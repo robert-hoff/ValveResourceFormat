@@ -10,7 +10,7 @@ namespace ValveResourceFormat.IO
     /// </summary>
     public ref struct SpanReader
     {
-        private readonly ReadOnlySpan<byte> input;
+        public ReadOnlySpan<byte> BaseSpan { get; }
 
         /// <summary>
         /// Gets or sets the current position within the stream.
@@ -24,7 +24,7 @@ namespace ValveResourceFormat.IO
         /// <param name="input">The input span.</param>
         public SpanReader(ReadOnlySpan<byte> input)
         {
-            this.input = input;
+            BaseSpan = input;
             Position = 0;
         }
 
@@ -53,13 +53,13 @@ namespace ValveResourceFormat.IO
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private ReadOnlySpan<byte> InternalRead(int numBytes)
         {
-            return input.Slice(Position += numBytes, numBytes);
+            return BaseSpan.Slice(Position += numBytes, numBytes);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private byte InternalReadByte()
         {
-            return input[Position++];
+            return BaseSpan[Position++];
         }
     }
 }
