@@ -1,6 +1,5 @@
 using System;
 using System.Buffers.Binary;
-using System.IO;
 using System.Runtime.CompilerServices;
 
 namespace ValveResourceFormat.IO
@@ -38,7 +37,7 @@ namespace ValveResourceFormat.IO
         public uint ReadUInt32() => BinaryPrimitives.ReadUInt32LittleEndian(InternalRead(4));
         public long ReadInt64() => BinaryPrimitives.ReadInt64LittleEndian(InternalRead(8));
         public ulong ReadUInt64() => BinaryPrimitives.ReadUInt64LittleEndian(InternalRead(8));
-        //public float ReadSingle() => BitConverter.Int32BitsToSingle(BinaryPrimitives.ReadInt32LittleEndian(InternalRead(4)));
+        public float ReadSingle() => BitConverter.ToSingle(InternalRead(4).ToArray(), 0); // TODO: BitConverter.Int32BitsToSingle(BinaryPrimitives.ReadInt32LittleEndian is in netstandard2.1
         public double ReadDouble() => BitConverter.Int64BitsToDouble(BinaryPrimitives.ReadInt64LittleEndian(InternalRead(8)));
 
         public ReadOnlySpan<byte> ReadBytes(int count)
