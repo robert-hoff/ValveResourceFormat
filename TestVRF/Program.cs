@@ -5,45 +5,70 @@ using System.Diagnostics;
 namespace TestVRF
 {
 
-    class Program
+
+
+  class Program
+  {
+
+    static void Main(string[] args)
     {
 
-        // static void Main(string[] args)
-        static void Main()
-        {
-            // arguments have to be used in this configuration
-            // if (args.Length > 0)
-            // {
-            // Console.Write(args[0]);
-            // }
 
 
-            int i = 10;
+                        
 
+      int j = 100;
 
-            int j = i * 7;
+      String hexstring = String.Format("0x{0:x8}", 1410770216);
+      Trace.WriteLine(hexstring);
 
+      int i = 10;
+      Trace.WriteLine("hi");
 
-            Debug.WriteLine("hello!");
+      Program my_prog = new Program(90);
 
+      Trace.WriteLine(my_prog.my_fieldvar);
 
-
-            j = j * 7;
-
-
-            // Console.WriteLine("hello!");
-            // Console.WriteLine("0x{0:x8}", 1410770216);
-            // Console.WriteLine(j);
-
-
-
-
-
-        }
-
-
+      DogDog growly_dog = new DogDog();
+      growly_dog.bark("high");
 
     }
+
+
+    public Program(int my_fieldvar)
+    {
+      this.my_fieldvar = my_fieldvar;
+    }
+
+    int my_fieldvar;
+
+
+  }
+
+
+
+  class MathsCat
+  {
+
+
+    public int mulmul(int a, int b)
+    {
+      return a * b;
+    }
+
+
+
+  }
+
+  class DogDog
+  {
+    public int bark(string level)
+    {
+      Trace.WriteLine("BARK!");
+      return 100000;
+    }
+  }
+
 
 
 }
