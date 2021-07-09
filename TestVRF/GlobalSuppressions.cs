@@ -5,4 +5,4 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage("Style", "IDE0007:Use implicit type", Justification = "<Pending>", Scope = "member", Target = "~M:TestVRF.Program.Main")]
+[assembly: SuppressMessage("Style", "IDE0007:Use implicit type", Justification = "<Pending>", Scope = "member", Target = "~M:TestVRF.MyProgram1.Main")]
