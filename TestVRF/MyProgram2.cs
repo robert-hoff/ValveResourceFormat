@@ -17,7 +17,7 @@ namespace TestVRF
     class MyProgram2
     {
 
-        static void Main(string[] args)
+        static void Mainz(string[] args)
         {
             // Trace.WriteLine("Hello!");
             processingAlchemistVmdlModel();
@@ -50,6 +50,7 @@ namespace TestVRF
                 FileName = alchemist_file,
             };
             resource.Read(alchemist_file);
+
 
 
             var path = @"X:\checkouts\ValveResourceFormat\Tests\Files\ValidOutput";
