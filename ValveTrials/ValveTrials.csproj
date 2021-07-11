@@ -1,0 +1,56 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <RollForward>LatestMajor</RollForward>
+    <OutputType>WinExe</OutputType>
+    <Description>Valve Trials</Description>
+    <ApplicationIcon>..\Icons\vrf.ico</ApplicationIcon>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <PublishSingleFile>true</PublishSingleFile>
+    <PublishTrimmed>true</PublishTrimmed>
+    <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
+    <StartupObject>ValveTrials.Program</StartupObject>
+    <AssemblyName>VRF</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+    <WarningLevel>1</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+  <!--
+    <PackageReference Include="NAudio" Version="2.0.1" />
+    <PackageReference Include="NLayer" Version="1.13.0" />
+    <PackageReference Include="NLayer.NAudioSupport" Version="1.2.0" />
+    <PackageReference Include="OpenTK" Version="3.3.1"><NoWarn>NU1701</NoWarn></PackageReference>
+    <PackageReference Include="OpenTK.GLControl" Version="3.1.0"><NoWarn>NU1701</NoWarn></PackageReference>
+  -->
+    <PackageReference Include="SkiaSharp.Views.WindowsForms" Version="2.80.2" />
+  </ItemGroup>
+  <!--
+  <ItemGroup>
+    <EmbeddedResource Include="AssetTypes\*" />
+    <EmbeddedResource Include="Types\Renderer\Shaders\*" />
+  </ItemGroup>
+  -->
+  <ItemGroup>
+    <ProjectReference Include="..\..\ValveKeyValue\ValveKeyValue\ValveKeyValue\ValveKeyValue.csproj" />
+    <ProjectReference Include="..\ValvePak\ValvePak.csproj" />
+
+    <!--
+    <ProjectReference Include="..\ValveResourceFormat\ValveResourceFormat.csproj">
+      <Project>{E685E563-5F49-4D8D-8342-A7354229E54F}</Project>
+      <Name>ValveResourceFormat</Name>
+    </ProjectReference>
+    -->
+  </ItemGroup>
+  <!--
+  <ItemGroup>
+    <Compile Update="Controls\GLViewerTrackBarControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+  </ItemGroup>
+  -->
+</Project>
