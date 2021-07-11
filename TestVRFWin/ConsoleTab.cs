@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 
-namespace TestVRF
+namespace TestVRFWin
 {
     internal class ConsoleTab
     {
@@ -52,6 +52,12 @@ namespace TestVRF
                 ForeColor = Color.FromArgb(240, 240, 240),
             };
 
+            ContextMenu cm = new ContextMenu();
+            cm.MenuItems.Add("go", new EventHandler(SomeHandler));
+            control.ContextMenu = cm;
+
+
+
             var tab = new TabPage("Console")
             {
                 BackColor = bgColor,
@@ -65,5 +71,17 @@ namespace TestVRF
 
             return tab;
         }
+
+
+        static void SomeHandler(object sender, EventArgs args)
+        {
+            TestVRF1.doIt();
+        }
+
+
+
     }
 }
+
+
+

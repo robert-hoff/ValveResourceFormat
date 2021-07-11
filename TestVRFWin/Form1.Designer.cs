@@ -1,5 +1,12 @@
+using System;
+using System.Drawing;
+using System.IO;
+using System.Text;
+using System.Windows.Forms;
 
-namespace TestVRFWin {
+
+namespace TestVRFWin
+{
 	partial class Form1 {
 		/// <summary>
 		/// Required designer variable.
@@ -25,71 +32,68 @@ namespace TestVRFWin {
 		/// </summary>
 		private void InitializeComponent() {
 			this.components = new System.ComponentModel.Container();
-			this.tabControl1 = new System.Windows.Forms.TabControl();
-			this.tabPage1 = new System.Windows.Forms.TabPage();
-			this.tabPage2 = new System.Windows.Forms.TabPage();
+			this.mainTabs = new System.Windows.Forms.TabControl();
 			this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
 			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.tabControl1.SuspendLayout();
+
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            // this.tabPage1 = ConsoleTab.CreateTab();
+
+            this.mainTabs.SuspendLayout();
 			this.contextMenuStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// tabControl1
+			// mainTabs
 			// 
-			this.tabControl1.Controls.Add(this.tabPage1);
-			this.tabControl1.Controls.Add(this.tabPage2);
-			this.tabControl1.Location = new System.Drawing.Point(5, 0);
-			this.tabControl1.Name = "tabControl1";
-			this.tabControl1.SelectedIndex = 0;
-			this.tabControl1.Size = new System.Drawing.Size(790, 447);
-			this.tabControl1.TabIndex = 0;
-			// 
-			// tabPage1
-			// 
-			this.tabPage1.ContextMenuStrip = this.contextMenuStrip1;
-			this.tabPage1.Location = new System.Drawing.Point(4, 22);
-			this.tabPage1.Name = "tabPage1";
-			this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage1.Size = new System.Drawing.Size(782, 421);
-			this.tabPage1.TabIndex = 0;
-			this.tabPage1.Text = "tabPage1";
-			this.tabPage1.UseVisualStyleBackColor = true;
-			// 
-			// tabPage2
-			// 
-			this.tabPage2.Location = new System.Drawing.Point(4, 22);
-			this.tabPage2.Name = "tabPage2";
-			this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-			this.tabPage2.Size = new System.Drawing.Size(782, 421);
-			this.tabPage2.TabIndex = 1;
-			this.tabPage2.Text = "tabPage2";
-			this.tabPage2.UseVisualStyleBackColor = true;
+			this.mainTabs.ContextMenuStrip = this.contextMenuStrip1;
+			this.mainTabs.Controls.Add(this.tabPage1);
+			this.mainTabs.Location = new System.Drawing.Point(5, 0);
+			this.mainTabs.Name = "mainTabs";
+			this.mainTabs.SelectedIndex = 0;
+			this.mainTabs.Size = new System.Drawing.Size(790, 447);
+			this.mainTabs.TabIndex = 0;
 			// 
 			// contextMenuStrip1
 			// 
 			this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItem1});
 			this.contextMenuStrip1.Name = "contextMenuStrip1";
-			this.contextMenuStrip1.Size = new System.Drawing.Size(181, 48);
+			this.contextMenuStrip1.Size = new System.Drawing.Size(92, 26);
 			// 
 			// toolStripMenuItem1
 			// 
 			this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-			this.toolStripMenuItem1.Size = new System.Drawing.Size(180, 22);
+			this.toolStripMenuItem1.Size = new System.Drawing.Size(91, 22);
 			this.toolStripMenuItem1.Text = "go!";
 			this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
-			// 
-			// Form1
-			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(782, 421);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "tabPage1";
+            this.tabPage1.UseVisualStyleBackColor = true;
+
+
+            // 
+            // Form1
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(800, 450);
-			this.Controls.Add(this.tabControl1);
+			this.Controls.Add(this.mainTabs);
 			this.Name = "Form1";
 			this.Text = "Form1";
-			this.tabControl1.ResumeLayout(false);
+			this.mainTabs.ResumeLayout(false);
 			this.contextMenuStrip1.ResumeLayout(false);
 			this.ResumeLayout(false);
+
+
+
+
 
 		}
 
@@ -98,11 +102,18 @@ namespace TestVRFWin {
 
         #endregion
 
-        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabControl mainTabs;
+
+        // ConsoleTab tabPage1;
         private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.TabPage tabPage2;
-        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        // private System.Windows.Forms.TabPage tabPage2;
+
+        System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+        private System.Windows.Forms.TabPage tabPage3;
     }
+
+
+
 }
 

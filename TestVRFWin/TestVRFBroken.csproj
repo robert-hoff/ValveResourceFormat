@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TestVRF1.cs" />
     <Compile Include="ConsoleTab.cs" />
     <Compile Include="GenericProgressForm.cs">
       <SubType>Form</SubType>
@@ -92,6 +93,12 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ValveResourceFormat\ValveResourceFormat.csproj">
+      <Project>{e685e563-5f49-4d8d-8342-a7354229e54f}</Project>
+      <Name>ValveResourceFormat</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

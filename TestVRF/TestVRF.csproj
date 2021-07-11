@@ -3,7 +3,6 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
-    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <ApplicationIcon />
     <StartupObject />
     <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
@@ -27,7 +26,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Decompiler\Decompiler.csproj" />
-    <ProjectReference Include="..\GUI\GUI.csproj" />
     <ProjectReference Include="..\ValveResourceFormat\ValveResourceFormat.csproj" />
   </ItemGroup>
 
