@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 
@@ -38,12 +39,23 @@ namespace ValveResourceFormat.Blocks.ResourceEditInfoStructs
         {
             reader.BaseStream.Position = Offset;
 
+            // Debug.WriteLine("InputDependencies size = {0}", Size);
+
+            // This will always be REDI
+            // Debug.WriteLine(Type);
+
+
+
+
             for (var i = 0; i < Size; i++)
             {
                 var dep = new InputDependency();
 
                 dep.ContentRelativeFilename = reader.ReadOffsetString(Encoding.UTF8);
+
+                // Debug.WriteLine(dep.ContentRelativeFilename);
                 dep.ContentSearchPath = reader.ReadOffsetString(Encoding.UTF8);
+                // Debug.WriteLine(dep.ContentSearchPath);
                 dep.FileCRC = reader.ReadUInt32();
                 dep.Flags = reader.ReadUInt32();
 

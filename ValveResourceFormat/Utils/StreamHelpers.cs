@@ -1,4 +1,5 @@
-﻿using System.IO;
+using System.Diagnostics;
+using System.IO;
 using System.Text;
 
 namespace ValveResourceFormat
@@ -42,8 +43,13 @@ namespace ValveResourceFormat
         /// <param name="encoding">Encoding.</param>
         public static string ReadOffsetString(this BinaryReader stream, Encoding encoding)
         {
+
+            // Debug.WriteLine(stream.BaseStream.Position);
+
             var currentOffset = stream.BaseStream.Position;
             var offset = stream.ReadInt32();
+
+            // Debug.WriteLine("offset = {0}", offset);
 
             if (offset == 0)
             {
@@ -52,9 +58,15 @@ namespace ValveResourceFormat
 
             stream.BaseStream.Position = currentOffset + offset;
 
+            // Debug.WriteLine("BASE = {0}", stream.BaseStream.Position);
+
+
             var str = ReadNullTermString(stream, encoding);
 
             stream.BaseStream.Position = currentOffset + 4;
+
+            // Debug.WriteLine(stream.BaseStream.Position);
+
 
             return str;
         }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -89,6 +90,17 @@ namespace Decompiler
         // don't expect to see any quality code in here
         public static int Main(string[] args)
         {
+            // Console.WriteLine("{0}", args.Length);
+            //Debug.WriteLine($"{args[0]}");
+            //Debug.WriteLine($"{args[1]}");
+            //Debug.WriteLine($"{args[2]}");
+            //Debug.WriteLine($"{args[3]}");
+            //Console.WriteLine($"{args[0]}");
+            //Console.WriteLine($"{args[1]}");
+            //Console.WriteLine($"{args[2]}");
+            //Console.WriteLine($"{args[3]}");
+
+
             CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
             CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
 
@@ -98,6 +110,9 @@ namespace Decompiler
         private int OnExecute()
         {
             InputFile = Path.GetFullPath(InputFile);
+
+            // Debug.WriteLine(InputFile);
+
 
             if (OutputFile != null)
             {
@@ -180,6 +195,15 @@ namespace Decompiler
                 return 1;
             }
 
+
+
+            // As expected there is one entry
+            // X:\checkouts\ValveResourceFormat\Tests\FilesLatest\shading_pen_lines_psd_4cab66cb.vtex_c
+
+            // Debug.WriteLine(paths[0]);
+            // Debug.WriteLine(paths.Count);
+
+
             CurrentFile = 0;
             TotalFiles = paths.Count;
 
@@ -214,6 +238,8 @@ namespace Decompiler
             {
                 foreach (var path in paths)
                 {
+                    // Debug.WriteLine(path);
+                    // !! this is where each of the files gets processed
                     ProcessFile(path);
                 }
             }
@@ -257,6 +283,11 @@ namespace Decompiler
 
             var magic = BitConverter.ToUInt32(magicData, 0);
 
+
+            // The magic for the vtex file is 1764 (which is taken to mean the size of the REDI and DATA blocks)
+            // Debug.WriteLine(magic);
+
+
             switch (magic)
             {
                 case Package.MAGIC: ParseVPK(path, fs); return;
@@ -269,6 +300,11 @@ namespace Decompiler
             }
 
             var extension = Path.GetExtension(path);
+
+            // file is not one with a magic number so passes the switch
+            // extension = .vtex_c
+            // Debug.WriteLine(extension);
+
 
             if (extension == ".vfont")
             {
@@ -294,10 +330,15 @@ namespace Decompiler
                 FileName = path,
             };
 
+
+
             try
             {
+                // this will populate the REDI and DATA blocks
                 resource.Read(stream);
 
+                // this returns the extension of the target file, for the vtex_c
+                // is always given as png
                 var extension = FileExtract.GetExtension(resource);
 
                 if (extension == null)
@@ -310,6 +351,9 @@ namespace Decompiler
                     }
                 }
 
+
+                // this is based on the --stats switch
+                // (which I think is only for reporting purposes)
                 if (CollectStats)
                 {
                     var id = $"{resource.ResourceType}_{resource.Version}";
@@ -317,6 +361,16 @@ namespace Decompiler
 
                     switch (resource.ResourceType)
                     {
+
+                        /*
+                        *  POTENTIAL BUG HERE
+                        *  when the command line is run with the --stats switch the
+                        *  texture.GenerateBitmap() is called twice!!!
+                        *
+                        *
+                        *
+                        *
+                        */
                         case ResourceType.Texture:
                             var texture = (Texture)resource.DataBlock;
                             info = texture.Format.ToString();
@@ -365,9 +419,33 @@ namespace Decompiler
                     }
                 }
 
+
                 if (OutputFile != null)
                 {
+
+                    /*
+                     * FileExtract.Extract(resource) will in turn call
+                     * var bitmap = ((Texture)resource.DataBlock).GenerateBitmap();
+                     *
+                     *
+                     */
                     var data = FileExtract.Extract(resource);
+
+
+                    // the size of this data is 419,579, which is the same as the output file
+                    // Debug.WriteLine(data.Length);
+
+                    // the checksum for these bytes is 0x48618e74 just like the output file
+                    // byte[] databytes = new byte[data.Length];
+                    // for (int i = 0; i < data.Length; i++)
+                    // {
+                    //     databytes[i] = data[i];
+                    // }
+                    // uint crc = Crc32.Compute(databytes);
+                    // Debug.WriteLine("0x{0:x8}", crc);
+
+
+
 
                     var filePath = Path.ChangeExtension(path, extension);
 

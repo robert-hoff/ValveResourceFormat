@@ -10,7 +10,7 @@ namespace TestVRF
 {
     class MyProgram3
     {
-        static void Main(string[] args)
+        static void Mainz(string[] args)
         {
 			// Trace.WriteLine("Hello!");
 
