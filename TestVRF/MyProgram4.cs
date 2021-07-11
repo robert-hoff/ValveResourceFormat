@@ -18,7 +18,7 @@ namespace TestVRF
 
     class MyProgram4
     {
-        static void Main()
+        static void Mainz()
         {
             // RunTheDecompiler();
             // tryStuff();

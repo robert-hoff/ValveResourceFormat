@@ -3,12 +3,16 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <ApplicationIcon />
     <StartupObject />
     <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
     <EnableNETAnalyzers>false</EnableNETAnalyzers>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="ValvePak" Version="1.0.2.35" />
+  </ItemGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <WarningLevel>0</WarningLevel>
     <NoWarn />
@@ -23,6 +27,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Decompiler\Decompiler.csproj" />
+    <ProjectReference Include="..\GUI\GUI.csproj" />
     <ProjectReference Include="..\ValveResourceFormat\ValveResourceFormat.csproj" />
   </ItemGroup>
 
