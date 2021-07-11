@@ -18,10 +18,10 @@ namespace TestVRFWin
             }
             runOnce = false;
 
-            // Console.WriteLine("let's go");
+            Console.WriteLine("let's go");
 
 
-
+            /*
             string vpkfile = @"Z:\git\vcs-decompile\vrf-decompiler-bat\pak01.vpk";
             var package = new SteamDatabase.ValvePak.Package();
             package.Read(vpkfile);
@@ -39,21 +39,12 @@ namespace TestVRFWin
 
             package.ReadEntry(model_entry, out byte[] output);
             resource.Read(new MemoryStream(output));
-
-
-
-
-
-
+            */
 
         }
 
 
-
-
     }
 }
-
-
 
 

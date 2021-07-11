@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{0BA6FBC7-B112-4736-B73F-5768DBD1C449}</ProjectGuid>
+    <ProjectGuid>{E839EB7E-02AD-4FB0-A234-51367E858C9E}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>TestVRFWin</RootNamespace>
     <AssemblyName>TestVRFWin</AssemblyName>
@@ -48,9 +48,6 @@
   <ItemGroup>
     <Compile Include="TestVRF1.cs" />
     <Compile Include="ConsoleTab.cs" />
-    <Compile Include="GenericProgressForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -81,6 +78,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
   </ItemGroup>
+  <!-- warning levels -->
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <WarningLevel>0</WarningLevel>
     <NoWarn />
@@ -93,12 +91,6 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ValveResourceFormat\ValveResourceFormat.csproj">
-      <Project>{e685e563-5f49-4d8d-8342-a7354229e54f}</Project>
-      <Name>ValveResourceFormat</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
