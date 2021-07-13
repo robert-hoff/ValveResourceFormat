@@ -7,16 +7,12 @@
     <PackageTags>source2 dota2 dota steam valve halflife artifact underlords</PackageTags>
     <NoWarn>$(NoWarn);NU5104</NoWarn>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <WarningLevel>0</WarningLevel>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <WarningsAsErrors />
-  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="K4os.Compression.LZ4" Version="1.2.6" />
     <PackageReference Include="SharpGLTF.Toolkit" Version="1.0.0-alpha0023" />
     <PackageReference Include="SkiaSharp" Version="2.80.2" />
     <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="2.80.2" />
+    <PackageReference Include="ValveKeyValue" Version="0.5.0.4" />
     <PackageReference Include="ZstdSharp.Port" Version="0.5.0" />
   </ItemGroup>
   <ItemGroup>
@@ -24,11 +20,5 @@
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
-  </ItemGroup>
-  <PropertyGroup>
-    <NoWarn>;NU1605</NoWarn>
-  </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ValvePak\ValvePak.csproj" />
   </ItemGroup>
 </Project>

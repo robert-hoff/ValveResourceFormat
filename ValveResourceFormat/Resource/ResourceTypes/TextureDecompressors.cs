@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using System.IO;
 using SkiaSharp;
 
@@ -386,15 +385,7 @@ namespace ValveResourceFormat.ResourceTypes
 
         public static SKBitmap UncompressDXT1(SKBitmap imageInfo, Span<byte> input, int w, int h)
         {
-            // the size of imageInfo has already been determined as 1048576
             var data = imageInfo.PeekPixels().GetPixelSpan<byte>();
-
-            // get 1048576 here = 2^20 = 512*512*4
-            // Debug.WriteLine(data.Length);
-
-            // crc32 for the input variable is 0x348f965b which is correct
-
-
             var offset = 0;
             var blockCountX = (w + 3) / 4;
             var blockCountY = (h + 3) / 4;

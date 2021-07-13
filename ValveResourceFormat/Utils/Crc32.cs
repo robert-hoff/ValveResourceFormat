@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 
 namespace ValveResourceFormat
 {
     /// <summary>
     /// A utility class to compute CRC32.
     /// </summary>
-    public static class Crc32
+    internal static class Crc32
     {
         /// <summary>
         /// CRC polynomial 0xEDB88320.
