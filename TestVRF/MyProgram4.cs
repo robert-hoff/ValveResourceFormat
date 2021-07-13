@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 using Decompiler;
 using SkiaSharp;
+using SteamDatabase.ValvePak;
 using ValveResourceFormat;
 
 

@@ -88,7 +88,7 @@ namespace ValveTrials {
 
 
 
-
+			/*
 			extractDialog.OnProcess += (_, __) => {
 				if (dialog.FilterIndex == 1 && ResourceTypesThatAreGltfExportable.Contains(resource.ResourceType)) {
 					var exporter = new GltfModelExporter {
@@ -120,7 +120,7 @@ namespace ValveTrials {
 				Console.WriteLine($"Export for \"{fileName}\" completed");
 			};
 			extractDialog.ShowDialog();
-
+			*/
 
 
 
