@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <RollForward>LatestMajor</RollForward>
+    <OutputType>Exe</OutputType>
+    <Description>Source 2 resource decompiler and extractor</Description>
+    <ApplicationIcon>..\Icons\vrf.ico</ApplicationIcon>
+    <RuntimeIdentifiers>win-x64;linux-x64</RuntimeIdentifiers>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningsAsErrors />
+    <WarningLevel>0</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="3.1.0" />
+    <PackageReference Include="ValvePak" Version="1.0.2.35" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MyValveResourceFormat\MyValveResourceFormat.csproj" />
+  </ItemGroup>
+</Project>
