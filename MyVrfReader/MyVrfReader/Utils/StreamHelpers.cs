@@ -1,0 +1,66 @@
+using System.Diagnostics;
+using System.IO;
+using System.Text;
+
+namespace MyVrfReader {
+	internal static class StreamHelpers {
+		/// <summary>
+		/// Reads a null terminated string.
+		/// </summary>
+		/// <returns>String.</returns>
+		/// <param name="stream">Stream.</param>
+		/// <param name="encoding">Encoding.</param>
+		public static string ReadNullTermString(this BinaryReader stream, Encoding encoding) {
+			var characterSize = encoding.GetByteCount("e");
+
+			using (var ms = new MemoryStream()) {
+				while (true) {
+					var data = new byte[characterSize];
+					stream.Read(data, 0, characterSize);
+
+					if (encoding.GetString(data, 0, characterSize) == "\0") {
+						break;
+					}
+
+					ms.Write(data, 0, data.Length);
+				}
+
+				return encoding.GetString(ms.ToArray());
+			}
+		}
+
+		/// <summary>
+		/// Reads a string at a given uint offset.
+		/// </summary>
+		/// <returns>String.</returns>
+		/// <param name="stream">Stream.</param>
+		/// <param name="encoding">Encoding.</param>
+		public static string ReadOffsetString(this BinaryReader stream, Encoding encoding) {
+
+			// Debug.WriteLine(stream.BaseStream.Position);
+
+			var currentOffset = stream.BaseStream.Position;
+			var offset = stream.ReadInt32();
+
+			// Debug.WriteLine("offset = {0}", offset);
+
+			if (offset == 0) {
+				return string.Empty;
+			}
+
+			stream.BaseStream.Position = currentOffset + offset;
+
+			// Debug.WriteLine("BASE = {0}", stream.BaseStream.Position);
+
+
+			var str = ReadNullTermString(stream, encoding);
+
+			stream.BaseStream.Position = currentOffset + 4;
+
+			// Debug.WriteLine(stream.BaseStream.Position);
+
+
+			return str;
+		}
+	}
+}
