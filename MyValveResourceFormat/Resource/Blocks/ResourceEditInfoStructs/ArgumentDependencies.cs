@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -37,6 +37,8 @@ namespace MyValveResourceFormat.Blocks.ResourceEditInfoStructs
         public override void Read(BinaryReader reader, Resource resource)
         {
             reader.BaseStream.Position = Offset;
+
+            // Debug.WriteLine(reader.BaseStream.Position);
 
             for (var i = 0; i < Size; i++)
             {

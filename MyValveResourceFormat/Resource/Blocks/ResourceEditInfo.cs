@@ -40,6 +40,8 @@ namespace MyValveResourceFormat.Blocks
         public override void Read(BinaryReader reader, Resource resource)
         {
             reader.BaseStream.Position = Offset;
+            // Debug.WriteLine("REDI POS = {0}", reader.BaseStream.Position);
+
 
             for (var i = REDIStruct.InputDependencies; i < REDIStruct.End; i++)
             {
@@ -47,6 +49,9 @@ namespace MyValveResourceFormat.Blocks
 
                 block.Offset = (uint)reader.BaseStream.Position + reader.ReadUInt32();
                 block.Size = reader.ReadUInt32();
+
+                // Debug.WriteLine(block.Size);
+
 
                 Structs.Add(i, block);
             }
@@ -76,6 +81,10 @@ namespace MyValveResourceFormat.Blocks
         {
             return id switch
             {
+
+                // For each of these go to the REDIStruct and see the read method
+                // for how to get the data
+
                 REDIStruct.InputDependencies => new InputDependencies(),
                 REDIStruct.AdditionalInputDependencies => new AdditionalInputDependencies(),
                 REDIStruct.ArgumentDependencies => new ArgumentDependencies(),

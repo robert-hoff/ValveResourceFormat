@@ -385,7 +385,15 @@ namespace MyValveResourceFormat.ResourceTypes
 
         public static SKBitmap UncompressDXT1(SKBitmap imageInfo, Span<byte> input, int w, int h)
         {
+            // the size of imageInfo has already been determined as 1048576
             var data = imageInfo.PeekPixels().GetPixelSpan<byte>();
+
+            // get 1048576 here = 2^20 = 512*512*4
+            // Debug.WriteLine(data.Length);
+
+            // crc32 for the input variable is 0x348f965b which is correct
+
+
             var offset = 0;
             var blockCountX = (w + 3) / 4;
             var blockCountY = (h + 3) / 4;
@@ -445,8 +453,7 @@ namespace MyValveResourceFormat.ResourceTypes
                                 finalR = (byte)(((2 * r0) + r1) / 3);
                                 finalG = (byte)(((2 * g0) + g1) / 3);
                                 finalB = (byte)(((2 * b0) + b1) / 3);
-                            }
-                            else
+                            } else
                             {
                                 finalR = (byte)((r0 + r1) / 2);
                                 finalG = (byte)((g0 + g1) / 2);
@@ -535,8 +542,7 @@ namespace MyValveResourceFormat.ResourceTypes
                                     data[dataIndex + 2] = (byte)(((nx / l * 0.5f) + 0.5f) * 255);
                                     data[dataIndex + 1] = (byte)(((ny / l * 0.5f) + 0.5f) * 255);
                                     data[dataIndex + 0] = (byte)(((nz / l * 0.5f) + 0.5f) * 255);
-                                }
-                                else
+                                } else
                                 {
                                     var swizzleA = (data[dataIndex + 3] * 2) - 255;     // premul A
                                     var swizzleG = (data[dataIndex + 1] * 2) - 255;         // premul G
@@ -583,28 +589,23 @@ namespace MyValveResourceFormat.ResourceTypes
                     if (index == 0)
                     {
                         pixels[dataIndex] = e0;
-                    }
-                    else if (index == 1)
+                    } else if (index == 1)
                     {
                         pixels[dataIndex] = e1;
-                    }
-                    else
+                    } else
                     {
                         if (e0 > e1)
                         {
                             pixels[dataIndex] = (byte)((((8 - index) * e0) + ((index - 1) * e1)) / 7);
-                        }
-                        else
+                        } else
                         {
                             if (index == 6)
                             {
                                 pixels[dataIndex] = 0;
-                            }
-                            else if (index == 7)
+                            } else if (index == 7)
                             {
                                 pixels[dataIndex] = 255;
-                            }
-                            else
+                            } else
                             {
                                 pixels[dataIndex] = (byte)((((6 - index) * e0) + ((index - 1) * e1)) / 5);
                             }

@@ -78,10 +78,13 @@ namespace MyValveResourceFormat.ResourceTypes
 
         public override void Read(BinaryReader reader, Resource resource)
         {
+
             Reader = reader;
             Resource = resource;
 
             reader.BaseStream.Position = Offset;
+            // Debug.WriteLine("DATA reader position = {0}", reader.BaseStream.Position);
+
 
             Version = reader.ReadUInt16();
 
@@ -109,6 +112,9 @@ namespace MyValveResourceFormat.ResourceTypes
             Picmip0Res = reader.ReadUInt32();
 
             var extraDataOffset = reader.ReadUInt32();
+
+            // Debug.WriteLine(extraDataOffset);
+
             var extraDataCount = reader.ReadUInt32();
 
             if (extraDataCount > 0)
@@ -173,6 +179,9 @@ namespace MyValveResourceFormat.ResourceTypes
                 }
             }
 
+            // Debug.WriteLine("Offset and Size");
+            // Debug.WriteLine(Offset);
+            // Debug.WriteLine(Size);
             DataOffset = Offset + Size;
         }
 
@@ -245,18 +254,43 @@ namespace MyValveResourceFormat.ResourceTypes
             return null;
         }
 
+
+        /*
+         *
+         * NOTE POTENTIAL BUG
+         * Method is called twice if the --stats switch is used
+         *
+         *
+         */
         public SKBitmap GenerateBitmap()
         {
+            // The reader is set at the data position
+            // this will later be read with
+            //
             Reader.BaseStream.Position = DataOffset;
 
+            // R: the method is called once for the extraction of the vtex_c data
+            // the position of the reader is set to 1764 (the index following the REDI and DATA blocks)
+            // Debug.WriteLine(Reader.BaseStream.Position);
+
+            // MipmapLevelToExtract is a const defined above and always seems to be zero
+            // (but maybe instantiated with other values elsewhere?)
             var width = ActualWidth >> MipmapLevelToExtract;
             var height = ActualHeight >> MipmapLevelToExtract;
             var blockWidth = Width >> MipmapLevelToExtract;
             var blockHeight = Height >> MipmapLevelToExtract;
 
+            // this is a Microsoft class
+            // https://docs.microsoft.com/en-us/dotnet/api/skiasharp.skbitmap?view=skiasharp-2.80.2
+            //
+            // the uncompressed texture will be written here
             var skiaBitmap = new SKBitmap(width, height, SKColorType.Bgra8888, SKAlphaType.Unpremul);
 
+
+            // This performs a check to see if several mipmap levels should be performed
+            // which is skipped in my case (value of NumMipLevels = 1)
             SkipMipmaps();
+
 
             switch (Format)
             {
@@ -455,8 +489,7 @@ namespace MyValveResourceFormat.ResourceTypes
                 if (CompressedMips != null)
                 {
                     offset = CompressedMips[j];
-                }
-                else
+                } else
                 {
                     offset = CalculateBufferSizeForMipLevel(j) * (Flags.HasFlag(VTexFlags.CUBE_TEXTURE) ? 6 : 1);
                 }
@@ -467,12 +500,37 @@ namespace MyValveResourceFormat.ResourceTypes
 
         private Span<byte> GetTextureSpan(int mipLevel = MipmapLevelToExtract)
         {
+            // this is the size of the data section, in my case 131072
+            // int
             var uncompressedSize = CalculateBufferSizeForMipLevel(mipLevel);
+            // Span<byte> of size 131072
             var output = new Span<byte>(new byte[uncompressedSize]);
 
             if (!IsActuallyCompressedMips)
             {
+                // output[i] are all zero here
+
+                // my vtex_c file will use this as IsActuallyCompressedMips=false
+                // does this just initialize all the data as zeros?
                 Reader.Read(output);
+
+
+                // R: crc check here reveals the data is populated and returns
+                //
+                //      0x348f965b
+                //
+                //byte[] databytes = new byte[output.Length];
+                //for (int i = 0; i < output.Length; i++)
+                //{
+                //    databytes[i] = output[i];
+                //}
+                //uint val = Crc32.Compute(databytes);
+                //Debug.WriteLine("0x{0:x8}", val);
+
+
+
+
+
                 return output;
             }
 

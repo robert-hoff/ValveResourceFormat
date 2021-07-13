@@ -180,6 +180,7 @@ namespace MyValveResourceFormat
             }
 
             HeaderVersion = Reader.ReadUInt16();
+            // Trace.WriteLine(HeaderVersion);
 
             if (HeaderVersion != KnownHeaderVersion)
             {
@@ -187,18 +188,38 @@ namespace MyValveResourceFormat
             }
 
             Version = Reader.ReadUInt16();
+            // Trace.WriteLine(Version);
 
             var blockOffset = Reader.ReadUInt32();
+            // Trace.WriteLine(blockOffset);
+
             var blockCount = Reader.ReadUInt32();
+            // Trace.WriteLine(blockCount);
+
+
 
             Reader.BaseStream.Position += blockOffset - 8; // 8 is 2 uint32s we just read
+
+            // position remains unchanged at 16
+            // Trace.WriteLine(Reader.BaseStream.Position);
 
             for (var i = 0; i < blockCount; i++)
             {
                 var blockType = Encoding.UTF8.GetString(Reader.ReadBytes(4));
+                // Trace.WriteLine(blockType);
 
                 var position = Reader.BaseStream.Position;
+                // Debug.WriteLine("position = {0}", position);
+
+                // it looks like it's saving the position after the size (below) for later
+                // I think the headers for the data blocks follow each other
+                // it looks like the header for the block is 12 bytes long
+                //         size |
+
                 var offset = (uint)position + Reader.ReadUInt32();
+                // Debug.WriteLine("offset = {0}", offset);
+
+
                 var size = Reader.ReadUInt32();
                 Block block = null;
 
@@ -214,8 +235,7 @@ namespace MyValveResourceFormat
                     if (magic == BinaryKV3.MAGIC || magic == BinaryKV3.MAGIC2 || magic == BinaryKV3.MAGIC3)
                     {
                         block = new BinaryKV3();
-                    }
-                    else if (magic == BinaryKV1.MAGIC)
+                    } else if (magic == BinaryKV1.MAGIC)
                     {
                         block = new BinaryKV1();
                     }
@@ -334,6 +354,9 @@ namespace MyValveResourceFormat
 
         private ResourceData ConstructResourceType()
         {
+            // prints 'Texture'
+            // Debug.WriteLine(ResourceType);
+
             switch (ResourceType)
             {
                 case ResourceType.Panorama:
