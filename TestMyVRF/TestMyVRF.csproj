@@ -12,6 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\ValveKeyValue\ValveKeyValue\ValveKeyValue\MyValveKeyValue.csproj" />
     <ProjectReference Include="..\MyValveResourceFormat\MyValveResourceFormat.csproj" />
     <ProjectReference Include="..\ValvePak\MyValvePak.csproj" />
   </ItemGroup>
