@@ -97,7 +97,7 @@ dotnet_diagnostic.CA5394.severity = suggestion
 #
 
 # IDE0055: Fix formatting
-dotnet_diagnostic.IDE0055.severity = warning
+dotnet_diagnostic.IDE0055.severity = none
 
 # Sort using and Import directives with System.* appearing first
 dotnet_separate_import_directive_groups = false:suggestion
