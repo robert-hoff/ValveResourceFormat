@@ -21,13 +21,8 @@ namespace TestVRF
         static void Mainz()
         {
             // RunTheDecompiler();
-            // tryStuff();
-
-            // runCrc32();
-
             decompressDataAndGenerateBitmap();
             // analyseData();
-            // sliceExample();
         }
 
 
@@ -49,24 +44,6 @@ namespace TestVRF
             Debug.WriteLine(dataspan.Length);
 
         }
-
-
-
-        static void sliceExample()
-        {
-            byte[] myBytes = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
-            Span<byte> dataspan = new Span<byte>(myBytes);
-            Span<byte> blockStorage = dataspan.Slice(2, 8); // returns 8-length block indexes [2,9]
-
-            for (int i = 0; i < 8; i++)
-            {
-                Debug.WriteLine("{0}", blockStorage[i]);
-            }
-
-
-
-        }
-
 
 
 
@@ -245,23 +222,6 @@ namespace TestVRF
         }
 
 
-
-        static void runCrc32()
-        {
-            byte[] data = { 1, 2, 3 };
-            uint val = Crc32.Compute(data);
-            Debug.WriteLine("0x{0:x8}", val);
-
-
-        }
-
-        public void forLoop()
-        {
-            for (int i = 0; i < 100; i++)
-            {
-                Debug.WriteLine(i);
-            }
-        }
 
         /*
          * Produces

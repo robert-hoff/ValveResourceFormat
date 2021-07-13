@@ -8,144 +8,131 @@ using System.Threading;
 using System.Threading.Tasks;
 using SteamDatabase.ValvePak;
 using ValveResourceFormat;
+using ValveResourceFormat.Blocks;
 using ValveResourceFormat.IO;
+using ValveResourceFormat.ResourceTypes;
 
-namespace TestVRF
-{
-    class MyProgram5
-    {
+namespace TestVRF {
+	class MyProgram5 {
 
-        static void Main()
-        {
-
-            string vpkfile = @"Z:\git\vcs-decompile\vrf-decompiler-bat\pak01.vpk";
-            var package = new SteamDatabase.ValvePak.Package();
-            package.Read(vpkfile);
-
-            string huskar_filename = "armor_of_reckless_vigor_weapon.vmdl_c";
-            string huskar_model = "models/items/huskar/armor_of_reckless_vigor_weapon/armor_of_reckless_vigor_weapon.vmdl_c";
-            PackageEntry model_entry = package.FindEntry(huskar_model);
+		static void Main() {
 
 
-            var resource = new ValveResourceFormat.Resource
-            {
-                FileName = huskar_filename
-            };
+			// trial2();
+			trial1();
+
+		}
 
 
-            package.ReadEntry(model_entry, out byte[] output);
-            resource.Read(new MemoryStream(output));
+
+		static string DOTA2_TEST_VPK = @"Z:\git\vcs-decompile\vrf-decompiler-bat\pak01.vpk";
+		static string HUSKAR_WEAPON = "models/items/huskar/armor_of_reckless_vigor_weapon/armor_of_reckless_vigor_weapon.vmdl_c";
+
+		static string HLALYX_TEST_VPK = @"Z:\git\vcs-decompile\vrf-decompiler-bat\gen_vpk\hl_dir.vpk";
+		static string HLALYX_MAIN_VPK = @"X:\Steam\steamapps\common\Half-Life Alyx\game\hlvr\pak01_dir.vpk";
+		static string ZOMBIE_CLASSIC = "models/creatures/zombie_classic/zombie_classic.vmdl_c";
+
+		static string EXPORT_DIR = @"C:\Users\R\Desktop\temttemp";
 
 
 
 
-        }
+
+		public static void trial2() {
+			string vpkfile = HLALYX_TEST_VPK;
+			var package = new SteamDatabase.ValvePak.Package();
+			package.Read(vpkfile);
+
+			string vpk_entry = ZOMBIE_CLASSIC;
+			string filename = vpk_entry.Substring(vpk_entry.LastIndexOf("/") + 1);
+			PackageEntry model_entry = package.FindEntry(vpk_entry);
+
+			var resource = new ValveResourceFormat.Resource();
+			package.ReadEntry(model_entry, out byte[] output);
+
+			// ouput.Length here is
+			// 44968687
+			// which matches the size of
+			// models/creatures/zombie_classic/zombie_classic.vmdl_c
 
 
-        /*
+
+			long millis = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+			resource.Read(new MemoryStream(output));
+			Debug.WriteLine($"reading {vpkfile} took {DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - millis} ms");
+			ResourceData datablock = (ResourceData)resource.GetBlockByType(BlockType.DATA);
 
 
-        static ISet<ResourceType> ResourceTypesThatAreGltfExportable = new HashSet<ResourceType>()
-        { ResourceType.Mesh, ResourceType.Model, ResourceType.WorldNode, ResourceType.World };
+		}
 
 
-        public static void Export(string fileName, ExportFileType FileType, Resource resource)
-        {
-            var extension = FileExtract.GetExtension(resource);
-
-            if (extension == null)
-            {
-                Debug.WriteLine($"Export for \"{fileName}\" has no suitable extension");
-                return;
-            }
-
-            var filter = $"{extension} file|*.{extension}";
-
-            if (ResourceTypesThatAreGltfExportable.Contains(resource.ResourceType))
-            {
-                if (FileType == ExportFileType.GLB)
-                {
-                    extension = "glb";
-                    filter = $"GLB file|*.glb|{filter}";
-                } else
-                {
-                    extension = "gltf";
-                    filter = $"glTF file|*.gltf|{filter}";
-                }
-            }
-
-            //var dialog = new SaveFileDialog
-            //{
-            //    // -- this line just adds the gltf ending
-            //    FileName = Path.GetFileName(Path.ChangeExtension(fileName, extension)),
-            //    InitialDirectory = Settings.Config.SaveDirectory,
-            //    DefaultExt = extension,
-            //    Filter = filter,
-            //};
-
-            //
-            // output directory
-            string FileName = "armor_of_reckless_vigor_weapon.gltf";
-
-            // results indicates if the dialog ws successful
-            // var result = dialog.ShowDialog();
-            // if (result != DialogResult.OK)
-            // {
-                // Console.WriteLine($"Export for \"{fileName}\" cancelled");
-                // return;
-            // }
-
-            Debug.WriteLine($"Export for \"{fileName}\" started to \"{extension}\"");
-
-            // Settings.Config.SaveDirectory = Path.GetDirectoryName(dialog.FileName);
-            // Settings.Save();
-            var extractDialog = new GenericProgressForm();
-
-            extractDialog.OnProcess += (_, __) =>
-            {
-                if (dialog.FilterIndex == 1 && ResourceTypesThatAreGltfExportable.Contains(resource.ResourceType))
-                {
-                    var exporter = new GltfModelExporter
-                    {
-                        ProgressReporter = new Progress<string>(extractDialog.SetProgress),
-                        FileLoader = exportData.VrfGuiContext.FileLoader,
-                    };
-                    switch (resource.ResourceType)
-                    {
-                        case ResourceType.Mesh:
-                            exporter.ExportToFile(fileName, dialog.FileName, new Mesh(resource));
-                            break;
-                        case ResourceType.Model:
-                            exporter.ExportToFile(fileName, dialog.FileName, (Model)resource.DataBlock);
-                            break;
-                        case ResourceType.WorldNode:
-                            exporter.ExportToFile(fileName, dialog.FileName, (WorldNode)resource.DataBlock);
-                            break;
-                        case ResourceType.World:
-                            exporter.ExportToFile(fileName, dialog.FileName, (World)resource.DataBlock);
-                            break;
-                        default:
-                            break;
-                    }
-                } else
-                {
-                    var data = FileExtract.Extract(resource).ToArray();
-                    using var stream = dialog.OpenFile();
-                    stream.Write(data, 0, data.Length);
-                }
-
-                Console.WriteLine($"Export for \"{fileName}\" completed");
-            };
-            extractDialog.ShowDialog();
-        }
-        */
 
 
-        public enum ExportFileType
-        {
-            Auto,
-            GLB
-        }
+		public static void trial1() {
+
+			string vpkfile = HLALYX_TEST_VPK;
+			var package = new SteamDatabase.ValvePak.Package();
+			package.Read(vpkfile);
+
+			string vpk_entry = ZOMBIE_CLASSIC;
+
+			// R: remember I can use built in functions for this! e.g. Path.GetDirectoryName(fileName)
+			string filename = vpk_entry.Substring(vpk_entry.LastIndexOf("/") + 1);
+
+
+
+			PackageEntry model_entry = package.FindEntry(vpk_entry);
+
+			var resource = new ValveResourceFormat.Resource();
+			package.ReadEntry(model_entry, out byte[] output);
+
+
+			long millis = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+			resource.Read(new MemoryStream(output));
+
+			Debug.WriteLine($"reading {vpkfile} took {DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - millis} ms");
+
+
+			// For the GltfModelExporter to work we need to instantiate it with a class implementing
+			//
+			//			ValveResourceFormat.IO.IFileLoader
+			//
+
+
+			MyFileLoader myFileLoader = new MyFileLoader(package);
+
+
+			var exporter = new GltfModelExporter {
+				FileLoader = myFileLoader,
+			};
+
+
+			ResourceData datablock = (ResourceData) resource.GetBlockByType(BlockType.DATA);
+
+
+
+			exporter.ExportToFile(filename, EXPORT_DIR + "\\" + filename, (Model)resource.DataBlock);
+
+
+
+
+		}
+
+
+
+
+		class MyFileLoader : IFileLoader {
+			Package package;
+			public MyFileLoader(Package package) {
+				this.package = package;
+			}
+
+			public Resource LoadFile(string file) {
+
+				Debug.WriteLine(file);
+				return null;
+			}
+		}
 
 
 
@@ -155,5 +142,8 @@ namespace TestVRF
 
 
 
-    }
+	}
 }
+
+
+
