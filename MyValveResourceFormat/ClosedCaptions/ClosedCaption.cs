@@ -1,11 +1,9 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace MyValveResourceFormat.ClosedCaptions
-{
-    public class ClosedCaption
-    {
+namespace MyValveResourceFormat.ClosedCaptions {
+    public class ClosedCaption {
         public uint Hash { get; set; }
         public uint UnknownV2 { get; set; }
         public int Blocknum { get; set; }

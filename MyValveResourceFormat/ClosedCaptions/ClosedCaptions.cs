@@ -1,16 +1,14 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
 
-namespace MyValveResourceFormat.ClosedCaptions
-{
-    // public class ClosedCaptions : IEnumerable<ClosedCaption>
-    public class ClosedCaptionz {
+namespace MyValveResourceFormat.ClosedCaptions {
+    public class ClosedCaptions : IEnumerable<ClosedCaption> {
 
-        /*
+
         public const int MAGIC = 0x44434356; // "VCCD"
 
         public List<ClosedCaption> Captions { get; private set; }
@@ -104,6 +102,6 @@ namespace MyValveResourceFormat.ClosedCaptions
         }
 
 
-        */
+
     }
 }
