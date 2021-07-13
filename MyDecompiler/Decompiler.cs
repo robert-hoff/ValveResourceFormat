@@ -85,23 +85,7 @@ namespace MyDecompiler {
 
         // This decompiler is a test bed for our library,
         // don't expect to see any quality code in here
-<<<<<<< Updated upstream
         public static int Main(string[] args) {
-=======
-        public static int Main(string[] args)
-        {
-            // Console.WriteLine("{0}", args.Length);
-            //Debug.WriteLine($"{args[0]}");
-            //Debug.WriteLine($"{args[1]}");
-            //Debug.WriteLine($"{args[2]}");
-            //Debug.WriteLine($"{args[3]}");
-            //Console.WriteLine($"{args[0]}");
-            //Console.WriteLine($"{args[1]}");
-            //Console.WriteLine($"{args[2]}");
-            //Console.WriteLine($"{args[3]}");
-
-
->>>>>>> Stashed changes
             CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
             CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
 
@@ -111,15 +95,7 @@ namespace MyDecompiler {
         private int OnExecute() {
             InputFile = Path.GetFullPath(InputFile);
 
-<<<<<<< Updated upstream
             if (OutputFile != null) {
-=======
-            // Debug.WriteLine(InputFile);
-
-
-            if (OutputFile != null)
-            {
->>>>>>> Stashed changes
                 OutputFile = Path.GetFullPath(OutputFile);
                 OutputFile = FixPathSlashes(OutputFile);
             }
@@ -173,40 +149,19 @@ namespace MyDecompiler {
                 }
 
                 paths.AddRange(dirs);
-<<<<<<< Updated upstream
             } else if (File.Exists(InputFile)) {
                 if (RecursiveSearch) {
-=======
-            } else if (File.Exists(InputFile))
-            {
-                if (RecursiveSearch)
-                {
->>>>>>> Stashed changes
                     Console.Error.WriteLine("File passed in with --recursive option. Either pass in a folder or remove --recursive.");
 
                     return 1;
                 }
 
                 paths.Add(InputFile);
-<<<<<<< Updated upstream
             } else {
-=======
-            } else
-            {
->>>>>>> Stashed changes
                 Console.Error.WriteLine("Input \"{0}\" is not a file or a folder.", InputFile);
 
                 return 1;
             }
-
-
-
-            // As expected there is one entry
-            // X:\checkouts\ValveResourceFormat\Tests\FilesLatest\shading_pen_lines_psd_4cab66cb.vtex_c
-
-            // Debug.WriteLine(paths[0]);
-            // Debug.WriteLine(paths.Count);
-
 
             CurrentFile = 0;
             TotalFiles = paths.Count;
@@ -232,17 +187,8 @@ namespace MyDecompiler {
                 }
 
                 Task.WhenAll(tasks).GetAwaiter().GetResult();
-<<<<<<< Updated upstream
             } else {
                 foreach (var path in paths) {
-=======
-            } else
-            {
-                foreach (var path in paths)
-                {
-                    // Debug.WriteLine(path);
-                    // !! this is where each of the files gets processed
->>>>>>> Stashed changes
                     ProcessFile(path);
                 }
             }
@@ -281,17 +227,7 @@ namespace MyDecompiler {
 
             var magic = BitConverter.ToUInt32(magicData, 0);
 
-<<<<<<< Updated upstream
             switch (magic) {
-=======
-
-            // The magic for the vtex file is 1764 (which is taken to mean the size of the REDI and DATA blocks)
-            // Debug.WriteLine(magic);
-
-
-            switch (magic)
-            {
->>>>>>> Stashed changes
                 case Package.MAGIC: ParseVPK(path, fs); return;
                 case CompiledShader.MAGIC: ParseVCS(path, fs); return;
                 case ToolsAssetInfo.MAGIC2:
@@ -303,17 +239,7 @@ namespace MyDecompiler {
 
             var extension = Path.GetExtension(path);
 
-<<<<<<< Updated upstream
             if (extension == ".vfont") {
-=======
-            // file is not one with a magic number so passes the switch
-            // extension = .vtex_c
-            // Debug.WriteLine(extension);
-
-
-            if (extension == ".vfont")
-            {
->>>>>>> Stashed changes
                 ParseVFont(path);
 
                 return;
@@ -333,19 +259,9 @@ namespace MyDecompiler {
                 FileName = path,
             };
 
-<<<<<<< Updated upstream
             try {
-=======
-
-
-            try
-            {
-                // this will populate the REDI and DATA blocks
->>>>>>> Stashed changes
                 resource.Read(stream);
 
-                // this returns the extension of the target file, for the vtex_c
-                // is always given as png
                 var extension = FileExtract.GetExtension(resource);
 
                 if (extension == null) {
@@ -356,34 +272,11 @@ namespace MyDecompiler {
                     }
                 }
 
-<<<<<<< Updated upstream
                 if (CollectStats) {
                     var id = $"{resource.ResourceType}_{resource.Version}";
                     var info = string.Empty;
 
                     switch (resource.ResourceType) {
-=======
-
-                // this is based on the --stats switch
-                // (which I think is only for reporting purposes)
-                if (CollectStats)
-                {
-                    var id = $"{resource.ResourceType}_{resource.Version}";
-                    var info = string.Empty;
-
-                    switch (resource.ResourceType)
-                    {
-
-                        /*
-                        *  POTENTIAL BUG HERE
-                        *  when the command line is run with the --stats switch the
-                        *  texture.GenerateBitmap() is called twice!!!
-                        *
-                        *
-                        *
-                        *
-                        */
->>>>>>> Stashed changes
                         case ResourceType.Texture:
                             var texture = (Texture)resource.DataBlock;
                             info = texture.Format.ToString();
@@ -404,12 +297,7 @@ namespace MyDecompiler {
                             if (stats[id].Count++ < 10) {
                                 stats[id].FilePaths.Add(path);
                             }
-<<<<<<< Updated upstream
                         } else {
-=======
-                        } else
-                        {
->>>>>>> Stashed changes
                             stats.Add(id, new ResourceStat(resource, info, path));
                         }
                     }
@@ -427,71 +315,27 @@ namespace MyDecompiler {
                     }
                 }
 
-<<<<<<< Updated upstream
                 if (OutputFile != null) {
-=======
-
-                if (OutputFile != null)
-                {
-
-                    /*
-                     * FileExtract.Extract(resource) will in turn call
-                     * var bitmap = ((Texture)resource.DataBlock).GenerateBitmap();
-                     *
-                     *
-                     */
->>>>>>> Stashed changes
                     var data = FileExtract.Extract(resource);
-
-
-                    // the size of this data is 419,579, which is the same as the output file
-                    // Debug.WriteLine(data.Length);
-
-                    // the checksum for these bytes is 0x48618e74 just like the output file
-                    // byte[] databytes = new byte[data.Length];
-                    // for (int i = 0; i < data.Length; i++)
-                    // {
-                    //     databytes[i] = data[i];
-                    // }
-                    // uint crc = Crc32.Compute(databytes);
-                    // Debug.WriteLine("0x{0:x8}", crc);
-
-
-
 
                     var filePath = Path.ChangeExtension(path, extension);
 
                     if (IsInputFolder) {
                         // I bet this is prone to breaking, is there a better way?
                         filePath = filePath.Remove(0, InputFile.TrimEnd(Path.DirectorySeparatorChar).Length + 1);
-<<<<<<< Updated upstream
                     } else {
-=======
-                    } else
-                    {
->>>>>>> Stashed changes
                         filePath = Path.GetFileName(filePath);
                     }
 
                     DumpFile(filePath, data, !IsInputFolder);
                 }
-<<<<<<< Updated upstream
             } catch (Exception e) {
-=======
-            } catch (Exception e)
-            {
->>>>>>> Stashed changes
                 var exceptionsFileName = CollectStats ? $"exceptions{Path.GetExtension(path)}.txt" : "exceptions.txt";
 
                 lock (ConsoleWriterLock) {
                     if (originalPath == null) {
                         File.AppendAllText(exceptionsFileName, $"---------------\nFile: {path}\nException: {e}\n\n");
-<<<<<<< Updated upstream
                     } else {
-=======
-                    } else
-                    {
->>>>>>> Stashed changes
                         File.AppendAllText(exceptionsFileName, $"---------------\nParent file: {originalPath}\nFile: {path}\nException: {e}\n\n");
                     }
 
@@ -529,12 +373,7 @@ namespace MyDecompiler {
                 foreach (var res in resource.ExternalReferences.ResourceRefInfoList) {
                     Console.WriteLine("\t{0:X16}  {1,-48}", res.Id, res.Name);
                 }
-<<<<<<< Updated upstream
             } else {
-=======
-            } else
-            {
->>>>>>> Stashed changes
                 Console.WriteLine("--- (No External Resource References Found)");
             }
 
@@ -576,22 +415,11 @@ namespace MyDecompiler {
                     fileName = Path.ChangeExtension(fileName, "txt");
 
                     DumpFile(fileName, assetsInfo.ToString(), true);
-<<<<<<< Updated upstream
                 } else {
                     Console.WriteLine(assetsInfo.ToString());
                 }
             } catch (Exception e) {
                 lock (ConsoleWriterLock) {
-=======
-                } else
-                {
-                    Console.WriteLine(assetsInfo.ToString());
-                }
-            } catch (Exception e)
-            {
-                lock (ConsoleWriterLock)
-                {
->>>>>>> Stashed changes
                     Console.ForegroundColor = ConsoleColor.Cyan;
                     Console.WriteLine(e);
                     Console.ResetColor();
@@ -610,15 +438,8 @@ namespace MyDecompiler {
 
             try {
                 shader.Read(path, stream);
-<<<<<<< Updated upstream
             } catch (Exception e) {
                 lock (ConsoleWriterLock) {
-=======
-            } catch (Exception e)
-            {
-                lock (ConsoleWriterLock)
-                {
->>>>>>> Stashed changes
                     Console.ForegroundColor = ConsoleColor.Cyan;
                     Console.WriteLine(e);
                     Console.ResetColor();
@@ -646,15 +467,8 @@ namespace MyDecompiler {
 
                     DumpFile(fileName, output, true);
                 }
-<<<<<<< Updated upstream
             } catch (Exception e) {
                 lock (ConsoleWriterLock) {
-=======
-            } catch (Exception e)
-            {
-                lock (ConsoleWriterLock)
-                {
->>>>>>> Stashed changes
                     Console.ForegroundColor = ConsoleColor.Cyan;
                     Console.WriteLine(e);
                     Console.ResetColor();
@@ -672,15 +486,8 @@ namespace MyDecompiler {
                 }
 
                 Console.WriteLine(kv3.ToString());
-<<<<<<< Updated upstream
             } catch (Exception e) {
                 lock (ConsoleWriterLock) {
-=======
-            } catch (Exception e)
-            {
-                lock (ConsoleWriterLock)
-                {
->>>>>>> Stashed changes
                     Console.ForegroundColor = ConsoleColor.Cyan;
                     Console.WriteLine(e);
                     Console.ResetColor();
@@ -700,15 +507,8 @@ namespace MyDecompiler {
 
             try {
                 package.Read(stream);
-<<<<<<< Updated upstream
             } catch (Exception e) {
                 lock (ConsoleWriterLock) {
-=======
-            } catch (Exception e)
-            {
-                lock (ConsoleWriterLock)
-                {
->>>>>>> Stashed changes
                     Console.ForegroundColor = ConsoleColor.Cyan;
                     Console.WriteLine(e);
                     Console.ResetColor();
@@ -720,15 +520,8 @@ namespace MyDecompiler {
                     package.VerifyHashes();
 
                     Console.WriteLine("VPK verification succeeded");
-<<<<<<< Updated upstream
                 } catch (Exception e) {
                     lock (ConsoleWriterLock) {
-=======
-                } catch (Exception e)
-                {
-                    lock (ConsoleWriterLock)
-                    {
->>>>>>> Stashed changes
                         Console.WriteLine("Failed to verify checksums and signature of given VPK:");
                         Console.ForegroundColor = ConsoleColor.Red;
                         Console.WriteLine(e.Message);
@@ -784,12 +577,7 @@ namespace MyDecompiler {
                         }
                     }
                 }
-<<<<<<< Updated upstream
             } else {
-=======
-            } else
-            {
->>>>>>> Stashed changes
                 Console.WriteLine("--- Dumping decompiled files...");
 
                 var manifestPath = string.Concat(path, ".manifest.txt");
@@ -895,12 +683,7 @@ namespace MyDecompiler {
 
                             if (resource.ResourceType == ResourceType.Mesh) {
                                 exporter.ExportToFile(file.GetFileName(), outputFile, new Mesh(resource));
-<<<<<<< Updated upstream
                             } else if (resource.ResourceType == ResourceType.Model) {
-=======
-                            } else if (resource.ResourceType == ResourceType.Model)
-                            {
->>>>>>> Stashed changes
                                 exporter.ExportToFile(file.GetFileName(), outputFile, (Model)resource.DataBlock);
                             }
 
@@ -908,12 +691,7 @@ namespace MyDecompiler {
                         }
 
                         output = FileExtract.Extract(resource).ToArray();
-<<<<<<< Updated upstream
                     } catch (Exception e) {
-=======
-                    } catch (Exception e)
-                    {
->>>>>>> Stashed changes
                         var exceptionsFileName = CollectStats ? $"exceptions.{file.TypeName}.txt" : "exceptions.txt";
 
                         lock (ConsoleWriterLock) {
