@@ -18,6 +18,7 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <WarningsAsErrors />
     <WarningLevel>1</WarningLevel>
+    <NoWarn>1701;1702;2008</NoWarn>
   </PropertyGroup>
   <ItemGroup>
   <!--
@@ -29,23 +30,16 @@
   -->
     <PackageReference Include="SkiaSharp.Views.WindowsForms" Version="2.80.2" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ValvePak\ValvePak.csproj" />
+    <ProjectReference Include="..\ValveResourceFormat\ValveResourceFormat.csproj" />
+  </ItemGroup>
   <!--
   <ItemGroup>
     <EmbeddedResource Include="AssetTypes\*" />
     <EmbeddedResource Include="Types\Renderer\Shaders\*" />
   </ItemGroup>
   -->
-  <ItemGroup>
-    <ProjectReference Include="..\..\ValveKeyValue\ValveKeyValue\ValveKeyValue\ValveKeyValue.csproj" />
-    <ProjectReference Include="..\ValvePak\ValvePak.csproj" />
-
-    <!--
-    <ProjectReference Include="..\ValveResourceFormat\ValveResourceFormat.csproj">
-      <Project>{E685E563-5F49-4D8D-8342-A7354229E54F}</Project>
-      <Name>ValveResourceFormat</Name>
-    </ProjectReference>
-    -->
-  </ItemGroup>
   <!--
   <ItemGroup>
     <Compile Update="Controls\GLViewerTrackBarControl.cs">
