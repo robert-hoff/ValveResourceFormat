@@ -2,17 +2,13 @@
 using System.IO;
 using System.Text;
 
-namespace MyValveResourceFormat.Blocks.ResourceEditInfoStructs
-{
-    public class ChildResourceList : REDIBlock
-    {
-        public class ReferenceInfo
-        {
+namespace MyValveResourceFormat.Blocks.ResourceEditInfoStructs {
+    public class ChildResourceList : REDIBlock {
+        public class ReferenceInfo {
             public ulong Id { get; set; }
             public string ResourceName { get; set; }
 
-            public void WriteText(IndentedTextWriter writer)
-            {
+            public void WriteText(IndentedTextWriter writer) {
                 writer.WriteLine("ResourceReferenceInfo_t");
                 writer.WriteLine("{");
                 writer.Indent++;
@@ -25,17 +21,14 @@ namespace MyValveResourceFormat.Blocks.ResourceEditInfoStructs
 
         public List<ReferenceInfo> List { get; }
 
-        public ChildResourceList()
-        {
+        public ChildResourceList() {
             List = new List<ReferenceInfo>();
         }
 
-        public override void Read(BinaryReader reader, Resource resource)
-        {
+        public override void Read(BinaryReader reader, Resource resource) {
             reader.BaseStream.Position = Offset;
 
-            for (var i = 0; i < Size; i++)
-            {
+            for (var i = 0; i < Size; i++) {
                 var dep = new ReferenceInfo();
 
                 dep.Id = reader.ReadUInt64();
@@ -47,14 +40,12 @@ namespace MyValveResourceFormat.Blocks.ResourceEditInfoStructs
             }
         }
 
-        public override void WriteText(IndentedTextWriter writer)
-        {
+        public override void WriteText(IndentedTextWriter writer) {
             writer.WriteLine("Struct m_ChildResourceList[{0}] =", List.Count);
             writer.WriteLine("[");
             writer.Indent++;
 
-            foreach (var dep in List)
-            {
+            foreach (var dep in List) {
                 dep.WriteText(writer);
             }
 

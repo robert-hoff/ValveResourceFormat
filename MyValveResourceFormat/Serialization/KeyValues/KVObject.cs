@@ -5,18 +5,15 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MyValveResourceFormat.Serialization.KeyValues
-{
+namespace MyValveResourceFormat.Serialization.KeyValues {
     //Datastructure for a KV Object
-    public class KVObject : IKeyValueCollection
-    {
+    public class KVObject : IKeyValueCollection {
         public string Key { get; private set; }
         public Dictionary<string, KVValue> Properties { get; private set; }
         private bool IsArray;
         public int Count { get; private set; }
 
-        public KVObject(string name)
-        {
+        public KVObject(string name) {
             Key = name;
             Properties = new Dictionary<string, KVValue>();
             IsArray = false;
@@ -24,53 +21,41 @@ namespace MyValveResourceFormat.Serialization.KeyValues
         }
 
         public KVObject(string name, bool isArray)
-            : this(name)
-        {
+            : this(name) {
             IsArray = isArray;
         }
 
         //Add a property to the structure
-        public virtual void AddProperty(string name, KVValue value)
-        {
-            if (IsArray)
-            {
+        public virtual void AddProperty(string name, KVValue value) {
+            if (IsArray) {
                 // Make up a key for the dictionary
                 Properties.Add(Count.ToString(), value);
-            }
-            else
-            {
+            } else {
                 Properties.Add(name, value);
             }
 
             Count++;
         }
 
-        public void Serialize(IndentedTextWriter writer)
-        {
-            if (IsArray)
-            {
+        public void Serialize(IndentedTextWriter writer) {
+            if (IsArray) {
                 SerializeArray(writer);
-            }
-            else
-            {
+            } else {
                 SerializeObject(writer);
             }
         }
 
         //Serialize the contents of the KV object
-        private void SerializeObject(IndentedTextWriter writer)
-        {
+        private void SerializeObject(IndentedTextWriter writer) {
             //Don't enter the top-most object
-            if (Key != null)
-            {
+            if (Key != null) {
                 writer.WriteLine();
             }
 
             writer.WriteLine("{");
             writer.Indent++;
 
-            foreach (var pair in Properties)
-            {
+            foreach (var pair in Properties) {
                 writer.Write(pair.Key);
                 writer.Write(" = ");
 
@@ -83,14 +68,12 @@ namespace MyValveResourceFormat.Serialization.KeyValues
             writer.Write("}");
         }
 
-        private void SerializeArray(IndentedTextWriter writer)
-        {
+        private void SerializeArray(IndentedTextWriter writer) {
             //Need to preserve the order
             writer.WriteLine();
             writer.WriteLine("[");
             writer.Indent++;
-            for (var i = 0; i < Count; i++)
-            {
+            for (var i = 0; i < Count; i++) {
                 Properties[i.ToString()].PrintValue(writer);
 
                 writer.WriteLine(",");
@@ -102,29 +85,21 @@ namespace MyValveResourceFormat.Serialization.KeyValues
 
         public bool ContainsKey(string name) => Properties.ContainsKey(name);
 
-        public T GetProperty<T>(string name)
-        {
-            if (Properties.TryGetValue(name, out var value))
-            {
+        public T GetProperty<T>(string name) {
+            if (Properties.TryGetValue(name, out var value)) {
                 return (T)value.Value;
-            }
-            else
-            {
+            } else {
                 return default(T);
             }
         }
 
-        public T[] GetArray<T>(string name)
-        {
-            if (Properties.TryGetValue(name, out var value))
-            {
-                if (value.Type == KVType.OBJECT && value.Value is KVObject kvObject && kvObject.IsArray)
-                {
+        public T[] GetArray<T>(string name) {
+            if (Properties.TryGetValue(name, out var value)) {
+                if (value.Type == KVType.OBJECT && value.Value is KVObject kvObject && kvObject.IsArray) {
                     var properties = new List<T>();
                     var index = 0;
                     var property = kvObject.GetProperty<T>(index.ToString());
-                    while (!property.Equals(default(T)))
-                    {
+                    while (!property.Equals(default(T))) {
                         properties.Add(property);
                         ++index;
                     }
@@ -132,20 +107,16 @@ namespace MyValveResourceFormat.Serialization.KeyValues
                     return properties.ToArray();
                 }
 
-                if (value.Type == KVType.BINARY_BLOB && typeof(T) == typeof(byte))
-                {
+                if (value.Type == KVType.BINARY_BLOB && typeof(T) == typeof(byte)) {
                     return (T[])value.Value;
                 }
 
-                if (value.Type != KVType.ARRAY && value.Type != KVType.ARRAY_TYPED)
-                {
+                if (value.Type != KVType.ARRAY && value.Type != KVType.ARRAY_TYPED) {
                     throw new InvalidOperationException($"Tried to cast non-array property {name} to array. Actual type: {value.Type}");
                 }
 
                 return ((KVObject)value.Value).Properties.Values.Select(v => (T)v.Value).ToArray();
-            }
-            else
-            {
+            } else {
                 return default(T[]);
             }
         }

@@ -3,15 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 
-namespace MyGUI.Types.Renderer
-{
-    internal abstract class SceneNode
-    {
-        public Matrix4x4 Transform
-        {
+namespace MyGUI.Types.Renderer {
+    internal abstract class SceneNode {
+        public Matrix4x4 Transform {
             get => transform;
-            set
-            {
+            set {
                 transform = value;
                 BoundingBox = LocalBoundingBox.Transform(transform);
             }
@@ -20,11 +16,9 @@ namespace MyGUI.Types.Renderer
         public string LayerName { get; set; }
         public bool LayerEnabled { get; set; } = true;
         public AABB BoundingBox { get; private set; }
-        public AABB LocalBoundingBox
-        {
+        public AABB LocalBoundingBox {
             get => localBoundingBox;
-            protected set
-            {
+            protected set {
                 localBoundingBox = value;
                 BoundingBox = LocalBoundingBox.Transform(transform);
             }
@@ -35,8 +29,7 @@ namespace MyGUI.Types.Renderer
         private AABB localBoundingBox;
         private Matrix4x4 transform = Matrix4x4.Identity;
 
-        protected SceneNode(Scene scene)
-        {
+        protected SceneNode(Scene scene) {
             Scene = scene;
         }
 
@@ -44,8 +37,7 @@ namespace MyGUI.Types.Renderer
         public abstract void Render(Scene.RenderContext context);
 
         public virtual IEnumerable<string> GetSupportedRenderModes() => Enumerable.Empty<string>();
-        public virtual void SetRenderMode(string mode)
-        {
+        public virtual void SetRenderMode(string mode) {
         }
     }
 }

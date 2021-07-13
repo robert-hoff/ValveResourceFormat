@@ -1,10 +1,8 @@
 using System;
 
-namespace MyValveResourceFormat
-{
+namespace MyValveResourceFormat {
 #pragma warning disable CA1717 // it thinks its plural
-    public enum VTexExtraData
-    {
+    public enum VTexExtraData {
         UNKNOWN = 0,
         FALLBACK_BITS = 1,
         SHEET = 2,

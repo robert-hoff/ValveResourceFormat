@@ -3,48 +3,39 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Windows.Forms;
 
-namespace MyGUI.Forms
-{
-    public partial class Texture : UserControl
-    {
+namespace MyGUI.Forms {
+    public partial class Texture : UserControl {
         private string name;
 
-        public Texture()
-        {
+        public Texture() {
             InitializeComponent();
         }
 
-        public void SetImage(Bitmap image, string name, int w, int h)
-        {
+        public void SetImage(Bitmap image, string name, int w, int h) {
             pictureBox1.Image = image;
             this.name = name;
             pictureBox1.MaximumSize = new Size(w, h);
         }
 
-        private void ContextMenuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
-        {
-            if (e.ClickedItem.Name != "saveAsToolStripMenuItem")
-            {
+        private void ContextMenuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e) {
+            if (e.ClickedItem.Name != "saveAsToolStripMenuItem") {
                 return;
             }
 
             var menuStrip = sender as ContextMenuStrip;
             menuStrip.Visible = false; //Hide it as we have pressed the button now!
 
-            var saveFileDialog = new SaveFileDialog
-            {
+            var saveFileDialog = new SaveFileDialog {
                 Filter = "PNG Image|*.png|JPG Image|*.jpg|Tiff Image|*.tiff|Bitmap Image|*.bmp",
                 Title = "Save an Image File",
                 FileName = name,
             };
             saveFileDialog.ShowDialog(this);
 
-            if (!string.IsNullOrEmpty(saveFileDialog.FileName))
-            {
+            if (!string.IsNullOrEmpty(saveFileDialog.FileName)) {
                 var format = ImageFormat.Png;
 
-                switch (saveFileDialog.FilterIndex)
-                {
+                switch (saveFileDialog.FilterIndex) {
                     case 2:
                         format = ImageFormat.Jpeg;
                         break;
@@ -57,8 +48,7 @@ namespace MyGUI.Forms
                         break;
                 }
 
-                using (var fs = (FileStream)saveFileDialog.OpenFile())
-                {
+                using (var fs = (FileStream)saveFileDialog.OpenFile()) {
                     pictureBox1.Image.Save(fs, format);
                 }
             }

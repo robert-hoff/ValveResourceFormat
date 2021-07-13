@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using MyValveResourceFormat.Serialization;
 
-namespace MyValveResourceFormat.ResourceTypes
-{
-    public class ParticleSystem : KeyValuesOrNTRO
-    {
+namespace MyValveResourceFormat.ResourceTypes {
+    public class ParticleSystem : KeyValuesOrNTRO {
         public IEnumerable<IKeyValueCollection> GetRenderers()
             => Data.GetArray("m_Renderers") ?? Enumerable.Empty<IKeyValueCollection>();
 
@@ -19,17 +17,14 @@ namespace MyValveResourceFormat.ResourceTypes
         public IEnumerable<IKeyValueCollection> GetEmitters()
             => Data.GetArray("m_Emitters") ?? Enumerable.Empty<IKeyValueCollection>();
 
-        public IEnumerable<string> GetChildParticleNames(bool enabledOnly = false)
-        {
+        public IEnumerable<string> GetChildParticleNames(bool enabledOnly = false) {
             IEnumerable<IKeyValueCollection> children = Data.GetArray("m_Children");
 
-            if (children == null)
-            {
+            if (children == null) {
                 return Enumerable.Empty<string>();
             }
 
-            if (enabledOnly)
-            {
+            if (enabledOnly) {
                 children = children.Where(c => !c.ContainsKey("m_bDisableChild") || !c.GetProperty<bool>("m_bDisableChild"));
             }
 

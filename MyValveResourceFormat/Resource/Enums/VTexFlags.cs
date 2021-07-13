@@ -1,10 +1,8 @@
 using System;
 
-namespace MyValveResourceFormat
-{
+namespace MyValveResourceFormat {
     [Flags]
-    public enum VTexFlags
-    {
+    public enum VTexFlags {
         SUGGEST_CLAMPS = 0x00000001,
         SUGGEST_CLAMPT = 0x00000002,
         SUGGEST_CLAMPU = 0x00000004,

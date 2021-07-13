@@ -4,20 +4,16 @@ using System.IO;
 using System.Text;
 using MyValveResourceFormat.Blocks;
 
-namespace MyValveResourceFormat.ResourceTypes
-{
-    public class SoundStackScript : ResourceData
-    {
+namespace MyValveResourceFormat.ResourceTypes {
+    public class SoundStackScript : ResourceData {
         public Dictionary<string, string> SoundStackScriptValue { get; private set; } // TODO: be Dictionary<string, SomeKVObject>
 
-        public override void Read(BinaryReader reader, Resource resource)
-        {
+        public override void Read(BinaryReader reader, Resource resource) {
             reader.BaseStream.Position = Offset;
 
             var version = reader.ReadInt32();
 
-            if (version != 8)
-            {
+            if (version != 8) {
                 throw new NotImplementedException($"Unknown soundstack version: {version}");
             }
 
@@ -26,8 +22,7 @@ namespace MyValveResourceFormat.ResourceTypes
             var count = reader.ReadInt32();
             var offset = reader.BaseStream.Position;
 
-            for (var i = 0; i < count; i++)
-            {
+            for (var i = 0; i < count; i++) {
                 var offsetToName = offset + reader.ReadInt32();
                 offset += 4;
                 var offsetToValue = offset + reader.ReadInt32();
@@ -45,12 +40,9 @@ namespace MyValveResourceFormat.ResourceTypes
             }
         }
 
-        public override string ToString()
-        {
-            using (var writer = new IndentedTextWriter())
-            {
-                foreach (var entry in SoundStackScriptValue)
-                {
+        public override string ToString() {
+            using (var writer = new IndentedTextWriter()) {
+                foreach (var entry in SoundStackScriptValue) {
                     writer.WriteLine($"// {entry.Key}");
                     writer.Write(entry.Value);
                     writer.WriteLine(string.Empty);

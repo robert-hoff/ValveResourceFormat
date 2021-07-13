@@ -4,33 +4,25 @@ using System.Windows.Forms;
 using MyGUI.Utils;
 using MyValveResourceFormat.ClosedCaptions;
 
-namespace MyGUI.Types.Viewers
-{
-    public class ClosedCaptions : IViewer
-    {
-        public static bool IsAccepted(uint magic)
-        {
+namespace MyGUI.Types.Viewers {
+    public class ClosedCaptions : IViewer {
+        public static bool IsAccepted(uint magic) {
             return magic == MyValveResourceFormat.ClosedCaptions.ClosedCaptions.MAGIC;
 
 
         }
 
-        public TabPage Create(VrfGuiContext vrfGuiContext, byte[] input)
-        {
+        public TabPage Create(VrfGuiContext vrfGuiContext, byte[] input) {
             var tab = new TabPage();
             var captions = new MyValveResourceFormat.ClosedCaptions.ClosedCaptions();
 
-            if (input != null)
-            {
+            if (input != null) {
                 captions.Read(vrfGuiContext.FileName, new MemoryStream(input));
-            }
-            else
-            {
+            } else {
                 captions.Read(vrfGuiContext.FileName);
             }
 
-            var control = new DataGridView
-            {
+            var control = new DataGridView {
                 Dock = DockStyle.Fill,
                 AutoSize = true,
                 ReadOnly = true,

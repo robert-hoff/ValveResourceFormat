@@ -2,17 +2,13 @@
 using System.IO;
 using System.Text;
 
-namespace MyValveResourceFormat.Blocks.ResourceEditInfoStructs
-{
-    public class AdditionalRelatedFiles : REDIBlock
-    {
-        public class AdditionalRelatedFile
-        {
+namespace MyValveResourceFormat.Blocks.ResourceEditInfoStructs {
+    public class AdditionalRelatedFiles : REDIBlock {
+        public class AdditionalRelatedFile {
             public string ContentRelativeFilename { get; set; }
             public string ContentSearchPath { get; set; }
 
-            public void WriteText(IndentedTextWriter writer)
-            {
+            public void WriteText(IndentedTextWriter writer) {
                 writer.WriteLine("ResourceAdditionalRelatedFile_t");
                 writer.WriteLine("{");
                 writer.Indent++;
@@ -25,17 +21,14 @@ namespace MyValveResourceFormat.Blocks.ResourceEditInfoStructs
 
         public List<AdditionalRelatedFile> List { get; }
 
-        public AdditionalRelatedFiles()
-        {
+        public AdditionalRelatedFiles() {
             List = new List<AdditionalRelatedFile>();
         }
 
-        public override void Read(BinaryReader reader, Resource resource)
-        {
+        public override void Read(BinaryReader reader, Resource resource) {
             reader.BaseStream.Position = Offset;
 
-            for (var i = 0; i < Size; i++)
-            {
+            for (var i = 0; i < Size; i++) {
                 var dep = new AdditionalRelatedFile();
 
                 dep.ContentRelativeFilename = reader.ReadOffsetString(Encoding.UTF8);
@@ -45,14 +38,12 @@ namespace MyValveResourceFormat.Blocks.ResourceEditInfoStructs
             }
         }
 
-        public override void WriteText(IndentedTextWriter writer)
-        {
+        public override void WriteText(IndentedTextWriter writer) {
             writer.WriteLine("Struct m_AdditionalRelatedFiles[{0}] =", List.Count);
             writer.WriteLine("[");
             writer.Indent++;
 
-            foreach (var dep in List)
-            {
+            foreach (var dep in List) {
                 dep.WriteText(writer);
             }
 

@@ -12,18 +12,15 @@ using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
 
-namespace MyGUI.Controls
-{
-    internal partial class GLViewerControl : UserControl
-    {
+namespace MyGUI.Controls {
+    internal partial class GLViewerControl : UserControl {
         public GLControl GLControl { get; }
 
         private readonly List<Label> labels = new List<Label>();
         private readonly List<UserControl> selectionBoxes = new List<UserControl>();
         private readonly List<Control> otherControls = new List<Control>();
 
-        public class RenderEventArgs
-        {
+        public class RenderEventArgs {
             public float FrameTime { get; set; }
             public Camera Camera { get; set; }
         }
@@ -37,8 +34,7 @@ namespace MyGUI.Controls
 
         private static bool hasCheckedOpenGL;
 
-        public GLViewerControl()
-        {
+        public GLViewerControl() {
             InitializeComponent();
             Dock = DockStyle.Fill;
 
@@ -65,13 +61,11 @@ namespace MyGUI.Controls
             glControlContainer.Controls.Add(GLControl);
         }
 
-        private void SetFps(double fps)
-        {
+        private void SetFps(double fps) {
             fpsLabel.Text = $"FPS: {Math.Round(fps).ToString(CultureInfo.InvariantCulture)}";
         }
 
-        public Label AddLabel(string text)
-        {
+        public Label AddLabel(string text) {
             var label = new Label();
             label.Text = text;
             label.AutoSize = true;
@@ -85,18 +79,15 @@ namespace MyGUI.Controls
             return label;
         }
 
-        public void AddControl(Control control)
-        {
+        public void AddControl(Control control) {
             controlsPanel.Controls.Add(control);
             otherControls.Add(control);
             RecalculatePositions();
         }
 
-        public CheckBox AddCheckBox(string name, bool defaultChecked, Action<bool> changeCallback)
-        {
+        public CheckBox AddCheckBox(string name, bool defaultChecked, Action<bool> changeCallback) {
             var checkbox = new GLViewerCheckboxControl(name, defaultChecked);
-            checkbox.CheckBox.CheckedChanged += (_, __) =>
-            {
+            checkbox.CheckBox.CheckedChanged += (_, __) => {
                 changeCallback(checkbox.CheckBox.Checked);
 
                 GLControl.Focus();
@@ -110,8 +101,7 @@ namespace MyGUI.Controls
             return checkbox.CheckBox;
         }
 
-        public ComboBox AddSelection(string name, Action<string, int> changeCallback)
-        {
+        public ComboBox AddSelection(string name, Action<string, int> changeCallback) {
             var selectionControl = new GLViewerSelectionControl(name);
 
             controlsPanel.Controls.Add(selectionControl);
@@ -121,8 +111,7 @@ namespace MyGUI.Controls
 
             RecalculatePositions();
 
-            selectionControl.ComboBox.SelectionChangeCommitted += (_, __) =>
-            {
+            selectionControl.ComboBox.SelectionChangeCommitted += (_, __) => {
                 selectionControl.Refresh();
                 changeCallback(selectionControl.ComboBox.SelectedItem as string, selectionControl.ComboBox.SelectedIndex);
 
@@ -132,8 +121,7 @@ namespace MyGUI.Controls
             return selectionControl.ComboBox;
         }
 
-        public CheckedListBox AddMultiSelection(string name, Action<IEnumerable<string>> changeCallback)
-        {
+        public CheckedListBox AddMultiSelection(string name, Action<IEnumerable<string>> changeCallback) {
             var selectionControl = new GLViewerMultiSelectionControl(name);
 
             controlsPanel.Controls.Add(selectionControl);
@@ -143,11 +131,9 @@ namespace MyGUI.Controls
 
             RecalculatePositions();
 
-            selectionControl.CheckedListBox.ItemCheck += (_, __) =>
-            {
+            selectionControl.CheckedListBox.ItemCheck += (_, __) => {
                 // ItemCheck is called before CheckedItems is updated
-                BeginInvoke((MethodInvoker)(() =>
-                {
+                BeginInvoke((MethodInvoker)(() => {
                     selectionControl.Refresh();
                     changeCallback(selectionControl.CheckedListBox.CheckedItems.OfType<string>());
 
@@ -158,13 +144,10 @@ namespace MyGUI.Controls
             return selectionControl.CheckedListBox;
         }
 
-        public GLViewerTrackBarControl AddTrackBar(string name, Action<int> changeCallback)
-        {
+        public GLViewerTrackBarControl AddTrackBar(string name, Action<int> changeCallback) {
             var trackBar = new GLViewerTrackBarControl(name);
-            trackBar.TrackBar.ValueChanged += (_, __) =>
-            {
-                if (trackBar.IgnoreValueChanged)
-                {
+            trackBar.TrackBar.ValueChanged += (_, __) => {
+                if (trackBar.IgnoreValueChanged) {
                     return;
                 }
                 changeCallback(trackBar.TrackBar.Value);
@@ -180,32 +163,27 @@ namespace MyGUI.Controls
             return trackBar;
         }
 
-        public void RecalculatePositions()
-        {
+        public void RecalculatePositions() {
             var y = 25;
 
-            foreach (var label in labels)
-            {
+            foreach (var label in labels) {
                 label.Location = new Point(0, y);
                 y += label.Height;
             }
 
-            foreach (var selection in selectionBoxes)
-            {
+            foreach (var selection in selectionBoxes) {
                 selection.Location = new Point(0, y);
                 y += selection.Height;
             }
 
-            foreach (var control in otherControls)
-            {
+            foreach (var control in otherControls) {
                 control.Location = new Point(0, y);
                 control.Width = glControlContainer.Location.X;
                 y += control.Height;
             }
         }
 
-        private void OnDisposed(object sender, EventArgs e)
-        {
+        private void OnDisposed(object sender, EventArgs e) {
             GLControl.Load -= OnLoad;
             GLControl.Paint -= OnPaint;
             GLControl.Resize -= OnResize;
@@ -216,27 +194,22 @@ namespace MyGUI.Controls
             GLControl.Disposed -= OnDisposed;
         }
 
-        private void OnVisibleChanged(object sender, EventArgs e)
-        {
-            if (GLControl.Visible)
-            {
+        private void OnVisibleChanged(object sender, EventArgs e) {
+            if (GLControl.Visible) {
                 GLControl.Focus();
                 HandleResize();
             }
         }
 
-        private void OnMouseLeave(object sender, EventArgs e)
-        {
+        private void OnMouseLeave(object sender, EventArgs e) {
             Camera.MouseOverRenderArea = false;
         }
 
-        private void OnMouseEnter(object sender, EventArgs e)
-        {
+        private void OnMouseEnter(object sender, EventArgs e) {
             Camera.MouseOverRenderArea = true;
         }
 
-        private void OnLoad(object sender, EventArgs e)
-        {
+        private void OnLoad(object sender, EventArgs e) {
             GLControl.MakeCurrent();
 
             CheckOpenGL();
@@ -249,22 +222,18 @@ namespace MyGUI.Controls
             Draw();
         }
 
-        private void OnPaint(object sender, EventArgs e)
-        {
+        private void OnPaint(object sender, EventArgs e) {
             Draw();
         }
 
-        private void Draw()
-        {
-            if (!GLControl.Visible)
-            {
+        private void Draw() {
+            if (!GLControl.Visible) {
                 return;
             }
 
             var elapsed = stopwatch.ElapsedMilliseconds;
 
-            if (elapsed < 1)
-            {
+            if (elapsed < 1) {
                 GLControl.SwapBuffers();
                 GLControl.Invalidate();
 
@@ -288,29 +257,24 @@ namespace MyGUI.Controls
             GLControl.Invalidate();
         }
 
-        private void OnResize(object sender, EventArgs e)
-        {
+        private void OnResize(object sender, EventArgs e) {
             HandleResize();
             Draw();
         }
 
-        private void HandleResize()
-        {
+        private void HandleResize() {
             Camera.SetViewportSize(GLControl.Width, GLControl.Height);
             RecalculatePositions();
         }
 
-        private void OnGotFocus(object sender, EventArgs e)
-        {
+        private void OnGotFocus(object sender, EventArgs e) {
             GLControl.MakeCurrent();
             HandleResize();
             Draw();
         }
 
-        private static void CheckOpenGL()
-        {
-            if (hasCheckedOpenGL)
-            {
+        private static void CheckOpenGL() {
+            if (hasCheckedOpenGL) {
                 return;
             }
 
@@ -322,21 +286,16 @@ namespace MyGUI.Controls
 
             var extensions = new HashSet<string>();
             var count = GL.GetInteger(GetPName.NumExtensions);
-            for (var i = 0; i < count; i++)
-            {
+            for (var i = 0; i < count; i++) {
                 var extension = GL.GetString(StringNameIndexed.Extensions, i);
-                if (!extensions.Contains(extension))
-                {
+                if (!extensions.Contains(extension)) {
                     extensions.Add(extension);
                 }
             }
 
-            if (extensions.Contains("GL_EXT_texture_filter_anisotropic"))
-            {
+            if (extensions.Contains("GL_EXT_texture_filter_anisotropic")) {
                 MaterialLoader.MaxTextureMaxAnisotropy = GL.GetInteger((GetPName)ExtTextureFilterAnisotropic.MaxTextureMaxAnisotropyExt);
-            }
-            else
-            {
+            } else {
                 Console.Error.WriteLine("GL_EXT_texture_filter_anisotropic is not supported");
             }
         }

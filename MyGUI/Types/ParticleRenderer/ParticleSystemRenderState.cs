@@ -1,10 +1,8 @@
 using System.Collections.Generic;
 using System.Numerics;
 
-namespace MyGUI.Types.ParticleRenderer
-{
-    public class ParticleSystemRenderState
-    {
+namespace MyGUI.Types.ParticleRenderer {
+    public class ParticleSystemRenderState {
         public float Lifetime { get; set; }
 
         private readonly Dictionary<int, Vector3> controlPoints = new Dictionary<int, Vector3>();
@@ -14,8 +12,7 @@ namespace MyGUI.Types.ParticleRenderer
             ? value
             : Vector3.Zero;
 
-        public ParticleSystemRenderState SetControlPoint(int cp, Vector3 value)
-        {
+        public ParticleSystemRenderState SetControlPoint(int cp, Vector3 value) {
             controlPoints[cp] = value;
 
             return this;

@@ -1,20 +1,16 @@
 using System;
 using OpenTK.Graphics.OpenGL;
 
-namespace MyGUI.Types.Renderer
-{
-    public class QuadIndexBuffer
-    {
+namespace MyGUI.Types.Renderer {
+    public class QuadIndexBuffer {
         public int GLHandle { get; }
 
-        public QuadIndexBuffer(int size)
-        {
+        public QuadIndexBuffer(int size) {
             GLHandle = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, GLHandle);
 
             var indices = new ushort[size];
-            for (int i = 0; i < size / 6; ++i)
-            {
+            for (int i = 0; i < size / 6; ++i) {
                 indices[(i * 6) + 0] = (ushort)((i * 4) + 0);
                 indices[(i * 6) + 1] = (ushort)((i * 4) + 1);
                 indices[(i * 6) + 2] = (ushort)((i * 4) + 2);

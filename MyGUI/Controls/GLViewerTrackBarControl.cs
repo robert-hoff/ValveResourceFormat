@@ -1,35 +1,29 @@
 using System;
 using System.Windows.Forms;
 
-namespace MyGUI.Controls
-{
-    public partial class GLViewerTrackBarControl : UserControl
-    {
+namespace MyGUI.Controls {
+    public partial class GLViewerTrackBarControl : UserControl {
         public TrackBar TrackBar => trackBar;
         public bool IgnoreValueChanged { get; private set; }
 
-        private GLViewerTrackBarControl()
-        {
+        private GLViewerTrackBarControl() {
             InitializeComponent();
         }
 
         public GLViewerTrackBarControl(string name)
-            : this()
-        {
+            : this() {
             IgnoreValueChanged = false;
             trackBarLabel.Text = name;
             trackBar.Value = 0;
         }
 
-        public void UpdateValueSilently(int value)
-        {
+        public void UpdateValueSilently(int value) {
             IgnoreValueChanged = true;
             trackBar.Value = value;
             IgnoreValueChanged = false;
         }
 
-        private void trackVolume_MouseDown(object sender, MouseEventArgs e)
-        {
+        private void trackVolume_MouseDown(object sender, MouseEventArgs e) {
             double dblValue;
 
             // Jump to the clicked location

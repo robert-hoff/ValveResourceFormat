@@ -6,13 +6,11 @@ using MyValveResourceFormat.Blocks;
 using MyValveResourceFormat.Blocks.ResourceEditInfoStructs;
 using MyValveResourceFormat.ResourceTypes;
 
-namespace MyValveResourceFormat
-{
+namespace MyValveResourceFormat {
     /// <summary>
     /// Represents a Valve resource.
     /// </summary>
-    public class Resource : IDisposable
-    {
+    public class Resource : IDisposable {
         public const ushort KnownHeaderVersion = 12;
 
         private FileStream FileStream;
@@ -58,10 +56,8 @@ namespace MyValveResourceFormat
         /// <summary>
         /// Gets the ResourceExtRefList block.
         /// </summary>
-        public ResourceExtRefList ExternalReferences
-        {
-            get
-            {
+        public ResourceExtRefList ExternalReferences {
+            get {
                 return (ResourceExtRefList)GetBlockByType(BlockType.RERL);
             }
         }
@@ -74,10 +70,8 @@ namespace MyValveResourceFormat
         /// <summary>
         /// Gets the ResourceIntrospectionManifest block.
         /// </summary>
-        public ResourceIntrospectionManifest IntrospectionManifest
-        {
-            get
-            {
+        public ResourceIntrospectionManifest IntrospectionManifest {
+            get {
                 return (ResourceIntrospectionManifest)GetBlockByType(BlockType.NTRO);
             }
         }
@@ -85,10 +79,8 @@ namespace MyValveResourceFormat
         /// <summary>
         /// Gets the Vertex and Index Buffer block.
         /// </summary>
-        public VBIB VBIB
-        {
-            get
-            {
+        public VBIB VBIB {
+            get {
                 return (VBIB)GetBlockByType(BlockType.VBIB);
             }
         }
@@ -96,10 +88,8 @@ namespace MyValveResourceFormat
         /// <summary>
         /// Gets the generic DATA block.
         /// </summary>
-        public ResourceData DataBlock
-        {
-            get
-            {
+        public ResourceData DataBlock {
+            get {
                 return (ResourceData)GetBlockByType(BlockType.DATA);
             }
         }
@@ -107,8 +97,7 @@ namespace MyValveResourceFormat
         /// <summary>
         /// Initializes a new instance of the <see cref="Resource"/> class.
         /// </summary>
-        public Resource()
-        {
+        public Resource() {
             ResourceType = ResourceType.Unknown;
             Blocks = new List<Block>();
         }
@@ -116,24 +105,19 @@ namespace MyValveResourceFormat
         /// <summary>
         /// Releases binary reader.
         /// </summary>
-        public void Dispose()
-        {
+        public void Dispose() {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                if (FileStream != null)
-                {
+        protected virtual void Dispose(bool disposing) {
+            if (disposing) {
+                if (FileStream != null) {
                     FileStream.Dispose();
                     FileStream = null;
                 }
 
-                if (Reader != null)
-                {
+                if (Reader != null) {
                     Reader.Dispose();
                     Reader = null;
                 }
@@ -145,8 +129,7 @@ namespace MyValveResourceFormat
         /// The file is held open until the object is disposed.
         /// </summary>
         /// <param name="filename">The file to open and read.</param>
-        public void Read(string filename)
-        {
+        public void Read(string filename) {
             FileName = filename;
             FileStream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
 
@@ -157,33 +140,28 @@ namespace MyValveResourceFormat
         /// Reads the given <see cref="Stream"/>.
         /// </summary>
         /// <param name="input">The input <see cref="Stream"/> to read from.</param>
-        public void Read(Stream input)
-        {
+        public void Read(Stream input) {
             Reader = new BinaryReader(input);
 
             FileSize = Reader.ReadUInt32();
 
-            if (FileSize == 0x55AA1234)
-            {
+            if (FileSize == 0x55AA1234) {
                 throw new InvalidDataException("Use ValvePak library to parse VPK files.\nSee https://github.com/SteamDatabase/ValvePak");
             }
 
-            if (FileSize == CompiledShader.MAGIC)
-            {
+            if (FileSize == CompiledShader.MAGIC) {
                 throw new InvalidDataException("Use CompiledShader() class to parse compiled shader files.");
             }
 
             // TODO: Some real files seem to have different file size
-            if (FileSize != Reader.BaseStream.Length)
-            {
+            if (FileSize != Reader.BaseStream.Length) {
                 //throw new Exception(string.Format("File size does not match size specified in file. {0} != {1}", FileSize, Reader.BaseStream.Length));
             }
 
             HeaderVersion = Reader.ReadUInt16();
             // Trace.WriteLine(HeaderVersion);
 
-            if (HeaderVersion != KnownHeaderVersion)
-            {
+            if (HeaderVersion != KnownHeaderVersion) {
                 throw new InvalidDataException(string.Format("Bad header version. ({0} != expected {1})", HeaderVersion, KnownHeaderVersion));
             }
 
@@ -203,8 +181,7 @@ namespace MyValveResourceFormat
             // position remains unchanged at 16
             // Trace.WriteLine(Reader.BaseStream.Position);
 
-            for (var i = 0; i < blockCount; i++)
-            {
+            for (var i = 0; i < blockCount; i++) {
                 var blockType = Encoding.UTF8.GetString(Reader.ReadBytes(4));
                 // Trace.WriteLine(blockType);
 
@@ -226,25 +203,21 @@ namespace MyValveResourceFormat
                 // Peek data to detect VKV3
                 // Valve has deprecated NTRO as reported by resourceinfo.exe
                 // TODO: Find a better way without checking against resource type
-                if (size >= 4 && blockType == nameof(BlockType.DATA) && !IsHandledResourceType(ResourceType))
-                {
+                if (size >= 4 && blockType == nameof(BlockType.DATA) && !IsHandledResourceType(ResourceType)) {
                     Reader.BaseStream.Position = offset;
 
                     var magic = Reader.ReadUInt32();
 
-                    if (magic == BinaryKV3.MAGIC || magic == BinaryKV3.MAGIC2 || magic == BinaryKV3.MAGIC3)
-                    {
+                    if (magic == BinaryKV3.MAGIC || magic == BinaryKV3.MAGIC2 || magic == BinaryKV3.MAGIC3) {
                         block = new BinaryKV3();
-                    } else if (magic == BinaryKV1.MAGIC)
-                    {
+                    } else if (magic == BinaryKV1.MAGIC) {
                         block = new BinaryKV1();
                     }
 
                     Reader.BaseStream.Position = position;
                 }
 
-                if (block == null)
-                {
+                if (block == null) {
                     block = ConstructFromType(blockType);
                 }
 
@@ -253,8 +226,7 @@ namespace MyValveResourceFormat
 
                 Blocks.Add(block);
 
-                switch (block.Type)
-                {
+                switch (block.Type) {
                     case BlockType.REDI:
                     case BlockType.RED2:
                         block.Read(Reader, this);
@@ -262,12 +234,10 @@ namespace MyValveResourceFormat
                         EditInfo = (ResourceEditInfo)block;
 
                         // Try to determine resource type by looking at first compiler indentifier
-                        if (ResourceType == ResourceType.Unknown && EditInfo.Structs.ContainsKey(ResourceEditInfo.REDIStruct.SpecialDependencies))
-                        {
+                        if (ResourceType == ResourceType.Unknown && EditInfo.Structs.ContainsKey(ResourceEditInfo.REDIStruct.SpecialDependencies)) {
                             var specialDeps = (SpecialDependencies)EditInfo.Structs[ResourceEditInfo.REDIStruct.SpecialDependencies];
 
-                            if (specialDeps.List.Count > 0)
-                            {
+                            if (specialDeps.List.Count > 0) {
                                 ResourceType = DetermineResourceTypeByCompilerIdentifier(specialDeps.List[0]);
                             }
                         }
@@ -277,10 +247,8 @@ namespace MyValveResourceFormat
                     case BlockType.NTRO:
                         block.Read(Reader, this);
 
-                        if (ResourceType == ResourceType.Unknown && IntrospectionManifest.ReferencedStructs.Count > 0)
-                        {
-                            switch (IntrospectionManifest.ReferencedStructs[0].Name)
-                            {
+                        if (ResourceType == ResourceType.Unknown && IntrospectionManifest.ReferencedStructs.Count > 0) {
+                            switch (IntrospectionManifest.ReferencedStructs[0].Name) {
                                 case "VSoundEventScript_t":
                                     ResourceType = ResourceType.SoundEventScript;
                                     break;
@@ -297,39 +265,31 @@ namespace MyValveResourceFormat
                 Reader.BaseStream.Position = position + 8;
             }
 
-            if (ResourceType == ResourceType.Unknown && FileName != null)
-            {
+            if (ResourceType == ResourceType.Unknown && FileName != null) {
                 ResourceType = DetermineResourceTypeByFileExtension();
             }
 
-            foreach (var block in Blocks)
-            {
-                if (block.Type is not BlockType.REDI and not BlockType.RED2 and not BlockType.NTRO)
-                {
+            foreach (var block in Blocks) {
+                if (block.Type is not BlockType.REDI and not BlockType.RED2 and not BlockType.NTRO) {
                     block.Read(Reader, this);
                 }
             }
         }
 
-        public Block GetBlockByIndex(int index)
-        {
+        public Block GetBlockByIndex(int index) {
             return Blocks[index];
         }
 
-        public Block GetBlockByType(BlockType type)
-        {
+        public Block GetBlockByType(BlockType type) {
             return Blocks.Find(b => b.Type == type);
         }
 
-        public bool ContainsBlockType(BlockType type)
-        {
+        public bool ContainsBlockType(BlockType type) {
             return Blocks.Exists(b => b.Type == type);
         }
 
-        private Block ConstructFromType(string input)
-        {
-            return input switch
-            {
+        private Block ConstructFromType(string input) {
+            return input switch {
                 nameof(BlockType.DATA) => ConstructResourceType(),
                 nameof(BlockType.REDI) => new ResourceEditInfo(),
                 nameof(BlockType.RED2) => new ResourceEditInfo2(),
@@ -352,13 +312,11 @@ namespace MyValveResourceFormat
             };
         }
 
-        private ResourceData ConstructResourceType()
-        {
+        private ResourceData ConstructResourceType() {
             // prints 'Texture'
             // Debug.WriteLine(ResourceType);
 
-            switch (ResourceType)
-            {
+            switch (ResourceType) {
                 case ResourceType.Panorama:
                 case ResourceType.PanoramaStyle:
                 case ResourceType.PanoramaScript:
@@ -408,39 +366,33 @@ namespace MyValveResourceFormat
                     return new PhysAggregateData();
 
                 case ResourceType.Mesh:
-                    if (Version == 0)
-                    {
+                    if (Version == 0) {
                         break;
                     }
 
                     return new BinaryKV3();
             }
 
-            if (ContainsBlockType(BlockType.NTRO))
-            {
+            if (ContainsBlockType(BlockType.NTRO)) {
                 return new NTRO();
             }
 
             return new ResourceData();
         }
 
-        private ResourceType DetermineResourceTypeByFileExtension()
-        {
+        private ResourceType DetermineResourceTypeByFileExtension() {
             var extension = Path.GetExtension(FileName) ?? string.Empty;
             extension = extension.EndsWith("_c", StringComparison.Ordinal) ? extension[1..^2] : extension[1..];
 
-            foreach (ResourceType typeValue in Enum.GetValues(typeof(ResourceType)))
-            {
-                if (typeValue == ResourceType.Unknown)
-                {
+            foreach (ResourceType typeValue in Enum.GetValues(typeof(ResourceType))) {
+                if (typeValue == ResourceType.Unknown) {
                     continue;
                 }
 
                 var type = typeof(ResourceType).GetMember(typeValue.ToString())[0];
                 var typeExt = (ExtensionAttribute)type.GetCustomAttributes(typeof(ExtensionAttribute), false)[0];
 
-                if (typeExt.Extension == extension)
-                {
+                if (typeExt.Extension == extension) {
                     return typeValue;
                 }
             }
@@ -448,8 +400,7 @@ namespace MyValveResourceFormat
             return ResourceType.Unknown;
         }
 
-        private static bool IsHandledResourceType(ResourceType type)
-        {
+        private static bool IsHandledResourceType(ResourceType type) {
             return type == ResourceType.Model
                    || type == ResourceType.World
                    || type == ResourceType.WorldNode
@@ -459,18 +410,15 @@ namespace MyValveResourceFormat
                    || type == ResourceType.PhysicsCollisionMesh;
         }
 
-        private static ResourceType DetermineResourceTypeByCompilerIdentifier(SpecialDependencies.SpecialDependency input)
-        {
+        private static ResourceType DetermineResourceTypeByCompilerIdentifier(SpecialDependencies.SpecialDependency input) {
             var identifier = input.CompilerIdentifier;
 
-            if (identifier.StartsWith("Compile", StringComparison.Ordinal))
-            {
+            if (identifier.StartsWith("Compile", StringComparison.Ordinal)) {
                 identifier = identifier.Remove(0, "Compile".Length);
             }
 
             // Special mappings and otherwise different identifiers
-            switch (identifier)
-            {
+            switch (identifier) {
                 case "Psf":
                     return ResourceType.ParticleSnapshot;
                 case "AnimGroup":
@@ -482,8 +430,7 @@ namespace MyValveResourceFormat
                 case "RenderMesh":
                     return ResourceType.Mesh;
                 case "Panorama":
-                    switch (input.String)
-                    {
+                    switch (input.String) {
                         case "Panorama Style Compiler Version":
                             return ResourceType.PanoramaStyle;
                         case "Panorama Script Compiler Version":
@@ -503,8 +450,7 @@ namespace MyValveResourceFormat
                     return ResourceType.SboxData;
             }
 
-            if (Enum.TryParse(identifier, false, out ResourceType resourceType))
-            {
+            if (Enum.TryParse(identifier, false, out ResourceType resourceType)) {
                 return resourceType;
             }
 

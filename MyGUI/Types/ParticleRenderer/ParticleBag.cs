@@ -1,9 +1,7 @@
 using System;
 
-namespace MyGUI.Types.ParticleRenderer
-{
-    public class ParticleBag
-    {
+namespace MyGUI.Types.ParticleRenderer {
+    public class ParticleBag {
         private readonly bool isGrowable;
 
         private Particle[] particles;
@@ -12,20 +10,15 @@ namespace MyGUI.Types.ParticleRenderer
 
         public Span<Particle> LiveParticles => new Span<Particle>(particles, 0, Count);
 
-        public ParticleBag(int initialCapacity, bool growable)
-        {
+        public ParticleBag(int initialCapacity, bool growable) {
             isGrowable = growable;
             particles = new Particle[initialCapacity];
         }
 
-        public int Add()
-        {
-            if (Count < particles.Length)
-            {
+        public int Add() {
+            if (Count < particles.Length) {
                 return Count++;
-            }
-            else if (isGrowable)
-            {
+            } else if (isGrowable) {
                 int newSize = particles.Length < 1024 ? particles.Length * 2 : particles.Length + 1024;
                 var newArray = new Particle[newSize];
                 Array.Copy(particles, 0, newArray, 0, Count);
@@ -37,25 +30,19 @@ namespace MyGUI.Types.ParticleRenderer
             return -1;
         }
 
-        public void PruneExpired()
-        {
+        public void PruneExpired() {
             // TODO: This alters the order of the particles so they are no longer in creation order after something expires. Fix that.
-            for (int i = 0; i < Count;)
-            {
-                if (particles[i].Lifetime <= 0)
-                {
+            for (int i = 0; i < Count;) {
+                if (particles[i].Lifetime <= 0) {
                     particles[i] = particles[Count - 1];
                     Count--;
-                }
-                else
-                {
+                } else {
                     ++i;
                 }
             }
         }
 
-        public void Clear()
-        {
+        public void Clear() {
             Count = 0;
         }
     }

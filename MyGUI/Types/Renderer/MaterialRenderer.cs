@@ -3,25 +3,21 @@ using MyGUI.Utils;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
-namespace MyGUI.Types.Renderer
-{
-    internal class MaterialRenderer : IRenderer
-    {
+namespace MyGUI.Types.Renderer {
+    internal class MaterialRenderer : IRenderer {
         private readonly RenderMaterial material;
         private readonly Shader shader;
         private readonly int quadVao;
 
         public AABB BoundingBox => new AABB(-1, -1, -1, 1, 1, 1);
 
-        public MaterialRenderer(RenderMaterial renderMaterial)
-        {
+        public MaterialRenderer(RenderMaterial renderMaterial) {
             material = renderMaterial;
             shader = ShaderLoader.LoadPlaneShader(material.Material.ShaderName, material.Material.GetShaderArguments());
             quadVao = SetupQuadBuffer();
         }
 
-        private int SetupQuadBuffer()
-        {
+        private int SetupQuadBuffer() {
             GL.UseProgram(shader.Program);
 
             // Create and bind VAO
@@ -70,21 +66,18 @@ namespace MyGUI.Types.Renderer
             return vao;
         }
 
-        public void Render(Camera camera, RenderPass renderPass)
-        {
+        public void Render(Camera camera, RenderPass renderPass) {
             GL.UseProgram(shader.Program);
             GL.BindVertexArray(quadVao);
             GL.EnableVertexAttribArray(0);
 
             var uniformLocation = shader.GetUniformLocation("m_vTintColorSceneObject");
-            if (uniformLocation > -1)
-            {
+            if (uniformLocation > -1) {
                 GL.Uniform4(uniformLocation, Vector4.One);
             }
 
             uniformLocation = shader.GetUniformLocation("m_vTintColorDrawCall");
-            if (uniformLocation > -1)
-            {
+            if (uniformLocation > -1) {
                 GL.Uniform3(uniformLocation, Vector3.One);
             }
 
@@ -106,8 +99,7 @@ namespace MyGUI.Types.Renderer
             GL.UseProgram(0);
         }
 
-        public void Update(float frameTime)
-        {
+        public void Update(float frameTime) {
             throw new NotImplementedException();
         }
     }

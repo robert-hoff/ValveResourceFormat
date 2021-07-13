@@ -1,10 +1,8 @@
 using System.Numerics;
 using MyValveResourceFormat.Serialization;
 
-namespace MyGUI.Types.ParticleRenderer
-{
-    public struct Particle
-    {
+namespace MyGUI.Types.ParticleRenderer {
+    public struct Particle {
         public int ParticleCount { get; set; }
 
         // Base properties
@@ -43,8 +41,7 @@ namespace MyGUI.Types.ParticleRenderer
 
         public Vector3 Velocity { get; set; }
 
-        public Particle(IKeyValueCollection baseProperties)
-        {
+        public Particle(IKeyValueCollection baseProperties) {
             ParticleCount = 0;
             Alpha = 1.0f;
             AlphaAlternate = 1.0f;
@@ -60,19 +57,16 @@ namespace MyGUI.Types.ParticleRenderer
             TrailLength = 1;
             Sequence = 0;
 
-            if (baseProperties.ContainsKey("m_ConstantColor"))
-            {
+            if (baseProperties.ContainsKey("m_ConstantColor")) {
                 var vectorValues = baseProperties.GetIntegerArray("m_ConstantColor");
                 ConstantColor = new Vector3(vectorValues[0], vectorValues[1], vectorValues[2]) / 255f;
             }
 
-            if (baseProperties.ContainsKey("m_flConstantRadius"))
-            {
+            if (baseProperties.ContainsKey("m_flConstantRadius")) {
                 ConstantRadius = baseProperties.GetFloatProperty("m_flConstantRadius");
             }
 
-            if (baseProperties.ContainsKey("m_flConstantLifespan"))
-            {
+            if (baseProperties.ContainsKey("m_flConstantLifespan")) {
                 ConstantLifetime = baseProperties.GetFloatProperty("m_flConstantLifespan");
             }
 
@@ -81,16 +75,14 @@ namespace MyGUI.Types.ParticleRenderer
             Radius = ConstantRadius;
         }
 
-        public Matrix4x4 GetTransformationMatrix()
-        {
+        public Matrix4x4 GetTransformationMatrix() {
             var scaleMatrix = Matrix4x4.CreateScale(Radius);
             var translationMatrix = Matrix4x4.CreateTranslation(Position.X, Position.Y, Position.Z);
 
             return Matrix4x4.Multiply(scaleMatrix, translationMatrix);
         }
 
-        public Matrix4x4 GetRotationMatrix()
-        {
+        public Matrix4x4 GetRotationMatrix() {
             var rotationMatrix = Matrix4x4.Multiply(Matrix4x4.CreateRotationZ(Rotation.Z), Matrix4x4.CreateRotationY(Rotation.Y));
             return rotationMatrix;
         }

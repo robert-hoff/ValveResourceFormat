@@ -5,26 +5,21 @@ using MyValveResourceFormat.ResourceTypes;
 using MyValveResourceFormat.Serialization;
 using MyValveResourceFormat.Serialization.KeyValues;
 
-namespace MyValveResourceFormat.Blocks
-{
+namespace MyValveResourceFormat.Blocks {
     /// <summary>
     /// "RED2" block. CResourceEditInfo.
     /// </summary>
-    public class ResourceEditInfo2 : ResourceEditInfo
-    {
+    public class ResourceEditInfo2 : ResourceEditInfo {
         public override BlockType Type => BlockType.RED2;
 
         private BinaryKV3 BackingData;
 
-        public ResourceEditInfo2()
-        {
+        public ResourceEditInfo2() {
             //
         }
 
-        public override void Read(BinaryReader reader, Resource resource)
-        {
-            var kv3 = new BinaryKV3
-            {
+        public override void Read(BinaryReader reader, Resource resource) {
+            var kv3 = new BinaryKV3 {
                 Offset = Offset,
                 Size = Size,
             };
@@ -34,10 +29,8 @@ namespace MyValveResourceFormat.Blocks
             var specialDependenciesRedi = new SpecialDependencies();
             var specialDependencies = kv3.AsKeyValueCollection().GetArray("m_SpecialDependencies");
 
-            foreach (var specialDependency in specialDependencies)
-            {
-                var specialDependencyRedi = new SpecialDependencies.SpecialDependency
-                {
+            foreach (var specialDependency in specialDependencies) {
+                var specialDependencyRedi = new SpecialDependencies.SpecialDependency {
                     String = specialDependency.GetProperty<string>("m_String"),
                     CompilerIdentifier = specialDependency.GetProperty<string>("m_CompilerIdentifier"),
                     Fingerprint = specialDependency.GetIntegerProperty("m_nFingerprint"),
@@ -49,22 +42,18 @@ namespace MyValveResourceFormat.Blocks
 
             Structs.Add(REDIStruct.SpecialDependencies, specialDependenciesRedi);
 
-            foreach (var kv in kv3.Data)
-            {
+            foreach (var kv in kv3.Data) {
                 // TODO: Structs?
                 //var structType = ConstructStruct(kv.Key);
             }
         }
 
-        public override void WriteText(IndentedTextWriter writer)
-        {
+        public override void WriteText(IndentedTextWriter writer) {
             BackingData.WriteText(writer);
         }
 
-        private static REDIBlock ConstructStruct(string name)
-        {
-            return name switch
-            {
+        private static REDIBlock ConstructStruct(string name) {
+            return name switch {
                 "m_InputDependencies" => new InputDependencies(),
                 "m_AdditionalInputDependencies" => new AdditionalInputDependencies(),
                 "m_ArgumentDependencies" => new ArgumentDependencies(),

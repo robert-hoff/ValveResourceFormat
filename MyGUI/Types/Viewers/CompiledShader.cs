@@ -5,17 +5,13 @@ using System.IO;
 using System.Windows.Forms;
 using MyGUI.Utils;
 
-namespace MyGUI.Types.Viewers
-{
-    public class CompiledShader : IViewer
-    {
-        public static bool IsAccepted(uint magic)
-        {
+namespace MyGUI.Types.Viewers {
+    public class CompiledShader : IViewer {
+        public static bool IsAccepted(uint magic) {
             return magic == MyValveResourceFormat.CompiledShader.MAGIC;
         }
 
-        public TabPage Create(VrfGuiContext vrfGuiContext, byte[] input)
-        {
+        public TabPage Create(VrfGuiContext vrfGuiContext, byte[] input) {
             var tab = new TabPage();
             var shader = new MyValveResourceFormat.CompiledShader();
 
@@ -23,12 +19,9 @@ namespace MyGUI.Types.Viewers
             var oldOut = Console.Out;
             Console.SetOut(buffer);
 
-            if (input != null)
-            {
+            if (input != null) {
                 shader.Read(vrfGuiContext.FileName, new MemoryStream(input));
-            }
-            else
-            {
+            } else {
                 shader.Read(vrfGuiContext.FileName);
             }
 

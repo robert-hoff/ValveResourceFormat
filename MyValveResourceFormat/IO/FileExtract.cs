@@ -5,16 +5,12 @@ using SkiaSharp;
 using MyValveResourceFormat;
 using MyValveResourceFormat.ResourceTypes;
 
-namespace MyValveResourceFormat.IO
-{
-    public static class FileExtract
-    {
-        public static Span<byte> Extract(Resource resource)
-        {
+namespace MyValveResourceFormat.IO {
+    public static class FileExtract {
+        public static Span<byte> Extract(Resource resource) {
             Span<byte> data;
 
-            switch (resource.ResourceType)
-            {
+            switch (resource.ResourceType) {
                 case ResourceType.Panorama:
                 case ResourceType.PanoramaLayout:
                 case ResourceType.PanoramaScript:
@@ -31,8 +27,7 @@ namespace MyValveResourceFormat.IO
                 case ResourceType.Texture:
                     var bitmap = ((Texture)resource.DataBlock).GenerateBitmap();
 
-                    using (var ms = new MemoryStream())
-                    {
+                    using (var ms = new MemoryStream()) {
                         bitmap.PeekPixels().Encode(ms, SKEncodedImageFormat.Png, 100);
 
                         data = ms.ToArray();
@@ -68,10 +63,8 @@ namespace MyValveResourceFormat.IO
             return data;
         }
 
-        public static string GetExtension(Resource resource)
-        {
-            switch (resource.ResourceType)
-            {
+        public static string GetExtension(Resource resource) {
+            switch (resource.ResourceType) {
                 case ResourceType.PanoramaLayout: return "xml";
                 case ResourceType.PanoramaScript: return "js";
                 case ResourceType.PanoramaStyle: return "css";
@@ -79,8 +72,7 @@ namespace MyValveResourceFormat.IO
                 case ResourceType.Texture: return "png";
 
                 case ResourceType.Sound:
-                    switch (((Sound)resource.DataBlock).SoundType)
-                    {
+                    switch (((Sound)resource.DataBlock).SoundType) {
                         case Sound.AudioFileType.MP3: return "mp3";
                         case Sound.AudioFileType.WAV: return "wav";
                     }
@@ -88,8 +80,7 @@ namespace MyValveResourceFormat.IO
                     break;
             }
 
-            if (resource.ResourceType != ResourceType.Unknown)
-            {
+            if (resource.ResourceType != ResourceType.Unknown) {
                 var type = typeof(ResourceType).GetMember(resource.ResourceType.ToString())[0];
                 return ((ExtensionAttribute)type.GetCustomAttributes(typeof(ExtensionAttribute), false)[0]).Extension;
             }

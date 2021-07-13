@@ -1,29 +1,23 @@
 using System.IO;
 using System.Text;
 
-namespace MyValveResourceFormat
-{
-    internal static class StreamHelpers
-    {
+namespace MyValveResourceFormat {
+    internal static class StreamHelpers {
         /// <summary>
         /// Reads a null terminated string.
         /// </summary>
         /// <returns>String.</returns>
         /// <param name="stream">Stream.</param>
         /// <param name="encoding">Encoding.</param>
-        public static string ReadNullTermString(this BinaryReader stream, Encoding encoding)
-        {
+        public static string ReadNullTermString(this BinaryReader stream, Encoding encoding) {
             var characterSize = encoding.GetByteCount("e");
 
-            using (var ms = new MemoryStream())
-            {
-                while (true)
-                {
+            using (var ms = new MemoryStream()) {
+                while (true) {
                     var data = new byte[characterSize];
                     stream.Read(data, 0, characterSize);
 
-                    if (encoding.GetString(data, 0, characterSize) == "\0")
-                    {
+                    if (encoding.GetString(data, 0, characterSize) == "\0") {
                         break;
                     }
 
@@ -40,8 +34,7 @@ namespace MyValveResourceFormat
         /// <returns>String.</returns>
         /// <param name="stream">Stream.</param>
         /// <param name="encoding">Encoding.</param>
-        public static string ReadOffsetString(this BinaryReader stream, Encoding encoding)
-        {
+        public static string ReadOffsetString(this BinaryReader stream, Encoding encoding) {
 
             // Debug.WriteLine(stream.BaseStream.Position);
 
@@ -50,8 +43,7 @@ namespace MyValveResourceFormat
 
             // Debug.WriteLine("offset = {0}", offset);
 
-            if (offset == 0)
-            {
+            if (offset == 0) {
                 return string.Empty;
             }
 

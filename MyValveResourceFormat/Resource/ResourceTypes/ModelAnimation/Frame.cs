@@ -2,21 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 
-namespace MyValveResourceFormat.ResourceTypes.ModelAnimation
-{
-    public class Frame
-    {
+namespace MyValveResourceFormat.ResourceTypes.ModelAnimation {
+    public class Frame {
         public Dictionary<string, FrameBone> Bones { get; }
 
-        public Frame()
-        {
+        public Frame() {
             Bones = new Dictionary<string, FrameBone>();
         }
 
-        public void SetAttribute(string bone, string attribute, object data)
-        {
-            switch (attribute)
-            {
+        public void SetAttribute(string bone, string attribute, object data) {
+            switch (attribute) {
                 case "Position":
                     InsertIfUnknown(bone);
                     Bones[bone].Position = (Vector3)data;
@@ -36,10 +31,8 @@ namespace MyValveResourceFormat.ResourceTypes.ModelAnimation
             }
         }
 
-        private void InsertIfUnknown(string name)
-        {
-            if (!Bones.ContainsKey(name))
-            {
+        private void InsertIfUnknown(string name) {
+            if (!Bones.ContainsKey(name)) {
                 Bones[name] = new FrameBone(new Vector3(0, 0, 0), new Quaternion(0, 0, 0, 1));
             }
         }

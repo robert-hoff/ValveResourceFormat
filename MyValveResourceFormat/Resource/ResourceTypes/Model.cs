@@ -5,14 +5,11 @@ using MyValveResourceFormat.Blocks;
 using MyValveResourceFormat.ResourceTypes.ModelAnimation;
 using MyValveResourceFormat.Serialization;
 
-namespace MyValveResourceFormat.ResourceTypes
-{
-    public class Model : KeyValuesOrNTRO
-    {
+namespace MyValveResourceFormat.ResourceTypes {
+    public class Model : KeyValuesOrNTRO {
         private List<Animation> CachedEmbeddedAnimations;
 
-        public Skeleton GetSkeleton(int meshIndex)
-        {
+        public Skeleton GetSkeleton(int meshIndex) {
             return Skeleton.FromModelData(Data, meshIndex);
         }
 
@@ -28,22 +25,18 @@ namespace MyValveResourceFormat.ResourceTypes
         public IEnumerable<(Mesh Mesh, long LoDMask)> GetEmbeddedMeshesAndLoD()
             => GetEmbeddedMeshes().Zip(Data.GetIntegerArray("m_refLODGroupMasks"), (l, r) => (l, r));
 
-        public IEnumerable<Mesh> GetEmbeddedMeshes()
-        {
+        public IEnumerable<Mesh> GetEmbeddedMeshes() {
             var meshes = new List<Mesh>();
 
-            if (Resource.ContainsBlockType(BlockType.CTRL))
-            {
+            if (Resource.ContainsBlockType(BlockType.CTRL)) {
                 var ctrl = Resource.GetBlockByType(BlockType.CTRL) as BinaryKV3;
                 var embeddedMeshes = ctrl.Data.GetArray("embedded_meshes");
 
-                if (embeddedMeshes == null)
-                {
+                if (embeddedMeshes == null) {
                     return meshes;
                 }
 
-                foreach (var embeddedMesh in embeddedMeshes)
-                {
+                foreach (var embeddedMesh in embeddedMeshes) {
                     var dataBlockIndex = (int)embeddedMesh.GetIntegerProperty("data_block");
                     var vbibBlockIndex = (int)embeddedMesh.GetIntegerProperty("vbib_block");
 
@@ -54,18 +47,15 @@ namespace MyValveResourceFormat.ResourceTypes
             return meshes;
         }
 
-        public PhysAggregateData GetEmbeddedPhys()
-        {
-            if (!Resource.ContainsBlockType(BlockType.CTRL))
-            {
+        public PhysAggregateData GetEmbeddedPhys() {
+            if (!Resource.ContainsBlockType(BlockType.CTRL)) {
                 return null;
             }
 
             var ctrl = Resource.GetBlockByType(BlockType.CTRL) as BinaryKV3;
             var embeddedPhys = ctrl.Data.GetSubCollection("embedded_physics");
 
-            if (embeddedPhys == null)
-            {
+            if (embeddedPhys == null) {
                 return null;
             }
 
@@ -79,22 +69,18 @@ namespace MyValveResourceFormat.ResourceTypes
         public IEnumerable<string> GetReferencedAnimationGroupNames()
             => Data.GetArray<string>("m_refAnimGroups");
 
-        public IEnumerable<Animation> GetEmbeddedAnimations()
-        {
-            if (CachedEmbeddedAnimations != null)
-            {
+        public IEnumerable<Animation> GetEmbeddedAnimations() {
+            if (CachedEmbeddedAnimations != null) {
                 return CachedEmbeddedAnimations;
             }
 
             CachedEmbeddedAnimations = new List<Animation>();
 
-            if (Resource.ContainsBlockType(BlockType.CTRL))
-            {
+            if (Resource.ContainsBlockType(BlockType.CTRL)) {
                 var ctrl = Resource.GetBlockByType(BlockType.CTRL) as BinaryKV3;
                 var embeddedAnimation = ctrl.Data.GetSubCollection("embedded_animation");
 
-                if (embeddedAnimation == null)
-                {
+                if (embeddedAnimation == null) {
                     return CachedEmbeddedAnimations;
                 }
 
@@ -118,23 +104,18 @@ namespace MyValveResourceFormat.ResourceTypes
         public IEnumerable<string> GetMaterialGroups()
            => Data.GetArray<IKeyValueCollection>("m_materialGroups").Select(group => group.GetProperty<string>("m_name"));
 
-        public IEnumerable<string> GetDefaultMeshGroups()
-        {
+        public IEnumerable<string> GetDefaultMeshGroups() {
             var defaultGroupMask = Data.GetUnsignedIntegerProperty("m_nDefaultMeshGroupMask");
 
             return GetMeshGroups().Where((group, index) => ((ulong)(1 << index) & defaultGroupMask) != 0);
         }
 
-        public IEnumerable<bool> GetActiveMeshMaskForGroup(string groupName)
-        {
+        public IEnumerable<bool> GetActiveMeshMaskForGroup(string groupName) {
             var groupIndex = GetMeshGroups().ToList().IndexOf(groupName);
             var meshGroupMasks = Data.GetIntegerArray("m_refMeshGroupMasks");
-            if (groupIndex >= 0)
-            {
+            if (groupIndex >= 0) {
                 return meshGroupMasks.Select(mask => (mask & 1 << groupIndex) != 0);
-            }
-            else
-            {
+            } else {
                 return meshGroupMasks.Select(_ => false);
             }
         }

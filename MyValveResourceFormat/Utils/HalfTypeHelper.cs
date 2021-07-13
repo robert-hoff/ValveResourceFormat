@@ -7,13 +7,10 @@
  */
 using System.Runtime.InteropServices;
 
-namespace MyValveResourceFormat
-{
-    internal static class HalfTypeHelper
-    {
+namespace MyValveResourceFormat {
+    internal static class HalfTypeHelper {
         [StructLayout(LayoutKind.Explicit)]
-        private struct HalfTypeHackCast
-        {
+        private struct HalfTypeHackCast {
             [FieldOffset(0)]
             public float Float;
 
@@ -21,37 +18,28 @@ namespace MyValveResourceFormat
             public uint UnsignedInteger;
         }
 
-        internal static float Convert(ushort value)
-        {
+        internal static float Convert(ushort value) {
             uint rst;
             uint mantissa = (uint)(value & 1023);
             uint exp = 0xfffffff2;
 
-            if ((value & -33792) == 0)
-            {
-                if (mantissa != 0)
-                {
-                    while ((mantissa & 1024) == 0)
-                    {
+            if ((value & -33792) == 0) {
+                if (mantissa != 0) {
+                    while ((mantissa & 1024) == 0) {
                         exp--;
                         mantissa = mantissa << 1;
                     }
 
                     mantissa &= 0xfffffbff;
                     rst = (((uint)value & 0x8000) << 16) | ((exp + 127) << 23) | (mantissa << 13);
-                }
-                else
-                {
+                } else {
                     rst = (uint)((value & 0x8000) << 16);
                 }
-            }
-            else
-            {
+            } else {
                 rst = (((uint)value & 0x8000) << 16) | (((((uint)value >> 10) & 0x1f) - 15 + 127) << 23) | (mantissa << 13);
             }
 
-            var uif = new HalfTypeHackCast
-            {
+            var uif = new HalfTypeHackCast {
                 UnsignedInteger = rst,
             };
             return uif.Float;

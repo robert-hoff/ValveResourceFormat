@@ -2,19 +2,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace MyValveResourceFormat.Blocks
-{
+namespace MyValveResourceFormat.Blocks {
     /// <summary>
     /// "NTRO" block. CResourceIntrospectionManifest.
     /// </summary>
-    public class ResourceIntrospectionManifest : Block
-    {
+    public class ResourceIntrospectionManifest : Block {
         public override BlockType Type => BlockType.NTRO;
 
-        public class ResourceDiskStruct
-        {
-            public class Field
-            {
+        public class ResourceDiskStruct {
+            public class Field {
                 public string FieldName { get; set; }
                 public short Count { get; set; }
                 public short OnDiskOffset { get; set; }
@@ -22,13 +18,11 @@ namespace MyValveResourceFormat.Blocks
                 public uint TypeData { get; set; }
                 public DataType Type { get; set; } // TODO: make this an enum?
 
-                public Field()
-                {
+                public Field() {
                     Indirections = new List<byte>();
                 }
 
-                public void WriteText(IndentedTextWriter writer)
-                {
+                public void WriteText(IndentedTextWriter writer) {
                     writer.WriteLine("CResourceDiskStructField");
                     writer.WriteLine("{");
                     writer.Indent++;
@@ -40,8 +34,7 @@ namespace MyValveResourceFormat.Blocks
                     writer.WriteLine("[");
                     writer.Indent++;
 
-                    foreach (var dep in Indirections)
-                    {
+                    foreach (var dep in Indirections) {
                         writer.WriteLine("{0:D2}", dep);
                     }
 
@@ -66,13 +59,11 @@ namespace MyValveResourceFormat.Blocks
             public byte StructFlags { get; set; }
             public List<Field> FieldIntrospection { get; private set; }
 
-            public ResourceDiskStruct()
-            {
+            public ResourceDiskStruct() {
                 FieldIntrospection = new List<Field>();
             }
 
-            public void WriteText(IndentedTextWriter writer)
-            {
+            public void WriteText(IndentedTextWriter writer) {
                 writer.WriteLine("CResourceDiskStruct");
                 writer.WriteLine("{");
                 writer.Indent++;
@@ -89,8 +80,7 @@ namespace MyValveResourceFormat.Blocks
                 writer.WriteLine("[");
                 writer.Indent++;
 
-                foreach (var field in FieldIntrospection)
-                {
+                foreach (var field in FieldIntrospection) {
                     field.WriteText(writer);
                 }
 
@@ -102,15 +92,12 @@ namespace MyValveResourceFormat.Blocks
             }
         }
 
-        public class ResourceDiskEnum
-        {
-            public class Value
-            {
+        public class ResourceDiskEnum {
+            public class Value {
                 public string EnumValueName { get; set; }
                 public int EnumValue { get; set; }
 
-                public void WriteText(IndentedTextWriter writer)
-                {
+                public void WriteText(IndentedTextWriter writer) {
                     writer.WriteLine("CResourceDiskEnumValue");
                     writer.WriteLine("{");
                     writer.Indent++;
@@ -128,13 +115,11 @@ namespace MyValveResourceFormat.Blocks
             public int UserVersion { get; set; }
             public List<Value> EnumValueIntrospection { get; private set; }
 
-            public ResourceDiskEnum()
-            {
+            public ResourceDiskEnum() {
                 EnumValueIntrospection = new List<Value>();
             }
 
-            public void WriteText(IndentedTextWriter writer)
-            {
+            public void WriteText(IndentedTextWriter writer) {
                 writer.WriteLine("CResourceDiskEnum");
                 writer.WriteLine("{");
                 writer.Indent++;
@@ -148,8 +133,7 @@ namespace MyValveResourceFormat.Blocks
                 writer.WriteLine("[");
                 writer.Indent++;
 
-                foreach (var value in EnumValueIntrospection)
-                {
+                foreach (var value in EnumValueIntrospection) {
                     value.WriteText(writer);
                 }
 
@@ -165,14 +149,12 @@ namespace MyValveResourceFormat.Blocks
         public List<ResourceDiskStruct> ReferencedStructs { get; }
         public List<ResourceDiskEnum> ReferencedEnums { get; }
 
-        public ResourceIntrospectionManifest()
-        {
+        public ResourceIntrospectionManifest() {
             ReferencedStructs = new List<ResourceDiskStruct>();
             ReferencedEnums = new List<ResourceDiskEnum>();
         }
 
-        public override void Read(BinaryReader reader, Resource resource)
-        {
+        public override void Read(BinaryReader reader, Resource resource) {
             reader.BaseStream.Position = Offset;
 
             IntrospectionVersion = reader.ReadUInt32();
@@ -184,22 +166,18 @@ namespace MyValveResourceFormat.Blocks
             ReadEnums(reader);
         }
 
-        private void ReadStructs(BinaryReader reader)
-        {
+        private void ReadStructs(BinaryReader reader) {
             var entriesOffset = reader.ReadUInt32();
             var entriesCount = reader.ReadUInt32();
 
-            if (entriesCount == 0)
-            {
+            if (entriesCount == 0) {
                 return;
             }
 
             reader.BaseStream.Position += entriesOffset - 8; // offset minus 2 ints we just read
 
-            for (var i = 0; i < entriesCount; i++)
-            {
-                var diskStruct = new ResourceDiskStruct
-                {
+            for (var i = 0; i < entriesCount; i++) {
+                var diskStruct = new ResourceDiskStruct {
                     IntrospectionVersion = reader.ReadUInt32(),
                     Id = reader.ReadUInt32(),
                     Name = reader.ReadOffsetString(Encoding.UTF8),
@@ -214,15 +192,12 @@ namespace MyValveResourceFormat.Blocks
                 var fieldsSize = reader.ReadUInt32();
 
                 // jump to fields
-                if (fieldsSize > 0)
-                {
+                if (fieldsSize > 0) {
                     var prev = reader.BaseStream.Position;
                     reader.BaseStream.Position += fieldsOffset - 8; // offset minus 2 ints we just read
 
-                    for (var y = 0; y < fieldsSize; y++)
-                    {
-                        var field = new ResourceDiskStruct.Field
-                        {
+                    for (var y = 0; y < fieldsSize; y++) {
+                        var field = new ResourceDiskStruct.Field {
                             FieldName = reader.ReadOffsetString(Encoding.UTF8),
                             Count = reader.ReadInt16(),
                             OnDiskOffset = reader.ReadInt16()
@@ -231,14 +206,12 @@ namespace MyValveResourceFormat.Blocks
                         var indirectionOffset = reader.ReadUInt32();
                         var indirectionSize = reader.ReadUInt32();
 
-                        if (indirectionSize > 0)
-                        {
+                        if (indirectionSize > 0) {
                             // jump to indirections
                             var prev2 = reader.BaseStream.Position;
                             reader.BaseStream.Position += indirectionOffset - 8; // offset minus 2 ints we just read
 
-                            for (var x = 0; x < indirectionSize; x++)
-                            {
+                            for (var x = 0; x < indirectionSize; x++) {
                                 field.Indirections.Add(reader.ReadByte());
                             }
 
@@ -264,22 +237,18 @@ namespace MyValveResourceFormat.Blocks
             }
         }
 
-        private void ReadEnums(BinaryReader reader)
-        {
+        private void ReadEnums(BinaryReader reader) {
             var entriesOffset = reader.ReadUInt32();
             var entriesCount = reader.ReadUInt32();
 
-            if (entriesCount == 0)
-            {
+            if (entriesCount == 0) {
                 return;
             }
 
             reader.BaseStream.Position += entriesOffset - 8; // offset minus 2 ints we just read
 
-            for (var i = 0; i < entriesCount; i++)
-            {
-                var diskEnum = new ResourceDiskEnum
-                {
+            for (var i = 0; i < entriesCount; i++) {
+                var diskEnum = new ResourceDiskEnum {
                     IntrospectionVersion = reader.ReadUInt32(),
                     Id = reader.ReadUInt32(),
                     Name = reader.ReadOffsetString(Encoding.UTF8),
@@ -291,15 +260,12 @@ namespace MyValveResourceFormat.Blocks
                 var fieldsSize = reader.ReadUInt32();
 
                 // jump to fields
-                if (fieldsSize > 0)
-                {
+                if (fieldsSize > 0) {
                     var prev = reader.BaseStream.Position;
                     reader.BaseStream.Position += fieldsOffset - 8; // offset minus 2 ints we just read
 
-                    for (var y = 0; y < fieldsSize; y++)
-                    {
-                        var field = new ResourceDiskEnum.Value
-                        {
+                    for (var y = 0; y < fieldsSize; y++) {
+                        var field = new ResourceDiskEnum.Value {
                             EnumValueName = reader.ReadOffsetString(Encoding.UTF8),
                             EnumValue = reader.ReadInt32()
                         };
@@ -314,8 +280,7 @@ namespace MyValveResourceFormat.Blocks
             }
         }
 
-        public override void WriteText(IndentedTextWriter writer)
-        {
+        public override void WriteText(IndentedTextWriter writer) {
             writer.WriteLine("CResourceIntrospectionManifest");
             writer.WriteLine("{");
             writer.Indent++;
@@ -325,8 +290,7 @@ namespace MyValveResourceFormat.Blocks
             writer.WriteLine("[");
             writer.Indent++;
 
-            foreach (var refStruct in ReferencedStructs)
-            {
+            foreach (var refStruct in ReferencedStructs) {
                 refStruct.WriteText(writer);
             }
 
@@ -337,8 +301,7 @@ namespace MyValveResourceFormat.Blocks
             writer.WriteLine("[");
             writer.Indent++;
 
-            foreach (var refEnum in ReferencedEnums)
-            {
+            foreach (var refEnum in ReferencedEnums) {
                 refEnum.WriteText(writer);
             }
 

@@ -4,11 +4,9 @@ using System.Numerics;
 using MyGUI.Utils;
 using OpenTK.Graphics.OpenGL;
 
-namespace MyGUI.Types.Renderer
-{
+namespace MyGUI.Types.Renderer {
     internal class OctreeDebugRenderer<T>
-        where T : class
-    {
+        where T : class {
         private readonly Shader shader;
         private readonly Octree<T> octree;
         private readonly int vaoHandle;
@@ -16,8 +14,7 @@ namespace MyGUI.Types.Renderer
         private readonly bool dynamic;
         private int vertexCount;
 
-        public OctreeDebugRenderer(Octree<T> octree, VrfGuiContext guiContext, bool dynamic)
-        {
+        public OctreeDebugRenderer(Octree<T> octree, VrfGuiContext guiContext, bool dynamic) {
             this.octree = octree;
             this.dynamic = dynamic;
 
@@ -25,8 +22,7 @@ namespace MyGUI.Types.Renderer
             GL.UseProgram(shader.Program);
 
             vboHandle = GL.GenBuffer();
-            if (!dynamic)
-            {
+            if (!dynamic) {
                 Rebuild();
             }
 
@@ -46,8 +42,7 @@ namespace MyGUI.Types.Renderer
             GL.BindVertexArray(0);
         }
 
-        private static void AddLine(List<float> vertices, Vector3 from, Vector3 to, float r, float g, float b, float a)
-        {
+        private static void AddLine(List<float> vertices, Vector3 from, Vector3 to, float r, float g, float b, float a) {
             vertices.Add(from.X);
             vertices.Add(from.Y);
             vertices.Add(from.Z);
@@ -64,8 +59,7 @@ namespace MyGUI.Types.Renderer
             vertices.Add(a);
         }
 
-        private static void AddBox(List<float> vertices, AABB box, float r, float g, float b, float a)
-        {
+        private static void AddBox(List<float> vertices, AABB box, float r, float g, float b, float a) {
             AddLine(vertices, new Vector3(box.Min.X, box.Min.Y, box.Min.Z), new Vector3(box.Max.X, box.Min.Y, box.Min.Z), r, g, b, a);
             AddLine(vertices, new Vector3(box.Max.X, box.Min.Y, box.Min.Z), new Vector3(box.Max.X, box.Max.Y, box.Min.Z), r, g, b, a);
             AddLine(vertices, new Vector3(box.Max.X, box.Max.Y, box.Min.Z), new Vector3(box.Min.X, box.Max.Y, box.Min.Z), r, g, b, a);
@@ -82,14 +76,11 @@ namespace MyGUI.Types.Renderer
             AddLine(vertices, new Vector3(box.Min.X, box.Max.Y, box.Min.Z), new Vector3(box.Min.X, box.Max.Y, box.Max.Z), r, g, b, a);
         }
 
-        private void AddOctreeNode(List<float> vertices, Octree<T>.Node node, int depth)
-        {
+        private void AddOctreeNode(List<float> vertices, Octree<T>.Node node, int depth) {
             AddBox(vertices, node.Region, 1.0f, 1.0f, 1.0f, node.HasElements ? 1.0f : 0.1f);
 
-            if (node.HasElements)
-            {
-                foreach (var element in node.Elements)
-                {
+            if (node.HasElements) {
+                foreach (var element in node.Elements) {
                     var shading = Math.Min(1.0f, depth * 0.1f);
                     AddBox(vertices, element.BoundingBox, 1.0f, shading, 0.0f, 1.0f);
 
@@ -98,17 +89,14 @@ namespace MyGUI.Types.Renderer
                 }
             }
 
-            if (node.HasChildren)
-            {
-                foreach (var child in node.Children)
-                {
+            if (node.HasChildren) {
+                foreach (var child in node.Children) {
                     AddOctreeNode(vertices, child, depth + 1);
                 }
             }
         }
 
-        private void Rebuild()
-        {
+        private void Rebuild() {
             var vertices = new List<float>();
             AddOctreeNode(vertices, octree.Root, 0);
             vertexCount = vertices.Count / 7;
@@ -117,12 +105,9 @@ namespace MyGUI.Types.Renderer
             GL.BufferData(BufferTarget.ArrayBuffer, vertices.Count * sizeof(float), vertices.ToArray(), dynamic ? BufferUsageHint.DynamicDraw : BufferUsageHint.StaticDraw);
         }
 
-        public void Render(Camera camera, RenderPass renderPass)
-        {
-            if (renderPass == RenderPass.Translucent || renderPass == RenderPass.Both)
-            {
-                if (dynamic)
-                {
+        public void Render(Camera camera, RenderPass renderPass) {
+            if (renderPass == RenderPass.Translucent || renderPass == RenderPass.Both) {
+                if (dynamic) {
                     Rebuild();
                 }
 

@@ -9,10 +9,8 @@ using MyValveResourceFormat.Blocks;
 using MyValveResourceFormat.ResourceTypes;
 using MyValveResourceFormat.Serialization;
 
-namespace MyGUI.Types.Renderer
-{
-    internal class RenderableMesh
-    {
+namespace MyGUI.Types.Renderer {
+    internal class RenderableMesh {
         public AABB BoundingBox { get; }
         public Vector4 Tint { get; set; } = Vector4.One;
 
@@ -27,8 +25,7 @@ namespace MyGUI.Types.Renderer
         private Mesh mesh;
         private List<DrawCall> DrawCallsAll = new List<DrawCall>();
 
-        public RenderableMesh(Mesh mesh, VrfGuiContext guiContext, Dictionary<string, string> skinMaterials = null)
-        {
+        public RenderableMesh(Mesh mesh, VrfGuiContext guiContext, Dictionary<string, string> skinMaterials = null) {
             this.guiContext = guiContext;
             this.mesh = mesh;
             BoundingBox = new AABB(mesh.MinBounds, mesh.MaxBounds);
@@ -41,19 +38,16 @@ namespace MyGUI.Types.Renderer
                 .SelectMany(drawCall => drawCall.Shader.RenderModes)
                 .Distinct();
 
-        public void SetRenderMode(string renderMode)
-        {
+        public void SetRenderMode(string renderMode) {
             var drawCalls = DrawCallsAll;
 
-            foreach (var call in drawCalls)
-            {
+            foreach (var call in drawCalls) {
                 // Recycle old shader parameters that are not render modes since we are scrapping those anyway
                 var parameters = call.Shader.Parameters
                     .Where(kvp => !kvp.Key.StartsWith("renderMode"))
                     .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
-                if (renderMode != null && call.Shader.RenderModes.Contains(renderMode))
-                {
+                if (renderMode != null && call.Shader.RenderModes.Contains(renderMode)) {
                     parameters.Add($"renderMode_{renderMode}", true);
                 }
 
@@ -66,28 +60,23 @@ namespace MyGUI.Types.Renderer
             }
         }
 
-        public void SetAnimationTexture(int? texture, int animationTextureSize)
-        {
+        public void SetAnimationTexture(int? texture, int animationTextureSize) {
             AnimationTexture = texture;
             AnimationTextureSize = animationTextureSize;
         }
 
-        public void SetSkin(Dictionary<string, string> skinMaterials)
-        {
+        public void SetSkin(Dictionary<string, string> skinMaterials) {
             var data = mesh.GetData();
             var sceneObjects = data.GetArray("m_sceneObjects");
 
             int i = 0;
-            foreach (var sceneObject in sceneObjects)
-            {
+            foreach (var sceneObject in sceneObjects) {
                 var objectDrawCalls = sceneObject.GetArray("m_drawCalls");
 
-                foreach (var objectDrawCall in objectDrawCalls)
-                {
+                foreach (var objectDrawCall in objectDrawCalls) {
                     var materialName = objectDrawCall.GetProperty<string>("m_material") ?? objectDrawCall.GetProperty<string>("m_pMaterial");
 
-                    if (skinMaterials != null && skinMaterials.ContainsKey(materialName))
-                    {
+                    if (skinMaterials != null && skinMaterials.ContainsKey(materialName)) {
                         materialName = skinMaterials[materialName];
                     }
 
@@ -95,15 +84,13 @@ namespace MyGUI.Types.Renderer
                     var isOverlay = material.Material.IntParams.ContainsKey("F_OVERLAY");
 
                     // Ignore overlays for now
-                    if (isOverlay)
-                    {
+                    if (isOverlay) {
                         continue;
                     }
 
                     var shaderArguments = new Dictionary<string, bool>();
 
-                    if (Mesh.IsCompressedNormalTangent(objectDrawCall))
-                    {
+                    if (Mesh.IsCompressedNormalTangent(objectDrawCall)) {
                         shaderArguments.Add("fulltangent", false);
                     }
 
@@ -112,13 +99,11 @@ namespace MyGUI.Types.Renderer
             }
         }
 
-        public void Update(float timeStep)
-        {
+        public void Update(float timeStep) {
             Time += timeStep;
         }
 
-        private void SetupDrawCalls(Mesh mesh, Dictionary<string, string> skinMaterials)
-        {
+        private void SetupDrawCalls(Mesh mesh, Dictionary<string, string> skinMaterials) {
             var vbib = mesh.VBIB;
             var data = mesh.GetData();
             var gpuMeshBuffers = guiContext.MeshBufferCache.GetVertexIndexBuffers(vbib);
@@ -126,16 +111,13 @@ namespace MyGUI.Types.Renderer
             //Prepare drawcalls
             var sceneObjects = data.GetArray("m_sceneObjects");
 
-            foreach (var sceneObject in sceneObjects)
-            {
+            foreach (var sceneObject in sceneObjects) {
                 var objectDrawCalls = sceneObject.GetArray("m_drawCalls");
 
-                foreach (var objectDrawCall in objectDrawCalls)
-                {
+                foreach (var objectDrawCall in objectDrawCalls) {
                     var materialName = objectDrawCall.GetProperty<string>("m_material") ?? objectDrawCall.GetProperty<string>("m_pMaterial");
 
-                    if (skinMaterials != null && skinMaterials.ContainsKey(materialName))
-                    {
+                    if (skinMaterials != null && skinMaterials.ContainsKey(materialName)) {
                         materialName = skinMaterials[materialName];
                     }
 
@@ -143,15 +125,13 @@ namespace MyGUI.Types.Renderer
                     var isOverlay = material.Material.IntParams.ContainsKey("F_OVERLAY");
 
                     // Ignore overlays for now
-                    if (isOverlay)
-                    {
+                    if (isOverlay) {
                         continue;
                     }
 
                     var shaderArguments = new Dictionary<string, bool>();
 
-                    if (Mesh.IsCompressedNormalTangent(objectDrawCall))
-                    {
+                    if (Mesh.IsCompressedNormalTangent(objectDrawCall)) {
                         shaderArguments.Add("fulltangent", false);
                     }
 
@@ -159,12 +139,9 @@ namespace MyGUI.Types.Renderer
                     var drawCall = CreateDrawCall(objectDrawCall, vbib, shaderArguments, material);
 
                     DrawCallsAll.Add(drawCall);
-                    if (drawCall.Material.IsBlended)
-                    {
+                    if (drawCall.Material.IsBlended) {
                         DrawCallsBlended.Add(drawCall);
-                    }
-                    else
-                    {
+                    } else {
                         DrawCallsOpaque.Add(drawCall);
                     }
                 }
@@ -173,20 +150,17 @@ namespace MyGUI.Types.Renderer
             //drawCalls = drawCalls.OrderBy(x => x.Material.Parameters.Name).ToList();
         }
 
-        private DrawCall CreateDrawCall(IKeyValueCollection objectDrawCall, VBIB vbib, IDictionary<string, bool> shaderArguments, RenderMaterial material)
-        {
+        private DrawCall CreateDrawCall(IKeyValueCollection objectDrawCall, VBIB vbib, IDictionary<string, bool> shaderArguments, RenderMaterial material) {
             var drawCall = new DrawCall();
- 
-            string primitiveType = objectDrawCall.GetProperty<object>("m_nPrimitiveType") switch
-            {
+
+            string primitiveType = objectDrawCall.GetProperty<object>("m_nPrimitiveType") switch {
                 string primitiveTypeString => primitiveTypeString,
                 byte primitiveTypeByte =>
                 (primitiveTypeByte == 5) ? "RENDER_PRIM_TRIANGLES" : ("UNKNOWN_" + primitiveTypeByte),
                 _ => throw new NotImplementedException("Unknown PrimitiveType in drawCall!")
             };
 
-            switch (primitiveType)
-            {
+            switch (primitiveType) {
                 case "RENDER_PRIM_TRIANGLES":
                     drawCall.PrimitiveType = PrimitiveType.Triangles;
                     break;
@@ -209,24 +183,18 @@ namespace MyGUI.Types.Renderer
             drawCall.StartIndex = Convert.ToUInt32(objectDrawCall.GetProperty<object>("m_nStartIndex")) * indexElementSize;
             drawCall.IndexCount = Convert.ToInt32(objectDrawCall.GetProperty<object>("m_nIndexCount"));
 
-            if (objectDrawCall.ContainsKey("m_vTintColor"))
-            {
+            if (objectDrawCall.ContainsKey("m_vTintColor")) {
                 var tintColor = objectDrawCall.GetSubCollection("m_vTintColor").ToVector3();
                 drawCall.TintColor = new OpenTK.Vector3(tintColor.X, tintColor.Y, tintColor.Z);
             }
 
-            if (indexElementSize == 2)
-            {
+            if (indexElementSize == 2) {
                 //shopkeeper_vr
                 drawCall.IndexType = DrawElementsType.UnsignedShort;
-            }
-            else if (indexElementSize == 4)
-            {
+            } else if (indexElementSize == 4) {
                 //glados
                 drawCall.IndexType = DrawElementsType.UnsignedInt;
-            }
-            else
-            {
+            } else {
                 throw new Exception("Unsupported index type");
             }
 
@@ -246,8 +214,7 @@ namespace MyGUI.Types.Renderer
             return drawCall;
         }
 
-        private void SetupDrawCallMaterial(DrawCall drawCall, IDictionary<string, bool> shaderArguments, RenderMaterial material)
-        {
+        private void SetupDrawCallMaterial(DrawCall drawCall, IDictionary<string, bool> shaderArguments, RenderMaterial material) {
             drawCall.Material = material;
             // Add shader parameters from material to the shader parameters from the draw call
             var combinedShaderParameters = shaderArguments
@@ -260,20 +227,17 @@ namespace MyGUI.Types.Renderer
             //Bind and validate shader
             GL.UseProgram(drawCall.Shader.Program);
 
-            if (!drawCall.Material.Textures.ContainsKey("g_tTintMask"))
-            {
+            if (!drawCall.Material.Textures.ContainsKey("g_tTintMask")) {
                 drawCall.Material.Textures.Add("g_tTintMask", MaterialLoader.CreateSolidTexture(1f, 1f, 1f));
             }
 
-            if (!drawCall.Material.Textures.ContainsKey("g_tNormal"))
-            {
+            if (!drawCall.Material.Textures.ContainsKey("g_tNormal")) {
                 drawCall.Material.Textures.Add("g_tNormal", MaterialLoader.CreateSolidTexture(0.5f, 1f, 0.5f));
             }
         }
     }
 
-    internal interface IRenderableMeshCollection
-    {
+    internal interface IRenderableMeshCollection {
         IEnumerable<RenderableMesh> RenderableMeshes { get; }
     }
 }

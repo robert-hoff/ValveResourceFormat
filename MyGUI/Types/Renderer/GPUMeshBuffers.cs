@@ -3,12 +3,9 @@ using System.Linq;
 using OpenTK.Graphics.OpenGL;
 using MyValveResourceFormat.Blocks;
 
-namespace MyGUI.Types.Renderer
-{
-    public class GPUMeshBuffers
-    {
-        public struct Buffer
-        {
+namespace MyGUI.Types.Renderer {
+    public class GPUMeshBuffers {
+        public struct Buffer {
 #pragma warning disable CA1051 // Do not declare visible instance fields
             public uint Handle;
             public long Size;
@@ -18,13 +15,11 @@ namespace MyGUI.Types.Renderer
         public Buffer[] VertexBuffers { get; private set; }
         public Buffer[] IndexBuffers { get; private set; }
 
-        public GPUMeshBuffers(VBIB vbib)
-        {
+        public GPUMeshBuffers(VBIB vbib) {
             VertexBuffers = new Buffer[vbib.VertexBuffers.Count];
             IndexBuffers = new Buffer[vbib.IndexBuffers.Count];
 
-            for (var i = 0; i < vbib.VertexBuffers.Count; i++)
-            {
+            for (var i = 0; i < vbib.VertexBuffers.Count; i++) {
                 VertexBuffers[i].Handle = (uint)GL.GenBuffer();
                 GL.BindBuffer(BufferTarget.ArrayBuffer, VertexBuffers[i].Handle);
                 GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(vbib.VertexBuffers[i].ElementCount * vbib.VertexBuffers[i].ElementSizeInBytes), vbib.VertexBuffers[i].Data, BufferUsageHint.StaticDraw);
@@ -32,8 +27,7 @@ namespace MyGUI.Types.Renderer
                 GL.GetBufferParameter(BufferTarget.ArrayBuffer, BufferParameterName.BufferSize, out VertexBuffers[i].Size);
             }
 
-            for (var i = 0; i < vbib.IndexBuffers.Count; i++)
-            {
+            for (var i = 0; i < vbib.IndexBuffers.Count; i++) {
                 IndexBuffers[i].Handle = (uint)GL.GenBuffer();
                 GL.BindBuffer(BufferTarget.ElementArrayBuffer, IndexBuffers[i].Handle);
                 GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(vbib.IndexBuffers[i].ElementCount * vbib.IndexBuffers[i].ElementSizeInBytes), vbib.IndexBuffers[i].Data, BufferUsageHint.StaticDraw);

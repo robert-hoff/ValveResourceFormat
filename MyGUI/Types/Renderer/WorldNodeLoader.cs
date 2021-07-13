@@ -5,31 +5,24 @@ using MyValveResourceFormat;
 using MyValveResourceFormat.ResourceTypes;
 using MyValveResourceFormat.Serialization;
 
-namespace MyGUI.Types.Renderer
-{
-    internal class WorldNodeLoader
-    {
+namespace MyGUI.Types.Renderer {
+    internal class WorldNodeLoader {
         private readonly WorldNode node;
         private readonly VrfGuiContext guiContext;
 
-        public WorldNodeLoader(VrfGuiContext vrfGuiContext, WorldNode node)
-        {
+        public WorldNodeLoader(VrfGuiContext vrfGuiContext, WorldNode node) {
             this.node = node;
             guiContext = vrfGuiContext;
         }
 
-        public void Load(Scene scene)
-        {
+        public void Load(Scene scene) {
             var data = node.Data;
 
             string[] worldLayers;
 
-            if (data.ContainsKey("m_layerNames"))
-            {
+            if (data.ContainsKey("m_layerNames")) {
                 worldLayers = data.GetArray<string>("m_layerNames");
-            }
-            else
-            {
+            } else {
                 worldLayers = Array.Empty<string>();
             }
 
@@ -38,8 +31,7 @@ namespace MyGUI.Types.Renderer
             var i = 0;
 
             // Output is WorldNode_t we need to iterate m_sceneObjects inside it
-            foreach (var sceneObject in sceneObjects)
-            {
+            foreach (var sceneObject in sceneObjects) {
                 var layerIndex = sceneObjectLayerIndices?[i++] ?? -1;
 
                 // sceneObject is SceneObject_t
@@ -49,27 +41,21 @@ namespace MyGUI.Types.Renderer
                 var tintColorWrongVector = sceneObject.GetSubCollection("m_vTintColor").ToVector4();
 
                 Vector4 tintColor;
-                if (tintColorWrongVector.W == 0)
-                {
+                if (tintColorWrongVector.W == 0) {
                     // Ignoring tintColor, it will fuck things up.
                     tintColor = Vector4.One;
-                }
-                else
-                {
+                } else {
                     tintColor = new Vector4(tintColorWrongVector.X, tintColorWrongVector.Y, tintColorWrongVector.Z, tintColorWrongVector.W);
                 }
 
-                if (renderableModel != null)
-                {
+                if (renderableModel != null) {
                     var newResource = guiContext.LoadFileByAnyMeansNecessary(renderableModel + "_c");
 
-                    if (newResource == null)
-                    {
+                    if (newResource == null) {
                         continue;
                     }
 
-                    var modelNode = new ModelSceneNode(scene, (Model)newResource.DataBlock, null, false)
-                    {
+                    var modelNode = new ModelSceneNode(scene, (Model)newResource.DataBlock, null, false) {
                         Transform = matrix,
                         Tint = tintColor,
                         LayerName = layerIndex > -1 ? worldLayers[layerIndex] : "No layer",
@@ -80,17 +66,14 @@ namespace MyGUI.Types.Renderer
 
                 var renderable = sceneObject.GetProperty<string>("m_renderable");
 
-                if (renderable != null)
-                {
+                if (renderable != null) {
                     var newResource = guiContext.LoadFileByAnyMeansNecessary(renderable + "_c");
 
-                    if (newResource == null)
-                    {
+                    if (newResource == null) {
                         continue;
                     }
 
-                    var meshNode = new MeshSceneNode(scene, new Mesh(newResource))
-                    {
+                    var meshNode = new MeshSceneNode(scene, new Mesh(newResource)) {
                         Transform = matrix,
                         Tint = tintColor,
                         LayerName = layerIndex > -1 ? worldLayers[layerIndex] : "No layer",

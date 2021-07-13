@@ -2,34 +2,27 @@ using System;
 using System.Numerics;
 using MyValveResourceFormat.Serialization;
 
-namespace MyGUI.Types.ParticleRenderer.Initializers
-{
-    public class InitialVelocityNoise : IParticleInitializer
-    {
+namespace MyGUI.Types.ParticleRenderer.Initializers {
+    public class InitialVelocityNoise : IParticleInitializer {
         private readonly IVectorProvider outputMin = new LiteralVectorProvider(Vector3.Zero);
         private readonly IVectorProvider outputMax = new LiteralVectorProvider(Vector3.One);
         private readonly INumberProvider noiseScale = new LiteralNumberProvider(1f);
 
-        public InitialVelocityNoise(IKeyValueCollection keyValues)
-        {
-            if (keyValues.ContainsKey("m_vecOutputMin"))
-            {
+        public InitialVelocityNoise(IKeyValueCollection keyValues) {
+            if (keyValues.ContainsKey("m_vecOutputMin")) {
                 outputMin = keyValues.GetVectorProvider("m_vecOutputMin");
             }
 
-            if (keyValues.ContainsKey("m_vecOutputMax"))
-            {
+            if (keyValues.ContainsKey("m_vecOutputMax")) {
                 outputMax = keyValues.GetVectorProvider("m_vecOutputMax");
             }
 
-            if (keyValues.ContainsKey("m_flNoiseScale"))
-            {
+            if (keyValues.ContainsKey("m_flNoiseScale")) {
                 noiseScale = keyValues.GetNumberProvider("m_flNoiseScale");
             }
         }
 
-        public Particle Initialize(ref Particle particle, ParticleSystemRenderState particleSystemState)
-        {
+        public Particle Initialize(ref Particle particle, ParticleSystemRenderState particleSystemState) {
             var noiseScale = (float)this.noiseScale.NextNumber();
             var r = new Vector3(
                 Simplex1D(particleSystemState.Lifetime * noiseScale),
@@ -46,8 +39,7 @@ namespace MyGUI.Types.ParticleRenderer.Initializers
 
         // Simple perlin noise implementation
 
-        private static float Simplex1D(float t)
-        {
+        private static float Simplex1D(float t) {
             var previous = PseudoRandom((float)Math.Floor(t));
             var next = PseudoRandom((float)Math.Ceiling(t));
 
@@ -60,8 +52,7 @@ namespace MyGUI.Types.ParticleRenderer.Initializers
         private static float PseudoRandom(float t)
             => ((1013904223517 * t) % 1664525) / 1664525f;
 
-        private static float CosineInterpolate(float start, float end, float mu)
-        {
+        private static float CosineInterpolate(float start, float end, float mu) {
             var mu2 = (1 - (float)Math.Cos(mu * Math.PI)) / 2f;
             return (start * (1 - mu2)) + (end * mu2);
         }

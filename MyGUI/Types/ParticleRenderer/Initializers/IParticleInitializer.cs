@@ -1,7 +1,5 @@
-namespace MyGUI.Types.ParticleRenderer.Initializers
-{
-    public interface IParticleInitializer
-    {
+namespace MyGUI.Types.ParticleRenderer.Initializers {
+    public interface IParticleInitializer {
         Particle Initialize(ref Particle particle, ParticleSystemRenderState particleSystemState);
     }
 }

@@ -6,10 +6,8 @@ using System.Text;
 using MyValveResourceFormat.Blocks;
 using MyValveResourceFormat.ResourceTypes;
 
-namespace MyValveResourceFormat.Serialization
-{
-    public interface IKeyValueCollection : IEnumerable<KeyValuePair<string, object>>
-    {
+namespace MyValveResourceFormat.Serialization {
+    public interface IKeyValueCollection : IEnumerable<KeyValuePair<string, object>> {
         bool ContainsKey(string name);
 
         T[] GetArray<T>(string name);
@@ -17,19 +15,16 @@ namespace MyValveResourceFormat.Serialization
         T GetProperty<T>(string name);
     }
 
-    public static class ResourceDataExtensions
-    {
+    public static class ResourceDataExtensions {
         public static IKeyValueCollection AsKeyValueCollection(this ResourceData data) =>
-            data switch
-            {
+            data switch {
                 BinaryKV3 kv => kv.Data,
                 ResourceTypes.NTRO ntro => ntro.Output,
                 _ => throw new InvalidOperationException($"Cannot use {data.GetType().Name} as key-value collection")
             };
     }
 
-    public static class IKeyValueCollectionExtensions
-    {
+    public static class IKeyValueCollectionExtensions {
         public static IKeyValueCollection GetSubCollection(this IKeyValueCollection collection, string name)
             => collection.GetProperty<IKeyValueCollection>(name);
 
@@ -41,14 +36,11 @@ namespace MyValveResourceFormat.Serialization
         public static long GetIntegerProperty(this IKeyValueCollection collection, string name)
             => Convert.ToInt64(collection.GetProperty<object>(name));
 
-        public static ulong GetUnsignedIntegerProperty(this IKeyValueCollection collection, string name)
-        {
+        public static ulong GetUnsignedIntegerProperty(this IKeyValueCollection collection, string name) {
             var value = collection.GetProperty<object>(name);
 
-            if (value is int i)
-            {
-                unchecked
-                {
+            if (value is int i) {
+                unchecked {
                     return (ulong)i;
                 }
             }
@@ -98,8 +90,7 @@ namespace MyValveResourceFormat.Serialization
             collection.GetFloatProperty("2"),
             collection.GetFloatProperty("3"));
 
-        public static Matrix4x4 ToMatrix4x4(this IKeyValueCollection[] array)
-        {
+        public static Matrix4x4 ToMatrix4x4(this IKeyValueCollection[] array) {
             var column1 = array[0].ToVector4();
             var column2 = array[1].ToVector4();
             var column3 = array[2].ToVector4();
@@ -110,20 +101,15 @@ namespace MyValveResourceFormat.Serialization
 
         public static string Print(this IKeyValueCollection collection) => PrintHelper(collection, 0);
 
-        private static string PrintHelper(IKeyValueCollection collection, int indent)
-        {
+        private static string PrintHelper(IKeyValueCollection collection, int indent) {
             var stringBuilder = new StringBuilder();
             var space = new string(' ', indent * 4);
-            foreach (var kvp in collection)
-            {
-                if (kvp.Value is IKeyValueCollection nestedCollection)
-                {
+            foreach (var kvp in collection) {
+                if (kvp.Value is IKeyValueCollection nestedCollection) {
                     stringBuilder.AppendLine($"{space}{kvp.Key} = {{");
                     stringBuilder.Append(PrintHelper(nestedCollection, indent + 1));
                     stringBuilder.AppendLine($"{space}}}");
-                }
-                else
-                {
+                } else {
                     stringBuilder.AppendLine($"{space}{kvp.Key} = {kvp.Value}");
                 }
             }

@@ -1,9 +1,7 @@
 using System;
 
-namespace MyValveResourceFormat.ResourceTypes.ModelAnimation
-{
-    public enum AnimDecoderType
-    {
+namespace MyValveResourceFormat.ResourceTypes.ModelAnimation {
+    public enum AnimDecoderType {
         Unknown,
         CCompressedReferenceFloat,
         CCompressedStaticFloat,

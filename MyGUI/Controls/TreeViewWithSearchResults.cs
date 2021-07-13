@@ -6,17 +6,14 @@ using MyGUI.Forms;
 using MyGUI.Utils;
 using SteamDatabase.ValvePak;
 
-namespace MyGUI.Controls
-{
+namespace MyGUI.Controls {
     /// <summary>
     /// Represents a user control in which a TreeView and ListView are used to view a directory/file listing. In addition to a normal TreeView,
     /// this control allows for searching to occur within the TreeView and have the results displayed in a ListView with details about the resulting
     /// items.
     /// </summary>
-    public partial class TreeViewWithSearchResults : UserControl
-    {
-        public class TreeViewPackageTag
-        {
+    public partial class TreeViewWithSearchResults : UserControl {
+        public class TreeViewPackageTag {
             public Package Package { get; set; }
             public AdvancedGuiFileLoader ParentFileLoader { get; set; }
         }
@@ -34,8 +31,7 @@ namespace MyGUI.Controls
         /// </summary>
         /// <param name="imageList">Image list.</param>
         public TreeViewWithSearchResults(ImageList imageList)
-            : this()
-        {
+            : this() {
             this.imageList = imageList;
             Dock = DockStyle.Fill;
         }
@@ -44,8 +40,7 @@ namespace MyGUI.Controls
         /// Initializes a new instance of the <see cref="TreeViewWithSearchResults"/> class.
         /// Require a default constructor for the designer.
         /// </summary>
-        private TreeViewWithSearchResults()
-        {
+        private TreeViewWithSearchResults() {
             InitializeComponent();
 
             mainListView.MouseDoubleClick += MainListView_MouseDoubleClick;
@@ -60,8 +55,7 @@ namespace MyGUI.Controls
             mainTreeView.AfterSelect += MainTreeView_AfterSelect;
         }
 
-        private void MainListView_Disposed(object sender, EventArgs e)
-        {
+        private void MainListView_Disposed(object sender, EventArgs e) {
             mainListView.MouseDoubleClick -= MainListView_MouseDoubleClick;
             mainListView.MouseDown -= MainListView_MouseDown;
             mainListView.Resize -= MainListView_Resize;
@@ -77,21 +71,17 @@ namespace MyGUI.Controls
             mainListView = null;
         }
 
-        private void MainTreeView_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
-        {
+        private void MainTreeView_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e) {
             TreeNodeMouseDoubleClick?.Invoke(sender, e);
         }
 
-        private void MainTreeView_AfterSelect(object sender, TreeViewEventArgs e)
-        {
+        private void MainTreeView_AfterSelect(object sender, TreeViewEventArgs e) {
             // if user selected a folder, show the contents of that folder in the list view
-            if (e.Action != TreeViewAction.Unknown && e.Node.Tag is TreeViewFolder)
-            {
+            if (e.Action != TreeViewAction.Unknown && e.Node.Tag is TreeViewFolder) {
                 mainListView.BeginUpdate();
                 mainListView.Items.Clear();
 
-                foreach (TreeNode node in e.Node.Nodes)
-                {
+                foreach (TreeNode node in e.Node.Nodes) {
                     AddNodeToListView(node);
                 }
 
@@ -99,33 +89,25 @@ namespace MyGUI.Controls
             }
         }
 
-        private void MainTreeView_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
-        {
-            if (e.Button == MouseButtons.Right)
-            {
+        private void MainTreeView_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e) {
+            if (e.Button == MouseButtons.Right) {
                 mainTreeView.SelectedNode = e.Node;
 
                 TreeNodeRightClick?.Invoke(sender, e);
             }
         }
 
-        private void MainListView_Resize(object sender, EventArgs e)
-        {
+        private void MainListView_Resize(object sender, EventArgs e) {
             mainListView.BeginUpdate();
             ResizeListViewColumns();
             mainListView.EndUpdate();
         }
 
-        private void ResizeListViewColumns()
-        {
-            foreach (ColumnHeader col in mainListView.Columns)
-            {
-                if (col.Text == "Name")
-                {
+        private void ResizeListViewColumns() {
+            foreach (ColumnHeader col in mainListView.Columns) {
+                if (col.Text == "Name") {
                     col.Width = mainListView.ClientSize.Width - (mainListView.Columns.Count - 1) * 100;
-                }
-                else
-                {
+                } else {
                     col.Width = 100;
                 }
             }
@@ -136,8 +118,7 @@ namespace MyGUI.Controls
         /// </summary>
         /// <param name="fileName">File path to the package.</param>
         /// <param name="package">Package object.</param>
-        internal void InitializeTreeViewFromPackage(string fileName, TreeViewPackageTag package)
-        {
+        internal void InitializeTreeViewFromPackage(string fileName, TreeViewPackageTag package) {
             mainListView.Tag = package;
 
             var control = mainTreeView;
@@ -163,10 +144,8 @@ namespace MyGUI.Controls
 
             var vpkName = Path.GetFileName(package.Package.FileName);
 
-            foreach (var fileType in package.Package.Entries)
-            {
-                foreach (var file in fileType.Value)
-                {
+            foreach (var fileType in package.Package.Entries) {
+                foreach (var file in fileType.Value) {
                     control.AddFileNode(root, file, vpkName);
                 }
             }
@@ -180,15 +159,13 @@ namespace MyGUI.Controls
         /// </summary>
         /// <param name="searchText">Value to search for in the TreeView. Matching on this value is based on the search type.</param>
         /// <param name="selectedSearchType">Determines the matching of the value. For example, full/partial text search or full path search.</param>
-        internal void SearchAndFillResults(string searchText, SearchType selectedSearchType)
-        {
+        internal void SearchAndFillResults(string searchText, SearchType selectedSearchType) {
             mainListView.BeginUpdate();
             mainListView.Items.Clear();
 
             var results = mainTreeView.Search(searchText, selectedSearchType);
 
-            foreach (var node in results)
-            {
+            foreach (var node in results) {
                 AddNodeToListView(node);
             }
 
@@ -203,31 +180,23 @@ namespace MyGUI.Controls
         /// </summary>
         /// <param name="sender">Object which raised event.</param>
         /// <param name="e">Event data.</param>
-        private void MainListView_MouseDown(object sender, MouseEventArgs e)
-        {
+        private void MainListView_MouseDown(object sender, MouseEventArgs e) {
             var info = mainListView.HitTest(e.X, e.Y);
 
             // if an item was clicked in the list view
-            if (info.Item != null)
-            {
+            if (info.Item != null) {
                 // right click should just notify our subscribers
-                if (e.Button == MouseButtons.Right)
-                {
+                if (e.Button == MouseButtons.Right) {
                     ListViewItemRightClick?.Invoke(sender, new ListViewItemClickEventArgs(info.Item, e.Location));
-                }
-                else if (e.Button == MouseButtons.Left)
-                {
+                } else if (e.Button == MouseButtons.Left) {
                     // left click should focus the node in its tree view
                     var node = info.Item.Tag as TreeNode;
-                    if (node.Tag is TreeViewFolder)
-                    {
+                    if (node.Tag is TreeViewFolder) {
                         node.EnsureVisible();
                         node.TreeView.SelectedNode = node;
                     }
                 }
-            }
-            else
-            {
+            } else {
                 mainListView.SelectedItems.Clear();
             }
         }
@@ -238,32 +207,25 @@ namespace MyGUI.Controls
         /// </summary>
         /// <param name="sender">Object which raised event.</param>
         /// <param name="e">Event data.</param>
-        private void MainListView_MouseDoubleClick(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Left)
-            {
+        private void MainListView_MouseDoubleClick(object sender, MouseEventArgs e) {
+            if (e.Button == MouseButtons.Left) {
                 var info = mainListView.HitTest(e.X, e.Y);
 
-                if (info.Item != null)
-                {
+                if (info.Item != null) {
                     // if user left double clicks a folder, open its contents and display in list view
                     var node = info.Item.Tag as TreeNode;
-                    if (node.Tag is TreeViewFolder)
-                    {
+                    if (node.Tag is TreeViewFolder) {
                         node.Expand();
                         mainListView.BeginUpdate();
                         mainListView.Items.Clear();
-                        foreach (TreeNode childNode in node.Nodes)
-                        {
+                        foreach (TreeNode childNode in node.Nodes) {
                             AddNodeToListView(childNode);
                         }
                         mainListView.EndUpdate();
                     }
 
                     ListViewItemDoubleClick?.Invoke(sender, new ListViewItemClickEventArgs(info.Item.Tag));
-                }
-                else
-                {
+                } else {
                     mainListView.SelectedItems.Clear();
                 }
             }
@@ -274,30 +236,24 @@ namespace MyGUI.Controls
         /// </summary>
         /// <param name="sender">Object which raised event.</param>
         /// <param name="e">Event data.</param>
-        private void TreeViewWithSearchResults_Load(object sender, EventArgs e)
-        {
+        private void TreeViewWithSearchResults_Load(object sender, EventArgs e) {
             mainListView.Columns.Add("Name");
             mainListView.Columns.Add("Size");
             mainListView.Columns.Add("Type");
             mainListView.SmallImageList = imageList;
         }
 
-        private void AddNodeToListView(TreeNode node)
-        {
-            var item = new ListViewItem(node.Text)
-            {
+        private void AddNodeToListView(TreeNode node) {
+            var item = new ListViewItem(node.Text) {
                 ImageKey = node.ImageKey,
                 Tag = node,
             };
 
-            if (node.Tag.GetType() == typeof(PackageEntry))
-            {
+            if (node.Tag.GetType() == typeof(PackageEntry)) {
                 var file = node.Tag as PackageEntry;
                 item.SubItems.Add(file.TotalLength.ToFileSizeString());
                 item.SubItems.Add(file.TypeName);
-            }
-            else if (node.Tag.GetType() == typeof(TreeViewFolder))
-            {
+            } else if (node.Tag.GetType() == typeof(TreeViewFolder)) {
                 var folder = node.Tag as TreeViewFolder;
                 item.SubItems.Add(string.Format("{0} items", folder.ItemCount));
                 item.SubItems.Add("folder");

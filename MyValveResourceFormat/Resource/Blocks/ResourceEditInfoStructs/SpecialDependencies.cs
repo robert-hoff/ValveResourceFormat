@@ -2,19 +2,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace MyValveResourceFormat.Blocks.ResourceEditInfoStructs
-{
-    public class SpecialDependencies : REDIBlock
-    {
-        public class SpecialDependency
-        {
+namespace MyValveResourceFormat.Blocks.ResourceEditInfoStructs {
+    public class SpecialDependencies : REDIBlock {
+        public class SpecialDependency {
             public string String { get; set; }
             public string CompilerIdentifier { get; set; }
             public long Fingerprint { get; set; }
             public long UserData { get; set; }
 
-            public void WriteText(IndentedTextWriter writer)
-            {
+            public void WriteText(IndentedTextWriter writer) {
                 writer.WriteLine("ResourceSpecialDependency_t");
                 writer.WriteLine("{");
                 writer.Indent++;
@@ -29,17 +25,14 @@ namespace MyValveResourceFormat.Blocks.ResourceEditInfoStructs
 
         public List<SpecialDependency> List { get; }
 
-        public SpecialDependencies()
-        {
+        public SpecialDependencies() {
             List = new List<SpecialDependency>();
         }
 
-        public override void Read(BinaryReader reader, Resource resource)
-        {
+        public override void Read(BinaryReader reader, Resource resource) {
             reader.BaseStream.Position = Offset;
 
-            for (var i = 0; i < Size; i++)
-            {
+            for (var i = 0; i < Size; i++) {
                 var dep = new SpecialDependency();
 
                 dep.String = reader.ReadOffsetString(Encoding.UTF8);
@@ -51,14 +44,12 @@ namespace MyValveResourceFormat.Blocks.ResourceEditInfoStructs
             }
         }
 
-        public override void WriteText(IndentedTextWriter writer)
-        {
+        public override void WriteText(IndentedTextWriter writer) {
             writer.WriteLine("Struct m_SpecialDependencies[{0}] =", List.Count);
             writer.WriteLine("[");
             writer.Indent++;
 
-            foreach (var dep in List)
-            {
+            foreach (var dep in List) {
                 dep.WriteText(writer);
             }
 

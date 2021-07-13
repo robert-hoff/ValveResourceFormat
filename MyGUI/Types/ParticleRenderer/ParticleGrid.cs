@@ -5,10 +5,8 @@ using MyGUI.Types.Renderer;
 using MyGUI.Utils;
 using OpenTK.Graphics.OpenGL;
 
-namespace MyGUI.Types.ParticleRenderer
-{
-    internal class ParticleGrid : IRenderer
-    {
+namespace MyGUI.Types.ParticleRenderer {
+    internal class ParticleGrid : IRenderer {
         private readonly int vao;
         private readonly Shader shader;
 
@@ -16,8 +14,7 @@ namespace MyGUI.Types.ParticleRenderer
 
         public AABB BoundingBox { get; }
 
-        public ParticleGrid(float cellWidth, int gridWidthInCells, VrfGuiContext guiContext)
-        {
+        public ParticleGrid(float cellWidth, int gridWidthInCells, VrfGuiContext guiContext) {
             BoundingBox = new AABB(
                 new Vector3(-cellWidth * 0.5f * gridWidthInCells, -cellWidth * 0.5f * gridWidthInCells, 0),
                 new Vector3(cellWidth * 0.5f * gridWidthInCells, cellWidth * 0.5f * gridWidthInCells, 0));
@@ -54,13 +51,11 @@ namespace MyGUI.Types.ParticleRenderer
             GL.UseProgram(0);
         }
 
-        public void Update(float frameTime)
-        {
+        public void Update(float frameTime) {
             // not required
         }
 
-        public void Render(Camera camera, RenderPass renderPass)
-        {
+        public void Render(Camera camera, RenderPass renderPass) {
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
@@ -79,39 +74,34 @@ namespace MyGUI.Types.ParticleRenderer
             GL.Disable(EnableCap.Blend);
         }
 
-        private static float[] GenerateGridVertexBuffer(float cellWidth, int gridWidthInCells)
-        {
+        private static float[] GenerateGridVertexBuffer(float cellWidth, int gridWidthInCells) {
             var gridVertices = new List<float>();
 
             var width = cellWidth * gridWidthInCells;
             var color = new[] { 1.0f, 1.0f, 1.0f, 1.0f };
 
-            for (var i = 0; i <= gridWidthInCells; i++)
-            {
+            for (var i = 0; i <= gridWidthInCells; i++) {
                 gridVertices.AddRange(new[] { width, i * cellWidth, 0 });
                 gridVertices.AddRange(color);
                 gridVertices.AddRange(new[] { -width, i * cellWidth, 0 });
                 gridVertices.AddRange(color);
             }
 
-            for (var i = 1; i <= gridWidthInCells; i++)
-            {
+            for (var i = 1; i <= gridWidthInCells; i++) {
                 gridVertices.AddRange(new[] { width, -i * cellWidth, 0 });
                 gridVertices.AddRange(color);
                 gridVertices.AddRange(new[] { -width, -i * cellWidth, 0 });
                 gridVertices.AddRange(color);
             }
 
-            for (var i = 0; i <= gridWidthInCells; i++)
-            {
+            for (var i = 0; i <= gridWidthInCells; i++) {
                 gridVertices.AddRange(new[] { i * cellWidth, width, 0 });
                 gridVertices.AddRange(color);
                 gridVertices.AddRange(new[] { i * cellWidth, -width, 0 });
                 gridVertices.AddRange(color);
             }
 
-            for (var i = 1; i <= gridWidthInCells; i++)
-            {
+            for (var i = 1; i <= gridWidthInCells; i++) {
                 gridVertices.AddRange(new[] { -i * cellWidth, width, 0 });
                 gridVertices.AddRange(color);
                 gridVertices.AddRange(new[] { -i * cellWidth, -width, 0 });

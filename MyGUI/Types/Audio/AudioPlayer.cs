@@ -6,21 +6,16 @@ using NLayer.NAudioSupport;
 using MyValveResourceFormat;
 using MyValveResourceFormat.ResourceTypes;
 
-namespace MyGUI.Types.Audio
-{
-    internal class AudioPlayer
-    {
-        public AudioPlayer(Resource resource, TabPage tab)
-        {
+namespace MyGUI.Types.Audio {
+    internal class AudioPlayer {
+        public AudioPlayer(Resource resource, TabPage tab) {
             var soundData = (Sound)resource.DataBlock;
             var stream = soundData.GetSoundStream();
 
-            try
-            {
+            try {
                 WaveStream waveStream;
 
-                switch (soundData.SoundType)
-                {
+                switch (soundData.SoundType) {
                     case Sound.AudioFileType.WAV: waveStream = new WaveFileReader(stream); break;
                     case Sound.AudioFileType.MP3: waveStream = new Mp3FileReaderBase(stream, wf => new Mp3FrameDecompressor(wf)); break;
                     case Sound.AudioFileType.AAC: waveStream = new StreamMediaFoundationReader(stream); break;
@@ -30,13 +25,10 @@ namespace MyGUI.Types.Audio
                 var audio = new AudioPlaybackPanel(waveStream);
 
                 tab.Controls.Add(audio);
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 Console.Error.WriteLine(e);
 
-                var msg = new Label
-                {
+                var msg = new Label {
                     Text = $"NAudio Exception: {e.Message}",
                     Dock = DockStyle.Fill,
                 };

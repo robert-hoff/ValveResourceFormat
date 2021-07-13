@@ -13,15 +13,12 @@ namespace MyValveResourceFormat.ClosedCaptions {
 
         public List<ClosedCaption> Captions { get; private set; }
 
-        public IEnumerator<ClosedCaption> GetEnumerator()
-        {
+        public IEnumerator<ClosedCaption> GetEnumerator() {
             return ((IEnumerable<ClosedCaption>)Captions).GetEnumerator();
         }
 
-        public ClosedCaption this[string key]
-        {
-            get
-            {
+        public ClosedCaption this[string key] {
+            get {
                 var hash = Crc32.Compute(Encoding.UTF8.GetBytes(key));
                 return Captions.Find(caption => caption.Hash == hash);
             }
@@ -32,8 +29,7 @@ namespace MyValveResourceFormat.ClosedCaptions {
         /// The file is held open until the object is disposed.
         /// </summary>
         /// <param name="filename">The file to open and read.</param>
-        public void Read(string filename)
-        {
+        public void Read(string filename) {
             var fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
 
             Read(filename, fs);
@@ -44,25 +40,21 @@ namespace MyValveResourceFormat.ClosedCaptions {
         /// </summary>
         /// <param name="filename">The filename <see cref="string"/>.</param>
         /// <param name="input">The input <see cref="Stream"/> to read from.</param>
-        public void Read(string filename, Stream input)
-        {
-            if (!filename.StartsWith("subtitles_"))
-            {
+        public void Read(string filename, Stream input) {
+            if (!filename.StartsWith("subtitles_")) {
                 // TODO: Throw warning?
             }
 
             var reader = new BinaryReader(input);
             Captions = new List<ClosedCaption>();
 
-            if (reader.ReadUInt32() != MAGIC)
-            {
+            if (reader.ReadUInt32() != MAGIC) {
                 throw new InvalidDataException("Given file is not a VCCD.");
             }
 
             var version = reader.ReadUInt32();
 
-            if (version != 1 && version != 2)
-            {
+            if (version != 1 && version != 2) {
                 throw new InvalidDataException("Unsupported VCCD version: " + version);
             }
 
@@ -72,12 +64,10 @@ namespace MyValveResourceFormat.ClosedCaptions {
             var directorysize = reader.ReadUInt32();
             var dataoffset = reader.ReadUInt32();
 
-            for (uint i = 0; i < directorysize; i++)
-            {
+            for (uint i = 0; i < directorysize; i++) {
                 var caption = new ClosedCaption { Hash = reader.ReadUInt32() };
 
-                if (version >= 2)
-                {
+                if (version >= 2) {
                     caption.UnknownV2 = reader.ReadUInt32();
                 }
 
@@ -89,15 +79,13 @@ namespace MyValveResourceFormat.ClosedCaptions {
             }
 
             // Probably could be inside the for loop above, but I'm unsure what the performance costs are of moving the position head manually a bunch compared to reading sequentually
-            foreach (var caption in Captions)
-            {
+            foreach (var caption in Captions) {
                 reader.BaseStream.Position = dataoffset + (caption.Blocknum * blocksize) + caption.Offset;
                 caption.Text = reader.ReadNullTermString(Encoding.Unicode);
             }
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
+        IEnumerator IEnumerable.GetEnumerator() {
             return ((IEnumerable<ClosedCaption>)Captions).GetEnumerator();
         }
 

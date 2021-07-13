@@ -5,22 +5,18 @@ using System.Text;
 using MyValveResourceFormat.Blocks;
 using MyValveResourceFormat.Serialization.NTRO;
 
-namespace MyValveResourceFormat.ResourceTypes
-{
-    public class NTRO : ResourceData
-    {
+namespace MyValveResourceFormat.ResourceTypes {
+    public class NTRO : ResourceData {
         protected BinaryReader Reader { get; private set; }
         protected Resource Resource { get; private set; }
         public NTROStruct Output { get; private set; }
         public string StructName { get; set; }
 
-        public override void Read(BinaryReader reader, Resource resource)
-        {
+        public override void Read(BinaryReader reader, Resource resource) {
             Reader = reader;
             Resource = resource;
 
-            if (StructName != null)
-            {
+            if (StructName != null) {
                 var refStruct = resource.IntrospectionManifest.ReferencedStructs.Find(s => s.Name == StructName);
 
                 Output = ReadStructure(refStruct, Offset);
@@ -28,20 +24,17 @@ namespace MyValveResourceFormat.ResourceTypes
                 return;
             }
 
-            foreach (var refStruct in resource.IntrospectionManifest.ReferencedStructs)
-            {
+            foreach (var refStruct in resource.IntrospectionManifest.ReferencedStructs) {
                 Output = ReadStructure(refStruct, Offset);
 
                 break;
             }
         }
 
-        private NTROStruct ReadStructure(ResourceIntrospectionManifest.ResourceDiskStruct refStruct, long startingOffset)
-        {
+        private NTROStruct ReadStructure(ResourceIntrospectionManifest.ResourceDiskStruct refStruct, long startingOffset) {
             var structEntry = new NTROStruct(refStruct.Name);
 
-            foreach (var field in refStruct.FieldIntrospection)
-            {
+            foreach (var field in refStruct.FieldIntrospection) {
                 Reader.BaseStream.Position = startingOffset + field.OnDiskOffset;
 
                 ReadFieldIntrospection(field, ref structEntry);
@@ -50,15 +43,13 @@ namespace MyValveResourceFormat.ResourceTypes
             // Some structs are padded, so all the field sizes do not add up to the size on disk
             Reader.BaseStream.Position = startingOffset + refStruct.DiskSize;
 
-            if (refStruct.BaseStructId != 0)
-            {
+            if (refStruct.BaseStructId != 0) {
                 var previousOffset = Reader.BaseStream.Position;
 
                 var newStruct = Resource.IntrospectionManifest.ReferencedStructs.First(x => x.Id == refStruct.BaseStructId);
 
                 // Valve doesn't print this struct's type, so we can't just call ReadStructure *sigh*
-                foreach (var field in newStruct.FieldIntrospection)
-                {
+                foreach (var field in newStruct.FieldIntrospection) {
                     Reader.BaseStream.Position = startingOffset + field.OnDiskOffset;
 
                     ReadFieldIntrospection(field, ref structEntry);
@@ -70,29 +61,24 @@ namespace MyValveResourceFormat.ResourceTypes
             return structEntry;
         }
 
-        private void ReadFieldIntrospection(ResourceIntrospectionManifest.ResourceDiskStruct.Field field, ref NTROStruct structEntry)
-        {
+        private void ReadFieldIntrospection(ResourceIntrospectionManifest.ResourceDiskStruct.Field field, ref NTROStruct structEntry) {
             var count = (uint)field.Count;
             var pointer = false; // TODO: get rid of this
 
-            if (count == 0)
-            {
+            if (count == 0) {
                 count = 1;
             }
 
             long prevOffset = 0;
 
-            if (field.Indirections.Count > 0)
-            {
+            if (field.Indirections.Count > 0) {
                 // TODO
-                if (field.Indirections.Count > 1)
-                {
+                if (field.Indirections.Count > 1) {
                     throw new NotImplementedException("More than one indirection, not yet handled.");
                 }
 
                 // TODO
-                if (field.Count > 0)
-                {
+                if (field.Count > 0) {
                     throw new NotImplementedException("Indirection.Count > 0 && field.Count > 0");
                 }
 
@@ -100,12 +86,10 @@ namespace MyValveResourceFormat.ResourceTypes
 
                 var offset = Reader.ReadUInt32();
 
-                if (indirection == 0x03)
-                {
+                if (indirection == 0x03) {
                     pointer = true;
 
-                    if (offset == 0)
-                    {
+                    if (offset == 0) {
                         structEntry.Add(field.FieldName, new NTROValue<byte?>(field.Type, null, true)); //being byte shouldn't matter
 
                         return;
@@ -114,20 +98,15 @@ namespace MyValveResourceFormat.ResourceTypes
                     prevOffset = Reader.BaseStream.Position;
 
                     Reader.BaseStream.Position += offset - 4;
-                }
-                else if (indirection == 0x04)
-                {
+                } else if (indirection == 0x04) {
                     count = Reader.ReadUInt32();
 
                     prevOffset = Reader.BaseStream.Position;
 
-                    if (count > 0)
-                    {
+                    if (count > 0) {
                         Reader.BaseStream.Position += offset - 8;
                     }
-                }
-                else
-                {
+                } else {
                     throw new NotImplementedException(string.Format("Unknown indirection. ({0})", indirection));
                 }
             }
@@ -136,44 +115,33 @@ namespace MyValveResourceFormat.ResourceTypes
             //{
             //    Writer.Write("{0} {1}* = (ptr) ->", ValveDataType(field.Type), field.FieldName);
             //}
-            if (field.Count > 0 || field.Indirections.Count > 0)
-            {
-                if (field.Type == DataType.Byte)
-                {
+            if (field.Count > 0 || field.Indirections.Count > 0) {
+                if (field.Type == DataType.Byte) {
                     //special case for byte arrays for faster access
                     var ntroValues = new NTROValue<byte[]>(field.Type, Reader.ReadBytes((int)count), pointer);
                     structEntry.Add(field.FieldName, ntroValues);
-                }
-                else
-                {
+                } else {
                     var ntroValues = new NTROArray(field.Type, (int)count, pointer, field.Indirections.Count > 0);
 
-                    for (var i = 0; i < count; i++)
-                    {
+                    for (var i = 0; i < count; i++) {
                         ntroValues[i] = ReadField(field, pointer);
                     }
 
                     structEntry.Add(field.FieldName, ntroValues);
                 }
-            }
-            else
-            {
-                for (var i = 0; i < count; i++)
-                {
+            } else {
+                for (var i = 0; i < count; i++) {
                     structEntry.Add(field.FieldName, ReadField(field, pointer));
                 }
             }
 
-            if (prevOffset > 0)
-            {
+            if (prevOffset > 0) {
                 Reader.BaseStream.Position = prevOffset;
             }
         }
 
-        private NTROValue ReadField(ResourceIntrospectionManifest.ResourceDiskStruct.Field field, bool pointer)
-        {
-            switch (field.Type)
-            {
+        private NTROValue ReadField(ResourceIntrospectionManifest.ResourceDiskStruct.Field field, bool pointer) {
+            switch (field.Type) {
                 case DataType.Struct:
                     var newStruct = Resource.IntrospectionManifest.ReferencedStructs.First(x => x.Id == field.TypeData);
                     return new NTROValue<NTROStruct>(field.Type, ReadStructure(newStruct, Reader.BaseStream.Position), pointer);
@@ -308,8 +276,7 @@ namespace MyValveResourceFormat.ResourceTypes
             }
         }
 
-        public override string ToString()
-        {
+        public override string ToString() {
             return Output?.ToString() ?? "Nope.";
         }
     }

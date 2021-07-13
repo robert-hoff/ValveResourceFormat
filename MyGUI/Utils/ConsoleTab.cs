@@ -4,30 +4,23 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 
-namespace MyGUI.Utils
-{
-    internal class ConsoleTab
-    {
-        private class MyLogger : TextWriter
-        {
+namespace MyGUI.Utils {
+    internal class ConsoleTab {
+        private class MyLogger : TextWriter {
             private readonly TextBox control;
 
-            public MyLogger(TextBox control)
-            {
+            public MyLogger(TextBox control) {
                 this.control = control;
             }
 
             public override Encoding Encoding => null;
 
-            public override void WriteLine(string value)
-            {
-                if (control.IsDisposed)
-                {
+            public override void WriteLine(string value) {
+                if (control.IsDisposed) {
                     return;
                 }
 
-                if (control.InvokeRequired)
-                {
+                if (control.InvokeRequired) {
                     control.Invoke(new MethodInvoker(delegate { WriteLine(value); }));
                     return;
                 }
@@ -37,11 +30,9 @@ namespace MyGUI.Utils
             }
         }
 
-        public static TabPage CreateTab()
-        {
+        public static TabPage CreateTab() {
             var bgColor = Color.FromArgb(37, 37, 37);
-            var control = new TextBox
-            {
+            var control = new TextBox {
                 Dock = DockStyle.Fill,
                 Multiline = true,
                 ReadOnly = true,
@@ -52,8 +43,7 @@ namespace MyGUI.Utils
                 ForeColor = Color.FromArgb(240, 240, 240),
             };
 
-            var tab = new TabPage("Console")
-            {
+            var tab = new TabPage("Console") {
                 BackColor = bgColor,
                 Padding = new Padding(10, 10, 0, 10),
             };

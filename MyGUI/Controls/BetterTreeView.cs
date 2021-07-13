@@ -8,22 +8,18 @@ using System.Windows.Forms;
 using MyGUI.Forms;
 using SteamDatabase.ValvePak;
 
-namespace MyGUI.Controls
-{
+namespace MyGUI.Controls {
     /// <summary>
     /// Represents a TreeView with the ability to have its contents searched.
     /// </summary>
-    public partial class BetterTreeView : TreeView
-    {
+    public partial class BetterTreeView : TreeView {
         private Dictionary<string, string> ExtensionIconList;
 
-        public BetterTreeView()
-        {
+        public BetterTreeView() {
             InitializeComponent();
         }
 
-        protected override void OnPaint(PaintEventArgs e)
-        {
+        protected override void OnPaint(PaintEventArgs e) {
             base.OnPaint(e);
         }
 
@@ -33,37 +29,27 @@ namespace MyGUI.Controls
         /// <param name="value">Value to search for in the TreeView. Matching on this value is based on the search type.</param>
         /// <param name="searchType">Determines the matching of the value. For example, full/partial text search or full path search.</param>
         /// <returns>A collection of nodes who match the conditions based on the search type.</returns>
-        public IReadOnlyCollection<TreeNode> Search(string value, SearchType searchType)
-        {
+        public IReadOnlyCollection<TreeNode> Search(string value, SearchType searchType) {
             IReadOnlyCollection<TreeNode> results = new List<TreeNode>().AsReadOnly();
 
-            if (searchType != SearchType.FileNameExactMatch)
-            {
+            if (searchType != SearchType.FileNameExactMatch) {
                 value = value.ToUpperInvariant().Replace('\\', Package.DirectorySeparatorChar);
             }
 
             // If only file name search is selected, but entered text contains a slash, search full path
-            if (searchType == SearchType.FileNamePartialMatch && value.Contains(Package.DirectorySeparatorChar, StringComparison.InvariantCulture))
-            {
+            if (searchType == SearchType.FileNamePartialMatch && value.Contains(Package.DirectorySeparatorChar, StringComparison.InvariantCulture)) {
                 searchType = SearchType.FullPath;
             }
 
-            if (searchType == SearchType.FileNameExactMatch)
-            {
+            if (searchType == SearchType.FileNameExactMatch) {
                 results = Nodes.Find(value, true).ToList();
-            }
-            else if (searchType == SearchType.FileNamePartialMatch)
-            {
+            } else if (searchType == SearchType.FileNamePartialMatch) {
                 bool MatchFunction(TreeNode node) => node.Text.Contains(value, StringComparison.InvariantCultureIgnoreCase);
                 results = Search(MatchFunction);
-            }
-            else if (searchType == SearchType.FullPath)
-            {
+            } else if (searchType == SearchType.FullPath) {
                 bool MatchFunction(TreeNode node) => node.FullPath.Contains(value, StringComparison.InvariantCultureIgnoreCase);
                 results = Search(MatchFunction);
-            }
-            else if (searchType == SearchType.Regex)
-            {
+            } else if (searchType == SearchType.Regex) {
                 var regex = new Regex(value, RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
 
                 bool MatchFunction(TreeNode node) => regex.IsMatch(node.Text);
@@ -78,37 +64,31 @@ namespace MyGUI.Controls
         /// </summary>
         /// <param name="matchFunction">Function which performs matching on the TreeNode. Returns true if there's a match.</param>
         /// <returns>Returns matched nodes.</returns>
-        private IReadOnlyCollection<TreeNode> Search(Func<TreeNode, bool> matchFunction)
-        {
+        private IReadOnlyCollection<TreeNode> Search(Func<TreeNode, bool> matchFunction) {
             var searchQueue = new Queue<TreeNode>();
 
             // queue up every child of the root to begin the search
-            foreach (TreeNode childNode in Nodes)
-            {
+            foreach (TreeNode childNode in Nodes) {
                 searchQueue.Enqueue(childNode);
             }
 
             var matchedNodes = new List<TreeNode>();
 
             // while there are items in the queue to search
-            while (searchQueue.Count > 0)
-            {
+            while (searchQueue.Count > 0) {
                 var currentNode = searchQueue.Dequeue();
 
                 // if our match function is true, add the node to our matches
-                if (matchFunction(currentNode))
-                {
+                if (matchFunction(currentNode)) {
                     matchedNodes.Add(currentNode);
                 }
 
                 // if the node being inspected has children, queue them all up
-                if (currentNode.Nodes.Count < 1)
-                {
+                if (currentNode.Nodes.Count < 1) {
                     continue;
                 }
 
-                foreach (TreeNode childNode in currentNode.Nodes)
-                {
+                foreach (TreeNode childNode in currentNode.Nodes) {
                     searchQueue.Enqueue(childNode);
                 }
             }
@@ -116,32 +96,24 @@ namespace MyGUI.Controls
             return matchedNodes.AsReadOnly();
         }
 
-        public void GenerateIconList(IEnumerable<string> extensions)
-        {
+        public void GenerateIconList(IEnumerable<string> extensions) {
             ExtensionIconList = new Dictionary<string, string>();
 
-            foreach (var originalExtension in extensions)
-            {
+            foreach (var originalExtension in extensions) {
                 var extension = originalExtension;
 
-                if (extension.EndsWith("_c", StringComparison.Ordinal))
-                {
+                if (extension.EndsWith("_c", StringComparison.Ordinal)) {
                     extension = extension.Substring(0, extension.Length - 2);
                 }
 
-                if (!ImageList.Images.ContainsKey(extension))
-                {
-                    if (extension.Length > 0 && extension[0] == 'v')
-                    {
+                if (!ImageList.Images.ContainsKey(extension)) {
+                    if (extension.Length > 0 && extension[0] == 'v') {
                         extension = extension.Substring(1);
 
-                        if (!ImageList.Images.ContainsKey(extension))
-                        {
+                        if (!ImageList.Images.ContainsKey(extension)) {
                             extension = "_default";
                         }
-                    }
-                    else
-                    {
+                    } else {
                         extension = "_default";
                     }
                 }
@@ -156,14 +128,11 @@ namespace MyGUI.Controls
         /// <param name="currentNode">Root node.</param>
         /// <param name="file">File entry.</param>
         /// <param name="vpkFileName">Name of the current vpk file.</param>
-        public void AddFileNode(TreeNode currentNode, PackageEntry file, string vpkFileName)
-        {
-            if (!string.IsNullOrWhiteSpace(file.DirectoryName))
-            {
+        public void AddFileNode(TreeNode currentNode, PackageEntry file, string vpkFileName) {
+            if (!string.IsNullOrWhiteSpace(file.DirectoryName)) {
                 var subPaths = file.DirectoryName.Split(Package.DirectorySeparatorChar);
 
-                foreach (var subPath in subPaths)
-                {
+                foreach (var subPath in subPaths) {
                     currentNode = currentNode.Nodes[subPath] ?? currentNode.Nodes.Add(subPath, subPath, @"_folder", @"_folder");
                     currentNode.Tag = new TreeViewFolder(file.DirectoryName, currentNode.Nodes.Count + 1); //is this enough?
                 }
@@ -180,13 +149,11 @@ namespace MyGUI.Controls
             tooltip.AppendLine($"Offset: {file.Offset}");
             tooltip.AppendLine($"Size: {file.TotalLength}");
 
-            if (file.SmallData.Length > 0)
-            {
+            if (file.SmallData.Length > 0) {
                 tooltip.AppendLine($"Small data length: {file.SmallData.Length}");
             }
 
-            if (file.ArchiveIndex != 0x7FFF)
-            {
+            if (file.ArchiveIndex != 0x7FFF) {
                 tooltip.AppendLine($"Archive: {vpkFileName}_{file.ArchiveIndex:000}.vpk");
             }
 

@@ -1,14 +1,11 @@
 using System;
 
-namespace MyValveResourceFormat
-{
+namespace MyValveResourceFormat {
     [AttributeUsage(AttributeTargets.Field)]
-    public sealed class ExtensionAttribute : Attribute
-    {
+    public sealed class ExtensionAttribute : Attribute {
         public string Extension { get; }
 
-        public ExtensionAttribute(string extension)
-        {
+        public ExtensionAttribute(string extension) {
             Extension = extension;
         }
     }

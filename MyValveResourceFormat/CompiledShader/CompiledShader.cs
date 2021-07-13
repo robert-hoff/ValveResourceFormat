@@ -3,10 +3,8 @@ using System.IO;
 using System.Text;
 using Decoder = SevenZip.Compression.LZMA.Decoder;
 
-namespace MyValveResourceFormat
-{
-    public class CompiledShader : IDisposable
-    {
+namespace MyValveResourceFormat {
+    public class CompiledShader : IDisposable {
         public const int MAGIC = 0x32736376; // "vcs2"
 
         private BinaryReader Reader;
@@ -16,16 +14,13 @@ namespace MyValveResourceFormat
         /// <summary>
         /// Releases binary reader.
         /// </summary>
-        public void Dispose()
-        {
+        public void Dispose() {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing && Reader != null)
-            {
+        protected virtual void Dispose(bool disposing) {
+            if (disposing && Reader != null) {
                 Reader.Dispose();
                 Reader = null;
             }
@@ -36,8 +31,7 @@ namespace MyValveResourceFormat
         /// The file is held open until the object is disposed.
         /// </summary>
         /// <param name="filename">The file to open and read.</param>
-        public void Read(string filename)
-        {
+        public void Read(string filename) {
             var fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
 
             Read(filename, fs);
@@ -48,39 +42,27 @@ namespace MyValveResourceFormat
         /// </summary>
         /// <param name="filename">The filename <see cref="string"/>.</param>
         /// <param name="input">The input <see cref="Stream"/> to read from.</param>
-        public void Read(string filename, Stream input)
-        {
+        public void Read(string filename, Stream input) {
             // TODO: Does Valve really have separate parsing for different shader files? See vertex buffer only string chunk below.
-            if (filename.EndsWith("vs.vcs"))
-            {
+            if (filename.EndsWith("vs.vcs")) {
                 ShaderType = "vertex";
-            }
-            else if (filename.EndsWith("ps.vcs"))
-            {
+            } else if (filename.EndsWith("ps.vcs")) {
                 ShaderType = "pixel";
-            }
-            else if (filename.EndsWith("features.vcs"))
-            {
+            } else if (filename.EndsWith("features.vcs")) {
                 ShaderType = "features";
             }
 
-            if (filename.Contains("vulkan"))
-            {
+            if (filename.Contains("vulkan")) {
                 ShaderPlatform = "vulkan";
-            }
-            else if (filename.Contains("pcgl"))
-            {
+            } else if (filename.Contains("pcgl")) {
                 ShaderPlatform = "opengl";
-            }
-            else if (filename.Contains("pc_"))
-            {
+            } else if (filename.Contains("pc_")) {
                 ShaderPlatform = "directx";
             }
 
             Reader = new BinaryReader(input);
 
-            if (Reader.ReadUInt32() != MAGIC)
-            {
+            if (Reader.ReadUInt32() != MAGIC) {
                 throw new InvalidDataException("Given file is not a vcs2.");
             }
 
@@ -90,23 +72,18 @@ namespace MyValveResourceFormat
             //  64 - May 2017
             var version = Reader.ReadUInt32();
 
-            if (version != 64)
-            {
+            if (version != 64) {
                 throw new InvalidDataException("Unsupported VCS2 version: " + version);
             }
 
-            if (ShaderType == "features")
-            {
+            if (ShaderType == "features") {
                 ReadFeatures();
-            }
-            else
-            {
+            } else {
                 ReadShader();
             }
         }
 
-        private void ReadFeatures()
-        {
+        private void ReadFeatures() {
             var anotherFileRef = Reader.ReadInt32(); // new in version 64, mostly 0 but sometimes 1
 
             var wtf = Reader.ReadUInt32(); // appears to be 0 in 'features'
@@ -125,13 +102,10 @@ namespace MyValveResourceFormat
             var f = Reader.ReadInt32();
             var g = Reader.ReadInt32();
             var h = Reader.ReadInt32();
-            if (anotherFileRef == 1)
-            {
+            if (anotherFileRef == 1) {
                 var i = Reader.ReadInt32();
                 Console.WriteLine($"{a} {b} {c} {d} {e} {f} {g} {h} {i}");
-            }
-            else
-            {
+            } else {
                 Console.WriteLine($"{a} {b} {c} {d} {e} {f} {g} {h}");
             }
 
@@ -141,8 +115,7 @@ namespace MyValveResourceFormat
 
             Console.WriteLine("Count: {0}", count);
 
-            for (var i = 0; i < count; i++)
-            {
+            for (var i = 0; i < count; i++) {
                 prevPos = Reader.BaseStream.Position;
 
                 name = Reader.ReadNullTermString(Encoding.UTF8);
@@ -153,8 +126,7 @@ namespace MyValveResourceFormat
 
                 Console.WriteLine("Name: {0} - Type: {1} - Offset: {2}", name, type, Reader.BaseStream.Position);
 
-                if (type == 1)
-                {
+                if (type == 1) {
                     prevPos = Reader.BaseStream.Position;
 
                     var subname = Reader.ReadNullTermString(Encoding.UTF8);
@@ -168,14 +140,12 @@ namespace MyValveResourceFormat
 
             var identifierCount = 8;
 
-            if (anotherFileRef == 1)
-            {
+            if (anotherFileRef == 1) {
                 identifierCount++;
             }
 
             // Appears to be always 128 bytes in version 63 and higher, 112 before
-            for (var i = 0; i < identifierCount; i++)
-            {
+            for (var i = 0; i < identifierCount; i++) {
                 // either 6 or 7 is cs (compute shader)
                 // 0 - ?
                 // 1 - vertex shader
@@ -195,8 +165,7 @@ namespace MyValveResourceFormat
 
             count = Reader.ReadUInt32();
 
-            for (var i = 0; i < count; i++)
-            {
+            for (var i = 0; i < count; i++) {
                 prevPos = Reader.BaseStream.Position;
 
                 name = Reader.ReadNullTermString(Encoding.UTF8);
@@ -213,8 +182,7 @@ namespace MyValveResourceFormat
 
                 Console.WriteLine("Name: {0} - Desc: {1} - Count: {2} - Offset: {3}", name, desc, subcount, Reader.BaseStream.Position);
 
-                for (var j = 0; j < subcount; j++)
-                {
+                for (var j = 0; j < subcount; j++) {
                     Console.WriteLine("     " + Reader.ReadNullTermString(Encoding.UTF8));
                 }
             }
@@ -222,8 +190,7 @@ namespace MyValveResourceFormat
             count = Reader.ReadUInt32();
         }
 
-        private void ReadShader()
-        {
+        private void ReadShader() {
             // This uint controls whether or not there's an additional uint and file identifier in header for features shader, might be something different in these.
             var unk0_a = Reader.ReadInt32(); // new in version 64, mostly 0 but sometimes 1
 
@@ -241,8 +208,7 @@ namespace MyValveResourceFormat
 
             Console.WriteLine("[CHUNK 1] Count: {0} - Offset: {1}", count, Reader.BaseStream.Position);
 
-            for (var i = 0; i < count; i++)
-            {
+            for (var i = 0; i < count; i++) {
                 var previousPosition = Reader.BaseStream.Position;
 
                 var name = Reader.ReadNullTermString(Encoding.UTF8);
@@ -264,8 +230,7 @@ namespace MyValveResourceFormat
 
             Console.WriteLine("[CHUNK 2] Count: {0} - Offset: {1}", count, Reader.BaseStream.Position);
 
-            for (var i = 0; i < count; i++)
-            {
+            for (var i = 0; i < count; i++) {
                 // Initial research based on brushsplat_pc_40_ps, might be different for other shaders
                 var unk2_a = Reader.ReadUInt32(); // always 3?
                 var unk2_b = Reader.ReadUInt32(); // always 2?
@@ -291,8 +256,7 @@ namespace MyValveResourceFormat
 
             Console.WriteLine("[CHUNK 3] Count: {0} - Offset: {1}", count, Reader.BaseStream.Position);
 
-            for (var i = 0; i < count; i++)
-            {
+            for (var i = 0; i < count; i++) {
                 var previousPosition = Reader.BaseStream.Position;
 
                 var name = Reader.ReadNullTermString(Encoding.UTF8);
@@ -314,8 +278,7 @@ namespace MyValveResourceFormat
 
             Console.WriteLine("[CHUNK 4] Count: {0} - Offset: {1}", count, Reader.BaseStream.Position);
 
-            for (var i = 0; i < count; i++)
-            {
+            for (var i = 0; i < count; i++) {
                 var unk4_a = Reader.ReadUInt32();
                 var unk4_b = Reader.ReadUInt32();
                 var unk4_c = Reader.ReadUInt16();
@@ -338,8 +301,7 @@ namespace MyValveResourceFormat
 
             Console.WriteLine("[CHUNK 5] Count: {0} - Offset: {1}", count, Reader.BaseStream.Position);
 
-            for (var i = 0; i < count; i++)
-            {
+            for (var i = 0; i < count; i++) {
                 var previousPosition = Reader.BaseStream.Position;
 
                 var name = Reader.ReadNullTermString(Encoding.UTF8);
@@ -351,8 +313,7 @@ namespace MyValveResourceFormat
 
                 var desc = string.Empty;
 
-                if (hasDesc > 0)
-                {
+                if (hasDesc > 0) {
                     desc = Reader.ReadNullTermString(Encoding.UTF8);
                 }
 
@@ -376,14 +337,10 @@ namespace MyValveResourceFormat
                 //  Type 11: 480 (post_process_pc_30_ps.vcs)
                 //  Type 13: 480 (spriteentity_pc_41_vs.vcs)
                 // Needs further investigation. This is where parsing a lot of shaders break right now.
-                if (length > -1 && type != 0 && type != 2 && type != 10 && type != 11 && type != 13)
-                {
-                    if (type != 1 && type != 5 && type != 6 && type != 7)
-                    {
+                if (length > -1 && type != 0 && type != 2 && type != 10 && type != 11 && type != 13) {
+                    if (type != 1 && type != 5 && type != 6 && type != 7) {
                         Console.WriteLine("!!! Unknown type of type " + type + " encountered at position " + (Reader.BaseStream.Position - 8) + ". Assuming normal sized chunk.");
-                    }
-                    else
-                    {
+                    } else {
                         var unk5_b = Reader.ReadBytes(length);
                         var unk5_c = Reader.ReadUInt32();
                     }
@@ -398,8 +355,7 @@ namespace MyValveResourceFormat
 
             Console.WriteLine("[CHUNK 6] Count: {0} - Offset: {1}", count, Reader.BaseStream.Position);
 
-            for (var i = 0; i < count; i++)
-            {
+            for (var i = 0; i < count; i++) {
                 var unk6_a = Reader.ReadBytes(4); // unsure, maybe shorts or bytes
                 var unk6_b = Reader.ReadUInt32(); // 12, 13, 14 or 15 in brushplat_pc_40_ps.vcs
                 var unk6_c = Reader.ReadBytes(12); // FF
@@ -419,8 +375,7 @@ namespace MyValveResourceFormat
 
             Console.WriteLine("[CHUNK 7] Count: {0} - Offset: {1}", count, Reader.BaseStream.Position);
 
-            for (var i = 0; i < count; i++)
-            {
+            for (var i = 0; i < count; i++) {
                 var prevPos = Reader.BaseStream.Position;
 
                 var name = Reader.ReadNullTermString(Encoding.UTF8);
@@ -434,8 +389,7 @@ namespace MyValveResourceFormat
 
                 Console.WriteLine("[SUB CHUNK] Name: {0} - unk1: {1} - unk2: {2} - Count: {3} - Offset: {4}", name, a, b, subCount, Reader.BaseStream.Position);
 
-                for (var j = 0; j < subCount; j++)
-                {
+                for (var j = 0; j < subCount; j++) {
                     var previousPosition = Reader.BaseStream.Position;
 
                     var subname = Reader.ReadNullTermString(Encoding.UTF8);
@@ -456,19 +410,16 @@ namespace MyValveResourceFormat
             Console.WriteLine("Offset: {0}", Reader.BaseStream.Position);
 
             // Vertex shader has a string chunk which seems to be vertex buffer specifications
-            if (ShaderType == "vertex")
-            {
+            if (ShaderType == "vertex") {
                 var bufferCount = Reader.ReadUInt32();
 
                 Console.WriteLine(bufferCount + " vertex buffer descriptors");
-                for (var h = 0; h < bufferCount; h++)
-                {
+                for (var h = 0; h < bufferCount; h++) {
                     count = Reader.ReadUInt32(); // number of attributes
 
                     Console.WriteLine("Buffer #{0}, {1} attributes", h, count);
 
-                    for (var i = 0; i < count; i++)
-                    {
+                    for (var i = 0; i < count; i++) {
                         var name = Reader.ReadNullTermString(Encoding.UTF8);
                         var type = Reader.ReadNullTermString(Encoding.UTF8);
                         var option = Reader.ReadNullTermString(Encoding.UTF8);
@@ -484,48 +435,40 @@ namespace MyValveResourceFormat
             Console.WriteLine("Offset: {0}", Reader.BaseStream.Position);
 
             var unkLongs = new long[lzmaCount];
-            for (var i = 0; i < lzmaCount; i++)
-            {
+            for (var i = 0; i < lzmaCount; i++) {
                 unkLongs[i] = Reader.ReadInt64();
             }
 
             var lzmaOffsets = new int[lzmaCount];
 
-            for (var i = 0; i < lzmaCount; i++)
-            {
+            for (var i = 0; i < lzmaCount; i++) {
                 lzmaOffsets[i] = Reader.ReadInt32();
             }
 
-            for (var i = 0; i < lzmaCount; i++)
-            {
+            for (var i = 0; i < lzmaCount; i++) {
                 Console.WriteLine("Extracting shader " + i + "..");
                 // File.WriteAllBytes(Path.Combine(@"D:\shaders\PCGL DotA Core\processed spritecard\", "shader_out_" + i + ".bin"), ReadShaderChunk(lzmaOffsets[i]));
 
                 // Skip non-PCGL shaders for now, need to figure out platform without checking filename
-                if (ShaderPlatform != "opengl")
-                {
+                if (ShaderPlatform != "opengl") {
                     continue;
                 }
 
                 // What follows here is super experimental and barely works as is. It is a very rough implementation to read and extract shader stringblocks for PCGL shaders.
                 using (var inputStream = new MemoryStream(ReadShaderChunk(lzmaOffsets[i])))
-                using (var chunkReader = new BinaryReader(inputStream))
-                {
-                    while (chunkReader.BaseStream.Position < chunkReader.BaseStream.Length)
-                    {
+                using (var chunkReader = new BinaryReader(inputStream)) {
+                    while (chunkReader.BaseStream.Position < chunkReader.BaseStream.Length) {
                         // Read count that also doubles as mode?
                         var modeAndCount = chunkReader.ReadInt16();
 
                         // Mode never seems to be 20 for anything but the FF chunk before shader stringblock
-                        if (modeAndCount != 20)
-                        {
+                        if (modeAndCount != 20) {
                             chunkReader.ReadInt16();
                             var unk2 = chunkReader.ReadInt32();
                             var unk3 = chunkReader.ReadInt32();
 
                             // If the mode isn't the same as unk3, skip shader for now
-                            if (modeAndCount != unk3)
-                            {
+                            if (modeAndCount != unk3) {
                                 Console.WriteLine("Having issues reading shader " + i + ", skipping..");
                                 chunkReader.BaseStream.Position = chunkReader.BaseStream.Length;
                                 continue;
@@ -536,17 +479,12 @@ namespace MyValveResourceFormat
                             var unk4 = chunkReader.ReadUInt16();
 
                             // Seems to be 1 if there's a string there, read 26 byte stringblock, roll back if not
-                            if (unk4 == 1)
-                            {
+                            if (unk4 == 1) {
                                 chunkReader.ReadBytes(26);
-                            }
-                            else
-                            {
+                            } else {
                                 chunkReader.BaseStream.Position -= 2;
                             }
-                        }
-                        else 
-                        {
+                        } else {
                             // Read 40 byte 0xFF chunk
                             chunkReader.ReadBytes(40);
 
@@ -560,16 +498,14 @@ namespace MyValveResourceFormat
                             chunkReader.ReadByte();
 
                             // If shader stringblock count is ridiculously high stop reading this shader and bail
-                            if (shaderContentCount > 100)
-                            {
+                            if (shaderContentCount > 100) {
                                 Console.WriteLine("Having issues reading shader " + i + ", skipping..");
                                 chunkReader.BaseStream.Position = chunkReader.BaseStream.Length;
                                 continue;
                             }
 
                             // Read and dump all shader stringblocks
-                            for (int j = 0; j < shaderContentCount; j++)
-                            {
+                            for (int j = 0; j < shaderContentCount; j++) {
                                 var shaderLengthInclHeader = chunkReader.ReadInt32();
                                 var unk = chunkReader.ReadUInt32(); //type?
                                 Console.WriteLine(unk);
@@ -588,16 +524,14 @@ namespace MyValveResourceFormat
             }
         }
 
-        private byte[] ReadShaderChunk(int offset)
-        {
+        private byte[] ReadShaderChunk(int offset) {
             var prevPos = Reader.BaseStream.Position;
 
             Reader.BaseStream.Position = offset;
 
             var chunkSize = Reader.ReadUInt32();
 
-            if (Reader.ReadUInt32() != 0x414D5A4C)
-            {
+            if (Reader.ReadUInt32() != 0x414D5A4C) {
                 throw new InvalidDataException("Not LZMA?");
             }
 
@@ -616,8 +550,7 @@ namespace MyValveResourceFormat
             Reader.BaseStream.Position = prevPos;
 
             using (var inputStream = new MemoryStream(compressedBuffer))
-            using (var outStream = new MemoryStream((int)uncompressedSize))
-            {
+            using (var outStream = new MemoryStream((int)uncompressedSize)) {
                 decoder.Code(inputStream, outStream, compressedBuffer.Length, uncompressedSize, null);
 
                 return outStream.ToArray();

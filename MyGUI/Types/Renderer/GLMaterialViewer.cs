@@ -4,8 +4,7 @@ using System.Windows.Forms;
 using MyGUI.Controls;
 using static MyGUI.Controls.GLViewerControl;
 
-namespace MyGUI.Types.Renderer
-{
+namespace MyGUI.Types.Renderer {
     /// <summary>
     /// GL Render control with material controls (render modes maybe at some point?).
     /// Renders a list of MatarialRenderers.
@@ -22,30 +21,25 @@ namespace MyGUI.Types.Renderer
 
         private readonly GLViewerControl viewerControl;
 
-        public GLMaterialViewer()
-        {
+        public GLMaterialViewer() {
             viewerControl = new GLViewerControl();
 
             viewerControl.GLLoad += OnLoad;
         }
 
-        private void OnLoad(object sender, EventArgs e)
-        {
+        private void OnLoad(object sender, EventArgs e) {
             Load?.Invoke(this, e);
 
             viewerControl.GLPaint += OnPaint;
         }
 
-        private void OnPaint(object sender, RenderEventArgs e)
-        {
-            foreach (var renderer in Renderers)
-            {
+        private void OnPaint(object sender, RenderEventArgs e) {
+            foreach (var renderer in Renderers) {
                 renderer.Render(e.Camera, RenderPass.Both);
             }
         }
 
-        public void AddRenderer(MaterialRenderer renderer)
-        {
+        public void AddRenderer(MaterialRenderer renderer) {
             Renderers.Add(renderer);
         }
     }

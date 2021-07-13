@@ -5,21 +5,18 @@ using System.Text;
 using MyValveResourceFormat.Compression;
 using MyValveResourceFormat.Serialization;
 
-namespace MyValveResourceFormat.Blocks
-{
+namespace MyValveResourceFormat.Blocks {
     /// <summary>
     /// "VBIB" block.
     /// </summary>
-    public class VBIB : Block
-    {
+    public class VBIB : Block {
         public override BlockType Type => BlockType.VBIB;
 
         public List<OnDiskBufferData> VertexBuffers { get; }
         public List<OnDiskBufferData> IndexBuffers { get; }
 
 #pragma warning disable CA1051 // Do not declare visible instance fields
-        public struct OnDiskBufferData
-        {
+        public struct OnDiskBufferData {
             public uint ElementCount;
             //stride for vertices. Type for indices
             public uint ElementSizeInBytes;
@@ -28,8 +25,7 @@ namespace MyValveResourceFormat.Blocks
             public byte[] Data;
         }
 
-        public struct RenderInputLayoutField
-        {
+        public struct RenderInputLayoutField {
             public string SemanticName;
             public int SemanticIndex;
             public DXGI_FORMAT Format;
@@ -40,34 +36,28 @@ namespace MyValveResourceFormat.Blocks
         }
 #pragma warning restore CA1051 // Do not declare visible instance fields
 
-        public VBIB()
-        {
+        public VBIB() {
             VertexBuffers = new List<OnDiskBufferData>();
             IndexBuffers = new List<OnDiskBufferData>();
         }
 
-        public VBIB(IKeyValueCollection data) : this()
-        {
+        public VBIB(IKeyValueCollection data) : this() {
             var vertexBuffers = data.GetArray("m_vertexBuffers");
-            foreach (var vb in vertexBuffers)
-            {
+            foreach (var vb in vertexBuffers) {
                 var vertexBuffer = BufferDataFromDATA(vb);
 
                 var decompressedSize = vertexBuffer.ElementCount * vertexBuffer.ElementSizeInBytes;
-                if (vertexBuffer.Data.Length != decompressedSize)
-                {
+                if (vertexBuffer.Data.Length != decompressedSize) {
                     vertexBuffer.Data = MeshOptimizerVertexDecoder.DecodeVertexBuffer((int)vertexBuffer.ElementCount, (int)vertexBuffer.ElementSizeInBytes, vertexBuffer.Data);
                 }
                 VertexBuffers.Add(vertexBuffer);
             }
             var indexBuffers = data.GetArray("m_indexBuffers");
-            foreach (var ib in indexBuffers)
-            {
+            foreach (var ib in indexBuffers) {
                 var indexBuffer = BufferDataFromDATA(ib);
 
                 var decompressedSize = indexBuffer.ElementCount * indexBuffer.ElementSizeInBytes;
-                if (indexBuffer.Data.Length != decompressedSize)
-                {
+                if (indexBuffer.Data.Length != decompressedSize) {
                     indexBuffer.Data = MeshOptimizerIndexDecoder.DecodeIndexBuffer((int)indexBuffer.ElementCount, (int)indexBuffer.ElementSizeInBytes, indexBuffer.Data);
                 }
 
@@ -75,8 +65,7 @@ namespace MyValveResourceFormat.Blocks
             }
         }
 
-        public override void Read(BinaryReader reader, Resource resource)
-        {
+        public override void Read(BinaryReader reader, Resource resource) {
             reader.BaseStream.Position = Offset;
 
             var vertexBufferOffset = reader.ReadUInt32();
@@ -85,13 +74,11 @@ namespace MyValveResourceFormat.Blocks
             var indexBufferCount = reader.ReadUInt32();
 
             reader.BaseStream.Position = Offset + vertexBufferOffset;
-            for (var i = 0; i < vertexBufferCount; i++)
-            {
+            for (var i = 0; i < vertexBufferCount; i++) {
                 var vertexBuffer = ReadOnDiskBufferData(reader);
 
                 var decompressedSize = vertexBuffer.ElementCount * vertexBuffer.ElementSizeInBytes;
-                if (vertexBuffer.Data.Length != decompressedSize)
-                {
+                if (vertexBuffer.Data.Length != decompressedSize) {
                     vertexBuffer.Data = MeshOptimizerVertexDecoder.DecodeVertexBuffer((int)vertexBuffer.ElementCount, (int)vertexBuffer.ElementSizeInBytes, vertexBuffer.Data);
                 }
 
@@ -99,13 +86,11 @@ namespace MyValveResourceFormat.Blocks
             }
 
             reader.BaseStream.Position = Offset + 8 + indexBufferOffset; //8 to take into account vertexOffset / count
-            for (var i = 0; i < indexBufferCount; i++)
-            {
+            for (var i = 0; i < indexBufferCount; i++) {
                 var indexBuffer = ReadOnDiskBufferData(reader);
 
                 var decompressedSize = indexBuffer.ElementCount * indexBuffer.ElementSizeInBytes;
-                if (indexBuffer.Data.Length != decompressedSize)
-                {
+                if (indexBuffer.Data.Length != decompressedSize) {
                     indexBuffer.Data = MeshOptimizerIndexDecoder.DecodeIndexBuffer((int)indexBuffer.ElementCount, (int)indexBuffer.ElementSizeInBytes, indexBuffer.Data);
                 }
 
@@ -113,8 +98,7 @@ namespace MyValveResourceFormat.Blocks
             }
         }
 
-        private static OnDiskBufferData ReadOnDiskBufferData(BinaryReader reader)
-        {
+        private static OnDiskBufferData ReadOnDiskBufferData(BinaryReader reader) {
             var buffer = default(OnDiskBufferData);
 
             buffer.ElementCount = reader.ReadUInt32();            //0
@@ -131,8 +115,7 @@ namespace MyValveResourceFormat.Blocks
             buffer.InputLayoutFields = new List<RenderInputLayoutField>();
 
             reader.BaseStream.Position = refA + attributeOffset;
-            for (var j = 0; j < attributeCount; j++)
-            {
+            for (var j = 0; j < attributeCount; j++) {
                 var attribute = default(RenderInputLayoutField);
 
                 var previousPosition = reader.BaseStream.Position;
@@ -158,8 +141,7 @@ namespace MyValveResourceFormat.Blocks
             return buffer;
         }
 
-        private static OnDiskBufferData BufferDataFromDATA(IKeyValueCollection data)
-        {
+        private static OnDiskBufferData BufferDataFromDATA(IKeyValueCollection data) {
             OnDiskBufferData buffer = new OnDiskBufferData();
             buffer.ElementCount = data.GetUInt32Property("m_nElementCount");
             buffer.ElementSizeInBytes = data.GetUInt32Property("m_nElementSizeInBytes");
@@ -167,8 +149,7 @@ namespace MyValveResourceFormat.Blocks
             buffer.InputLayoutFields = new List<RenderInputLayoutField>();
 
             var inputLayoutFields = data.GetArray("m_inputLayoutFields");
-            foreach (var il in inputLayoutFields)
-            {
+            foreach (var il in inputLayoutFields) {
                 RenderInputLayoutField attrib = new RenderInputLayoutField();
 
                 //null-terminated string
@@ -188,113 +169,99 @@ namespace MyValveResourceFormat.Blocks
             return buffer;
         }
 
-        public static float[] ReadVertexAttribute(int offset, OnDiskBufferData vertexBuffer, RenderInputLayoutField attribute)
-        {
+        public static float[] ReadVertexAttribute(int offset, OnDiskBufferData vertexBuffer, RenderInputLayoutField attribute) {
             float[] result;
 
             offset = (int)(offset * vertexBuffer.ElementSizeInBytes) + (int)attribute.Offset;
 
             // Useful reference: https://github.com/apitrace/dxsdk/blob/master/Include/d3dx_dxgiformatconvert.inl
-            switch (attribute.Format)
-            {
-                case DXGI_FORMAT.R32G32B32_FLOAT:
-                {
-                    result = new float[3];
-                    Buffer.BlockCopy(vertexBuffer.Data, offset, result, 0, 12);
-                    break;
-                }
+            switch (attribute.Format) {
+                case DXGI_FORMAT.R32G32B32_FLOAT: {
+                        result = new float[3];
+                        Buffer.BlockCopy(vertexBuffer.Data, offset, result, 0, 12);
+                        break;
+                    }
 
-                case DXGI_FORMAT.R32G32B32A32_FLOAT:
-                {
-                    result = new float[4];
-                    Buffer.BlockCopy(vertexBuffer.Data, offset, result, 0, 16);
-                    break;
-                }
+                case DXGI_FORMAT.R32G32B32A32_FLOAT: {
+                        result = new float[4];
+                        Buffer.BlockCopy(vertexBuffer.Data, offset, result, 0, 16);
+                        break;
+                    }
 
-                case DXGI_FORMAT.R16G16_UNORM:
-                {
-                    var shorts = new ushort[2];
-                    Buffer.BlockCopy(vertexBuffer.Data, offset, shorts, 0, 4);
+                case DXGI_FORMAT.R16G16_UNORM: {
+                        var shorts = new ushort[2];
+                        Buffer.BlockCopy(vertexBuffer.Data, offset, shorts, 0, 4);
 
-                    result = new[]
-                    {
+                        result = new[]
+                        {
                         shorts[0] / 65535f,
                         shorts[1] / 65535f,
                     };
-                    break;
-                }
+                        break;
+                    }
 
-                case DXGI_FORMAT.R16G16_FLOAT:
-                {
-                    var shorts = new ushort[2];
-                    Buffer.BlockCopy(vertexBuffer.Data, offset, shorts, 0, 4);
+                case DXGI_FORMAT.R16G16_FLOAT: {
+                        var shorts = new ushort[2];
+                        Buffer.BlockCopy(vertexBuffer.Data, offset, shorts, 0, 4);
 
-                    result = new[]
-                    {
+                        result = new[]
+                        {
                         HalfTypeHelper.Convert(shorts[0]),
                         HalfTypeHelper.Convert(shorts[1]),
                     };
-                    break;
-                }
-
-                case DXGI_FORMAT.R32_FLOAT:
-                {
-                    result = new float[1];
-                    Buffer.BlockCopy(vertexBuffer.Data, offset, result, 0, 4);
-                    break;
-                }
-
-                case DXGI_FORMAT.R32G32_FLOAT:
-                {
-                    result = new float[2];
-                    Buffer.BlockCopy(vertexBuffer.Data, offset, result, 0, 8);
-                    break;
-                }
-
-                case DXGI_FORMAT.R16G16_SINT:
-                {
-                    var shorts = new short[2];
-                    Buffer.BlockCopy(vertexBuffer.Data, offset, shorts, 0, 4);
-
-                    result = new float[2];
-                    for (var i = 0; i < 2; i++)
-                    {
-                        result[i] = shorts[i];
+                        break;
                     }
 
-                    break;
-                }
-
-                case DXGI_FORMAT.R16G16B16A16_SINT:
-                {
-                    var shorts = new short[4];
-                    Buffer.BlockCopy(vertexBuffer.Data, offset, shorts, 0, 8);
-
-                    result = new float[4];
-                    for (var i = 0; i < 4; i++)
-                    {
-                        result[i] = shorts[i];
+                case DXGI_FORMAT.R32_FLOAT: {
+                        result = new float[1];
+                        Buffer.BlockCopy(vertexBuffer.Data, offset, result, 0, 4);
+                        break;
                     }
 
-                    break;
-                }
+                case DXGI_FORMAT.R32G32_FLOAT: {
+                        result = new float[2];
+                        Buffer.BlockCopy(vertexBuffer.Data, offset, result, 0, 8);
+                        break;
+                    }
+
+                case DXGI_FORMAT.R16G16_SINT: {
+                        var shorts = new short[2];
+                        Buffer.BlockCopy(vertexBuffer.Data, offset, shorts, 0, 4);
+
+                        result = new float[2];
+                        for (var i = 0; i < 2; i++) {
+                            result[i] = shorts[i];
+                        }
+
+                        break;
+                    }
+
+                case DXGI_FORMAT.R16G16B16A16_SINT: {
+                        var shorts = new short[4];
+                        Buffer.BlockCopy(vertexBuffer.Data, offset, shorts, 0, 8);
+
+                        result = new float[4];
+                        for (var i = 0; i < 4; i++) {
+                            result[i] = shorts[i];
+                        }
+
+                        break;
+                    }
 
                 case DXGI_FORMAT.R8G8B8A8_UINT:
-                case DXGI_FORMAT.R8G8B8A8_UNORM:
-                {
-                    var bytes = new byte[4];
-                    Buffer.BlockCopy(vertexBuffer.Data, offset, bytes, 0, 4);
+                case DXGI_FORMAT.R8G8B8A8_UNORM: {
+                        var bytes = new byte[4];
+                        Buffer.BlockCopy(vertexBuffer.Data, offset, bytes, 0, 4);
 
-                    result = new float[4];
-                    for (var i = 0; i < 4; i++)
-                    {
-                        result[i] = attribute.Format == DXGI_FORMAT.R8G8B8A8_UNORM
-                            ? bytes[i] / 255f
-                            : bytes[i];
+                        result = new float[4];
+                        for (var i = 0; i < 4; i++) {
+                            result[i] = attribute.Format == DXGI_FORMAT.R8G8B8A8_UNORM
+                                ? bytes[i] / 255f
+                                : bytes[i];
+                        }
+
+                        break;
                     }
-
-                    break;
-                }
 
                 default:
                     throw new NotImplementedException($"Unsupported \"{attribute.SemanticName}\" DXGI_FORMAT.{attribute.Format}");
@@ -303,17 +270,14 @@ namespace MyValveResourceFormat.Blocks
             return result;
         }
 
-        public override void WriteText(IndentedTextWriter writer)
-        {
+        public override void WriteText(IndentedTextWriter writer) {
             writer.WriteLine("Vertex buffers:");
 
-            foreach (var vertexBuffer in VertexBuffers)
-            {
+            foreach (var vertexBuffer in VertexBuffers) {
                 writer.WriteLine($"Count: {vertexBuffer.ElementCount}");
                 writer.WriteLine($"Size: {vertexBuffer.ElementSizeInBytes}");
 
-                for (var i = 0; i < vertexBuffer.InputLayoutFields.Count; i++)
-                {
+                for (var i = 0; i < vertexBuffer.InputLayoutFields.Count; i++) {
                     var vertexAttribute = vertexBuffer.InputLayoutFields[i];
                     writer.WriteLine($"Attribute[{ i}]");
                     writer.Indent++;
@@ -333,8 +297,7 @@ namespace MyValveResourceFormat.Blocks
             writer.WriteLine();
             writer.WriteLine("Index buffers:");
 
-            foreach (var indexBuffer in IndexBuffers)
-            {
+            foreach (var indexBuffer in IndexBuffers) {
                 writer.WriteLine($"Count: {indexBuffer.ElementCount}");
                 writer.WriteLine($"Size: {indexBuffer.ElementSizeInBytes}");
                 writer.WriteLine();

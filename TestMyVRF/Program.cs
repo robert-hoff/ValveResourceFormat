@@ -6,20 +6,17 @@ using MyValveResourceFormat;
 using MyValveResourceFormat.Blocks;
 using MyValveResourceFormat.ResourceTypes;
 
-namespace TestMyVRF
-{
+namespace TestMyVRF {
 
 
 
 
-    class Program
-    {
+    class Program {
 
 
 
 
-        static void Main()
-        {
+        static void Main() {
 
 
             // trial2();
@@ -42,8 +39,7 @@ namespace TestMyVRF
 
 
 
-        public static void trial1()
-        {
+        public static void trial1() {
             string vpkfile = HLALYX_TEST_VPK;
             var package = new SteamDatabase.ValvePak.Package();
 

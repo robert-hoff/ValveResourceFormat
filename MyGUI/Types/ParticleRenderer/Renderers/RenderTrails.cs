@@ -7,10 +7,8 @@ using OpenTK.Graphics.OpenGL;
 using MyValveResourceFormat.ResourceTypes;
 using MyValveResourceFormat.Serialization;
 
-namespace MyGUI.Types.ParticleRenderer.Renderers
-{
-    internal class RenderTrails : IParticleRenderer
-    {
+namespace MyGUI.Types.ParticleRenderer.Renderers {
+    internal class RenderTrails : IParticleRenderer {
         private readonly Shader shader;
         private readonly int quadVao;
         private readonly int glTexture;
@@ -28,63 +26,51 @@ namespace MyGUI.Types.ParticleRenderer.Renderers
         private readonly float maxLength = 2000f;
         private readonly float lengthFadeInTime;
 
-        public RenderTrails(IKeyValueCollection keyValues, VrfGuiContext vrfGuiContext)
-        {
+        public RenderTrails(IKeyValueCollection keyValues, VrfGuiContext vrfGuiContext) {
             shader = vrfGuiContext.ShaderLoader.LoadShader("vrf.particle.trail", new Dictionary<string, bool>());
 
             // The same quad is reused for all particles
             quadVao = SetupQuadBuffer();
 
-            if (keyValues.ContainsKey("m_hTexture"))
-            {
+            if (keyValues.ContainsKey("m_hTexture")) {
                 var textureSetup = LoadTexture(keyValues.GetProperty<string>("m_hTexture"), vrfGuiContext);
                 glTexture = textureSetup.TextureIndex;
                 spriteSheetData = textureSetup.TextureData?.GetSpriteSheetData();
-            }
-            else
-            {
+            } else {
                 glTexture = vrfGuiContext.MaterialLoader.GetErrorTexture();
             }
 
             additive = keyValues.GetProperty<bool>("m_bAdditive");
-            if (keyValues.ContainsKey("m_flOverbrightFactor"))
-            {
+            if (keyValues.ContainsKey("m_flOverbrightFactor")) {
                 overbrightFactor = keyValues.GetFloatProperty("m_flOverbrightFactor");
             }
 
-            if (keyValues.ContainsKey("m_nOrientationType"))
-            {
+            if (keyValues.ContainsKey("m_nOrientationType")) {
                 orientationType = keyValues.GetIntegerProperty("m_nOrientationType");
             }
 
-            if (keyValues.ContainsKey("m_flAnimationRate"))
-            {
+            if (keyValues.ContainsKey("m_flAnimationRate")) {
                 animationRate = keyValues.GetFloatProperty("m_flAnimationRate");
             }
 
-            if (keyValues.ContainsKey("m_flFinalTextureScaleU"))
-            {
+            if (keyValues.ContainsKey("m_flFinalTextureScaleU")) {
                 finalTextureScaleU = keyValues.GetFloatProperty("m_flFinalTextureScaleU");
             }
 
-            if (keyValues.ContainsKey("m_flFinalTextureScaleV"))
-            {
+            if (keyValues.ContainsKey("m_flFinalTextureScaleV")) {
                 finalTextureScaleV = keyValues.GetFloatProperty("m_flFinalTextureScaleV");
             }
 
-            if (keyValues.ContainsKey("m_flMaxLength"))
-            {
+            if (keyValues.ContainsKey("m_flMaxLength")) {
                 maxLength = keyValues.GetFloatProperty("m_flMaxLength");
             }
 
-            if (keyValues.ContainsKey("m_flLengthFadeInTime"))
-            {
+            if (keyValues.ContainsKey("m_flLengthFadeInTime")) {
                 lengthFadeInTime = keyValues.GetFloatProperty("m_flLengthFadeInTime");
             }
         }
 
-        private int SetupQuadBuffer()
-        {
+        private int SetupQuadBuffer() {
             GL.UseProgram(shader.Program);
 
             // Create and bind VAO
@@ -114,31 +100,25 @@ namespace MyGUI.Types.ParticleRenderer.Renderers
             return vao;
         }
 
-        private static (int TextureIndex, Texture TextureData) LoadTexture(string textureName, VrfGuiContext vrfGuiContext)
-        {
+        private static (int TextureIndex, Texture TextureData) LoadTexture(string textureName, VrfGuiContext vrfGuiContext) {
             var textureResource = vrfGuiContext.LoadFileByAnyMeansNecessary(textureName + "_c");
 
-            if (textureResource == null)
-            {
+            if (textureResource == null) {
                 return (vrfGuiContext.MaterialLoader.GetErrorTexture(), null);
             }
 
             return (vrfGuiContext.MaterialLoader.LoadTexture(textureName), (Texture)textureResource.DataBlock);
         }
 
-        public void Render(ParticleBag particleBag, Matrix4x4 viewProjectionMatrix, Matrix4x4 modelViewMatrix)
-        {
+        public void Render(ParticleBag particleBag, Matrix4x4 viewProjectionMatrix, Matrix4x4 modelViewMatrix) {
             var particles = particleBag.LiveParticles;
 
             GL.Enable(EnableCap.Blend);
             GL.UseProgram(shader.Program);
 
-            if (additive)
-            {
+            if (additive) {
                 GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.One);
-            }
-            else
-            {
+            } else {
                 GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
             }
 
@@ -167,8 +147,7 @@ namespace MyGUI.Types.ParticleRenderer.Renderers
             modelViewRotation = Quaternion.Inverse(modelViewRotation);
             var billboardMatrix = Matrix4x4.CreateFromQuaternion(modelViewRotation);
 
-            for (int i = 0; i < particles.Length; ++i)
-            {
+            for (int i = 0; i < particles.Length; ++i) {
                 var position = new Vector3(particles[i].Position.X, particles[i].Position.Y, particles[i].Position.Z);
                 var previousPosition = new Vector3(particles[i].PositionPrevious.X, particles[i].PositionPrevious.Y, particles[i].PositionPrevious.Z);
                 var difference = previousPosition - position;
@@ -202,8 +181,7 @@ namespace MyGUI.Types.ParticleRenderer.Renderers
                 var otkModelMatrix = modelMatrix.ToOpenTK();
                 GL.UniformMatrix4(modelMatrixLocation, false, ref otkModelMatrix);
 
-                if (spriteSheetData != null && spriteSheetData.Sequences.Length > 0 && spriteSheetData.Sequences[0].Frames.Length > 0)
-                {
+                if (spriteSheetData != null && spriteSheetData.Sequences.Length > 0 && spriteSheetData.Sequences[0].Frames.Length > 0) {
                     var sequence = spriteSheetData.Sequences[0];
 
                     var particleTime = particles[i].ConstantLifetime - particles[i].Lifetime;
@@ -219,9 +197,7 @@ namespace MyGUI.Types.ParticleRenderer.Renderers
 
                     GL.Uniform2(uvOffsetLocation, offset.X, offset.Y);
                     GL.Uniform2(uvScaleLocation, scale.X * finalTextureScaleU, scale.Y * finalTextureScaleV);
-                }
-                else
-                {
+                } else {
                     GL.Uniform2(uvOffsetLocation, 1f, 1f);
                     GL.Uniform2(uvScaleLocation, finalTextureScaleU, finalTextureScaleV);
                 }
@@ -237,8 +213,7 @@ namespace MyGUI.Types.ParticleRenderer.Renderers
             GL.BindVertexArray(0);
             GL.UseProgram(0);
 
-            if (additive)
-            {
+            if (additive) {
                 GL.BlendEquation(BlendEquationMode.FuncAdd);
             }
 

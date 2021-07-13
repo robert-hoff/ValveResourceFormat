@@ -1,10 +1,8 @@
 using System.Collections.Generic;
 using System.Numerics;
 
-namespace MyValveResourceFormat.ResourceTypes.ModelAnimation
-{
-    public class Bone
-    {
+namespace MyValveResourceFormat.ResourceTypes.ModelAnimation {
+    public class Bone {
         public Bone Parent { get; private set; }
         public List<Bone> Children { get; }
 
@@ -17,8 +15,7 @@ namespace MyValveResourceFormat.ResourceTypes.ModelAnimation
         public Matrix4x4 BindPose { get; }
         public Matrix4x4 InverseBindPose { get; }
 
-        public Bone(string name, List<int> index, Vector3 position, Quaternion rotation)
-        {
+        public Bone(string name, List<int> index, Vector3 position, Quaternion rotation) {
             Parent = null;
             Children = new List<Bone>();
 
@@ -35,13 +32,11 @@ namespace MyValveResourceFormat.ResourceTypes.ModelAnimation
             InverseBindPose = inverseBindPose;
         }
 
-        public void AddChild(Bone child)
-        {
+        public void AddChild(Bone child) {
             Children.Add(child);
         }
 
-        public void SetParent(Bone parent)
-        {
+        public void SetParent(Bone parent) {
             Parent = parent;
         }
     }

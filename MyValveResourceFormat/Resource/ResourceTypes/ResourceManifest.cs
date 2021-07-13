@@ -5,20 +5,15 @@ using System.Text;
 using MyValveResourceFormat.Blocks;
 using MyValveResourceFormat.Utils;
 
-namespace MyValveResourceFormat.ResourceTypes
-{
-    public class ResourceManifest : ResourceData
-    {
+namespace MyValveResourceFormat.ResourceTypes {
+    public class ResourceManifest : ResourceData {
         public List<List<string>> Resources { get; private set; }
 
-        public override void Read(BinaryReader reader, Resource resource)
-        {
+        public override void Read(BinaryReader reader, Resource resource) {
             reader.BaseStream.Position = Offset;
 
-            if (resource.ContainsBlockType(BlockType.NTRO))
-            {
-                var ntro = new NTRO
-                {
+            if (resource.ContainsBlockType(BlockType.NTRO)) {
+                var ntro = new NTRO {
                     StructName = "ResourceManifest_t",
                     Offset = Offset,
                     Size = Size,
@@ -35,17 +30,15 @@ namespace MyValveResourceFormat.ResourceTypes
 
             var version = reader.ReadInt32();
 
-            if (version != 8)
-            {
+            if (version != 8) {
                 throw new UnexpectedMagicException("Unknown version", version, nameof(version));
             }
-            
+
             Resources = new List<List<string>>();
 
             var blockCount = reader.ReadInt32();
 
-            for (var block = 0; block < blockCount; block++)
-            {
+            for (var block = 0; block < blockCount; block++) {
                 var strings = new List<string>();
                 var originalOffset = reader.BaseStream.Position;
                 var offset = reader.ReadInt32();
@@ -53,8 +46,7 @@ namespace MyValveResourceFormat.ResourceTypes
 
                 reader.BaseStream.Position = originalOffset + offset;
 
-                for (var i = 0; i < count; i++)
-                {
+                for (var i = 0; i < count; i++) {
                     var returnOffset = reader.BaseStream.Position;
                     var stringOffset = reader.ReadInt32();
                     reader.BaseStream.Position = returnOffset + stringOffset;
@@ -71,13 +63,10 @@ namespace MyValveResourceFormat.ResourceTypes
             }
         }
 
-        public override string ToString()
-        {
+        public override string ToString() {
             using var writer = new IndentedTextWriter();
-            foreach (var block in Resources)
-            {
-                foreach (var entry in block)
-                {
+            foreach (var block in Resources) {
+                foreach (var entry in block) {
                     writer.WriteLine(entry);
                 }
 

@@ -7,30 +7,24 @@ using MyValveResourceFormat;
 using MyValveResourceFormat.ResourceTypes;
 using VrfMaterial = MyValveResourceFormat.ResourceTypes.Material;
 
-namespace MyGUI.Types.Renderer
-{
-    public class MaterialLoader
-    {
+namespace MyGUI.Types.Renderer {
+    public class MaterialLoader {
         private readonly Dictionary<string, RenderMaterial> Materials = new Dictionary<string, RenderMaterial>();
         private readonly VrfGuiContext VrfGuiContext;
         private int ErrorTextureID;
         public static int MaxTextureMaxAnisotropy { get; set; }
 
-        public MaterialLoader(VrfGuiContext guiContext)
-        {
+        public MaterialLoader(VrfGuiContext guiContext) {
             VrfGuiContext = guiContext;
         }
 
-        public RenderMaterial GetMaterial(string name)
-        {
+        public RenderMaterial GetMaterial(string name) {
             // HL:VR has a world node that has a draw call with no material
-            if (name == null)
-            {
+            if (name == null) {
                 return GetErrorMaterial();
             }
 
-            if (Materials.ContainsKey(name))
-            {
+            if (Materials.ContainsKey(name)) {
                 return Materials[name];
             }
 
@@ -42,43 +36,35 @@ namespace MyGUI.Types.Renderer
             return mat;
         }
 
-        public RenderMaterial LoadMaterial(Resource resource)
-        {
-            if (resource == null)
-            {
+        public RenderMaterial LoadMaterial(Resource resource) {
+            if (resource == null) {
                 return GetErrorMaterial();
             }
 
             var mat = new RenderMaterial((VrfMaterial)resource.DataBlock);
 
-            foreach (var textureReference in mat.Material.TextureParams)
-            {
+            foreach (var textureReference in mat.Material.TextureParams) {
                 var key = textureReference.Key;
 
                 mat.Textures[key] = LoadTexture(textureReference.Value);
             }
 
-            if (mat.Material.IntParams.ContainsKey("F_SOLID_COLOR") && mat.Material.IntParams["F_SOLID_COLOR"] == 1)
-            {
+            if (mat.Material.IntParams.ContainsKey("F_SOLID_COLOR") && mat.Material.IntParams["F_SOLID_COLOR"] == 1) {
                 var a = mat.Material.VectorParams["g_vColorTint"];
 
                 mat.Textures["g_tColor"] = GenerateColorTexture(1, 1, new[] { a.X, a.Y, a.Z, a.W });
             }
 
-            if (!mat.Textures.ContainsKey("g_tColor"))
-            {
+            if (!mat.Textures.ContainsKey("g_tColor")) {
                 mat.Textures["g_tColor"] = GetErrorTexture();
             }
 
             // Since our shaders only use g_tColor, we have to find at least one texture to use here
-            if (mat.Textures["g_tColor"] == GetErrorTexture())
-            {
+            if (mat.Textures["g_tColor"] == GetErrorTexture()) {
                 var namesToTry = new[] { "g_tColor2", "g_tColor1", "g_tColorA", "g_tColorB", "g_tColorC" };
 
-                foreach (var name in namesToTry)
-                {
-                    if (mat.Textures.ContainsKey(name))
-                    {
+                foreach (var name in namesToTry) {
+                    if (mat.Textures.ContainsKey(name)) {
                         mat.Textures["g_tColor"] = mat.Textures[name];
                         break;
                     }
@@ -86,38 +72,32 @@ namespace MyGUI.Types.Renderer
             }
 
             // Set default values for scale and positions
-            if (!mat.Material.VectorParams.ContainsKey("g_vTexCoordScale"))
-            {
+            if (!mat.Material.VectorParams.ContainsKey("g_vTexCoordScale")) {
                 mat.Material.VectorParams["g_vTexCoordScale"] = Vector4.One;
             }
 
-            if (!mat.Material.VectorParams.ContainsKey("g_vTexCoordOffset"))
-            {
+            if (!mat.Material.VectorParams.ContainsKey("g_vTexCoordOffset")) {
                 mat.Material.VectorParams["g_vTexCoordOffset"] = Vector4.Zero;
             }
 
-            if (!mat.Material.VectorParams.ContainsKey("g_vColorTint"))
-            {
+            if (!mat.Material.VectorParams.ContainsKey("g_vColorTint")) {
                 mat.Material.VectorParams["g_vColorTint"] = Vector4.One;
             }
 
             return mat;
         }
 
-        public int LoadTexture(string name)
-        {
+        public int LoadTexture(string name) {
             var textureResource = VrfGuiContext.LoadFileByAnyMeansNecessary(name + "_c");
 
-            if (textureResource == null)
-            {
+            if (textureResource == null) {
                 return GetErrorTexture();
             }
 
             return LoadTexture(textureResource);
         }
 
-        public int LoadTexture(Resource textureResource)
-        {
+        public int LoadTexture(Resource textureResource) {
             var tex = (Texture)textureResource.DataBlock;
 
             var id = GL.GenTexture();
@@ -132,27 +112,22 @@ namespace MyGUI.Types.Renderer
             var internalFormat = GetPixelInternalFormat(tex.Format);
             var format = GetInternalFormat(tex.Format);
 
-            if (!format.HasValue && !internalFormat.HasValue)
-            {
+            if (!format.HasValue && !internalFormat.HasValue) {
                 Console.Error.WriteLine($"Don't support {tex.Format} but don't want to crash either. Using error texture!");
                 return GetErrorTexture();
             }
 
-            for (var i = tex.NumMipLevels - 1; i >= 0; i--)
-            {
+            for (var i = tex.NumMipLevels - 1; i >= 0; i--) {
                 var width = tex.Width >> i;
                 var height = tex.Height >> i;
                 var bytes = tex.GetDecompressedTextureAtMipLevel(i);
 
-                if (internalFormat.HasValue)
-                {
+                if (internalFormat.HasValue) {
                     var pixelFormat = GetPixelFormat(tex.Format);
                     var pixelType = GetPixelType(tex.Format);
 
                     GL.TexImage2D(TextureTarget.Texture2D, i, internalFormat.Value, width, height, 0, pixelFormat, pixelType, bytes);
-                }
-                else
-                {
+                } else {
                     GL.CompressedTexImage2D(TextureTarget.Texture2D, i, format.Value, width, height, 0, bytes.Length, bytes);
                 }
             }
@@ -161,14 +136,11 @@ namespace MyGUI.Types.Renderer
             // TODO: This might conflict when opening multiple files due to shit caching
             textureResource.Dispose();
 
-            if (MaxTextureMaxAnisotropy >= 4)
-            {
+            if (MaxTextureMaxAnisotropy >= 4) {
                 GL.TexParameter(TextureTarget.Texture2D, (TextureParameterName)ExtTextureFilterAnisotropic.TextureMaxAnisotropyExt, MaxTextureMaxAnisotropy);
                 GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.LinearMipmapLinear);
                 GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
-            }
-            else
-            {
+            } else {
                 GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
                 GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Nearest);
             }
@@ -189,8 +161,7 @@ namespace MyGUI.Types.Renderer
         }
 
         private static InternalFormat? GetInternalFormat(VTexFormat vformat)
-            => vformat switch
-            {
+            => vformat switch {
                 VTexFormat.DXT1 => InternalFormat.CompressedRgbaS3tcDxt1Ext,
                 VTexFormat.DXT5 => InternalFormat.CompressedRgbaS3tcDxt5Ext,
                 VTexFormat.ETC2 => InternalFormat.CompressedRgb8Etc2,
@@ -206,8 +177,7 @@ namespace MyGUI.Types.Renderer
             };
 
         private static PixelInternalFormat? GetPixelInternalFormat(VTexFormat vformat)
-            => vformat switch
-            {
+            => vformat switch {
                 VTexFormat.R16 => PixelInternalFormat.R16,
                 VTexFormat.R16F => PixelInternalFormat.R16f,
                 VTexFormat.RG1616 => PixelInternalFormat.Rg16,
@@ -216,8 +186,7 @@ namespace MyGUI.Types.Renderer
             };
 
         private static PixelFormat GetPixelFormat(VTexFormat vformat)
-            => vformat switch
-            {
+            => vformat switch {
                 VTexFormat.R16 => PixelFormat.Red,
                 VTexFormat.R16F => PixelFormat.Red,
                 VTexFormat.RG1616 => PixelFormat.Rg,
@@ -226,8 +195,7 @@ namespace MyGUI.Types.Renderer
             };
 
         private static PixelType GetPixelType(VTexFormat vformat)
-            => vformat switch
-            {
+            => vformat switch {
                 VTexFormat.R16 => PixelType.UnsignedShort,
                 VTexFormat.R16F => PixelType.Float,
                 VTexFormat.RG1616 => PixelType.UnsignedShort,
@@ -235,9 +203,8 @@ namespace MyGUI.Types.Renderer
                 _ => PixelType.UnsignedByte
             };
 
-        
-        public RenderMaterial GetErrorMaterial()
-        {
+
+        public RenderMaterial GetErrorMaterial() {
             var errorMat = new RenderMaterial(new VrfMaterial());
             errorMat.Textures["g_tColor"] = GetErrorTexture();
             errorMat.Material.ShaderName = "vrf.error";
@@ -246,10 +213,8 @@ namespace MyGUI.Types.Renderer
         }
 
 
-        public int GetErrorTexture()
-        {
-            if (ErrorTextureID == 0)
-            {
+        public int GetErrorTexture() {
+            if (ErrorTextureID == 0) {
                 var color = new[]
                 {
                     0.9f, 0.2f, 0.8f, 1f,
@@ -282,8 +247,7 @@ namespace MyGUI.Types.Renderer
         public static int CreateSolidTexture(float r, float g, float b)
             => GenerateColorTexture(1, 1, new[] { r, g, b, 1f });
 
-        private static int GenerateColorTexture(int width, int height, float[] color)
-        {
+        private static int GenerateColorTexture(int width, int height, float[] color) {
             var texture = GL.GenTexture();
 
             GL.BindTexture(TextureTarget.Texture2D, texture);

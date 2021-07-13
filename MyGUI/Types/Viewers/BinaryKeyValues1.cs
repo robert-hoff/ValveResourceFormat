@@ -5,35 +5,25 @@ using MyGUI.Utils;
 using ValveKeyValue;
 using MyValveResourceFormat.ResourceTypes;
 
-namespace MyGUI.Types.Viewers
-{
-    public class BinaryKeyValues1 : IViewer
-    {
-        public static bool IsAccepted(uint magic)
-        {
+namespace MyGUI.Types.Viewers {
+    public class BinaryKeyValues1 : IViewer {
+        public static bool IsAccepted(uint magic) {
             return magic == BinaryKV1.MAGIC;
         }
 
-        public TabPage Create(VrfGuiContext vrfGuiContext, byte[] input)
-        {
+        public TabPage Create(VrfGuiContext vrfGuiContext, byte[] input) {
             Stream stream;
             KVObject kv;
 
-            if (input != null)
-            {
+            if (input != null) {
                 stream = new MemoryStream(input);
-            }
-            else
-            {
+            } else {
                 stream = File.OpenRead(vrfGuiContext.FileName);
             }
 
-            try
-            {
+            try {
                 kv = KVSerializer.Create(KVSerializationFormat.KeyValues1Binary).Deserialize(stream);
-            }
-            finally
-            {
+            } finally {
                 stream.Close();
             }
 

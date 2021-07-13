@@ -3,10 +3,8 @@ using System.Numerics;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
 
-namespace MyGUI.Types.Renderer
-{
-    internal class Camera
-    {
+namespace MyGUI.Types.Renderer {
+    internal class Camera {
         private const float CAMERASPEED = 300f; // Per second
         private const float FOV = OpenTK.MathHelper.PiOver4;
 
@@ -33,32 +31,27 @@ namespace MyGUI.Types.Renderer
 
         private KeyboardState KeyboardState;
 
-        public Camera()
-        {
+        public Camera() {
             Location = new Vector3(1);
             LookAt(new Vector3(0));
         }
 
-        private void RecalculateMatrices()
-        {
+        private void RecalculateMatrices() {
             CameraViewMatrix = Matrix4x4.CreateScale(Scale) * Matrix4x4.CreateLookAt(Location, Location + GetForwardVector(), Vector3.UnitZ);
             ViewProjectionMatrix = CameraViewMatrix * ProjectionMatrix;
             ViewFrustum.Update(ViewProjectionMatrix);
         }
 
         // Calculate forward vector from pitch and yaw
-        private Vector3 GetForwardVector()
-        {
+        private Vector3 GetForwardVector() {
             return new Vector3((float)(Math.Cos(Yaw) * Math.Cos(Pitch)), (float)(Math.Sin(Yaw) * Math.Cos(Pitch)), (float)Math.Sin(Pitch));
         }
 
-        private Vector3 GetRightVector()
-        {
+        private Vector3 GetRightVector() {
             return new Vector3((float)Math.Cos(Yaw - OpenTK.MathHelper.PiOver2), (float)Math.Sin(Yaw - OpenTK.MathHelper.PiOver2), 0);
         }
 
-        public void SetViewportSize(int viewportWidth, int viewportHeight)
-        {
+        public void SetViewportSize(int viewportWidth, int viewportHeight) {
             // Store window size and aspect ratio
             AspectRatio = viewportWidth / (float)viewportHeight;
             WindowSize = new Vector2(viewportWidth, viewportHeight);
@@ -72,8 +65,7 @@ namespace MyGUI.Types.Renderer
             GL.Viewport(0, 0, viewportWidth, viewportHeight);
         }
 
-        public void CopyFrom(Camera fromOther)
-        {
+        public void CopyFrom(Camera fromOther) {
             AspectRatio = fromOther.AspectRatio;
             WindowSize = fromOther.WindowSize;
             Location = fromOther.Location;
@@ -85,22 +77,19 @@ namespace MyGUI.Types.Renderer
             ViewFrustum.Update(ViewProjectionMatrix);
         }
 
-        public void SetLocation(Vector3 location)
-        {
+        public void SetLocation(Vector3 location) {
             Location = location;
             RecalculateMatrices();
         }
 
-        public void SetLocationPitchYaw(Vector3 location, float pitch, float yaw)
-        {
+        public void SetLocationPitchYaw(Vector3 location, float pitch, float yaw) {
             Location = location;
             Pitch = pitch;
             Yaw = yaw;
             RecalculateMatrices();
         }
 
-        public void LookAt(Vector3 target)
-        {
+        public void LookAt(Vector3 target) {
             var dir = Vector3.Normalize(target - Location);
             Yaw = (float)Math.Atan2(dir.Y, dir.X);
             Pitch = (float)Math.Asin(dir.Z);
@@ -109,8 +98,7 @@ namespace MyGUI.Types.Renderer
             RecalculateMatrices();
         }
 
-        public void SetFromTransformMatrix(Matrix4x4 matrix)
-        {
+        public void SetFromTransformMatrix(Matrix4x4 matrix) {
             Location = matrix.Translation;
 
             // Extract view direction from view matrix and use it to calculate pitch and yaw
@@ -121,16 +109,13 @@ namespace MyGUI.Types.Renderer
             RecalculateMatrices();
         }
 
-        public void SetScale(float scale)
-        {
+        public void SetScale(float scale) {
             Scale = scale;
             RecalculateMatrices();
         }
 
-        public void Tick(float deltaTime)
-        {
-            if (!MouseOverRenderArea)
-            {
+        public void Tick(float deltaTime) {
+            if (!MouseOverRenderArea) {
                 return;
             }
 
@@ -146,14 +131,11 @@ namespace MyGUI.Types.Renderer
             RecalculateMatrices();
         }
 
-        public void HandleInput(MouseState mouseState, KeyboardState keyboardState)
-        {
+        public void HandleInput(MouseState mouseState, KeyboardState keyboardState) {
             KeyboardState = keyboardState;
 
-            if (MouseOverRenderArea && mouseState.LeftButton == ButtonState.Pressed)
-            {
-                if (!MouseDragging)
-                {
+            if (MouseOverRenderArea && mouseState.LeftButton == ButtonState.Pressed) {
+                if (!MouseDragging) {
                     MouseDragging = true;
                     MousePreviousPosition = new Vector2(mouseState.X, mouseState.Y);
                 }
@@ -166,67 +148,52 @@ namespace MyGUI.Types.Renderer
                 MousePreviousPosition = mouseNewCoords;
             }
 
-            if (!MouseOverRenderArea || mouseState.LeftButton == ButtonState.Released)
-            {
+            if (!MouseOverRenderArea || mouseState.LeftButton == ButtonState.Released) {
                 MouseDragging = false;
                 MouseDelta = default;
             }
         }
 
-        private void HandleKeyboardInput(float deltaTime)
-        {
+        private void HandleKeyboardInput(float deltaTime) {
             var speed = CAMERASPEED * deltaTime;
 
             // Double speed if shift is pressed
-            if (KeyboardState.IsKeyDown(Key.ShiftLeft))
-            {
+            if (KeyboardState.IsKeyDown(Key.ShiftLeft)) {
                 speed *= 2;
-            }
-            else if (KeyboardState.IsKeyDown(Key.F))
-            {
+            } else if (KeyboardState.IsKeyDown(Key.F)) {
                 speed *= 10;
             }
 
-            if (KeyboardState.IsKeyDown(Key.W))
-            {
+            if (KeyboardState.IsKeyDown(Key.W)) {
                 Location += GetForwardVector() * speed;
             }
 
-            if (KeyboardState.IsKeyDown(Key.S))
-            {
+            if (KeyboardState.IsKeyDown(Key.S)) {
                 Location -= GetForwardVector() * speed;
             }
 
-            if (KeyboardState.IsKeyDown(Key.D))
-            {
+            if (KeyboardState.IsKeyDown(Key.D)) {
                 Location += GetRightVector() * speed;
             }
 
-            if (KeyboardState.IsKeyDown(Key.A))
-            {
+            if (KeyboardState.IsKeyDown(Key.A)) {
                 Location -= GetRightVector() * speed;
             }
 
-            if (KeyboardState.IsKeyDown(Key.Z))
-            {
+            if (KeyboardState.IsKeyDown(Key.Z)) {
                 Location += new Vector3(0, 0, -speed);
             }
 
-            if (KeyboardState.IsKeyDown(Key.Q))
-            {
+            if (KeyboardState.IsKeyDown(Key.Q)) {
                 Location += new Vector3(0, 0, speed);
             }
         }
 
         // Prevent camera from going upside-down
-        private void ClampRotation()
-        {
-            if (Pitch >= OpenTK.MathHelper.PiOver2)
-            {
+        private void ClampRotation() {
+            if (Pitch >= OpenTK.MathHelper.PiOver2) {
                 Pitch = OpenTK.MathHelper.PiOver2 - 0.001f;
-            }
-            else if (Pitch <= -OpenTK.MathHelper.PiOver2)
-            {
+            } else if (Pitch <= -OpenTK.MathHelper.PiOver2) {
                 Pitch = -OpenTK.MathHelper.PiOver2 + 0.001f;
             }
         }

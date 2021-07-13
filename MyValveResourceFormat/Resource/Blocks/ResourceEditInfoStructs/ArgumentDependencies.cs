@@ -2,19 +2,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace MyValveResourceFormat.Blocks.ResourceEditInfoStructs
-{
-    public class ArgumentDependencies : REDIBlock
-    {
-        public class ArgumentDependency
-        {
+namespace MyValveResourceFormat.Blocks.ResourceEditInfoStructs {
+    public class ArgumentDependencies : REDIBlock {
+        public class ArgumentDependency {
             public string ParameterName { get; set; }
             public string ParameterType { get; set; }
             public uint Fingerprint { get; set; }
             public uint FingerprintDefault { get; set; }
 
-            public void WriteText(IndentedTextWriter writer)
-            {
+            public void WriteText(IndentedTextWriter writer) {
                 writer.WriteLine("ResourceArgumentDependency_t");
                 writer.WriteLine("{");
                 writer.Indent++;
@@ -29,19 +25,16 @@ namespace MyValveResourceFormat.Blocks.ResourceEditInfoStructs
 
         public List<ArgumentDependency> List { get; }
 
-        public ArgumentDependencies()
-        {
+        public ArgumentDependencies() {
             List = new List<ArgumentDependency>();
         }
 
-        public override void Read(BinaryReader reader, Resource resource)
-        {
+        public override void Read(BinaryReader reader, Resource resource) {
             reader.BaseStream.Position = Offset;
 
             // Debug.WriteLine(reader.BaseStream.Position);
 
-            for (var i = 0; i < Size; i++)
-            {
+            for (var i = 0; i < Size; i++) {
                 var dep = new ArgumentDependency();
 
                 dep.ParameterName = reader.ReadOffsetString(Encoding.UTF8);
@@ -53,14 +46,12 @@ namespace MyValveResourceFormat.Blocks.ResourceEditInfoStructs
             }
         }
 
-        public override void WriteText(IndentedTextWriter writer)
-        {
+        public override void WriteText(IndentedTextWriter writer) {
             writer.WriteLine("Struct m_ArgumentDependencies[{0}] =", List.Count);
             writer.WriteLine("[");
             writer.Indent++;
 
-            foreach (var dep in List)
-            {
+            foreach (var dep in List) {
                 dep.WriteText(writer);
             }
 

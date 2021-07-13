@@ -2,19 +2,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace MyValveResourceFormat.Blocks.ResourceEditInfoStructs
-{
-    public class InputDependencies : REDIBlock
-    {
-        public class InputDependency
-        {
+namespace MyValveResourceFormat.Blocks.ResourceEditInfoStructs {
+    public class InputDependencies : REDIBlock {
+        public class InputDependency {
             public string ContentRelativeFilename { get; set; }
             public string ContentSearchPath { get; set; }
             public uint FileCRC { get; set; }
             public uint Flags { get; set; }
 
-            public void WriteText(IndentedTextWriter writer)
-            {
+            public void WriteText(IndentedTextWriter writer) {
                 writer.WriteLine("ResourceInputDependency_t");
                 writer.WriteLine("{");
                 writer.Indent++;
@@ -29,13 +25,11 @@ namespace MyValveResourceFormat.Blocks.ResourceEditInfoStructs
 
         public List<InputDependency> List { get; }
 
-        public InputDependencies()
-        {
+        public InputDependencies() {
             List = new List<InputDependency>();
         }
 
-        public override void Read(BinaryReader reader, Resource resource)
-        {
+        public override void Read(BinaryReader reader, Resource resource) {
             reader.BaseStream.Position = Offset;
 
             // Debug.WriteLine("InputDependencies size = {0}", Size);
@@ -46,8 +40,7 @@ namespace MyValveResourceFormat.Blocks.ResourceEditInfoStructs
 
 
 
-            for (var i = 0; i < Size; i++)
-            {
+            for (var i = 0; i < Size; i++) {
                 var dep = new InputDependency();
 
                 dep.ContentRelativeFilename = reader.ReadOffsetString(Encoding.UTF8);
@@ -62,19 +55,16 @@ namespace MyValveResourceFormat.Blocks.ResourceEditInfoStructs
             }
         }
 
-        public override void WriteText(IndentedTextWriter writer)
-        {
+        public override void WriteText(IndentedTextWriter writer) {
             writer.WriteLine("Struct m_InputDependencies[{0}] =", List.Count);
             WriteList(writer);
         }
 
-        protected void WriteList(IndentedTextWriter writer)
-        {
+        protected void WriteList(IndentedTextWriter writer) {
             writer.WriteLine("[");
             writer.Indent++;
 
-            foreach (var dep in List)
-            {
+            foreach (var dep in List) {
                 dep.WriteText(writer);
             }
 

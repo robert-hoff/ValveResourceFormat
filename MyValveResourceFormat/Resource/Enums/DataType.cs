@@ -1,9 +1,7 @@
 using System;
 
-namespace MyValveResourceFormat
-{
-    public enum DataType
-    {
+namespace MyValveResourceFormat {
+    public enum DataType {
         Struct = 1,
         Enum = 2, // TODO: not verified with resourceinfo
         ExternalReference = 3,

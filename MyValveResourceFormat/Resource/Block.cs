@@ -1,12 +1,10 @@
 using System.IO;
 
-namespace MyValveResourceFormat
-{
+namespace MyValveResourceFormat {
     /// <summary>
     /// Represents a block within the resource file.
     /// </summary>
-    public abstract class Block
-    {
+    public abstract class Block {
         /// <summary>
         /// Gets the block type.
         /// </summary>
@@ -28,10 +26,8 @@ namespace MyValveResourceFormat
         /// Returns a string that represents the current object.
         /// </summary>
         /// <returns>A string that represents the current object.</returns>
-        public override string ToString()
-        {
-            using (var writer = new IndentedTextWriter())
-            {
+        public override string ToString() {
+            using (var writer = new IndentedTextWriter()) {
                 WriteText(writer);
 
                 return writer.ToString();

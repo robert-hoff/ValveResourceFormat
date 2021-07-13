@@ -3,39 +3,31 @@ using System.Linq;
 using System.Windows.Forms;
 using MyGUI.Utils;
 
-namespace MyGUI.Types.Viewers
-{
-    public class ByteViewer : IViewer
-    {
+namespace MyGUI.Types.Viewers {
+    public class ByteViewer : IViewer {
         public static bool IsAccepted() => true;
 
-        public TabPage Create(VrfGuiContext vrfGuiContext, byte[] input)
-        {
+        public TabPage Create(VrfGuiContext vrfGuiContext, byte[] input) {
             var tab = new TabPage();
-            var resTabs = new TabControl
-            {
+            var resTabs = new TabControl {
                 Dock = DockStyle.Fill,
             };
             tab.Controls.Add(resTabs);
 
             var bvTab = new TabPage("Hex");
-            var bv = new System.ComponentModel.Design.ByteViewer
-            {
+            var bv = new System.ComponentModel.Design.ByteViewer {
                 Dock = DockStyle.Fill,
             };
             bvTab.Controls.Add(bv);
             resTabs.TabPages.Add(bvTab);
 
-            if (input == null)
-            {
+            if (input == null) {
                 input = File.ReadAllBytes(vrfGuiContext.FileName);
             }
 
-            if (!input.Contains<byte>(0x00))
-            {
+            if (!input.Contains<byte>(0x00)) {
                 var textTab = new TabPage("Text");
-                var text = new TextBox
-                {
+                var text = new TextBox {
                     Dock = DockStyle.Fill,
                     ScrollBars = ScrollBars.Vertical,
                     Multiline = true,
@@ -47,8 +39,7 @@ namespace MyGUI.Types.Viewers
                 resTabs.SelectedTab = textTab;
             }
 
-            Program.MainForm.Invoke((MethodInvoker)(() =>
-            {
+            Program.MainForm.Invoke((MethodInvoker)(() => {
                 bv.SetBytes(input);
             }));
 

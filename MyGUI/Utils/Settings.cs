@@ -7,12 +7,9 @@ using System.Runtime.InteropServices;
 using Microsoft.Win32;
 using ValveKeyValue;
 
-namespace MyGUI.Utils
-{
-    internal static class Settings
-    {
-        public class AppConfig
-        {
+namespace MyGUI.Utils {
+    internal static class Settings {
+        public class AppConfig {
             public List<string> GameSearchPaths { get; set; } = new List<string>();
             public string BackgroundColor { get; set; } = string.Empty;
             public string OpenDirectory { get; set; } = string.Empty;
@@ -26,59 +23,47 @@ namespace MyGUI.Utils
 
         public static Color BackgroundColor { get; set; } = Color.FromArgb(60, 60, 60);
 
-        public static void Load()
-        {
+        public static void Load() {
             SettingsFilePath = Path.Combine(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule?.FileName), "settings.txt");
 
-            if (!File.Exists(SettingsFilePath))
-            {
+            if (!File.Exists(SettingsFilePath)) {
                 Save();
                 return;
             }
 
-            using (var stream = new FileStream(SettingsFilePath, FileMode.Open, FileAccess.Read))
-            {
+            using (var stream = new FileStream(SettingsFilePath, FileMode.Open, FileAccess.Read)) {
                 Config = KVSerializer.Create(KVSerializationFormat.KeyValues1Text).Deserialize<AppConfig>(stream, KVSerializerOptions.DefaultOptions);
             }
 
             BackgroundColor = ColorTranslator.FromHtml(Config.BackgroundColor);
 
-            if (Config.SavedCameras == null)
-            {
+            if (Config.SavedCameras == null) {
                 Config.SavedCameras = new Dictionary<string, float[]>();
             }
 
-            if (string.IsNullOrEmpty(Config.OpenDirectory) && RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-            {
+            if (string.IsNullOrEmpty(Config.OpenDirectory) && RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
                 Config.OpenDirectory = GetSteamPath();
             }
         }
 
-        public static void Save()
-        {
+        public static void Save() {
             Config.BackgroundColor = ColorTranslator.ToHtml(BackgroundColor);
 
-            using (var stream = new FileStream(SettingsFilePath, FileMode.Create, FileAccess.Write, FileShare.None))
-            {
+            using (var stream = new FileStream(SettingsFilePath, FileMode.Create, FileAccess.Write, FileShare.None)) {
                 KVSerializer.Create(KVSerializationFormat.KeyValues1Text).Serialize(stream, Config, nameof(MyValveResourceFormat));
             }
         }
 
-        private static string GetSteamPath()
-        {
-            try
-            {
+        private static string GetSteamPath() {
+            try {
                 var key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Valve\\Steam") ??
                           RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64)
                               .OpenSubKey("SOFTWARE\\Valve\\Steam");
 
-                if (key != null && key.GetValue("SteamPath") is string steamPath)
-                {
+                if (key != null && key.GetValue("SteamPath") is string steamPath) {
                     return Path.GetFullPath(Path.Combine(steamPath, "steamapps", "common"));
                 }
-            }
-            catch
-            {
+            } catch {
                 // Don't care about registry exceptions
             }
 

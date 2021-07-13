@@ -1,9 +1,7 @@
 using System;
 
-namespace MyValveResourceFormat
-{
-    public enum VTexFormat
-    {
+namespace MyValveResourceFormat {
+    public enum VTexFormat {
 #pragma warning disable 1591
         UNKNOWN = 0,
         DXT1 = 1,

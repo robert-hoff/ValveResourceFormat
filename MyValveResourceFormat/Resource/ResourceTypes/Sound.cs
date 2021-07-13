@@ -3,12 +3,9 @@ using System.IO;
 using System.Text;
 using MyValveResourceFormat.Blocks;
 
-namespace MyValveResourceFormat.ResourceTypes
-{
-    public class Sound : ResourceData
-    {
-        public enum AudioFileType
-        {
+namespace MyValveResourceFormat.ResourceTypes {
+    public class Sound : ResourceData {
+        public enum AudioFileType {
             AAC = 0,
             WAV = 1,
             MP3 = 2,
@@ -56,18 +53,15 @@ namespace MyValveResourceFormat.ResourceTypes
 
         private BinaryReader Reader;
 
-        public override void Read(BinaryReader reader, Resource resource)
-        {
+        public override void Read(BinaryReader reader, Resource resource) {
             Reader = reader;
             reader.BaseStream.Position = Offset;
 
-            if (resource.Version > 4)
-            {
+            if (resource.Version > 4) {
                 throw new InvalidDataException($"Invalid vsnd version '{resource.Version}'");
             }
 
-            if (resource.Version >= 4)
-            {
+            if (resource.Version >= 4) {
                 SampleRate = reader.ReadUInt16();
 
                 SetVersion4();
@@ -75,14 +69,11 @@ namespace MyValveResourceFormat.ResourceTypes
                 SampleSize = Bits / 8;
                 Channels = 1;
                 AudioFormat = 1;
-            }
-            else
-            {
+            } else {
                 var bitpackedSoundInfo = reader.ReadUInt32();
                 var type = ExtractSub(bitpackedSoundInfo, 0, 2);
 
-                if (type > 2)
-                {
+                if (type > 2) {
                     throw new InvalidDataException($"Unknown sound type in old vsnd version: {type}");
                 }
 
@@ -101,8 +92,7 @@ namespace MyValveResourceFormat.ResourceTypes
             StreamingDataSize = reader.ReadUInt32();
         }
 
-        private static uint ExtractSub(uint l, byte offset, byte nrBits)
-        {
+        private static uint ExtractSub(uint l, byte offset, byte nrBits) {
             var rightShifted = l >> offset;
             var mask = (1 << nrBits) - 1;
             return (uint)(rightShifted & mask);
@@ -113,10 +103,8 @@ namespace MyValveResourceFormat.ResourceTypes
         /// In case of WAV files, header is automatically generated as Valve removes it when compiling.
         /// </summary>
         /// <returns>Byte array containing sound data.</returns>
-        public byte[] GetSound()
-        {
-            using (var sound = GetSoundStream())
-            {
+        public byte[] GetSound() {
+            using (var sound = GetSoundStream()) {
                 return sound.ToArray();
             }
         }
@@ -126,14 +114,12 @@ namespace MyValveResourceFormat.ResourceTypes
         /// In case of WAV files, header is automatically generated as Valve removes it when compiling.
         /// </summary>
         /// <returns>Memory stream containing sound data.</returns>
-        public MemoryStream GetSoundStream()
-        {
+        public MemoryStream GetSoundStream() {
             Reader.BaseStream.Position = Offset + Size;
 
             var stream = new MemoryStream();
 
-            if (SoundType == AudioFileType.WAV)
-            {
+            if (SoundType == AudioFileType.WAV) {
                 // http://soundfile.sapp.org/doc/WaveFormat/
                 // http://www.codeproject.com/Articles/129173/Writing-a-Proper-Wave-File
                 var headerRiff = new byte[] { 0x52, 0x49, 0x46, 0x46 };
@@ -171,13 +157,11 @@ namespace MyValveResourceFormat.ResourceTypes
             return stream;
         }
 
-        private void SetVersion4()
-        {
+        private void SetVersion4() {
             var type = Reader.ReadUInt16();
 
             // We don't know if it's actually calculated, or if its a lookup
-            switch (type)
-            {
+            switch (type) {
                 case 0x0101: SoundType = AudioFileType.WAV; Bits = 8; break;
                 case 0x0201: SoundType = AudioFileType.WAV; Bits = 8; break;
                 case 0x0100: SoundType = AudioFileType.WAV; Bits = 16; break;
@@ -190,14 +174,12 @@ namespace MyValveResourceFormat.ResourceTypes
             }
         }
 
-        private static byte[] PackageInt(uint source, int length)
-        {
+        private static byte[] PackageInt(uint source, int length) {
             var retVal = new byte[length];
             retVal[0] = (byte)(source & 0xFF);
             retVal[1] = (byte)((source >> 8) & 0xFF);
 
-            if (length == 4)
-            {
+            if (length == 4) {
                 retVal[2] = (byte)((source >> 0x10) & 0xFF);
                 retVal[3] = (byte)((source >> 0x18) & 0xFF);
             }
@@ -205,8 +187,7 @@ namespace MyValveResourceFormat.ResourceTypes
             return retVal;
         }
 
-        public override string ToString()
-        {
+        public override string ToString() {
             var output = new StringBuilder();
 
             output.AppendLine($"SoundType: {SoundType}");

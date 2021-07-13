@@ -1,9 +1,7 @@
 using System;
 
-namespace MyValveResourceFormat
-{
-    public enum BlockType
-    {
+namespace MyValveResourceFormat {
+    public enum BlockType {
         RERL = 1,
         REDI,
         RED2,

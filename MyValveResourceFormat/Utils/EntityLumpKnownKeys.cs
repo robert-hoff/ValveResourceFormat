@@ -1,13 +1,10 @@
 using System.Collections.Generic;
 
-namespace MyValveResourceFormat.Utils
-{
-    public class EntityLumpKnownKeys
-    {
+namespace MyValveResourceFormat.Utils {
+    public class EntityLumpKnownKeys {
         public Dictionary<uint, string> Fields { get; } = new Dictionary<uint, string>();
 
-        public EntityLumpKnownKeys()
-        {
+        public EntityLumpKnownKeys() {
             // grep -Eohr "^\s*([a-zA-Z0-9\w_-]+)\s*\(" **/*.fgd | tr '[:upper:]' '[:lower:]' | sort -h | uniq > test.txt
             // and worldrendererbuilder.dll
 
@@ -5565,8 +5562,7 @@ namespace MyValveResourceFormat.Utils
                 "zoomfogscale",
             };
 
-            foreach (var field in list)
-            {
+            foreach (var field in list) {
                 Fields.Add(EntityLumpKeyLookup.Get(field), field);
             }
         }

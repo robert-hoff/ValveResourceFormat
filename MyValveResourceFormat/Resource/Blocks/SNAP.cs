@@ -7,39 +7,33 @@ using MyValveResourceFormat.Compression;
 using MyValveResourceFormat.Serialization;
 using MyValveResourceFormat.Utils;
 
-namespace MyValveResourceFormat.Blocks
-{
+namespace MyValveResourceFormat.Blocks {
     /// <summary>
     /// "SNAP" block.
     /// </summary>
-    public class SNAP : Block
-    {
+    public class SNAP : Block {
         public override BlockType Type => BlockType.SNAP;
 
         public uint NumParticles { get; private set; }
 
         public IReadOnlyDictionary<string, IEnumerable> AttributeData { get; private set; }
 
-        public override void WriteText(IndentedTextWriter writer)
-        {
+        public override void WriteText(IndentedTextWriter writer) {
             writer.WriteLine("{0:X8}", Offset);
 
             writer.WriteLine($"{NumParticles} particles with {AttributeData.Count} attributes:");
             writer.WriteLine();
 
-            foreach (var (attribute, data) in AttributeData)
-            {
+            foreach (var (attribute, data) in AttributeData) {
                 writer.WriteLine($"- Attribute {attribute} -");
-                foreach (var d in data)
-                {
+                foreach (var d in data) {
                     writer.WriteLine(d);
                 }
                 writer.WriteLine();
             }
         }
 
-        public override void Read(BinaryReader reader, Resource resource)
-        {
+        public override void Read(BinaryReader reader, Resource resource) {
             reader.BaseStream.Position = Offset;
 
             // Decompress SNAP block compression
@@ -55,13 +49,11 @@ namespace MyValveResourceFormat.Blocks
 
             var attributeData = new Dictionary<string, IEnumerable>();
 
-            foreach (var attribute in attributes)
-            {
+            foreach (var attribute in attributes) {
                 var attributeName = attribute.GetProperty<string>("name");
                 var attributeType = attribute.GetProperty<string>("type");
 
-                var attributeArray = attributeType switch
-                {
+                var attributeArray = attributeType switch {
                     "skinning" => ReadSkinningData(innerReader, numParticles, stringList),
                     "string" => ReadStringArray(innerReader, numParticles, stringList),
                     "bone" => ReadStringArray(innerReader, numParticles, stringList),
@@ -75,31 +67,22 @@ namespace MyValveResourceFormat.Blocks
             AttributeData = attributeData;
         }
 
-        private static IEnumerable ReadArrayOfType(BinaryReader reader, long count, string type)
-        {
-            if (type == "float3" || type == "vector")
-            {
+        private static IEnumerable ReadArrayOfType(BinaryReader reader, long count, string type) {
+            if (type == "float3" || type == "vector") {
                 var array = new Vector3[count];
-                for (var i = 0; i < count; i++)
-                {
+                for (var i = 0; i < count; i++) {
                     array[i] = new Vector3(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
                 }
                 return array;
-            }
-            else if (type == "float")
-            {
+            } else if (type == "float") {
                 var array = new float[count];
-                for (var i = 0; i < count; i++)
-                {
+                for (var i = 0; i < count; i++) {
                     array[i] = reader.ReadSingle();
                 }
                 return array;
-            }
-            else if (type == "int")
-            {
+            } else if (type == "int") {
                 var array = new int[count];
-                for (var i = 0; i < count; i++)
-                {
+                for (var i = 0; i < count; i++) {
                     array[i] = reader.ReadInt32();
                 }
                 return array;
@@ -108,19 +91,14 @@ namespace MyValveResourceFormat.Blocks
             throw new UnexpectedMagicException("Unsupported SNAP array type.", type, nameof(type));
         }
 
-        private static string[] ReadStringArray(BinaryReader reader, long count, string[] stringList)
-        {
+        private static string[] ReadStringArray(BinaryReader reader, long count, string[] stringList) {
             var result = new string[count];
 
-            for (var i = 0; i < count; i++)
-            {
+            for (var i = 0; i < count; i++) {
                 var index = reader.ReadInt32();
-                if (stringList != null && index < stringList.Length)
-                {
+                if (stringList != null && index < stringList.Length) {
                     result[i] = stringList[index];
-                }
-                else
-                {
+                } else {
                     result[i] = $"{index} <INVALID: string not in DATA string list>";
                 }
             }
@@ -128,8 +106,7 @@ namespace MyValveResourceFormat.Blocks
             return result;
         }
 
-        public class SkinningData
-        {
+        public class SkinningData {
             public string[] JointNames { get; set; }
             public float[] Weights { get; set; }
 
@@ -138,28 +115,23 @@ namespace MyValveResourceFormat.Blocks
                     .Select(i => $"({JointNames[i]}: {Weights[i]})"));
         }
 
-        private static SkinningData[] ReadSkinningData(BinaryReader reader, long count, string[] stringList)
-        {
+        private static SkinningData[] ReadSkinningData(BinaryReader reader, long count, string[] stringList) {
             var result = new SkinningData[count];
 
-            for (var i = 0; i < count; i++)
-            {
+            for (var i = 0; i < count; i++) {
                 // Read 4 joints
                 var joints = new string[4];
-                for (var j = 0; j < 4; j++)
-                {
+                for (var j = 0; j < 4; j++) {
                     joints[j] = stringList[reader.ReadInt16()];
                 }
 
                 // Read 4 weights
                 var weights = new float[4];
-                for (var j = 0; j < 4; j++)
-                {
+                for (var j = 0; j < 4; j++) {
                     weights[j] = reader.ReadSingle();
                 }
 
-                result[i] = new SkinningData
-                {
+                result[i] = new SkinningData {
                     JointNames = joints,
                     Weights = weights
                 };

@@ -2,10 +2,8 @@ using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using MyValveResourceFormat.Serialization;
 
-namespace MyGUI.Types.Renderer
-{
-    internal class DrawCall
-    {
+namespace MyGUI.Types.Renderer {
+    internal class DrawCall {
         public PrimitiveType PrimitiveType { get; set; }
         public Shader Shader { get; set; }
         //public uint BaseVertex { get; set; }
@@ -24,8 +22,7 @@ namespace MyGUI.Types.Renderer
         public DrawBuffer IndexBuffer { get; set; }
     }
 
-    internal struct DrawBuffer
-    {
+    internal struct DrawBuffer {
         public uint Id;
         public uint Offset;
     }

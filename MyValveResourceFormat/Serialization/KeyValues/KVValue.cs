@@ -4,11 +4,9 @@ using System;
 using System.Globalization;
 using System.Linq;
 
-namespace MyValveResourceFormat.Serialization.KeyValues
-{
+namespace MyValveResourceFormat.Serialization.KeyValues {
     //Different type of value blocks for KeyValues (All in use for KV3)
-    public enum KVType : byte
-    {
+    public enum KVType : byte {
         STRING_MULTI = 0, // STRING_MULTI doesn't have an ID
         NULL = 1,
         BOOLEAN = 2,
@@ -33,24 +31,19 @@ namespace MyValveResourceFormat.Serialization.KeyValues
     /// <summary>
     /// Class to hold type + value
     /// </summary>
-    public class KVValue
-    {
+    public class KVValue {
         public KVType Type { get; private set; }
         public object Value { get; private set; }
 
-        public KVValue(KVType type, object value)
-        {
+        public KVValue(KVType type, object value) {
             Type = type;
             Value = value;
         }
 
         //Print a value in the correct representation
-        public void PrintValue(IndentedTextWriter writer)
-        {
-            if (this is KVFlaggedValue flagValue)
-            {
-                switch (flagValue.Flag)
-                {
+        public void PrintValue(IndentedTextWriter writer) {
+            if (this is KVFlaggedValue flagValue) {
+                switch (flagValue.Flag) {
                     case KVFlag.Resource:
                         writer.Write("resource:");
                         break;
@@ -71,8 +64,7 @@ namespace MyValveResourceFormat.Serialization.KeyValues
                 }
             }
 
-            switch (Type)
-            {
+            switch (Type) {
                 case KVType.OBJECT:
                 case KVType.ARRAY:
                     ((KVObject)Value).Serialize(writer);
@@ -110,24 +102,19 @@ namespace MyValveResourceFormat.Serialization.KeyValues
                     writer.WriteLine("#[");
                     writer.Indent++;
 
-                    foreach (var oneByte in byteArray)
-                    {
+                    foreach (var oneByte in byteArray) {
                         writer.Write(oneByte.ToString("X2"));
 
-                        if (++count % 32 == 0)
-                        {
+                        if (++count % 32 == 0) {
                             writer.WriteLine();
-                        }
-                        else
-                        {
+                        } else {
                             writer.Write(" ");
                         }
                     }
 
                     writer.Indent--;
 
-                    if (count % 32 != 0)
-                    {
+                    if (count % 32 != 0) {
                         writer.WriteLine();
                     }
 
@@ -138,26 +125,21 @@ namespace MyValveResourceFormat.Serialization.KeyValues
             }
         }
 
-        private string EscapeUnescaped(string input, char toEscape)
-        {
-            if (input.Length == 0)
-            {
+        private string EscapeUnescaped(string input, char toEscape) {
+            if (input.Length == 0) {
                 return input;
             }
 
             int index = 1;
-            while (true)
-            {
+            while (true) {
                 index = input.IndexOf(toEscape, index);
 
                 //Break out of the loop if no more occurrences were found
-                if (index == -1)
-                {
+                if (index == -1) {
                     break;
                 }
 
-                if (input.ElementAt(index - 1) != '\\')
-                {
+                if (input.ElementAt(index - 1) != '\\') {
                     input = input.Insert(index, "\\");
                 }
 

@@ -2,17 +2,13 @@
 using System.IO;
 using System.Text;
 
-namespace MyValveResourceFormat.Blocks.ResourceEditInfoStructs
-{
-    public class ExtraFloatData : REDIBlock
-    {
-        public class EditFloatData
-        {
+namespace MyValveResourceFormat.Blocks.ResourceEditInfoStructs {
+    public class ExtraFloatData : REDIBlock {
+        public class EditFloatData {
             public string Name { get; set; }
             public float Value { get; set; }
 
-            public void WriteText(IndentedTextWriter writer)
-            {
+            public void WriteText(IndentedTextWriter writer) {
                 writer.WriteLine("ResourceEditFloatData_t");
                 writer.WriteLine("{");
                 writer.Indent++;
@@ -25,17 +21,14 @@ namespace MyValveResourceFormat.Blocks.ResourceEditInfoStructs
 
         public List<EditFloatData> List { get; }
 
-        public ExtraFloatData()
-        {
+        public ExtraFloatData() {
             List = new List<EditFloatData>();
         }
 
-        public override void Read(BinaryReader reader, Resource resource)
-        {
+        public override void Read(BinaryReader reader, Resource resource) {
             reader.BaseStream.Position = Offset;
 
-            for (var i = 0; i < Size; i++)
-            {
+            for (var i = 0; i < Size; i++) {
                 var dep = new EditFloatData();
 
                 dep.Name = reader.ReadOffsetString(Encoding.UTF8);
@@ -45,14 +38,12 @@ namespace MyValveResourceFormat.Blocks.ResourceEditInfoStructs
             }
         }
 
-        public override void WriteText(IndentedTextWriter writer)
-        {
+        public override void WriteText(IndentedTextWriter writer) {
             writer.WriteLine("Struct m_ExtraFloatData[{0}] =", List.Count);
             writer.WriteLine("[");
             writer.Indent++;
 
-            foreach (var dep in List)
-            {
+            foreach (var dep in List) {
                 dep.WriteText(writer);
             }
 

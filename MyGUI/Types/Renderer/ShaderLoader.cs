@@ -9,10 +9,8 @@ using System.Text.RegularExpressions;
 using OpenTK.Graphics.OpenGL;
 using MyValveResourceFormat.ThirdParty;
 
-namespace MyGUI.Types.Renderer
-{
-    public class ShaderLoader
-    {
+namespace MyGUI.Types.Renderer {
+    public class ShaderLoader {
         private const string ShaderDirectory = "MyGUI.Types.Renderer.Shaders.";
         private const int ShaderSeed = 0x13141516;
         private static Regex RegexInclude = new Regex(@"^#include ""(?<IncludeName>[^""]+)""", RegexOptions.Multiline);
@@ -23,17 +21,14 @@ namespace MyGUI.Types.Renderer
         private readonly Dictionary<string, List<string>> ShaderDefines = new Dictionary<string, List<string>>();
 #endif
 
-        public Shader LoadShader(string shaderName, IDictionary<string, bool> arguments)
-        {
+        public Shader LoadShader(string shaderName, IDictionary<string, bool> arguments) {
             var shaderFileName = GetShaderFileByName(shaderName);
 
 #if !DEBUG_SHADERS || !DEBUG
-            if (ShaderDefines.ContainsKey(shaderFileName))
-            {
+            if (ShaderDefines.ContainsKey(shaderFileName)) {
                 var shaderCacheHash = CalculateShaderCacheHash(shaderFileName, arguments);
 
-                if (CachedShaders.TryGetValue(shaderCacheHash, out var cachedShader))
-                {
+                if (CachedShaders.TryGetValue(shaderCacheHash, out var cachedShader)) {
                     return cachedShader;
                 }
             }
@@ -51,8 +46,7 @@ namespace MyGUI.Types.Renderer
 #else
             using (var stream = assembly.GetManifestResourceStream($"{ShaderDirectory}{shaderFileName}.vert"))
 #endif
-            using (var reader = new StreamReader(stream))
-            {
+            using (var reader = new StreamReader(stream)) {
                 var shaderSource = reader.ReadToEnd();
                 GL.ShaderSource(vertexShader, PreprocessVertexShader(shaderSource, arguments));
 
@@ -64,8 +58,7 @@ namespace MyGUI.Types.Renderer
 
             GL.GetShader(vertexShader, ShaderParameter.CompileStatus, out var shaderStatus);
 
-            if (shaderStatus != 1)
-            {
+            if (shaderStatus != 1) {
                 GL.GetShaderInfoLog(vertexShader, out var vsInfo);
 
                 throw new Exception($"Error setting up Vertex Shader \"{shaderName}\": {vsInfo}");
@@ -79,8 +72,7 @@ namespace MyGUI.Types.Renderer
 #else
             using (var stream = assembly.GetManifestResourceStream($"{ShaderDirectory}{shaderFileName}.frag"))
 #endif
-            using (var reader = new StreamReader(stream))
-            {
+            using (var reader = new StreamReader(stream)) {
                 var shaderSource = reader.ReadToEnd();
                 GL.ShaderSource(fragmentShader, UpdateDefines(shaderSource, arguments));
 
@@ -92,8 +84,7 @@ namespace MyGUI.Types.Renderer
 
             GL.GetShader(fragmentShader, ShaderParameter.CompileStatus, out shaderStatus);
 
-            if (shaderStatus != 1)
-            {
+            if (shaderStatus != 1) {
                 GL.GetShaderInfoLog(fragmentShader, out var fsInfo);
 
                 throw new Exception($"Error setting up Fragment Shader \"{shaderName}\": {fsInfo}");
@@ -105,8 +96,7 @@ namespace MyGUI.Types.Renderer
                 .Select(k => k.Substring(renderMode.Length))
                 .ToList();
 
-            var shader = new Shader
-            {
+            var shader = new Shader {
                 Name = shaderName,
                 Parameters = arguments,
                 Program = GL.CreateProgram(),
@@ -120,8 +110,7 @@ namespace MyGUI.Types.Renderer
 
             GL.GetProgram(shader.Program, GetProgramParameterName.LinkStatus, out var linkStatus);
 
-            if (linkStatus != 1)
-            {
+            if (linkStatus != 1) {
                 GL.GetProgramInfoLog(shader.Program, out var linkInfo);
                 throw new Exception($"Error linking shaders: {linkInfo} (link status = {linkStatus}");
             }
@@ -144,8 +133,7 @@ namespace MyGUI.Types.Renderer
             return shader;
         }
 
-        public static Shader LoadPlaneShader(string shaderName, IDictionary<string, bool> arguments)
-        {
+        public static Shader LoadPlaneShader(string shaderName, IDictionary<string, bool> arguments) {
             var shaderFileName = GetShaderFileByName(shaderName);
 
             /* Vertex shader */
@@ -158,8 +146,7 @@ namespace MyGUI.Types.Renderer
 #else
             using (var stream = assembly.GetManifestResourceStream($"{ShaderDirectory}plane.vert"))
 #endif
-            using (var reader = new StreamReader(stream))
-            {
+            using (var reader = new StreamReader(stream)) {
                 GL.ShaderSource(vertexShader, reader.ReadToEnd());
             }
 
@@ -167,8 +154,7 @@ namespace MyGUI.Types.Renderer
 
             GL.GetShader(vertexShader, ShaderParameter.CompileStatus, out var shaderStatus);
 
-            if (shaderStatus != 1)
-            {
+            if (shaderStatus != 1) {
                 GL.GetShaderInfoLog(vertexShader, out var vsInfo);
 
                 throw new Exception($"Error setting up Vertex Shader \"{shaderName}\": {vsInfo}");
@@ -182,8 +168,7 @@ namespace MyGUI.Types.Renderer
 #else
             using (var stream = assembly.GetManifestResourceStream($"{ShaderDirectory}{shaderFileName}.frag"))
 #endif
-            using (var reader = new StreamReader(stream))
-            {
+            using (var reader = new StreamReader(stream)) {
                 var shaderSource = reader.ReadToEnd();
                 GL.ShaderSource(fragmentShader, UpdateDefines(shaderSource, arguments));
             }
@@ -192,15 +177,13 @@ namespace MyGUI.Types.Renderer
 
             GL.GetShader(fragmentShader, ShaderParameter.CompileStatus, out shaderStatus);
 
-            if (shaderStatus != 1)
-            {
+            if (shaderStatus != 1) {
                 GL.GetShaderInfoLog(fragmentShader, out var fsInfo);
 
                 throw new Exception($"Error setting up Fragment Shader \"{shaderName}\": {fsInfo}");
             }
 
-            var shader = new Shader
-            {
+            var shader = new Shader {
                 Name = shaderName,
                 Program = GL.CreateProgram(),
             };
@@ -212,8 +195,7 @@ namespace MyGUI.Types.Renderer
 
             GL.GetProgram(shader.Program, GetProgramParameterName.LinkStatus, out var linkStatus);
 
-            if (linkStatus != 1)
-            {
+            if (linkStatus != 1) {
                 GL.GetProgramInfoLog(shader.Program, out var linkInfo);
                 throw new Exception($"Error linking shaders: {linkInfo} (link status = {linkStatus}");
             }
@@ -228,8 +210,7 @@ namespace MyGUI.Types.Renderer
         }
 
         //Preprocess a vertex shader's source to include the #version plus #defines for parameters
-        private static string PreprocessVertexShader(string source, IDictionary<string, bool> arguments)
-        {
+        private static string PreprocessVertexShader(string source, IDictionary<string, bool> arguments) {
             //Update parameter defines
             var paramSource = UpdateDefines(source, arguments);
 
@@ -240,16 +221,13 @@ namespace MyGUI.Types.Renderer
         }
 
         //Update default defines with possible overrides from the model
-        private static string UpdateDefines(string source, IDictionary<string, bool> arguments)
-        {
+        private static string UpdateDefines(string source, IDictionary<string, bool> arguments) {
             //Find all #define param_(paramName) (paramValue) using regex
             var defines = RegexDefine.Matches(source);
 
-            foreach (Match define in defines)
-            {
+            foreach (Match define in defines) {
                 //Check if this parameter is in the arguments
-                if (!arguments.TryGetValue(define.Groups["ParamName"].Value, out var value))
-                {
+                if (!arguments.TryGetValue(define.Groups["ParamName"].Value, out var value)) {
                     continue;
                 }
 
@@ -266,22 +244,19 @@ namespace MyGUI.Types.Renderer
         }
 
         //Remove any #includes from the shader and replace with the included code
-        private static string ResolveIncludes(string source)
-        {
+        private static string ResolveIncludes(string source) {
             var assembly = Assembly.GetExecutingAssembly();
 
             var includes = RegexInclude.Matches(source);
 
-            foreach (Match define in includes)
-            {
+            foreach (Match define in includes) {
                 //Read included code
 #if DEBUG_SHADERS  && DEBUG
                 using (var stream = File.Open(GetShaderDiskPath(define.Groups["IncludeName"].Value), FileMode.Open))
 #else
                 using (var stream = assembly.GetManifestResourceStream($"{ShaderDirectory}{define.Groups["IncludeName"].Value}"))
 #endif
-                using (var reader = new StreamReader(stream))
-                {
+                using (var reader = new StreamReader(stream)) {
                     var includedCode = reader.ReadToEnd();
 
                     //Recursively resolve includes in the included code. (Watch out for cyclic dependencies!)
@@ -295,17 +270,14 @@ namespace MyGUI.Types.Renderer
             return source;
         }
 
-        private static List<string> FindDefines(string source)
-        {
+        private static List<string> FindDefines(string source) {
             var defines = RegexDefine.Matches(source);
             return defines.Select(match => match.Groups["ParamName"].Value).ToList();
         }
 
         // Map shader names to shader files
-        private static string GetShaderFileByName(string shaderName)
-        {
-            switch (shaderName)
-            {
+        private static string GetShaderFileByName(string shaderName) {
+            switch (shaderName) {
                 case "vrf.error":
                     return "error";
                 case "vrf.grid":
@@ -325,8 +297,7 @@ namespace MyGUI.Types.Renderer
                 case "multiblend.vfx":
                     return "multiblend";
                 default:
-                    if (shaderName.StartsWith("vr_"))
-                    {
+                    if (shaderName.StartsWith("vr_")) {
                         return "vr_standard";
                     }
 
@@ -338,15 +309,13 @@ namespace MyGUI.Types.Renderer
         }
 
 #if !DEBUG_SHADERS || !DEBUG
-        private uint CalculateShaderCacheHash(string shaderFileName, IDictionary<string, bool> arguments)
-        {
+        private uint CalculateShaderCacheHash(string shaderFileName, IDictionary<string, bool> arguments) {
             var shaderCacheHashString = new StringBuilder();
             shaderCacheHashString.AppendLine(shaderFileName);
 
             var parameters = ShaderDefines[shaderFileName].Intersect(arguments.Keys);
 
-            foreach (var key in parameters)
-            {
+            foreach (var key in parameters) {
                 shaderCacheHashString.AppendLine(key);
                 shaderCacheHashString.AppendLine(arguments[key] ? "t" : "f");
             }

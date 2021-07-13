@@ -10,10 +10,8 @@ using MyValveResourceFormat;
 using MyValveResourceFormat.IO;
 using Exception = System.Exception;
 
-namespace MyGUI.Forms
-{
-    public partial class ExtractProgressForm : Form
-    {
+namespace MyGUI.Forms {
+    public partial class ExtractProgressForm : Form {
         private readonly Package package;
         private readonly TreeNode root;
         private readonly string path;
@@ -22,8 +20,7 @@ namespace MyGUI.Forms
         private CancellationTokenSource cancellationTokenSource;
         private int initialFileCount;
 
-        public ExtractProgressForm(Package package, TreeNode root, string path, bool decompile)
-        {
+        public ExtractProgressForm(Package package, TreeNode root, string path, bool decompile) {
             InitializeComponent();
 
             cancellationTokenSource = new CancellationTokenSource();
@@ -36,14 +33,11 @@ namespace MyGUI.Forms
             this.decompile = decompile;
         }
 
-        protected override void OnShown(EventArgs e)
-        {
+        protected override void OnShown(EventArgs e) {
             Task
                 .Run(
-                async () =>
-                {
-                    Invoke((Action)(() =>
-                    {
+                async () => {
+                    Invoke((Action)(() => {
                         extractStatusLabel.Text = "Calculating...";
                         extractProgressBar.Style = ProgressBarStyle.Marquee;
                     }));
@@ -51,56 +45,44 @@ namespace MyGUI.Forms
                     CalculateFilesToExtract(root);
                     initialFileCount = filesToExtract.Count;
 
-                    Invoke((Action)(() =>
-                    {
+                    Invoke((Action)(() => {
                         extractProgressBar.Style = ProgressBarStyle.Continuous;
                     }));
 
                     await ExtractFilesAsync().ConfigureAwait(false);
                 },
                 cancellationTokenSource.Token)
-                .ContinueWith((t) =>
-                {
-                    if (!t.IsCanceled)
-                    {
+                .ContinueWith((t) => {
+                    if (!t.IsCanceled) {
                         Invoke((Action)Close);
                     }
                 });
         }
 
-        protected override void OnClosing(CancelEventArgs e)
-        {
+        protected override void OnClosing(CancelEventArgs e) {
             cancellationTokenSource.Cancel();
         }
 
-        private void CalculateFilesToExtract(TreeNode root)
-        {
+        private void CalculateFilesToExtract(TreeNode root) {
             cancellationTokenSource.Token.ThrowIfCancellationRequested();
 
-            foreach (TreeNode node in root.Nodes)
-            {
-                if (node.Tag.GetType() == typeof(PackageEntry))
-                {
+            foreach (TreeNode node in root.Nodes) {
+                if (node.Tag.GetType() == typeof(PackageEntry)) {
                     var file = node.Tag as PackageEntry;
                     filesToExtract.Enqueue(file);
-                }
-                else
-                {
+                } else {
                     CalculateFilesToExtract(node);
                 }
             }
         }
 
-        private async Task ExtractFilesAsync()
-        {
-            while (filesToExtract.Count > 0)
-            {
+        private async Task ExtractFilesAsync() {
+            while (filesToExtract.Count > 0) {
                 cancellationTokenSource.Token.ThrowIfCancellationRequested();
 
                 var packageFile = filesToExtract.Dequeue();
 
-                Invoke((Action)(() =>
-                {
+                Invoke((Action)(() => {
                     extractProgressBar.Value = 100 - (int)((filesToExtract.Count / (float)initialFileCount) * 100.0f);
                     extractStatusLabel.Text = $"Extracting {packageFile.GetFullPath()}";
                 }));
@@ -111,33 +93,24 @@ namespace MyGUI.Forms
 
                 Directory.CreateDirectory(Path.GetDirectoryName(filePath));
 
-                if (decompile && filePath.EndsWith("_c", StringComparison.Ordinal))
-                {
-                    using (var resource = new Resource
-                    {
+                if (decompile && filePath.EndsWith("_c", StringComparison.Ordinal)) {
+                    using (var resource = new Resource {
                         FileName = filePath,
                     })
-                    using (var memory = new MemoryStream(output))
-                    {
-                        try
-                        {
+                    using (var memory = new MemoryStream(output)) {
+                        try {
                             resource.Read(memory);
 
                             var extension = FileExtract.GetExtension(resource);
 
-                            if (extension == null)
-                            {
+                            if (extension == null) {
                                 filePath = filePath.Substring(0, filePath.Length - 2);
-                            }
-                            else
-                            {
+                            } else {
                                 filePath = Path.ChangeExtension(filePath, extension);
                             }
 
                             output = FileExtract.Extract(resource).ToArray();
-                        }
-                        catch (Exception e)
-                        {
+                        } catch (Exception e) {
                             Console.WriteLine($"Failed to extract '{packageFile.GetFullPath()}' - {e.Message}");
                             continue;
                         }
@@ -145,15 +118,13 @@ namespace MyGUI.Forms
                 }
 
                 var stream = new FileStream(filePath, FileMode.Create);
-                await using (stream.ConfigureAwait(false))
-                {
+                await using (stream.ConfigureAwait(false)) {
                     await stream.WriteAsync(output, cancellationTokenSource.Token).ConfigureAwait(false);
                 }
             }
         }
 
-        private void CancelButton_Click(object sender, EventArgs e)
-        {
+        private void CancelButton_Click(object sender, EventArgs e) {
             Close();
         }
     }

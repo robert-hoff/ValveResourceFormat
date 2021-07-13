@@ -5,17 +5,14 @@ using System.Linq;
 using System.Text;
 using MyValveResourceFormat.Serialization;
 
-namespace MyValveResourceFormat.Blocks
-{
+namespace MyValveResourceFormat.Blocks {
     /// <summary>
     /// "RERL" block. ResourceExtRefList_t.
     /// </summary>
-    public class ResourceExtRefList : Block
-    {
+    public class ResourceExtRefList : Block {
         public override BlockType Type => BlockType.RERL;
 
-        public class ResourceReferenceInfo : IKeyValueCollection
-        {
+        public class ResourceReferenceInfo : IKeyValueCollection {
             /// <summary>
             /// Gets or sets the resource id.
             /// </summary>
@@ -26,8 +23,7 @@ namespace MyValveResourceFormat.Blocks
             /// </summary>
             public string Name { get; set; }
 
-            public void WriteText(IndentedTextWriter writer)
-            {
+            public void WriteText(IndentedTextWriter writer) {
                 writer.WriteLine("ResourceReferenceInfo_t");
                 writer.WriteLine("{");
                 writer.Indent++;
@@ -40,19 +36,14 @@ namespace MyValveResourceFormat.Blocks
             public bool ContainsKey(string name)
                 => name == "id" || name == "name";
 
-            public T[] GetArray<T>(string name)
-            {
+            public T[] GetArray<T>(string name) {
                 throw new System.NotImplementedException();
             }
 
-            public T GetProperty<T>(string name)
-            {
-                if (name == "id" && Id is T tid)
-                {
+            public T GetProperty<T>(string name) {
+                if (name == "id" && Id is T tid) {
                     return tid;
-                }
-                else if (name == "name" && Name is T tname)
-                {
+                } else if (name == "name" && Name is T tname) {
                     return tname;
                 }
 
@@ -74,37 +65,31 @@ namespace MyValveResourceFormat.Blocks
 
         public List<ResourceReferenceInfo> ResourceRefInfoList { get; private set; }
 
-        public string this[ulong id]
-        {
-            get
-            {
+        public string this[ulong id] {
+            get {
                 var value = ResourceRefInfoList.FirstOrDefault(c => c.Id == id);
 
                 return value?.Name;
             }
         }
 
-        public ResourceExtRefList()
-        {
+        public ResourceExtRefList() {
             ResourceRefInfoList = new List<ResourceReferenceInfo>();
         }
 
-        public override void Read(BinaryReader reader, Resource resource)
-        {
+        public override void Read(BinaryReader reader, Resource resource) {
             reader.BaseStream.Position = Offset;
 
             var offset = reader.ReadUInt32();
             var size = reader.ReadUInt32();
 
-            if (size == 0)
-            {
+            if (size == 0) {
                 return;
             }
 
             reader.BaseStream.Position += offset - 8; // 8 is 2 uint32s we just read
 
-            for (var i = 0; i < size; i++)
-            {
+            for (var i = 0; i < size; i++) {
                 var resInfo = new ResourceReferenceInfo { Id = reader.ReadUInt64() };
 
                 var previousPosition = reader.BaseStream.Position;
@@ -122,8 +107,7 @@ namespace MyValveResourceFormat.Blocks
             }
         }
 
-        public override void WriteText(IndentedTextWriter writer)
-        {
+        public override void WriteText(IndentedTextWriter writer) {
             writer.WriteLine("ResourceExtRefList_t");
             writer.WriteLine("{");
             writer.Indent++;
@@ -131,8 +115,7 @@ namespace MyValveResourceFormat.Blocks
             writer.WriteLine("[");
             writer.Indent++;
 
-            foreach (var refInfo in ResourceRefInfoList)
-            {
+            foreach (var refInfo in ResourceRefInfoList) {
                 refInfo.WriteText(writer);
             }
 

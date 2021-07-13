@@ -2,10 +2,8 @@ using System;
 using System.Numerics;
 using MyValveResourceFormat.Serialization;
 
-namespace MyGUI.Types.ParticleRenderer.Initializers
-{
-    public class RandomRotation : IParticleInitializer
-    {
+namespace MyGUI.Types.ParticleRenderer.Initializers {
+    public class RandomRotation : IParticleInitializer {
         private const float PiOver180 = (float)Math.PI / 180f;
 
         private readonly Random random;
@@ -16,51 +14,40 @@ namespace MyGUI.Types.ParticleRenderer.Initializers
         private readonly long fieldOutput = 4;
         private readonly bool randomlyFlipDirection;
 
-        public RandomRotation(IKeyValueCollection keyValues)
-        {
+        public RandomRotation(IKeyValueCollection keyValues) {
             random = new Random();
 
-            if (keyValues.ContainsKey("m_flDegreesMin"))
-            {
+            if (keyValues.ContainsKey("m_flDegreesMin")) {
                 degreesMin = keyValues.GetFloatProperty("m_flDegreesMin");
             }
 
-            if (keyValues.ContainsKey("m_flDegreesMax"))
-            {
+            if (keyValues.ContainsKey("m_flDegreesMax")) {
                 degreesMax = keyValues.GetFloatProperty("m_flDegreesMax");
             }
 
-            if (keyValues.ContainsKey("m_flDegrees"))
-            {
+            if (keyValues.ContainsKey("m_flDegrees")) {
                 degreesOffset = keyValues.GetFloatProperty("m_flDegrees");
             }
 
-            if (keyValues.ContainsKey("m_nFieldOutput"))
-            {
+            if (keyValues.ContainsKey("m_nFieldOutput")) {
                 fieldOutput = keyValues.GetIntegerProperty("m_nFieldOutput");
             }
 
-            if (keyValues.ContainsKey("m_bRandomlyFlipDirection"))
-            {
+            if (keyValues.ContainsKey("m_bRandomlyFlipDirection")) {
                 randomlyFlipDirection = keyValues.GetProperty<bool>("m_bRandomlyFlipDirection");
             }
         }
 
-        public Particle Initialize(ref Particle particle, ParticleSystemRenderState particleSystemState)
-        {
+        public Particle Initialize(ref Particle particle, ParticleSystemRenderState particleSystemState) {
             var degrees = degreesOffset + degreesMin + ((float)random.NextDouble() * (degreesMax - degreesMin));
-            if (randomlyFlipDirection && random.NextDouble() > 0.5)
-            {
+            if (randomlyFlipDirection && random.NextDouble() > 0.5) {
                 degrees *= -1;
             }
 
-            if (fieldOutput == 4)
-            {
+            if (fieldOutput == 4) {
                 // Roll
                 particle.Rotation = new Vector3(particle.Rotation.X, particle.Rotation.Y, degrees * PiOver180);
-            }
-            else if (fieldOutput == 12)
-            {
+            } else if (fieldOutput == 12) {
                 // Yaw
                 particle.Rotation = new Vector3(particle.Rotation.X, degrees * PiOver180, particle.Rotation.Z);
             }

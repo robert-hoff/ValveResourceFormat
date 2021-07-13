@@ -9,10 +9,8 @@ using MyGUI.Utils;
 using OpenTK.Graphics.OpenGL;
 using static MyGUI.Controls.GLViewerControl;
 
-namespace MyGUI.Types.Renderer
-{
-    internal abstract class GLSceneViewer
-    {
+namespace MyGUI.Types.Renderer {
+    internal abstract class GLSceneViewer {
         public Scene Scene { get; }
         public Scene SkyboxScene { get; protected set; }
         public GLViewerControl ViewerControl { get; }
@@ -34,8 +32,7 @@ namespace MyGUI.Types.Renderer
         private OctreeDebugRenderer<SceneNode> staticOctreeRenderer;
         private OctreeDebugRenderer<SceneNode> dynamicOctreeRenderer;
 
-        protected GLSceneViewer(VrfGuiContext guiContext, Frustum cullFrustum)
-        {
+        protected GLSceneViewer(VrfGuiContext guiContext, Frustum cullFrustum) {
             Scene = new Scene(guiContext);
             ViewerControl = new GLViewerControl();
             lockedCullFrustum = cullFrustum;
@@ -47,22 +44,17 @@ namespace MyGUI.Types.Renderer
             ViewerControl.GLLoad += OnLoad;
         }
 
-        protected GLSceneViewer(VrfGuiContext guiContext)
-        {
+        protected GLSceneViewer(VrfGuiContext guiContext) {
             Scene = new Scene(guiContext);
             ViewerControl = new GLViewerControl();
 
             InitializeControl();
             ViewerControl.AddCheckBox("Show Static Octree", showStaticOctree, (v) => showStaticOctree = v);
             ViewerControl.AddCheckBox("Show Dynamic Octree", showDynamicOctree, (v) => showDynamicOctree = v);
-            ViewerControl.AddCheckBox("Lock Cull Frustum", false, (v) =>
-            {
-                if (v)
-                {
+            ViewerControl.AddCheckBox("Lock Cull Frustum", false, (v) => {
+                if (v) {
                     lockedCullFrustum = Scene.MainCamera.ViewFrustum.Clone();
-                }
-                else
-                {
+                } else {
                     lockedCullFrustum = null;
                 }
             });
@@ -74,8 +66,7 @@ namespace MyGUI.Types.Renderer
 
         protected abstract void LoadScene();
 
-        private void OnLoad(object sender, EventArgs e)
-        {
+        private void OnLoad(object sender, EventArgs e) {
             baseGrid = new ParticleGrid(20, 5, GuiContext);
 
             ViewerControl.Camera.SetViewportSize(ViewerControl.GLControl.Width, ViewerControl.GLControl.Height);
@@ -84,8 +75,7 @@ namespace MyGUI.Types.Renderer
 
             LoadScene();
 
-            if (Scene.AllNodes.Any())
-            {
+            if (Scene.AllNodes.Any()) {
                 var bbox = Scene.AllNodes.First().BoundingBox;
                 //if first node has no bbox, LookAt will break camera, so +1 to location.x
                 var location = new Vector3(bbox.Max.Z + 1, 0, bbox.Max.Z) * 1.5f;
@@ -97,8 +87,7 @@ namespace MyGUI.Types.Renderer
             staticOctreeRenderer = new OctreeDebugRenderer<SceneNode>(Scene.StaticOctree, Scene.GuiContext, false);
             dynamicOctreeRenderer = new OctreeDebugRenderer<SceneNode>(Scene.DynamicOctree, Scene.GuiContext, true);
 
-            if (renderModeComboBox != null)
-            {
+            if (renderModeComboBox != null) {
                 var supportedRenderModes = Scene.AllNodes
                     .SelectMany(r => r.GetSupportedRenderModes())
                     .Distinct();
@@ -111,18 +100,15 @@ namespace MyGUI.Types.Renderer
             GuiContext.ClearCache();
         }
 
-        private void OnPaint(object sender, RenderEventArgs e)
-        {
+        private void OnPaint(object sender, RenderEventArgs e) {
             Scene.MainCamera = e.Camera;
             Scene.Update(e.FrameTime);
 
-            if (ShowBaseGrid)
-            {
+            if (ShowBaseGrid) {
                 baseGrid.Render(e.Camera, RenderPass.Both);
             }
 
-            if (ShowSkybox && SkyboxScene != null)
-            {
+            if (ShowSkybox && SkyboxScene != null) {
                 skyboxCamera.CopyFrom(e.Camera);
                 skyboxCamera.SetLocation(e.Camera.Location - SkyboxOrigin);
                 skyboxCamera.SetScale(SkyboxScale);
@@ -136,32 +122,24 @@ namespace MyGUI.Types.Renderer
 
             Scene.RenderWithCamera(e.Camera, lockedCullFrustum);
 
-            if (showStaticOctree)
-            {
+            if (showStaticOctree) {
                 staticOctreeRenderer.Render(e.Camera, RenderPass.Both);
             }
 
-            if (showDynamicOctree)
-            {
+            if (showDynamicOctree) {
                 dynamicOctreeRenderer.Render(e.Camera, RenderPass.Both);
             }
         }
 
-        protected void AddRenderModeSelectionControl()
-        {
-            if (renderModeComboBox == null)
-            {
-                renderModeComboBox = ViewerControl.AddSelection("Render Mode", (renderMode, _) =>
-                {
-                    foreach (var node in Scene.AllNodes)
-                    {
+        protected void AddRenderModeSelectionControl() {
+            if (renderModeComboBox == null) {
+                renderModeComboBox = ViewerControl.AddSelection("Render Mode", (renderMode, _) => {
+                    foreach (var node in Scene.AllNodes) {
                         node.SetRenderMode(renderMode);
                     }
 
-                    if (SkyboxScene != null)
-                    {
-                        foreach (var node in SkyboxScene.AllNodes)
-                        {
+                    if (SkyboxScene != null) {
+                        foreach (var node in SkyboxScene.AllNodes) {
                             node.SetRenderMode(renderMode);
                         }
                     }
@@ -169,26 +147,21 @@ namespace MyGUI.Types.Renderer
             }
         }
 
-        private void SetAvailableRenderModes(IEnumerable<string> renderModes)
-        {
+        private void SetAvailableRenderModes(IEnumerable<string> renderModes) {
             renderModeComboBox.Items.Clear();
-            if (renderModes.Any())
-            {
+            if (renderModes.Any()) {
                 renderModeComboBox.Enabled = true;
                 renderModeComboBox.Items.Add("Default Render Mode");
                 renderModeComboBox.Items.AddRange(renderModes.ToArray());
                 renderModeComboBox.SelectedIndex = 0;
-            }
-            else
-            {
+            } else {
                 renderModeComboBox.Items.Add("(no render modes available)");
                 renderModeComboBox.SelectedIndex = 0;
                 renderModeComboBox.Enabled = false;
             }
         }
 
-        protected void SetEnabledLayers(HashSet<string> layers)
-        {
+        protected void SetEnabledLayers(HashSet<string> layers) {
             Scene.SetEnabledLayers(layers);
             staticOctreeRenderer = new OctreeDebugRenderer<SceneNode>(Scene.StaticOctree, Scene.GuiContext, false);
         }

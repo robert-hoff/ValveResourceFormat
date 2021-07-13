@@ -1,9 +1,7 @@
 using System;
 
-namespace MyGUI.Types.ParticleRenderer.Emitters
-{
-    public interface IParticleEmitter
-    {
+namespace MyGUI.Types.ParticleRenderer.Emitters {
+    public interface IParticleEmitter {
         void Start(Action particleEmitCallback);
 
 #pragma warning disable CA1716 // Identifiers should not match keywords

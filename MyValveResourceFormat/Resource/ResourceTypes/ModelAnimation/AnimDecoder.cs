@@ -1,13 +1,9 @@
 using System;
 
-namespace MyValveResourceFormat.ResourceTypes.ModelAnimation
-{
-    internal static class AnimDecoder
-    {
-        public static int Size(this AnimDecoderType t)
-        {
-            switch (t)
-            {
+namespace MyValveResourceFormat.ResourceTypes.ModelAnimation {
+    internal static class AnimDecoder {
+        public static int Size(this AnimDecoderType t) {
+            switch (t) {
                 case AnimDecoderType.CCompressedFullQuaternion:
                     return 16;
                 case AnimDecoderType.CCompressedFullVector3:
@@ -21,10 +17,8 @@ namespace MyValveResourceFormat.ResourceTypes.ModelAnimation
             return 0;
         }
 
-        public static AnimDecoderType FromString(string s)
-        {
-            switch (s)
-            {
+        public static AnimDecoderType FromString(string s) {
+            switch (s) {
                 case "CCompressedReferenceFloat": return AnimDecoderType.CCompressedReferenceFloat;
                 case "CCompressedStaticFloat": return AnimDecoderType.CCompressedStaticFloat;
                 case "CCompressedFullFloat": return AnimDecoderType.CCompressedFullFloat;

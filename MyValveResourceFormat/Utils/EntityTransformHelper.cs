@@ -7,17 +7,13 @@ using System.Text;
 using System.Threading.Tasks;
 using MyValveResourceFormat.ResourceTypes;
 
-namespace MyValveResourceFormat.Utils
-{
-    public static class EntityTransformHelper
-    {
-        public static Matrix4x4 CalculateTransformationMatrix(EntityLump.Entity entity)
-        {
+namespace MyValveResourceFormat.Utils {
+    public static class EntityTransformHelper {
+        public static Matrix4x4 CalculateTransformationMatrix(EntityLump.Entity entity) {
             var scale = entity.GetProperty<string>("scales");
             var position = entity.GetProperty<string>("origin");
             var angles = entity.GetProperty<string>("angles");
-            if (scale == null || position == null || angles == null)
-            {
+            if (scale == null || position == null || angles == null) {
                 return default;
             }
 
@@ -35,16 +31,13 @@ namespace MyValveResourceFormat.Utils
             return scaleMatrix * rotationMatrix * positionMatrix;
         }
 
-        public static Vector3 ParseVector(string input)
-        {
-            if (string.IsNullOrEmpty(input))
-            {
+        public static Vector3 ParseVector(string input) {
+            if (string.IsNullOrEmpty(input)) {
                 return default;
             }
             var split = input.Split(' ');
 
-            if (split.Length != 3)
-            {
+            if (split.Length != 3) {
                 return default;
             }
 

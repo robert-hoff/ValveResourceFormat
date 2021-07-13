@@ -1,9 +1,7 @@
 using System.Numerics;
 
-namespace MyGUI.Types.ParticleRenderer
-{
-    public enum ParticleField
-    {
+namespace MyGUI.Types.ParticleRenderer {
+    public enum ParticleField {
         Position = 0,
         PositionPrevious = 2,
         Radius = 3,
@@ -13,12 +11,9 @@ namespace MyGUI.Types.ParticleRenderer
         AlphaAlternate = 16,
     }
 
-    public static class ParticleFieldExtensions
-    {
-        public static float GetScalar(this Particle particle, ParticleField field)
-        {
-            switch (field)
-            {
+    public static class ParticleFieldExtensions {
+        public static float GetScalar(this Particle particle, ParticleField field) {
+            switch (field) {
                 case ParticleField.Alpha: return particle.Alpha;
                 case ParticleField.AlphaAlternate: return particle.AlphaAlternate;
                 case ParticleField.Radius: return particle.Radius;
@@ -27,10 +22,8 @@ namespace MyGUI.Types.ParticleRenderer
             return 0f;
         }
 
-        public static Vector3 GetVector(this Particle particle, ParticleField field)
-        {
-            switch (field)
-            {
+        public static Vector3 GetVector(this Particle particle, ParticleField field) {
+            switch (field) {
                 case ParticleField.Position: return particle.Position;
                 case ParticleField.PositionPrevious: return particle.PositionPrevious;
             }

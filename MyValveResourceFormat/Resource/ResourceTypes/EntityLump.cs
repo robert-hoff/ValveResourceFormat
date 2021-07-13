@@ -7,12 +7,9 @@ using System.Text;
 using MyValveResourceFormat.Serialization;
 using MyValveResourceFormat.Utils;
 
-namespace MyValveResourceFormat.ResourceTypes
-{
-    public class EntityLump : KeyValuesOrNTRO
-    {
-        public class Entity
-        {
+namespace MyValveResourceFormat.ResourceTypes {
+    public class EntityLump : KeyValuesOrNTRO {
+        public class Entity {
             public Dictionary<uint, EntityProperty> Properties { get; } = new Dictionary<uint, EntityProperty>();
 
             public T GetProperty<T>(string name)
@@ -21,20 +18,16 @@ namespace MyValveResourceFormat.ResourceTypes
             public EntityProperty GetProperty(string name)
                 => GetProperty(EntityLumpKeyLookup.Get(name));
 
-            public T GetProperty<T>(uint hash)
-            {
-                if (Properties.TryGetValue(hash, out var property))
-                {
+            public T GetProperty<T>(uint hash) {
+                if (Properties.TryGetValue(hash, out var property)) {
                     return (T)property.Data;
                 }
 
                 return default;
             }
 
-            public EntityProperty GetProperty(uint hash)
-            {
-                if (Properties.TryGetValue(hash, out var property))
-                {
+            public EntityProperty GetProperty(uint hash) {
+                if (Properties.TryGetValue(hash, out var property)) {
                     return property;
                 }
 
@@ -42,8 +35,7 @@ namespace MyValveResourceFormat.ResourceTypes
             }
         }
 
-        public class EntityProperty
-        {
+        public class EntityProperty {
             public uint Type { get; set; }
 
             public string Name { get; set; }
@@ -51,8 +43,7 @@ namespace MyValveResourceFormat.ResourceTypes
             public object Data { get; set; }
         }
 
-        public IEnumerable<string> GetChildEntityNames()
-        {
+        public IEnumerable<string> GetChildEntityNames() {
             return Data.GetArray<string>("m_childLumps");
         }
 
@@ -61,15 +52,12 @@ namespace MyValveResourceFormat.ResourceTypes
                 .Select(entity => ParseEntityProperties(entity.GetArray<byte>("m_keyValuesData")))
                 .ToList();
 
-        private static Entity ParseEntityProperties(byte[] bytes)
-        {
+        private static Entity ParseEntityProperties(byte[] bytes) {
             using (var dataStream = new MemoryStream(bytes))
-            using (var dataReader = new BinaryReader(dataStream))
-            {
+            using (var dataReader = new BinaryReader(dataStream)) {
                 var a = dataReader.ReadUInt32(); // always 1?
 
-                if (a != 1)
-                {
+                if (a != 1) {
                     throw new NotImplementedException($"First field in entity lump is not 1");
                 }
 
@@ -78,17 +66,14 @@ namespace MyValveResourceFormat.ResourceTypes
 
                 var entity = new Entity();
 
-                void ReadTypedValue(uint keyHash, string keyName)
-                {
+                void ReadTypedValue(uint keyHash, string keyName) {
                     var type = dataReader.ReadUInt32();
-                    var entityProperty = new EntityProperty
-                    {
+                    var entityProperty = new EntityProperty {
                         Type = type,
                         Name = keyName,
                     };
 
-                    switch (type)
-                    {
+                    switch (type) {
                         case 0x06: // boolean
                             entityProperty.Data = dataReader.ReadBoolean(); // 1
                             break;
@@ -119,16 +104,14 @@ namespace MyValveResourceFormat.ResourceTypes
                     entity.Properties.Add(keyHash, entityProperty);
                 }
 
-                for (var i = 0; i < hashedFieldsCount; i++)
-                {
+                for (var i = 0; i < hashedFieldsCount; i++) {
                     // murmur2 hashed field name (see EntityLumpKeyLookup)
                     var keyHash = dataReader.ReadUInt32();
 
                     ReadTypedValue(keyHash, null);
                 }
 
-                for (var i = 0; i < stringFieldsCount; i++)
-                {
+                for (var i = 0; i < stringFieldsCount; i++) {
                     var keyHash = dataReader.ReadUInt32();
                     var keyName = dataReader.ReadNullTermString(Encoding.UTF8);
 
@@ -139,8 +122,7 @@ namespace MyValveResourceFormat.ResourceTypes
             }
         }
 
-        public override string ToString()
-        {
+        public override string ToString() {
             var knownKeys = new EntityLumpKnownKeys().Fields;
             var builder = new StringBuilder();
             var unknownKeys = new Dictionary<uint, uint>();
@@ -159,39 +141,28 @@ namespace MyValveResourceFormat.ResourceTypes
             };
 
             var index = 0;
-            foreach (var entity in GetEntities())
-            {
+            foreach (var entity in GetEntities()) {
                 builder.AppendLine($"===={index++}====");
 
-                foreach (var property in entity.Properties)
-                {
+                foreach (var property in entity.Properties) {
                     var value = property.Value.Data;
-                    if (value.GetType() == typeof(byte[]))
-                    {
+                    if (value.GetType() == typeof(byte[])) {
                         var tmp = value as byte[];
                         value = $"Array [{string.Join(", ", tmp.Select(p => p.ToString()).ToArray())}]";
                     }
 
                     string key;
 
-                    if (knownKeys.ContainsKey(property.Key))
-                    {
+                    if (knownKeys.ContainsKey(property.Key)) {
                         key = knownKeys[property.Key];
-                    }
-                    else if (property.Value.Name != null)
-                    {
+                    } else if (property.Value.Name != null) {
                         key = property.Value.Name;
-                    }
-                    else
-                    {
+                    } else {
                         key = $"key={property.Key}";
 
-                        if (!unknownKeys.ContainsKey(property.Key))
-                        {
+                        if (!unknownKeys.ContainsKey(property.Key)) {
                             unknownKeys.Add(property.Key, 1);
-                        }
-                        else
-                        {
+                        } else {
                             unknownKeys[property.Key]++;
                         }
                     }
@@ -202,13 +173,11 @@ namespace MyValveResourceFormat.ResourceTypes
                 builder.AppendLine();
             }
 
-            if (unknownKeys.Count > 0)
-            {
+            if (unknownKeys.Count > 0) {
                 builder.AppendLine($"@@@@@ UNKNOWN KEY LOOKUPS:");
                 builder.AppendLine($"If you know what these are, add them to EntityLumpKnownKeys.cs");
 
-                foreach (var unknownKey in unknownKeys)
-                {
+                foreach (var unknownKey in unknownKeys) {
                     builder.AppendLine($"key={unknownKey.Key} hits={unknownKey.Value}");
                 }
             }

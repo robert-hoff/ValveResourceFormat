@@ -11,10 +11,8 @@ using MyGUI.Utils;
 using MyValveResourceFormat.ResourceTypes;
 using MyValveResourceFormat.Serialization;
 
-namespace MyGUI.Types.ParticleRenderer
-{
-    internal class ParticleRenderer : IRenderer
-    {
+namespace MyGUI.Types.ParticleRenderer {
+    internal class ParticleRenderer : IRenderer {
         public IEnumerable<IParticleEmitter> Emitters { get; private set; } = new List<IParticleEmitter>();
 
         public IEnumerable<IParticleInitializer> Initializers { get; private set; } = new List<IParticleInitializer>();
@@ -25,14 +23,11 @@ namespace MyGUI.Types.ParticleRenderer
 
         public AABB BoundingBox { get; private set; }
 
-        public Vector3 Position
-        {
+        public Vector3 Position {
             get => systemRenderState.GetControlPoint(0);
-            set
-            {
+            set {
                 systemRenderState.SetControlPoint(0, value);
-                foreach (var child in childParticleRenderers)
-                {
+                foreach (var child in childParticleRenderers) {
                     child.Position = value;
                 }
             }
@@ -47,8 +42,7 @@ namespace MyGUI.Types.ParticleRenderer
         private ParticleSystemRenderState systemRenderState;
 
         // TODO: Passing in position here was for testing, do it properly
-        public ParticleRenderer(ParticleSystem particleSystem, VrfGuiContext vrfGuiContext, Vector3 pos = default)
-        {
+        public ParticleRenderer(ParticleSystem particleSystem, VrfGuiContext vrfGuiContext, Vector3 pos = default) {
             childParticleRenderers = new List<ParticleRenderer>();
             this.vrfGuiContext = vrfGuiContext;
 
@@ -67,24 +61,19 @@ namespace MyGUI.Types.ParticleRenderer
             SetupChildParticles(particleSystem.GetChildParticleNames(true));
         }
 
-        public void Start()
-        {
-            foreach (var emitter in Emitters)
-            {
+        public void Start() {
+            foreach (var emitter in Emitters) {
                 emitter.Start(EmitParticle);
             }
 
-            foreach (var childParticleRenderer in childParticleRenderers)
-            {
+            foreach (var childParticleRenderer in childParticleRenderers) {
                 childParticleRenderer.Start();
             }
         }
 
-        private void EmitParticle()
-        {
+        private void EmitParticle() {
             int index = particleBag.Add();
-            if (index < 0)
-            {
+            if (index < 0) {
                 Console.WriteLine("Out of space in particle bag");
                 return;
             }
@@ -93,59 +82,48 @@ namespace MyGUI.Types.ParticleRenderer
             InitializeParticle(ref particleBag.LiveParticles[index]);
         }
 
-        private void InitializeParticle(ref Particle p)
-        {
+        private void InitializeParticle(ref Particle p) {
             p.Position = systemRenderState.GetControlPoint(0);
 
-            foreach (var initializer in Initializers)
-            {
+            foreach (var initializer in Initializers) {
                 initializer.Initialize(ref p, systemRenderState);
             }
         }
 
-        public void Stop()
-        {
-            foreach (var emitter in Emitters)
-            {
+        public void Stop() {
+            foreach (var emitter in Emitters) {
                 emitter.Stop();
             }
 
-            foreach (var childParticleRenderer in childParticleRenderers)
-            {
+            foreach (var childParticleRenderer in childParticleRenderers) {
                 childParticleRenderer.Stop();
             }
         }
 
-        public void Restart()
-        {
+        public void Restart() {
             Stop();
             systemRenderState.Lifetime = 0;
             particleBag.Clear();
             Start();
 
-            foreach (var childParticleRenderer in childParticleRenderers)
-            {
+            foreach (var childParticleRenderer in childParticleRenderers) {
                 childParticleRenderer.Restart();
             }
         }
 
-        public void Update(float frameTime)
-        {
-            if (!hasStarted)
-            {
+        public void Update(float frameTime) {
+            if (!hasStarted) {
                 Start();
                 hasStarted = true;
             }
 
             systemRenderState.Lifetime += frameTime;
 
-            foreach (var emitter in Emitters)
-            {
+            foreach (var emitter in Emitters) {
                 emitter.Update(frameTime);
             }
 
-            foreach (var particleOperator in Operators)
-            {
+            foreach (var particleOperator in Operators) {
                 particleOperator.Update(particleBag.LiveParticles, frameTime, systemRenderState);
             }
 
@@ -153,18 +131,14 @@ namespace MyGUI.Types.ParticleRenderer
             particleBag.PruneExpired();
 
             var center = systemRenderState.GetControlPoint(0);
-            if (particleBag.Count == 0)
-            {
+            if (particleBag.Count == 0) {
                 BoundingBox = new AABB(center, center);
-            }
-            else
-            {
+            } else {
                 var minParticlePos = center;
                 var maxParticlePos = center;
 
                 var liveParticles = particleBag.LiveParticles;
-                for (int i = 0; i < liveParticles.Length; ++i)
-                {
+                for (int i = 0; i < liveParticles.Length; ++i) {
                     var pos = liveParticles[i].Position;
                     var radius = liveParticles[i].Radius;
                     minParticlePos = Vector3.Min(minParticlePos, pos - new Vector3(radius));
@@ -174,15 +148,13 @@ namespace MyGUI.Types.ParticleRenderer
                 BoundingBox = new AABB(minParticlePos, maxParticlePos);
             }
 
-            foreach (var childParticleRenderer in childParticleRenderers)
-            {
+            foreach (var childParticleRenderer in childParticleRenderers) {
                 childParticleRenderer.Update(frameTime);
                 BoundingBox = BoundingBox.Union(childParticleRenderer.BoundingBox);
             }
 
             // Restart if all emitters are done and all particles expired
-            if (IsFinished())
-            {
+            if (IsFinished()) {
                 Restart();
             }
         }
@@ -192,40 +164,30 @@ namespace MyGUI.Types.ParticleRenderer
             && particleBag.Count == 0
             && childParticleRenderers.All(r => r.IsFinished());
 
-        public void Render(Camera camera, RenderPass renderPass)
-        {
-            if (particleBag.Count == 0)
-            {
+        public void Render(Camera camera, RenderPass renderPass) {
+            if (particleBag.Count == 0) {
                 return;
             }
 
-            if (renderPass == RenderPass.Translucent || renderPass == RenderPass.Both)
-            {
-                foreach (var renderer in Renderers)
-                {
+            if (renderPass == RenderPass.Translucent || renderPass == RenderPass.Both) {
+                foreach (var renderer in Renderers) {
                     renderer.Render(particleBag, camera.ViewProjectionMatrix, camera.CameraViewMatrix);
                 }
             }
 
-            foreach (var childParticleRenderer in childParticleRenderers)
-            {
+            foreach (var childParticleRenderer in childParticleRenderers) {
                 childParticleRenderer.Render(camera, RenderPass.Both);
             }
         }
 
-        private void SetupEmitters(IKeyValueCollection baseProperties, IEnumerable<IKeyValueCollection> emitterData)
-        {
+        private void SetupEmitters(IKeyValueCollection baseProperties, IEnumerable<IKeyValueCollection> emitterData) {
             var emitters = new List<IParticleEmitter>();
 
-            foreach (var emitterInfo in emitterData)
-            {
+            foreach (var emitterInfo in emitterData) {
                 var emitterClass = emitterInfo.GetProperty<string>("_class");
-                if (ParticleControllerFactory.TryCreateEmitter(emitterClass, baseProperties, emitterInfo, out var emitter))
-                {
+                if (ParticleControllerFactory.TryCreateEmitter(emitterClass, baseProperties, emitterInfo, out var emitter)) {
                     emitters.Add(emitter);
-                }
-                else
-                {
+                } else {
                     Console.WriteLine($"Unsupported emitter class '{emitterClass}'.");
                 }
             }
@@ -233,19 +195,14 @@ namespace MyGUI.Types.ParticleRenderer
             Emitters = emitters;
         }
 
-        private void SetupInitializers(IEnumerable<IKeyValueCollection> initializerData)
-        {
+        private void SetupInitializers(IEnumerable<IKeyValueCollection> initializerData) {
             var initializers = new List<IParticleInitializer>();
 
-            foreach (var initializerInfo in initializerData)
-            {
+            foreach (var initializerInfo in initializerData) {
                 var initializerClass = initializerInfo.GetProperty<string>("_class");
-                if (ParticleControllerFactory.TryCreateInitializer(initializerClass, initializerInfo, out var initializer))
-                {
+                if (ParticleControllerFactory.TryCreateInitializer(initializerClass, initializerInfo, out var initializer)) {
                     initializers.Add(initializer);
-                }
-                else
-                {
+                } else {
                     Console.WriteLine($"Unsupported initializer class '{initializerClass}'.");
                 }
             }
@@ -253,19 +210,14 @@ namespace MyGUI.Types.ParticleRenderer
             Initializers = initializers;
         }
 
-        private void SetupOperators(IEnumerable<IKeyValueCollection> operatorData)
-        {
+        private void SetupOperators(IEnumerable<IKeyValueCollection> operatorData) {
             var operators = new List<IParticleOperator>();
 
-            foreach (var operatorInfo in operatorData)
-            {
+            foreach (var operatorInfo in operatorData) {
                 var operatorClass = operatorInfo.GetProperty<string>("_class");
-                if (ParticleControllerFactory.TryCreateOperator(operatorClass, operatorInfo, out var @operator))
-                {
+                if (ParticleControllerFactory.TryCreateOperator(operatorClass, operatorInfo, out var @operator)) {
                     operators.Add(@operator);
-                }
-                else
-                {
+                } else {
                     Console.WriteLine($"Unsupported operator class '{operatorClass}'.");
                 }
             }
@@ -273,19 +225,14 @@ namespace MyGUI.Types.ParticleRenderer
             Operators = operators;
         }
 
-        private void SetupRenderers(IEnumerable<IKeyValueCollection> rendererData)
-        {
+        private void SetupRenderers(IEnumerable<IKeyValueCollection> rendererData) {
             var renderers = new List<IParticleRenderer>();
 
-            foreach (var rendererInfo in rendererData)
-            {
+            foreach (var rendererInfo in rendererData) {
                 var rendererClass = rendererInfo.GetProperty<string>("_class");
-                if (ParticleControllerFactory.TryCreateRender(rendererClass, rendererInfo, vrfGuiContext, out var renderer))
-                {
+                if (ParticleControllerFactory.TryCreateRender(rendererClass, rendererInfo, vrfGuiContext, out var renderer)) {
                     renderers.Add(renderer);
-                }
-                else
-                {
+                } else {
                     Console.WriteLine($"Unsupported renderer class '{rendererClass}'.");
                 }
             }
@@ -293,10 +240,8 @@ namespace MyGUI.Types.ParticleRenderer
             Renderers = renderers;
         }
 
-        private void SetupChildParticles(IEnumerable<string> childNames)
-        {
-            foreach (var childName in childNames)
-            {
+        private void SetupChildParticles(IEnumerable<string> childNames) {
+            foreach (var childName in childNames) {
                 var childResource = vrfGuiContext.LoadFileByAnyMeansNecessary(childName + "_c");
                 var childSystem = (ParticleSystem)childResource.DataBlock;
 

@@ -1,10 +1,8 @@
 using System;
 
-namespace MyValveResourceFormat
-{
+namespace MyValveResourceFormat {
     // Friendly names are used
-    public enum ResourceType
-    {
+    public enum ResourceType {
 #pragma warning disable 1591
         Unknown = 0,
 

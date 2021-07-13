@@ -1,10 +1,8 @@
 using System;
 using System.Windows.Forms;
 
-namespace MyGUI.Forms
-{
-    public partial class SearchForm : Form
-    {
+namespace MyGUI.Forms {
+    public partial class SearchForm : Form {
         /// <summary>
         /// Gets whatever text was entered by the user in the search textbox.
         /// </summary>
@@ -15,8 +13,7 @@ namespace MyGUI.Forms
         /// </summary>
         public SearchType SelectedSearchType => ((SearchTypeItem)searchTypeComboBox.SelectedItem).Type;
 
-        public SearchForm()
-        {
+        public SearchForm() {
             InitializeComponent();
 
             searchTypeComboBox.ValueMember = "Id";
@@ -28,14 +25,12 @@ namespace MyGUI.Forms
             searchTypeComboBox.SelectedIndex = 0;
         }
 
-        private void FindButton_Click(object sender, EventArgs e)
-        {
+        private void FindButton_Click(object sender, EventArgs e) {
             DialogResult = DialogResult.OK;
             Close();
         }
 
-        private void CancelButton_Click(object sender, EventArgs e)
-        {
+        private void CancelButton_Click(object sender, EventArgs e) {
             DialogResult = DialogResult.Cancel;
             Close();
         }
@@ -45,8 +40,7 @@ namespace MyGUI.Forms
         /// </summary>
         /// <param name="sender">Object which raised event.</param>
         /// <param name="e">Event data.</param>
-        private void SearchForm_Load(object sender, EventArgs e)
-        {
+        private void SearchForm_Load(object sender, EventArgs e) {
             ActiveControl = findTextBox;
         }
     }

@@ -1,19 +1,15 @@
 using System.Windows.Forms;
 
-namespace MyGUI.Controls
-{
-    public partial class GLViewerMultiSelectionControl : UserControl
-    {
+namespace MyGUI.Controls {
+    public partial class GLViewerMultiSelectionControl : UserControl {
         public CheckedListBox CheckedListBox => checkedListBox;
 
-        private GLViewerMultiSelectionControl()
-        {
+        private GLViewerMultiSelectionControl() {
             InitializeComponent();
         }
 
         public GLViewerMultiSelectionControl(string name)
-            : this()
-        {
+            : this() {
             selectionNameLabel.Text = $"{name}:";
         }
     }

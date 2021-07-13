@@ -4,32 +4,24 @@ using System.Windows.Forms;
 using MyGUI.Utils;
 using MyValveResourceFormat.ResourceTypes;
 
-namespace MyGUI.Types.Viewers
-{
-    public class BinaryKeyValues : IViewer
-    {
-        public static bool IsAccepted(uint magic)
-        {
+namespace MyGUI.Types.Viewers {
+    public class BinaryKeyValues : IViewer {
+        public static bool IsAccepted(uint magic) {
             return magic == BinaryKV3.MAGIC || magic == BinaryKV3.MAGIC2 || magic == BinaryKV3.MAGIC3;
         }
 
-        public TabPage Create(VrfGuiContext vrfGuiContext, byte[] input)
-        {
+        public TabPage Create(VrfGuiContext vrfGuiContext, byte[] input) {
             var tab = new TabPage();
             var kv3 = new BinaryKV3();
             Stream kv3stream;
 
-            if (input != null)
-            {
+            if (input != null) {
                 kv3stream = new MemoryStream(input);
-            }
-            else
-            {
+            } else {
                 kv3stream = File.OpenRead(vrfGuiContext.FileName);
             }
 
-            using (var binaryReader = new BinaryReader(kv3stream))
-            {
+            using (var binaryReader = new BinaryReader(kv3stream)) {
                 kv3.Size = (uint)kv3stream.Length;
                 kv3.Read(binaryReader, null);
             }

@@ -1,7 +1,5 @@
-namespace MyGUI.Forms
-{
-    public enum SearchType
-    {
+namespace MyGUI.Forms {
+    public enum SearchType {
         FileNameExactMatch,
         FileNamePartialMatch,
         FullPath,

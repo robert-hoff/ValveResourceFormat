@@ -1,19 +1,15 @@
 using System.Windows.Forms;
 
-namespace MyGUI.Controls
-{
-    public partial class GLViewerSelectionControl : UserControl
-    {
+namespace MyGUI.Controls {
+    public partial class GLViewerSelectionControl : UserControl {
         public ComboBox ComboBox => comboBox;
 
-        private GLViewerSelectionControl()
-        {
+        private GLViewerSelectionControl() {
             InitializeComponent();
         }
 
         public GLViewerSelectionControl(string name)
-            : this()
-        {
+            : this() {
             selectionNameLabel.Text = $"{name}:";
         }
     }

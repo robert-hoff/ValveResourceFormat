@@ -5,36 +5,28 @@ using MyGUI.Controls;
 using MyGUI.Utils;
 using SteamDatabase.ValvePak;
 
-namespace MyGUI.Types.Viewers
-{
-    public class Package : IViewer
-    {
+namespace MyGUI.Types.Viewers {
+    public class Package : IViewer {
         public ImageList ImageList { get; set; }
 
-        public static bool IsAccepted(uint magic)
-        {
+        public static bool IsAccepted(uint magic) {
             return magic == SteamDatabase.ValvePak.Package.MAGIC;
         }
 
-        public TabPage Create(VrfGuiContext vrfGuiContext, byte[] input)
-        {
+        public TabPage Create(VrfGuiContext vrfGuiContext, byte[] input) {
             var tab = new TabPage();
             var package = new SteamDatabase.ValvePak.Package();
 
-            if (input != null)
-            {
+            if (input != null) {
                 package.SetFileName(vrfGuiContext.FileName);
                 package.Read(new MemoryStream(input));
-            }
-            else
-            {
+            } else {
                 package.Read(vrfGuiContext.FileName);
             }
 
             // create a TreeView with search capabilities, register its events, and add it to the tab
             var treeViewWithSearch = new TreeViewWithSearchResults(ImageList);
-            treeViewWithSearch.InitializeTreeViewFromPackage(vrfGuiContext.FileName, new TreeViewWithSearchResults.TreeViewPackageTag
-            {
+            treeViewWithSearch.InitializeTreeViewFromPackage(vrfGuiContext.FileName, new TreeViewWithSearchResults.TreeViewPackageTag {
                 Package = package,
                 ParentFileLoader = vrfGuiContext.FileLoader,
             });
@@ -48,10 +40,8 @@ namespace MyGUI.Types.Viewers
             return tab;
         }
 
-        private void VPK_Disposed(object sender, EventArgs e)
-        {
-            if (sender is TreeViewWithSearchResults treeViewWithSearch)
-            {
+        private void VPK_Disposed(object sender, EventArgs e) {
+            if (sender is TreeViewWithSearchResults treeViewWithSearch) {
                 treeViewWithSearch.TreeNodeMouseDoubleClick -= VPK_OpenFile;
                 treeViewWithSearch.TreeNodeRightClick -= VPK_OnClick;
                 treeViewWithSearch.ListViewItemDoubleClick -= VPK_OpenFile;
@@ -65,25 +55,20 @@ namespace MyGUI.Types.Viewers
         /// </summary>
         /// <param name="sender">Object which raised event.</param>
         /// <param name="e">Event data.</param>
-        private void VPK_OpenFile(object sender, ListViewItemClickEventArgs e)
-        {
-            if (e.Tag is TreeNode node)
-            {
+        private void VPK_OpenFile(object sender, ListViewItemClickEventArgs e) {
+            if (e.Tag is TreeNode node) {
                 OpenFileFromNode(node);
             }
         }
 
-        private void VPK_OpenFile(object sender, TreeNodeMouseClickEventArgs e)
-        {
+        private void VPK_OpenFile(object sender, TreeNodeMouseClickEventArgs e) {
             var node = e.Node;
             OpenFileFromNode(node);
         }
 
-        private static void OpenFileFromNode(TreeNode node)
-        {
+        private static void OpenFileFromNode(TreeNode node) {
             //Make sure we aren't a directory!
-            if (node.Tag.GetType() == typeof(PackageEntry))
-            {
+            if (node.Tag.GetType() == typeof(PackageEntry)) {
                 var package = node.TreeView.Tag as TreeViewWithSearchResults.TreeViewPackageTag;
                 var file = node.Tag as PackageEntry;
                 package.Package.ReadEntry(file, out var output);
@@ -92,8 +77,7 @@ namespace MyGUI.Types.Viewers
             }
         }
 
-        private void VPK_OnClick(object sender, TreeNodeMouseClickEventArgs e)
-        {
+        private void VPK_OnClick(object sender, TreeNodeMouseClickEventArgs e) {
             Program.MainForm.VpkContextMenu.Show(e.Node.TreeView, e.Location);
         }
 
@@ -102,10 +86,8 @@ namespace MyGUI.Types.Viewers
         /// </summary>
         /// <param name="sender">Object which raised event.</param>
         /// <param name="e">Event data.</param>
-        private void VPK_OnClick(object sender, ListViewItemClickEventArgs e)
-        {
-            if (e.Tag is ListViewItem listViewItem && listViewItem.Tag is TreeNode node)
-            {
+        private void VPK_OnClick(object sender, ListViewItemClickEventArgs e) {
+            if (e.Tag is ListViewItem listViewItem && listViewItem.Tag is TreeNode node) {
                 node.TreeView.SelectedNode = node; // To stop it spassing out
                 Program.MainForm.VpkContextMenu.Show(listViewItem.ListView, e.Location);
             }

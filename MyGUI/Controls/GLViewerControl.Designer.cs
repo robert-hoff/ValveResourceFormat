@@ -1,10 +1,8 @@
 using System.Windows.Forms;
 using OpenTK;
 
-namespace MyGUI.Controls
-{
-    partial class GLViewerControl
-    {
+namespace MyGUI.Controls {
+    partial class GLViewerControl {
         /// <summary> 
         /// Required designer variable.
         /// </summary>
@@ -14,10 +12,8 @@ namespace MyGUI.Controls
         /// Clean up any resources being used.
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null))
-            {
+        protected override void Dispose(bool disposing) {
+            if (disposing && (components != null)) {
                 components.Dispose();
             }
             base.Dispose(disposing);
@@ -29,8 +25,7 @@ namespace MyGUI.Controls
         /// Required method for Designer support - do not modify 
         /// the contents of this method with the code editor.
         /// </summary>
-        private void InitializeComponent()
-        {
+        private void InitializeComponent() {
             this.glControlContainer = new System.Windows.Forms.Panel();
             this.fpsLabel = new System.Windows.Forms.Label();
             this.controlsPanel = new System.Windows.Forms.Panel();
@@ -39,8 +34,8 @@ namespace MyGUI.Controls
             // 
             // glControlContainer
             // 
-            this.glControlContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.glControlContainer.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.glControlContainer.BackColor = System.Drawing.Color.Black;
             this.glControlContainer.Location = new System.Drawing.Point(192, 0);

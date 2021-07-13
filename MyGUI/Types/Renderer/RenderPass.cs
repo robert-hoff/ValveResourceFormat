@@ -1,7 +1,5 @@
-namespace MyGUI.Types.Renderer
-{
-    public enum RenderPass
-    {
+namespace MyGUI.Types.Renderer {
+    public enum RenderPass {
         Both,
         Opaque,
         Translucent,

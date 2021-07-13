@@ -4,42 +4,33 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace MyGUI.Forms
-{
-    public partial class GenericProgressForm : Form
-    {
+namespace MyGUI.Forms {
+    public partial class GenericProgressForm : Form {
         private CancellationTokenSource cancellationTokenSource;
         public event EventHandler OnProcess;
 
-        public GenericProgressForm()
-        {
+        public GenericProgressForm() {
             InitializeComponent();
 
             cancellationTokenSource = new CancellationTokenSource();
         }
 
-        public void SetProgress(string text)
-        {
-            if (!IsHandleCreated)
-            {
+        public void SetProgress(string text) {
+            if (!IsHandleCreated) {
                 return;
             }
 
-            Invoke((Action)(() =>
-            {
+            Invoke((Action)(() => {
                 extractStatusLabel.Text = text;
             }));
         }
 
-        protected override void OnShown(EventArgs e)
-        {
+        protected override void OnShown(EventArgs e) {
             Task.Run(
                 () => OnProcess?.Invoke(this, new EventArgs()),
                 cancellationTokenSource.Token)
-                .ContinueWith((t) =>
-                {
-                    if (t.Exception != null)
-                    {
+                .ContinueWith((t) => {
+                    if (t.Exception != null) {
                         Console.Error.WriteLine(t.Exception);
                         Console.Error.WriteLine("Search existing issues or create a new one here: https://github.com/SteamDatabase/MyValveResourceFormat/issues");
                         SetProgress($"An exception occured, view console tab for more information. ({t.Exception.Message})");
@@ -48,20 +39,17 @@ namespace MyGUI.Forms
                         throw t.Exception;
                     }
 
-                    if (!t.IsCanceled)
-                    {
+                    if (!t.IsCanceled) {
                         Invoke((Action)Close);
                     }
                 });
         }
 
-        protected override void OnClosing(CancelEventArgs e)
-        {
+        protected override void OnClosing(CancelEventArgs e) {
             cancellationTokenSource.Cancel();
         }
 
-        private void CancelButton_Click(object sender, EventArgs e)
-        {
+        private void CancelButton_Click(object sender, EventArgs e) {
             Close();
         }
     }

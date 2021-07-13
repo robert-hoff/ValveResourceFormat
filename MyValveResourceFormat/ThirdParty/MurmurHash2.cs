@@ -1,27 +1,22 @@
 using System.Text;
 
-namespace MyValveResourceFormat.ThirdParty
-{
-    public static class MurmurHash2
-    {
+namespace MyValveResourceFormat.ThirdParty {
+    public static class MurmurHash2 {
         private const uint M = 0x5bd1e995;
         private const int R = 24;
 
         public static uint Hash(string data, uint seed) => Hash(Encoding.ASCII.GetBytes(data), seed);
 
-        public static uint Hash(byte[] data, uint seed)
-        {
+        public static uint Hash(byte[] data, uint seed) {
             int length = data.Length;
 
-            if (length == 0)
-            {
+            if (length == 0) {
                 return 0;
             }
 
             uint h = seed ^ (uint)length;
             int currentIndex = 0;
-            while (length >= 4)
-            {
+            while (length >= 4) {
                 uint k = (uint)(data[currentIndex++] | data[currentIndex++] << 8 | data[currentIndex++] << 16 | data[currentIndex++] << 24);
                 k *= M;
                 k ^= k >> R;
@@ -32,8 +27,7 @@ namespace MyValveResourceFormat.ThirdParty
                 length -= 4;
             }
 
-            switch (length)
-            {
+            switch (length) {
                 case 3:
                     h ^= (ushort)(data[currentIndex++] | data[currentIndex++] << 8);
                     h ^= (uint)(data[currentIndex] << 16);

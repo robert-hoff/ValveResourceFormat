@@ -7,8 +7,7 @@ using MyGUI.Controls;
 using MyGUI.Utils;
 using MyValveResourceFormat.ResourceTypes;
 
-namespace MyGUI.Types.Renderer
-{
+namespace MyGUI.Types.Renderer {
     /// <summary>
     /// GL Render control with world controls (render mode, camera selection).
     /// </summary>
@@ -25,23 +24,19 @@ namespace MyGUI.Types.Renderer
         private SavedCameraPositionsControl savedCameraPositionsControl;
 
         public GLWorldViewer(VrfGuiContext guiContext, World world)
-            : base(guiContext)
-        {
+            : base(guiContext) {
             this.world = world;
         }
 
         public GLWorldViewer(VrfGuiContext guiContext, WorldNode worldNode)
-            : base(guiContext)
-        {
+            : base(guiContext) {
             this.worldNode = worldNode;
         }
 
-        protected override void InitializeControl()
-        {
+        protected override void InitializeControl() {
             AddRenderModeSelectionControl();
 
-            worldLayersComboBox = ViewerControl.AddMultiSelection("World Layers", (worldLayers) =>
-            {
+            worldLayersComboBox = ViewerControl.AddMultiSelection("World Layers", (worldLayers) => {
                 SetEnabledLayers(new HashSet<string>(worldLayers));
             });
 
@@ -50,28 +45,21 @@ namespace MyGUI.Types.Renderer
             savedCameraPositionsControl.RestoreCameraRequest += OnRestoreCameraRequest;
             ViewerControl.AddControl(savedCameraPositionsControl);
 
-            ViewerControl.AddCheckBox("Show triggers", false, v =>
-            {
-                foreach (var n in triggerNodes)
-                {
+            ViewerControl.AddCheckBox("Show triggers", false, v => {
+                foreach (var n in triggerNodes) {
                     n.Enabled = v;
                 }
             });
-            ViewerControl.AddCheckBox("Show entity colliders", false, v =>
-            {
-                foreach (var n in colliderNodes)
-                {
+            ViewerControl.AddCheckBox("Show entity colliders", false, v => {
+                foreach (var n in colliderNodes) {
                     n.Enabled = v;
                 }
             });
         }
 
-        private void OnRestoreCameraRequest(object sender, string e)
-        {
-            if (Settings.Config.SavedCameras.TryGetValue(e, out var savedFloats))
-            {
-                if (savedFloats.Length == 5)
-                {
+        private void OnRestoreCameraRequest(object sender, string e) {
+            if (Settings.Config.SavedCameras.TryGetValue(e, out var savedFloats)) {
+                if (savedFloats.Length == 5) {
                     Scene.MainCamera.SetLocationPitchYaw(
                         new Vector3(savedFloats[0], savedFloats[1], savedFloats[2]),
                         savedFloats[3],
@@ -80,8 +68,7 @@ namespace MyGUI.Types.Renderer
             }
         }
 
-        private void OnSaveCameraRequest(object sender, EventArgs e)
-        {
+        private void OnSaveCameraRequest(object sender, EventArgs e) {
             var cam = Scene.MainCamera;
             var saveName = string.Format("Saved Camera #{0}", Settings.Config.SavedCameras.Count + 1);
 
@@ -91,15 +78,12 @@ namespace MyGUI.Types.Renderer
             savedCameraPositionsControl.RefreshSavedPositions();
         }
 
-        protected override void LoadScene()
-        {
-            if (world != null)
-            {
+        protected override void LoadScene() {
+            if (world != null) {
                 var loader = new WorldLoader(GuiContext, world);
                 var result = loader.Load(Scene);
 
-                if (result.Skybox != null)
-                {
+                if (result.Skybox != null) {
                     SkyboxScene = new Scene(GuiContext);
                     var skyboxLoader = new WorldLoader(GuiContext, result.Skybox);
                     var skyboxResult = skyboxLoader.Load(SkyboxScene);
@@ -115,27 +99,20 @@ namespace MyGUI.Types.Renderer
                     .Distinct();
                 SetAvailableLayers(worldLayers);
 
-                if (worldLayers.Any())
-                {
+                if (worldLayers.Any()) {
                     // TODO: Since the layers are combined, has to be first in each world node?
                     worldLayersComboBox.SetItemCheckState(0, CheckState.Checked);
 
-                    foreach (var worldLayer in result.DefaultEnabledLayers)
-                    {
+                    foreach (var worldLayer in result.DefaultEnabledLayers) {
                         worldLayersComboBox.SetItemCheckState(worldLayersComboBox.FindStringExact(worldLayer), CheckState.Checked);
                     }
                 }
 
-                if (result.CameraMatrices.Any())
-                {
-                    if (cameraComboBox == default)
-                    {
-                        cameraComboBox = ViewerControl.AddSelection("Camera", (cameraName, index) =>
-                        {
-                            if (index > 0)
-                            {
-                                if (result.CameraMatrices.TryGetValue(cameraName, out var cameraMatrix))
-                                {
+                if (result.CameraMatrices.Any()) {
+                    if (cameraComboBox == default) {
+                        cameraComboBox = ViewerControl.AddSelection("Camera", (cameraName, index) => {
+                            if (index > 0) {
+                                if (result.CameraMatrices.TryGetValue(cameraName, out var cameraMatrix)) {
                                     Scene.MainCamera.SetFromTransformMatrix(cameraMatrix);
                                 }
 
@@ -155,8 +132,7 @@ namespace MyGUI.Types.Renderer
                 colliderNodes = physNodes.Where(n => !n.IsTrigger);
             }
 
-            if (worldNode != null)
-            {
+            if (worldNode != null) {
                 var loader = new WorldNodeLoader(GuiContext, worldNode);
                 loader.Load(Scene);
 
@@ -166,8 +142,7 @@ namespace MyGUI.Types.Renderer
                     .ToList();
                 SetAvailableLayers(worldLayers);
 
-                for (var i = 0; i < worldLayersComboBox.Items.Count; i++)
-                {
+                for (var i = 0; i < worldLayersComboBox.Items.Count; i++) {
                     worldLayersComboBox.SetItemChecked(i, true);
                 }
             }
@@ -177,16 +152,12 @@ namespace MyGUI.Types.Renderer
             ViewerControl.Invoke((Action)savedCameraPositionsControl.RefreshSavedPositions);
         }
 
-        private void SetAvailableLayers(IEnumerable<string> worldLayers)
-        {
+        private void SetAvailableLayers(IEnumerable<string> worldLayers) {
             worldLayersComboBox.Items.Clear();
-            if (worldLayers.Any())
-            {
+            if (worldLayers.Any()) {
                 worldLayersComboBox.Enabled = true;
                 worldLayersComboBox.Items.AddRange(worldLayers.ToArray());
-            }
-            else
-            {
+            } else {
                 worldLayersComboBox.Enabled = false;
             }
         }

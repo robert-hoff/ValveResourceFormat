@@ -3,29 +3,24 @@ using System.Collections.Generic;
 using System.IO;
 using MyValveResourceFormat.Serialization.NTRO;
 
-namespace MyValveResourceFormat.ResourceTypes
-{
-    public class SoundEventScript : NTRO
-    {
+namespace MyValveResourceFormat.ResourceTypes {
+    public class SoundEventScript : NTRO {
         public Dictionary<string, string> SoundEventScriptValue { get; private set; } // TODO: be Dictionary<string, SomeKVObject>
 
-        public override void Read(BinaryReader reader, Resource resource)
-        {
+        public override void Read(BinaryReader reader, Resource resource) {
             base.Read(reader, resource);
             SoundEventScriptValue = new Dictionary<string, string>();
 
             // Output is VSoundEventScript_t we need to iterate m_SoundEvents inside it.
             var soundEvents = (NTROArray)Output["m_SoundEvents"];
 
-            foreach (var entry in soundEvents)
-            {
+            foreach (var entry in soundEvents) {
                 // sound is VSoundEvent_t
                 var sound = ((NTROValue<NTROStruct>)entry).Value;
                 var soundName = ((NTROValue<string>)sound["m_SoundName"]).Value;
                 var soundValue = ((NTROValue<string>)sound["m_OperatorsKV"]).Value.Replace("\n", Environment.NewLine); // make sure we have new lines
 
-                if (SoundEventScriptValue.ContainsKey(soundName))
-                {
+                if (SoundEventScriptValue.ContainsKey(soundName)) {
                     // Valve have duplicates, assume last is correct?
                     SoundEventScriptValue.Remove(soundName);
                 }
@@ -34,12 +29,9 @@ namespace MyValveResourceFormat.ResourceTypes
             }
         }
 
-        public override string ToString()
-        {
-            using (var writer = new IndentedTextWriter())
-            {
-                foreach (var entry in SoundEventScriptValue)
-                {
+        public override string ToString() {
+            using (var writer = new IndentedTextWriter()) {
+                foreach (var entry in SoundEventScriptValue) {
                     writer.WriteLine("\"" + entry.Key + "\"");
                     writer.WriteLine("{");
                     writer.Indent++;

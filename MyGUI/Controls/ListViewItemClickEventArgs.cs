@@ -1,20 +1,16 @@
 using System;
 using System.Drawing;
 
-namespace MyGUI.Controls
-{
-    public class ListViewItemClickEventArgs : EventArgs
-    {
+namespace MyGUI.Controls {
+    public class ListViewItemClickEventArgs : EventArgs {
         public object Tag { get; }
         public Point Location { get; }
 
-        public ListViewItemClickEventArgs(object tag)
-        {
+        public ListViewItemClickEventArgs(object tag) {
             Tag = tag;
         }
 
-        public ListViewItemClickEventArgs(object tag, Point location)
-        {
+        public ListViewItemClickEventArgs(object tag, Point location) {
             Tag = tag;
             Location = location;
         }

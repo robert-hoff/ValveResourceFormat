@@ -8,15 +8,15 @@ using System;
 using System.Linq;
 
 namespace SteamDatabase.ValvePak {
-  /// <summary>
-  /// A utility class to compute CRC32.
-  /// </summary>
-  public static class Crc32 {
     /// <summary>
-    /// CRC polynomial 0xEDB88320.
+    /// A utility class to compute CRC32.
     /// </summary>
-    private static readonly uint[] Table =
-    {
+    public static class Crc32 {
+        /// <summary>
+        /// CRC polynomial 0xEDB88320.
+        /// </summary>
+        private static readonly uint[] Table =
+        {
             0x00000000, 0x77073096, 0xEE0E612C, 0x990951BA, 0x076DC419,
             0x706AF48F, 0xE963A535, 0x9E6495A3, 0x0EDB8832, 0x79DCB8A4,
             0xE0D5E91E, 0x97D2D988, 0x09B64C2B, 0x7EB17CBD, 0xE7B82D07,
@@ -71,13 +71,13 @@ namespace SteamDatabase.ValvePak {
             0x2D02EF8D
         };
 
-    /// <summary>
-    /// Compute a checksum for a given array of bytes.
-    /// </summary>
-    /// <param name="buffer">The array of bytes to compute the checksum for.</param>
-    /// <returns>The computed checksum.</returns>
-    public static uint Compute(byte[] buffer) {
-      return ~buffer.Aggregate(0xFFFFFFFF, (current, t) => (current >> 8) ^ Table[t ^ (current & 0xff)]);
+        /// <summary>
+        /// Compute a checksum for a given array of bytes.
+        /// </summary>
+        /// <param name="buffer">The array of bytes to compute the checksum for.</param>
+        /// <returns>The computed checksum.</returns>
+        public static uint Compute(byte[] buffer) {
+            return ~buffer.Aggregate(0xFFFFFFFF, (current, t) => (current >> 8) ^ Table[t ^ (current & 0xff)]);
+        }
     }
-  }
 }

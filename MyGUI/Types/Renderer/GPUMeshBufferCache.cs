@@ -4,50 +4,38 @@ using OpenTK.Graphics.OpenGL;
 using MyValveResourceFormat;
 using MyValveResourceFormat.Blocks;
 
-namespace MyGUI.Types.Renderer
-{
-    public class GPUMeshBufferCache
-    {
+namespace MyGUI.Types.Renderer {
+    public class GPUMeshBufferCache {
         private Dictionary<VBIB, GPUMeshBuffers> gpuBuffers = new Dictionary<VBIB, GPUMeshBuffers>();
         private Dictionary<VAOKey, uint> vertexArrayObjects = new Dictionary<VAOKey, uint>();
 
-        private struct VAOKey
-        {
+        private struct VAOKey {
             public GPUMeshBuffers VBIB;
             public Shader Shader;
             public uint VertexIndex;
             public uint IndexIndex;
         }
 
-        public GPUMeshBufferCache()
-        {
+        public GPUMeshBufferCache() {
         }
 
-        public GPUMeshBuffers GetVertexIndexBuffers(VBIB vbib)
-        {
-            if (gpuBuffers.TryGetValue(vbib, out var gpuVbib))
-            {
+        public GPUMeshBuffers GetVertexIndexBuffers(VBIB vbib) {
+            if (gpuBuffers.TryGetValue(vbib, out var gpuVbib)) {
                 return gpuVbib;
-            }
-            else
-            {
+            } else {
                 var newGpuVbib = new GPUMeshBuffers(vbib);
                 gpuBuffers.Add(vbib, newGpuVbib);
                 return newGpuVbib;
             }
         }
 
-        public uint GetVertexArrayObject(VBIB vbib, Shader shader, uint vtxIndex, uint idxIndex)
-        {
+        public uint GetVertexArrayObject(VBIB vbib, Shader shader, uint vtxIndex, uint idxIndex) {
             var gpuVbib = GetVertexIndexBuffers(vbib);
             var vaoKey = new VAOKey { VBIB = gpuVbib, Shader = shader, VertexIndex = vtxIndex, IndexIndex = idxIndex };
 
-            if (vertexArrayObjects.TryGetValue(vaoKey, out uint vaoHandle))
-            {
+            if (vertexArrayObjects.TryGetValue(vaoKey, out uint vaoHandle)) {
                 return vaoHandle;
-            }
-            else
-            {
+            } else {
                 GL.GenVertexArrays(1, out uint newVaoHandle);
 
                 GL.BindVertexArray(newVaoHandle);
@@ -56,13 +44,11 @@ namespace MyGUI.Types.Renderer
 
                 var curVertexBuffer = vbib.VertexBuffers[(int)vtxIndex];
                 var texCoordNum = 0;
-                foreach (var attribute in curVertexBuffer.InputLayoutFields)
-                {
+                foreach (var attribute in curVertexBuffer.InputLayoutFields) {
                     var attributeName = "v" + attribute.SemanticName;
 
                     // TODO: other params too?
-                    if (attribute.SemanticName == "TEXCOORD" && texCoordNum++ > 0)
-                    {
+                    if (attribute.SemanticName == "TEXCOORD" && texCoordNum++ > 0) {
                         attributeName += texCoordNum;
                     }
 
@@ -76,20 +62,17 @@ namespace MyGUI.Types.Renderer
             }
         }
 
-        private static void BindVertexAttrib(VBIB.RenderInputLayoutField attribute, string attributeName, int shaderProgram, int stride)
-        {
+        private static void BindVertexAttrib(VBIB.RenderInputLayoutField attribute, string attributeName, int shaderProgram, int stride) {
             var attributeLocation = GL.GetAttribLocation(shaderProgram, attributeName);
 
             //Ignore this attribute if it is not found in the shader
-            if (attributeLocation == -1)
-            {
+            if (attributeLocation == -1) {
                 return;
             }
 
             GL.EnableVertexAttribArray(attributeLocation);
 
-            switch (attribute.Format)
-            {
+            switch (attribute.Format) {
                 case DXGI_FORMAT.R32G32B32_FLOAT:
                     GL.VertexAttribPointer(attributeLocation, 3, VertexAttribPointerType.Float, false, stride, (IntPtr)attribute.Offset);
                     break;

@@ -6,10 +6,8 @@ using System.Numerics;
 using MyValveResourceFormat.Serialization;
 using MyValveResourceFormat.Serialization.NTRO;
 
-namespace MyValveResourceFormat.ResourceTypes.ModelAnimation
-{
-    public class Animation
-    {
+namespace MyValveResourceFormat.ResourceTypes.ModelAnimation {
+    public class Animation {
         public string Name { get; private set; }
         public float Fps { get; private set; }
         public int FrameCount { get; private set; }
@@ -19,8 +17,7 @@ namespace MyValveResourceFormat.ResourceTypes.ModelAnimation
             IKeyValueCollection animDesc,
             IKeyValueCollection decodeKey,
             AnimDecoderType[] decoderArray,
-            IKeyValueCollection[] segmentArray)
-        {
+            IKeyValueCollection[] segmentArray) {
             Name = string.Empty;
             Fps = 0;
             Frames = Array.Empty<Frame>();
@@ -28,12 +25,10 @@ namespace MyValveResourceFormat.ResourceTypes.ModelAnimation
             ConstructFromDesc(animDesc, decodeKey, decoderArray, segmentArray);
         }
 
-        public static IEnumerable<Animation> FromData(IKeyValueCollection animationData, IKeyValueCollection decodeKey)
-        {
+        public static IEnumerable<Animation> FromData(IKeyValueCollection animationData, IKeyValueCollection decodeKey) {
             var animArray = animationData.GetArray<IKeyValueCollection>("m_animArray");
 
-            if (animArray.Length == 0)
-            {
+            if (animArray.Length == 0) {
                 Console.WriteLine("Empty animation file found.");
                 return Enumerable.Empty<Animation>();
             }
@@ -43,19 +38,15 @@ namespace MyValveResourceFormat.ResourceTypes.ModelAnimation
 
             var animations = new List<Animation>();
 
-            foreach (var anim in animArray)
-            {
+            foreach (var anim in animArray) {
                 // Here be dragons. Animation decoding is complicated, and we have not
                 // fully figured it out, especially all of the decoder types.
                 // If an animation decoder throws, this prevents the model from loading or exporting,
                 // so we catch all exceptions here and skip over the animation.
                 // Obviously we want to properly support animation decoding, but we are not there yet.
-                try
-                {
+                try {
                     animations.Add(new Animation(anim, decodeKey, decoderArray, segmentArray));
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     Console.Error.WriteLine(e);
                 }
             }
@@ -72,8 +63,7 @@ namespace MyValveResourceFormat.ResourceTypes.ModelAnimation
         /// <summary>
         /// Get animation matrices as an array.
         /// </summary>
-        public float[] GetAnimationMatricesAsArray(float time, Skeleton skeleton)
-        {
+        public float[] GetAnimationMatricesAsArray(float time, Skeleton skeleton) {
             var matrices = GetAnimationMatrices(time, skeleton);
             return Flatten(matrices);
         }
@@ -81,16 +71,14 @@ namespace MyValveResourceFormat.ResourceTypes.ModelAnimation
         /// <summary>
         /// Get the animation matrix for each bone.
         /// </summary>
-        public Matrix4x4[] GetAnimationMatrices(float time, Skeleton skeleton)
-        {
+        public Matrix4x4[] GetAnimationMatrices(float time, Skeleton skeleton) {
             // Create output array
             var matrices = new Matrix4x4[skeleton.AnimationTextureSize + 1];
 
             // Get bone transformations
             var transforms = GetTransformsAtTime(time);
 
-            foreach (var root in skeleton.Roots)
-            {
+            foreach (var root in skeleton.Roots) {
                 GetAnimationMatrixRecursive(root, Matrix4x4.Identity, Matrix4x4.Identity, transforms, ref matrices);
             }
 
@@ -100,16 +88,14 @@ namespace MyValveResourceFormat.ResourceTypes.ModelAnimation
         /// <summary>
         /// Get animation matrix recursively.
         /// </summary>
-        private void GetAnimationMatrixRecursive(Bone bone, Matrix4x4 parentBindPose, Matrix4x4 parentInvBindPose, Frame transforms, ref Matrix4x4[] matrices)
-        {
+        private void GetAnimationMatrixRecursive(Bone bone, Matrix4x4 parentBindPose, Matrix4x4 parentInvBindPose, Frame transforms, ref Matrix4x4[] matrices) {
             // Calculate world space bind and inverse bind pose
             var bindPose = parentBindPose;
             var invBindPose = parentInvBindPose * bone.InverseBindPose;
 
             // Calculate transformation matrix
             var transformMatrix = Matrix4x4.Identity;
-            if (transforms.Bones.ContainsKey(bone.Name))
-            {
+            if (transforms.Bones.ContainsKey(bone.Name)) {
                 var transform = transforms.Bones[bone.Name];
                 transformMatrix = Matrix4x4.CreateFromQuaternion(transform.Angle) * Matrix4x4.CreateTranslation(transform.Position);
             }
@@ -119,14 +105,12 @@ namespace MyValveResourceFormat.ResourceTypes.ModelAnimation
 
             // Store result
             var skinMatrix = invBindPose * transformed;
-            foreach (var index in bone.SkinIndices)
-            {
+            foreach (var index in bone.SkinIndices) {
                 matrices[index] = skinMatrix;
             }
 
             // Propagate to childen
-            foreach (var child in bone.Children)
-            {
+            foreach (var child in bone.Children) {
                 GetAnimationMatrixRecursive(child, transformed, invBindPose, transforms, ref matrices);
             }
         }
@@ -135,13 +119,11 @@ namespace MyValveResourceFormat.ResourceTypes.ModelAnimation
         /// Get the transformation matrices at a time.
         /// </summary>
         /// <param name="time">The time to get the transformation for.</param>
-        private Frame GetTransformsAtTime(float time)
-        {
+        private Frame GetTransformsAtTime(float time) {
             // Create output frame
             var frame = new Frame();
 
-            if (FrameCount == 0)
-            {
+            if (FrameCount == 0) {
                 return frame;
             }
 
@@ -154,8 +136,7 @@ namespace MyValveResourceFormat.ResourceTypes.ModelAnimation
             var frame2 = Frames[(frameIndex + 1) % FrameCount];
 
             // Interpolate bone positions and angles
-            foreach (var bonePair in frame1.Bones)
-            {
+            foreach (var bonePair in frame1.Bones) {
                 var position = Vector3.Lerp(frame1.Bones[bonePair.Key].Position, frame2.Bones[bonePair.Key].Position, t);
                 var angle = Quaternion.Slerp(frame1.Bones[bonePair.Key].Angle, frame2.Bones[bonePair.Key].Angle, t);
                 frame.Bones[bonePair.Key] = new FrameBone(position, angle);
@@ -171,8 +152,7 @@ namespace MyValveResourceFormat.ResourceTypes.ModelAnimation
             IKeyValueCollection animDesc,
             IKeyValueCollection decodeKey,
             AnimDecoderType[] decoderArray,
-            IKeyValueCollection[] segmentArray)
-        {
+            IKeyValueCollection[] segmentArray) {
             // Get animation properties
             Name = animDesc.GetProperty<string>("m_name");
             Fps = animDesc.GetFloatProperty("fps");
@@ -187,24 +167,20 @@ namespace MyValveResourceFormat.ResourceTypes.ModelAnimation
             var frameArray = new Frame[FrameCount];
 
             // Figure out each frame
-            for (var frame = 0; frame < FrameCount; frame++)
-            {
+            for (var frame = 0; frame < FrameCount; frame++) {
                 // Create new frame object
                 frameArray[frame] = new Frame();
 
                 // Read all frame blocks
-                foreach (var frameBlock in frameBlockArray)
-                {
+                foreach (var frameBlock in frameBlockArray) {
                     var startFrame = frameBlock.GetIntegerProperty("m_nStartFrame");
                     var endFrame = frameBlock.GetIntegerProperty("m_nEndFrame");
 
                     // Only consider blocks that actual contain info for this frame
-                    if (frame >= startFrame && frame <= endFrame)
-                    {
+                    if (frame >= startFrame && frame <= endFrame) {
                         var segmentIndexArray = frameBlock.GetIntegerArray("m_segmentIndexArray");
 
-                        foreach (var segmentIndex in segmentIndexArray)
-                        {
+                        foreach (var segmentIndex in segmentIndexArray) {
                             var segment = segmentArray[segmentIndex];
                             ReadSegment(frame - startFrame, segment, decodeKey, decoderArray, ref frameArray[frame]);
                         }
@@ -217,8 +193,7 @@ namespace MyValveResourceFormat.ResourceTypes.ModelAnimation
         /// <summary>
         /// Read segment.
         /// </summary>
-        private void ReadSegment(long frame, IKeyValueCollection segment, IKeyValueCollection decodeKey, AnimDecoderType[] decoderArray, ref Frame outFrame)
-        {
+        private void ReadSegment(long frame, IKeyValueCollection segment, IKeyValueCollection decodeKey, AnimDecoderType[] decoderArray, ref Frame outFrame) {
             // Clamp the frame number to be between 0 and the maximum frame
             frame = frame < 0 ? 0 : frame;
             frame = frame >= FrameCount ? FrameCount - 1 : frame;
@@ -231,12 +206,10 @@ namespace MyValveResourceFormat.ResourceTypes.ModelAnimation
 
             // Read container
             var container = segment.GetArray<byte>("m_container");
-            using (var containerReader = new BinaryReader(new MemoryStream(container)))
-            {
+            using (var containerReader = new BinaryReader(new MemoryStream(container))) {
                 var elementIndexArray = dataChannel.GetIntegerArray("m_nElementIndexArray");
                 var elementBones = new int[decodeKey.GetProperty<int>("m_nChannelElements")];
-                for (var i = 0; i < elementIndexArray.Length; i++)
-                {
+                for (var i = 0; i < elementIndexArray.Length; i++) {
                     elementBones[elementIndexArray[i]] = i;
                 }
 
@@ -248,27 +221,23 @@ namespace MyValveResourceFormat.ResourceTypes.ModelAnimation
 
                 // Read bone list
                 var elements = new List<int>();
-                for (var i = 0; i < numBones; i++)
-                {
+                for (var i = 0; i < numBones; i++) {
                     elements.Add(containerReader.ReadInt16());
                 }
 
                 // Skip data to find the data for the current frame.
                 // Structure is just | Bone 0 - Frame 0 | Bone 1 - Frame 0 | Bone 0 - Frame 1 | Bone 1 - Frame 1|
-                if (containerReader.BaseStream.Position + (decoder.Size() * frame * numBones) < containerReader.BaseStream.Length)
-                {
+                if (containerReader.BaseStream.Position + (decoder.Size() * frame * numBones) < containerReader.BaseStream.Length) {
                     containerReader.BaseStream.Position += decoder.Size() * frame * numBones;
                 }
 
                 // Read animation data for all bones
-                for (var element = 0; element < numBones; element++)
-                {
+                for (var element = 0; element < numBones; element++) {
                     // Get the bone we are reading for
                     var bone = elementBones[elements[element]];
 
                     // Look at the decoder to see what to read
-                    switch (decoder)
-                    {
+                    switch (decoder) {
                         case AnimDecoderType.CCompressedStaticFullVector3:
                         case AnimDecoderType.CCompressedFullVector3:
                         case AnimDecoderType.CCompressedDeltaVector3:
@@ -297,8 +266,7 @@ namespace MyValveResourceFormat.ResourceTypes.ModelAnimation
                             break;
 #if DEBUG
                         default:
-                            if (channelAttribute != "data")
-                            {
+                            if (channelAttribute != "data") {
                                 Console.WriteLine($"Unhandled animation bone decoder type '{decoder}'");
                             }
 
@@ -314,8 +282,7 @@ namespace MyValveResourceFormat.ResourceTypes.ModelAnimation
         /// </summary>
         /// <param name="reader">Binary ready.</param>
         /// <returns>float.</returns>
-        private static float ReadHalfFloat(BinaryReader reader)
-        {
+        private static float ReadHalfFloat(BinaryReader reader) {
             return HalfTypeHelper.Convert(reader.ReadUInt16());
         }
 
@@ -324,8 +291,7 @@ namespace MyValveResourceFormat.ResourceTypes.ModelAnimation
         /// </summary>
         /// <param name="reader">Binary reader.</param>
         /// <returns>Quaternion.</returns>
-        private static Quaternion ReadQuaternion(BinaryReader reader)
-        {
+        private static Quaternion ReadQuaternion(BinaryReader reader) {
             var bytes = reader.ReadBytes(6);
 
             // Values
@@ -347,14 +313,12 @@ namespace MyValveResourceFormat.ResourceTypes.ModelAnimation
             var w = (float)Math.Sqrt(1 - (x * x) - (y * y) - (z * z));
 
             // Apply sign 3
-            if (s3 == 128)
-            {
+            if (s3 == 128) {
                 w *= -1;
             }
 
             // Apply sign 1 and 2
-            if (s1 == 128)
-            {
+            if (s1 == 128) {
                 return s2 == 128 ? new Quaternion(y, z, w, x) : new Quaternion(z, w, x, y);
             }
 
@@ -364,11 +328,9 @@ namespace MyValveResourceFormat.ResourceTypes.ModelAnimation
         /// <summary>
         /// Transform the decoder array to a mapping of index to type ID.
         /// </summary>
-        private static AnimDecoderType[] MakeDecoderArray(IKeyValueCollection[] decoderArray)
-        {
+        private static AnimDecoderType[] MakeDecoderArray(IKeyValueCollection[] decoderArray) {
             var array = new AnimDecoderType[decoderArray.Length];
-            for (var i = 0; i < decoderArray.Length; i++)
-            {
+            for (var i = 0; i < decoderArray.Length; i++) {
                 var decoder = decoderArray[i];
                 array[i] = AnimDecoder.FromString(decoder.GetProperty<string>("m_szName"));
             }
@@ -379,12 +341,10 @@ namespace MyValveResourceFormat.ResourceTypes.ModelAnimation
         /// <summary>
         /// Flatten an array of matrices to an array of floats.
         /// </summary>
-        private static float[] Flatten(Matrix4x4[] matrices)
-        {
+        private static float[] Flatten(Matrix4x4[] matrices) {
             var returnArray = new float[matrices.Length * 16];
 
-            for (var i = 0; i < matrices.Length; i++)
-            {
+            for (var i = 0; i < matrices.Length; i++) {
                 var mat = matrices[i];
                 returnArray[i * 16] = mat.M11;
                 returnArray[(i * 16) + 1] = mat.M12;
@@ -410,8 +370,7 @@ namespace MyValveResourceFormat.ResourceTypes.ModelAnimation
             return returnArray;
         }
 
-        public override string ToString()
-        {
+        public override string ToString() {
             return Name;
         }
     }

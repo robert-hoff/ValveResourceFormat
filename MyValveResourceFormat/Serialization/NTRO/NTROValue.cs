@@ -2,10 +2,8 @@ using System;
 using System.Numerics;
 using MyValveResourceFormat.Blocks;
 
-namespace MyValveResourceFormat.Serialization.NTRO
-{
-    public abstract class NTROValue
-    {
+namespace MyValveResourceFormat.Serialization.NTRO {
+    public abstract class NTROValue {
         public DataType Type { get; protected set; }
         public bool Pointer { get; protected set; }
         public abstract void WriteText(IndentedTextWriter writer);
@@ -13,39 +11,32 @@ namespace MyValveResourceFormat.Serialization.NTRO
         public abstract object ValueObject { get; }
     }
 
-    public class NTROValue<T> : NTROValue
-    {
+    public class NTROValue<T> : NTROValue {
         public T Value { get; private set; }
 
         public override object ValueObject => Value as object;
 
-        public NTROValue(DataType type, T value, bool pointer = false)
-        {
+        public NTROValue(DataType type, T value, bool pointer = false) {
             Type = type;
             Value = value;
             Pointer = pointer;
         }
 
-        public override string ToString()
-        {
-            using (var writer = new IndentedTextWriter())
-            {
+        public override string ToString() {
+            using (var writer = new IndentedTextWriter()) {
                 WriteText(writer);
 
                 return writer.ToString();
             }
         }
 
-        public override void WriteText(IndentedTextWriter writer)
-        {
-            if (Value == null)
-            {
+        public override void WriteText(IndentedTextWriter writer) {
+            if (Value == null) {
                 writer.WriteLine("NULL");
                 return;
             }
 
-            switch (Type)
-            {
+            switch (Type) {
                 case DataType.Enum:
                     // TODO: Lookup in ReferencedEnums
                     writer.WriteLine("0x{0:X8}", Value);

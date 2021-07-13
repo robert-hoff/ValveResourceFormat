@@ -3,17 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace MyValveResourceFormat.Blocks.ResourceEditInfoStructs
-{
-    public class ExtraStringData : REDIBlock
-    {
-        public class EditStringData
-        {
+namespace MyValveResourceFormat.Blocks.ResourceEditInfoStructs {
+    public class ExtraStringData : REDIBlock {
+        public class EditStringData {
             public string Name { get; set; }
             public string Value { get; set; }
 
-            public void WriteText(IndentedTextWriter writer)
-            {
+            public void WriteText(IndentedTextWriter writer) {
                 writer.WriteLine("ResourceEditStringData_t");
                 writer.WriteLine("{");
                 writer.Indent++;
@@ -21,23 +17,19 @@ namespace MyValveResourceFormat.Blocks.ResourceEditInfoStructs
 
                 var lines = Value.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
 
-                if (lines.Length > 1)
-                {
+                if (lines.Length > 1) {
                     writer.Indent++;
 
                     writer.Write("CResourceString m_String = \"");
 
-                    foreach (var line in lines)
-                    {
+                    foreach (var line in lines) {
                         writer.WriteLine(line);
                     }
 
                     writer.WriteLine("\"");
 
                     writer.Indent--;
-                }
-                else
-                {
+                } else {
                     writer.WriteLine("CResourceString m_String = \"{0}\"", Value);
                 }
 
@@ -48,17 +40,14 @@ namespace MyValveResourceFormat.Blocks.ResourceEditInfoStructs
 
         public List<EditStringData> List { get; }
 
-        public ExtraStringData()
-        {
+        public ExtraStringData() {
             List = new List<EditStringData>();
         }
 
-        public override void Read(BinaryReader reader, Resource resource)
-        {
+        public override void Read(BinaryReader reader, Resource resource) {
             reader.BaseStream.Position = Offset;
 
-            for (var i = 0; i < Size; i++)
-            {
+            for (var i = 0; i < Size; i++) {
                 var dep = new EditStringData();
 
                 dep.Name = reader.ReadOffsetString(Encoding.UTF8);
@@ -68,14 +57,12 @@ namespace MyValveResourceFormat.Blocks.ResourceEditInfoStructs
             }
         }
 
-        public override void WriteText(IndentedTextWriter writer)
-        {
+        public override void WriteText(IndentedTextWriter writer) {
             writer.WriteLine("Struct m_ExtraStringData[{0}] =", List.Count);
             writer.WriteLine("[");
             writer.Indent++;
 
-            foreach (var dep in List)
-            {
+            foreach (var dep in List) {
                 dep.WriteText(writer);
             }
 

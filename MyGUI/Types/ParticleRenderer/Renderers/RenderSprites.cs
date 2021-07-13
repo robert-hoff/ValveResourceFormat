@@ -7,10 +7,8 @@ using OpenTK.Graphics.OpenGL;
 using MyValveResourceFormat.ResourceTypes;
 using MyValveResourceFormat.Serialization;
 
-namespace MyGUI.Types.ParticleRenderer.Renderers
-{
-    internal class RenderSprites : IParticleRenderer
-    {
+namespace MyGUI.Types.ParticleRenderer.Renderers {
+    internal class RenderSprites : IParticleRenderer {
         private const int VertexSize = 9;
 
         private readonly Shader shader;
@@ -28,44 +26,36 @@ namespace MyGUI.Types.ParticleRenderer.Renderers
         private QuadIndexBuffer quadIndices;
         private int vertexBufferHandle;
 
-        public RenderSprites(IKeyValueCollection keyValues, VrfGuiContext vrfGuiContext)
-        {
+        public RenderSprites(IKeyValueCollection keyValues, VrfGuiContext vrfGuiContext) {
             shader = vrfGuiContext.ShaderLoader.LoadShader("vrf.particle.sprite", new Dictionary<string, bool>());
             quadIndices = vrfGuiContext.QuadIndices;
 
             // The same quad is reused for all particles
             quadVao = SetupQuadBuffer();
 
-            if (keyValues.ContainsKey("m_hTexture"))
-            {
+            if (keyValues.ContainsKey("m_hTexture")) {
                 var textureSetup = LoadTexture(keyValues.GetProperty<string>("m_hTexture"), vrfGuiContext);
                 glTexture = textureSetup.TextureIndex;
                 spriteSheetData = textureSetup.TextureData?.GetSpriteSheetData();
-            }
-            else
-            {
+            } else {
                 glTexture = vrfGuiContext.MaterialLoader.GetErrorTexture();
             }
 
             additive = keyValues.GetProperty<bool>("m_bAdditive");
-            if (keyValues.ContainsKey("m_flOverbrightFactor"))
-            {
+            if (keyValues.ContainsKey("m_flOverbrightFactor")) {
                 overbrightFactor = keyValues.GetFloatProperty("m_flOverbrightFactor");
             }
 
-            if (keyValues.ContainsKey("m_nOrientationType"))
-            {
+            if (keyValues.ContainsKey("m_nOrientationType")) {
                 orientationType = keyValues.GetIntegerProperty("m_nOrientationType");
             }
 
-            if (keyValues.ContainsKey("m_flAnimationRate"))
-            {
+            if (keyValues.ContainsKey("m_flAnimationRate")) {
                 animationRate = keyValues.GetFloatProperty("m_flAnimationRate");
             }
         }
 
-        private int SetupQuadBuffer()
-        {
+        private int SetupQuadBuffer() {
             GL.UseProgram(shader.Program);
 
             // Create and bind VAO
@@ -92,35 +82,28 @@ namespace MyGUI.Types.ParticleRenderer.Renderers
             return vao;
         }
 
-        private static (int TextureIndex, Texture TextureData) LoadTexture(string textureName, VrfGuiContext vrfGuiContext)
-        {
+        private static (int TextureIndex, Texture TextureData) LoadTexture(string textureName, VrfGuiContext vrfGuiContext) {
             var textureResource = vrfGuiContext.LoadFileByAnyMeansNecessary(textureName + "_c");
 
-            if (textureResource == null)
-            {
+            if (textureResource == null) {
                 return (vrfGuiContext.MaterialLoader.GetErrorTexture(), null);
             }
 
             return (vrfGuiContext.MaterialLoader.LoadTexture(textureName), (Texture)textureResource.DataBlock);
         }
 
-        private void EnsureSpaceForVertices(int count)
-        {
+        private void EnsureSpaceForVertices(int count) {
             int numFloats = count * VertexSize;
 
-            if (rawVertices == null)
-            {
+            if (rawVertices == null) {
                 rawVertices = new float[numFloats];
-            }
-            else if (rawVertices.Length < numFloats)
-            {
+            } else if (rawVertices.Length < numFloats) {
                 int nextSize = (((count / 64) + 1) * 64) * VertexSize;
                 Array.Resize(ref rawVertices, nextSize);
             }
         }
 
-        private void UpdateVertices(ParticleBag particleBag, Matrix4x4 modelViewMatrix)
-        {
+        private void UpdateVertices(ParticleBag particleBag, Matrix4x4 modelViewMatrix) {
             var particles = particleBag.LiveParticles;
 
             // Create billboarding rotation (always facing camera)
@@ -130,8 +113,7 @@ namespace MyGUI.Types.ParticleRenderer.Renderers
 
             // Update vertex buffer
             EnsureSpaceForVertices(particleBag.Count * 4);
-            for (int i = 0; i < particleBag.Count; ++i)
-            {
+            for (int i = 0; i < particleBag.Count; ++i) {
                 // Positions
                 var modelMatrix = orientationType == 0
                     ? particles[i].GetRotationMatrix() * billboardMatrix * particles[i].GetTransformationMatrix()
@@ -157,8 +139,7 @@ namespace MyGUI.Types.ParticleRenderer.Renderers
                 rawVertices[quadStart + (VertexSize * 3) + 2] = tr.Z;
 
                 // Colors
-                for (int j = 0; j < 4; ++j)
-                {
+                for (int j = 0; j < 4; ++j) {
                     rawVertices[quadStart + (VertexSize * j) + 3] = particles[i].Color.X;
                     rawVertices[quadStart + (VertexSize * j) + 4] = particles[i].Color.Y;
                     rawVertices[quadStart + (VertexSize * j) + 5] = particles[i].Color.Z;
@@ -166,8 +147,7 @@ namespace MyGUI.Types.ParticleRenderer.Renderers
                 }
 
                 // UVs
-                if (spriteSheetData != null && spriteSheetData.Sequences.Length > 0 && spriteSheetData.Sequences[0].Frames.Length > 0)
-                {
+                if (spriteSheetData != null && spriteSheetData.Sequences.Length > 0 && spriteSheetData.Sequences[0].Frames.Length > 0) {
                     var sequence = spriteSheetData.Sequences[particles[i].Sequence % spriteSheetData.Sequences.Length];
 
                     var particleTime = particles[i].ConstantLifetime - particles[i].Lifetime;
@@ -189,9 +169,7 @@ namespace MyGUI.Types.ParticleRenderer.Renderers
                     rawVertices[quadStart + (VertexSize * 2) + 8] = offset.Y + (scale.Y * 0);
                     rawVertices[quadStart + (VertexSize * 3) + 7] = offset.X + (scale.X * 1);
                     rawVertices[quadStart + (VertexSize * 3) + 8] = offset.Y + (scale.Y * 1);
-                }
-                else
-                {
+                } else {
                     rawVertices[quadStart + (VertexSize * 0) + 7] = 0;
                     rawVertices[quadStart + (VertexSize * 0) + 8] = 1;
                     rawVertices[quadStart + (VertexSize * 1) + 7] = 0;
@@ -207,10 +185,8 @@ namespace MyGUI.Types.ParticleRenderer.Renderers
             GL.BufferData(BufferTarget.ArrayBuffer, particleBag.Count * VertexSize * 4 * sizeof(float), rawVertices, BufferUsageHint.DynamicDraw);
         }
 
-        public void Render(ParticleBag particleBag, Matrix4x4 viewProjectionMatrix, Matrix4x4 modelViewMatrix)
-        {
-            if (particleBag.Count == 0)
-            {
+        public void Render(ParticleBag particleBag, Matrix4x4 viewProjectionMatrix, Matrix4x4 modelViewMatrix) {
+            if (particleBag.Count == 0) {
                 return;
             }
 
@@ -221,12 +197,9 @@ namespace MyGUI.Types.ParticleRenderer.Renderers
             GL.Enable(EnableCap.Blend);
             GL.UseProgram(shader.Program);
 
-            if (additive)
-            {
+            if (additive) {
                 GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.One);
-            }
-            else
-            {
+            } else {
                 GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
             }
 
@@ -262,8 +235,7 @@ namespace MyGUI.Types.ParticleRenderer.Renderers
             GL.BindVertexArray(0);
             GL.UseProgram(0);
 
-            if (additive)
-            {
+            if (additive) {
                 GL.BlendEquation(BlendEquationMode.FuncAdd);
             }
 

@@ -1,13 +1,11 @@
 using System;
 
-namespace MyValveResourceFormat
-{
+namespace MyValveResourceFormat {
     /// <summary>
     /// Microsoft DirectX Graphics Infrastructure formats.
     /// See <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/bb173059(v=vs.85).aspx">this link</a> for more information.
     /// </summary>
-    public enum DXGI_FORMAT
-    {
+    public enum DXGI_FORMAT {
 #pragma warning disable 1591
         UNKNOWN = 0,
         R32G32B32A32_TYPELESS = 1,

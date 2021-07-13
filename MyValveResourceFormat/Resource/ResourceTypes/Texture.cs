@@ -10,18 +10,13 @@ using SkiaSharp;
 using MyValveResourceFormat.Blocks;
 using MyValveResourceFormat.Blocks.ResourceEditInfoStructs;
 
-namespace MyValveResourceFormat.ResourceTypes
-{
-    public class Texture : ResourceData
-    {
+namespace MyValveResourceFormat.ResourceTypes {
+    public class Texture : ResourceData {
         private const short MipmapLevelToExtract = 0; // for debugging purposes
 
-        public class SpritesheetData
-        {
-            public class Sequence
-            {
-                public class Frame
-                {
+        public class SpritesheetData {
+            public class Sequence {
+                public class Frame {
                     public Vector2 StartMins { get; set; }
                     public Vector2 StartMaxs { get; set; }
 
@@ -71,13 +66,11 @@ namespace MyValveResourceFormat.ResourceTypes
         public ushort ActualWidth => NonPow2Width > 0 ? NonPow2Width : Width;
         public ushort ActualHeight => NonPow2Height > 0 ? NonPow2Height : Height;
 
-        public Texture()
-        {
+        public Texture() {
             ExtraData = new Dictionary<VTexExtraData, byte[]>();
         }
 
-        public override void Read(BinaryReader reader, Resource resource)
-        {
+        public override void Read(BinaryReader reader, Resource resource) {
 
             Reader = reader;
             Resource = resource;
@@ -88,8 +81,7 @@ namespace MyValveResourceFormat.ResourceTypes
 
             Version = reader.ReadUInt16();
 
-            if (Version != 1)
-            {
+            if (Version != 1) {
                 throw new InvalidDataException(string.Format("Unknown vtex version. ({0} != expected 1)", Version));
             }
 
@@ -117,12 +109,10 @@ namespace MyValveResourceFormat.ResourceTypes
 
             var extraDataCount = reader.ReadUInt32();
 
-            if (extraDataCount > 0)
-            {
+            if (extraDataCount > 0) {
                 reader.BaseStream.Position += extraDataOffset - 8; // 8 is 2 uint32s we just read
 
-                for (var i = 0; i < extraDataCount; i++)
-                {
+                for (var i = 0; i < extraDataCount; i++) {
                     var type = (VTexExtraData)reader.ReadUInt32();
                     var offset = reader.ReadUInt32() - 8;
                     var size = reader.ReadUInt32();
@@ -131,13 +121,11 @@ namespace MyValveResourceFormat.ResourceTypes
 
                     reader.BaseStream.Position += offset;
 
-                    if (type == VTexExtraData.FILL_TO_POWER_OF_TWO)
-                    {
+                    if (type == VTexExtraData.FILL_TO_POWER_OF_TWO) {
                         reader.ReadUInt16();
                         var nw = reader.ReadUInt16();
                         var nh = reader.ReadUInt16();
-                        if (nw > 0 && nh > 0 && Width >= nw && Height >= nh)
-                        {
+                        if (nw > 0 && nh > 0 && Width >= nw && Height >= nh) {
                             NonPow2Width = nw;
                             NonPow2Height = nh;
                         }
@@ -147,21 +135,18 @@ namespace MyValveResourceFormat.ResourceTypes
 
                     ExtraData.Add(type, reader.ReadBytes((int)size));
 
-                    if (type == VTexExtraData.COMPRESSED_MIP_SIZE)
-                    {
+                    if (type == VTexExtraData.COMPRESSED_MIP_SIZE) {
                         reader.BaseStream.Position -= size;
 
                         var int1 = reader.ReadUInt32(); // 1?
                         var int2 = reader.ReadUInt32(); // 8?
                         var mips = reader.ReadUInt32();
 
-                        if (int1 != 1 && int1 != 0)
-                        {
+                        if (int1 != 1 && int1 != 0) {
                             throw new InvalidDataException($"int1 got: {int1}");
                         }
 
-                        if (int2 != 8)
-                        {
+                        if (int2 != 8) {
                             throw new InvalidDataException($"int2 expected 8 but got: {int2}");
                         }
 
@@ -169,8 +154,7 @@ namespace MyValveResourceFormat.ResourceTypes
 
                         CompressedMips = new int[mips];
 
-                        for (var mip = 0; mip < mips; mip++)
-                        {
+                        for (var mip = 0; mip < mips; mip++) {
                             CompressedMips[mip] = reader.ReadInt32();
                         }
                     }
@@ -185,10 +169,8 @@ namespace MyValveResourceFormat.ResourceTypes
             DataOffset = Offset + Size;
         }
 
-        public SpritesheetData GetSpriteSheetData()
-        {
-            if (ExtraData.TryGetValue(VTexExtraData.SHEET, out var bytes))
-            {
+        public SpritesheetData GetSpriteSheetData() {
+            if (ExtraData.TryGetValue(VTexExtraData.SHEET, out var bytes)) {
                 using var memoryStream = new MemoryStream(bytes);
                 using var reader = new BinaryReader(memoryStream);
                 var version = reader.ReadUInt32();
@@ -196,8 +178,7 @@ namespace MyValveResourceFormat.ResourceTypes
 
                 var sequences = new SpritesheetData.Sequence[numSequences];
 
-                for (var i = 0; i < numSequences; i++)
-                {
+                for (var i = 0; i < numSequences; i++) {
                     var sequenceNumber = reader.ReadUInt32();
                     var unknown1 = reader.ReadUInt32(); // 1?
                     var unknown2 = reader.ReadUInt32();
@@ -218,8 +199,7 @@ namespace MyValveResourceFormat.ResourceTypes
 
                     var frames = new SpritesheetData.Sequence.Frame[numFrames];
 
-                    for (var j = 0; j < numFrames; j++)
-                    {
+                    for (var j = 0; j < numFrames; j++) {
                         var frameUnknown1 = reader.ReadSingle();
                         var frameUnknown2 = reader.ReadUInt32();
                         var frameUnknown3 = reader.ReadSingle();
@@ -227,8 +207,7 @@ namespace MyValveResourceFormat.ResourceTypes
                         frames[j] = new SpritesheetData.Sequence.Frame();
                     }
 
-                    for (var j = 0; j < numFrames; j++)
-                    {
+                    for (var j = 0; j < numFrames; j++) {
                         frames[j].StartMins = new Vector2(reader.ReadSingle(), reader.ReadSingle());
                         frames[j].StartMaxs = new Vector2(reader.ReadSingle(), reader.ReadSingle());
 
@@ -238,15 +217,13 @@ namespace MyValveResourceFormat.ResourceTypes
 
                     reader.BaseStream.Position = endOfHeaderOffset;
 
-                    sequences[i] = new SpritesheetData.Sequence
-                    {
+                    sequences[i] = new SpritesheetData.Sequence {
                         Frames = frames,
                         FramesPerSecond = framesPerSecond,
                     };
                 }
 
-                return new SpritesheetData
-                {
+                return new SpritesheetData {
                     Sequences = sequences,
                 };
             }
@@ -262,8 +239,7 @@ namespace MyValveResourceFormat.ResourceTypes
          *
          *
          */
-        public SKBitmap GenerateBitmap()
-        {
+        public SKBitmap GenerateBitmap() {
             // The reader is set at the data position
             // this will later be read with
             //
@@ -292,8 +268,7 @@ namespace MyValveResourceFormat.ResourceTypes
             SkipMipmaps();
 
 
-            switch (Format)
-            {
+            switch (Format) {
                 case VTexFormat.DXT1:
                     return TextureDecompressors.UncompressDXT1(skiaBitmap, GetTextureSpan(), blockWidth, blockHeight);
 
@@ -303,8 +278,7 @@ namespace MyValveResourceFormat.ResourceTypes
                     var invert = false;
                     var hemiOct = false;
 
-                    if (Resource.EditInfo.Structs.ContainsKey(ResourceEditInfo.REDIStruct.SpecialDependencies))
-                    {
+                    if (Resource.EditInfo.Structs.ContainsKey(ResourceEditInfo.REDIStruct.SpecialDependencies)) {
                         var specialDeps = (SpecialDependencies)Resource.EditInfo.Structs[ResourceEditInfo.REDIStruct.SpecialDependencies];
 
                         yCoCg = specialDeps.List.Any(dependancy => dependancy.CompilerIdentifier == "CompileTexture" && dependancy.String == "Texture Compiler Version Image YCoCg Conversion");
@@ -357,8 +331,7 @@ namespace MyValveResourceFormat.ResourceTypes
                 case VTexFormat.BC7:
                     bool hemiOctRB = false;
                     invert = false;
-                    if (Resource.EditInfo.Structs.ContainsKey(ResourceEditInfo.REDIStruct.SpecialDependencies))
-                    {
+                    if (Resource.EditInfo.Structs.ContainsKey(ResourceEditInfo.REDIStruct.SpecialDependencies)) {
                         var specialDeps = (SpecialDependencies)Resource.EditInfo.Structs[ResourceEditInfo.REDIStruct.SpecialDependencies];
                         hemiOctRB = specialDeps.List.Any(dependancy => dependancy.CompilerIdentifier == "CompileTexture" && dependancy.String == "Texture Compiler Version Mip HemiOctIsoRoughness_RG_B");
                         invert = specialDeps.List.Any(dependancy => dependancy.CompilerIdentifier == "CompileTexture" && dependancy.String == "Texture Compiler Version LegacySource1InvertNormals");
@@ -368,8 +341,7 @@ namespace MyValveResourceFormat.ResourceTypes
 
                 case VTexFormat.ATI2N:
                     normalize = false;
-                    if (Resource.EditInfo.Structs.ContainsKey(ResourceEditInfo.REDIStruct.SpecialDependencies))
-                    {
+                    if (Resource.EditInfo.Structs.ContainsKey(ResourceEditInfo.REDIStruct.SpecialDependencies)) {
                         var specialDeps = (SpecialDependencies)Resource.EditInfo.Structs[ResourceEditInfo.REDIStruct.SpecialDependencies];
                         normalize = specialDeps.List.Any(dependancy => dependancy.CompilerIdentifier == "CompileTexture" && dependancy.String == "Texture Compiler Version Image NormalizeNormals");
                     }
@@ -417,15 +389,13 @@ namespace MyValveResourceFormat.ResourceTypes
             return skiaBitmap;
         }
 
-        private int CalculateBufferSizeForMipLevel(int mipLevel)
-        {
+        private int CalculateBufferSizeForMipLevel(int mipLevel) {
             var bytesPerPixel = GetBlockSize();
             var width = Width >> mipLevel;
             var height = Height >> mipLevel;
             var depth = Depth >> mipLevel;
 
-            if (depth < 1)
-            {
+            if (depth < 1) {
                 depth = 1;
             }
 
@@ -435,34 +405,28 @@ namespace MyValveResourceFormat.ResourceTypes
             || Format == VTexFormat.BC7
             || Format == VTexFormat.ETC2
             || Format == VTexFormat.ETC2_EAC
-            || Format == VTexFormat.ATI1N)
-            {
+            || Format == VTexFormat.ATI1N) {
                 var misalign = width % 4;
 
-                if (misalign > 0)
-                {
+                if (misalign > 0) {
                     width += 4 - misalign;
                 }
 
                 misalign = height % 4;
 
-                if (misalign > 0)
-                {
+                if (misalign > 0) {
                     height += 4 - misalign;
                 }
 
-                if (width < 4 && width > 0)
-                {
+                if (width < 4 && width > 0) {
                     width = 4;
                 }
 
-                if (height < 4 && height > 0)
-                {
+                if (height < 4 && height > 0) {
                     height = 4;
                 }
 
-                if (depth < 4 && depth > 1)
-                {
+                if (depth < 4 && depth > 1) {
                     depth = 4;
                 }
 
@@ -475,22 +439,17 @@ namespace MyValveResourceFormat.ResourceTypes
             return width * height * depth * bytesPerPixel;
         }
 
-        private void SkipMipmaps()
-        {
-            if (NumMipLevels < 2)
-            {
+        private void SkipMipmaps() {
+            if (NumMipLevels < 2) {
                 return;
             }
 
-            for (var j = NumMipLevels - 1; j > MipmapLevelToExtract; j--)
-            {
+            for (var j = NumMipLevels - 1; j > MipmapLevelToExtract; j--) {
                 int offset;
 
-                if (CompressedMips != null)
-                {
+                if (CompressedMips != null) {
                     offset = CompressedMips[j];
-                } else
-                {
+                } else {
                     offset = CalculateBufferSizeForMipLevel(j) * (Flags.HasFlag(VTexFlags.CUBE_TEXTURE) ? 6 : 1);
                 }
 
@@ -498,16 +457,14 @@ namespace MyValveResourceFormat.ResourceTypes
             }
         }
 
-        private Span<byte> GetTextureSpan(int mipLevel = MipmapLevelToExtract)
-        {
+        private Span<byte> GetTextureSpan(int mipLevel = MipmapLevelToExtract) {
             // this is the size of the data section, in my case 131072
             // int
             var uncompressedSize = CalculateBufferSizeForMipLevel(mipLevel);
             // Span<byte> of size 131072
             var output = new Span<byte>(new byte[uncompressedSize]);
 
-            if (!IsActuallyCompressedMips)
-            {
+            if (!IsActuallyCompressedMips) {
                 // output[i] are all zero here
 
                 // my vtex_c file will use this as IsActuallyCompressedMips=false
@@ -536,8 +493,7 @@ namespace MyValveResourceFormat.ResourceTypes
 
             var compressedSize = CompressedMips[mipLevel];
 
-            if (compressedSize >= uncompressedSize)
-            {
+            if (compressedSize >= uncompressedSize) {
                 Reader.Read(output);
                 return output;
             }
@@ -549,15 +505,12 @@ namespace MyValveResourceFormat.ResourceTypes
             return output;
         }
 
-        public byte[] GetDecompressedTextureAtMipLevel(int mipLevel)
-        {
+        public byte[] GetDecompressedTextureAtMipLevel(int mipLevel) {
             return GetTextureSpan(mipLevel).ToArray();
         }
 
-        private BinaryReader GetDecompressedBuffer()
-        {
-            if (!IsActuallyCompressedMips)
-            {
+        private BinaryReader GetDecompressedBuffer() {
+            if (!IsActuallyCompressedMips) {
                 return Reader;
             }
 
@@ -566,16 +519,13 @@ namespace MyValveResourceFormat.ResourceTypes
             return new BinaryReader(outStream); // TODO: dispose
         }
 
-        private SKBitmap ReadBuffer()
-        {
+        private SKBitmap ReadBuffer() {
             return SKBitmap.Decode(Reader.ReadBytes((int)Reader.BaseStream.Length));
         }
 
 #pragma warning disable CA1024 // Use properties where appropriate
-        public int GetBlockSize()
-        {
-            return Format switch
-            {
+        public int GetBlockSize() {
+            return Format switch {
                 VTexFormat.DXT1 => 8,
                 VTexFormat.DXT5 => 16,
                 VTexFormat.RGBA8888 => 4,
@@ -601,8 +551,7 @@ namespace MyValveResourceFormat.ResourceTypes
         }
 #pragma warning restore CA1024 // Use properties where appropriate
 
-        public override string ToString()
-        {
+        public override string ToString() {
             using var writer = new IndentedTextWriter();
             writer.WriteLine("{0,-12} = {1}", "VTEX Version", Version);
             writer.WriteLine("{0,-12} = {1}", "Width", Width);
@@ -616,10 +565,8 @@ namespace MyValveResourceFormat.ResourceTypes
             writer.WriteLine("{0,-12} = {1} (VTEX_FORMAT_{2})", "Format", (int)Format, Format);
             writer.WriteLine("{0,-12} = 0x{1:X8}", "Flags", (int)Flags);
 
-            foreach (Enum value in Enum.GetValues(Flags.GetType()))
-            {
-                if (Flags.HasFlag(value))
-                {
+            foreach (Enum value in Enum.GetValues(Flags.GetType())) {
+                if (Flags.HasFlag(value)) {
                     writer.WriteLine("{0,-12} | 0x{1:X8} = VTEX_FLAG_{2}", string.Empty, Convert.ToInt32(value), value);
                 }
             }
@@ -628,18 +575,15 @@ namespace MyValveResourceFormat.ResourceTypes
 
             var entry = 0;
 
-            foreach (var b in ExtraData)
-            {
+            foreach (var b in ExtraData) {
                 writer.WriteLine("{0,-12}   [ Entry {1}: VTEX_EXTRA_DATA_{2} - {3} bytes ]", string.Empty, entry++, b.Key, b.Value.Length);
 
-                if (b.Key == VTexExtraData.COMPRESSED_MIP_SIZE)
-                {
+                if (b.Key == VTexExtraData.COMPRESSED_MIP_SIZE) {
                     writer.WriteLine("{0,-16}   [ {1} mips, sized: {2} ]", string.Empty, CompressedMips.Length, string.Join(", ", CompressedMips));
                 }
             }
 
-            for (var j = 0; j < NumMipLevels; j++)
-            {
+            for (var j = 0; j < NumMipLevels; j++) {
                 writer.WriteLine($"Mip level {j} - buffer size: {CalculateBufferSizeForMipLevel(j)}");
             }
 

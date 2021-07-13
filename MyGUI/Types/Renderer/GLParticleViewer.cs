@@ -7,8 +7,7 @@ using MyGUI.Types.ParticleRenderer;
 using MyGUI.Utils;
 using static MyGUI.Controls.GLViewerControl;
 
-namespace MyGUI.Types.Renderer
-{
+namespace MyGUI.Types.Renderer {
     /// <summary>
     /// GL Render control with particle controls (control points? particle counts?).
     /// Renders a list of ParticleRenderers.
@@ -28,8 +27,7 @@ namespace MyGUI.Types.Renderer
 
         private ParticleGrid particleGrid;
 
-        public GLParticleViewer(VrfGuiContext guiContext)
-        {
+        public GLParticleViewer(VrfGuiContext guiContext) {
             vrfGuiContext = guiContext;
 
             viewerControl = new GLViewerControl();
@@ -37,8 +35,7 @@ namespace MyGUI.Types.Renderer
             viewerControl.GLLoad += OnLoad;
         }
 
-        private void OnLoad(object sender, EventArgs e)
-        {
+        private void OnLoad(object sender, EventArgs e) {
             particleGrid = new ParticleGrid(20, 5, vrfGuiContext);
 
             viewerControl.Camera.SetViewportSize(viewerControl.GLControl.Width, viewerControl.GLControl.Height);
@@ -50,20 +47,17 @@ namespace MyGUI.Types.Renderer
             viewerControl.GLPaint += OnPaint;
         }
 
-        private void OnPaint(object sender, RenderEventArgs e)
-        {
+        private void OnPaint(object sender, RenderEventArgs e) {
             particleGrid.Render(e.Camera, RenderPass.Both);
 
-            foreach (var renderer in Renderers)
-            {
+            foreach (var renderer in Renderers) {
                 renderer.Update(e.FrameTime);
 
                 renderer.Render(e.Camera, RenderPass.Both);
             }
         }
 
-        public void AddRenderer(ParticleRenderer.ParticleRenderer renderer)
-        {
+        public void AddRenderer(ParticleRenderer.ParticleRenderer renderer) {
             Renderers.Add(renderer);
         }
     }

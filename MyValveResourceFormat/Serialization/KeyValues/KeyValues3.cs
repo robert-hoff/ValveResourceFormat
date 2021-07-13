@@ -22,12 +22,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace MyValveResourceFormat.Serialization.KeyValues
-{
-    public static class KeyValues3
-    {
-        private enum State
-        {
+namespace MyValveResourceFormat.Serialization.KeyValues {
+    public static class KeyValues3 {
+        private enum State {
             HEADER,
             SEEK_VALUE,
             PROP_NAME,
@@ -41,8 +38,7 @@ namespace MyValveResourceFormat.Serialization.KeyValues
             COMMENT_BLOCK
         }
 
-        private class Parser
-        {
+        private class Parser {
             public StreamReader FileStream;
 
             public KVObject Root = null;
@@ -56,8 +52,7 @@ namespace MyValveResourceFormat.Serialization.KeyValues
             public Stack<KVObject> ObjStack;
             public Stack<State> StateStack;
 
-            public Parser()
-            {
+            public Parser() {
                 //Initialise datastructures
                 ObjStack = new Stack<KVObject>();
                 StateStack = new Stack<State>();
@@ -73,29 +68,24 @@ namespace MyValveResourceFormat.Serialization.KeyValues
             }
         }
 
-        public static KV3File ParseKVFile(string filename)
-        {
-            using (var fileStream = new FileStream(filename, FileMode.Open, FileAccess.Read))
-            {
+        public static KV3File ParseKVFile(string filename) {
+            using (var fileStream = new FileStream(filename, FileMode.Open, FileAccess.Read)) {
                 return ParseKVFile(fileStream);
             }
         }
 
-        public static KV3File ParseKVFile(Stream fileStream)
-        {
+        public static KV3File ParseKVFile(Stream fileStream) {
             var parser = new Parser();
 
             //Open stream reader
             parser.FileStream = new StreamReader(fileStream);
 
             char c;
-            while (!parser.FileStream.EndOfStream)
-            {
+            while (!parser.FileStream.EndOfStream) {
                 c = NextChar(parser);
 
                 //Do something depending on the current state
-                switch (parser.StateStack.Peek())
-                {
+                switch (parser.StateStack.Peek()) {
                     case State.HEADER:
                         ReadHeader(c, parser);
                         break;
@@ -138,13 +128,11 @@ namespace MyValveResourceFormat.Serialization.KeyValues
         }
 
         //header state
-        private static void ReadHeader(char c, Parser parser)
-        {
+        private static void ReadHeader(char c, Parser parser) {
             parser.CurrentString.Append(c);
 
             //Read until --> is encountered
-            if (c == '>' && parser.CurrentString.ToString().Substring(parser.CurrentString.Length - 3) == "-->")
-            {
+            if (c == '>' && parser.CurrentString.ToString().Substring(parser.CurrentString.Length - 3) == "-->") {
                 parser.StateStack.Pop();
                 parser.StateStack.Push(State.SEEK_VALUE);
                 return;
@@ -152,17 +140,14 @@ namespace MyValveResourceFormat.Serialization.KeyValues
         }
 
         //Seeking value state
-        private static void SeekValue(char c, Parser parser)
-        {
+        private static void SeekValue(char c, Parser parser) {
             //Ignore whitespace
-            if (char.IsWhiteSpace(c) || c == '=')
-            {
+            if (char.IsWhiteSpace(c) || c == '=') {
                 return;
             }
 
             //Check struct opening
-            if (c == '{')
-            {
+            if (c == '{') {
                 parser.StateStack.Pop();
                 parser.StateStack.Push(State.VALUE_STRUCT);
 
@@ -170,8 +155,7 @@ namespace MyValveResourceFormat.Serialization.KeyValues
             }
 
             //Check for array opening
-            else if (c == '[')
-            {
+            else if (c == '[') {
                 parser.StateStack.Pop();
                 parser.StateStack.Push(State.VALUE_ARRAY);
                 parser.StateStack.Push(State.SEEK_VALUE);
@@ -180,8 +164,7 @@ namespace MyValveResourceFormat.Serialization.KeyValues
             }
 
             //Check for array closing
-            else if (c == ']')
-            {
+            else if (c == ']') {
                 parser.StateStack.Pop();
                 parser.StateStack.Pop();
 
@@ -190,21 +173,17 @@ namespace MyValveResourceFormat.Serialization.KeyValues
             }
 
             //String opening
-            else if (c == '"')
-            {
+            else if (c == '"') {
                 //Check if a multistring or single string was found
                 string next = PeekString(parser, 4);
-                if (next.Contains("\"\"\n") || next == "\"\"\r\n")
-                {
+                if (next.Contains("\"\"\n") || next == "\"\"\r\n") {
                     //Skip the next two "'s
                     SkipChars(parser, 2);
 
                     parser.StateStack.Pop();
                     parser.StateStack.Push(State.VALUE_STRING_MULTI);
                     parser.CurrentString.Clear();
-                }
-                else
-                {
+                } else {
                     parser.StateStack.Pop();
                     parser.StateStack.Push(State.VALUE_STRING);
                     parser.CurrentString.Clear();
@@ -212,8 +191,7 @@ namespace MyValveResourceFormat.Serialization.KeyValues
             }
 
             //Boolean false
-            else if (ReadAheadMatches(parser, c, "false"))
-            {
+            else if (ReadAheadMatches(parser, c, "false")) {
                 parser.StateStack.Pop();
 
                 //Can directly be added
@@ -224,8 +202,7 @@ namespace MyValveResourceFormat.Serialization.KeyValues
             }
 
             //Boolean true
-            else if (ReadAheadMatches(parser, c, "true"))
-            {
+            else if (ReadAheadMatches(parser, c, "true")) {
                 parser.StateStack.Pop();
 
                 //Can directly be added
@@ -236,8 +213,7 @@ namespace MyValveResourceFormat.Serialization.KeyValues
             }
 
             //Null
-            else if (ReadAheadMatches(parser, c, "null"))
-            {
+            else if (ReadAheadMatches(parser, c, "null")) {
                 parser.StateStack.Pop();
 
                 //Can directly be added
@@ -248,8 +224,7 @@ namespace MyValveResourceFormat.Serialization.KeyValues
             }
 
             // Number
-            else if (char.IsDigit(c))
-            {
+            else if (char.IsDigit(c)) {
                 parser.StateStack.Pop();
                 parser.StateStack.Push(State.VALUE_NUMBER);
                 parser.CurrentString.Clear();
@@ -257,8 +232,7 @@ namespace MyValveResourceFormat.Serialization.KeyValues
             }
 
             //Flagged resource
-            else
-            {
+            else {
                 parser.StateStack.Pop();
                 parser.StateStack.Push(State.VALUE_FLAGGED);
                 parser.CurrentString.Clear();
@@ -267,11 +241,9 @@ namespace MyValveResourceFormat.Serialization.KeyValues
         }
 
         //Reading a property name
-        private static void ReadPropName(char c, Parser parser)
-        {
+        private static void ReadPropName(char c, Parser parser) {
             //Stop once whitespace is encountered
-            if (char.IsWhiteSpace(c))
-            {
+            if (char.IsWhiteSpace(c)) {
                 parser.StateStack.Pop();
                 parser.StateStack.Push(State.SEEK_VALUE);
                 parser.CurrentName = parser.CurrentString.ToString();
@@ -282,17 +254,14 @@ namespace MyValveResourceFormat.Serialization.KeyValues
         }
 
         //Read a structure
-        private static void ReadValueStruct(char c, Parser parser)
-        {
+        private static void ReadValueStruct(char c, Parser parser) {
             //Ignore whitespace
-            if (char.IsWhiteSpace(c))
-            {
+            if (char.IsWhiteSpace(c)) {
                 return;
             }
 
             //Catch comments
-            if (c == '/')
-            {
+            if (c == '/') {
                 parser.StateStack.Push(State.COMMENT);
                 parser.CurrentString.Clear();
                 parser.CurrentString.Append(c);
@@ -300,8 +269,7 @@ namespace MyValveResourceFormat.Serialization.KeyValues
             }
 
             //Check for the end of the structure
-            if (c == '}')
-            {
+            if (c == '}') {
                 KVObject value = parser.ObjStack.Pop();
                 parser.ObjStack.Peek().AddProperty(value.Key, new KVValue(KVType.OBJECT, value));
                 parser.StateStack.Pop();
@@ -315,10 +283,8 @@ namespace MyValveResourceFormat.Serialization.KeyValues
         }
 
         //Read a string value
-        private static void ReadValueString(char c, Parser parser)
-        {
-            if (c == '"' && parser.PreviousChar != '\\')
-            {
+        private static void ReadValueString(char c, Parser parser) {
+            if (c == '"' && parser.PreviousChar != '\\') {
                 //String ending found
                 parser.StateStack.Pop();
                 parser.ObjStack.Peek().AddProperty(parser.CurrentName, new KVValue(KVType.STRING, parser.CurrentString.ToString()));
@@ -329,36 +295,27 @@ namespace MyValveResourceFormat.Serialization.KeyValues
         }
 
         //Reading multiline string
-        private static void ReadValueStringMulti(char c, Parser parser)
-        {
+        private static void ReadValueStringMulti(char c, Parser parser) {
             //Check for ending
             string next = PeekString(parser, 2);
-            if (c == '"' && next == "\"\"" && parser.PreviousChar != '\\')
-            {
+            if (c == '"' && next == "\"\"" && parser.PreviousChar != '\\') {
                 //Check for starting and trailing linebreaks
                 string multilineStr = parser.CurrentString.ToString();
                 int start = 0;
                 int end = multilineStr.Length;
 
                 //Check the start
-                if (multilineStr.ElementAt(0) == '\n')
-                {
+                if (multilineStr.ElementAt(0) == '\n') {
                     start = 1;
-                }
-                else if (multilineStr.ElementAt(0) == '\r' && multilineStr.ElementAt(1) == '\n')
-                {
+                } else if (multilineStr.ElementAt(0) == '\r' && multilineStr.ElementAt(1) == '\n') {
                     start = 2;
                 }
 
                 //Check the end
-                if (multilineStr.ElementAt(multilineStr.Length - 1) == '\n')
-                {
-                    if (multilineStr.ElementAt(multilineStr.Length - 2) == '\r')
-                    {
+                if (multilineStr.ElementAt(multilineStr.Length - 1) == '\n') {
+                    if (multilineStr.ElementAt(multilineStr.Length - 2) == '\r') {
                         end = multilineStr.Length - 2;
-                    }
-                    else
-                    {
+                    } else {
                         end = multilineStr.Length - 1;
                     }
                 }
@@ -378,19 +335,14 @@ namespace MyValveResourceFormat.Serialization.KeyValues
         }
 
         //Read a numerical value
-        private static void ReadValueNumber(char c, Parser parser)
-        {
+        private static void ReadValueNumber(char c, Parser parser) {
             //For arrays
-            if (c == ',')
-            {
+            if (c == ',') {
                 parser.StateStack.Pop();
                 parser.StateStack.Push(State.SEEK_VALUE);
-                if (parser.CurrentString.ToString().Contains('.'))
-                {
+                if (parser.CurrentString.ToString().Contains('.')) {
                     parser.ObjStack.Peek().AddProperty(parser.CurrentName, new KVValue(KVType.DOUBLE, double.Parse(parser.CurrentString.ToString(), CultureInfo.InvariantCulture)));
-                }
-                else
-                {
+                } else {
                     parser.ObjStack.Peek().AddProperty(parser.CurrentName, new KVValue(KVType.INT64, long.Parse(parser.CurrentString.ToString(), CultureInfo.InvariantCulture)));
                 }
 
@@ -398,16 +350,12 @@ namespace MyValveResourceFormat.Serialization.KeyValues
             }
 
             //Stop reading the number once whtiespace is encountered
-            if (char.IsWhiteSpace(c))
-            {
+            if (char.IsWhiteSpace(c)) {
                 //Distinguish between doubles and ints
                 parser.StateStack.Pop();
-                if (parser.CurrentString.ToString().Contains('.'))
-                {
+                if (parser.CurrentString.ToString().Contains('.')) {
                     parser.ObjStack.Peek().AddProperty(parser.CurrentName, new KVValue(KVType.DOUBLE, double.Parse(parser.CurrentString.ToString(), CultureInfo.InvariantCulture)));
-                }
-                else
-                {
+                } else {
                     parser.ObjStack.Peek().AddProperty(parser.CurrentName, new KVValue(KVType.INT64, long.Parse(parser.CurrentString.ToString(), CultureInfo.InvariantCulture)));
                 }
 
@@ -418,11 +366,9 @@ namespace MyValveResourceFormat.Serialization.KeyValues
         }
 
         //Read an array
-        private static void ReadValueArray(char c, Parser parser)
-        {
+        private static void ReadValueArray(char c, Parser parser) {
             //This shouldn't happen
-            if (!char.IsWhiteSpace(c) && c != ',')
-            {
+            if (!char.IsWhiteSpace(c) && c != ',') {
                 throw new InvalidDataException("Error in array format.");
             }
 
@@ -431,16 +377,13 @@ namespace MyValveResourceFormat.Serialization.KeyValues
         }
 
         //Read a flagged value
-        private static void ReadValueFlagged(char c, Parser parser)
-        {
+        private static void ReadValueFlagged(char c, Parser parser) {
             //End at whitespace
-            if (char.IsWhiteSpace(c))
-            {
+            if (char.IsWhiteSpace(c)) {
                 parser.StateStack.Pop();
                 var strings = parser.CurrentString.ToString().Split(new char[] { ':' }, 2);
                 KVFlag flag;
-                switch (strings[0])
-                {
+                switch (strings[0]) {
                     case "resource":
                         flag = KVFlag.Resource;
                         break;
@@ -468,34 +411,28 @@ namespace MyValveResourceFormat.Serialization.KeyValues
         }
 
         //Read comments
-        private static void ReadComment(char c, Parser parser)
-        {
+        private static void ReadComment(char c, Parser parser) {
             //Check for multiline comments
-            if (parser.CurrentString.Length == 1 && c == '*')
-            {
+            if (parser.CurrentString.Length == 1 && c == '*') {
                 parser.StateStack.Pop();
                 parser.StateStack.Push(State.COMMENT_BLOCK);
             }
 
             //Check for the end of a comment
-            if (c == '\n')
-            {
+            if (c == '\n') {
                 parser.StateStack.Pop();
                 return;
             }
 
-            if (c != '\r')
-            {
+            if (c != '\r') {
                 parser.CurrentString.Append(c);
             }
         }
 
         //Read a comment block
-        private static void ReadCommentBlock(char c, Parser parser)
-        {
+        private static void ReadCommentBlock(char c, Parser parser) {
             //Look for the end of the comment block
-            if (c == '/' && parser.CurrentString.ToString().Last() == '*')
-            {
+            if (c == '/' && parser.CurrentString.ToString().Last() == '*') {
                 parser.StateStack.Pop();
             }
 
@@ -503,40 +440,29 @@ namespace MyValveResourceFormat.Serialization.KeyValues
         }
 
         //Get the next char from the filestream
-        private static char NextChar(Parser parser)
-        {
+        private static char NextChar(Parser parser) {
             //Check if there are characters in the buffer, otherwise read a new one
-            if (parser.CharBuffer.Count > 0)
-            {
+            if (parser.CharBuffer.Count > 0) {
                 return parser.CharBuffer.Dequeue();
-            }
-            else
-            {
+            } else {
                 return (char)parser.FileStream.Read();
             }
         }
 
         //Skip the next X characters in the filestream
-        private static void SkipChars(Parser parser, int num)
-        {
-            for (int i = 0; i < num; i++)
-            {
+        private static void SkipChars(Parser parser, int num) {
+            for (int i = 0; i < num; i++) {
                 NextChar(parser);
             }
         }
 
         //Utility function
-        private static string PeekString(Parser parser, int length)
-        {
+        private static string PeekString(Parser parser, int length) {
             char[] buffer = new char[length];
-            for (int i = 0; i < length; i++)
-            {
-                if (i < parser.CharBuffer.Count)
-                {
+            for (int i = 0; i < length; i++) {
+                if (i < parser.CharBuffer.Count) {
                     buffer[i] = parser.CharBuffer.ElementAt(i);
-                }
-                else
-                {
+                } else {
                     buffer[i] = (char)parser.FileStream.Read();
                     parser.CharBuffer.Enqueue(buffer[i]);
                 }
@@ -545,10 +471,8 @@ namespace MyValveResourceFormat.Serialization.KeyValues
             return string.Join(string.Empty, buffer);
         }
 
-        private static bool ReadAheadMatches(Parser parser, char c, string pattern)
-        {
-            if (c + PeekString(parser, pattern.Length - 1) == pattern)
-            {
+        private static bool ReadAheadMatches(Parser parser, char c, string pattern) {
+            if (c + PeekString(parser, pattern.Length - 1) == pattern) {
                 return true;
             }
 
