@@ -342,6 +342,13 @@ namespace GUI
                 TaskScheduler.FromCurrentSynchronizationContext());
         }
 
+
+        /*
+         *
+         * The file from the ValvePak has already been read into byte[] input at this point!
+         *
+         *
+         */
         private TabPage ProcessFile(string fileName, byte[] input, TreeViewWithSearchResults.TreeViewPackageTag currentPackage)
         {
             uint magic = 0;
@@ -357,6 +364,7 @@ namespace GUI
             }
             else
             {
+                // if input==null it may be a VPK file, it may be another type of file too
                 var magicData = new byte[6];
 
                 using (var fs = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
@@ -368,10 +376,27 @@ namespace GUI
                 magicResourceVersion = BitConverter.ToUInt16(magicData, 4);
             }
 
+
+
+
+            /*
+             * This is called when opening the ValvePak file
+             * It will also be called when opening files inside the package, when using the file menu on the left
+             * If opening a file inside a package then currentPackage contains the member
+             *
+             *      Package of the type SteamDataBase.ValvePak.Package
+             *
+             *
+             *
+             *
+             */
             var vrfGuiContext = new VrfGuiContext(fileName, currentPackage);
 
             if (Types.Viewers.Package.IsAccepted(magic))
             {
+
+                // R: Package here is the interface viewer for the ValvePak (it probably needs a list of icons)
+                // I'm guessing the MainForm is instantiated with the icons (or ImageList) - the Package.ImageList get a pointer to this
                 var tab = new Types.Viewers.Package
                 {
                     ImageList = ImageList, // TODO: Move this directly into Package
@@ -404,6 +429,9 @@ namespace GUI
             }
             else if (Types.Viewers.Resource.IsAccepted(magicResourceVersion))
             {
+
+                // the file armor_of_reckless_vigor_weapon_vmdl_c has already been
+                // read into the input here, which is 5400 bytes long
                 return new Types.Viewers.Resource().Create(vrfGuiContext, input);
             }
             else if (Types.Viewers.Image.IsAccepted(magic))
