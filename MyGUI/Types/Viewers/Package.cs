@@ -71,8 +71,18 @@ namespace MyGUI.Types.Viewers {
             if (node.Tag.GetType() == typeof(PackageEntry)) {
                 var package = node.TreeView.Tag as TreeViewWithSearchResults.TreeViewPackageTag;
                 var file = node.Tag as PackageEntry;
-                package.Package.ReadEntry(file, out var output);
 
+                /*
+                 * R: this line will populate byte[] output with the content of the file clicked on
+                 *
+                 *'out var ouput'
+                 * means output is declared and assigned a value in the function
+                 *
+                 *
+                 * this won't do any processing yes and we've just obtained a byte[] here
+                 *
+                 */
+                package.Package.ReadEntry(file, out var output);
                 Program.MainForm.OpenFile(file.GetFileName(), output, package);
             }
         }

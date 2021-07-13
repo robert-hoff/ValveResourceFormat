@@ -54,16 +54,27 @@ namespace MyGUI.Types.Exporter {
             Settings.Save();
 
             var extractDialog = new GenericProgressForm();
+
+            // I think this is an anonymous function
+            // the arguments here are
+            // object? sender, EventArgs e
+            //
             extractDialog.OnProcess += (_, __) => {
+
+
                 if (dialog.FilterIndex == 1 && ResourceTypesThatAreGltfExportable.Contains(resource.ResourceType)) {
                     var exporter = new GltfModelExporter {
                         ProgressReporter = new Progress<string>(extractDialog.SetProgress),
                         FileLoader = exportData.VrfGuiContext.FileLoader,
                     };
+                    Console.WriteLine($"inside mesh/model/world: {resource.FileName}");
                     switch (resource.ResourceType) {
                         case ResourceType.Mesh:
                             exporter.ExportToFile(fileName, dialog.FileName, new Mesh(resource));
                             break;
+
+                        // R: dialog.FileName is the full filepath
+                        // fileName though is just that without the dir
                         case ResourceType.Model:
                             exporter.ExportToFile(fileName, dialog.FileName, (Model)resource.DataBlock);
                             break;
@@ -77,6 +88,7 @@ namespace MyGUI.Types.Exporter {
                             break;
                     }
                 } else {
+                    Console.WriteLine($"other types: {resource.FileName}");
                     var data = FileExtract.Extract(resource).ToArray();
                     using var stream = dialog.OpenFile();
                     stream.Write(data, 0, data.Length);

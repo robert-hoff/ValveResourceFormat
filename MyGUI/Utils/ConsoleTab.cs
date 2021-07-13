@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Text;
@@ -50,10 +51,24 @@ namespace MyGUI.Utils {
             tab.Controls.Add(control);
 
             var logger = new MyLogger(control);
-            Console.SetOut(logger);
-            Console.SetError(logger);
+            // Console.SetOut(logger);
+            // Console.SetError(logger);
+            Console.SetOut(new ToDebugWriter());
 
             return tab;
         }
+
+
+        public class ToDebugWriter : StringWriter
+        {
+            public override void WriteLine(string value)
+            {
+                Debug.WriteLine(value);
+                base.WriteLine(value);
+            }
+        }
+
+
+
     }
 }

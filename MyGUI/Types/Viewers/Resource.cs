@@ -24,6 +24,11 @@ namespace MyGUI.Types.Viewers {
                 FileName = vrfGuiContext.FileName,
             };
 
+            // byte[] here is 5400 long which is the length of the file
+            //
+            //      armor_of_reckless_vigor_weapon.vmdl_c
+            //
+            // threrefore resource.Read(new MemoryStream(input)) is called here
             if (input != null) {
                 resource.Read(new MemoryStream(input));
             } else {
@@ -152,8 +157,43 @@ namespace MyGUI.Types.Viewers {
                     break;
 
                 case ResourceType.Model:
-                    Program.MainForm.Invoke(new ExportDel(AddToExport), resTabs, $"Export {Path.GetFileName(vrfGuiContext.FileName)} as glTF",
-                        vrfGuiContext.FileName, new ExportData { Resource = resource, VrfGuiContext = vrfGuiContext });
+                    // The resource type is identified as model, ExportDel is a signature or *delegate*
+                    // there are two functions here
+                    //
+                    //          ExportDel                   meaning 'export delegate' - possibly this is just the tooltip
+                    //          ExportData
+                    //
+                    // new ExportDel(AddToExport)
+                    //
+                    // must be the function that is called
+
+
+                    /*
+                     *
+                     * The Invoke methods takes two arguments
+                     *
+                     *          Delegate mathod, object[] args
+                     *
+                     * The arguments object[] args will be *passed* to the delegate
+                     *
+                     *
+                     * The point of execution of the line line Program.MainForm.Invoke(..) happens
+                     * then I open a file in the vpk browser
+                     *
+                     *
+                     *
+                     *
+                     *
+                     */
+                    Program.MainForm.Invoke(
+                                new ExportDel(AddToExport),
+                                resTabs,
+                                $"Export {Path.GetFileName(vrfGuiContext.FileName)} as glTF",
+                                vrfGuiContext.FileName, new ExportData { Resource = resource, VrfGuiContext = vrfGuiContext }
+                            );
+
+
+
                     Program.MainForm.Invoke(new ExportDel(AddToExport), resTabs, $"Export {Path.GetFileName(vrfGuiContext.FileName)} as GLB",
                         vrfGuiContext.FileName, new ExportData { Resource = resource, VrfGuiContext = vrfGuiContext, FileType = ExportFileType.GLB });
 
@@ -334,16 +374,53 @@ namespace MyGUI.Types.Viewers {
         private delegate void ExportDel(Control control, string name, string filename, ExportData data);
 
         private void AddToExport(Control control, string name, string filename, ExportData data) {
+            /*
+             * The point of execution here ALSO happens when I open a file in the vpk browser
+             * The same method, i.e. this method, is called regardless of resource type
+             *
+             * The method will be called TWICE. once for each of the options glTF and GLB
+             *
+             *      data.FileType = Auto              => glTF
+             *      data.FileType = GLB               => GLB
+             *
+             *
+             * name         is the name of the control          "Export armore_of_... as glTF"
+             * filename     is the orginal name of the file     armor_of_reckless_vigor_weapon.vmdl_c
+             *
+             *
+             * Also, ExportData data contain the resource type, i.e. the field
+             *
+             *      data.Resource
+             *
+             * The data.Resource at this point has already extracted the headers for the data
+             * (which is used to populate the tabs in the GUI)
+             *
+             *
+             *
+             *
+             */
             Program.MainForm.ExportToolStripButton.Enabled = true;
 
             var ts = new ToolStripMenuItem {
                 Size = new Size(150, 20),
+                // name = "Export armore of ... " is assigned to the Text part
                 Text = name,
+
+                // R: it looks like the tooptip is actually disabled, but if assigned as the filename makes it convenient
+                // to retrieve when calling the ExportFile function
                 ToolTipText = filename,
+
+                // R: this hasn't got a declared type, or it's 'var' like the ToolStripMenuItem object ts
+                // from the docs:
+                // Tag is a standard ToolStripItem property used to store various stash
+                // it will be used later to get the resource object when exporting
                 Tag = data,
             };
+
             //This is required for the dialog to know the default name and path.
             //This makes it trivial to dump without exploring our nested TabPages.
+
+            // R: this must be the event to execute on click?
             ts.Click += ExportToolStripMenuItem_Click;
 
             Program.MainForm.ExportToolStripButton.DropDownItems.Add(ts);
@@ -361,11 +438,13 @@ namespace MyGUI.Types.Viewers {
             control.Disposed += ControlExposed;
         }
 
+
         private void ExportToolStripMenuItem_Click(object sender, EventArgs e) {
             //ToolTipText is the full filename
             var menuItem = (ToolStripMenuItem)sender;
             var fileName = menuItem.ToolTipText;
 
+            // R: exports the file, the var Tag object is cast to the expected type
             ExportFile.Export(fileName, menuItem.Tag as ExportData);
         }
     }
