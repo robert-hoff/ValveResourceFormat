@@ -37,8 +37,8 @@
     <EmbeddedResource Include="Types\Renderer\Shaders\*" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MyValvePak\MyValvePak.csproj" />
     <ProjectReference Include="..\MyValveResourceFormat\MyValveResourceFormat.csproj" />
-    <ProjectReference Include="..\ValvePak\MyValvePak.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Controls\GLViewerTrackBarControl.cs">

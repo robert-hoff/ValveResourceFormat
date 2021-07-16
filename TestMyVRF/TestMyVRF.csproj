@@ -1,8 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0</TargetFramework>
+    <ApplicationIcon />
+    <StartupObject />
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -13,8 +15,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\ValveKeyValue\ValveKeyValue\ValveKeyValue\MyValveKeyValue.csproj" />
+    <ProjectReference Include="..\MyValvePak\MyValvePak.csproj" />
     <ProjectReference Include="..\MyValveResourceFormat\MyValveResourceFormat.csproj" />
-    <ProjectReference Include="..\ValvePak\MyValvePak.csproj" />
   </ItemGroup>
 
 </Project>

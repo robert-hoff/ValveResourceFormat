@@ -31,7 +31,7 @@
     <PackageReference Include="SkiaSharp.Views.WindowsForms" Version="2.80.2" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ValvePak\MyValvePak.csproj" />
+    <ProjectReference Include="..\MyValvePak\MyValvePak.csproj" />
     <ProjectReference Include="..\ValveResourceFormat\ValveResourceFormat.csproj" />
   </ItemGroup>
   <!--

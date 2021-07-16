@@ -53,6 +53,16 @@ namespace MyValveResourceFormat.ResourceTypes {
 
             var magic = reader.ReadUInt32();
 
+
+            // R: set breakpoint here to see that the DATA block for zombie_classic.vmdl_c will be read here
+            // the magic for this file is 0x4b563301
+            // which matches MAGIC2 = 0x4B563301; // KV3\x01
+            if (KVBlockType == BlockType.DATA)
+            {
+
+            }
+
+
             if (magic == MAGIC2) {
                 ReadVersion2(reader, outWrite, outRead);
 
@@ -272,6 +282,22 @@ namespace MyValveResourceFormat.ResourceTypes {
         }
 
         private void ReadVersion2(BinaryReader reader, BinaryWriter outWrite, BinaryReader outRead) {
+
+
+            // R: outWrite and outRead are instantiated as follows
+            // var outStream = new MemoryStream();
+            // var outWrite = new BinaryWriter(outStream);
+            // var outRead = new BinaryReader(outStream); // Why why why why why why why
+
+            if (KVBlockType == BlockType.DATA)
+            {
+                // this doens't work here, outRead must have been set somewhere, it must be reading
+                // from the outWrite that is decompressed in LZ4
+                // var testRead = outRead.ReadInt32();
+            }
+
+
+
             Format = new Guid(reader.ReadBytes(16));
 
             var compressionMethod = reader.ReadInt32();
@@ -279,9 +305,18 @@ namespace MyValveResourceFormat.ResourceTypes {
             var countOfIntegers = reader.ReadInt32(); // how many 4 byte values (ints)
             var countOfEightByteValues = reader.ReadInt32(); // how many 8 byte values (doubles)
 
+
+            // investigating the zombie_classic.vmdl_c file (set breakpoint here)
+            // the compressionMethod = 1 which matches the DecompressLZ4(reader, outWrite) below
+            if (KVBlockType == BlockType.DATA)
+            {
+
+            }
+
+
+
             if (compressionMethod == 0) {
                 var length = reader.ReadInt32();
-
                 var output = new Span<byte>(new byte[length]);
                 reader.Read(output);
                 outWrite.Write(output);
@@ -299,7 +334,18 @@ namespace MyValveResourceFormat.ResourceTypes {
                 outRead.BaseStream.Position += 4 - (outRead.BaseStream.Position % 4);
             }
 
+
+            // for the DATA block of zombie_classic.vmdl_c
+            // this is 335
+            // how did it end up getting this value?
+            // NOTE NOTE outRead becomes the result of outWrite
             var countOfStrings = outRead.ReadInt32();
+
+            if (KVBlockType == BlockType.DATA)
+            {
+
+            }
+
             var kvDataOffset = outRead.BaseStream.Position;
 
             // Subtract one integer since we already read it (countOfStrings)
@@ -320,6 +366,12 @@ namespace MyValveResourceFormat.ResourceTypes {
                 stringArray[i] = outRead.ReadNullTermString(System.Text.Encoding.UTF8);
             }
 
+
+            if (KVBlockType == BlockType.DATA)
+            {
+
+            }
+
             // bytes after the string table is kv types, minus 4 static bytes at the end
             var typesLength = outRead.BaseStream.Length - 4 - outRead.BaseStream.Position;
             typesArray = new byte[typesLength];
@@ -332,6 +384,11 @@ namespace MyValveResourceFormat.ResourceTypes {
             outRead.BaseStream.Position = kvDataOffset;
 
             Data = ParseBinaryKV3(outRead, null, true);
+
+            if (KVBlockType == BlockType.DATA)
+            {
+
+            }
         }
 
         private void DecompressLZ4(BinaryReader reader, BinaryWriter outWrite) {
@@ -345,6 +402,14 @@ namespace MyValveResourceFormat.ResourceTypes {
 
             outWrite.Write(output);
             outWrite.BaseStream.Position = 0;
+
+
+            // the data from the data block is uncompressed into 'output'
+            if (KVBlockType == BlockType.DATA)
+            {
+
+            }
+
         }
 
         private (KVType Type, KVFlag Flag) ReadType(BinaryReader reader) {
@@ -385,6 +450,16 @@ namespace MyValveResourceFormat.ResourceTypes {
 
         private KVObject ReadBinaryValue(string name, KVType datatype, KVFlag flagInfo, BinaryReader reader, KVObject parent) {
             var currentOffset = reader.BaseStream.Position;
+
+
+            // R: setting a breakpoint here reveals that this method is called recursively
+            // A LOT of times. The items that are read are then built into the KVObject parent depending on the
+            // depth of the call
+            if (KVBlockType == BlockType.DATA)
+            {
+
+            }
+
 
             switch (datatype) {
                 case KVType.NULL:

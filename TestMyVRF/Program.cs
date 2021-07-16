@@ -16,7 +16,7 @@ namespace TestMyVRF {
 
 
 
-        static void Main() {
+        static void Mainz() {
 
 
             // trial2();

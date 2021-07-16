@@ -59,10 +59,8 @@ namespace MyGUI.Utils {
         }
 
 
-        public class ToDebugWriter : StringWriter
-        {
-            public override void WriteLine(string value)
-            {
+        public class ToDebugWriter : StringWriter {
+            public override void WriteLine(string value) {
                 Debug.WriteLine(value);
                 base.WriteLine(value);
             }

@@ -200,6 +200,14 @@ namespace MyValveResourceFormat {
                 var size = Reader.ReadUInt32();
                 Block block = null;
 
+
+                if (blockType == nameof(BlockType.DATA) || blockType == nameof(BlockType.REDI))
+                {
+                // R: setting a breakpoint here reveals that ResourceType is determined when the BlockType.REDI is processed
+                }
+
+
+
                 // Peek data to detect VKV3
                 // Valve has deprecated NTRO as reported by resourceinfo.exe
                 // TODO: Find a better way without checking against resource type
@@ -225,6 +233,12 @@ namespace MyValveResourceFormat {
                 block.Size = size;
 
                 Blocks.Add(block);
+
+                if (blockType == nameof(BlockType.DATA))
+                {
+
+                }
+
 
                 switch (block.Type) {
                     case BlockType.REDI:
@@ -272,6 +286,12 @@ namespace MyValveResourceFormat {
             foreach (var block in Blocks) {
                 if (block.Type is not BlockType.REDI and not BlockType.RED2 and not BlockType.NTRO) {
                     block.Read(Reader, this);
+
+                    if (block.Type == BlockType.DATA)
+                    {
+
+                    }
+
                 }
             }
         }
