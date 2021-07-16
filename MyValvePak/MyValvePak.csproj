@@ -21,9 +21,5 @@
     <WarningsAsErrors />
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\ValveKeyValue\ValveKeyValue\ValveKeyValue\MyValveKeyValue.csproj" />
-  </ItemGroup>
-
 
 </Project>

@@ -26,6 +26,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\ValveKeyValue\ValveKeyValue\ValveKeyValue\MyValveKeyValue.csproj" />
+    <ProjectReference Include="..\MyValveKeyValue\MyValveKeyValue.csproj" />
   </ItemGroup>
 </Project>
