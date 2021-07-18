@@ -1,15 +1,9 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 
 
 namespace TestMyVRF {
-
 
     class ParseDynamicExpressions {
 
@@ -26,46 +20,49 @@ namespace TestMyVRF {
 
         // function reference, name and number of arguments (some functions are unknown)
         private (string, int)[] FUNCTION_REF = {
-            ("sin",     1),     // 00
-            ("cos",     1),     // 01
-            ("tan",     1),     // 02
-            ("frac",    1),     // 03
-            ("floor",   1),     // 04
-            ("ceil",    1),     // 05
-            ("?",      -1),     // 06
-            ("?",      -1),     // 07
-            ("lerp",    3),     // 08
-            ("?",      -1),     // 09
-            ("?",      -1),     // 0A
-            ("?",      -1),     // 0B
-            ("log",     1),     // 0C
-            ("log2",    1),     // 0D
-            ("log10",   1),     // 0E
-            ("exp",     1),     // 0F
-            ("?",      -1),     // 10
-            ("sqrt",    1),     // 11
-            ("?",      -1),     // 12
-            ("sign",    1),     // 13
-            ("abs",     1),     // 14
-            ("pow",     2),     // 15
-            ("step",    2),     // 16
-            ("?",      -1),     // 17
-            ("float4",  4),     // 18
-            ("float3",  3),     // 19
-            ("float2",  2),     // 1A
-            ("time",    0),     // 1B
-            ("min",     2),     // 1C
-            ("max",     2),     // 1D
-            ("?",      -1),     // 1E
-            ("?",      -1),     // 1F
-            ("random",  2),     // 20
-        };
+            ("sin",        1),     // 00
+            ("cos",        1),     // 01
+            ("tan",        1),     // 02
+            ("frac",       1),     // 03
+            ("floor",      1),     // 04
+            ("ceil",       1),     // 05
+            ("saturate",   1),     // 06
+            ("clamp",      3),     // 07
+            ("lerp",       3),     // 08
+            ("dot4",       2),     // 09
+            ("dot3",       2),     // 0A
+            ("dot2",       2),     // 0B
+            ("log",        1),     // 0C
+            ("log2",       1),     // 0D
+            ("log10",      1),     // 0E
+            ("exp",        1),     // 0F
+            ("exp2",       1),     // 10
+            ("sqrt",       1),     // 11
+            ("rsqrt",      1),     // 12
+            ("sign",       1),     // 13
+            ("abs",        1),     // 14
+            ("pow",        2),     // 15
+            ("step",       2),     // 16
+            ("smoothstep", 3),     // 17
+            ("float4",     4),     // 18
+            ("float3",     3),     // 19
+            ("float2",     2),     // 1A
+            ("time",       0),     // 1B
+            ("min",        2),     // 1C
+            ("max",        2),     // 1D
+            ("SrgbLinearToGamma",1), // 1E
+            ("SrgbGammaToLinear",1), // 1F
+            ("random",     2),     // 20
+            ("normalize",  1),     // 21
+            ("length",     1),     // 22
+            ("?",         -1),     // R: couldn't find this function
+            ("TextureSize",1),     // 24
 
+        };
 
         private static string[] operatorSymbols = {
             "","","","","","","","","","","","","",
             "==","!=",">",">=","<","<=","+","-","*","/","%"};
-
 
         private enum OPS {
             ENDOFDATA = 0x00,
@@ -110,81 +107,123 @@ namespace TestMyVRF {
                 } catch (System.ArgumentOutOfRangeException) {
                     errorWhileParsing = true;
                     errorMessage = "Parsing error - reader exceeded input";
-                    Debug.WriteLine("EXCEPTION WAS THROWN");
+                    // Debug.WriteLine("EXCEPTION WAS THROWN");
                 }
-
                 if (errorWhileParsing) {
                     return;
                 }
-
-
-                // break;
             }
 
+            foreach (string s in dynamicExpressionList) {
+                dynamicExpressionResult += $"{s}\n";
+            }
         }
 
 
+        private const uint IFELSE_BRANCH = 0;     //    <cond> : <e1> ? <e2>
+        private const uint AND_BRANCH = 1;        //    <e1> && <e2>            (these expressions are encoded as branches on the bytestream!)
+        private const uint OR_BRANCH = 2;         //    <e1> || <e2>
+
         private void ProcessOps(OPS op) {
 
-            //
-            // combine the last three expressions on the stack into one,
-            // on a branch exit we can look back at
-            //
-            //      <condition> ? <p1> : <p2>
-            //
-            // <condition>,<p1> and <p2> are always exactly 1 expression each
-            //
-            //
+            // when exiting a branch, combine the conditional expressions on the stack into one
             if (offsetAtBranchExits.Peek() == datareader.offset) {
                 offsetAtBranchExits.Pop();
-                if (expressions.Count < 3) {
-                    errorWhileParsing = true;
-                    errorMessage = "error - not on a branch exit";
-                    return;
+                uint branchType = offsetAtBranchExits.Pop();
+
+                switch(branchType) {
+                    case IFELSE_BRANCH:
+                        if (expressions.Count < 3) {
+                            errorWhileParsing = true;
+                            errorMessage = "error! - not on a branch exit";
+                            return;
+                        }
+                        {
+                            string exp3 = expressions.Pop();
+                            string exp2 = expressions.Pop();
+                            string exp1 = expressions.Pop();
+                            string exp_conditional = $"({trimb(exp1)} ? {trimb(exp2)} : {trimb(exp3)})";
+                            expressions.Push(exp_conditional);
+                        }
+                        break;
+
+                    case AND_BRANCH:
+                        if (expressions.Count < 2) {
+                            errorWhileParsing = true;
+                            errorMessage = "parse error, evaluating AND_BRANCH";
+                            return;
+                        }
+                        {
+                            string exp2 = expressions.Pop();
+                            string exp1 = expressions.Pop();
+                            string exp_andcondition = $"({trimb(exp1)} && {trimb(exp2)})";
+                            expressions.Push(exp_andcondition);
+                        }
+                        break;
+
+                    case OR_BRANCH:
+                        if (expressions.Count < 2) {
+                            errorWhileParsing = true;
+                            errorMessage = "parse error, evaluating OR_BRANCH";
+                            return;
+                        }
+                        {
+                            string exp2 = expressions.Pop();
+                            string exp1 = expressions.Pop();
+                            string exp_orcondition = $"({trimb(exp1)} || {trimb(exp2)})";
+                            expressions.Push(exp_orcondition);
+                        }
+                        break;
+
+                    default:
+                        errorWhileParsing = true;
+                        errorMessage = "error! this should not happen";
+                        return;
                 }
-                string exp3 = expressions.Pop();
-                string exp2 = expressions.Pop();
-                string exp1 = expressions.Pop();
-                string exp_conditional = $"({exp1}?{exp2}:{exp3})";
-                expressions.Push(exp_conditional);
             }
+
 
             if (op == OPS.BRANCH_SEP) {
                 uint branch_exit = datareader.nextInt16();
-                offsetAtBranchExits.Push(branch_exit + 1);
+                offsetAtBranchExits.Push(branch_exit+1);
                 return;
             }
+
 
             // we will need the branch exit, it becomes available when we get to the branch separator
             // (in the middle of the conditional structure)
             if (op == OPS.BRANCH) {
-                // some offsets here but we don't need them
-                datareader.offset += 4;
-                return;
-            }
+                uint pointer1 = datareader.nextInt16();
+                uint pointer2 = datareader.nextInt16();
 
-            if (op == OPS.EXTVAR) {
-                uint varId = datareader.nextInt();
-                string ext_varname = getExternalVarName(varId);
-                expressions.Push(ext_varname);
-                return;
-            }
+                int p = datareader.offset;
+                byte[] b = datareader.data;
 
-            if (op == OPS.FLOAT) {
-                float float_val = datareader.nextFloat();
-                string float_literal = string.Format("{0:g4}", float_val);
-                // if a float leads with "0." remove the 0 (as how Valve likes it)
-                if (float_literal.Length > 1 && float_literal.Substring(0, 2) == "0.") {
-                    float_literal = float_literal.Substring(1);
+                // for <e1>&&<e2> expressions we are looking for the pattern
+                // 04 12 00 0A 00    07 00 00 00 00
+                if (pointer1-pointer2==8 && b[p]==7 && b[p+1]==0 && b[p+2]==0 && b[p+3]==0 && b[p+4]==0) {
+                    offsetAtBranchExits.Push(AND_BRANCH);
+                    datareader.offset += 5;
+                    return;
                 }
-                expressions.Push(float_literal);
+
+                // for <e1>||<e2> expressions we are looking for the pattern
+                // 04 17 00 1F 00     07 00 00 80 3F
+                if (pointer2-pointer1==8 && b[p]==7 && b[p+1]==0 && b[p+2]==0 && b[p+3]==0x80 && b[p+4]==0x3F) {
+                    offsetAtBranchExits.Push(OR_BRANCH);
+                    datareader.offset += 5;
+                    return;
+                }
+
+                offsetAtBranchExits.Push(IFELSE_BRANCH);
                 return;
             }
+
 
             if (op == OPS.FUNC) {
                 byte funcId = datareader.nextByte();
                 byte funcCheckByte = datareader.nextByte();
-                if (funcId > 0x20) {
+                if (funcId >= FUNCTION_REF.Length) {
                     errorWhileParsing = true;
                     errorMessage = $"Parsing error - invalid function Id = {funcId:x}";
                     return;
@@ -199,13 +238,12 @@ namespace TestMyVRF {
 
                 if (nrArguments == -1) {
                     errorWhileParsing = true;
-                    errorMessage = $"Parsing error - this function ID has not been implemented = {funcId:x}";
+                    errorMessage = $"Parsing error - unknown function ID = {funcId:x}";
                     return;
                 }
-
                 if (nrArguments > expressions.Count) {
                     errorWhileParsing = true;
-                    errorMessage = $"Parsing error - the number of arguments for the function exceeds available expressions!";
+                    errorMessage = $"Parsing error - too many arguments!";
                     return;
                 }
 
@@ -213,13 +251,24 @@ namespace TestMyVRF {
                 return;
             }
 
-            // R: I believe assignment is always to a local variable, and it terminates the line (check a bit more)
+
+            if (op == OPS.FLOAT) {
+                float float_val = datareader.nextFloat();
+                string float_literal = string.Format("{0:g4}", float_val);
+                // if a float leads with "0." remove the 0 (as how Valve likes it)
+                if (float_literal.Length > 1 && float_literal.Substring(0, 2) == "0.") {
+                    float_literal = float_literal.Substring(1);
+                }
+                expressions.Push(float_literal);
+                return;
+            }
+
+            // R: I believe assignment is always to a local variable, and it terminates the line (run more tests)
             if (op == OPS.ASSIGN) {
                 byte varId = datareader.nextByte();
                 string loc_varname = getLocalVarName(varId);
                 string exp = expressions.Pop();
                 string final_expression = $"{loc_varname} = {trimb(exp)};";
-                Debug.WriteLine(final_expression);
                 dynamicExpressionList.Add(final_expression);
                 return;
             }
@@ -243,20 +292,26 @@ namespace TestMyVRF {
                     errorMessage = $"Parsing error - missing expressions, cannot build the operation {op}";
                     return;
                 }
-                string exp1 = expressions.Pop();
                 string exp2 = expressions.Pop();
-
+                string exp1 = expressions.Pop();
                 String opSymbol = operatorSymbols[(int)op];
                 if (opSymbol.Length == 0) {
                     throw new Exception("Error!");
                 }
-                expressions.Push($"({exp2}{opSymbol}{exp1})");
+                expressions.Push($"({exp1}{opSymbol}{exp2})");
                 return;
             }
 
             if (op == OPS.NEGATION) {
                 string exp = expressions.Pop();
                 expressions.Push($"-{exp}");
+                return;
+            }
+
+            if (op == OPS.EXTVAR) {
+                uint varId = datareader.nextInt();
+                string ext_varname = getExternalVarName(varId);
+                expressions.Push(ext_varname);
                 return;
             }
 
@@ -267,25 +322,13 @@ namespace TestMyVRF {
                 return;
             }
 
-            Debug.WriteLine(op);
+            // Debug.WriteLine(op);
             if (op == OPS.ENDOFDATA) {
                 string final_exp = expressions.Pop();
                 dynamicExpressionList.Add(trimb(final_exp));
-                Debug.WriteLine("program terminates, should only print ONCE");
+                // Debug.WriteLine("program terminates, should only print ONCE");
             }
-
         }
-
-
-        //static string arithmChar(OPS op) {
-        //    if (op == OPS.ADD) return "+";
-        //    if (op == OPS.SUB) return "-";
-        //    if (op == OPS.MUL) return "*";
-        //    if (op == OPS.DIV) return "/";
-        //    if (op == OPS.MODULO) return "%";
-        //    throw new Exception("this cannot happen!");
-        //}
-
 
 
         private void processFunction(string funcName, int nrArguments) {
@@ -300,14 +343,14 @@ namespace TestMyVRF {
             }
             string exp2 = expressions.Pop();
             if (nrArguments == 2) {
-                expressions.Push($"{funcName}({exp2},{exp1})");
+                expressions.Push($"{funcName}({trimb(exp2)},{trimb(exp1)})");
                 return;
             }
             string exp3 = expressions.Pop();
             if (nrArguments == 3) {
                 // trim or not to trim ...
-                // expressions.Push($"{funcName}({trimb(exp3)},{trimb(exp2)},{trimb(exp1)})");
-                expressions.Push($"{funcName}({exp3},{exp2},{exp1})");
+                expressions.Push($"{funcName}({trimb(exp3)},{trimb(exp2)},{trimb(exp1)})");
+                // expressions.Push($"{funcName}({exp3},{exp2},{exp1})");
                 return;
             }
 
@@ -331,7 +374,7 @@ namespace TestMyVRF {
                 if (externalVariables.Count == 0) {
                     varName = "EXT";
                 } else {
-                    varName = String.Format("EXT{0}", externalVariables.Count);
+                    varName = String.Format("EXT{0}", externalVariables.Count+1);
                 }
                 externalVariables.Add(varId, varName);
             }
@@ -341,7 +384,7 @@ namespace TestMyVRF {
 
         // naming local variables v1,v2,v3,..
         // the naming of these are not so critical as the external variables because they
-        // are fully contained in the texteditor scope (i.e. they won't cause broken links)
+        // are contained in the texteditor scope (i.e. they won't cause broken references)
         private string getLocalVarName(uint varId) {
             localVariables.TryGetValue(varId, out string varName);
             if (varName == null) {
@@ -353,7 +396,7 @@ namespace TestMyVRF {
 
 
         private class DataReader {
-            private byte[] data;
+            public byte[] data;
             public int offset;
             public DataReader(byte[] data) {
                 this.data = data;
@@ -365,7 +408,7 @@ namespace TestMyVRF {
             public uint nextInt16() {
                 uint b0 = nextByte();
                 uint b1 = nextByte();
-                uint intval = (b1 << 8) + b0;
+                uint intval = (b1<<8) + b0;
                 return intval;
             }
             public uint nextInt() {
@@ -373,7 +416,7 @@ namespace TestMyVRF {
                 uint b1 = nextByte();
                 uint b2 = nextByte();
                 uint b3 = nextByte();
-                uint intval = (b3 << 24) + (b2 << 16) + (b1 << 8) + b0;
+                uint intval = (b3<<24) + (b2<<16) + (b1<<8) + b0;
                 return intval;
             }
             public float nextFloat() {
@@ -420,10 +463,11 @@ namespace TestMyVRF {
               "xzzw","yzzw","zzzw","wzzw","xwzw","ywzw","zwzw","wwzw",
               "xxw", "yxw", "zxw", "wxw", "xyw", "yyw", "zyw", "wyw",
               "xzw", "yzw", "zzw", "wzw", "xw",  "yw",  "zw",  "w"};
-
-
     }
 
 
 }
+
+
+
 
