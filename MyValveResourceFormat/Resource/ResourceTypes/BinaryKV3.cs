@@ -360,7 +360,13 @@ namespace MyValveResourceFormat.ResourceTypes {
 
             outRead.BaseStream.Position += countOfEightByteValues * 8;
 
+
             stringArray = new string[countOfStrings];
+
+            if (KVBlockType == BlockType.DATA) {
+
+            }
+
 
             for (var i = 0; i < countOfStrings; i++) {
                 stringArray[i] = outRead.ReadNullTermString(System.Text.Encoding.UTF8);
@@ -444,6 +450,11 @@ namespace MyValveResourceFormat.ResourceTypes {
             }
 
             var (datatype, flagInfo) = ReadType(reader);
+
+            if (KVBlockType == BlockType.DATA) {
+
+            }
+
 
             return ReadBinaryValue(name, datatype, flagInfo, reader, parent);
         }
@@ -536,6 +547,9 @@ namespace MyValveResourceFormat.ResourceTypes {
 
                     break;
                 case KVType.DOUBLE_ZERO:
+                    if (KVBlockType == BlockType.DATA) {
+
+                    }
                     parent.AddProperty(name, MakeValue(datatype, 0.0D, flagInfo));
                     break;
                 case KVType.DOUBLE_ONE:
@@ -543,6 +557,11 @@ namespace MyValveResourceFormat.ResourceTypes {
                     break;
                 case KVType.STRING:
                     var id = reader.ReadInt32();
+
+                    if (KVBlockType == BlockType.DATA) {
+
+                    }
+
                     parent.AddProperty(name, MakeValue(datatype, id == -1 ? string.Empty : stringArray[id], flagInfo));
                     break;
                 case KVType.BINARY_BLOB:
@@ -580,15 +599,30 @@ namespace MyValveResourceFormat.ResourceTypes {
                     var (subType, subFlagInfo) = ReadType(reader);
                     var typedArray = new KVObject(name, true);
 
+                    if (KVBlockType == BlockType.DATA) {
+
+                    }
+
+
                     for (var i = 0; i < typeArrayLength; i++) {
                         ReadBinaryValue(name, subType, subFlagInfo, reader, typedArray);
                     }
 
                     parent.AddProperty(name, MakeValue(datatype, typedArray, flagInfo));
                     break;
+
+
+
+
                 case KVType.OBJECT:
                     var objectLength = reader.ReadInt32();
                     var newObject = new KVObject(name, false);
+
+                    if (KVBlockType == BlockType.DATA) {
+
+                    }
+
+
                     for (var i = 0; i < objectLength; i++) {
                         ParseBinaryKV3(reader, newObject, false);
                     }
@@ -600,6 +634,10 @@ namespace MyValveResourceFormat.ResourceTypes {
                     }
 
                     break;
+
+
+
+
                 default:
                     throw new UnexpectedMagicException($"Unknown KVType for field '{name}' on byte {reader.BaseStream.Position - 1}", (int)datatype, nameof(datatype));
             }

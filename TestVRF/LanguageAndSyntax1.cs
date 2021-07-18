@@ -18,7 +18,9 @@ namespace TestVRF {
 
 
 
-
+        public static void printFloatNumber() {
+            Debug.WriteLine("{0:0.00}", 9.2);
+        }
 
         public static void printHexNumber() {
             Debug.WriteLine("0x{0:x8}", 123123123);

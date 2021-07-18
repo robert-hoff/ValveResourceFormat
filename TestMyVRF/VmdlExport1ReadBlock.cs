@@ -13,11 +13,11 @@ using MyValveResourceFormat.IO;
 using MyValveResourceFormat.ResourceTypes;
 
 namespace TestMyVRF {
-    class ReadingVmdlFile1 {
+    class VmdlExport1ReadBlock {
 
-        static void Main() {
+        static void Mainz() {
 
-            // printFloatNumber();
+            // tryStuff();
             trial4ReadDataBlock();
 
         }
@@ -45,19 +45,24 @@ namespace TestMyVRF {
 
 
 
-        public static void printFloatNumber() {
-            Debug.WriteLine("0x{0:x8}", 123123123);
-        }
-
-
         public static void tryStuff() {
+
+            // {95791a46-95bc-4f6c-a70b-05bca1b7dfd2}
             Guid KV3_ENCODING_BINARY_BLOCK_COMPRESSED = new Guid(
                 new byte[] { 0x46, 0x1A, 0x79, 0x95, 0xBC, 0x95, 0x6C, 0x4F, 0xA7, 0x0B, 0x05, 0xBC, 0xA1, 0xB7, 0xDF, 0xD2 });
+            // {1b860500-f7d8-40c1-ad82-75a48267e714}
+            Guid KV3_ENCODING_BINARY_UNCOMPRESSED = new Guid(
+                new byte[] { 0x00, 0x05, 0x86, 0x1B, 0xD8, 0xF7, 0xC1, 0x40, 0xAD, 0x82, 0x75, 0xA4, 0x82, 0x67, 0xE7, 0x14 });
+            // {6847348a-63a1-4f5c-a197-53806fd9b119}
+            Guid KV3_ENCODING_BINARY_BLOCK_LZ4 = new Guid(
+                new byte[] { 0x8A, 0x34, 0x47, 0x68, 0xA1, 0x63, 0x5C, 0x4F, 0xA1, 0x97, 0x53, 0x80, 0x6F, 0xD9, 0xB1, 0x19 });
 
 
-            var i = 10 / 9.0;
+            Debug.WriteLine(KV3_ENCODING_BINARY_BLOCK_COMPRESSED);
+            Debug.WriteLine(KV3_ENCODING_BINARY_UNCOMPRESSED);
+            Debug.WriteLine(KV3_ENCODING_BINARY_BLOCK_LZ4);
 
-            Debug.WriteLine($"hello {i}", i);
+
 
         }
 
