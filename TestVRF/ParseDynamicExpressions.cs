@@ -5,10 +5,8 @@ using System.Diagnostics;
 
 namespace TestVRF
 {
-
     class ParseDynamicExpressions
     {
-
         // if successful the parsed data assigned here
         public string dynamicExpressionResult = "";
         // parse the input one line at a time, we track certain conditions to delimit these
@@ -20,7 +18,7 @@ namespace TestVRF
         public string errorMessage = "";
 
 
-        // function reference, name and number of arguments (some functions are unknown)
+        // function reference, name and number of arguments
         private (string, int)[] FUNCTION_REF = {
             ("sin",        1),     // 00
             ("cos",        1),     // 01
@@ -57,16 +55,16 @@ namespace TestVRF
             ("random",     2),     // 20
             ("normalize",  1),     // 21
             ("length",     1),     // 22
-            ("?",         -1),     // R: couldn't find this function
+            ("sqr",        1),     // 23
             ("TextureSize",1),     // 24
-
         };
+
 
         private static string[] operatorSymbols = {
             "","","","","","","","","","","","","",
             "==","!=",">",">=","<","<=","+","-","*","/","%"};
 
-        private enum OPS
+        private enum OPCODE
         {
             ENDOFDATA = 0x00,
             BRANCH_SEP = 0x02,
@@ -87,9 +85,10 @@ namespace TestVRF
             MUL = 0x15,                  // 15		*					21
             DIV = 0x16,                  // 16		/					22
             MODULO = 0x17,               // 17		%					23
-            NEGATION = 0x18,
+            NEGATE = 0x18,
             EXTVAR = 0x19,
             SWIZZLE = 0x1E,
+            EXISTS = 0x1F,
             // NOT_AN_OPS = 0xff,
         };
 
@@ -109,7 +108,7 @@ namespace TestVRF
             {
                 try
                 {
-                    ProcessOps((OPS)datareader.nextByte());
+                    ProcessOps((OPCODE)datareader.nextByte());
                 } catch (System.ArgumentOutOfRangeException)
                 {
                     errorWhileParsing = true;
@@ -133,13 +132,13 @@ namespace TestVRF
         private const uint AND_BRANCH = 1;        //    <e1> && <e2>            (these expressions are encoded as branches on the bytestream!)
         private const uint OR_BRANCH = 2;         //    <e1> || <e2>
 
-        private void ProcessOps(OPS op)
+        private void ProcessOps(OPCODE op)
         {
-
             // when exiting a branch, combine the conditional expressions on the stack into one
             if (offsetAtBranchExits.Peek() == datareader.offset)
             {
                 offsetAtBranchExits.Pop();
+                codeDepth--;
                 uint branchType = offsetAtBranchExits.Pop();
 
                 switch (branchType)
@@ -155,7 +154,7 @@ namespace TestVRF
                             string exp3 = expressions.Pop();
                             string exp2 = expressions.Pop();
                             string exp1 = expressions.Pop();
-                            string exp_conditional = $"({trimb(exp1)} ? {trimb(exp2)} : {trimb(exp3)})";
+                            string exp_conditional = $"({trimb2(exp1)} ? {trimb2(exp2)} : {trimb2(exp3)})";
                             expressions.Push(exp_conditional);
                         }
                         break;
@@ -170,7 +169,7 @@ namespace TestVRF
                         {
                             string exp2 = expressions.Pop();
                             string exp1 = expressions.Pop();
-                            string exp_andcondition = $"({trimb(exp1)} && {trimb(exp2)})";
+                            string exp_andcondition = $"({trimb2(exp1)} && {trimb2(exp2)})";
                             expressions.Push(exp_andcondition);
                         }
                         break;
@@ -185,7 +184,7 @@ namespace TestVRF
                         {
                             string exp2 = expressions.Pop();
                             string exp1 = expressions.Pop();
-                            string exp_orcondition = $"({trimb(exp1)} || {trimb(exp2)})";
+                            string exp_orcondition = $"({trimb2(exp1)} || {trimb2(exp2)})";
                             expressions.Push(exp_orcondition);
                         }
                         break;
@@ -198,7 +197,7 @@ namespace TestVRF
             }
 
 
-            if (op == OPS.BRANCH_SEP)
+            if (op == OPCODE.BRANCH_SEP)
             {
                 uint branch_exit = datareader.nextInt16();
                 offsetAtBranchExits.Push(branch_exit + 1);
@@ -208,8 +207,10 @@ namespace TestVRF
 
             // we will need the branch exit, it becomes available when we get to the branch separator
             // (in the middle of the conditional structure)
-            if (op == OPS.BRANCH)
+            if (op == OPCODE.BRANCH)
             {
+                codeDepth++;
+
                 uint pointer1 = datareader.nextInt16();
                 uint pointer2 = datareader.nextInt16();
 
@@ -239,7 +240,7 @@ namespace TestVRF
             }
 
 
-            if (op == OPS.FUNC)
+            if (op == OPCODE.FUNC)
             {
                 byte funcId = datareader.nextByte();
                 byte funcCheckByte = datareader.nextByte();
@@ -276,7 +277,7 @@ namespace TestVRF
             }
 
 
-            if (op == OPS.FLOAT)
+            if (op == OPCODE.FLOAT)
             {
                 float float_val = datareader.nextFloat();
                 string float_literal = string.Format("{0:g4}", float_val);
@@ -289,8 +290,8 @@ namespace TestVRF
                 return;
             }
 
-            // R: I believe assignment is always to a local variable, and it terminates the line (run more tests)
-            if (op == OPS.ASSIGN)
+            // assignment is always to a local variable, and it terminates the line
+            if (op == OPCODE.ASSIGN)
             {
                 byte varId = datareader.nextByte();
                 string loc_varname = getLocalVarName(varId);
@@ -300,7 +301,7 @@ namespace TestVRF
                 return;
             }
 
-            if (op == OPS.LOCALVAR)
+            if (op == OPCODE.LOCALVAR)
             {
                 byte varId = datareader.nextByte();
                 string loc_varname = getLocalVarName(varId);
@@ -308,14 +309,14 @@ namespace TestVRF
                 return;
             }
 
-            if (op == OPS.NOT)
+            if (op == OPCODE.NOT)
             {
                 string exp = expressions.Pop();
                 expressions.Push($"!{exp}");
                 return;
             }
 
-            if (op >= OPS.EQUALS && op <= OPS.MODULO)
+            if (op >= OPCODE.EQUALS && op <= OPCODE.MODULO)
             {
                 if (expressions.Count < 2)
                 {
@@ -326,22 +327,18 @@ namespace TestVRF
                 string exp2 = expressions.Pop();
                 string exp1 = expressions.Pop();
                 String opSymbol = operatorSymbols[(int)op];
-                if (opSymbol.Length == 0)
-                {
-                    throw new Exception("Error!");
-                }
                 expressions.Push($"({exp1}{opSymbol}{exp2})");
                 return;
             }
 
-            if (op == OPS.NEGATION)
+            if (op == OPCODE.NEGATE)
             {
                 string exp = expressions.Pop();
                 expressions.Push($"-{exp}");
                 return;
             }
 
-            if (op == OPS.EXTVAR)
+            if (op == OPCODE.EXTVAR)
             {
                 uint varId = datareader.nextInt();
                 string ext_varname = getExternalVarName(varId);
@@ -349,7 +346,7 @@ namespace TestVRF
                 return;
             }
 
-            if (op == OPS.SWIZZLE)
+            if (op == OPCODE.SWIZZLE)
             {
                 string exp = expressions.Pop();
                 exp += $".{swizzles[datareader.nextByte()]}";
@@ -357,13 +354,33 @@ namespace TestVRF
                 return;
             }
 
-            // Debug.WriteLine(op);
-            if (op == OPS.ENDOFDATA)
+            if (op == OPCODE.EXISTS)
             {
-                string final_exp = expressions.Pop();
-                dynamicExpressionList.Add(trimb(final_exp));
-                // Debug.WriteLine("program terminates, should only print ONCE");
+                uint varId = datareader.nextInt();
+                string ext_varname = getExternalVarName(varId);
+                expressions.Push($"exists({ext_varname})");
+                return;
             }
+
+            // parser terminates here
+            if (op == OPCODE.ENDOFDATA)
+            {
+                if (datareader.hasData())
+                {
+                    errorMessage = "malformed data!";
+                    errorWhileParsing = true;
+                    return;
+                }
+                string final_exp = expressions.Pop();
+                dynamicExpressionList.Add($"return {trimb(final_exp)};");
+                return;
+            }
+
+
+
+            // this point should never be reached
+            throw new Exception($"UNKNOWN OPCODE = 0x{(int)op:x2}, offset = {datareader.offset}");
+
         }
 
 
@@ -394,15 +411,28 @@ namespace TestVRF
                 // expressions.Push($"{funcName}({exp3},{exp2},{exp1})");
                 return;
             }
+            string exp4 = expressions.Pop();
+            if (nrArguments == 4)
+            {
+                expressions.Push($"{funcName}({trimb(exp4)},{trimb(exp3)},{trimb(exp2)},{trimb(exp1)})");
+                return;
+            }
 
             throw new Exception("this cannot happen!");
         }
 
 
-        private static string trimb(string exp)
+
+        private int codeDepth = 0;
+        private string trimb(string exp)
         {
             return exp[0] == '(' ? exp.Substring(1, exp.Length - 2) : exp;
         }
+        private string trimb2(string exp)
+        {
+            return codeDepth > 0 ? trimb(exp) : exp;
+        }
+
 
 
         private Dictionary<uint, string> externalVariables = new Dictionary<uint, string>();
