@@ -25,7 +25,8 @@ namespace TestVRF
             // string input_string = example10();
             //  string input_string = example11();
             // string input_string = example12();
-            string input_string = example13();
+            // string input_string = example13();
+            string input_string = example14();
 
 
             byte[] databytes = parseString(input_string);
@@ -35,6 +36,21 @@ namespace TestVRF
 
         }
 
+
+
+
+
+        /*
+         *
+         * (.36*sin(1.2*time()))+.6
+         *
+         *
+         */
+        static string example14()
+        {
+            return
+            "07 EC 51 B8 3E 07 9A 99 99 3F 06 1B 00 15 06 00 00 15 07 9A 99 19 3F 13 00";
+        }
 
 
         /*

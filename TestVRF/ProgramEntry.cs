@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ValveResourceFormat.ThirdParty;
+using ValveResourceFormat.Utils;
 
 namespace TestVRF
 {
@@ -17,8 +20,13 @@ namespace TestVRF
         {
 
             // RunParseDynamicExpressions.RunTestData();
-            // ReadExpressionsFromPackage.DecompileDynamicExpressions(HLALYX_VPK_ARCHIVE);
+            // CheckExternalVarsHashes.checkNames();
+
+            // CollectRenderAttributes.collectAttributes(DOTA2_VPK_ARCHIVE);
+            // CollectRenderAttributes.collectAttributes(HLALYX_VPK_ARCHIVE);
+
             ReadExpressionsFromPackage.DecompileDynamicExpressions(DOTA2_VPK_ARCHIVE);
+            // ReadExpressionsFromPackage.DecompileDynamicExpressions(HLALYX_VPK_ARCHIVE);
 
 
         }

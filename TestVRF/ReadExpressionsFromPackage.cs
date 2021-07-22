@@ -63,16 +63,39 @@ namespace TestVRF {
 
                     ParseDynamicExpressions decompiledDynamicExpression = new ParseDynamicExpressions(databytes);
                     Debug.WriteLine($"    {prop_name}");
+
+                    // showDatabytes(databytes);
+
                     // tab result (for readability)
                     Regex rx = new Regex("^", RegexOptions.Multiline);
                     string res = rx.Replace(decompiledDynamicExpression.dynamicExpressionResult, "    ");
                     Debug.WriteLine(res);
+
 
                 }
             }
 
 
         }
+
+
+        static void showDatabytes(byte[] databytes)
+        {
+            Debug.Write("    ");
+            int count = 0;
+            foreach (byte b in databytes)
+            {
+                Debug.Write(String.Format("{0:X2} ", b));
+                if (++count%32==0)
+                {
+                    Debug.WriteLine("");
+                    Debug.Write("    ");
+                }
+            }
+
+            Debug.WriteLine("");
+        }
+
 
 
         static Package getVpkPackage(string vpk_archive)
