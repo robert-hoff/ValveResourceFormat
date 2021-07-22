@@ -97,7 +97,7 @@ namespace TestVRF
 
         // check on each OPS if we are exiting a branch,
         // when we do we should combine expressions on the stack
-        public Stack<uint> offsetAtBranchExits = new Stack<uint>();
+        private Stack<uint> offsetAtBranchExits = new Stack<uint>();
 
         public ParseDynamicExpressions(byte[] binary_blob)
         {
@@ -154,7 +154,9 @@ namespace TestVRF
                             string exp3 = expressions.Pop();
                             string exp2 = expressions.Pop();
                             string exp1 = expressions.Pop();
-                            string exp_conditional = $"({trimb2(exp1)} ? {trimb2(exp2)} : {trimb2(exp3)})";
+                            // R: it's not safe to trim here
+                            // string exp_conditional = $"({trimb2(exp1)} ? {trimb2(exp2)} : {trimb2(exp3)})";
+                            string exp_conditional = $"({exp1} ? {exp2} : {exp3})";
                             expressions.Push(exp_conditional);
                         }
                         break;
@@ -169,7 +171,7 @@ namespace TestVRF
                         {
                             string exp2 = expressions.Pop();
                             string exp1 = expressions.Pop();
-                            string exp_andcondition = $"({trimb2(exp1)} && {trimb2(exp2)})";
+                            string exp_andcondition = $"({exp1} && {exp2})";
                             expressions.Push(exp_andcondition);
                         }
                         break;
@@ -184,7 +186,7 @@ namespace TestVRF
                         {
                             string exp2 = expressions.Pop();
                             string exp1 = expressions.Pop();
-                            string exp_orcondition = $"({trimb2(exp1)} || {trimb2(exp2)})";
+                            string exp_orcondition = $"({exp1} || {exp2})";
                             expressions.Push(exp_orcondition);
                         }
                         break;
@@ -430,7 +432,7 @@ namespace TestVRF
         }
         private string trimb2(string exp)
         {
-            return codeDepth > 0 ? trimb(exp) : exp;
+            return codeDepth == 0 ? trimb(exp) : exp;
         }
 
 
