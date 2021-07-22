@@ -138,7 +138,6 @@ namespace TestVRF
             if (offsetAtBranchExits.Peek() == datareader.offset)
             {
                 offsetAtBranchExits.Pop();
-                codeDepth--;
                 uint branchType = offsetAtBranchExits.Pop();
 
                 switch (branchType)
@@ -211,8 +210,6 @@ namespace TestVRF
             // (in the middle of the conditional structure)
             if (op == OPCODE.BRANCH)
             {
-                codeDepth++;
-
                 uint pointer1 = datareader.nextInt16();
                 uint pointer2 = datareader.nextInt16();
 
@@ -424,15 +421,13 @@ namespace TestVRF
         }
 
 
-
-        private int codeDepth = 0;
         private string trimb(string exp)
         {
             return exp[0] == '(' ? exp.Substring(1, exp.Length - 2) : exp;
         }
         private string trimb2(string exp)
         {
-            return codeDepth == 0 ? trimb(exp) : exp;
+            return offsetAtBranchExits.Count == 1 ? trimb(exp) : exp;
         }
 
 
