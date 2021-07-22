@@ -371,7 +371,7 @@ namespace TestVRF
                     return;
                 }
                 string final_exp = expressions.Pop();
-                while (final_exp.Length>2 && final_exp[0] == '(')
+                while (final_exp.Length > 2 && final_exp[0] == '(' && final_exp[final_exp.Length - 1] == ')')
                 {
                     final_exp = trimb(final_exp);
                 }
@@ -427,7 +427,7 @@ namespace TestVRF
 
         private string trimb(string exp)
         {
-            return exp[0] == '(' ? exp.Substring(1, exp.Length - 2) : exp;
+            return exp[0] == '(' && exp[exp.Length - 1] == ')' ? exp.Substring(1, exp.Length - 2) : exp;
         }
         private string trimb2(string exp)
         {
