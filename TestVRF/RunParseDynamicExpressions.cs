@@ -10,10 +10,10 @@ using System.Threading.Tasks;
 
 namespace TestVRF
 {
-    class VmdlExport2SaveToFile
+    class RunParseDynamicExpressions
     {
 
-        static void Main()
+        public static void Main()
         {
             // string input_string = example3();
             // string input_string = example4();
