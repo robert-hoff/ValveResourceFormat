@@ -13,19 +13,19 @@ namespace TestVRF
     class VmdlExport2SaveToFile
     {
 
-        static void Main()
+        static void Mainz()
         {
             // string input_string = example3();
             // string input_string = example4();
             // string input_string = example5();
             // string input_string = example6();
-            // string input_string = example7();
+            string input_string = example7();
             // string input_string = example8();
             // string input_string = example9();
             // string input_string = example10();
-            //  string input_string = example11();
+            // string input_string = example11();
             // string input_string = example12();
-            string input_string = example13();
+            // string input_string = example13();
 
 
             byte[] databytes = parseString(input_string);
@@ -153,14 +153,31 @@ namespace TestVRF
         }
 
 
+
+
         /*
-         * true ? (true ? 1 : 2) : 123
+         * In general these are the same
+         *
+         *    <p1>?true:<p2>
+         *    <p1>||<p2>
+         *
+         * The parser will represent this as <p1>||<p2> whenever <p>?true:<p2> is encountered. 'true' is
+         * the float value 1.0 seen as '07 00 00 80 3F'
+         *
+         *
+         * E.g. these two expressions will compile (in the material editor) to the same bytestream!
+         *
+         *    true ? (1 ? true : 2) : 123
+         *    1 ? (1 || 2) : 123;
+         *
+         *
          *
          */
         static string example7()
         {
-            return "07 00 00 80 3F 04 0A 00 24 00 07 00 00 80 3F 04 14 00 1C 00 07 00 00 80 3F " +
-                "02 21 00 07 00 00 00 40 02 29 00 07 00 00 F6 42 00";
+            return
+              "07 00 00 80 3F 04 0A 00 24 00 07 00 00 80 3F 04 14 00 1C 00 07 00 00 80 3F " +
+              "02 21 00 07 00 00 00 40 02 29 00 07 00 00 F6 42 00";
         }
 
 
