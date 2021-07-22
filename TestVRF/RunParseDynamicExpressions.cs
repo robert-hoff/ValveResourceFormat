@@ -13,7 +13,7 @@ namespace TestVRF
     class RunParseDynamicExpressions
     {
 
-        public static void Main()
+        public static void RunTestData()
         {
             // string input_string = example3();
             // string input_string = example4();

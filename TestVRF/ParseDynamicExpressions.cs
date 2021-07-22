@@ -371,7 +371,11 @@ namespace TestVRF
                     return;
                 }
                 string final_exp = expressions.Pop();
-                dynamicExpressionList.Add($"return {trimb(final_exp)};");
+                while (final_exp.Length>2 && final_exp[0] == '(')
+                {
+                    final_exp = trimb(final_exp);
+                }
+                dynamicExpressionList.Add($"return {final_exp};");
                 return;
             }
 
