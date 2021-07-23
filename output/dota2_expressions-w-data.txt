@@ -1319,7 +1319,7 @@ dynamicParams entries in materials/models/heroes/ember_spirit/ember_spirit_remna
     07 98 F9 8E 3C 07 CD CC 4C 3E 18 07 CD CC 4C 3E 07 00 00 00 3F 07 19 04 06 40 06 1B 00 15 06 00
     00 15 07 00 00 00 3F 13 06 08 00 15 08 00 07 CD CC CC 3D 09 00 06 01 00 15 07 CD CC CC 3D 09 00
     06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(-.2,.2,(.5*sin(2.094*time()))+.5);
+    v0 = .017453*lerp(-.2,.2,(.5*sin(2.094*time()))+.5);
     v1 = frac(float2(.1*cos(v0),.1*sin(v0))*time());
     return v1;
 
@@ -1334,7 +1334,7 @@ dynamicParams entries in materials/models/heroes/ember_spirit/ember_spirit_remna
     07 98 F9 8E 3C 07 CD CC 4C 3E 18 07 CD CC 4C 3E 07 00 00 00 3F 07 19 04 06 40 06 1B 00 15 06 00
     00 15 07 00 00 00 3F 13 06 08 00 15 08 00 07 CD CC CC 3D 09 00 06 01 00 15 07 CD CC CC 3D 09 00
     06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(-.2,.2,(.5*sin(2.094*time()))+.5);
+    v0 = .017453*lerp(-.2,.2,(.5*sin(2.094*time()))+.5);
     v1 = frac(float2(.1*cos(v0),.1*sin(v0))*time());
     return v1;
 
@@ -1349,7 +1349,7 @@ dynamicParams entries in materials/models/heroes/ember_spirit/ember_spirit_remna
     07 98 F9 8E 3C 07 CD CC CC 3D 18 07 8F C2 F5 3D 07 00 00 00 3F 07 17 D9 2E 40 06 1B 00 15 06 00
     00 15 07 00 00 00 3F 13 06 08 00 15 08 00 07 CD CC CC 3D 09 00 06 01 00 15 07 CD CC CC 3D 09 00
     06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(-.1,.12,(.5*sin(2.732*time()))+.5);
+    v0 = .017453*lerp(-.1,.12,(.5*sin(2.732*time()))+.5);
     v1 = frac(float2(.1*cos(v0),.1*sin(v0))*time());
     return v1;
 
@@ -1361,7 +1361,7 @@ dynamicParams entries in materials/models/heroes/ember_spirit/ember_spirit_remna
     07 98 F9 8E 3C 07 CD CC CC 3D 18 07 8F C2 F5 3D 07 00 00 00 3F 07 17 D9 2E 40 06 1B 00 15 06 00
     00 15 07 00 00 00 3F 13 06 08 00 15 08 00 07 B8 1E 05 3E 09 00 06 01 00 15 07 B8 1E 05 3E 09 00
     06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(-.1,.12,(.5*sin(2.732*time()))+.5);
+    v0 = .017453*lerp(-.1,.12,(.5*sin(2.732*time()))+.5);
     v1 = frac(float2(.13*cos(v0),.13*sin(v0))*time());
     return v1;
 
@@ -2945,7 +2945,7 @@ dynamicParams entries in materials/models/heroes/storm_spirit/storm_spirit_armor
     07 98 F9 8E 3C 07 00 00 B8 42 07 00 00 BA 42 07 00 00 00 3F 07 39 B4 48 3E 06 1B 00 15 06 00 00
     15 07 00 00 00 3F 13 06 08 00 15 08 00 07 9A 99 99 3E 18 09 00 06 01 00 15 07 9A 99 99 3E 18 09
     00 06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(92,93,(.5*sin(.196*time()))+.5);
+    v0 = .017453*lerp(92,93,(.5*sin(.196*time()))+.5);
     v1 = frac(float2(-.3*cos(v0),-.3*sin(v0))*time());
     return v1;
 
@@ -2961,7 +2961,7 @@ dynamicParams entries in materials/models/heroes/storm_spirit/storm_spirit_arms.
     07 98 F9 8E 3C 07 00 00 B8 42 07 00 00 BA 42 07 00 00 00 3F 07 39 B4 48 3E 06 1B 00 15 06 00 00
     15 07 00 00 00 3F 13 06 08 00 15 08 00 07 9A 99 99 3E 18 09 00 06 01 00 15 07 9A 99 99 3E 18 09
     00 06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(92,93,(.5*sin(.196*time()))+.5);
+    v0 = .017453*lerp(92,93,(.5*sin(.196*time()))+.5);
     v1 = frac(float2(-.3*cos(v0),-.3*sin(v0))*time());
     return v1;
 
@@ -2976,13 +2976,13 @@ dynamicParams entries in materials/models/heroes/storm_spirit/storm_spirit_base.
     g_flDetailBlendFactor
     07 00 00 40 40 07 00 00 80 40 07 00 00 00 3F 07 14 AE 3D 41 06 1B 00 15 06 00 00 15 07 00 00 00
     3F 13 06 08 00 00
-    return lerp(3,4,(.5*sin(11.85*time()))+.5);
+    return lerp(3,4,(.5*sin(11.855*time()))+.5);
 
     g_vDetailTexCoordOffset
     07 98 F9 8E 3C 07 00 00 B8 42 07 00 00 BA 42 07 00 00 00 3F 07 39 B4 48 3E 06 1B 00 15 06 00 00
     15 07 00 00 00 3F 13 06 08 00 15 08 00 07 9A 99 99 3E 18 09 00 06 01 00 15 07 9A 99 99 3E 18 09
     00 06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(92,93,(.5*sin(.196*time()))+.5);
+    v0 = .017453*lerp(92,93,(.5*sin(.196*time()))+.5);
     v1 = frac(float2(-.3*cos(v0),-.3*sin(v0))*time());
     return v1;
 
@@ -2998,7 +2998,7 @@ dynamicParams entries in materials/models/heroes/storm_spirit/storm_spirit_head.
     07 98 F9 8E 3C 07 00 00 B8 42 07 00 00 BA 42 07 00 00 00 3F 07 39 B4 48 3E 06 1B 00 15 06 00 00
     15 07 00 00 00 3F 13 06 08 00 15 08 00 07 9A 99 99 3E 18 09 00 06 01 00 15 07 9A 99 99 3E 18 09
     00 06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(92,93,(.5*sin(.196*time()))+.5);
+    v0 = .017453*lerp(92,93,(.5*sin(.196*time()))+.5);
     v1 = frac(float2(-.3*cos(v0),-.3*sin(v0))*time());
     return v1;
 
@@ -3013,7 +3013,7 @@ dynamicParams entries in materials/models/heroes/storm_spirit/storm_v2_staticrem
     g_flMaterialCloakFactor
     07 CD CC 8C 3E 07 48 E1 BA 3E 07 00 00 00 3F 07 62 10 C9 41 06 1B 00 15 06 00 00 15 07 00 00 00
     3F 13 06 08 00 00
-    return lerp(.275,.365,(.5*sin(25.13*time()))+.5);
+    return lerp(.275,.365,(.5*sin(25.133*time()))+.5);
 
     g_vDetailTexCoordOffset
     07 AC 1C 9A 3E 07 BA 49 CC 3E 06 1A 00 06 1B 00 15 06 03 00 00
@@ -9150,7 +9150,7 @@ dynamicParams entries in materials/models/items/ember_spirit/arm_guards_of_prosp
     07 98 F9 8E 3C 07 CD CC CC 3D 18 07 CD CC CC 3D 07 00 00 00 3F 07 87 16 C9 3F 06 1B 00 15 06 00
     00 15 07 00 00 00 3F 13 06 08 00 15 08 00 07 CD CC CC 3D 09 00 06 01 00 15 07 CD CC CC 3D 09 00
     06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
+    v0 = .017453*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
     v1 = frac(float2(.1*cos(v0),.1*sin(v0))*time());
     return v1;
 
@@ -9165,7 +9165,7 @@ dynamicParams entries in materials/models/items/ember_spirit/blazearmor_arms/bla
     07 98 F9 8E 3C 07 CD CC CC 3D 18 07 CD CC CC 3D 07 00 00 00 3F 07 87 16 C9 3F 06 1B 00 15 06 00
     00 15 07 00 00 00 3F 13 06 08 00 15 08 00 07 CD CC CC 3D 09 00 06 01 00 15 07 CD CC CC 3D 09 00
     06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
+    v0 = .017453*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
     v1 = frac(float2(.1*cos(v0),.1*sin(v0))*time());
     return v1;
 
@@ -9180,7 +9180,7 @@ dynamicParams entries in materials/models/items/ember_spirit/blazearmor_belt/bla
     07 98 F9 8E 3C 07 CD CC CC 3D 18 07 CD CC CC 3D 07 00 00 00 3F 07 87 16 C9 3F 06 1B 00 15 06 00
     00 15 07 00 00 00 3F 13 06 08 00 15 08 00 07 CD CC CC 3D 09 00 06 01 00 15 07 CD CC CC 3D 09 00
     06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
+    v0 = .017453*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
     v1 = frac(float2(.1*cos(v0),.1*sin(v0))*time());
     return v1;
 
@@ -9195,7 +9195,7 @@ dynamicParams entries in materials/models/items/ember_spirit/blazearmor_head/bla
     07 98 F9 8E 3C 07 CD CC CC 3D 18 07 CD CC CC 3D 07 00 00 00 3F 07 87 16 C9 3F 06 1B 00 15 06 00
     00 15 07 00 00 00 3F 13 06 08 00 15 08 00 07 CD CC CC 3D 09 00 06 01 00 15 07 CD CC CC 3D 09 00
     06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
+    v0 = .017453*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
     v1 = frac(float2(.1*cos(v0),.1*sin(v0))*time());
     return v1;
 
@@ -9210,7 +9210,7 @@ dynamicParams entries in materials/models/items/ember_spirit/blazearmor_offhand/
     07 98 F9 8E 3C 07 CD CC CC 3D 18 07 CD CC CC 3D 07 00 00 00 3F 07 87 16 C9 3F 06 1B 00 15 06 00
     00 15 07 00 00 00 3F 13 06 08 00 15 08 00 07 CD CC CC 3D 09 00 06 01 00 15 07 CD CC CC 3D 09 00
     06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
+    v0 = .017453*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
     v1 = frac(float2(.1*cos(v0),.1*sin(v0))*time());
     return v1;
 
@@ -9225,7 +9225,7 @@ dynamicParams entries in materials/models/items/ember_spirit/blazearmor_shoulder
     07 98 F9 8E 3C 07 CD CC CC 3D 18 07 CD CC CC 3D 07 00 00 00 3F 07 87 16 C9 3F 06 1B 00 15 06 00
     00 15 07 00 00 00 3F 13 06 08 00 15 08 00 07 CD CC CC 3D 09 00 06 01 00 15 07 CD CC CC 3D 09 00
     06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
+    v0 = .017453*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
     v1 = frac(float2(.1*cos(v0),.1*sin(v0))*time());
     return v1;
 
@@ -9240,7 +9240,7 @@ dynamicParams entries in materials/models/items/ember_spirit/blazearmor_weapon/b
     07 98 F9 8E 3C 07 CD CC CC 3D 18 07 CD CC CC 3D 07 00 00 00 3F 07 87 16 C9 3F 06 1B 00 15 06 00
     00 15 07 00 00 00 3F 13 06 08 00 15 08 00 07 CD CC CC 3D 09 00 06 01 00 15 07 CD CC CC 3D 09 00
     06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
+    v0 = .017453*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
     v1 = frac(float2(.1*cos(v0),.1*sin(v0))*time());
     return v1;
 
@@ -9255,7 +9255,7 @@ dynamicParams entries in materials/models/items/ember_spirit/crimson_guard_of_pr
     07 98 F9 8E 3C 07 CD CC CC 3D 18 07 CD CC CC 3D 07 00 00 00 3F 07 87 16 C9 3F 06 1B 00 15 06 00
     00 15 07 00 00 00 3F 13 06 08 00 15 08 00 07 CD CC CC 3D 09 00 06 01 00 15 07 CD CC CC 3D 09 00
     06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
+    v0 = .017453*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
     v1 = frac(float2(.1*cos(v0),.1*sin(v0))*time());
     return v1;
 
@@ -9270,7 +9270,7 @@ dynamicParams entries in materials/models/items/ember_spirit/ember_pauldrons_of_
     07 98 F9 8E 3C 07 CD CC CC 3D 18 07 CD CC CC 3D 07 00 00 00 3F 07 87 16 C9 3F 06 1B 00 15 06 00
     00 15 07 00 00 00 3F 13 06 08 00 15 08 00 07 CD CC CC 3D 09 00 06 01 00 15 07 CD CC CC 3D 09 00
     06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
+    v0 = .017453*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
     v1 = frac(float2(.1*cos(v0),.1*sin(v0))*time());
     return v1;
 
@@ -9285,7 +9285,7 @@ dynamicParams entries in materials/models/items/ember_spirit/flame_imperial_offh
     07 98 F9 8E 3C 07 CD CC CC 3D 18 07 CD CC CC 3D 07 00 00 00 3F 07 87 16 C9 3F 06 1B 00 15 06 00
     00 15 07 00 00 00 3F 13 06 08 00 15 08 00 07 CD CC CC 3D 09 00 06 01 00 15 07 CD CC CC 3D 09 00
     06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
+    v0 = .017453*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
     v1 = frac(float2(.1*cos(v0),.1*sin(v0))*time());
     return v1;
 
@@ -9300,7 +9300,7 @@ dynamicParams entries in materials/models/items/ember_spirit/flame_imperial_weap
     07 98 F9 8E 3C 07 CD CC CC 3D 18 07 CD CC CC 3D 07 00 00 00 3F 07 87 16 C9 3F 06 1B 00 15 06 00
     00 15 07 00 00 00 3F 13 06 08 00 15 08 00 07 CD CC CC 3D 09 00 06 01 00 15 07 CD CC CC 3D 09 00
     06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
+    v0 = .017453*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
     v1 = frac(float2(.1*cos(v0),.1*sin(v0))*time());
     return v1;
 
@@ -9315,7 +9315,7 @@ dynamicParams entries in materials/models/items/ember_spirit/greaterpurifier_wea
     07 98 F9 8E 3C 07 CD CC CC 3D 18 07 CD CC CC 3D 07 00 00 00 3F 07 87 16 C9 3F 06 1B 00 15 06 00
     00 15 07 00 00 00 3F 13 06 08 00 15 08 00 07 CD CC CC 3D 09 00 06 01 00 15 07 CD CC CC 3D 09 00
     06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
+    v0 = .017453*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
     v1 = frac(float2(.1*cos(v0),.1*sin(v0))*time());
     return v1;
 
@@ -9330,7 +9330,7 @@ dynamicParams entries in materials/models/items/ember_spirit/huo__blade_of_prosp
     07 98 F9 8E 3C 07 CD CC CC 3D 18 07 CD CC CC 3D 07 00 00 00 3F 07 87 16 C9 3F 06 1B 00 15 06 00
     00 15 07 00 00 00 3F 13 06 08 00 15 08 00 07 CD CC CC 3D 09 00 06 01 00 15 07 CD CC CC 3D 09 00
     06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
+    v0 = .017453*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
     v1 = frac(float2(.1*cos(v0),.1*sin(v0))*time());
     return v1;
 
@@ -9345,7 +9345,7 @@ dynamicParams entries in materials/models/items/ember_spirit/jin__blade_of_prosp
     07 98 F9 8E 3C 07 CD CC CC 3D 18 07 CD CC CC 3D 07 00 00 00 3F 07 87 16 C9 3F 06 1B 00 15 06 00
     00 15 07 00 00 00 3F 13 06 08 00 15 08 00 07 CD CC CC 3D 09 00 06 01 00 15 07 CD CC CC 3D 09 00
     06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
+    v0 = .017453*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
     v1 = frac(float2(.1*cos(v0),.1*sin(v0))*time());
     return v1;
 
@@ -9360,7 +9360,7 @@ dynamicParams entries in materials/models/items/ember_spirit/lesserpurifier_offh
     07 98 F9 8E 3C 07 CD CC CC 3D 18 07 CD CC CC 3D 07 00 00 00 3F 07 87 16 C9 3F 06 1B 00 15 06 00
     00 15 07 00 00 00 3F 13 06 08 00 15 08 00 07 CD CC CC 3D 09 00 06 01 00 15 07 CD CC CC 3D 09 00
     06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
+    v0 = .017453*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
     v1 = frac(float2(.1*cos(v0),.1*sin(v0))*time());
     return v1;
 
@@ -9375,7 +9375,7 @@ dynamicParams entries in materials/models/items/ember_spirit/lucky_disc/lucky_di
     07 98 F9 8E 3C 07 CD CC CC 3D 18 07 CD CC CC 3D 07 00 00 00 3F 07 87 16 C9 3F 06 1B 00 15 06 00
     00 15 07 00 00 00 3F 13 06 08 00 15 08 00 07 CD CC CC 3D 09 00 06 01 00 15 07 CD CC CC 3D 09 00
     06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
+    v0 = .017453*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
     v1 = frac(float2(.1*cos(v0),.1*sin(v0))*time());
     return v1;
 
@@ -9390,7 +9390,7 @@ dynamicParams entries in materials/models/items/ember_spirit/mentor_high_plains_
     07 98 F9 8E 3C 07 CD CC CC 3D 18 07 CD CC CC 3D 07 00 00 00 3F 07 87 16 C9 3F 06 1B 00 15 06 00
     00 15 07 00 00 00 3F 13 06 08 00 15 08 00 07 CD CC CC 3D 09 00 06 01 00 15 07 CD CC CC 3D 09 00
     06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
+    v0 = .017453*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
     v1 = frac(float2(.1*cos(v0),.1*sin(v0))*time());
     return v1;
 
@@ -9405,7 +9405,7 @@ dynamicParams entries in materials/models/items/ember_spirit/mentor_high_plains_
     07 98 F9 8E 3C 07 CD CC CC 3D 18 07 CD CC CC 3D 07 00 00 00 3F 07 87 16 C9 3F 06 1B 00 15 06 00
     00 15 07 00 00 00 3F 13 06 08 00 15 08 00 07 CD CC CC 3D 09 00 06 01 00 15 07 CD CC CC 3D 09 00
     06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
+    v0 = .017453*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
     v1 = frac(float2(.1*cos(v0),.1*sin(v0))*time());
     return v1;
 
@@ -9420,7 +9420,7 @@ dynamicParams entries in materials/models/items/ember_spirit/mentor_high_plains_
     07 98 F9 8E 3C 07 CD CC CC 3D 18 07 CD CC CC 3D 07 00 00 00 3F 07 87 16 C9 3F 06 1B 00 15 06 00
     00 15 07 00 00 00 3F 13 06 08 00 15 08 00 07 CD CC CC 3D 09 00 06 01 00 15 07 CD CC CC 3D 09 00
     06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
+    v0 = .017453*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
     v1 = frac(float2(.1*cos(v0),.1*sin(v0))*time());
     return v1;
 
@@ -9435,7 +9435,7 @@ dynamicParams entries in materials/models/items/ember_spirit/mentor_high_plains_
     07 98 F9 8E 3C 07 CD CC CC 3D 18 07 CD CC CC 3D 07 00 00 00 3F 07 87 16 C9 3F 06 1B 00 15 06 00
     00 15 07 00 00 00 3F 13 06 08 00 15 08 00 07 CD CC CC 3D 09 00 06 01 00 15 07 CD CC CC 3D 09 00
     06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
+    v0 = .017453*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
     v1 = frac(float2(.1*cos(v0),.1*sin(v0))*time());
     return v1;
 
@@ -9450,7 +9450,7 @@ dynamicParams entries in materials/models/items/ember_spirit/mentor_high_plains_
     07 98 F9 8E 3C 07 CD CC CC 3D 18 07 CD CC CC 3D 07 00 00 00 3F 07 87 16 C9 3F 06 1B 00 15 06 00
     00 15 07 00 00 00 3F 13 06 08 00 15 08 00 07 CD CC CC 3D 09 00 06 01 00 15 07 CD CC CC 3D 09 00
     06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
+    v0 = .017453*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
     v1 = frac(float2(.1*cos(v0),.1*sin(v0))*time());
     return v1;
 
@@ -9465,7 +9465,7 @@ dynamicParams entries in materials/models/items/ember_spirit/mentor_high_plains_
     07 98 F9 8E 3C 07 CD CC CC 3D 18 07 CD CC CC 3D 07 00 00 00 3F 07 87 16 C9 3F 06 1B 00 15 06 00
     00 15 07 00 00 00 3F 13 06 08 00 15 08 00 07 CD CC CC 3D 09 00 06 01 00 15 07 CD CC CC 3D 09 00
     06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
+    v0 = .017453*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
     v1 = frac(float2(.1*cos(v0),.1*sin(v0))*time());
     return v1;
 
@@ -9480,7 +9480,7 @@ dynamicParams entries in materials/models/items/ember_spirit/phoenix_helm_of_pro
     07 98 F9 8E 3C 07 CD CC CC 3D 18 07 CD CC CC 3D 07 00 00 00 3F 07 87 16 C9 3F 06 1B 00 15 06 00
     00 15 07 00 00 00 3F 13 06 08 00 15 08 00 07 CD CC CC 3D 09 00 06 01 00 15 07 CD CC CC 3D 09 00
     06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
+    v0 = .017453*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
     v1 = frac(float2(.1*cos(v0),.1*sin(v0))*time());
     return v1;
 
@@ -9495,7 +9495,7 @@ dynamicParams entries in materials/models/items/ember_spirit/rapier_burning_god_
     07 98 F9 8E 3C 07 CD CC CC 3D 18 07 CD CC CC 3D 07 00 00 00 3F 07 87 16 C9 3F 06 1B 00 15 06 00
     00 15 07 00 00 00 3F 13 06 08 00 15 08 00 07 CD CC CC 3D 09 00 06 01 00 15 07 CD CC CC 3D 09 00
     06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
+    v0 = .017453*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
     v1 = frac(float2(.1*cos(v0),.1*sin(v0))*time());
     return v1;
 
@@ -9510,7 +9510,7 @@ dynamicParams entries in materials/models/items/ember_spirit/rapier_burning_god_
     07 98 F9 8E 3C 07 CD CC CC 3D 18 07 CD CC CC 3D 07 00 00 00 3F 07 87 16 C9 3F 06 1B 00 15 06 00
     00 15 07 00 00 00 3F 13 06 08 00 15 08 00 07 CD CC CC 3D 09 00 06 01 00 15 07 CD CC CC 3D 09 00
     06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
+    v0 = .017453*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
     v1 = frac(float2(.1*cos(v0),.1*sin(v0))*time());
     return v1;
 
@@ -9525,7 +9525,7 @@ dynamicParams entries in materials/models/items/ember_spirit/salakot/salakot_col
     07 98 F9 8E 3C 07 CD CC CC 3D 18 07 CD CC CC 3D 07 00 00 00 3F 07 87 16 C9 3F 06 1B 00 15 06 00
     00 15 07 00 00 00 3F 13 06 08 00 15 08 00 07 CD CC CC 3D 09 00 06 01 00 15 07 CD CC CC 3D 09 00
     06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
+    v0 = .017453*lerp(-.1,.1,(.5*sin(1.571*time()))+.5);
     v1 = frac(float2(.1*cos(v0),.1*sin(v0))*time());
     return v1;
 
@@ -23101,13 +23101,13 @@ dynamicParams entries in materials/models/items/storm_spirit/anuxi_ring_of_storm
     g_flDetailBlendFactor
     07 00 00 40 40 07 00 00 80 40 07 00 00 00 3F 07 14 AE 3D 41 06 1B 00 15 06 00 00 15 07 00 00 00
     3F 13 06 08 00 00
-    return lerp(3,4,(.5*sin(11.85*time()))+.5);
+    return lerp(3,4,(.5*sin(11.855*time()))+.5);
 
     g_vDetailTexCoordOffset
     07 98 F9 8E 3C 07 00 00 B8 42 07 00 00 BA 42 07 00 00 00 3F 07 39 B4 48 3E 06 1B 00 15 06 00 00
     15 07 00 00 00 3F 13 06 08 00 15 08 00 07 9A 99 99 3E 18 09 00 06 01 00 15 07 9A 99 99 3E 18 09
     00 06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(92,93,(.5*sin(.196*time()))+.5);
+    v0 = .017453*lerp(92,93,(.5*sin(.196*time()))+.5);
     v1 = frac(float2(-.3*cos(v0),-.3*sin(v0))*time());
     return v1;
 
@@ -23122,13 +23122,13 @@ dynamicParams entries in materials/models/items/storm_spirit/emperors_robe_armor
     g_flDetailBlendFactor
     07 00 00 40 40 07 00 00 80 40 07 00 00 00 3F 07 14 AE 3D 41 06 1B 00 15 06 00 00 15 07 00 00 00
     3F 13 06 08 00 00
-    return lerp(3,4,(.5*sin(11.85*time()))+.5);
+    return lerp(3,4,(.5*sin(11.855*time()))+.5);
 
     g_vDetailTexCoordOffset
     07 98 F9 8E 3C 07 00 00 B8 42 07 00 00 BA 42 07 00 00 00 3F 07 39 B4 48 3E 06 1B 00 15 06 00 00
     15 07 00 00 00 3F 13 06 08 00 15 08 00 07 9A 99 99 3E 18 09 00 06 01 00 15 07 9A 99 99 3E 18 09
     00 06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(92,93,(.5*sin(.196*time()))+.5);
+    v0 = .017453*lerp(92,93,(.5*sin(.196*time()))+.5);
     v1 = frac(float2(-.3*cos(v0),-.3*sin(v0))*time());
     return v1;
 
@@ -23143,13 +23143,13 @@ dynamicParams entries in materials/models/items/storm_spirit/emperors_robe_arms/
     g_flDetailBlendFactor
     07 00 00 40 40 07 00 00 80 40 07 00 00 00 3F 07 14 AE 3D 41 06 1B 00 15 06 00 00 15 07 00 00 00
     3F 13 06 08 00 00
-    return lerp(3,4,(.5*sin(11.85*time()))+.5);
+    return lerp(3,4,(.5*sin(11.855*time()))+.5);
 
     g_vDetailTexCoordOffset
     07 98 F9 8E 3C 07 00 00 B8 42 07 00 00 BA 42 07 00 00 00 3F 07 39 B4 48 3E 06 1B 00 15 06 00 00
     15 07 00 00 00 3F 13 06 08 00 15 08 00 07 9A 99 99 3E 18 09 00 06 01 00 15 07 9A 99 99 3E 18 09
     00 06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(92,93,(.5*sin(.196*time()))+.5);
+    v0 = .017453*lerp(92,93,(.5*sin(.196*time()))+.5);
     v1 = frac(float2(-.3*cos(v0),-.3*sin(v0))*time());
     return v1;
 
@@ -23164,13 +23164,13 @@ dynamicParams entries in materials/models/items/storm_spirit/emperors_robe_head/
     g_flDetailBlendFactor
     07 00 00 40 40 07 00 00 80 40 07 00 00 00 3F 07 14 AE 3D 41 06 1B 00 15 06 00 00 15 07 00 00 00
     3F 13 06 08 00 00
-    return lerp(3,4,(.5*sin(11.85*time()))+.5);
+    return lerp(3,4,(.5*sin(11.855*time()))+.5);
 
     g_vDetailTexCoordOffset
     07 98 F9 8E 3C 07 00 00 B8 42 07 00 00 BA 42 07 00 00 00 3F 07 39 B4 48 3E 06 1B 00 15 06 00 00
     15 07 00 00 00 3F 13 06 08 00 15 08 00 07 9A 99 99 3E 18 09 00 06 01 00 15 07 9A 99 99 3E 18 09
     00 06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(92,93,(.5*sin(.196*time()))+.5);
+    v0 = .017453*lerp(92,93,(.5*sin(.196*time()))+.5);
     v1 = frac(float2(-.3*cos(v0),-.3*sin(v0))*time());
     return v1;
 
@@ -23185,13 +23185,13 @@ dynamicParams entries in materials/models/items/storm_spirit/esl_harmony_armor/e
     g_flDetailBlendFactor
     07 00 00 40 40 07 00 00 80 40 07 00 00 00 3F 07 14 AE 3D 41 06 1B 00 15 06 00 00 15 07 00 00 00
     3F 13 06 08 00 00
-    return lerp(3,4,(.5*sin(11.85*time()))+.5);
+    return lerp(3,4,(.5*sin(11.855*time()))+.5);
 
     g_vDetailTexCoordOffset
     07 98 F9 8E 3C 07 00 00 B8 42 07 00 00 BA 42 07 00 00 00 3F 07 39 B4 48 3E 06 1B 00 15 06 00 00
     15 07 00 00 00 3F 13 06 08 00 15 08 00 07 9A 99 99 3E 18 09 00 06 01 00 15 07 9A 99 99 3E 18 09
     00 06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(92,93,(.5*sin(.196*time()))+.5);
+    v0 = .017453*lerp(92,93,(.5*sin(.196*time()))+.5);
     v1 = frac(float2(-.3*cos(v0),-.3*sin(v0))*time());
     return v1;
 
@@ -23206,13 +23206,13 @@ dynamicParams entries in materials/models/items/storm_spirit/esl_harmony_arms/es
     g_flDetailBlendFactor
     07 00 00 40 40 07 00 00 80 40 07 00 00 00 3F 07 14 AE 3D 41 06 1B 00 15 06 00 00 15 07 00 00 00
     3F 13 06 08 00 00
-    return lerp(3,4,(.5*sin(11.85*time()))+.5);
+    return lerp(3,4,(.5*sin(11.855*time()))+.5);
 
     g_vDetailTexCoordOffset
     07 98 F9 8E 3C 07 00 00 B8 42 07 00 00 BA 42 07 00 00 00 3F 07 39 B4 48 3E 06 1B 00 15 06 00 00
     15 07 00 00 00 3F 13 06 08 00 15 08 00 07 9A 99 99 3E 18 09 00 06 01 00 15 07 9A 99 99 3E 18 09
     00 06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(92,93,(.5*sin(.196*time()))+.5);
+    v0 = .017453*lerp(92,93,(.5*sin(.196*time()))+.5);
     v1 = frac(float2(-.3*cos(v0),-.3*sin(v0))*time());
     return v1;
 
@@ -23227,13 +23227,13 @@ dynamicParams entries in materials/models/items/storm_spirit/esl_harmony_head/es
     g_flDetailBlendFactor
     07 00 00 40 40 07 00 00 80 40 07 00 00 00 3F 07 14 AE 3D 41 06 1B 00 15 06 00 00 15 07 00 00 00
     3F 13 06 08 00 00
-    return lerp(3,4,(.5*sin(11.85*time()))+.5);
+    return lerp(3,4,(.5*sin(11.855*time()))+.5);
 
     g_vDetailTexCoordOffset
     07 98 F9 8E 3C 07 00 00 B8 42 07 00 00 BA 42 07 00 00 00 3F 07 39 B4 48 3E 06 1B 00 15 06 00 00
     15 07 00 00 00 3F 13 06 08 00 15 08 00 07 9A 99 99 3E 18 09 00 06 01 00 15 07 9A 99 99 3E 18 09
     00 06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(92,93,(.5*sin(.196*time()))+.5);
+    v0 = .017453*lerp(92,93,(.5*sin(.196*time()))+.5);
     v1 = frac(float2(-.3*cos(v0),-.3*sin(v0))*time());
     return v1;
 
@@ -23248,13 +23248,13 @@ dynamicParams entries in materials/models/items/storm_spirit/festive_dress_of_go
     g_flDetailBlendFactor
     07 00 00 40 40 07 00 00 80 40 07 00 00 00 3F 07 14 AE 3D 41 06 1B 00 15 06 00 00 15 07 00 00 00
     3F 13 06 08 00 00
-    return lerp(3,4,(.5*sin(11.85*time()))+.5);
+    return lerp(3,4,(.5*sin(11.855*time()))+.5);
 
     g_vDetailTexCoordOffset
     07 98 F9 8E 3C 07 00 00 B8 42 07 00 00 BA 42 07 00 00 00 3F 07 39 B4 48 3E 06 1B 00 15 06 00 00
     15 07 00 00 00 3F 13 06 08 00 15 08 00 07 9A 99 99 3E 18 09 00 06 01 00 15 07 9A 99 99 3E 18 09
     00 06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(92,93,(.5*sin(.196*time()))+.5);
+    v0 = .017453*lerp(92,93,(.5*sin(.196*time()))+.5);
     v1 = frac(float2(-.3*cos(v0),-.3*sin(v0))*time());
     return v1;
 
@@ -23269,13 +23269,13 @@ dynamicParams entries in materials/models/items/storm_spirit/hat_orchid/hat_orch
     g_flDetailBlendFactor
     07 00 00 40 40 07 00 00 80 40 07 00 00 00 3F 07 14 AE 3D 41 06 1B 00 15 06 00 00 15 07 00 00 00
     3F 13 06 08 00 00
-    return lerp(3,4,(.5*sin(11.85*time()))+.5);
+    return lerp(3,4,(.5*sin(11.855*time()))+.5);
 
     g_vDetailTexCoordOffset
     07 98 F9 8E 3C 07 00 00 B8 42 07 00 00 BA 42 07 00 00 00 3F 07 39 B4 48 3E 06 1B 00 15 06 00 00
     15 07 00 00 00 3F 13 06 08 00 15 08 00 07 9A 99 99 3E 18 09 00 06 01 00 15 07 9A 99 99 3E 18 09
     00 06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(92,93,(.5*sin(.196*time()))+.5);
+    v0 = .017453*lerp(92,93,(.5*sin(.196*time()))+.5);
     v1 = frac(float2(-.3*cos(v0),-.3*sin(v0))*time());
     return v1;
 
@@ -23290,7 +23290,7 @@ dynamicParams entries in materials/models/items/storm_spirit/hat_orchid/hat_orch
     g_flDetailBlendFactor
     07 00 00 40 40 07 00 00 80 40 07 00 00 00 3F 07 14 AE 3D 41 06 1B 00 15 06 00 00 15 07 00 00 00
     3F 13 06 08 00 00
-    return lerp(3,4,(.5*sin(11.85*time()))+.5);
+    return lerp(3,4,(.5*sin(11.855*time()))+.5);
 
     g_flDetailTexCoordRotation
     07 00 00 B8 42 07 00 00 BA 42 07 00 00 00 3F 07 39 B4 48 3E 06 1B 00 15 06 00 00 15 07 00 00 00
@@ -23301,7 +23301,7 @@ dynamicParams entries in materials/models/items/storm_spirit/hat_orchid/hat_orch
     07 98 F9 8E 3C 07 00 00 B8 42 07 00 00 BA 42 07 00 00 00 3F 07 39 B4 48 3E 06 1B 00 15 06 00 00
     15 07 00 00 00 3F 13 06 08 00 15 08 00 07 9A 99 99 3E 18 09 00 06 01 00 15 07 9A 99 99 3E 18 09
     00 06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(92,93,(.5*sin(.196*time()))+.5);
+    v0 = .017453*lerp(92,93,(.5*sin(.196*time()))+.5);
     v1 = frac(float2(-.3*cos(v0),-.3*sin(v0))*time());
     return v1;
 
@@ -23311,7 +23311,7 @@ dynamicParams entries in materials/models/items/storm_spirit/hat_orchid/hat_orch
     g_flDetailBlendFactor
     07 00 00 40 40 07 00 00 80 40 07 00 00 00 3F 07 14 AE 3D 41 06 1B 00 15 06 00 00 15 07 00 00 00
     3F 13 06 08 00 00
-    return lerp(3,4,(.5*sin(11.85*time()))+.5);
+    return lerp(3,4,(.5*sin(11.855*time()))+.5);
 
     g_flDetailTexCoordRotation
     07 00 00 B8 42 07 00 00 BA 42 07 00 00 00 3F 07 39 B4 48 3E 06 1B 00 15 06 00 00 15 07 00 00 00
@@ -23322,7 +23322,7 @@ dynamicParams entries in materials/models/items/storm_spirit/hat_orchid/hat_orch
     07 98 F9 8E 3C 07 00 00 B8 42 07 00 00 BA 42 07 00 00 00 3F 07 39 B4 48 3E 06 1B 00 15 06 00 00
     15 07 00 00 00 3F 13 06 08 00 15 08 00 07 9A 99 99 3E 18 09 00 06 01 00 15 07 9A 99 99 3E 18 09
     00 06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(92,93,(.5*sin(.196*time()))+.5);
+    v0 = .017453*lerp(92,93,(.5*sin(.196*time()))+.5);
     v1 = frac(float2(-.3*cos(v0),-.3*sin(v0))*time());
     return v1;
 
@@ -23332,13 +23332,13 @@ dynamicParams entries in materials/models/items/storm_spirit/heavenlygeneral_arm
     g_flDetailBlendFactor
     07 00 00 40 40 07 00 00 80 40 07 00 00 00 3F 07 14 AE 3D 41 06 1B 00 15 06 00 00 15 07 00 00 00
     3F 13 06 08 00 00
-    return lerp(3,4,(.5*sin(11.85*time()))+.5);
+    return lerp(3,4,(.5*sin(11.855*time()))+.5);
 
     g_vDetailTexCoordOffset
     07 98 F9 8E 3C 07 00 00 B8 42 07 00 00 BA 42 07 00 00 00 3F 07 39 B4 48 3E 06 1B 00 15 06 00 00
     15 07 00 00 00 3F 13 06 08 00 15 08 00 07 9A 99 99 3E 18 09 00 06 01 00 15 07 9A 99 99 3E 18 09
     00 06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(92,93,(.5*sin(.196*time()))+.5);
+    v0 = .017453*lerp(92,93,(.5*sin(.196*time()))+.5);
     v1 = frac(float2(-.3*cos(v0),-.3*sin(v0))*time());
     return v1;
 
@@ -23353,13 +23353,13 @@ dynamicParams entries in materials/models/items/storm_spirit/heavenlygeneral_hat
     g_flDetailBlendFactor
     07 00 00 40 40 07 00 00 80 40 07 00 00 00 3F 07 14 AE 3D 41 06 1B 00 15 06 00 00 15 07 00 00 00
     3F 13 06 08 00 00
-    return lerp(3,4,(.5*sin(11.85*time()))+.5);
+    return lerp(3,4,(.5*sin(11.855*time()))+.5);
 
     g_vDetailTexCoordOffset
     07 98 F9 8E 3C 07 00 00 B8 42 07 00 00 BA 42 07 00 00 00 3F 07 39 B4 48 3E 06 1B 00 15 06 00 00
     15 07 00 00 00 3F 13 06 08 00 15 08 00 07 9A 99 99 3E 18 09 00 06 01 00 15 07 9A 99 99 3E 18 09
     00 06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(92,93,(.5*sin(.196*time()))+.5);
+    v0 = .017453*lerp(92,93,(.5*sin(.196*time()))+.5);
     v1 = frac(float2(-.3*cos(v0),-.3*sin(v0))*time());
     return v1;
 
@@ -23374,13 +23374,13 @@ dynamicParams entries in materials/models/items/storm_spirit/heavenlygeneral_sho
     g_flDetailBlendFactor
     07 00 00 40 40 07 00 00 80 40 07 00 00 00 3F 07 14 AE 3D 41 06 1B 00 15 06 00 00 15 07 00 00 00
     3F 13 06 08 00 00
-    return lerp(3,4,(.5*sin(11.85*time()))+.5);
+    return lerp(3,4,(.5*sin(11.855*time()))+.5);
 
     g_vDetailTexCoordOffset
     07 98 F9 8E 3C 07 00 00 B8 42 07 00 00 BA 42 07 00 00 00 3F 07 39 B4 48 3E 06 1B 00 15 06 00 00
     15 07 00 00 00 3F 13 06 08 00 15 08 00 07 9A 99 99 3E 18 09 00 06 01 00 15 07 9A 99 99 3E 18 09
     00 06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(92,93,(.5*sin(.196*time()))+.5);
+    v0 = .017453*lerp(92,93,(.5*sin(.196*time()))+.5);
     v1 = frac(float2(-.3*cos(v0),-.3*sin(v0))*time());
     return v1;
 
@@ -23395,13 +23395,13 @@ dynamicParams entries in materials/models/items/storm_spirit/ornate_hat_of_good_
     g_flDetailBlendFactor
     07 00 00 40 40 07 00 00 80 40 07 00 00 00 3F 07 14 AE 3D 41 06 1B 00 15 06 00 00 15 07 00 00 00
     3F 13 06 08 00 00
-    return lerp(3,4,(.5*sin(11.85*time()))+.5);
+    return lerp(3,4,(.5*sin(11.855*time()))+.5);
 
     g_vDetailTexCoordOffset
     07 98 F9 8E 3C 07 00 00 B8 42 07 00 00 BA 42 07 00 00 00 3F 07 39 B4 48 3E 06 1B 00 15 06 00 00
     15 07 00 00 00 3F 13 06 08 00 15 08 00 07 9A 99 99 3E 18 09 00 06 01 00 15 07 9A 99 99 3E 18 09
     00 06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(92,93,(.5*sin(.196*time()))+.5);
+    v0 = .017453*lerp(92,93,(.5*sin(.196*time()))+.5);
     v1 = frac(float2(-.3*cos(v0),-.3*sin(v0))*time());
     return v1;
 
@@ -23416,13 +23416,13 @@ dynamicParams entries in materials/models/items/storm_spirit/qilin_sorcerer_armo
     g_flDetailBlendFactor
     07 00 00 40 40 07 00 00 80 40 07 00 00 00 3F 07 14 AE 3D 41 06 1B 00 15 06 00 00 15 07 00 00 00
     3F 13 06 08 00 00
-    return lerp(3,4,(.5*sin(11.85*time()))+.5);
+    return lerp(3,4,(.5*sin(11.855*time()))+.5);
 
     g_vDetailTexCoordOffset
     07 98 F9 8E 3C 07 00 00 B8 42 07 00 00 BA 42 07 00 00 00 3F 07 39 B4 48 3E 06 1B 00 15 06 00 00
     15 07 00 00 00 3F 13 06 08 00 15 08 00 07 9A 99 99 3E 18 09 00 06 01 00 15 07 9A 99 99 3E 18 09
     00 06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(92,93,(.5*sin(.196*time()))+.5);
+    v0 = .017453*lerp(92,93,(.5*sin(.196*time()))+.5);
     v1 = frac(float2(-.3*cos(v0),-.3*sin(v0))*time());
     return v1;
 
@@ -23437,13 +23437,13 @@ dynamicParams entries in materials/models/items/storm_spirit/qilin_sorcerer_arms
     g_flDetailBlendFactor
     07 00 00 40 40 07 00 00 80 40 07 00 00 00 3F 07 14 AE 3D 41 06 1B 00 15 06 00 00 15 07 00 00 00
     3F 13 06 08 00 00
-    return lerp(3,4,(.5*sin(11.85*time()))+.5);
+    return lerp(3,4,(.5*sin(11.855*time()))+.5);
 
     g_vDetailTexCoordOffset
     07 98 F9 8E 3C 07 00 00 B8 42 07 00 00 BA 42 07 00 00 00 3F 07 39 B4 48 3E 06 1B 00 15 06 00 00
     15 07 00 00 00 3F 13 06 08 00 15 08 00 07 9A 99 99 3E 18 09 00 06 01 00 15 07 9A 99 99 3E 18 09
     00 06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(92,93,(.5*sin(.196*time()))+.5);
+    v0 = .017453*lerp(92,93,(.5*sin(.196*time()))+.5);
     v1 = frac(float2(-.3*cos(v0),-.3*sin(v0))*time());
     return v1;
 
@@ -23458,13 +23458,13 @@ dynamicParams entries in materials/models/items/storm_spirit/qilin_sorcerer_head
     g_flDetailBlendFactor
     07 00 00 40 40 07 00 00 80 40 07 00 00 00 3F 07 14 AE 3D 41 06 1B 00 15 06 00 00 15 07 00 00 00
     3F 13 06 08 00 00
-    return lerp(3,4,(.5*sin(11.85*time()))+.5);
+    return lerp(3,4,(.5*sin(11.855*time()))+.5);
 
     g_vDetailTexCoordOffset
     07 98 F9 8E 3C 07 00 00 B8 42 07 00 00 BA 42 07 00 00 00 3F 07 39 B4 48 3E 06 1B 00 15 06 00 00
     15 07 00 00 00 3F 13 06 08 00 15 08 00 07 9A 99 99 3E 18 09 00 06 01 00 15 07 9A 99 99 3E 18 09
     00 06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(92,93,(.5*sin(.196*time()))+.5);
+    v0 = .017453*lerp(92,93,(.5*sin(.196*time()))+.5);
     v1 = frac(float2(-.3*cos(v0),-.3*sin(v0))*time());
     return v1;
 
@@ -23479,13 +23479,13 @@ dynamicParams entries in materials/models/items/storm_spirit/raijins_tools_of_wa
     g_flDetailBlendFactor
     07 00 00 40 40 07 00 00 80 40 07 00 00 00 3F 07 14 AE 3D 41 06 1B 00 15 06 00 00 15 07 00 00 00
     3F 13 06 08 00 00
-    return lerp(3,4,(.5*sin(11.85*time()))+.5);
+    return lerp(3,4,(.5*sin(11.855*time()))+.5);
 
     g_vDetailTexCoordOffset
     07 98 F9 8E 3C 07 00 00 B8 42 07 00 00 BA 42 07 00 00 00 3F 07 39 B4 48 3E 06 1B 00 15 06 00 00
     15 07 00 00 00 3F 13 06 08 00 15 08 00 07 9A 99 99 3E 18 09 00 06 01 00 15 07 9A 99 99 3E 18 09
     00 06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(92,93,(.5*sin(.196*time()))+.5);
+    v0 = .017453*lerp(92,93,(.5*sin(.196*time()))+.5);
     v1 = frac(float2(-.3*cos(v0),-.3*sin(v0))*time());
     return v1;
 
@@ -23500,13 +23500,13 @@ dynamicParams entries in materials/models/items/storm_spirit/raijins_tools_of_wa
     g_flDetailBlendFactor
     07 00 00 40 40 07 00 00 80 40 07 00 00 00 3F 07 14 AE 3D 41 06 1B 00 15 06 00 00 15 07 00 00 00
     3F 13 06 08 00 00
-    return lerp(3,4,(.5*sin(11.85*time()))+.5);
+    return lerp(3,4,(.5*sin(11.855*time()))+.5);
 
     g_vDetailTexCoordOffset
     07 98 F9 8E 3C 07 00 00 B8 42 07 00 00 BA 42 07 00 00 00 3F 07 39 B4 48 3E 06 1B 00 15 06 00 00
     15 07 00 00 00 3F 13 06 08 00 15 08 00 07 9A 99 99 3E 18 09 00 06 01 00 15 07 9A 99 99 3E 18 09
     00 06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(92,93,(.5*sin(.196*time()))+.5);
+    v0 = .017453*lerp(92,93,(.5*sin(.196*time()))+.5);
     v1 = frac(float2(-.3*cos(v0),-.3*sin(v0))*time());
     return v1;
 
@@ -23521,13 +23521,13 @@ dynamicParams entries in materials/models/items/storm_spirit/raijins_tools_of_wa
     g_flDetailBlendFactor
     07 00 00 40 40 07 00 00 80 40 07 00 00 00 3F 07 14 AE 3D 41 06 1B 00 15 06 00 00 15 07 00 00 00
     3F 13 06 08 00 00
-    return lerp(3,4,(.5*sin(11.85*time()))+.5);
+    return lerp(3,4,(.5*sin(11.855*time()))+.5);
 
     g_vDetailTexCoordOffset
     07 98 F9 8E 3C 07 00 00 B8 42 07 00 00 BA 42 07 00 00 00 3F 07 39 B4 48 3E 06 1B 00 15 06 00 00
     15 07 00 00 00 3F 13 06 08 00 15 08 00 07 9A 99 99 3E 18 09 00 06 01 00 15 07 9A 99 99 3E 18 09
     00 06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(92,93,(.5*sin(.196*time()))+.5);
+    v0 = .017453*lerp(92,93,(.5*sin(.196*time()))+.5);
     v1 = frac(float2(-.3*cos(v0),-.3*sin(v0))*time());
     return v1;
 
@@ -23542,13 +23542,13 @@ dynamicParams entries in materials/models/items/storm_spirit/raikage_ares_armor/
     g_flDetailBlendFactor
     07 00 00 40 40 07 00 00 80 40 07 00 00 00 3F 07 14 AE 3D 41 06 1B 00 15 06 00 00 15 07 00 00 00
     3F 13 06 08 00 00
-    return lerp(3,4,(.5*sin(11.85*time()))+.5);
+    return lerp(3,4,(.5*sin(11.855*time()))+.5);
 
     g_vDetailTexCoordOffset
     07 98 F9 8E 3C 07 00 00 B8 42 07 00 00 BA 42 07 00 00 00 3F 07 39 B4 48 3E 06 1B 00 15 06 00 00
     15 07 00 00 00 3F 13 06 08 00 15 08 00 07 9A 99 99 3E 18 09 00 06 01 00 15 07 9A 99 99 3E 18 09
     00 06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(92,93,(.5*sin(.196*time()))+.5);
+    v0 = .017453*lerp(92,93,(.5*sin(.196*time()))+.5);
     v1 = frac(float2(-.3*cos(v0),-.3*sin(v0))*time());
     return v1;
 
@@ -23563,13 +23563,13 @@ dynamicParams entries in materials/models/items/storm_spirit/raikage_ares_arms/r
     g_flDetailBlendFactor
     07 00 00 40 40 07 00 00 80 40 07 00 00 00 3F 07 14 AE 3D 41 06 1B 00 15 06 00 00 15 07 00 00 00
     3F 13 06 08 00 00
-    return lerp(3,4,(.5*sin(11.85*time()))+.5);
+    return lerp(3,4,(.5*sin(11.855*time()))+.5);
 
     g_vDetailTexCoordOffset
     07 98 F9 8E 3C 07 00 00 B8 42 07 00 00 BA 42 07 00 00 00 3F 07 39 B4 48 3E 06 1B 00 15 06 00 00
     15 07 00 00 00 3F 13 06 08 00 15 08 00 07 9A 99 99 3E 18 09 00 06 01 00 15 07 9A 99 99 3E 18 09
     00 06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(92,93,(.5*sin(.196*time()))+.5);
+    v0 = .017453*lerp(92,93,(.5*sin(.196*time()))+.5);
     v1 = frac(float2(-.3*cos(v0),-.3*sin(v0))*time());
     return v1;
 
@@ -23584,13 +23584,13 @@ dynamicParams entries in materials/models/items/storm_spirit/raikage_ares_head/r
     g_flDetailBlendFactor
     07 00 00 40 40 07 00 00 80 40 07 00 00 00 3F 07 14 AE 3D 41 06 1B 00 15 06 00 00 15 07 00 00 00
     3F 13 06 08 00 00
-    return lerp(3,4,(.5*sin(11.85*time()))+.5);
+    return lerp(3,4,(.5*sin(11.855*time()))+.5);
 
     g_vDetailTexCoordOffset
     07 98 F9 8E 3C 07 00 00 B8 42 07 00 00 BA 42 07 00 00 00 3F 07 39 B4 48 3E 06 1B 00 15 06 00 00
     15 07 00 00 00 3F 13 06 08 00 15 08 00 07 9A 99 99 3E 18 09 00 06 01 00 15 07 9A 99 99 3E 18 09
     00 06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(92,93,(.5*sin(.196*time()))+.5);
+    v0 = .017453*lerp(92,93,(.5*sin(.196*time()))+.5);
     v1 = frac(float2(-.3*cos(v0),-.3*sin(v0))*time());
     return v1;
 
@@ -23605,13 +23605,13 @@ dynamicParams entries in materials/models/items/storm_spirit/scale_pauldrons_of_
     g_flDetailBlendFactor
     07 00 00 40 40 07 00 00 80 40 07 00 00 00 3F 07 14 AE 3D 41 06 1B 00 15 06 00 00 15 07 00 00 00
     3F 13 06 08 00 00
-    return lerp(3,4,(.5*sin(11.85*time()))+.5);
+    return lerp(3,4,(.5*sin(11.855*time()))+.5);
 
     g_vDetailTexCoordOffset
     07 98 F9 8E 3C 07 00 00 B8 42 07 00 00 BA 42 07 00 00 00 3F 07 39 B4 48 3E 06 1B 00 15 06 00 00
     15 07 00 00 00 3F 13 06 08 00 15 08 00 07 9A 99 99 3E 18 09 00 06 01 00 15 07 9A 99 99 3E 18 09
     00 06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(92,93,(.5*sin(.196*time()))+.5);
+    v0 = .017453*lerp(92,93,(.5*sin(.196*time()))+.5);
     v1 = frac(float2(-.3*cos(v0),-.3*sin(v0))*time());
     return v1;
 
@@ -23626,13 +23626,13 @@ dynamicParams entries in materials/models/items/storm_spirit/storm_spring_armor/
     g_flDetailBlendFactor
     07 00 00 40 40 07 00 00 80 40 07 00 00 00 3F 07 14 AE 3D 41 06 1B 00 15 06 00 00 15 07 00 00 00
     3F 13 06 08 00 00
-    return lerp(3,4,(.5*sin(11.85*time()))+.5);
+    return lerp(3,4,(.5*sin(11.855*time()))+.5);
 
     g_vDetailTexCoordOffset
     07 98 F9 8E 3C 07 00 00 B8 42 07 00 00 BA 42 07 00 00 00 3F 07 39 B4 48 3E 06 1B 00 15 06 00 00
     15 07 00 00 00 3F 13 06 08 00 15 08 00 07 9A 99 99 3E 18 09 00 06 01 00 15 07 9A 99 99 3E 18 09
     00 06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(92,93,(.5*sin(.196*time()))+.5);
+    v0 = .017453*lerp(92,93,(.5*sin(.196*time()))+.5);
     v1 = frac(float2(-.3*cos(v0),-.3*sin(v0))*time());
     return v1;
 
@@ -23647,13 +23647,13 @@ dynamicParams entries in materials/models/items/storm_spirit/storm_spring_arms/s
     g_flDetailBlendFactor
     07 00 00 40 40 07 00 00 80 40 07 00 00 00 3F 07 14 AE 3D 41 06 1B 00 15 06 00 00 15 07 00 00 00
     3F 13 06 08 00 00
-    return lerp(3,4,(.5*sin(11.85*time()))+.5);
+    return lerp(3,4,(.5*sin(11.855*time()))+.5);
 
     g_vDetailTexCoordOffset
     07 98 F9 8E 3C 07 00 00 B8 42 07 00 00 BA 42 07 00 00 00 3F 07 39 B4 48 3E 06 1B 00 15 06 00 00
     15 07 00 00 00 3F 13 06 08 00 15 08 00 07 9A 99 99 3E 18 09 00 06 01 00 15 07 9A 99 99 3E 18 09
     00 06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(92,93,(.5*sin(.196*time()))+.5);
+    v0 = .017453*lerp(92,93,(.5*sin(.196*time()))+.5);
     v1 = frac(float2(-.3*cos(v0),-.3*sin(v0))*time());
     return v1;
 
@@ -23668,13 +23668,13 @@ dynamicParams entries in materials/models/items/storm_spirit/storm_spring_head/s
     g_flDetailBlendFactor
     07 00 00 40 40 07 00 00 80 40 07 00 00 00 3F 07 14 AE 3D 41 06 1B 00 15 06 00 00 15 07 00 00 00
     3F 13 06 08 00 00
-    return lerp(3,4,(.5*sin(11.85*time()))+.5);
+    return lerp(3,4,(.5*sin(11.855*time()))+.5);
 
     g_vDetailTexCoordOffset
     07 98 F9 8E 3C 07 00 00 B8 42 07 00 00 BA 42 07 00 00 00 3F 07 39 B4 48 3E 06 1B 00 15 06 00 00
     15 07 00 00 00 3F 13 06 08 00 15 08 00 07 9A 99 99 3E 18 09 00 06 01 00 15 07 9A 99 99 3E 18 09
     00 06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(92,93,(.5*sin(.196*time()))+.5);
+    v0 = .017453*lerp(92,93,(.5*sin(.196*time()))+.5);
     v1 = frac(float2(-.3*cos(v0),-.3*sin(v0))*time());
     return v1;
 
@@ -23695,7 +23695,7 @@ dynamicParams entries in materials/models/items/storm_spirit/storm_ti8_immortal_
     07 98 F9 8E 3C 07 00 00 B8 42 07 00 00 BA 42 07 00 00 00 3F 07 39 B4 48 3E 06 1B 00 15 06 00 00
     15 07 00 00 00 3F 13 06 08 00 15 08 00 07 9A 99 99 3E 18 09 00 06 01 00 15 07 9A 99 99 3E 18 09
     00 06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(92,93,(.5*sin(.196*time()))+.5);
+    v0 = .017453*lerp(92,93,(.5*sin(.196*time()))+.5);
     v1 = frac(float2(-.3*cos(v0),-.3*sin(v0))*time());
     return v1;
 
@@ -23711,7 +23711,7 @@ dynamicParams entries in materials/models/items/storm_spirit/storm_ti8_immortal_
     07 98 F9 8E 3C 07 00 00 B8 42 07 00 00 BA 42 07 00 00 00 3F 07 39 B4 48 3E 06 1B 00 15 06 00 00
     15 07 00 00 00 3F 13 06 08 00 15 08 00 07 9A 99 99 3E 18 09 00 06 01 00 15 07 9A 99 99 3E 18 09
     00 06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(92,93,(.5*sin(.196*time()))+.5);
+    v0 = .017453*lerp(92,93,(.5*sin(.196*time()))+.5);
     v1 = frac(float2(-.3*cos(v0),-.3*sin(v0))*time());
     return v1;
 
@@ -23721,13 +23721,13 @@ dynamicParams entries in materials/models/items/storm_spirit/thunderbraid_head/t
     g_flDetailBlendFactor
     07 00 00 40 40 07 00 00 80 40 07 00 00 00 3F 07 14 AE 3D 41 06 1B 00 15 06 00 00 15 07 00 00 00
     3F 13 06 08 00 00
-    return lerp(3,4,(.5*sin(11.85*time()))+.5);
+    return lerp(3,4,(.5*sin(11.855*time()))+.5);
 
     g_vDetailTexCoordOffset
     07 98 F9 8E 3C 07 00 00 B8 42 07 00 00 BA 42 07 00 00 00 3F 07 39 B4 48 3E 06 1B 00 15 06 00 00
     15 07 00 00 00 3F 13 06 08 00 15 08 00 07 9A 99 99 3E 18 09 00 06 01 00 15 07 9A 99 99 3E 18 09
     00 06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(92,93,(.5*sin(.196*time()))+.5);
+    v0 = .017453*lerp(92,93,(.5*sin(.196*time()))+.5);
     v1 = frac(float2(-.3*cos(v0),-.3*sin(v0))*time());
     return v1;
 
@@ -23742,13 +23742,13 @@ dynamicParams entries in materials/models/items/storm_spirit/ti9_cache_storm_gen
     g_flDetailBlendFactor
     07 00 00 40 40 07 00 00 80 40 07 00 00 00 3F 07 14 AE 3D 41 06 1B 00 15 06 00 00 15 07 00 00 00
     3F 13 06 08 00 00
-    return lerp(3,4,(.5*sin(11.85*time()))+.5);
+    return lerp(3,4,(.5*sin(11.855*time()))+.5);
 
     g_vDetailTexCoordOffset
     07 98 F9 8E 3C 07 00 00 B8 42 07 00 00 BA 42 07 00 00 00 3F 07 39 B4 48 3E 06 1B 00 15 06 00 00
     15 07 00 00 00 3F 13 06 08 00 15 08 00 07 9A 99 99 3E 18 09 00 06 01 00 15 07 9A 99 99 3E 18 09
     00 06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(92,93,(.5*sin(.196*time()))+.5);
+    v0 = .017453*lerp(92,93,(.5*sin(.196*time()))+.5);
     v1 = frac(float2(-.3*cos(v0),-.3*sin(v0))*time());
     return v1;
 
@@ -23763,13 +23763,13 @@ dynamicParams entries in materials/models/items/storm_spirit/ti9_cache_storm_gen
     g_flDetailBlendFactor
     07 00 00 40 40 07 00 00 80 40 07 00 00 00 3F 07 14 AE 3D 41 06 1B 00 15 06 00 00 15 07 00 00 00
     3F 13 06 08 00 00
-    return lerp(3,4,(.5*sin(11.85*time()))+.5);
+    return lerp(3,4,(.5*sin(11.855*time()))+.5);
 
     g_vDetailTexCoordOffset
     07 98 F9 8E 3C 07 00 00 B8 42 07 00 00 BA 42 07 00 00 00 3F 07 39 B4 48 3E 06 1B 00 15 06 00 00
     15 07 00 00 00 3F 13 06 08 00 15 08 00 07 9A 99 99 3E 18 09 00 06 01 00 15 07 9A 99 99 3E 18 09
     00 06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(92,93,(.5*sin(.196*time()))+.5);
+    v0 = .017453*lerp(92,93,(.5*sin(.196*time()))+.5);
     v1 = frac(float2(-.3*cos(v0),-.3*sin(v0))*time());
     return v1;
 
@@ -23784,7 +23784,7 @@ dynamicParams entries in materials/models/items/storm_spirit/ti9_cache_storm_gen
     g_flDetailBlendFactor
     07 00 00 40 40 07 00 00 80 40 07 00 00 00 3F 07 14 AE 3D 41 06 1B 00 15 06 00 00 15 07 00 00 00
     3F 13 06 08 00 00
-    return lerp(3,4,(.5*sin(11.85*time()))+.5);
+    return lerp(3,4,(.5*sin(11.855*time()))+.5);
 
     g_flDetailTexCoordRotation
     07 00 00 B8 42 07 00 00 BA 42 07 00 00 00 3F 07 39 B4 48 3E 06 1B 00 15 06 00 00 15 07 00 00 00
@@ -23795,7 +23795,7 @@ dynamicParams entries in materials/models/items/storm_spirit/ti9_cache_storm_gen
     07 98 F9 8E 3C 07 00 00 B8 42 07 00 00 BA 42 07 00 00 00 3F 07 39 B4 48 3E 06 1B 00 15 06 00 00
     15 07 00 00 00 3F 13 06 08 00 15 08 00 07 9A 99 99 3E 18 09 00 06 01 00 15 07 9A 99 99 3E 18 09
     00 06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(92,93,(.5*sin(.196*time()))+.5);
+    v0 = .017453*lerp(92,93,(.5*sin(.196*time()))+.5);
     v1 = frac(float2(-.3*cos(v0),-.3*sin(v0))*time());
     return v1;
 
@@ -23805,7 +23805,7 @@ dynamicParams entries in materials/models/items/storm_spirit/tormenta_armor/torm
     g_flDetailBlendFactor
     07 00 00 40 40 07 00 00 80 40 07 00 00 00 3F 07 14 AE 3D 41 06 1B 00 15 06 00 00 15 07 00 00 00
     3F 13 06 08 00 00
-    return lerp(3,4,(.5*sin(11.85*time()))+.5);
+    return lerp(3,4,(.5*sin(11.855*time()))+.5);
 
     g_flDetailTexCoordRotation
     07 00 00 B8 42 07 00 00 BA 42 07 00 00 00 3F 07 39 B4 48 3E 06 1B 00 15 06 00 00 15 07 00 00 00
@@ -23816,7 +23816,7 @@ dynamicParams entries in materials/models/items/storm_spirit/tormenta_armor/torm
     07 98 F9 8E 3C 07 00 00 B8 42 07 00 00 BA 42 07 00 00 00 3F 07 39 B4 48 3E 06 1B 00 15 06 00 00
     15 07 00 00 00 3F 13 06 08 00 15 08 00 07 9A 99 99 3E 18 09 00 06 01 00 15 07 9A 99 99 3E 18 09
     00 06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(92,93,(.5*sin(.196*time()))+.5);
+    v0 = .017453*lerp(92,93,(.5*sin(.196*time()))+.5);
     v1 = frac(float2(-.3*cos(v0),-.3*sin(v0))*time());
     return v1;
 
@@ -23826,7 +23826,7 @@ dynamicParams entries in materials/models/items/storm_spirit/tormenta_arms/torme
     g_flDetailBlendFactor
     07 00 00 40 40 07 00 00 80 40 07 00 00 00 3F 07 14 AE 3D 41 06 1B 00 15 06 00 00 15 07 00 00 00
     3F 13 06 08 00 00
-    return lerp(3,4,(.5*sin(11.85*time()))+.5);
+    return lerp(3,4,(.5*sin(11.855*time()))+.5);
 
     g_flDetailTexCoordRotation
     07 00 00 B8 42 07 00 00 BA 42 07 00 00 00 3F 07 39 B4 48 3E 06 1B 00 15 06 00 00 15 07 00 00 00
@@ -23837,7 +23837,7 @@ dynamicParams entries in materials/models/items/storm_spirit/tormenta_arms/torme
     07 98 F9 8E 3C 07 00 00 B8 42 07 00 00 BA 42 07 00 00 00 3F 07 39 B4 48 3E 06 1B 00 15 06 00 00
     15 07 00 00 00 3F 13 06 08 00 15 08 00 07 9A 99 99 3E 18 09 00 06 01 00 15 07 9A 99 99 3E 18 09
     00 06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(92,93,(.5*sin(.196*time()))+.5);
+    v0 = .017453*lerp(92,93,(.5*sin(.196*time()))+.5);
     v1 = frac(float2(-.3*cos(v0),-.3*sin(v0))*time());
     return v1;
 
@@ -23847,13 +23847,13 @@ dynamicParams entries in materials/models/items/storm_spirit/tormenta_head/torme
     g_flDetailBlendFactor
     07 00 00 40 40 07 00 00 80 40 07 00 00 00 3F 07 14 AE 3D 41 06 1B 00 15 06 00 00 15 07 00 00 00
     3F 13 06 08 00 00
-    return lerp(3,4,(.5*sin(11.85*time()))+.5);
+    return lerp(3,4,(.5*sin(11.855*time()))+.5);
 
     g_vDetailTexCoordOffset
     07 98 F9 8E 3C 07 00 00 B8 42 07 00 00 BA 42 07 00 00 00 3F 07 39 B4 48 3E 06 1B 00 15 06 00 00
     15 07 00 00 00 3F 13 06 08 00 15 08 00 07 9A 99 99 3E 18 09 00 06 01 00 15 07 9A 99 99 3E 18 09
     00 06 00 00 15 06 1A 00 06 1B 00 15 06 03 00 08 01 09 01 00
-    v0 = .01745*lerp(92,93,(.5*sin(.196*time()))+.5);
+    v0 = .017453*lerp(92,93,(.5*sin(.196*time()))+.5);
     v1 = frac(float2(-.3*cos(v0),-.3*sin(v0))*time());
     return v1;
 
@@ -28140,7 +28140,7 @@ dynamicParams entries in materials/models/items/zeus/thundergods_arcana/zeus_arc
     g_flMaterialCloakFactor
     07 CD CC 8C 3E 07 48 E1 BA 3E 07 00 00 00 3F 07 62 10 C9 41 06 1B 00 15 06 00 00 15 07 00 00 00
     3F 13 06 08 00 00
-    return lerp(.275,.365,(.5*sin(25.13*time()))+.5);
+    return lerp(.275,.365,(.5*sin(25.133*time()))+.5);
 
     g_vDetailTexCoordOffset
     07 AC 1C 9A 3E 07 BA 49 CC 3E 06 1A 00 06 1B 00 15 06 03 00 00
@@ -28261,7 +28261,7 @@ dynamicParams entries in materials/models/particle/statue_override_default.vmat_
     g_flMaterialCloakFactor
     07 CD CC 8C 3E 07 48 E1 BA 3E 07 00 00 00 3F 07 62 10 C9 41 06 1B 00 15 06 00 00 15 07 00 00 00
     3F 13 06 08 00 00
-    return lerp(.275,.365,(.5*sin(25.13*time()))+.5);
+    return lerp(.275,.365,(.5*sin(25.133*time()))+.5);
 
     g_vDetailTexCoordOffset
     07 AC 1C 9A 3E 07 BA 49 CC 3E 06 1A 00 06 1B 00 15 06 03 00 00

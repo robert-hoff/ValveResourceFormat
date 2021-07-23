@@ -1,4 +1,3 @@
-
 dynamicParams entries in materials/choreo/refuge/monitor_refuge_a_call.vmat_c (KVObject)
 
     g_vScanlineTextureOffset
@@ -4129,7 +4128,7 @@ dynamicParams entries in materials/particle/fluids/caustic_foam3.vmat_c (KVObjec
     g_vTexCoordOffset
     06 1B 00 07 80 82 0B 3C 15 06 03 00 06 1B 00 07 4E 8B 0B 3C 15 06 03 00 06 1B 00 07 93 87 0B 3C
     15 06 03 00 06 19 00 00
-    return float3(frac(time()*.008515),frac(time()*.008517),frac(time()*.008516));
+    return float3(frac(time()*.008515),frac(time()*.0085171),frac(time()*.00851621));
 
     g_flEmissiveBrightness
     07 00 00 40 40 06 1B 00 07 66 66 E6 3F 15 06 00 00 06 14 00 07 6D E7 33 40 15 13 00
@@ -4141,17 +4140,17 @@ dynamicParams entries in materials/particle/fluids/combine_shield_mounted_gun_pl
     g_flEmissiveBrightness
     07 CD CC 4C 40 07 00 00 0C 42 19 CC 85 44 96 15 06 00 00 15 07 00 00 80 3F 18 07 8D 57 04 43 19
     CC 85 44 96 15 06 00 00 15 15 07 00 00 40 40 13 00
-    return ((3.2*sin(35*time))*(-1*sin(132.3*time)))+3;
+    return ((3.2*sin(35*time))*(-1*sin(132.342*time)))+3;
 
     g_flNoise
     07 0A D7 A3 3D 07 00 00 6B 43 19 CC 85 44 96 15 06 00 00 15 07 35 5E 01 42 19 CC 85 44 96 15 06
     00 00 15 07 0A D7 A3 3C 13 00
-    return ((.08*sin(235*time))*sin(32.34*time))+.02;
+    return ((.08*sin(235*time))*sin(32.342*time))+.02;
 
     g_flOpacity
     07 CD CC 4C 3D 07 00 00 82 42 19 CC 85 44 96 15 06 00 00 15 07 35 5E 01 42 19 CC 85 44 96 15 06
     00 00 15 07 9A 99 99 3D 13 00
-    return ((.05*sin(65*time))*sin(32.34*time))+.075;
+    return ((.05*sin(65*time))*sin(32.342*time))+.075;
 
 
 dynamicParams entries in materials/particle/fluids/hacking_sphere_fail_plasma.vmat_c (KVObject)
