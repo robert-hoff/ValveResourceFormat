@@ -32,7 +32,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MyValvePak\MyValvePak.csproj" />
-    <ProjectReference Include="..\ValveResourceFormat\ValveResourceFormat.csproj" />
+    <ProjectReference Include="..\MyValveResourceFormat\MyValveResourceFormat.csproj" />
   </ItemGroup>
   <!--
   <ItemGroup>

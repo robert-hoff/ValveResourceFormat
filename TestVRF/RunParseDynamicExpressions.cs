@@ -26,7 +26,8 @@ namespace TestVRF
             // string input_string = example11();
             // string input_string = example12();
             // string input_string = example13();
-            string input_string = example14();
+            // string input_string = example14();
+            string input_string = example15();
 
 
             byte[] databytes = parseString(input_string);
@@ -34,10 +35,22 @@ namespace TestVRF
 
             Debug.WriteLine(result.dynamicExpressionResult);
 
+
+
+            Debug.WriteLine("in position");  
+            Debug.WriteLine(result.errorWhileParsing);
+
         }
 
 
 
+
+
+        static string example15()
+        {
+            return
+            "04 07 00 0F 00 07 00 00 80 3F 02 14 00 07 00 00 00 00";
+        }
 
 
         /*

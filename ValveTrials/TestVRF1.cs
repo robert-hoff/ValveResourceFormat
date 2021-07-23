@@ -1,4 +1,4 @@
-﻿using SteamDatabase.ValvePak;
+using SteamDatabase.ValvePak;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using ValveResourceFormat;
-using ValveResourceFormat.IO;
-using ValveResourceFormat.ResourceTypes;
+using MyValveResourceFormat;
+using MyValveResourceFormat.IO;
+using MyValveResourceFormat.ResourceTypes;
 
 namespace ValveTrials {
 	class TestVRF1 {
@@ -23,7 +23,7 @@ namespace ValveTrials {
 			string huskar_model = "models/items/huskar/armor_of_reckless_vigor_weapon/armor_of_reckless_vigor_weapon.vmdl_c";
 			PackageEntry model_entry = package.FindEntry(huskar_model);
 
-			var resource = new ValveResourceFormat.Resource {
+			var resource = new Resource {
 				FileName = huskar_filename
 			};
 

@@ -19,14 +19,14 @@ namespace TestVRF
         static void Main()
         {
 
-            // RunParseDynamicExpressions.RunTestData();
+            RunParseDynamicExpressions.RunTestData();
             // CheckExternalVarsHashes.checkNames();
 
             // CollectRenderAttributes.collectAttributes(DOTA2_VPK_ARCHIVE);
             // CollectRenderAttributes.collectAttributes(HLALYX_VPK_ARCHIVE);
 
             // ReadExpressionsFromPackage.DecompileDynamicExpressions(DOTA2_VPK_ARCHIVE);
-            ReadExpressionsFromPackage.DecompileDynamicExpressions(HLALYX_VPK_ARCHIVE);
+            // ReadExpressionsFromPackage.DecompileDynamicExpressions(HLALYX_VPK_ARCHIVE);
 
 
         }
