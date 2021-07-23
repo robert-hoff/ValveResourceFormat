@@ -1,20 +1,19 @@
+using MyValveResourceFormat.Serialization.VfxEval;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
+namespace TestMyVRF {
+    class RunVfxEval {
 
-namespace TestVRF
-{
-    class RunParseDynamicExpressions
-    {
+        public static void RunTrials() {
+            trial1();
+        }
 
-        public static void RunTestData()
-        {
+        static void trial1() {
             // string input_string = example3();
             // string input_string = example4();
             // string input_string = example5();
@@ -27,22 +26,61 @@ namespace TestVRF
             // string input_string = example12();
             // string input_string = example13();
             // string input_string = example14();
-            string input_string = example16();
+            // string input_string = example16();
+            // string input_string = example17();
+            string input_string = example18();
 
 
             byte[] databytes = parseString(input_string);
-            ParseDynamicExpressions result = new ParseDynamicExpressions(databytes);
 
-            Debug.WriteLine(result.dynamicExpressionResult);
+
+            // VfxEval result = new VfxEval(databytes);
+            VfxEval result = new VfxEval(databytes, new string[]{ "time", "myvarvar" });
+
+
+            Debug.WriteLine(result.ErrorWhileParsing);
+            Debug.WriteLine(result.DynamicExpressionResult);
+
 
         }
 
 
 
-        static string example16()
-        {
+
+
+        /*
+         *
+         *      v0 = 1.x;
+         *      v0 = 1.yx;
+         *      v0 = 1.w;
+         *      v0 = 1.wxy;
+         *      v0 = 1.xxzx;
+         *      v0 = 1.zzy;
+         *      v0 = 1.zx;
+         *      v0 = 1.xz;
+         *      v0 = 1.xy;
+         *      v0 = 1.yw;
+         *      v0 = 1.y;
+         *      return 1;
+         *
+         */
+        static string example18() {
             return
-            "07 00 00 20 41 08 00 07 00 00 30 41 08 01 07 00 00 A0 40 08 02 09 01 09 00 0F 04 1F 00 27 00 07 "+
+            "07 00 00 80 3F 1E 00 08 00 07 00 00 80 3F 1E 01 08 00 07 00 00 80 3F 1E FF 08 00 07 00 00 80 3F "+
+            "1E 53 08 00 07 00 00 80 3F 1E 20 08 00 07 00 00 80 3F 1E 5A 08 00 07 00 00 80 3F 1E 02 08 00 07 "+
+            "00 00 80 3F 1E A8 08 00 07 00 00 80 3F 1E 54 08 00 07 00 00 80 3F 1E FD 08 00 07 00 00 80 3F 1E "+
+            "55 08 00 07 00 00 80 3F 00";
+        }
+
+        static string example17() {
+            return
+            "07 CD CC CC 3D 06 03 00 19 C7 7E 6D 0B 15 00";
+        }
+
+
+        static string example16() {
+            return
+            "07 00 00 20 41 08 00 07 00 00 30 41 08 01 07 00 00 A0 40 08 02 09 01 09 00 0F 04 1F 00 27 00 07 " +
             "00 00 80 3F 02 2C 00 09 02 09 00 0F 04 31 00 39 00 07 00 00 C8 42 02 3E 00 07 00 00 48 43 08 03 09 03 00";
         }
 
@@ -50,8 +88,7 @@ namespace TestVRF
 
 
 
-        static string example15()
-        {
+        static string example15() {
             return
             "04 07 00 0F 00 07 00 00 80 3F 02 14 00 07 00 00 00 00";
         }
@@ -63,8 +100,7 @@ namespace TestVRF
          *
          *
          */
-        static string example14()
-        {
+        static string example14() {
             return
             "07 EC 51 B8 3E 07 9A 99 99 3F 06 1B 00 15 06 00 00 15 07 9A 99 19 3F 13 00";
         }
@@ -75,8 +111,7 @@ namespace TestVRF
          *   return sin(exists(myvar)) ? (true ? (false ? 10 : frac(10*10)) : 1) : 1;
          *
          */
-        static string example13()
-        {
+        static string example13() {
             return
             "07 00 00 20 41 19 51 A2 54 EA 15 08 00 1F 51 A2 54 EA 06 00 00 04 1A 00 4F 00 " +
             "07 00 00 80 3F 04 24 00 47 00 07 00 00 00 00 04 2E 00 36 00 07 00 00 20 41 02 " +
@@ -118,8 +153,7 @@ namespace TestVRF
          *
          *
          */
-        static string example11()
-        {
+        static string example11() {
             return
             "19 D6 AA E4 2C 06 00 00 08 00 1F 39 F1 28 39 04 14 00 2E 00 07 00 00 80 3F 07 00 00 00 40 07 00 " +
             "00 40 40 07 00 00 80 40 06 18 00 02 45 00 07 00 00 A0 40 07 00 00 C0 40 07 00 00 E0 40 07 00 00 " +
@@ -142,8 +176,7 @@ namespace TestVRF
          *
          *
          */
-        static string example10()
-        {
+        static string example10() {
             return
             "07 CD CC 4C 3F 07 00 00 80 3F 06 20 00 08 00 07 00 00 80 3F 07 00 00 00 40 06 20 00 08 01 07 00 " +
             "00 00 00 07 00 00 80 3F 06 20 00 08 02 09 02 07 CD CC CC 3D 0F 04 3A 00 3F 00 09 00 02 41 00 09 " +
@@ -157,8 +190,7 @@ namespace TestVRF
          * v1||v2 ? sin(1) : 7
          *
          */
-        static string example9()
-        {
+        static string example9() {
             return "07 00 00 20 41 07 00 00 20 41 13 08 00 19 38 AE 48 52 04 17 00 1F 00 07 00 00 80 3F 02 24 00 19 " +
                 "31 FB FD 02 04 29 00 34 00 07 00 00 80 3F 06 00 00 02 39 00 07 00 00 E0 40 00";
         }
@@ -183,8 +215,7 @@ namespace TestVRF
          *
          *
          */
-        static string example8()
-        {
+        static string example8() {
             //       0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F 10 11 12 13 14 15 16 17 18 19 1A 1B 1C 1D 1E 1F ..
             return "19 38 AE 48 52 04 12 00 0A 00 07 00 00 00 00 02 17 00 19 31 FB FD 02 04 1C 00 27 00 07 00 00 20 " +
                 "41 06 03 00 02 32 00 07 00 00 C8 42 07 00 00 C8 42 15 00";
@@ -195,15 +226,13 @@ namespace TestVRF
          * true ? (true ? 1 : 2) : 123
          *
          */
-        static string example7()
-        {
+        static string example7() {
             return "07 00 00 80 3F 04 0A 00 24 00 07 00 00 80 3F 04 14 00 1C 00 07 00 00 80 3F " +
                 "02 21 00 07 00 00 00 40 02 29 00 07 00 00 F6 42 00";
         }
 
 
-        static string example6()
-        {
+        static string example6() {
             return "07 00 00 80 3F 07 00 00 80 40 13 08 00 07 00 00 20 41 07 00 00 20 42 13 00";
         }
 
@@ -216,8 +245,7 @@ namespace TestVRF
          *      frac(a)
          *
          */
-        static string example5()
-        {
+        static string example5() {
             return "07 00 00 80 3F 06 22 00 08 00 07 00 00 80 3F 06 11 00 08 00 07 00 00 80 3F 06 24 00 08 00 09 00 06 03 00 00";
         }
 
@@ -226,15 +254,13 @@ namespace TestVRF
          * true ? 2 : 3
          *
          */
-        static string example4()
-        {
+        static string example4() {
             //       0  1  2  3  4  5  6  7  8  9  A  B  C  D  E  F 10 11 12 13 14 15 16 17
             return "07 00 00 80 3F 04 0A 00 12 00 07 00 00 00 40 02 17 00 07 00 00 40 40 00";
         }
 
 
-        static string example3()
-        {
+        static string example3() {
             // return "19 CC 85 44 96 07 CD CC 4C 3E 15 06 01 00 07 9A 99 99 3E 15 06 02 00 06 00 00 07 00 00 80 3F 13 07 CD CC 4C 3F 15 00";
             // return "19 CC 85 44 96 07 CD CC 8C 3F 15 06 00 00 07 33 33 33 3F 15 06 03 00 18 07 00 00 00 00 06 1A 00 00";
             // return "07 00 00 A0 40 07 00 00 20 41 13 07 00 00 40 40 15 00";
@@ -251,8 +277,7 @@ namespace TestVRF
         }
 
 
-        static string example2()
-        {
+        static string example2() {
             return
             "07 CD CC 4C 3F 07 00 00 80 3F 06 20 00 08 00 07 00 00 80 3F 07 00 00 00 40 06 20 00 08 01 07 00 " +
             "00 00 00 07 00 00 80 3F 06 20 00 08 02 09 02 07 CD CC CC 3D 0F 04 3A 00 3F 00 09 00 02 41 00 09 " +
@@ -262,20 +287,17 @@ namespace TestVRF
 
 
         // rand(1,2)
-        static string example1()
-        {
+        static string example1() {
             return "07 00 00 80 3F 07 00 00 00 40 06 20 00 00";
         }
 
 
 
 
-        static byte[] parseString(String bytestring)
-        {
+        static byte[] parseString(String bytestring) {
             string[] tokens = bytestring.Split(" ");
             byte[] databytes = new byte[tokens.Length];
-            for (int i = 0; i < tokens.Length; i++)
-            {
+            for (int i = 0; i < tokens.Length; i++) {
                 databytes[i] = Convert.ToByte(tokens[i], 16);
             }
             return databytes;
@@ -283,12 +305,6 @@ namespace TestVRF
 
 
 
+
     }
-
-
 }
-
-
-
-
-

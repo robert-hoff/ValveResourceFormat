@@ -3,6 +3,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace MyValveResourceFormat.Serialization.KeyValues {
@@ -108,6 +109,11 @@ namespace MyValveResourceFormat.Serialization.KeyValues {
                 }
 
                 if (value.Type == KVType.BINARY_BLOB && typeof(T) == typeof(byte)) {
+
+
+                    // Debug.WriteLine(value.Value);
+                    Debug.WriteLine("##############################");
+
                     return (T[])value.Value;
                 }
 

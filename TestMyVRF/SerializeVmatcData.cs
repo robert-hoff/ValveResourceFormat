@@ -1,4 +1,5 @@
 using MyValveResourceFormat;
+using MyValveResourceFormat.Blocks;
 using SteamDatabase.ValvePak;
 using System;
 using System.Collections.Generic;
@@ -37,7 +38,9 @@ namespace TestMyVRF {
             Resource resource = new MyValveResourceFormat.Resource();
             resource.Read(new MemoryStream(databytes));
 
-            
+            ResourceData datablock = (ResourceData)resource.GetBlockByType(BlockType.DATA);
+
+            Debug.WriteLine(datablock);
 
 
 

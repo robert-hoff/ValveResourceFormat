@@ -98,6 +98,10 @@ namespace MyValveResourceFormat.Serialization.KeyValues {
                     var byteArray = (byte[])Value;
                     var count = 0;
 
+                    // parse dynamic expression here?
+                    
+
+
                     writer.WriteLine();
                     writer.WriteLine("#[");
                     writer.Indent++;

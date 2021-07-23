@@ -8,6 +8,8 @@ using ValveKeyValue;
 using MyValveResourceFormat.Blocks;
 using MyValveResourceFormat.Blocks.ResourceEditInfoStructs;
 using MyValveResourceFormat.Serialization;
+using MyValveResourceFormat.Serialization.NTRO;
+using System.Diagnostics;
 
 namespace MyValveResourceFormat.ResourceTypes {
     public class Material : KeyValuesOrNTRO {
@@ -48,10 +50,38 @@ namespace MyValveResourceFormat.ResourceTypes {
                 TextureParams[kvp.GetProperty<string>("m_name")] = kvp.GetProperty<string>("m_pValue");
             }
 
+
+            // R: update the material exporter here
+
+
+
+
+
             // TODO: These 3 parameters
             //var textureAttributes = (NTROArray)Output["m_textureAttributes"];
-            //var dynamicParams = (NTROArray)Output["m_dynamicParams"];
-            //var dynamicTextureParams = (NTROArray)Output["m_dynamicTextureParams"];
+            // var dynamicParams = (NTROArray)Output["m_dynamicParams"];
+            // var dynamicTextureParams = (NTROArray)Output["m_dynamicTextureParams"];
+
+
+            // R: something like this
+
+            foreach (var kvp in Data.GetArray("m_dynamicParams")) {
+                // TextureParams[kvp.GetProperty<string>("m_name")] = kvp.GetProperty<string>("m_pValue");
+
+
+                string dynamicParamsName = kvp.GetProperty<string>("m_name");
+                byte[] dynamicParamsBytes = kvp.GetProperty<byte[]>("m_value");
+                // Debug.WriteLine(dynamicParamsBytes.Length);
+
+
+
+
+                // byte[] databytes = kvp.GetProperty<>
+                // Debug.WriteLine(kvp);
+
+            }
+
+
 
             foreach (var kvp in Data.GetArray("m_intAttributes")) {
                 IntAttributes[kvp.GetProperty<string>("m_name")] = kvp.GetIntegerProperty("m_nValue");
