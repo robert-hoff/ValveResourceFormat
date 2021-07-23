@@ -6,8 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ValveResourceFormat;
 
-namespace TestVRF
-{
+namespace TestVRFDev {
     class MyProgram3
     {
         static void Mainz(string[] args)

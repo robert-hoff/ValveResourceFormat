@@ -12,8 +12,7 @@ using ValveResourceFormat.Blocks;
 using ValveResourceFormat.IO;
 using ValveResourceFormat.ResourceTypes;
 
-namespace TestVRF
-{
+namespace TestVRFDev {
     class ReadingVmdlFile1
     {
 

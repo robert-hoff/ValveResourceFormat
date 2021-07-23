@@ -12,8 +12,7 @@ using ValveResourceFormat;
 using ValveResourceFormat.ResourceTypes;
 
 
-namespace TestVRF
-{
+namespace TestVRFDev {
     class MyProgram2
     {
 

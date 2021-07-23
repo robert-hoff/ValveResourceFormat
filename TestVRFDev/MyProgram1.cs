@@ -2,8 +2,7 @@ using System;
 using System.Diagnostics;
 
 [assembly: CLSCompliant(false)]
-namespace TestVRF
-{
+namespace TestVRFDev {
     class MyProgram1
     {
 

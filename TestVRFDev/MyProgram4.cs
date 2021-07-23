@@ -12,8 +12,7 @@ using SteamDatabase.ValvePak;
 using ValveResourceFormat;
 
 
-namespace TestVRF
-{
+namespace TestVRFDev {
 
 
 

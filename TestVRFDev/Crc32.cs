@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 using System;
 using System.Linq;
 
-namespace TestVRF
-{
+namespace TestVRFDev {
     /// <summary>
     /// A utility class to compute CRC32.
     /// </summary>
