@@ -346,20 +346,39 @@ namespace MyGUI {
 
                 return tab;
             } else if (Types.Viewers.CompiledShader.IsAccepted(magic)) {
+
                 return new Types.Viewers.CompiledShader().Create(vrfGuiContext, input);
             } else if (Types.Viewers.ClosedCaptions.IsAccepted(magic)) {
+
                 return new Types.Viewers.ClosedCaptions().Create(vrfGuiContext, input);
+
             } else if (Types.Viewers.ToolsAssetInfo.IsAccepted(magic)) {
+
                 return new Types.Viewers.ToolsAssetInfo().Create(vrfGuiContext, input);
+
             } else if (Types.Viewers.BinaryKeyValues.IsAccepted(magic)) {
+
                 return new Types.Viewers.BinaryKeyValues().Create(vrfGuiContext, input);
+
             } else if (Types.Viewers.BinaryKeyValues1.IsAccepted(magic)) {
+
                 return new Types.Viewers.BinaryKeyValues1().Create(vrfGuiContext, input);
+
             } else if (Types.Viewers.Resource.IsAccepted(magicResourceVersion)) {
+
+
+
+
 
                 // the file armor_of_reckless_vigor_weapon_vmdl_c has already been
                 // read into the input here, which is 5400 bytes long
+
+                // R: I'm tracing huskar_body.vmat_c, which also ends up here
                 return new Types.Viewers.Resource().Create(vrfGuiContext, input);
+
+
+
+
             } else if (Types.Viewers.Image.IsAccepted(magic)) {
                 return new Types.Viewers.Image().Create(vrfGuiContext, input);
             } else if (Types.Viewers.Audio.IsAccepted(magic, fileName)) {

@@ -11,6 +11,7 @@ using SkiaSharp.Views.Desktop;
 using MyValveResourceFormat;
 using MyValveResourceFormat.Blocks;
 using MyValveResourceFormat.ResourceTypes;
+using System.Diagnostics;
 
 namespace MyGUI.Types.Viewers {
     public class Resource : IViewer {
@@ -216,7 +217,15 @@ namespace MyGUI.Types.Viewers {
                     break;
 
                 case ResourceType.Material:
+
+
+
+                    // R: this stuff seems to be about rendering the material in the viewport
+                    // but where is the place where the data-blocks get populated?
+
                     var materialViewerControl = new GLMaterialViewer();
+
+
                     materialViewerControl.Load += (_, __) => {
                         var material = vrfGuiContext.MaterialLoader.LoadMaterial(resource);
                         var materialRenderer = new MaterialRenderer(material);
@@ -224,16 +233,30 @@ namespace MyGUI.Types.Viewers {
                         materialViewerControl.AddRenderer(materialRenderer);
                     };
 
+
+
                     var materialRendererTab = new TabPage("MATERIAL");
+
+
                     materialRendererTab.Controls.Add(materialViewerControl.Control);
+
+
+                    // R: so even with this disabled, the tabs for the dataentries seem to work
                     resTabs.TabPages.Add(materialRendererTab);
+
+
+
                     break;
+
+
+
                 case ResourceType.PhysicsCollisionMesh:
                     var physRendererTab = new TabPage("PHYSICS");
                     physRendererTab.Controls.Add(new GLModelViewer(vrfGuiContext, (PhysAggregateData)resource.DataBlock).ViewerControl);
                     resTabs.TabPages.Add(physRendererTab);
                     break;
             }
+
 
             foreach (var block in resource.Blocks) {
                 if (block.Type == BlockType.RERL) {
@@ -324,7 +347,12 @@ namespace MyGUI.Types.Viewers {
 
                                 break;
                             default:
+
                                 control.Text = Utils.Utils.NormalizeLineEndings(block.ToString());
+
+                                string dataresult = control.Text;
+                                Debug.WriteLine(dataresult);
+
                                 break;
                         }
                     } else {
