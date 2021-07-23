@@ -117,7 +117,7 @@ namespace MyValveResourceFormat.Serialization.VfxEval
             {
                 var murmur32 = MurmurHash2.Hash(externalVarName.ToLower(), MURMUR2SEED);
                 ExternalVarsReference.TryGetValue(murmur32, out var varName);
-                // always overwrite, because newer additions may use a different case
+                // overwrite existing entries because newer additions may have different case
                 if (varName != null)
                 {
                     ExternalVarsReference.Remove(murmur32);
@@ -147,6 +147,7 @@ namespace MyValveResourceFormat.Serialization.VfxEval
             {
                 DynamicExpressionResult += $"{expression}\n";
             }
+            DynamicExpressionResult = DynamicExpressionResult.Trim();
         }
 
 
@@ -176,9 +177,9 @@ namespace MyValveResourceFormat.Serialization.VfxEval
                             var exp2 = Expressions.Pop();
                             var exp1 = Expressions.Pop();
                             // it's not safe to trim here
-                            // string exp_conditional = $"({trimb2(exp1)} ? {trimb2(exp2)} : {trimb2(exp3)})";
-                            string exp_conditional = $"({exp1} ? {exp2} : {exp3})";
-                            Expressions.Push(exp_conditional);
+                            // string expConditional = $"({trimb2(exp1)} ? {trimb2(exp2)} : {trimb2(exp3)})";
+                            var expConditional = $"({exp1} ? {exp2} : {exp3})";
+                            Expressions.Push(expConditional);
                         }
                         break;
 
@@ -192,8 +193,8 @@ namespace MyValveResourceFormat.Serialization.VfxEval
                         {
                             var exp2 = Expressions.Pop();
                             var exp1 = Expressions.Pop();
-                            var exp_andcondition = $"({exp1} && {exp2})";
-                            Expressions.Push(exp_andcondition);
+                            var expAndConditional = $"({exp1} && {exp2})";
+                            Expressions.Push(expAndConditional);
                         }
                         break;
 
@@ -207,8 +208,8 @@ namespace MyValveResourceFormat.Serialization.VfxEval
                         {
                             var exp2 = Expressions.Pop();
                             var exp1 = Expressions.Pop();
-                            var exp_orcondition = $"({exp1} || {exp2})";
-                            Expressions.Push(exp_orcondition);
+                            var expOrConditional = $"({exp1} || {exp2})";
+                            Expressions.Push(expOrConditional);
                         }
                         break;
 
@@ -221,8 +222,8 @@ namespace MyValveResourceFormat.Serialization.VfxEval
 
             if (op == OPCODE.BRANCH_SEP)
             {
-                var branch_exit = (uint)dataReader.ReadUInt16();
-                OffsetAtBranchExits.Push(branch_exit + 1);
+                var branchExit = (uint)dataReader.ReadUInt16();
+                OffsetAtBranchExits.Push(branchExit + 1);
                 return;
             }
 
@@ -294,33 +295,33 @@ namespace MyValveResourceFormat.Serialization.VfxEval
 
             if (op == OPCODE.FLOAT)
             {
-                var float_val = dataReader.ReadSingle();
-                var float_literal = string.Format("{0:g}", float_val);
+                var floatVal = dataReader.ReadSingle();
+                var floatLiteral = string.Format("{0:g}", floatVal);
                 // if a float leads with "0." remove the 0 (as how Valve likes it)
-                if (float_literal.Length > 1 && float_literal.Substring(0, 2) == "0.")
+                if (floatLiteral.Length > 1 && floatLiteral.Substring(0, 2) == "0.")
                 {
-                    float_literal = float_literal.Substring(1);
+                    floatLiteral = floatLiteral[1..];
                 }
-                Expressions.Push(float_literal);
+                Expressions.Push(floatLiteral);
                 return;
             }
 
             // assignment is always to a local variable, and it terminates the line
             if (op == OPCODE.ASSIGN)
             {
-                byte varId = dataReader.ReadByte();
-                string loc_varname = GetLocalVarName(varId);
-                string exp = Expressions.Pop();
-                string final_expression = $"{loc_varname} = {Trimb(exp)};";
-                DynamicExpressionList.Add(final_expression);
+                var varId = dataReader.ReadByte();
+                var locVarname = GetLocalVarName(varId);
+                var exp = Expressions.Pop();
+                var assignExpression = $"{locVarname} = {Trimb(exp)};";
+                DynamicExpressionList.Add(assignExpression);
                 return;
             }
 
             if (op == OPCODE.LOCALVAR)
             {
                 var varId = dataReader.ReadByte();
-                var loc_varname = GetLocalVarName(varId);
-                Expressions.Push(loc_varname);
+                var locVarname = GetLocalVarName(varId);
+                Expressions.Push(locVarname);
                 return;
             }
 
@@ -356,8 +357,8 @@ namespace MyValveResourceFormat.Serialization.VfxEval
             if (op == OPCODE.EXTVAR)
             {
                 var varId = dataReader.ReadUInt32();
-                var ext_varname = GetExternalVarName(varId);
-                Expressions.Push(ext_varname);
+                var extVarname = GetExternalVarName(varId);
+                Expressions.Push(extVarname);
                 return;
             }
 
@@ -401,7 +402,6 @@ namespace MyValveResourceFormat.Serialization.VfxEval
             ErrorMessage = $"UNKNOWN OPCODE = 0x{(int)op:x2}, offset = {dataReader.BaseStream.Position}";
         }
 
-
         private void ApplyFunction(string funcName, int nrArguments)
         {
             if (nrArguments == 0)
@@ -439,7 +439,6 @@ namespace MyValveResourceFormat.Serialization.VfxEval
             throw new Exception("this cannot happen!");
         }
 
-
         private static string GetSwizzle(byte b)
         {
             string[] axes = { "x", "y", "z", "w" };
@@ -452,7 +451,6 @@ namespace MyValveResourceFormat.Serialization.VfxEval
             return res.Substring(0, i + 1);
         }
 
-
         private static string Trimb(string exp)
         {
             return exp[0] == '(' && exp[^1] == ')' ? exp[1..^1] : exp;
@@ -463,8 +461,8 @@ namespace MyValveResourceFormat.Serialization.VfxEval
         //}
 
 
-        private readonly Dictionary<uint, string> ExternalVariablesPlaceholderNames = new Dictionary<uint, string>();
-        private readonly Dictionary<uint, string> LocalVariableNames = new Dictionary<uint, string>();
+        private readonly Dictionary<uint, string> ExternalVariablesPlaceholderNames = new();
+        private readonly Dictionary<uint, string> LocalVariableNames = new();
 
         // naming external variables EXT, EXT2, EXT3,.. where not found
         private string GetExternalVarName(uint varId)
@@ -490,7 +488,6 @@ namespace MyValveResourceFormat.Serialization.VfxEval
             return varName;
         }
 
-
         // naming local variables v1,v2,v3,..
         private string GetLocalVarName(uint varId)
         {
@@ -503,8 +500,7 @@ namespace MyValveResourceFormat.Serialization.VfxEval
             return varName;
         }
 
-
-        private static readonly Dictionary<uint, string> ExternalVarsReference = new Dictionary<uint, string>();
+        private static readonly Dictionary<uint, string> ExternalVarsReference = new();
         public static void BuildExternalVarsReference()
         {
             // Dota 2
@@ -628,6 +624,4 @@ namespace MyValveResourceFormat.Serialization.VfxEval
             ExternalVarsReference.Add(0x73119842, "$LightColor");
         }
     }
-
 }
-

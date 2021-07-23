@@ -12,8 +12,8 @@ namespace TestMyVRF {
 
 
         public static void RunTrials() {
-            trial1();
-            // trial2();
+            // trial1();
+            trial2();
         }
 
 
@@ -37,13 +37,13 @@ namespace TestMyVRF {
 
 
                 string filename = $"{packageEntry.DirectoryName}/{packageEntry.FileName}.{packageEntry.TypeName}";
-                Debug.WriteLine(filename);
+                //Debug.WriteLine(filename);
 
 
                 ExportFile.Export(filename, resource);
 
                 count++;
-                if (count==1000) {
+                if (count==100000) {
                     break;
                 }
 

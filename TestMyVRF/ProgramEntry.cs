@@ -17,10 +17,10 @@ namespace TestMyVRF {
         static void Main() {
 
 
-            RunVfxEval.RunTrials();
+            // RunVfxEval.RunTrials();
             // RunVfxEval2.RunTrials();
 
-            // ExportVmatcData.RunTrials();
+            ExportVmatcData.RunTrials();
             // SerializeVmatcData.RunTrials();
             // ScanArchiveForEntries.RunTrials();
 

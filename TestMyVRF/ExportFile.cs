@@ -17,7 +17,10 @@ namespace TestMyVRF {
                 res += (char) b;
             }
 
-            // Debug.WriteLine(res);
+            if (res.Contains("@")) {
+             Debug.WriteLine(res);
+            }
+
         }
 
 
