@@ -23,7 +23,7 @@ namespace TestVRF
             // string input_string = example8();
             // string input_string = example9();
             // string input_string = example10();
-            //  string input_string = example11();
+            // string input_string = example11();
             // string input_string = example12();
             // string input_string = example13();
             string input_string = example14();
@@ -91,6 +91,8 @@ namespace TestVRF
 
 
         /*
+         * from
+         * https://developer.valvesoftware.com/wiki/Dota_2_Workshop_Tools/Materials/Dynamic_Material_Expressions
          *
          *  v0 = sin(EXT);
          *  v1 = exists(EXT2) ? float4(1,2,3,4) : float4(5,6,7,8);

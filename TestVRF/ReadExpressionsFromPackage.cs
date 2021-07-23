@@ -64,7 +64,7 @@ namespace TestVRF {
                     ParseDynamicExpressions decompiledDynamicExpression = new ParseDynamicExpressions(databytes);
                     Debug.WriteLine($"    {prop_name}");
 
-                    // showDatabytes(databytes);
+                    showDatabytes(databytes);
 
                     // tab result (for readability)
                     Regex rx = new Regex("^", RegexOptions.Multiline);

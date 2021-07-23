@@ -25,8 +25,8 @@ namespace TestVRF
             // CollectRenderAttributes.collectAttributes(DOTA2_VPK_ARCHIVE);
             // CollectRenderAttributes.collectAttributes(HLALYX_VPK_ARCHIVE);
 
-            ReadExpressionsFromPackage.DecompileDynamicExpressions(DOTA2_VPK_ARCHIVE);
-            // ReadExpressionsFromPackage.DecompileDynamicExpressions(HLALYX_VPK_ARCHIVE);
+            // ReadExpressionsFromPackage.DecompileDynamicExpressions(DOTA2_VPK_ARCHIVE);
+            ReadExpressionsFromPackage.DecompileDynamicExpressions(HLALYX_VPK_ARCHIVE);
 
 
         }

@@ -284,7 +284,7 @@ namespace TestVRF
             if (op == OPCODE.FLOAT)
             {
                 float float_val = datareader.nextFloat();
-                string float_literal = string.Format("{0:g4}", float_val);
+                string float_literal = string.Format("{0:g}", float_val);
                 // if a float leads with "0." remove the 0 (as how Valve likes it)
                 if (float_literal.Length > 1 && float_literal.Substring(0, 2) == "0.")
                 {
