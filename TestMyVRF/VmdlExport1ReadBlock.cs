@@ -15,7 +15,7 @@ using MyValveResourceFormat.ResourceTypes;
 namespace TestMyVRF {
     class VmdlExport1ReadBlock {
 
-        static void Mainz() {
+        public static void RunTrials() {
 
             // tryStuff();
             trial4ReadDataBlock();

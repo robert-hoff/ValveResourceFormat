@@ -6,23 +6,17 @@ using MyValveResourceFormat;
 using MyValveResourceFormat.Blocks;
 using MyValveResourceFormat.ResourceTypes;
 
+
 namespace TestMyVRF {
+    class VmdlExport0NeedsTidy {
 
 
-
-
-    class Program {
-
-
-
-
-        static void Mainz() {
-
-
-            // trial2();
-            // trial1();
+        public static void RunTrials() {
 
         }
+
+
+
 
 
 
@@ -34,9 +28,6 @@ namespace TestMyVRF {
         static string ZOMBIE_CLASSIC = "models/creatures/zombie_classic/zombie_classic.vmdl_c";
 
         static string EXPORT_DIR = @"C:\Users\R\Desktop\temttemp";
-
-
-
 
 
         public static void trial1() {
@@ -72,16 +63,12 @@ namespace TestMyVRF {
 
 
 
+
     }
 
 
 
 
+
+
 }
-
-
-
-
-
-
-

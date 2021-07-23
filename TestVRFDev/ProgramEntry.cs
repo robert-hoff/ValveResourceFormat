@@ -9,7 +9,9 @@ namespace TestVRFDev {
 
         static void Main() {
 
-            ReadingVmdlFile2.RunTrials();
+            // ReadingVmdlFile2.RunTrials();
+
+
 
         }
 
