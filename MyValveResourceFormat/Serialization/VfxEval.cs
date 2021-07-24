@@ -1,7 +1,7 @@
-using MyValveResourceFormat.ThirdParty;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using MyValveResourceFormat.ThirdParty;
 
 namespace MyValveResourceFormat.Serialization.VfxEval
 {
@@ -386,7 +386,7 @@ namespace MyValveResourceFormat.Serialization.VfxEval
                     return;
                 }
                 var finalExp = Expressions.Pop();
-                while (finalExp.Length > 2 && finalExp[0] == '(' && finalExp[finalExp.Length - 1] == ')')
+                while (finalExp.Length > 2 && finalExp[0] == '(' && finalExp[^1] == ')')
                 {
                     finalExp = Trimb(finalExp);
                 }
@@ -407,19 +407,19 @@ namespace MyValveResourceFormat.Serialization.VfxEval
                 Expressions.Push($"{funcName}()");
                 return;
             }
-            string exp1 = Expressions.Pop();
+            var exp1 = Expressions.Pop();
             if (nrArguments == 1)
             {
                 Expressions.Push($"{funcName}({Trimb(exp1)})");
                 return;
             }
-            string exp2 = Expressions.Pop();
+            var exp2 = Expressions.Pop();
             if (nrArguments == 2)
             {
                 Expressions.Push($"{funcName}({Trimb(exp2)},{Trimb(exp1)})");
                 return;
             }
-            string exp3 = Expressions.Pop();
+            var exp3 = Expressions.Pop();
             if (nrArguments == 3)
             {
                 // trim or not to trim ...
@@ -427,7 +427,7 @@ namespace MyValveResourceFormat.Serialization.VfxEval
                 // expressions.Push($"{funcName}({exp3},{exp2},{exp1})");
                 return;
             }
-            string exp4 = Expressions.Pop();
+            var exp4 = Expressions.Pop();
             if (nrArguments == 4)
             {
                 Expressions.Push($"{funcName}({Trimb(exp4)},{Trimb(exp3)},{Trimb(exp2)},{Trimb(exp1)})");
@@ -440,13 +440,13 @@ namespace MyValveResourceFormat.Serialization.VfxEval
         private static string GetSwizzle(byte b)
         {
             string[] axes = { "x", "y", "z", "w" };
-            var res = axes[b & 3] + axes[(b >> 2) & 3] + axes[(b >> 4) & 3] + axes[(b >> 6) & 3];
+            var swizzle = axes[b & 3] + axes[(b >> 2) & 3] + axes[(b >> 4) & 3] + axes[(b >> 6) & 3];
             var i = 3;
-            while (i > 0 && res[i - 1] == res[i])
+            while (i > 0 && swizzle[i - 1] == swizzle[i])
             {
                 i--;
             }
-            return res.Substring(0, i + 1);
+            return swizzle.Substring(0, i + 1);
         }
 
         private static string Trimb(string exp)
@@ -465,12 +465,11 @@ namespace MyValveResourceFormat.Serialization.VfxEval
         // naming external variables EXT, EXT2, EXT3,.. where not found
         private string GetExternalVarName(uint varId)
         {
-            ExternalVarsReference.TryGetValue(varId, out string varKnownName);
+            ExternalVarsReference.TryGetValue(varId, out var varKnownName);
             if (varKnownName != null)
             {
                 return varKnownName;
             }
-
             ExternalVariablesPlaceholderNames.TryGetValue(varId, out var varName);
             if (varName == null)
             {

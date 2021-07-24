@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +11,7 @@ namespace ValveTrials {
 			internal static void Main() {
 				Application.EnableVisualStyles();
 				Application.SetCompatibleTextRenderingDefault(false);
-				Form1 window = new Form1();
+				Form1 window = new();
 				Application.Run(window);
 			}
 

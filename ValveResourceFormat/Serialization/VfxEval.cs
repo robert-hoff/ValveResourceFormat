@@ -131,7 +131,8 @@ namespace ValveResourceFormat.Serialization.VfxEval
                 try
                 {
                     ProcessOps((OPCODE)dataReader.ReadByte(), dataReader);
-                } catch (System.ArgumentOutOfRangeException)
+                }
+                catch (System.ArgumentOutOfRangeException)
                 {
                     ErrorWhileParsing = true;
                     ErrorMessage = "Parsing error - reader exceeded input";
@@ -386,7 +387,7 @@ namespace ValveResourceFormat.Serialization.VfxEval
                     return;
                 }
                 var finalExp = Expressions.Pop();
-                while (finalExp.Length > 2 && finalExp[0] == '(' && finalExp[finalExp.Length - 1] == ')')
+                while (finalExp.Length > 2 && finalExp[0] == '(' && finalExp[^1] == ')')
                 {
                     finalExp = Trimb(finalExp);
                 }
@@ -407,19 +408,19 @@ namespace ValveResourceFormat.Serialization.VfxEval
                 Expressions.Push($"{funcName}()");
                 return;
             }
-            string exp1 = Expressions.Pop();
+            var exp1 = Expressions.Pop();
             if (nrArguments == 1)
             {
                 Expressions.Push($"{funcName}({Trimb(exp1)})");
                 return;
             }
-            string exp2 = Expressions.Pop();
+            var exp2 = Expressions.Pop();
             if (nrArguments == 2)
             {
                 Expressions.Push($"{funcName}({Trimb(exp2)},{Trimb(exp1)})");
                 return;
             }
-            string exp3 = Expressions.Pop();
+            var exp3 = Expressions.Pop();
             if (nrArguments == 3)
             {
                 // trim or not to trim ...
@@ -427,7 +428,7 @@ namespace ValveResourceFormat.Serialization.VfxEval
                 // expressions.Push($"{funcName}({exp3},{exp2},{exp1})");
                 return;
             }
-            string exp4 = Expressions.Pop();
+            var exp4 = Expressions.Pop();
             if (nrArguments == 4)
             {
                 Expressions.Push($"{funcName}({Trimb(exp4)},{Trimb(exp3)},{Trimb(exp2)},{Trimb(exp1)})");
@@ -440,13 +441,13 @@ namespace ValveResourceFormat.Serialization.VfxEval
         private static string GetSwizzle(byte b)
         {
             string[] axes = { "x", "y", "z", "w" };
-            var res = axes[b & 3] + axes[(b >> 2) & 3] + axes[(b >> 4) & 3] + axes[(b >> 6) & 3];
+            var swizzle = axes[b & 3] + axes[(b >> 2) & 3] + axes[(b >> 4) & 3] + axes[(b >> 6) & 3];
             var i = 3;
-            while (i > 0 && res[i - 1] == res[i])
+            while (i > 0 && swizzle[i - 1] == swizzle[i])
             {
                 i--;
             }
-            return res.Substring(0, i + 1);
+            return swizzle.Substring(0, i + 1);
         }
 
         private static string Trimb(string exp)
@@ -465,7 +466,7 @@ namespace ValveResourceFormat.Serialization.VfxEval
         // naming external variables EXT, EXT2, EXT3,.. where not found
         private string GetExternalVarName(uint varId)
         {
-            ExternalVarsReference.TryGetValue(varId, out string varKnownName);
+            ExternalVarsReference.TryGetValue(varId, out var varKnownName);
             if (varKnownName != null)
             {
                 return varKnownName;
@@ -477,7 +478,8 @@ namespace ValveResourceFormat.Serialization.VfxEval
                 if (ExternalVariablesPlaceholderNames.Count == 0)
                 {
                     varName = "EXT";
-                } else
+                }
+                else
                 {
                     varName = string.Format("EXT{0}", ExternalVariablesPlaceholderNames.Count + 1);
                 }

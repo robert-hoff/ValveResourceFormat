@@ -26,7 +26,7 @@ namespace ValveResourceFormat.ResourceTypes
         public Dictionary<string, string> StringAttributes { get; } = new Dictionary<string, string>();
         public Dictionary<string, string> DynamicExpressions { get; } = new Dictionary<string, string>();
 
-        private static readonly Dictionary<string, string> ConvertNames = new Dictionary<string, string>();
+        private static readonly Dictionary<string, string> ConvertNames = new();
 
         public override void Read(BinaryReader reader, Resource resource)
         {
@@ -86,20 +86,20 @@ namespace ValveResourceFormat.ResourceTypes
                 ConvertNames.Add("g_tVignette", "TextureVignette");
             }
 
-            // textureAttributes is zero-length for all vmat files in Dota2 and HL archives
-            string[] textureAttributes = Data.GetArray<string>("m_textureAttributes");
+            // This is zero-length for all vmat files in Dota2 and HL archives
+            var textureAttributes = Data.GetArray<string>("m_textureAttributes");
             if (textureAttributes.Length > 0)
-            {
+{
                 Console.WriteLine("unexpected textureAttributes length");
             }
 
-            string[] renderAttributesUsed = Data.GetArray<string>("m_renderAttributesUsed");
+            var renderAttributesUsed = Data.GetArray<string>("m_renderAttributesUsed");
 
             foreach (var kvp in Data.GetArray("m_dynamicParams"))
             {
-                string dynamicParamName = kvp.GetProperty<string>("m_name");
-                byte[] dynamicParamBytes = kvp.GetProperty<byte[]>("m_value");
-                VfxEval vfxEval = new VfxEval(dynamicParamBytes, renderAttributesUsed);
+                var dynamicParamName = kvp.GetProperty<string>("m_name");
+                var dynamicParamBytes = kvp.GetProperty<byte[]>("m_value");
+                var vfxEval = new VfxEval(dynamicParamBytes, renderAttributesUsed);
                 if (vfxEval.ErrorWhileParsing)
                 {
                     throw new Exception($"{vfxEval.ErrorMessage}");
@@ -109,9 +109,9 @@ namespace ValveResourceFormat.ResourceTypes
 
             foreach (var kvp in Data.GetArray("m_dynamicTextureParams"))
             {
-                string dynamicTextureParamName = kvp.GetProperty<string>("m_name");
-                byte[] dynamicTextureParamBytes = kvp.GetProperty<byte[]>("m_value");
-                VfxEval vfxEval = new VfxEval(dynamicTextureParamBytes, renderAttributesUsed);
+                var dynamicTextureParamName = kvp.GetProperty<string>("m_name");
+                var dynamicTextureParamBytes = kvp.GetProperty<byte[]>("m_value");
+                var vfxEval = new VfxEval(dynamicTextureParamBytes, renderAttributesUsed);
                 if (vfxEval.ErrorWhileParsing)
                 {
                     throw new Exception($"{vfxEval.ErrorMessage}");
@@ -123,6 +123,11 @@ namespace ValveResourceFormat.ResourceTypes
                 }
                 DynamicExpressions.Add(newTextureParamName, vfxEval.DynamicExpressionResult.Replace("\n", "\\n"));
             }
+
+
+
+
+
         }
 
         public IDictionary<string, bool> GetShaderArguments()
