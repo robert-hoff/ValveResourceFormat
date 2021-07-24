@@ -131,7 +131,8 @@ namespace MyValveResourceFormat.Serialization.VfxEval
                 try
                 {
                     ProcessOps((OPCODE)dataReader.ReadByte(), dataReader);
-                } catch (System.ArgumentOutOfRangeException)
+                }
+                catch (System.IO.EndOfStreamException)
                 {
                     ErrorWhileParsing = true;
                     ErrorMessage = "Parsing error - reader exceeded input";
@@ -476,7 +477,8 @@ namespace MyValveResourceFormat.Serialization.VfxEval
                 if (ExternalVariablesPlaceholderNames.Count == 0)
                 {
                     varName = "EXT";
-                } else
+                }
+                else
                 {
                     varName = string.Format("EXT{0}", ExternalVariablesPlaceholderNames.Count + 1);
                 }

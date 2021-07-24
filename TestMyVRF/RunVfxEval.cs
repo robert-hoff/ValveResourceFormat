@@ -27,8 +27,8 @@ namespace TestMyVRF {
             // string input_string = example13();
             // string input_string = example14();
             // string input_string = example16();
-            // string input_string = example17();
-            string input_string = example18();
+            string input_string = example17();
+            // string input_string = example18();
 
 
             byte[] databytes = parseString(input_string);
@@ -75,6 +75,8 @@ namespace TestMyVRF {
         static string example17() {
             return
             "07 CD CC CC 3D 06 03 00 19 C7 7E 6D 0B 15 00";
+            /// this input will trigger System.IO.EndOfStreamException
+            // "07 CD CC";
         }
 
 

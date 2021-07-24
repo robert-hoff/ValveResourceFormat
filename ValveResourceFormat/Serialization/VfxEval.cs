@@ -132,7 +132,7 @@ namespace ValveResourceFormat.Serialization.VfxEval
                 {
                     ProcessOps((OPCODE)dataReader.ReadByte(), dataReader);
                 }
-                catch (System.ArgumentOutOfRangeException)
+                catch (System.IO.EndOfStreamException)
                 {
                     ErrorWhileParsing = true;
                     ErrorMessage = "Parsing error - reader exceeded input";
