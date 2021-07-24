@@ -86,7 +86,7 @@ namespace ValveResourceFormat.ResourceTypes
                 ConvertNames.Add("g_tVignette", "TextureVignette");
             }
 
-            // This is zero-length for all vmat files in Dota2 and HL archives
+            // textureAttributes is zero-length for all vmat files in Dota2 and HL archives
             string[] textureAttributes = Data.GetArray<string>("m_textureAttributes");
             if (textureAttributes.Length > 0)
             {
@@ -211,7 +211,7 @@ namespace ValveResourceFormat.ResourceTypes
 
             if (DynamicExpressions.Count > 0)
             {
-                var dynamicExpressionsNode = new KVObject("@DynamicParams", new List<KVObject>());
+                var dynamicExpressionsNode = new KVObject("DynamicParams", new List<KVObject>());
                 root.Add(dynamicExpressionsNode);
                 foreach (var (key, value) in DynamicExpressions)
                 {
