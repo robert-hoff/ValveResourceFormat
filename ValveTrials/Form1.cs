@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -21,8 +21,9 @@ namespace ValveTrials {
 		}
 
 		private void goToolStripMenuItem_Click(object sender, EventArgs e) {
-			TestVRF1.doIt();
-		}
+            TestVRF1.doIt2();
+            // TestVRF1.doIt();
+        }
 	}
 }
 

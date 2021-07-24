@@ -9,86 +9,97 @@ using System.Windows.Forms;
 using MyValveResourceFormat;
 using MyValveResourceFormat.IO;
 using MyValveResourceFormat.ResourceTypes;
+using System.Diagnostics;
+using MyShaderAnalysis;
+
 
 namespace ValveTrials {
-	class TestVRF1 {
-
-		public static void doIt() {
-
-			string vpkfile = @"Z:\git\vcs-decompile\vrf-decompiler-bat\pak01.vpk";
-			var package = new SteamDatabase.ValvePak.Package();
-			package.Read(vpkfile);
-
-			string huskar_filename = "armor_of_reckless_vigor_weapon.vmdl_c";
-			string huskar_model = "models/items/huskar/armor_of_reckless_vigor_weapon/armor_of_reckless_vigor_weapon.vmdl_c";
-			PackageEntry model_entry = package.FindEntry(huskar_model);
-
-			var resource = new Resource {
-				FileName = huskar_filename
-			};
-
-
-			package.ReadEntry(model_entry, out byte[] output);
-			resource.Read(new MemoryStream(output));
-
-		}
+    class TestVRF1 {
 
 
 
-		static ISet<ResourceType> ResourceTypesThatAreGltfExportable = new HashSet<ResourceType>()
-		{ ResourceType.Mesh, ResourceType.Model, ResourceType.WorldNode, ResourceType.World };
+        public static void doIt2() {
+            ShaderAnalysis1.RunTrials();
+
+        }
 
 
-		public static void Export(string fileName, ExportFileType FileType, Resource resource) {
-			var extension = FileExtract.GetExtension(resource);
+        public static void doIt() {
 
-			if (extension == null) {
-				Console.WriteLine($"Export for \"{fileName}\" has no suitable extension");
-				return;
-			}
+            string vpkfile = @"Z:\git\vcs-decompile\vrf-decompiler-bat\pak01.vpk";
+            var package = new SteamDatabase.ValvePak.Package();
+            package.Read(vpkfile);
 
-			var filter = $"{extension} file|*.{extension}";
+            string huskar_filename = "armor_of_reckless_vigor_weapon.vmdl_c";
+            string huskar_model = "models/items/huskar/armor_of_reckless_vigor_weapon/armor_of_reckless_vigor_weapon.vmdl_c";
+            PackageEntry model_entry = package.FindEntry(huskar_model);
 
-			if (ResourceTypesThatAreGltfExportable.Contains(resource.ResourceType)) {
-				if (FileType == ExportFileType.GLB) {
-					extension = "glb";
-					filter = $"GLB file|*.glb|{filter}";
-				} else {
-					extension = "gltf";
-					filter = $"glTF file|*.gltf|{filter}";
-				}
-			}
+            var resource = new Resource {
+                FileName = huskar_filename
+            };
 
 
-			// -- this line just adds the gltf ending, FileName will be
-			// "armor_of_reckless_vigor_weapon.gltf"
-			var dialog = new SaveFileDialog {
-				FileName = Path.GetFileName(Path.ChangeExtension(fileName, extension)),
-				DefaultExt = extension,
-				Filter = filter,
-			};
+            package.ReadEntry(model_entry, out byte[] output);
+            resource.Read(new MemoryStream(output));
 
-
-			// output directory
-			// string FileName = "armor_of_reckless_vigor_weapon.gltf";
-
-			// results indicates if the dialog was successful
-			// var result = dialog.ShowDialog();
-			// if (result != DialogResult.OK)
-			// {
-			//	Console.WriteLine($"Export for \"{fileName}\" cancelled");
-			//	return;
-			// }
-
-			Console.WriteLine($"Export for \"{fileName}\" started to \"{extension}\"");
-			// Settings.Config.SaveDirectory = Path.GetDirectoryName(dialog.FileName);
-			// Settings.Save();
-
-			var extractDialog = new GenericProgressForm();
+        }
 
 
 
-			/*
+        static ISet<ResourceType> ResourceTypesThatAreGltfExportable = new HashSet<ResourceType>()
+        { ResourceType.Mesh, ResourceType.Model, ResourceType.WorldNode, ResourceType.World };
+
+
+        public static void Export(string fileName, ExportFileType FileType, Resource resource) {
+            var extension = FileExtract.GetExtension(resource);
+
+            if (extension == null) {
+                Console.WriteLine($"Export for \"{fileName}\" has no suitable extension");
+                return;
+            }
+
+            var filter = $"{extension} file|*.{extension}";
+
+            if (ResourceTypesThatAreGltfExportable.Contains(resource.ResourceType)) {
+                if (FileType == ExportFileType.GLB) {
+                    extension = "glb";
+                    filter = $"GLB file|*.glb|{filter}";
+                } else {
+                    extension = "gltf";
+                    filter = $"glTF file|*.gltf|{filter}";
+                }
+            }
+
+
+            // -- this line just adds the gltf ending, FileName will be
+            // "armor_of_reckless_vigor_weapon.gltf"
+            var dialog = new SaveFileDialog {
+                FileName = Path.GetFileName(Path.ChangeExtension(fileName, extension)),
+                DefaultExt = extension,
+                Filter = filter,
+            };
+
+
+            // output directory
+            // string FileName = "armor_of_reckless_vigor_weapon.gltf";
+
+            // results indicates if the dialog was successful
+            // var result = dialog.ShowDialog();
+            // if (result != DialogResult.OK)
+            // {
+            //	Console.WriteLine($"Export for \"{fileName}\" cancelled");
+            //	return;
+            // }
+
+            Console.WriteLine($"Export for \"{fileName}\" started to \"{extension}\"");
+            // Settings.Config.SaveDirectory = Path.GetDirectoryName(dialog.FileName);
+            // Settings.Save();
+
+            var extractDialog = new GenericProgressForm();
+
+
+
+            /*
 			extractDialog.OnProcess += (_, __) => {
 				if (dialog.FilterIndex == 1 && ResourceTypesThatAreGltfExportable.Contains(resource.ResourceType)) {
 					var exporter = new GltfModelExporter {
@@ -124,23 +135,23 @@ namespace ValveTrials {
 
 
 
-		}
+        }
 
 
 
-		public enum ExportFileType {
-			Auto,
-			GLB
-		}
-
-
-
-
+        public enum ExportFileType {
+            Auto,
+            GLB
+        }
 
 
 
 
 
 
-	}
+
+
+
+
+    }
 }

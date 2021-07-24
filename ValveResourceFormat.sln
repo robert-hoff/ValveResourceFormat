@@ -28,6 +28,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestVRFDev", "TestVRFDev\Te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ValveTrials", "ValveTrials\ValveTrials.csproj", "{9C19CE54-C25E-410C-AC69-7D4821D52C4F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyShaderAnalysis", "MyShaderAnalysis\MyShaderAnalysis.csproj", "{4AD9C78D-06BA-40A8-9FA3-DAC65D0B4E88}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -86,6 +88,10 @@ Global
 		{9C19CE54-C25E-410C-AC69-7D4821D52C4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9C19CE54-C25E-410C-AC69-7D4821D52C4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9C19CE54-C25E-410C-AC69-7D4821D52C4F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4AD9C78D-06BA-40A8-9FA3-DAC65D0B4E88}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4AD9C78D-06BA-40A8-9FA3-DAC65D0B4E88}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4AD9C78D-06BA-40A8-9FA3-DAC65D0B4E88}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4AD9C78D-06BA-40A8-9FA3-DAC65D0B4E88}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
