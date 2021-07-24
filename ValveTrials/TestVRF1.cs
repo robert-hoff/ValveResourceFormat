@@ -10,7 +10,7 @@ using MyValveResourceFormat;
 using MyValveResourceFormat.IO;
 using MyValveResourceFormat.ResourceTypes;
 using System.Diagnostics;
-using MyShaderAnalysis;
+using MyShaderAnalysisreader;
 
 
 namespace ValveTrials {

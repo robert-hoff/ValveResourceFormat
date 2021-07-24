@@ -8,6 +8,40 @@ trim_trailing_whitespace = true
 # insert_final_newline = true
 
 [*.cs]
+
+# R: my additions
+# Some uselss simplication tip
+dotnet_diagnostic.IDE0003.severity = none
+
+# Static holder type
+dotnet_diagnostic.CA1052.severity = none
+
+# unused field
+dotnet_diagnostic.CA1823.severity = none
+
+# member can be removed as its never used
+dotnet_diagnostic.IDE0052.severity = none
+
+# make member read only
+dotnet_diagnostic.IDE0044.severity = none
+
+# unecessary assignment
+dotnet_diagnostic.IDE0059.severity = none
+
+# do not declare visible instance fields
+dotnet_diagnostic.CA1051.severity = none
+
+# unused member
+dotnet_diagnostic.IDE0051.severity = none
+
+# Member is explicitly initialized to its default value
+dotnet_diagnostic.CA1805.severity = none
+
+
+
+
+# ----------- these definitions came with VRF
+
 # CA1002: Do not expose generic lists.
 dotnet_diagnostic.CA1002.severity = none
 

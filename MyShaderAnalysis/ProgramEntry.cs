@@ -1,7 +1,7 @@
 using System;
 using System.Diagnostics;
 
-namespace MyShaderAnalysis {
+namespace MyShaderAnalysisreader {
 
 
     class ProgramEntry {

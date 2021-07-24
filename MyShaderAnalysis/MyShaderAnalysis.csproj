@@ -12,4 +12,8 @@
     <WarningsAsErrors />
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="ZstdSharp.Port" Version="0.5.0" />
+  </ItemGroup>
+
 </Project>
