@@ -211,7 +211,7 @@ namespace MyValveResourceFormat.ResourceTypes
 
             if (DynamicExpressions.Count > 0)
             {
-                var dynamicExpressionsNode = new KVObject("@DynamicParams", new List<KVObject>());
+                var dynamicExpressionsNode = new KVObject("DynamicParams", new List<KVObject>());
                 root.Add(dynamicExpressionsNode);
                 foreach (var (key, value) in DynamicExpressions)
                 {

@@ -43,7 +43,7 @@ namespace TestMyVRF {
                 ExportFile.Export(filename, resource);
 
                 count++;
-                if (count==100000) {
+                if (count==1000000) {
                     break;
                 }
 
