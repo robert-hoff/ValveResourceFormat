@@ -38,7 +38,7 @@ namespace MyShaderAnalysis.readers {
 
         // using
         // https://github.com/oleg-st/ZstdSharp
-        public byte[] decompressFrame(byte[] zStdDictionary) {
+        public byte[] DecompressFrame(byte[] zStdDictionary) {
             using var decompressor = new Decompressor();
             decompressor.LoadDictionary(zStdDictionary);
 

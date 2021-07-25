@@ -80,6 +80,7 @@ namespace MyShaderAnalysis.readers {
 
 
 
+
         public float ReadFloat() {
             float floatval = BitConverter.ToSingle(databytes, offset);
             offset += 4;
@@ -102,10 +103,10 @@ namespace MyShaderAnalysis.readers {
 
 
         // this does not change the offset
-        public List<int> searchForByteSequence(byte[] bytes) {
+        public List<int> SearchForByteSequence(byte[] bytes) {
             List<int> indexes = new();
             for (int i = 0; i < databytes.Length-bytes.Length; i++) {
-                Boolean match = true;
+                bool match = true;
                 for (int j = 0; j < bytes.Length; j++) {
                     if (databytes[i+j] != bytes[j]) {
                         match = false;
@@ -126,8 +127,8 @@ namespace MyShaderAnalysis.readers {
          * show bytes around the current offset
          *
          */
-        public void showBytesSurrounding() {
-            showBytesSurrounding(offset);
+        public void ShowBytesSurrounding() {
+            ShowBytesSurrounding(offset);
         }
 
         /*
@@ -135,7 +136,7 @@ namespace MyShaderAnalysis.readers {
          *
          *
          */
-        public void showBytesSurrounding(int ind) {
+        public void ShowBytesSurrounding(int ind) {
             for (int i = -20; i < 40; i++) {
                 if (ind+i<0) {
                     Debug.Write($"   ");
@@ -145,7 +146,7 @@ namespace MyShaderAnalysis.readers {
                     Debug.WriteLine($"EOF");
                     return;
                 }
-                string bytestr = String.Format($"{databytes[ind+i]:x02}");
+                string bytestr = string.Format($"{databytes[ind+i]:x02}");
                 Debug.Write($"{bytestr} ");
             }
             Debug.WriteLine("");

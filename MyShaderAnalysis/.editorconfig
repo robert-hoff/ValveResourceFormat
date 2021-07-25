@@ -37,6 +37,16 @@ dotnet_diagnostic.IDE0051.severity = none
 # Member is explicitly initialized to its default value
 dotnet_diagnostic.CA1805.severity = none
 
+# Going on about Exceptions needing to be specific
+dotnet_diagnostic.CA2201.severity = none
+
+# Field is never used
+dotnet_diagnostic.CS0169.severity = none
+
+# behaviour of string parsing could vary
+dotnet_diagnostic.CA1305.severity = none
+
+
 
 
 
@@ -70,7 +80,7 @@ dotnet_diagnostic.CA1303.severity = none
 dotnet_diagnostic.CA1304.severity = suggestion
 
 # CA1305: Specify IFormatProvider
-dotnet_diagnostic.CA1305.severity = suggestion
+# dotnet_diagnostic.CA1305.severity = suggestion
 
 # CA1307: Specify StringComparison
 dotnet_diagnostic.CA1307.severity = suggestion
@@ -118,7 +128,7 @@ dotnet_diagnostic.CA2008.severity = none
 dotnet_diagnostic.CA2119.severity = none
 
 # CA2201: Do not raise reserved exception types
-dotnet_diagnostic.CA2201.severity = suggestion
+# dotnet_diagnostic.CA2201.severity = suggestion
 
 # CA2214: Do not call overridable methods in constructors
 dotnet_diagnostic.CA2214.severity = none

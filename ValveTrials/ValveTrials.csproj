@@ -19,7 +19,7 @@
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <WarningsAsErrors />
     <WarningLevel>0</WarningLevel>
-    <NoWarn>1701;1702;2008</NoWarn>
+    <NoWarn>1701;1702;2008;NU1701</NoWarn>
   </PropertyGroup>
   <ItemGroup>
   <!--

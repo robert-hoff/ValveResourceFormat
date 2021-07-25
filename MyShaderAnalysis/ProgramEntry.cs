@@ -1,7 +1,7 @@
 using System;
 using System.Diagnostics;
 
-namespace MyShaderAnalysisreader {
+namespace MyShaderAnalysis {
 
 
     class ProgramEntry {
@@ -11,6 +11,7 @@ namespace MyShaderAnalysisreader {
 
 
             ShaderAnalysis1.RunTrials();
+            // ShaderTesting.RunTrials();
 
 
 

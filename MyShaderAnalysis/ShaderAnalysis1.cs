@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using MyShaderAnalysis.readers;
 
 
-namespace MyShaderAnalysisreader {
+namespace MyShaderAnalysis {
     public class ShaderAnalysis1 {
 
         const string ANALYSIS_DIR = @"X:\checkouts\ValveResourceFormat\files_under_analysis";
@@ -27,8 +27,8 @@ namespace MyShaderAnalysisreader {
 
 
         static void Trials3() {
-            // ShaderReader shaderReader = new ShaderReader(MULTIBLEND_PCGL_30_PS);
-            ShaderReader shaderReader = new ShaderReader(GLOW_OUPUT_PCGL_30_VS);
+            // ShaderReader shaderReader = new(MULTIBLEND_PCGL_30_PS);
+            ShaderReader shaderReader = new(GLOW_OUPUT_PCGL_30_VS);
 
         }
 
@@ -38,11 +38,11 @@ namespace MyShaderAnalysisreader {
 
             DataReader datareader = new(GetFile(GLOW_OUPUT_PCGL_30_VS));
 
-            List<int> zframeIndexes = datareader.searchForByteSequence(new byte[] { 0x28, 0xb5, 0x2f, 0xfd });
+            List<int> zframeIndexes = datareader.SearchForByteSequence(new byte[] { 0x28, 0xb5, 0x2f, 0xfd });
 
-            datareader.showBytesSurrounding(zframeIndexes[0]);
-            datareader.showBytesSurrounding(10);
-            datareader.showBytesSurrounding(910);
+            datareader.ShowBytesSurrounding(zframeIndexes[0]);
+            datareader.ShowBytesSurrounding(10);
+            datareader.ShowBytesSurrounding(910);
 
 
 
@@ -53,7 +53,7 @@ namespace MyShaderAnalysisreader {
 
         static void Trials1GetDictionary() {
             DataReader datareader = new(GetFile(ANALYSIS_DIR + @"\zstdictionary_2bc2fa87.dat"));
-            datareader.showBytesSurrounding();
+            datareader.ShowBytesSurrounding();
 
         }
 

@@ -7,6 +7,12 @@ charset = utf-8
 trim_trailing_whitespace = true
 # insert_final_newline = true
 
+
+# R: can't seem to get rid of this fucking thing
+dotnet_diagnostic.NU1701.severity = none
+
+
+
 [*.cs]
 # CA1002: Do not expose generic lists.
 dotnet_diagnostic.CA1002.severity = none
