@@ -29,6 +29,12 @@ namespace MyShaderAnalysis {
         const string MULTIBLEND_PCGL_30_VS = ANALYSIS_DIR + @"\compiled-shaders\multiblend_pcgl_30_vs.vcs";
 
 
+
+        const string REFRACT_PCGL_30_FEATURES = ANALYSIS_DIR + @"\compiled-shaders\refract_pcgl_30_features.vcs";
+
+
+
+
         public static void RunTrials() {
             // Trials1();
             // Trials1GetDictionary();
@@ -39,7 +45,7 @@ namespace MyShaderAnalysis {
 
 
         static void Trials4() {
-            new ShaderFile(GLOW_OUPUT_PCGL_30_FEATURES);
+            new ShaderFile(REFRACT_PCGL_30_FEATURES);
 
         }
 

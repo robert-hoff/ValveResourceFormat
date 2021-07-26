@@ -61,8 +61,11 @@ namespace MyShaderAnalysis.readers {
             //}
 
 
+            // datareader.Print484Block(4003);
             // datareader.ShowAllBytes();
-            datareader.ShowBytes(1962, 484);
+
+            datareader.ShowBytes(1095, 472);
+            Debug.WriteLine("");
 
         }
 

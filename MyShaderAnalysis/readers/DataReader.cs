@@ -106,6 +106,17 @@ namespace MyShaderAnalysis.readers {
         }
 
 
+
+        public string readNullTermStringAtPosition(int ind) {
+            string str = "";
+            while (databytes[ind] > 0) {
+                str += (char) databytes[ind++];
+            }
+            return str;
+        }
+
+
+
         public bool HasData() {
             return offset < databytes.Length;
         }
@@ -187,11 +198,43 @@ namespace MyShaderAnalysis.readers {
                     Debug.WriteLine("");
                 }
             }
-            Debug.WriteLine("");
+            if (count%breakLen!=0) {
+                Debug.WriteLine("");
+            }
         }
 
 
 
+        public void Print484BlockPrev(int ind) {
+            ShowBytes(ind,64);
+            ShowBytes(ind+64,64);
+            ShowBytes(ind+128,4);
+            ShowBytes(ind+132,64);
+            ShowBytes(ind+196,96);
+            ShowBytes(ind+292,128,16);
+            ShowBytes(ind+420,64);
+        }
+
+        public void Print484Block(int ind) {
+            string name1 = readNullTermStringAtPosition(ind);
+            Debug.WriteLine($"[{ind}] {name1}");
+            ShowBytes(ind,64);
+            string name2 = readNullTermStringAtPosition(ind+64);
+            if (name2.Length>0) {
+                Debug.WriteLine($"[{ind+64}] {name2}");
+            }
+            ShowBytes(ind+64,64);
+            ShowBytes(ind+128,8);
+            string name3 = readNullTermStringAtPosition(ind+136);
+            if (name3.Length>0) {
+                Debug.WriteLine($"[{ind+136}] {name3}");
+            }
+            ShowBytes(ind+136,64);
+            ShowBytes(ind+200,28);
+            ShowBytes(ind+228,64);
+            ShowBytes(ind+292,128,16);
+            ShowBytes(ind+420,64);
+        }
 
 
 
