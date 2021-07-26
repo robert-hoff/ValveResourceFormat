@@ -61,10 +61,62 @@ namespace MyShaderAnalysis.readers {
             //}
 
 
-            // datareader.Print484Block(4003);
             // datareader.ShowAllBytes();
 
-            datareader.ShowBytes(1095, 472);
+            // datareader.PrintForSBlock(52);
+
+            datareader.offset = 5412;
+            datareader.PrintCompressedZFrame();
+            datareader.PrintCompressedZFrame();
+            datareader.PrintCompressedZFrame();
+            datareader.PrintCompressedZFrame();
+            datareader.EndOfFile();
+
+
+
+
+
+
+
+
+
+            //for (int i = 0; i < 9; i++) {
+            //    datareader.Print484Block();
+            //}
+
+
+            //datareader.offset = 5352;
+            //datareader.ShowBytes(40, 4);
+            //datareader.ShowOffset();
+            //datareader.ShowIntValue();
+            //datareader.ShowIntValue();
+            //datareader.ShowIntValue();
+            //datareader.ShowIntValue();
+            //datareader.ShowIntValue();
+
+            // datareader.Print484Block();
+            //datareader.PrintMipmapBlock();
+            //datareader.PrintMipmapBlock();
+            //datareader.ShowOffset();
+            //datareader.ShowBytes(100, 4);
+
+
+
+
+            // datareader.ShowBytesAtPosition(4788, 5000);
+
+
+
+            // for (int i = 0; i < 9; i++) {
+            // datareader.ShowBytesAtPosition(7165 + i * 280, 280);
+            // datareader.Print484Block(372+i*484);
+            // }
+
+
+
+            // datareader.ShowPsVsHeader(0);
+
+
             Debug.WriteLine("");
 
         }

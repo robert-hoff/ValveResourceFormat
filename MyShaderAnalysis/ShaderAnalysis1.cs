@@ -32,6 +32,11 @@ namespace MyShaderAnalysis {
 
         const string REFRACT_PCGL_30_FEATURES = ANALYSIS_DIR + @"\compiled-shaders\refract_pcgl_30_features.vcs";
 
+        const string UI_TWOTEXTURE_PCGL_30_FEATURES = ANALYSIS_DIR + @"\compiled-shaders\ui_twotexture_pcgl_30_features.vcs";
+        const string UI_TWOTEXTURE_PCGL_30_PS = ANALYSIS_DIR + @"\compiled-shaders\ui_twotexture_pcgl_30_ps.vcs";
+        const string UI_TWOTEXTURE_PCGL_30_VS = ANALYSIS_DIR + @"\compiled-shaders\ui_twotexture_pcgl_30_vs.vcs";
+
+
 
 
 
@@ -45,7 +50,7 @@ namespace MyShaderAnalysis {
 
 
         static void Trials4() {
-            new ShaderFile(REFRACT_PCGL_30_FEATURES);
+            new ShaderFile(UI_TWOTEXTURE_PCGL_30_PS);
 
         }
 
@@ -55,9 +60,7 @@ namespace MyShaderAnalysis {
 
             // MULTIBLEND!
             // ShaderReader shaderReader = new(MULTIBLEND_PCGL_30_PS);
-
-
-            ShaderReader shaderReader = new(GLOW_OUPUT_PCGL_30_PS);
+            // ShaderReader shaderReader = new(GLOW_OUPUT_PCGL_30_PS);
             // ShaderReader shaderReader = new(GLOW_OUPUT_PCGL_30_VS);
 
 
@@ -65,18 +68,15 @@ namespace MyShaderAnalysis {
 
 
 
+
+
+        // OLD TRIALS - DON'T MIX UP FILES
         static void Trials2() {
-
             DataReader datareader = new(GetFile(GLOW_OUPUT_PCGL_30_VS));
-
             List<int> zframeIndexes = datareader.SearchForByteSequence(new byte[] { 0x28, 0xb5, 0x2f, 0xfd });
-
             datareader.ShowBytesSurrounding(zframeIndexes[0]);
             datareader.ShowBytesSurrounding(10);
             datareader.ShowBytesSurrounding(910);
-
-
-
         }
 
 

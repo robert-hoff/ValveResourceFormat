@@ -55,8 +55,9 @@ dotnet_diagnostic.IDE0060.severity = none
 # Use discard
 dotnet_diagnostic.IDE0058.severity = none
 
-dotnet_diagnostic.CA1806.severity = none
 
+dotnet_diagnostic.CA1806.severity = none
+dotnet_diagnostic.CS0219.severity = none
 
 
 
