@@ -12,7 +12,7 @@ namespace MyShaderAnalysis {
 
         public static void RunTrials() {
             uint MURMUR2SEED = 0x31415926; // It's pi!
-            uint murmur32 = MurmurHash2.Hash("Default", MURMUR2SEED);
+            uint murmur32 = MurmurHash2.Hash("flGlobalLightAmbientShadowAmount", MURMUR2SEED);
 
             Debug.WriteLine($"{murmur32:X08}");
 

@@ -38,6 +38,9 @@ namespace MyShaderAnalysis {
 
 
 
+        const string OUTPUT_DIR = @"Z:\active\projects\dota2-sourcesdk-modding\shader-analysis-vcs-format\bit-analysis";
+
+
 
 
         public static void RunTrials() {
@@ -45,14 +48,64 @@ namespace MyShaderAnalysis {
             // Trials1GetDictionary();
             // Trials2();
             // Trials3();
-            Trials4();
+
+            ParseShaderFile(MULTIBLEND_PCGL_30_VS);
+            
+
+
+
         }
 
 
-        static void Trials4() {
-            new ShaderFile(UI_TWOTEXTURE_PCGL_30_PS);
+        static void ParseShaderFile(string filepath) {
+            // TouchFile(filepath);
+            // WriteAllBytesToTemplateFile(filepath);
 
+            new ShaderFile(filepath);
         }
+
+
+
+
+        static FileStream TouchFile(string filepath) {
+            string filename = Path.GetFileName(filepath);
+            filename = filename[0..^4] + "-ANALYSIS.txt";
+            string newFilepath = @$"{OUTPUT_DIR}\{filename}";
+
+            if (!File.Exists(newFilepath)) {
+                FileStream filestream = File.Create(newFilepath);
+                Debug.WriteLine($"CREATED FILE {newFilepath}");
+                return filestream;
+            } else {
+                Debug.WriteLine($"File already exists!!! {newFilepath}");
+                // return null;
+
+
+                FileStream filestream = File.Create(newFilepath);
+                return filestream;
+            }
+        }
+
+
+        static void WriteAllBytesToTemplateFile(string filepath) {
+            DataReader datareader = new(File.ReadAllBytes(filepath));
+
+            FileStream stream = TouchFile(filepath);
+            if (stream == null) {
+                return;
+            }
+
+            while (datareader.HasData()) {
+                string bytesAsString = datareader.ReadBytesAsString(1024, 32);
+                stream.Write(Encoding.ASCII.GetBytes(bytesAsString));
+            }
+
+             stream.Flush();
+             stream.Close();
+
+            Debug.WriteLine("finished writing");
+        }
+
 
 
 
@@ -70,7 +123,8 @@ namespace MyShaderAnalysis {
 
 
 
-        // OLD TRIALS - DON'T MIX UP FILES
+        // OLD CRAP - DON'T MIX UP FILES
+        // **********************************************************************
         static void Trials2() {
             DataReader datareader = new(GetFile(GLOW_OUPUT_PCGL_30_VS));
             List<int> zframeIndexes = datareader.SearchForByteSequence(new byte[] { 0x28, 0xb5, 0x2f, 0xfd });

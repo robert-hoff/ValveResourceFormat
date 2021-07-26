@@ -13,7 +13,7 @@ namespace MyShaderAnalysis {
             ShaderAnalysis1.RunTrials();
             // ShaderTesting.RunTrials();
 
-            // Murmur32.RunTrials();
+           // Murmur32.RunTrials();
 
 
 
