@@ -48,6 +48,9 @@ namespace MyShaderAnalysis.readers {
             if (zframeUncompressed.Length != uncompressed_length) {
                 throw new ShaderParserException("zframe length mismatch!");
             }
+
+            decompressor.Dispose();
+
             return zframeUncompressed.ToArray();
         }
 

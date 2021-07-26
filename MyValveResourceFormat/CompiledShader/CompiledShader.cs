@@ -190,6 +190,24 @@ namespace MyValveResourceFormat {
             count = Reader.ReadUInt32();
         }
 
+
+
+
+
+        // END OF READ FEATURES
+
+
+
+
+
+
+
+
+
+
+
+
+
         private void ReadShader() {
             // This uint controls whether or not there's an additional uint and file identifier in header for features shader, might be something different in these.
             var unk0_a = Reader.ReadInt32(); // new in version 64, mostly 0 but sometimes 1

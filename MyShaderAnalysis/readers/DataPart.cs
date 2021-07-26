@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,7 +33,40 @@ namespace MyShaderAnalysis.readers {
         }
 
 
+
+        public void PrintFirstNrOfByte(int count) {
+            byte[] segmentbytes = datareader.ReadBytesAtPosition(length, 0);
+            int i = 0;
+            while (i < count) {
+                if (i == segmentbytes.Length) {
+                    Debug.WriteLine("EOF");
+                    return;
+                }
+
+                Debug.Write($"{segmentbytes[i]:X02} ");
+                if (++i % 32 == 0) {
+                    Debug.WriteLine("");
+                }
+            }
+        }
+
+
+        public void PrintAllBytes() {
+            byte[] segmentbytes = datareader.ReadBytesAtPosition(length, 0);
+            int i = 0;
+            while (i < segmentbytes.Length) {
+                Debug.Write($"{segmentbytes[i]:X02} ");
+                if (++i % 32 == 0) {
+                    Debug.WriteLine("");
+                }
+            }
+            Debug.WriteLine("");
+        }
+
+
+
     }
+
 
 
 }

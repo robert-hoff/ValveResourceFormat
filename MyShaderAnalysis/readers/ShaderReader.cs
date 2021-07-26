@@ -25,7 +25,7 @@ namespace MyShaderAnalysis.readers {
             // zstdDictionary = File.ReadAllBytes(ANALYSIS_DIR + @"\zstdictionary_FALSE.dat");
             // zstdDictionary = File.ReadAllBytes(ANALYSIS_DIR + @"\zstdictionary_FALSE3.dat");
 
-            List<int> zframeIndexes = datareader.SearchForByteSequence(new byte[] { 0x28, 0xb5, 0x2f, 0xfd });
+            List<int> zframeIndexes = datareader.SearchForByteSequence(new byte[] {0x28, 0xb5, 0x2f, 0xfd});
 
             if (zframeIndexes.Count > 0) {
                 headerData = new DataPart(datareader.databytes, 0, zframeIndexes[0] - 12);
@@ -39,23 +39,31 @@ namespace MyShaderAnalysis.readers {
             foreach (int ind in zframeIndexes) {
                 int zFrameLength = datareader.ReadIntAtPosition(ind-4) + 12;
                 ZFrameCompressed zFrameData = new(datareader.databytes, ind-12, zFrameLength);
+
+                Debug.WriteLine(zFrameLength);
+
                 byte[] zframedatabytes = zFrameData.DecompressFrame(zstdDictionary);
                 zFrames.Add(new DataPart(zframedatabytes, 0));
                 zFrameSizes += zFrameData.length;
 
             }
 
-
-
             int totalSize = headerData.length + zFrameSizes;
             if (totalSize != datareader.databytes.Length) {
                 throw new ShaderParserException("sizes don't add up!");
             }
+            // Debug.WriteLine($"nr of zframes = {zFrames.Count}");
 
             uint vcsMagic = datareader.ReadUInt();
 
 
-            Debug.WriteLine($"nr of zframes = {zFrames.Count}");
+
+
+            //Debug.WriteLine("HEADER");
+            //headerData.PrintAllBytes();
+            //Debug.WriteLine("ZFRAME");
+            //zFrames[0].PrintAllBytes();
+
 
 
 
@@ -68,3 +76,7 @@ namespace MyShaderAnalysis.readers {
 
     }
 }
+
+
+
+

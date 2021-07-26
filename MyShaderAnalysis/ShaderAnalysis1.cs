@@ -12,8 +12,19 @@ namespace MyShaderAnalysis {
     public class ShaderAnalysis1 {
 
         const string ANALYSIS_DIR = @"X:\checkouts\ValveResourceFormat\files_under_analysis";
+
+        const string GLOW_OUPUT_PC_30_FEATURES = ANALYSIS_DIR + @"\compiled-shaders\glow_output_pc_30_features.vcs";
+        const string GLOW_OUPUT_PC_40_FEATURES = ANALYSIS_DIR + @"\compiled-shaders\glow_output_pc_40_features.vcs";
+
+
+        const string GLOW_OUPUT_PCGL_30_FEATURES = ANALYSIS_DIR + @"\compiled-shaders\glow_output_pcgl_30_features.vcs";
         const string GLOW_OUPUT_PCGL_30_PS = ANALYSIS_DIR + @"\compiled-shaders\glow_output_pcgl_30_ps.vcs";
         const string GLOW_OUPUT_PCGL_30_VS = ANALYSIS_DIR + @"\compiled-shaders\glow_output_pcgl_30_vs.vcs";
+
+        const string GLOW_OUPUT_PCGL_40_PS = ANALYSIS_DIR + @"\compiled-shaders\glow_output_pcgl_40_ps.vcs";
+        const string GLOW_OUPUT_PCGL_40_VS = ANALYSIS_DIR + @"\compiled-shaders\glow_output_pcgl_40_vs.vcs";
+
+
         const string MULTIBLEND_PCGL_30_PS = ANALYSIS_DIR + @"\compiled-shaders\multiblend_pcgl_30_ps.vcs";
         const string MULTIBLEND_PCGL_30_VS = ANALYSIS_DIR + @"\compiled-shaders\multiblend_pcgl_30_vs.vcs";
 
@@ -22,13 +33,27 @@ namespace MyShaderAnalysis {
             // Trials1();
             // Trials1GetDictionary();
             // Trials2();
-            Trials3();
+            // Trials3();
+            Trials4();
         }
 
 
+        static void Trials4() {
+            new ShaderFile(GLOW_OUPUT_PCGL_30_FEATURES);
+
+        }
+
+
+
         static void Trials3() {
+
+            // MULTIBLEND!
             // ShaderReader shaderReader = new(MULTIBLEND_PCGL_30_PS);
-            ShaderReader shaderReader = new(GLOW_OUPUT_PCGL_30_VS);
+
+
+            ShaderReader shaderReader = new(GLOW_OUPUT_PCGL_30_PS);
+            // ShaderReader shaderReader = new(GLOW_OUPUT_PCGL_30_VS);
+
 
         }
 

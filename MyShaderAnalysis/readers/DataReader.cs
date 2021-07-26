@@ -34,6 +34,11 @@ namespace MyShaderAnalysis.readers {
         public byte ReadByte() {
             return databytes[offset++];
         }
+
+        public byte ReadByteAtPosition(int ind) {
+            return databytes[start+ind];
+        }
+
         public uint ReadUInt16() {
             uint b0 = ReadByte();
             uint b1 = ReadByte();
@@ -78,9 +83,6 @@ namespace MyShaderAnalysis.readers {
             return intval;
         }
 
-
-
-
         public float ReadFloat() {
             float floatval = BitConverter.ToSingle(databytes, offset);
             offset += 4;
@@ -95,10 +97,19 @@ namespace MyShaderAnalysis.readers {
             return bytes;
         }
 
+        public byte[] ReadBytesAtPosition(int len, int ind) {
+            byte[] segmentbytes = new byte[len];
+            for (int i = 0; i < len; i++) {
+                segmentbytes[i] = databytes[start+ind+i];
+            }
+            return segmentbytes;
+        }
+
 
         public bool HasData() {
             return offset < databytes.Length;
         }
+
 
 
 
@@ -146,8 +157,35 @@ namespace MyShaderAnalysis.readers {
                     Debug.WriteLine($"EOF");
                     return;
                 }
-                string bytestr = string.Format($"{databytes[ind+i]:x02}");
+                string bytestr = string.Format($"{databytes[ind+i]:X02}");
                 Debug.Write($"{bytestr} ");
+            }
+            Debug.WriteLine("");
+        }
+
+        public void ShowAllBytes() {
+            ShowBytes(0, databytes.Length, 32);
+        }
+
+
+        public void ShowBytes(int fromInd, int len) {
+            ShowBytes(fromInd, len, 32);
+        }
+
+
+        // FIXME - the method doesn't use the start stuff
+
+        public void ShowBytes(int fromInd, int len, int breakLen) {
+            int count = 0;
+            for (int i = fromInd; i < fromInd+len; i++) {
+                if (i==databytes.Length) {
+                    Debug.WriteLine("EOF");
+                    return;
+                }
+                Debug.Write($"{databytes[i]:X02} ");
+                if (++count%breakLen== 0) {
+                    Debug.WriteLine("");
+                }
             }
             Debug.WriteLine("");
         }
@@ -159,6 +197,7 @@ namespace MyShaderAnalysis.readers {
 
     }
 }
+
 
 
 

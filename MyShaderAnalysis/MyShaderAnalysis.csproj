@@ -16,4 +16,8 @@
     <PackageReference Include="ZstdSharp.Port" Version="0.5.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MyValveResourceFormat\MyValveResourceFormat.csproj" />
+  </ItemGroup>
+
 </Project>
