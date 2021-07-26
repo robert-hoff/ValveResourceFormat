@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ namespace MyShaderAnalysis.readers {
         public byte[] databytes;
         public readonly int start;
         public int offset;
+        StreamWriter sw = null;
 
 
         public DataReader(byte[] data) {
@@ -329,14 +331,7 @@ namespace MyShaderAnalysis.readers {
                 throw new ShaderParserException("unexpected value!");
             }
             ShowBytesNoLineBreak(4);
-            TabPrintComment("one row of zeroes indicates ps/vs header follows");
-
-            // FIXME we need a bit more here for the features files
-
-
-            Debug.WriteLine("");
-
-
+            TabPrintComment("always 0");
         }
 
 
@@ -347,17 +342,90 @@ namespace MyShaderAnalysis.readers {
             TabPrintComment("file ID0");
             ShowBytesNoLineBreak(16);
             TabPrintComment("file ID1");
+            Debug.WriteLine("");
         }
 
 
+        public void PrintFeaturesHeader() {
+            Debug.WriteLine("");
+            ShowByteCount("features header");
+            uint unk0 = ReadUIntAtPosition(offset);
+            ShowBytesNoLineBreak(4);
+            TabPrintComment($"{unk0} ?");
 
+            uint name_len = ReadUIntAtPosition(offset);
+            ShowBytesNoLineBreak(4);
+            TabPrintComment($"{name_len} len of name");
+            Debug.WriteLine("");
 
-        //public void PrintForSBlock(int ind) {
-        //    string name1 = readNullTermStringAtPosition(ind);
-        //    Debug.WriteLine($"[{ind}] {name1}");
-        //    ShowBytesAtPosition(ind, 128);
-        //    ShowBytesAtPosition(ind+128, 24, 4);
-        //}
+            string name = readNullTermStringAtPosition(offset);
+            Debug.WriteLine($"// {name}");
+            ShowBytes(name.Length + 1);
+
+            Debug.WriteLine("");
+            ShowByteCount();
+
+            uint arg1 = ReadUIntAtPosition(offset);
+            uint arg2 = ReadUIntAtPosition(offset + 4);
+            uint arg3 = ReadUIntAtPosition(offset + 8);
+            uint arg4 = ReadUIntAtPosition(offset + 12);
+            ShowBytes(4);
+            ShowBytes(4);
+            ShowBytes(4);
+            ShowBytesNoLineBreak(4);
+            TabPrintComment($"({arg1},{arg2},{arg3},{arg4})");
+            uint arg5 = ReadUIntAtPosition(offset);
+            uint arg6 = ReadUIntAtPosition(offset + 4);
+            uint arg7 = ReadUIntAtPosition(offset + 8);
+            uint arg8 = ReadUIntAtPosition(offset + 12);
+            ShowBytes(4);
+            ShowBytes(4);
+            ShowBytes(4);
+            ShowBytesNoLineBreak(4);
+            TabPrintComment($"({arg5},{arg6},{arg7},{arg8})");
+            Debug.WriteLine("");
+
+            ShowByteCount();
+            uint count = ReadUIntAtPosition(offset);
+            ShowBytesNoLineBreak(4);
+            TabPrintComment($"count = {count}");
+
+            Debug.WriteLine("");
+            ShowByteCount();
+
+            for (int i = 0; i < count; i++) {
+                string default_name = readNullTermStringAtPosition(offset);
+                Debug.WriteLine($"// {default_name}");
+                ShowBytes(128);
+                uint sSymbols = ReadUIntAtPosition(offset);
+                ShowBytes(4);
+                for (int j = 0; j < sSymbols; j++) {
+                    string sSymbolName = readNullTermStringAtPosition(offset);
+                    Debug.WriteLine($"// {sSymbolName}");
+                    ShowBytes(68);
+                }
+            }
+
+            Debug.WriteLine("");
+            ShowByteCount();
+            ShowBytesNoLineBreak(16);
+            TabPrintComment("file ID0");
+            ShowBytesNoLineBreak(16);
+            TabPrintComment("file ID1");
+            ShowBytesNoLineBreak(16);
+            TabPrintComment("file ID2");
+            ShowBytesNoLineBreak(16);
+            TabPrintComment("file ID3");
+            ShowBytesNoLineBreak(16);
+            TabPrintComment("file ID4");
+            ShowBytesNoLineBreak(16);
+            TabPrintComment("file ID5");
+            ShowBytesNoLineBreak(16);
+            TabPrintComment("file ID6");
+            ShowBytesNoLineBreak(16);
+            TabPrintComment("file ID7");
+            Debug.WriteLine("");
+        }
 
 
         public void PrintSFBlock() {
@@ -388,23 +456,16 @@ namespace MyShaderAnalysis.readers {
         }
 
 
-        int unknownBlockType1Count = 0;
-        public void PrintUnknownBlockType1() {
-            ShowByteCount($"TYPE1_UNKBLOCK[{unknownBlockType1Count++}]");
+        public void PrintUnknownBlockType1(int unknownBlockId) {
+            ShowByteCount($"TYPE1_UNKBLOCK[{unknownBlockId}]");
             ShowBytes(472);
+            Debug.WriteLine("");
         }
 
 
 
-        int paramAssignmentBlockCount = 0;
-        /*
-         *
-         *
-         *
-         *
-         */
-        public void PrintParamAssignmentBlock() {
-            ShowByteCount($"PARAM-BLOCK[{paramAssignmentBlockCount++}]");
+        public void PrintParamAssignmentBlock(int paramId) {
+            ShowByteCount($"PARAM-BLOCK[{paramId}]");
             string name1 = readNullTermStringAtPosition(offset);
             Debug.WriteLine($"// {name1}");
             ShowBytesAtPosition(offset, 64);
@@ -453,24 +514,19 @@ namespace MyShaderAnalysis.readers {
         }
 
 
-
-
-        public void PrintMipmapBlock() {
-            Debug.WriteLine($"[{offset}]");
+        public void PrintMipmapBlock(int mipmapId) {
+            Debug.WriteLine($"[{offset}] MIPMAP-BLOCK[{mipmapId}]");
             ShowBytes(24, 4);
             string name1 = readNullTermStringAtPosition(offset);
-            Debug.WriteLine($"[{offset}] {name1}");
+            Debug.WriteLine($"// {name1}");
             ShowBytes(256);
             Debug.WriteLine("");
         }
 
 
-
-        int bufferBlockCount = 0;
-
-        public void PrintBufferBlock() {
+        public void PrintBufferBlock(int bufferBlockId) {
             string blockname = readNullTermStringAtPosition(offset);
-            ShowByteCount($"BUFFER-BLOCK[{bufferBlockCount++}] {blockname}");
+            ShowByteCount($"BUFFER-BLOCK[{bufferBlockId}] {blockname}");
             ShowBytes(64);
             uint bufferSize = ReadUIntAtPosition(offset);
             ShowBytesNoLineBreak(4);
@@ -505,7 +561,6 @@ namespace MyShaderAnalysis.readers {
         }
 
 
-
         public void PrintNamesBlock(int block_id) {
             ShowByteCount($"SYMBOL-NAMES-BLOCK[{block_id}]");
             uint symbolGroupCount = ReadUIntAtPosition(offset);
@@ -524,14 +579,17 @@ namespace MyShaderAnalysis.readers {
         }
 
 
-
-
         public void ParseZFramesSection() {
+            Debug.WriteLine("");
             ShowByteCount();
             uint zframe_count = ReadUIntAtPosition(offset);
             ShowBytesNoLineBreak(4);
             TabPrintComment($"{zframe_count} nr of zframes");
             Debug.WriteLine("");
+
+            if (zframe_count == 0) {
+                return;
+            }
 
             List<uint> zFrameIndexes = new();
             ShowByteCount("zFrame ID's");
@@ -561,9 +619,6 @@ namespace MyShaderAnalysis.readers {
         }
 
 
-
-        // int zFrameCount = 0;
-
         public void PrintCompressedZFrame(int zframeId) {
             Debug.WriteLine($"[{offset}] zframe[{zframeId}]");
             ShowBytesNoLineBreak(4);
@@ -591,6 +646,23 @@ namespace MyShaderAnalysis.readers {
             Debug.WriteLine("EOF");
         }
 
+
+
+
+
+        public void ConfigureWriteToFile(StreamWriter sw) {
+            this.sw = sw;
+        }
+        private void OutputWrite(string text) {
+            if (sw != null) {
+                sw.Write(text);
+            } else {
+                Debug.Write(text);
+            }
+        }
+        private void OutputWriteLine(string text) {
+            OutputWrite(text + "\n");
+        }
 
 
     }

@@ -11,30 +11,32 @@ using MyShaderAnalysis.readers;
 namespace MyShaderAnalysis {
     public class ShaderAnalysis1 {
 
-        const string ANALYSIS_DIR = @"X:\checkouts\ValveResourceFormat\files_under_analysis";
-
-        const string GLOW_OUPUT_PC_30_FEATURES = ANALYSIS_DIR + @"\compiled-shaders\glow_output_pc_30_features.vcs";
-        const string GLOW_OUPUT_PC_40_FEATURES = ANALYSIS_DIR + @"\compiled-shaders\glow_output_pc_40_features.vcs";
+        // const string ANALYSIS_DIR = @"X:\checkouts\ValveResourceFormat\files_under_analysis\compiled-shaders";
+        const string ANALYSIS_DIR = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders\vfx";
 
 
-        const string GLOW_OUPUT_PCGL_30_FEATURES = ANALYSIS_DIR + @"\compiled-shaders\glow_output_pcgl_30_features.vcs";
-        const string GLOW_OUPUT_PCGL_30_PS = ANALYSIS_DIR + @"\compiled-shaders\glow_output_pcgl_30_ps.vcs";
-        const string GLOW_OUPUT_PCGL_30_VS = ANALYSIS_DIR + @"\compiled-shaders\glow_output_pcgl_30_vs.vcs";
-
-        const string GLOW_OUPUT_PCGL_40_PS = ANALYSIS_DIR + @"\compiled-shaders\glow_output_pcgl_40_ps.vcs";
-        const string GLOW_OUPUT_PCGL_40_VS = ANALYSIS_DIR + @"\compiled-shaders\glow_output_pcgl_40_vs.vcs";
+        const string GLOW_OUPUT_PC_30_FEATURES = ANALYSIS_DIR + @"\glow_output_pc_30_features.vcs";
+        const string GLOW_OUPUT_PC_40_FEATURES = ANALYSIS_DIR + @"\glow_output_pc_40_features.vcs";
 
 
-        const string MULTIBLEND_PCGL_30_PS = ANALYSIS_DIR + @"\compiled-shaders\multiblend_pcgl_30_ps.vcs";
-        const string MULTIBLEND_PCGL_30_VS = ANALYSIS_DIR + @"\compiled-shaders\multiblend_pcgl_30_vs.vcs";
+        const string GLOW_OUPUT_PCGL_30_FEATURES = ANALYSIS_DIR + @"\glow_output_pcgl_30_features.vcs";
+        const string GLOW_OUPUT_PCGL_30_PS = ANALYSIS_DIR + @"\glow_output_pcgl_30_ps.vcs";
+        const string GLOW_OUPUT_PCGL_30_VS = ANALYSIS_DIR + @"\glow_output_pcgl_30_vs.vcs";
+
+        const string GLOW_OUPUT_PCGL_40_PS = ANALYSIS_DIR + @"\glow_output_pcgl_40_ps.vcs";
+        const string GLOW_OUPUT_PCGL_40_VS = ANALYSIS_DIR + @"\glow_output_pcgl_40_vs.vcs";
+
+
+        const string MULTIBLEND_PCGL_30_PS = ANALYSIS_DIR + @"\multiblend_pcgl_30_ps.vcs";
+        const string MULTIBLEND_PCGL_30_VS = ANALYSIS_DIR + @"\multiblend_pcgl_30_vs.vcs";
 
 
 
-        const string REFRACT_PCGL_30_FEATURES = ANALYSIS_DIR + @"\compiled-shaders\refract_pcgl_30_features.vcs";
+        const string REFRACT_PCGL_30_FEATURES = ANALYSIS_DIR + @"\refract_pcgl_30_features.vcs";
 
-        const string UI_TWOTEXTURE_PCGL_30_FEATURES = ANALYSIS_DIR + @"\compiled-shaders\ui_twotexture_pcgl_30_features.vcs";
-        const string UI_TWOTEXTURE_PCGL_30_PS = ANALYSIS_DIR + @"\compiled-shaders\ui_twotexture_pcgl_30_ps.vcs";
-        const string UI_TWOTEXTURE_PCGL_30_VS = ANALYSIS_DIR + @"\compiled-shaders\ui_twotexture_pcgl_30_vs.vcs";
+        const string UI_TWOTEXTURE_PCGL_30_FEATURES = ANALYSIS_DIR + @"\ui_twotexture_pcgl_30_features.vcs";
+        const string UI_TWOTEXTURE_PCGL_30_PS = ANALYSIS_DIR + @"\ui_twotexture_pcgl_30_ps.vcs";
+        const string UI_TWOTEXTURE_PCGL_30_VS = ANALYSIS_DIR + @"\ui_twotexture_pcgl_30_vs.vcs";
 
 
 
@@ -49,7 +51,18 @@ namespace MyShaderAnalysis {
             // Trials2();
             // Trials3();
 
-            ParseShaderFile(MULTIBLEND_PCGL_30_PS);
+
+            // ParseShaderFile(ANALYSIS_DIR+@"\3dskyboxstencil_pcgl_30_features.vcs");
+            // ParseShaderFile(ANALYSIS_DIR+@"\3dskyboxstencil_pcgl_30_ps.vcs");
+            // ParseShaderFile(ANALYSIS_DIR+@"\3dskyboxstencil_pcgl_30_vs.vcs");
+
+
+            // ParseShaderFile(ANALYSIS_DIR+@"\3dskyboxstencil_pcgl_30_features.vcs");
+            // ParseShaderFile(ANALYSIS_DIR+@"\bloom_dota_cs_pcgl_30_features.vcs");
+            // ParseShaderFile(ANALYSIS_DIR+@"\bloom_dota_pcgl_30_features.vcs");
+            ParseShaderFile(ANALYSIS_DIR+@"\crystal_pcgl_30_features.vcs");
+
+
 
 
 
@@ -61,7 +74,13 @@ namespace MyShaderAnalysis {
             // TouchFile(filepath);
             // WriteAllBytesToTemplateFile(filepath);
 
-            new ShaderFile(filepath);
+            // new ShaderFile(filepath);
+
+            ShaderFile2 parser = new ShaderFile2(filepath);
+            parser.ConfigureWriteToFile(OUTPUT_DIR);
+            parser.ParseShader();
+
+
         }
 
 
@@ -77,12 +96,12 @@ namespace MyShaderAnalysis {
                 Debug.WriteLine($"CREATED FILE {newFilepath}");
                 return filestream;
             } else {
-                Debug.WriteLine($"File already exists!!! {newFilepath}");
-                // return null;
+                // Debug.WriteLine($"File already exists!!! {newFilepath}");
+                return null;
 
 
-                FileStream filestream = File.Create(newFilepath);
-                return filestream;
+                // FileStream filestream = File.Create(newFilepath);
+                // return filestream;
             }
         }
 
