@@ -136,37 +136,26 @@ namespace MyShaderAnalysis.readers {
 
 
             //datareader.offset = 28220;
-            //datareader.ShowByteCount($"{datareader.readNullTermStringAtPosition(datareader.offset)}");
-            //datareader.ShowBytes(64);
             //for (int i = 0; i < 3; i++) {
-            //    uint val = datareader.ReadUIntAtPosition(datareader.offset);
-            //    datareader.ShowBytesNoLineBreak(4);
-            //    datareader.TabPrintComment($"{val}");
-            //}
-            //Debug.WriteLine("");
-            //for (int i = 0; i < 81; i++) {
-            //    string name1 = datareader.readNullTermStringAtPosition(datareader.offset);
-            //    datareader.ShowByteCount($"{name1}");
-            //    datareader.ShowBytes(64);
-            //    for (int j = 0; j < 4; j++) {
-            //        uint val = datareader.ReadUIntAtPosition(datareader.offset);
-            //        datareader.ShowBytesNoLineBreak(4);
-            //        datareader.TabPrintComment($"{val}");
-            //    }
+            //    datareader.PrintBufferBlock();
             //}
 
 
             //datareader.offset = 34780;
-            //for (int i = 0; i < 10; i++) {
-            //    datareader.ShowByteCount();
-            //    datareader.ShowBytes(500);
+            //datareader.ShowByteCount();
+            //uint symbolBlockCount = datareader.ReadUIntAtPosition(datareader.offset);
+            //datareader.ShowBytesNoLineBreak(4);
+            //datareader.TabPrintComment($"{symbolBlockCount} symbol/names blocks (variable length)");
+            //for (int i = 0; i < symbolBlockCount; i++) {
+            //    Debug.WriteLine("");
+            //    datareader.PrintNamesBlock(i);
             //}
 
 
 
-            datareader.offset = 37244;
-            datareader.parseZFramesSection();
 
+            //datareader.offset = 37244;
+            //datareader.parseZFramesSection();
 
 
 

@@ -49,8 +49,8 @@ namespace MyShaderAnalysis {
             // Trials2();
             // Trials3();
 
-            ParseShaderFile(MULTIBLEND_PCGL_30_VS);
-            
+            ParseShaderFile(MULTIBLEND_PCGL_30_PS);
+
 
 
 
