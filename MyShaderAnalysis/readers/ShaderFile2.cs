@@ -9,15 +9,15 @@ using System.Threading.Tasks;
 namespace MyShaderAnalysis.readers {
 
 
-    class ShaderFile2 {
-
-
+    public class ShaderFile2 {
 
         string filepath;
         string filename;
         private bool FEATURES_FILE = false;
-        private bool PC_FILE = false;
-        private bool VC_FILE = false;
+        private bool PS_FILE = false;
+        private bool VS_FILE = false;
+        private bool GS_FILE = false;
+        private bool PSRS_FILE = false;
         DataReader datareader;
         string outputFile = null;
         StreamWriter sw = null;
@@ -30,14 +30,22 @@ namespace MyShaderAnalysis.readers {
             if (name_wo_extension.Length >= 8 && name_wo_extension[^8..] == "features") {
                 FEATURES_FILE = true;
             }
-            if (name_wo_extension.Length >= 2 && name_wo_extension[^2..] == "pc") {
-                PC_FILE = true;
+            if (name_wo_extension.Length >= 2 && name_wo_extension[^2..] == "ps") {
+                PS_FILE = true;
             }
-            if (name_wo_extension.Length >= 2 && name_wo_extension[^2..] == "vc") {
-                VC_FILE = true;
+            if (name_wo_extension.Length >= 2 && name_wo_extension[^2..] == "vs") {
+                VS_FILE = true;
             }
-            if (!FEATURES_FILE && !PC_FILE && !VC_FILE) {
+            if (name_wo_extension.Length >= 2 && name_wo_extension[^2..] == "gs") {
+                GS_FILE = true;
+            }
+            if (name_wo_extension.Length >= 4 && name_wo_extension[^4..] == "psrs") {
+                PSRS_FILE = true;
+            }
+            if (!FEATURES_FILE && !PS_FILE && !VS_FILE && !GS_FILE && !PSRS_FILE) {
                 throw new ShaderParserException($"Cannot parse this filetype! {filename}");
+                // Debug.WriteLine($"unknown file! {filename}");
+                // return;
             }
             datareader = new(File.ReadAllBytes(filepath));
         }
@@ -53,28 +61,30 @@ namespace MyShaderAnalysis.readers {
             filestream.Close();
             outputFile = newFilepath;
 
-            //filestream.Flush();
-            //filestream.Close();
-            //Trace.Listeners.Add(new TextWriterTraceListener(newFilepath));
-            //Trace.AutoFlush = true;
+            //R: couldn't get this to work without showing output in console
+            // filestream.Flush();
+            // filestream.Close();
+            // Trace.Listeners.Add(new TextWriterTraceListener(newFilepath));
+            // Trace.AutoFlush = true;
         }
 
 
         public void ParseShader() {
-
             if (outputFile != null) {
                 sw = new StreamWriter(outputFile);
                 datareader.ConfigureWriteToFile(sw);
-            }
-            try {
-                parseShaderToFile();
-            } catch (Exception) {
-                Debug.WriteLine($"exception thrown for {filepath}");
-            }
+                try {
+                    StartParsing();
+                    Debug.WriteLine($"wrote file {filepath}");
 
-            if (sw != null) {
+                } catch (Exception) {
+                    Debug.WriteLine($"exception thrown for {filepath}");
+                }
+
                 sw.Flush();
                 sw.Close();
+            } else {
+                StartParsing();
             }
         }
 
@@ -90,9 +100,7 @@ namespace MyShaderAnalysis.readers {
             OutputWrite(text + "\n");
         }
 
-
-
-        private void parseShaderToFile() {
+        private void StartParsing() {
 
             OutputWriteLine($"parsing {filename}\n");
             datareader.PrintVcsFileHeader();
@@ -117,8 +125,7 @@ namespace MyShaderAnalysis.readers {
             datareader.ShowByteCount();
             uint sfBlockCount = datareader.ReadUIntAtPosition(datareader.offset);
             datareader.ShowBytesNoLineBreak(4);
-            datareader.TabPrintComment($"{sfBlockCount} SF blocks (152 bytes each)");
-
+            datareader.TabPrintComment($"{sfBlockCount} SF blocks (usually 152 bytes each)");
             OutputWriteLine("");
             for (int i = 0; i < sfBlockCount; i++) {
                 datareader.PrintSFBlock();
@@ -131,10 +138,8 @@ namespace MyShaderAnalysis.readers {
             OutputWriteLine("");
 
             for (int i = 0; i < combatibilityBlockCount; i++) {
-                datareader.PrintCompatibilitiesBlock();
+                datareader.PrintCompatibilitiesBlock(i);
             }
-
-
             datareader.ShowByteCount();
             uint dBlockCount = datareader.ReadUIntAtPosition(datareader.offset);
             datareader.ShowBytesNoLineBreak(4);
@@ -144,7 +149,6 @@ namespace MyShaderAnalysis.readers {
             for (int i = 0; i < dBlockCount; i++) {
                 datareader.PrintDBlock();
             }
-
             datareader.ShowByteCount();
             uint unknownBlockCount = datareader.ReadUIntAtPosition(datareader.offset);
             datareader.ShowBytesNoLineBreak(4);
@@ -154,7 +158,6 @@ namespace MyShaderAnalysis.readers {
             for (int i = 0; i < unknownBlockCount; i++) {
                 datareader.PrintUnknownBlockType1(i);
             }
-
             datareader.ShowByteCount();
             uint paramBlockCount = datareader.ReadUIntAtPosition(datareader.offset);
             datareader.ShowBytesNoLineBreak(4);
@@ -163,7 +166,6 @@ namespace MyShaderAnalysis.readers {
             for (int i = 0; i < paramBlockCount; i++) {
                 datareader.PrintParamAssignmentBlock(i);
             }
-
             datareader.ShowByteCount();
             uint mipmapBlockCount = datareader.ReadUIntAtPosition(datareader.offset);
             datareader.ShowBytesNoLineBreak(4);
@@ -172,7 +174,6 @@ namespace MyShaderAnalysis.readers {
             for (int i = 0; i < mipmapBlockCount; i++) {
                 datareader.PrintMipmapBlock(i);
             }
-
             datareader.ShowByteCount();
             uint bufferBlockCount = datareader.ReadUIntAtPosition(datareader.offset);
             datareader.ShowBytesNoLineBreak(4);
@@ -182,9 +183,8 @@ namespace MyShaderAnalysis.readers {
                 datareader.PrintBufferBlock(i);
             }
 
-
-            // R: no symbol blocks for the ps file ... ?
-            if (!PC_FILE) {
+            // for some reason these do not observe symbol blocks
+            if (!PS_FILE && !GS_FILE && !PSRS_FILE) {
                 datareader.ShowByteCount();
                 uint symbolBlockCount = datareader.ReadUIntAtPosition(datareader.offset);
                 datareader.ShowBytesNoLineBreak(4);
@@ -194,27 +194,27 @@ namespace MyShaderAnalysis.readers {
                     datareader.PrintNamesBlock(i);
                 }
             }
-
             datareader.ParseZFramesSection();
             datareader.EndOfFile();
 
 
 
+            //Debug.WriteLine("");
+            //Debug.WriteLine("");
+            //Debug.WriteLine("");
+            //datareader.ShowByteCount("----------------------------------------------------------------------------------------");
+            //datareader.ShowBytesAtPosition(datareader.offset, 1000);
+            //Debug.WriteLine("");
+
+
         }
-
-
-
-
-
 
     }
 
 
-
-
-
-
 }
+
+
 
 
 

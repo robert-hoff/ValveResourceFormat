@@ -70,7 +70,7 @@ namespace MyShaderAnalysis.readers {
             Debug.WriteLine("");
 
             for (int i = 0; i < combatibilityBlockCount; i++) {
-                datareader.PrintCompatibilitiesBlock();
+                datareader.PrintCompatibilitiesBlock(i);
             }
 
 

@@ -12,7 +12,9 @@ namespace MyShaderAnalysis {
     public class ShaderAnalysis1 {
 
         // const string ANALYSIS_DIR = @"X:\checkouts\ValveResourceFormat\files_under_analysis\compiled-shaders";
+        // const string ANALYSIS_DIR = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders-core\vfx";
         const string ANALYSIS_DIR = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders\vfx";
+        // const string ANALYSIS_DIR = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders-core\vfx";
 
 
         const string GLOW_OUPUT_PC_30_FEATURES = ANALYSIS_DIR + @"\glow_output_pc_30_features.vcs";
@@ -60,24 +62,55 @@ namespace MyShaderAnalysis {
             // ParseShaderFile(ANALYSIS_DIR+@"\3dskyboxstencil_pcgl_30_features.vcs");
             // ParseShaderFile(ANALYSIS_DIR+@"\bloom_dota_cs_pcgl_30_features.vcs");
             // ParseShaderFile(ANALYSIS_DIR+@"\bloom_dota_pcgl_30_features.vcs");
-            ParseShaderFile(ANALYSIS_DIR+@"\crystal_pcgl_30_features.vcs");
+            // ParseShaderFile(ANALYSIS_DIR+@"\crystal_pcgl_30_features.vcs");
+
+
+
+            // ParseShaderFile(ANALYSIS_DIR+@"\blur_cs_pcgl_30_features.vcs");
+            // ParseShaderFile(ANALYSIS_DIR+@"\deferred_post_process_experimental_pcgl_30_features.vcs");
+            // ParseShaderFile(ANALYSIS_DIR+@"\spritecard_pcgl_30_features.vcs");
+            // ParseShaderFile(ANALYSIS_DIR+@"\visualize_physics_pcgl_40_gs.vcs");
+            // ParseShaderFile(ANALYSIS_DIR+@"\spritecard_pcgl_40_psrs.vcs");
+            // ParseShaderFile(ANALYSIS_DIR+@"\sky_pcgl_30_features.vcs");
+            // ParseShaderFile(ANALYSIS_DIR+@"\tools_sprite_pcgl_40_features.vcs");
+            // ParseShaderFile(ANALYSIS_DIR+@"\spritecard_pcgl_30_features.vcs");
+            // ParseShaderFile(ANALYSIS_DIR+@"\vr_warp_pcgl_50_ps.vcs");
+            // ParseShaderFile(ANALYSIS_DIR+@"\tools_visualize_tangent_frame_pcgl_40_vs.vcs");
+            // ParseShaderFile(ANALYSIS_DIR+@"\blur_pcgl_30_ps.vcs");
 
 
 
 
-
+             ParseAllShaders(ANALYSIS_DIR);
 
         }
 
 
+        static void ParseAllShaders(string path) {
+            string[] files = Directory.GetFiles(path);
+            foreach(string file in files) {
+                if (Path.GetExtension(file)!=".vcs") {
+                    continue;
+                }
+                try {
+                    Debug.WriteLine($"attempting to parse {file}");
+                    ParseShaderFile(file, true);
+                } catch (Exception) {
+                }
+            }
+        }
+
+
         static void ParseShaderFile(string filepath) {
-            // TouchFile(filepath);
-            // WriteAllBytesToTemplateFile(filepath);
+            ParseShaderFile(filepath, false);
+        }
 
-            // new ShaderFile(filepath);
 
+        static void ParseShaderFile(string filepath, bool writeToFile) {
             ShaderFile2 parser = new ShaderFile2(filepath);
-            parser.ConfigureWriteToFile(OUTPUT_DIR);
+            if (writeToFile) {
+                parser.ConfigureWriteToFile(OUTPUT_DIR);
+            }
             parser.ParseShader();
 
 
@@ -119,8 +152,8 @@ namespace MyShaderAnalysis {
                 stream.Write(Encoding.ASCII.GetBytes(bytesAsString));
             }
 
-             stream.Flush();
-             stream.Close();
+            stream.Flush();
+            stream.Close();
 
             Debug.WriteLine("finished writing");
         }

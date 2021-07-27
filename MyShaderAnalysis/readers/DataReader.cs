@@ -90,6 +90,11 @@ namespace MyShaderAnalysis.readers {
             offset += 4;
             return floatval;
         }
+        public float ReadFloatAtPosition(int ind) {
+            float floatval = BitConverter.ToSingle(databytes, ind);
+            return floatval;
+        }
+
 
         public byte[] ReadBytes(int len) {
             byte[] bytes = new byte[len];
@@ -163,17 +168,17 @@ namespace MyShaderAnalysis.readers {
         public void ShowBytesSurrounding(int ind) {
             for (int i = -20; i < 40; i++) {
                 if (ind + i < 0) {
-                    Debug.Write($"   ");
+                    OutputWrite($"   ");
                     continue;
                 }
                 if (ind + i > databytes.Length - 1) {
-                    Debug.WriteLine($"EOF");
+                    OutputWriteLine($"EOF");
                     return;
                 }
                 string bytestr = string.Format($"{databytes[ind + i]:X02}");
-                Debug.Write($"{bytestr} ");
+                OutputWrite($"{bytestr} ");
             }
-            Debug.WriteLine("");
+            OutputWriteLine("");
         }
 
         public void ShowAllBytes() {
@@ -183,11 +188,11 @@ namespace MyShaderAnalysis.readers {
 
         public string ReadBytesAsString(int len, int breakLen) {
             if (offset == databytes.Length) {
-                Debug.WriteLine("EOF reached");
+                OutputWriteLine("EOF reached");
             }
             if (offset + len >= databytes.Length) {
                 len = databytes.Length - offset;
-                Debug.WriteLine("WARN - request a bit too long");
+                OutputWriteLine("WARN - request a bit too long");
             }
 
             byte[] b = ReadBytes(len);
@@ -204,7 +209,7 @@ namespace MyShaderAnalysis.readers {
                 }
             }
             if (count % breakLen != 0) {
-                Debug.WriteLine("");
+                OutputWriteLine("");
             }
             return bytestring;
         }
@@ -234,64 +239,64 @@ namespace MyShaderAnalysis.readers {
             int count = 0;
             for (int i = fromInd; i < fromInd + len; i++) {
                 if (i == databytes.Length) {
-                    Debug.WriteLine("EOF");
+                    OutputWriteLine("EOF");
                     return;
                 }
-                Debug.Write($"{databytes[i]:X02} ");
+                OutputWrite($"{databytes[i]:X02} ");
                 if (++count % breakLen == 0) {
-                    Debug.WriteLine("");
+                    OutputWriteLine("");
                 }
             }
             if (count % breakLen != 0) {
-                Debug.WriteLine("");
+                OutputWriteLine("");
             }
         }
 
-        public static void ShowBytesByteArray(byte[] b) {
+        public void ShowBytesByteArray(byte[] b) {
             ShowBytesByteArray(b, 32);
         }
 
-        public static void ShowBytesByteArray(byte[] b, int breakLen) {
+        public void ShowBytesByteArray(byte[] b, int breakLen) {
             int count = 0;
             for (int i = 0; i < b.Length; i++) {
-                Debug.Write($"{b[i]:X02} ");
+                OutputWrite($"{b[i]:X02} ");
                 if (++count % breakLen == 0) {
-                    Debug.WriteLine("");
+                    OutputWriteLine("");
                 }
             }
             if (count % breakLen != 0) {
-                Debug.WriteLine("");
+                OutputWriteLine("");
             }
         }
 
         public void ShowByteCount() {
-            Debug.WriteLine($"[{offset}]");
+            OutputWriteLine($"[{offset}]");
         }
 
         public void ShowByteCount(string comment) {
-            Debug.WriteLine($"[{offset}] {comment}");
+            OutputWriteLine($"[{offset}] {comment}");
         }
 
 
         public void ShowIntValue() {
             int intval = ReadIntAtPosition(offset);
             for (int i = 0; i < 4; i++) {
-                Debug.Write($"{ ReadByte():x02} ");
+                OutputWrite($"{ ReadByte():x02} ");
             }
-            Debug.WriteLine($"        // {intval}");
+            OutputWriteLine($"        // {intval}");
         }
 
 
         public void ShowBytesAtPositionNoLineBreak(int offset, int len) {
-            Debug.Write($"{databytes[offset]:X02}");
+            OutputWrite($"{databytes[offset]:X02}");
             for (int i = 1; i < len; i++) {
-                Debug.Write($" {databytes[offset + i]:X02}");
+                OutputWrite($" {databytes[offset + i]:X02}");
             }
         }
         public void ShowBytesNoLineBreak(int len) {
-            Debug.Write($"{ReadByte():X02}");
+            OutputWrite($"{ReadByte():X02}");
             for (int i = 1; i < len; i++) {
-                Debug.Write($" {ReadByte():X02}");
+                OutputWrite($" {ReadByte():X02}");
             }
         }
 
@@ -303,9 +308,12 @@ namespace MyShaderAnalysis.readers {
 
         public void TabPrintComment(string message, int tabLength) {
             string space = "";
-            Debug.WriteLine($"{space.PadLeft(tabLength)} // {message}");
+            OutputWriteLine($"{space.PadLeft(tabLength)} // {message}");
         }
 
+
+
+        uint oneOrZeroValue;
 
 
         public void PrintVcsFileHeader() {
@@ -326,12 +334,12 @@ namespace MyShaderAnalysis.readers {
             }
             ShowBytesNoLineBreak(4);
             TabPrintComment("version 64");
-            uint zerocheck = ReadUIntAtPosition(offset);
-            if (zerocheck != 0) {
+            oneOrZeroValue = ReadUIntAtPosition(offset);
+            if (oneOrZeroValue != 0 && oneOrZeroValue != 1) {
                 throw new ShaderParserException("unexpected value!");
             }
             ShowBytesNoLineBreak(4);
-            TabPrintComment("always 0");
+            TabPrintComment("values seen are 0 and 1");
         }
 
 
@@ -342,12 +350,12 @@ namespace MyShaderAnalysis.readers {
             TabPrintComment("file ID0");
             ShowBytesNoLineBreak(16);
             TabPrintComment("file ID1");
-            Debug.WriteLine("");
+            OutputWriteLine("");
         }
 
 
         public void PrintFeaturesHeader() {
-            Debug.WriteLine("");
+            OutputWriteLine("");
             ShowByteCount("features header");
             uint unk0 = ReadUIntAtPosition(offset);
             ShowBytesNoLineBreak(4);
@@ -356,13 +364,13 @@ namespace MyShaderAnalysis.readers {
             uint name_len = ReadUIntAtPosition(offset);
             ShowBytesNoLineBreak(4);
             TabPrintComment($"{name_len} len of name");
-            Debug.WriteLine("");
+            OutputWriteLine("");
 
             string name = readNullTermStringAtPosition(offset);
-            Debug.WriteLine($"// {name}");
+            OutputWriteLine($"// {name}");
             ShowBytes(name.Length + 1);
 
-            Debug.WriteLine("");
+            OutputWriteLine("");
             ShowByteCount();
 
             uint arg1 = ReadUIntAtPosition(offset);
@@ -383,30 +391,37 @@ namespace MyShaderAnalysis.readers {
             ShowBytes(4);
             ShowBytesNoLineBreak(4);
             TabPrintComment($"({arg5},{arg6},{arg7},{arg8})");
-            Debug.WriteLine("");
+            OutputWriteLine("");
 
             ShowByteCount();
             uint count = ReadUIntAtPosition(offset);
             ShowBytesNoLineBreak(4);
             TabPrintComment($"count = {count}");
 
-            Debug.WriteLine("");
+            if (oneOrZeroValue == 1) {
+                // do this again
+                count = ReadUIntAtPosition(offset);
+                ShowBytesNoLineBreak(4);
+                TabPrintComment($"count = {count}");
+            }
+
+            OutputWriteLine("");
             ShowByteCount();
 
             for (int i = 0; i < count; i++) {
                 string default_name = readNullTermStringAtPosition(offset);
-                Debug.WriteLine($"// {default_name}");
+                OutputWriteLine($"// {default_name}");
                 ShowBytes(128);
                 uint sSymbols = ReadUIntAtPosition(offset);
                 ShowBytes(4);
                 for (int j = 0; j < sSymbols; j++) {
                     string sSymbolName = readNullTermStringAtPosition(offset);
-                    Debug.WriteLine($"// {sSymbolName}");
+                    OutputWriteLine($"// {sSymbolName}");
                     ShowBytes(68);
                 }
             }
 
-            Debug.WriteLine("");
+            OutputWriteLine("");
             ShowByteCount();
             ShowBytesNoLineBreak(16);
             TabPrintComment("file ID0");
@@ -424,74 +439,139 @@ namespace MyShaderAnalysis.readers {
             TabPrintComment("file ID6");
             ShowBytesNoLineBreak(16);
             TabPrintComment("file ID7");
-            Debug.WriteLine("");
+            // affects the number of ids
+            if (oneOrZeroValue == 1) {
+                ShowBytesNoLineBreak(16);
+                TabPrintComment("file ID8");
+            }
+            OutputWriteLine("");
+
+        }
+
+
+        private void PrintStringList(List<string> names) {
+            if (names.Count == 0) {
+                return;
+            }
+            OutputWrite($"// {names[0]}");
+            for (int i = 1; i < names.Count; i++) {
+                OutputWrite($", {names[i]}");
+            }
+            OutputWriteLine("");
         }
 
 
         public void PrintSFBlock() {
-            string name1 = readNullTermStringAtPosition(offset);
-            Debug.WriteLine($"[{offset}] {name1}");
-            ShowBytes(128);
-            ShowBytes(24, 4);
-            Debug.WriteLine("");
+            ShowByteCount();
+            for (int i = 0; i < 2; i++) {
+                string name1 = readNullTermStringAtPosition(offset);
+                if (name1.Length > 0) {
+                    OutputWriteLine($"// {name1}");
+                }
+                ShowBytes(64);
+            }
+
+            int arg0 = ReadIntAtPosition(offset);
+            int arg1 = ReadIntAtPosition(offset + 4);
+            int arg2 = ReadIntAtPosition(offset + 8);
+            int arg3 = ReadIntAtPosition(offset + 12);
+            int arg4 = ReadIntAtPosition(offset + 16);
+            int arg5 = ReadIntAtPosition(offset + 20);
+
+            ShowBytes(12, 4);
+            ShowBytesNoLineBreak(4);
+            TabPrintComment($"({arg0},{arg1},{arg2},{arg3})");
+
+            ShowBytesNoLineBreak(4);
+            TabPrintComment($"({arg4}) values seen: [-1,13]");
+
+            ShowBytesNoLineBreak(4);
+            TabPrintComment($"{arg5} additional string params");
+            int string_offset = offset;
+            List<string> names = new();
+            for (int i = 0; i < arg5; i++) {
+                string paramname = readNullTermStringAtPosition(string_offset);
+                names.Add(paramname);
+                string_offset += paramname.Length + 1;
+            }
+            PrintStringList(names);
+            ShowBytes(string_offset - offset);
+            OutputWriteLine("");
         }
 
-        int compatBlockCount = 0;
-        public void PrintCompatibilitiesBlock() {
-            Debug.WriteLine($"[{offset}] COMPAT-BLOCK[{compatBlockCount++}]");
+
+        //public void PrintStringSequence() {
+        //    List<string> names = new();
+        //    int string_offset = offset;
+        //    string name1 = readNullTermStringAtPosition(string_offset);
+        //    string_offset += name1.Length + 1;
+        //    if (name1.Length > 0) {
+        //        names.Add(name1);
+        //    }
+        //    while (name1.Length > 0) {
+        //        name1 = readNullTermStringAtPosition(string_offset);
+        //        if (name1.Length > 0) {
+        //            names.Add(name1);
+        //            string_offset += name1.Length + 1;
+        //        }
+        //    };
+        //    PrintStringList(names);
+        //    ShowBytes(string_offset - offset);
+        //}
+
+
+
+        public void PrintCompatibilitiesBlock(int compatBlockId) {
+            OutputWriteLine($"[{offset}] COMPAT-BLOCK[{compatBlockId}]");
             ShowBytes(216);
             string name1 = readNullTermStringAtPosition(offset);
-            Debug.WriteLine($"[{offset}] {name1}");
+            OutputWriteLine($"[{offset}] {name1}");
             ShowBytes(256);
-            Debug.WriteLine("");
+            OutputWriteLine("");
         }
 
         public void PrintDBlock() {
             string name1 = readNullTermStringAtPosition(offset);
-            Debug.WriteLine($"[{offset}] {name1}");
+            OutputWriteLine($"[{offset}] {name1}");
             ShowBytes(128);
             ShowBytes(12, 4);
             ShowBytes(12);
-            Debug.WriteLine("");
+            OutputWriteLine("");
         }
-
 
         public void PrintUnknownBlockType1(int unknownBlockId) {
             ShowByteCount($"TYPE1_UNKBLOCK[{unknownBlockId}]");
             ShowBytes(472);
-            Debug.WriteLine("");
+            OutputWriteLine("");
         }
-
 
 
         public void PrintParamAssignmentBlock(int paramId) {
             ShowByteCount($"PARAM-BLOCK[{paramId}]");
             string name1 = readNullTermStringAtPosition(offset);
-            Debug.WriteLine($"// {name1}");
+            OutputWriteLine($"// {name1}");
             ShowBytesAtPosition(offset, 64);
             offset += 64;
             string name2 = readNullTermStringAtPosition(offset);
             if (name2.Length > 0) {
-                Debug.WriteLine($"// {name2}");
+                OutputWriteLine($"// {name2}");
             }
             ShowBytesAtPosition(offset, 64);
             offset += 64;
-
             ShowBytesAtPosition(offset, 8);
             offset += 8;
-
             string name3 = readNullTermStringAtPosition(offset);
             if (name3.Length > 0) {
-                Debug.WriteLine($"// {name3}");
+                OutputWriteLine($"// {name3}");
             }
             ShowBytesAtPosition(offset, 64);
             offset += 64;
 
-            uint dynIndicator = ReadUIntAtPosition(offset);
+            uint paramType = ReadUIntAtPosition(offset);
+            OutputWriteLine($"// param-type, 6 or 7 lead dynamic-exp. Known values: 0,1,5,6,7,8,10,11,13");
+            ShowBytes(4);
 
-            if (dynIndicator == 6 || dynIndicator == 7) {
-                // Debug.WriteLine("06 00 00 00 // dyn-exp");
-                ShowBytes(4);
+            if (paramType == 6 || paramType == 7) {
                 int dynLength = ReadIntAtPosition(offset);
                 ShowBytesNoLineBreak(4);
                 TabPrintComment("dyn-exp len", 0);
@@ -499,28 +579,99 @@ namespace MyShaderAnalysis.readers {
                 TabPrintComment("dynamic expression", 0);
 
             } else {
-                ShowBytes(4);
+                // ShowBytes(4);
             }
 
-            ShowBytesAtPosition(offset, 24);
-            offset += 24;
-            ShowBytesAtPosition(offset, 64);
-            offset += 64;
-            ShowBytesAtPosition(offset, 128, 16);
-            offset += 128;
-            ShowBytesAtPosition(offset, 64);
-            offset += 64;
-            Debug.WriteLine("");
+            // parameters
+            ShowBytes(24);
+            ShowBytes(64); // 64 byte 0 padding
+
+
+            // float or int arguments
+            int a0 = ReadIntAtPosition(offset);
+            int a1 = ReadIntAtPosition(offset + 4);
+            int a2 = ReadIntAtPosition(offset + 8);
+            int a3 = ReadIntAtPosition(offset + 12);
+            ShowBytesNoLineBreak(16);
+            TabPrintComment($"ints   ({show(a0)},{show(a1)},{show(a2)},{show(a3)})", 10);
+
+            a0 = ReadIntAtPosition(offset);
+            a1 = ReadIntAtPosition(offset + 4);
+            a2 = ReadIntAtPosition(offset + 8);
+            a3 = ReadIntAtPosition(offset + 12);
+            ShowBytesNoLineBreak(16);
+            TabPrintComment($"ints   ({show(a0)},{show(a1)},{show(a2)},{show(a3)})", 10);
+
+            a0 = ReadIntAtPosition(offset);
+            a1 = ReadIntAtPosition(offset + 4);
+            a2 = ReadIntAtPosition(offset + 8);
+            a3 = ReadIntAtPosition(offset + 12);
+            ShowBytesNoLineBreak(16);
+            TabPrintComment($"ints   ({show(a0)},{show(a1)},{show(a2)},{show(a3)})", 10);
+
+            float f0 = ReadFloatAtPosition(offset);
+            float f1 = ReadFloatAtPosition(offset + 4);
+            float f2 = ReadFloatAtPosition(offset + 8);
+            float f3 = ReadFloatAtPosition(offset + 12);
+            ShowBytesNoLineBreak(16);
+            TabPrintComment($"floats ({show(f0)},{show(f1)},{show(f2)},{show(f3)})", 10);
+
+            f0 = ReadFloatAtPosition(offset);
+            f1 = ReadFloatAtPosition(offset + 4);
+            f2 = ReadFloatAtPosition(offset + 8);
+            f3 = ReadFloatAtPosition(offset + 12);
+            ShowBytesNoLineBreak(16);
+            TabPrintComment($"floats ({show(f0)},{show(f1)},{show(f2)},{show(f3)})", 10);
+
+
+            f0 = ReadFloatAtPosition(offset);
+            f1 = ReadFloatAtPosition(offset + 4);
+            f2 = ReadFloatAtPosition(offset + 8);
+            f3 = ReadFloatAtPosition(offset + 12);
+            ShowBytesNoLineBreak(16);
+            TabPrintComment($"floats ({show(f0)},{show(f1)},{show(f2)},{show(f3)})", 10);
+
+            a0 = ReadIntAtPosition(offset);
+            a1 = ReadIntAtPosition(offset + 4);
+            a2 = ReadIntAtPosition(offset + 8);
+            a3 = ReadIntAtPosition(offset + 12);
+            ShowBytesNoLineBreak(16);
+            TabPrintComment($"ints   ({show(a0)},{show(a1)},{show(a2)},{show(a3)})", 10);
+
+            a0 = ReadIntAtPosition(offset);
+            a1 = ReadIntAtPosition(offset + 4);
+            a2 = ReadIntAtPosition(offset + 8);
+            a3 = ReadIntAtPosition(offset + 12);
+            ShowBytesNoLineBreak(16);
+            TabPrintComment($"ints   ({show(a0)},{show(a1)},{show(a2)},{show(a3)})", 10);
+
+
+            ShowBytes(64); // 64 byte 0 padding
+            OutputWriteLine("");
         }
 
 
+        private string show(float val) {
+            if (val == -1e9) return "-inf";
+            if (val == 1e9) return "inf";
+            return $"{val}";
+        }
+
+        private string show(int val) {
+            if (val == -999999999) return "-inf";
+            if (val == 999999999) return "inf";
+            return "" + val; ;
+        }
+
+
+
         public void PrintMipmapBlock(int mipmapId) {
-            Debug.WriteLine($"[{offset}] MIPMAP-BLOCK[{mipmapId}]");
+            OutputWriteLine($"[{offset}] MIPMAP-BLOCK[{mipmapId}]");
             ShowBytes(24, 4);
             string name1 = readNullTermStringAtPosition(offset);
-            Debug.WriteLine($"// {name1}");
+            OutputWriteLine($"// {name1}");
             ShowBytes(256);
-            Debug.WriteLine("");
+            OutputWriteLine("");
         }
 
 
@@ -538,7 +689,7 @@ namespace MyShaderAnalysis.readers {
 
             for (int i = 0; i < paramCount; i++) {
                 string paramname = readNullTermStringAtPosition(offset);
-                Debug.WriteLine($"// {paramname}");
+                OutputWriteLine($"// {paramname}");
                 ShowBytes(64);
                 uint paramIndex = ReadUIntAtPosition(offset);
                 ShowBytesNoLineBreak(4);
@@ -553,11 +704,11 @@ namespace MyShaderAnalysis.readers {
                 TabPrintComment($"({vertexSize},{attributeCount},{size}) (vertex-size, attribute-count, size)");
             }
 
-            Debug.WriteLine("");
+            OutputWriteLine("");
             ShowBytesNoLineBreak(4);
             TabPrintComment("check/crc/confirmation for the block");
-            Debug.WriteLine("");
-            Debug.WriteLine("");
+            OutputWriteLine("");
+            OutputWriteLine("");
         }
 
 
@@ -567,25 +718,25 @@ namespace MyShaderAnalysis.readers {
             ShowBytesNoLineBreak(4);
             TabPrintComment($"{symbolGroupCount} string groups in this block");
             for (int i = 0; i < symbolGroupCount; i++) {
-                Debug.WriteLine("");
+                OutputWriteLine("");
                 for (int j = 0; j < 3; j++) {
                     string symbolname = readNullTermStringAtPosition(offset);
-                    Debug.WriteLine($"// {symbolname}");
+                    OutputWriteLine($"// {symbolname}");
                     ShowBytes(symbolname.Length + 1);
                 }
                 ShowBytes(4);
             }
-            Debug.WriteLine("");
+            OutputWriteLine("");
         }
 
 
         public void ParseZFramesSection() {
-            Debug.WriteLine("");
+            OutputWriteLine("");
             ShowByteCount();
             uint zframe_count = ReadUIntAtPosition(offset);
             ShowBytesNoLineBreak(4);
-            TabPrintComment($"{zframe_count} nr of zframes");
-            Debug.WriteLine("");
+            TabPrintComment($"{zframe_count} zframes");
+            OutputWriteLine("");
 
             if (zframe_count == 0) {
                 return;
@@ -599,7 +750,7 @@ namespace MyShaderAnalysis.readers {
                 TabPrintComment($"zframe[{zframe_index}]");
                 zFrameIndexes.Add(zframe_index);
             }
-            Debug.WriteLine("");
+            OutputWriteLine("");
 
             ShowByteCount("zFrame file offsets");
             foreach (int zframeIndex in zFrameIndexes) {
@@ -611,7 +762,7 @@ namespace MyShaderAnalysis.readers {
             uint total_size = ReadUIntAtPosition(offset);
             ShowBytesNoLineBreak(4);
             TabPrintComment($"{total_size} - end of file");
-            Debug.WriteLine("");
+            OutputWriteLine("");
 
             foreach (int zframeIndex in zFrameIndexes) {
                 PrintCompressedZFrame(zframeIndex);
@@ -620,7 +771,7 @@ namespace MyShaderAnalysis.readers {
 
 
         public void PrintCompressedZFrame(int zframeId) {
-            Debug.WriteLine($"[{offset}] zframe[{zframeId}]");
+            OutputWriteLine($"[{offset}] zframe[{zframeId}]");
             ShowBytesNoLineBreak(4);
             TabPrintComment("DELIM (0xfffffffd)");
             ShowBytesAtPositionNoLineBreak(offset, 4);
@@ -631,9 +782,9 @@ namespace MyShaderAnalysis.readers {
             int compressed_length = ReadInt();
             TabPrintComment($"{compressed_length,-8} compressed length");
             ShowBytesAtPosition(offset, 96);
-            Debug.WriteLine("// ...");
+            OutputWriteLine("// ...");
             offset += compressed_length;
-            Debug.WriteLine("");
+            OutputWriteLine("");
         }
 
 
@@ -643,7 +794,7 @@ namespace MyShaderAnalysis.readers {
                 throw new ShaderParserException("End of file not reached!");
             }
             ShowByteCount();
-            Debug.WriteLine("EOF");
+            OutputWriteLine("EOF");
         }
 
 
