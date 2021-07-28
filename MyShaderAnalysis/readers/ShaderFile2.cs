@@ -18,9 +18,10 @@ namespace MyShaderAnalysis.readers {
         private bool VS_FILE = false;
         private bool GS_FILE = false;
         private bool PSRS_FILE = false;
-        DataReader datareader;
+        public DataReader datareader;
         string outputFile = null;
         StreamWriter sw = null;
+        private bool DisableOutput = false;
 
 
         public ShaderFile2(string filepath) {
@@ -70,6 +71,10 @@ namespace MyShaderAnalysis.readers {
 
 
         public void ParseShader() {
+            if (DisableOutput) {
+                datareader.DisableOutput = true;
+            }
+
             if (outputFile != null) {
                 sw = new StreamWriter(outputFile);
                 datareader.ConfigureWriteToFile(sw);
@@ -90,6 +95,10 @@ namespace MyShaderAnalysis.readers {
 
 
         private void OutputWrite(string text) {
+            if (DisableOutput) {
+                return;
+            }
+
             if (sw != null) {
                 sw.Write(text);
             } else {
@@ -100,9 +109,16 @@ namespace MyShaderAnalysis.readers {
             OutputWrite(text + "\n");
         }
 
+        public void SetDisableOutput(bool DisableOutput) {
+            this.DisableOutput = DisableOutput;
+        }
+
+
         private void StartParsing() {
 
             OutputWriteLine($"parsing {filename}\n");
+
+            // Debug.WriteLine($"{filename}");
             datareader.PrintVcsFileHeader();
 
             if (FEATURES_FILE) {
@@ -205,6 +221,10 @@ namespace MyShaderAnalysis.readers {
             //datareader.ShowByteCount("----------------------------------------------------------------------------------------");
             //datareader.ShowBytesAtPosition(datareader.offset, 1000);
             //Debug.WriteLine("");
+
+
+
+
 
 
         }

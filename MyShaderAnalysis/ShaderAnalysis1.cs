@@ -11,38 +11,34 @@ using MyShaderAnalysis.readers;
 namespace MyShaderAnalysis {
     public class ShaderAnalysis1 {
 
-        // const string ANALYSIS_DIR = @"X:\checkouts\ValveResourceFormat\files_under_analysis\compiled-shaders";
+
+
+
+        const string ANALYSIS_DIR = @"X:\checkouts\ValveResourceFormat\files_under_analysis\compiled-shaders";
         // const string ANALYSIS_DIR = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders-core\vfx";
-        const string ANALYSIS_DIR = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders\vfx";
-        // const string ANALYSIS_DIR = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders-core\vfx";
+
+        // PCGL dirs
+        const string ANALYSIS_DIR1 = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders\vfx";
+        const string ANALYSIS_DIR2 = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders-core\vfx";
 
 
         const string GLOW_OUPUT_PC_30_FEATURES = ANALYSIS_DIR + @"\glow_output_pc_30_features.vcs";
         const string GLOW_OUPUT_PC_40_FEATURES = ANALYSIS_DIR + @"\glow_output_pc_40_features.vcs";
-
-
         const string GLOW_OUPUT_PCGL_30_FEATURES = ANALYSIS_DIR + @"\glow_output_pcgl_30_features.vcs";
         const string GLOW_OUPUT_PCGL_30_PS = ANALYSIS_DIR + @"\glow_output_pcgl_30_ps.vcs";
         const string GLOW_OUPUT_PCGL_30_VS = ANALYSIS_DIR + @"\glow_output_pcgl_30_vs.vcs";
-
         const string GLOW_OUPUT_PCGL_40_PS = ANALYSIS_DIR + @"\glow_output_pcgl_40_ps.vcs";
         const string GLOW_OUPUT_PCGL_40_VS = ANALYSIS_DIR + @"\glow_output_pcgl_40_vs.vcs";
-
-
         const string MULTIBLEND_PCGL_30_PS = ANALYSIS_DIR + @"\multiblend_pcgl_30_ps.vcs";
         const string MULTIBLEND_PCGL_30_VS = ANALYSIS_DIR + @"\multiblend_pcgl_30_vs.vcs";
-
-
-
         const string REFRACT_PCGL_30_FEATURES = ANALYSIS_DIR + @"\refract_pcgl_30_features.vcs";
-
         const string UI_TWOTEXTURE_PCGL_30_FEATURES = ANALYSIS_DIR + @"\ui_twotexture_pcgl_30_features.vcs";
         const string UI_TWOTEXTURE_PCGL_30_PS = ANALYSIS_DIR + @"\ui_twotexture_pcgl_30_ps.vcs";
         const string UI_TWOTEXTURE_PCGL_30_VS = ANALYSIS_DIR + @"\ui_twotexture_pcgl_30_vs.vcs";
 
 
 
-        const string OUTPUT_DIR = @"Z:\active\projects\dota2-sourcesdk-modding\shader-analysis-vcs-format\bit-analysis";
+        const string OUTPUT_DIR = @"Z:\active\projects\dota2-sourcesdk-modding\shader-analysis-vcs-format\output-dump";
 
 
 
@@ -76,25 +72,138 @@ namespace MyShaderAnalysis {
             // ParseShaderFile(ANALYSIS_DIR+@"\spritecard_pcgl_30_features.vcs");
             // ParseShaderFile(ANALYSIS_DIR+@"\vr_warp_pcgl_50_ps.vcs");
             // ParseShaderFile(ANALYSIS_DIR+@"\tools_visualize_tangent_frame_pcgl_40_vs.vcs");
-            // ParseShaderFile(ANALYSIS_DIR+@"\blur_pcgl_30_ps.vcs");
+            // ParseShaderFile(ANALYSIS_DIR2+@"\blur_pcgl_30_features.vcs");
 
 
 
+            ParseAllShadersAnalysis(ANALYSIS_DIR1);
+            ParseAllShadersAnalysis(ANALYSIS_DIR2);
 
-             ParseAllShaders(ANALYSIS_DIR);
+
+            // ParseAllShadersToFile(ANALYSIS_DIR1);
+            // ParseAllShadersToFile(ANALYSIS_DIR2);
 
         }
 
 
-        static void ParseAllShaders(string path) {
-            string[] files = Directory.GetFiles(path);
-            foreach(string file in files) {
-                if (Path.GetExtension(file)!=".vcs") {
+        static void ParseAllShadersAnalysis(string path) {
+
+
+
+            //for (int i = 0; i < 8; i++) {
+            //    Debug.WriteLine($"({i*32+216}) 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
+            //}
+
+
+
+
+            Dictionary<int, int> collectValuesInt = new();
+            Dictionary<string, int> collectValuesString = new();
+
+            Debug.WriteLine(path);
+            bool[] requestCount = { false };
+            bool[] requestShowFile = { false };
+
+
+            string[] fileListing = Directory.GetFiles(path);
+            foreach (string filepath in fileListing) {
+                if (Path.GetExtension(filepath) != ".vcs") {
+                    continue;
+                }
+
+                ShaderFile2 parser = new(filepath);
+
+                parser.datareader.collectValuesInt = collectValuesInt;
+                parser.datareader.collectValuesString = collectValuesString;
+                parser.datareader.requestCount = requestCount;
+                // parser.datareader.requestShowFile = requestShowFile;
+                parser.datareader.filepath = filepath;
+
+                parser.SetDisableOutput(true);
+                parser.ParseShader();
+
+                //if (requestShowFile[0]) {
+                //    Debug.WriteLine(filepath);
+                //}
+
+
+
+            }
+
+            // why the frick doesn't this work? (oh, it's because the last file doesn't contain a D-block)
+            // showIntCount = parser.datareader.requestCount;
+            // showStringCount = parser.datareader.requestCount;
+
+
+
+
+
+
+            List<int> intvalues = new();
+            foreach (int i in collectValuesInt.Keys) {
+                intvalues.Add(i);
+            }
+            intvalues.Sort();
+            foreach (int i in intvalues) {
+                if (requestCount[0]) {
+                    collectValuesInt.TryGetValue(i, out int instanceCount);
+                    Debug.WriteLine($"{i,5}        {instanceCount,3}");
+                } else {
+                    Debug.WriteLine($"{i}");
+                }
+            }
+
+
+            List<string> stringvalues = new();
+            foreach (string s in collectValuesString.Keys) {
+                stringvalues.Add(s);
+            }
+            stringvalues.Sort();
+
+
+            // ParseDynamicExpressionShader dynParser = new ParseDynamicExpressionShader();
+
+            foreach (string s in stringvalues) {
+                if (requestCount[0]) {
+
+                    // parse dynamic expression
+                    // byte[] databytes = parseString(s);
+                    // dynParser.ParseExpression(databytes);
+                    // Debug.Write("// "+dynParser.dynamicExpressionResult.Trim().Replace("\n", "\n// "));
+                    // Debug.WriteLine("");
+
+
+                    collectValuesString.TryGetValue(s, out int instanceCount);
+                    Debug.WriteLine($"{s}        {instanceCount,3}");
+                    // Debug.WriteLine("");
+                } else {
+                    Debug.WriteLine($"{s}");
+                }
+            }
+
+        }
+
+
+        static byte[] parseString(String bytestring) {
+            // string[] tokens = bytestring.Trim().Split(" ");
+            string[] tokens = bytestring.Replace("\n", "").Trim().Split(" ");
+            byte[] databytes = new byte[tokens.Length];
+            for (int i = 0; i < tokens.Length; i++) {
+                databytes[i] = Convert.ToByte(tokens[i], 16);
+            }
+            return databytes;
+        }
+
+
+        static void ParseAllShadersToFile(string path) {
+            string[] fileListing = Directory.GetFiles(path);
+            foreach (string filenamepath in fileListing) {
+                if (Path.GetExtension(filenamepath) != ".vcs") {
                     continue;
                 }
                 try {
-                    Debug.WriteLine($"attempting to parse {file}");
-                    ParseShaderFile(file, true);
+                    Debug.WriteLine($"attempting to parse {filenamepath}");
+                    ParseShaderFile(filenamepath, true);
                 } catch (Exception) {
                 }
             }
@@ -112,21 +221,17 @@ namespace MyShaderAnalysis {
                 parser.ConfigureWriteToFile(OUTPUT_DIR);
             }
             parser.ParseShader();
-
-
         }
 
 
-
-
-        static FileStream TouchFile(string filepath) {
-            string filename = Path.GetFileName(filepath);
+        static FileStream TouchFile(string filenamepath) {
+            string filename = Path.GetFileName(filenamepath);
             filename = filename[0..^4] + "-ANALYSIS.txt";
-            string newFilepath = @$"{OUTPUT_DIR}\{filename}";
+            string newFilenamepath = @$"{OUTPUT_DIR}\{filename}";
 
-            if (!File.Exists(newFilepath)) {
-                FileStream filestream = File.Create(newFilepath);
-                Debug.WriteLine($"CREATED FILE {newFilepath}");
+            if (!File.Exists(newFilenamepath)) {
+                FileStream filestream = File.Create(newFilenamepath);
+                Debug.WriteLine($"CREATED FILE {newFilenamepath}");
                 return filestream;
             } else {
                 // Debug.WriteLine($"File already exists!!! {newFilepath}");
