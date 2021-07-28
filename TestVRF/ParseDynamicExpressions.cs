@@ -87,6 +87,8 @@ namespace TestVRF
             MODULO = 0x17,               // 17		%					23
             NEGATE = 0x18,
             EXTVAR = 0x19,
+            EXTFUN = 0x1A,          // deduced from vcs files
+            EXTVAL = 0x1D,          // deduced from vcs files
             SWIZZLE = 0x1E,
             EXISTS = 0x1F,
             // NOT_AN_OPS = 0xff,
@@ -350,6 +352,25 @@ namespace TestVRF
                 return;
             }
 
+            if (op == OPCODE.EXTFUN)
+            {
+                uint expressionId = datareader.nextByte();
+                expressions.Push($"EXTFUN[{expressionId}]");
+                return;
+            }
+
+            if (op == OPCODE.EXTVAL)
+            {
+                // uint b0 = datareader.nextByte();
+                // uint b1 = datareader.nextByte();
+                uint intval = datareader.nextInt();
+                string refname = externalVarsReference.GetValueOrDefault(intval, $"{intval:x08}");
+
+                // expressions.Push($"EXTVAL[0x{intval:x04}]");
+                expressions.Push($"EXTVAL[{refname}]");
+                return;
+            }
+
             if (op == OPCODE.SWIZZLE)
             {
                 string exp = expressions.Pop();
@@ -376,10 +397,11 @@ namespace TestVRF
                     return;
                 }
                 string final_exp = expressions.Pop();
-                while (final_exp.Length > 2 && final_exp[0] == '(' && final_exp[final_exp.Length - 1] == ')')
-                {
+                // NOTE - there are examples where this will fail!
+                //while (final_exp.Length > 2 && final_exp[0] == '(' && final_exp[final_exp.Length - 1] == ')')
+                //{
                     final_exp = trimb(final_exp);
-                }
+                //}
                 dynamicExpressionList.Add($"return {final_exp};");
                 return;
             }

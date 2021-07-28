@@ -27,7 +27,8 @@ namespace TestVRF
             // string input_string = example12();
             // string input_string = example13();
             // string input_string = example14();
-            string input_string = example16();
+            // string input_string = example16();
+            string input_string = example17();
 
 
             byte[] databytes = parseString(input_string);
@@ -37,6 +38,18 @@ namespace TestVRF
 
         }
 
+
+        //
+
+
+        static string example17()
+        {
+
+            return
+            "07 00 00 00 40 1D 43 7B B8 29 06 15 00 1E 00 1D D4 62 A9 E3 1E 00 15 1D 3C 13 92 A3 1E A4 06 1F 00 15 00";
+            // "07 00 00 00 40 1D 43 7B B8 29 06 15 00 1E 00 1D D4 62 A9 E3 1E 00 15 00";
+            // "1D 3C 13 92 A3 1E A4 06 1F 00 00";
+        }
 
 
         static string example16()
