@@ -235,7 +235,7 @@ namespace MyShaderAnalysis {
 
         static void ScanSizes() {
             ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR1 + @"\multiblend_pcgl_30_ps.vcs");
-            for (int i = 0; i < 1; i++) {
+            for (int i = 2; i < 3; i++) {
                 Trial1ZGen(shaderReader, i);
             }
 
@@ -251,7 +251,7 @@ namespace MyShaderAnalysis {
 
             DataReader datareader = shaderReader.getZframeDataReader(zframeId);
             // Debug.WriteLine($"{zframeId}    {datareader.databytes.Length}");
-             // datareader.DisableOutput = true;
+              //datareader.DisableOutput = true;
 
 
             datareader.ShowZDataSection(-1);
@@ -288,45 +288,16 @@ namespace MyShaderAnalysis {
             }
 
 
-
-            Debug.WriteLine("");
-            datareader.ShowByteCount();
-            datareader.ShowBytes(2);
-            int blockEntryCount = (int)datareader.ReadUInt16AtPosition(datareader.offset - 2);
-            int blocksRegistered = datareader.ShowBlocksRegistered(blockEntryCount);
-            Debug.WriteLine("");
-
-            datareader.ShowByteCount();
-            datareader.ShowBytesNoLineBreak(2);
-            datareader.TabPrintComment("control, always 1C 02");
-            Debug.WriteLine("");
+            int blocksRegistered = datareader.ShowZBlocksRegisteredSection();
+            datareader.ShowZControlAndFlags();
 
 
-            datareader.ShowByteCount("flags");
-            datareader.ShowBytes(4);
-            datareader.ShowBytes(4);
-            Debug.WriteLine("");
 
-
-            for (int i = 0; i < blocksRegistered; i++) {
-                datareader.ShowZSourceOffsets();
-                datareader.ShowZGlslSourceSummary(i);
-                datareader.ShowByteCount();
-                datareader.ShowBytesNoLineBreak(16);
-                datareader.TabPrintComment($"File ID");
-                Debug.WriteLine("");
-            }
-
-            datareader.ShowByteCount();
-            datareader.ShowBytesNoLineBreak(4);
-            int nr_end_blocks = datareader.ReadIntAtPosition(datareader.offset - 4);
-            datareader.TabPrintComment($"nr end blocks ({nr_end_blocks})");
-            Debug.WriteLine("");
-            for (int i = 0; i < nr_end_blocks; i++) {
-                datareader.ShowZEndBlock(i);
-            }
-
-            datareader.EndOfFile();
+            //for (int i = 0; i < blocksRegistered; i++) {
+            //    datareader.ShowZSourceSection(i);
+            //}
+            //datareader.ShowZAllEndBlocks();
+            //datareader.EndOfFile();
 
 
         }
@@ -380,7 +351,7 @@ namespace MyShaderAnalysis {
             datareader.ShowByteCount();
             datareader.ShowBytes(2);
             int blockEntryCount = (int)datareader.ReadUInt16AtPosition(datareader.offset - 2);
-            int blocksRegistered = datareader.ShowBlocksRegistered(blockEntryCount);
+            int blocksRegistered = datareader.ShowZBlocksRegistered(blockEntryCount);
             Debug.WriteLine("");
 
             datareader.ShowByteCount();
@@ -395,24 +366,13 @@ namespace MyShaderAnalysis {
             Debug.WriteLine("");
 
             for (int i = 0; i < blocksRegistered; i++) {
-                datareader.ShowZSourceOffsets();
-                datareader.ShowZGlslSourceSummary(i);
-                datareader.ShowByteCount();
-                datareader.ShowBytesNoLineBreak(16);
-                datareader.TabPrintComment($"File ID");
-                Debug.WriteLine("");
+                datareader.ShowZSourceSection(i);
             }
 
 
             datareader.ShowByteCount();
             datareader.ShowBytesNoLineBreak(4);
-            int nr_end_blocks = datareader.ReadIntAtPosition(datareader.offset - 4);
-            datareader.TabPrintComment($"nr end blocks ({nr_end_blocks})");
-            Debug.WriteLine("");
-            for (int i = 0; i < nr_end_blocks; i++) {
-                datareader.ShowZEndBlock(i);
-            }
-
+            datareader.ShowZAllEndBlocks();
             datareader.EndOfFile();
 
 

@@ -1189,13 +1189,17 @@ namespace MyShaderAnalysis.readers {
             OutputWriteLine("");
         }
 
-
-        public void ShowBlocksRegisteredSection() {
-
+        public int ShowZBlocksRegisteredSection() {
+            OutputWriteLine("");
+            ShowByteCount();
+            ShowBytes(2);
+            int blockEntryCount = (int)ReadUInt16AtPosition(offset - 2);
+            int blocksRegistered = ShowZBlocksRegistered(blockEntryCount);
+            OutputWriteLine("");
+            return blocksRegistered;
         }
 
-
-        public int ShowBlocksRegistered(int blockEntryCount) {
+        public int ShowZBlocksRegistered(int blockEntryCount) {
             int recordsFound = 0;
             for (int i = 0; i < blockEntryCount; i++) {
                 int hasEntry = (int) ReadInt16AtPosition(offset + i * 2);
@@ -1209,6 +1213,26 @@ namespace MyShaderAnalysis.readers {
         }
 
 
+        public void ShowZControlAndFlags() {
+            ShowByteCount();
+            ShowBytesNoLineBreak(2);
+            TabPrintComment("control, always 1C 02");
+            OutputWriteLine("");
+            ShowByteCount("flags");
+            ShowBytes(4);
+            ShowBytes(4);
+            OutputWriteLine("");
+        }
+
+
+        public void ShowZSourceSection(int blockId) {
+                ShowZSourceOffsets();
+                ShowZGlslSourceSummary(blockId);
+                ShowByteCount();
+                ShowBytesNoLineBreak(16);
+                TabPrintComment($"File ID");
+                OutputWriteLine("");
+        }
 
         public void ShowZSourceOffsets() {
             ShowByteCount("glsl source offsets");
@@ -1227,6 +1251,20 @@ namespace MyShaderAnalysis.readers {
             OutputWriteLine($"// ... ({endOfSource-offset} bytes of data not shown)");
             offset = endOfSource;
             OutputWriteLine("");
+        }
+
+
+
+
+        public void ShowZAllEndBlocks() {
+            ShowByteCount();
+            ShowBytesNoLineBreak(4);
+            int nr_end_blocks = ReadIntAtPosition(offset - 4);
+            TabPrintComment($"nr end blocks ({nr_end_blocks})");
+            OutputWriteLine("");
+            for (int i = 0; i < nr_end_blocks; i++) {
+                ShowZEndBlock(i);
+            }
         }
 
 
