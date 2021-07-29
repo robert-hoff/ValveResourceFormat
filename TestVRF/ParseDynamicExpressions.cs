@@ -87,7 +87,7 @@ namespace TestVRF
             MODULO = 0x17,               // 17		%					23
             NEGATE = 0x18,
             EXTVAR = 0x19,
-            EXTFUN = 0x1A,          // deduced from vcs files
+            COND = 0x1A,          // deduced from vcs files
             EXTVAL = 0x1D,          // deduced from vcs files
             SWIZZLE = 0x1E,
             EXISTS = 0x1F,
@@ -234,12 +234,12 @@ namespace TestVRF
 
                 // for <e1>||<e2> expressions we are looking for the pattern
                 // 04 17 00 1F 00     07 00 00 80 3F
-                if (pointer2 - pointer1 == 8 && b[p] == 7 && b[p + 1] == 0 && b[p + 2] == 0 && b[p + 3] == 0x80 && b[p + 4] == 0x3F)
-                {
-                    offsetAtBranchExits.Push(OR_BRANCH);
-                    datareader.offset += 5;
-                    return;
-                }
+                //if (pointer2 - pointer1 == 8 && b[p] == 7 && b[p + 1] == 0 && b[p + 2] == 0 && b[p + 3] == 0x80 && b[p + 4] == 0x3F)
+                //{
+                //    offsetAtBranchExits.Push(OR_BRANCH);
+                //    datareader.offset += 5;
+                //    return;
+                //}
 
                 offsetAtBranchExits.Push(IFELSE_BRANCH);
                 return;
@@ -352,10 +352,10 @@ namespace TestVRF
                 return;
             }
 
-            if (op == OPCODE.EXTFUN)
+            if (op == OPCODE.COND)
             {
                 uint expressionId = datareader.nextByte();
-                expressions.Push($"EXTFUN[{expressionId}]");
+                expressions.Push($"COND[{expressionId}]");
                 return;
             }
 

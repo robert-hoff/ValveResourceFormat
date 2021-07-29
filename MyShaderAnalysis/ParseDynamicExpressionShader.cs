@@ -88,7 +88,7 @@ namespace MyShaderAnalysis {
             NEGATE = 0x18,
             EXTVAR = 0x19,
             EXTCOND = 0x1A,          // deduced from vcs files
-            EXTVAL = 0x1D,           // deduced from vcs files
+            EXTEVAL = 0x1D,           // deduced from vcs files
             SWIZZLE = 0x1E,
             EXISTS = 0x1F,
             // NOT_AN_OPS = 0xff,
@@ -143,6 +143,7 @@ namespace MyShaderAnalysis {
             {
                 dynamicExpressionResult += $"{s}\n";
             }
+            dynamicExpressionResult = dynamicExpressionResult.Trim();
         }
 
 
@@ -247,12 +248,11 @@ namespace MyShaderAnalysis {
 
                 // for <e1>||<e2> expressions we are looking for the pattern
                 // 04 17 00 1F 00     07 00 00 80 3F
-                if (pointer2 - pointer1 == 8 && b[p] == 7 && b[p + 1] == 0 && b[p + 2] == 0 && b[p + 3] == 0x80 && b[p + 4] == 0x3F)
-                {
-                    offsetAtBranchExits.Push(OR_BRANCH);
-                    datareader.offset += 5;
-                    return;
-                }
+                //if (pointer2 - pointer1 == 8 && b[p] == 7 && b[p + 1] == 0 && b[p + 2] == 0 && b[p + 3] == 0x80 && b[p + 4] == 0x3F) {
+                //    offsetAtBranchExits.Push(OR_BRANCH);
+                //    datareader.offset += 5;
+                //    return;
+                //}
 
                 offsetAtBranchExits.Push(IFELSE_BRANCH);
                 return;
@@ -372,7 +372,7 @@ namespace MyShaderAnalysis {
                 return;
             }
 
-            if (op == OPCODE.EXTVAL)
+            if (op == OPCODE.EXTEVAL)
             {
                 // uint b0 = datareader.nextByte();
                 // uint b1 = datareader.nextByte();
@@ -380,7 +380,7 @@ namespace MyShaderAnalysis {
                 string refname = externalVarsReference.GetValueOrDefault(intval, $"{intval:x08}");
 
                 // expressions.Push($"EXTVAL[0x{intval:x04}]");
-                expressions.Push($"EXTVAL[{refname}]");
+                expressions.Push($"EVAL[{refname}]");
                 return;
             }
 
@@ -415,7 +415,8 @@ namespace MyShaderAnalysis {
                 //{
                     final_exp = trimb(final_exp);
                 //}
-                dynamicExpressionList.Add($"return {final_exp};");
+                // dynamicExpressionList.Add($"return {final_exp};");
+                dynamicExpressionList.Add($"{final_exp}");
                 return;
             }
 
@@ -489,19 +490,21 @@ namespace MyShaderAnalysis {
                 return varKnownName;
             }
 
+            string varName = String.Format($"EXT[{varId:x08}]");
 
-            externalVariables.TryGetValue(varId, out string varName);
-            if (varName == null)
-            {
-                if (externalVariables.Count == 0)
-                {
-                    varName = "EXT";
-                } else
-                {
-                    varName = String.Format("EXT{0}", externalVariables.Count + 1);
-                }
-                externalVariables.Add(varId, varName);
-            }
+
+            //externalVariables.TryGetValue(varId, out string varName);
+            //if (varName == null)
+            //{
+            //    if (externalVariables.Count == 0)
+            //    {
+            //        varName = "EXT";
+            //    } else
+            //    {
+            //        varName = String.Format("EXT{0}", externalVariables.Count + 1);
+            //    }
+            //    externalVariables.Add(varId, varName);
+            //}
             return varName;
         }
 

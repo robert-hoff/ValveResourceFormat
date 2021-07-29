@@ -76,17 +76,36 @@ namespace MyShaderAnalysis {
 
 
 
-            ParseAllShadersAnalysis(ANALYSIS_DIR1);
-            ParseAllShadersAnalysis(ANALYSIS_DIR2);
 
 
-            // ParseAllShadersToFile(ANALYSIS_DIR1);
+            // ParseAllShadersAnalysis(ANALYSIS_DIR1, false);
+            // ParseAllShadersAnalysis(ANALYSIS_DIR2, true);
+
+
+
+            // NOTE - some files share the same name, doing the main dir (ANALYSIS_DIR1) last
+            // will guarantee all those files are the ones I expect
             // ParseAllShadersToFile(ANALYSIS_DIR2);
+            // ParseAllShadersToFile(ANALYSIS_DIR1);
+
+
+            WriteAllBytesToTemplateFile(@"Z:\git\vcs-decompile\output2\zframe001.txt");
 
         }
 
 
-        static void ParseAllShadersAnalysis(string path) {
+
+
+
+
+
+
+        private static Dictionary<int, int> collectValuesInt = new();
+        private static Dictionary<string, int> collectValuesString = new();
+
+
+
+        static void ParseAllShadersAnalysis(string path, bool printData) {
 
 
 
@@ -95,10 +114,6 @@ namespace MyShaderAnalysis {
             //}
 
 
-
-
-            Dictionary<int, int> collectValuesInt = new();
-            Dictionary<string, int> collectValuesString = new();
 
             Debug.WriteLine(path);
             bool[] requestCount = { false };
@@ -130,12 +145,11 @@ namespace MyShaderAnalysis {
 
             }
 
-            // why the frick doesn't this work? (oh, it's because the last file doesn't contain a D-block)
-            // showIntCount = parser.datareader.requestCount;
-            // showStringCount = parser.datareader.requestCount;
 
 
-
+            if (!printData) {
+                return;
+            }
 
 
 
@@ -159,18 +173,17 @@ namespace MyShaderAnalysis {
                 stringvalues.Add(s);
             }
             stringvalues.Sort();
-
-
             // ParseDynamicExpressionShader dynParser = new ParseDynamicExpressionShader();
 
             foreach (string s in stringvalues) {
                 if (requestCount[0]) {
 
                     // parse dynamic expression
-                    // byte[] databytes = parseString(s);
-                    // dynParser.ParseExpression(databytes);
-                    // Debug.Write("// "+dynParser.dynamicExpressionResult.Trim().Replace("\n", "\n// "));
-                    // Debug.WriteLine("");
+                    // NOTE requestCount[0] must be enabled to do this here!!!
+                    //byte[] databytes = parseString(s);
+                    //dynParser.ParseExpression(databytes);
+                    //Debug.Write("// " + dynParser.dynamicExpressionResult.Trim().Replace("\n", "\n// "));
+                    //Debug.WriteLine("");
 
 
                     collectValuesString.TryGetValue(s, out int instanceCount);
@@ -181,7 +194,21 @@ namespace MyShaderAnalysis {
                 }
             }
 
+            //Debug.WriteLine("");
+            //Debug.WriteLine("");
+            //Debug.WriteLine("");
+            //Debug.WriteLine("");
+            //Debug.WriteLine("");
+            //Debug.WriteLine("");
+
+
+            if (printData) {
+                collectValuesInt = new();
+                collectValuesString = new();
+            }
+
         }
+
 
 
         static byte[] parseString(String bytestring) {
@@ -228,6 +255,9 @@ namespace MyShaderAnalysis {
             string filename = Path.GetFileName(filenamepath);
             filename = filename[0..^4] + "-ANALYSIS.txt";
             string newFilenamepath = @$"{OUTPUT_DIR}\{filename}";
+
+
+            Debug.WriteLine(newFilenamepath);
 
             if (!File.Exists(newFilenamepath)) {
                 FileStream filestream = File.Create(newFilenamepath);

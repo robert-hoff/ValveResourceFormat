@@ -1,3 +1,4 @@
+using MyValveResourceFormat.ThirdParty;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -66,6 +67,14 @@ namespace MyShaderAnalysis.readers {
             uint intval = (b1 << 8) + b0;
             return intval;
         }
+
+        public uint ReadUInt16AtPosition(int ind) {
+            uint b0 = databytes[start + ind];
+            uint b1 = databytes[start + ind + 1];
+            uint intval = (b1 << 8) + b0;
+            return intval;
+        }
+
         public uint ReadUInt() {
             uint b0 = ReadByte();
             uint b1 = ReadByte();
@@ -123,6 +132,8 @@ namespace MyShaderAnalysis.readers {
             return bytes;
         }
 
+
+        // WARN WARN - this has the offset as the second argument
         public byte[] ReadBytesAtPosition(int len, int ind) {
             byte[] segmentbytes = new byte[len];
             for (int i = 0; i < len; i++) {
@@ -232,11 +243,28 @@ namespace MyShaderAnalysis.readers {
 
 
         public string ReadBytesAsStringAtPosition(int ind, int len) {
-            int currentoffset = offset;
-            offset = ind;
-            string bytestring = ReadBytesAsString(len, 32);
-            offset = currentoffset;
-            return bytestring;
+
+            //int currentoffset = offset;
+            //offset = ind;
+            //string bytestring = ReadBytesAsString(len, 999999);
+            //offset = currentoffset;
+            //return bytestring;
+
+            if (ind + len >= databytes.Length) {
+                len = databytes.Length - ind;
+                OutputWriteLine("WARN - request a bit too long");
+            }
+            byte[] b = ReadBytesAtPosition(len, offset);
+            string bytestring = "";
+            for (int i = ind; i < b.Length + ind; i++) {
+                if (i == databytes.Length) {
+                    bytestring += "EOF";
+                    return bytestring;
+                }
+                bytestring += $"{b[i - ind]:X02} ";
+            }
+            return bytestring.Trim();
+
         }
 
 
@@ -301,14 +329,6 @@ namespace MyShaderAnalysis.readers {
         }
 
 
-        public void ShowIntValue() {
-            int intval = ReadIntAtPosition(offset);
-            for (int i = 0; i < 4; i++) {
-                OutputWrite($"{ ReadByte():x02} ");
-            }
-            OutputWriteLine($"        // {intval}");
-        }
-
 
         public void ShowBytesAtPositionNoLineBreak(int offset, int len) {
             OutputWrite($"{databytes[offset]:X02}");
@@ -322,6 +342,30 @@ namespace MyShaderAnalysis.readers {
                 OutputWrite($" {ReadByte():X02}");
             }
         }
+
+
+
+        //public void ShowIntValue() {
+        //    int intval = ReadIntAtPosition(offset);
+        //    for (int i = 0; i < 4; i++) {
+        //        OutputWrite($"{ ReadByte():X02} ");
+        //    }
+        //    OutputWriteLine($"        // {intval}");
+        //}
+
+
+        public void PrintUInt16WithValue() {
+            uint intval = ReadUInt16AtPosition(offset);
+            ShowBytesNoLineBreak(2);
+            TabPrintComment($"{intval}");
+        }
+
+        public void PrintIntWithValue() {
+            int intval = ReadIntAtPosition(offset);
+            ShowBytesNoLineBreak(4);
+            TabPrintComment($"{intval}");
+        }
+
 
 
 
@@ -436,7 +480,7 @@ namespace MyShaderAnalysis.readers {
                 ShowBytesNoLineBreak(4);
                 TabPrintComment($"count = {count}");
                 // Debug.WriteLine($"{count}");
-                AddCollectValueInt((int) count);
+                // AddCollectValueInt((int) count);
             }
 
             OutputWriteLine("");
@@ -457,6 +501,21 @@ namespace MyShaderAnalysis.readers {
                     ShowBytes(68);
                 }
             }
+
+
+            //AddCollectValueString(ReadBytesAsStringAtPosition(offset, 16));
+            //AddCollectValueString(ReadBytesAsStringAtPosition(offset+16, 16));
+            //AddCollectValueString(ReadBytesAsStringAtPosition(offset+32, 16));
+            //AddCollectValueString(ReadBytesAsStringAtPosition(offset+48, 16));
+            //AddCollectValueString(ReadBytesAsStringAtPosition(offset+64, 16));
+            //AddCollectValueString(ReadBytesAsStringAtPosition(offset+80, 16));
+            //AddCollectValueString(ReadBytesAsStringAtPosition(offset+96, 16));
+            //AddCollectValueString(ReadBytesAsStringAtPosition(offset+112, 16));
+            //if (oneOrZeroValue == 1) {
+            //    AddCollectValueString(ReadBytesAsStringAtPosition(offset+128, 16));
+            //}
+
+
 
             OutputWriteLine("");
             ShowByteCount();
@@ -666,7 +725,7 @@ namespace MyShaderAnalysis.readers {
         public void PrintParamAssignmentBlock(int paramId) {
 
             // requestCount[0] = true;
-            int save_offset = offset;
+            // int save_offset = offset;
 
             // Debug.WriteLine(offset);
 
@@ -707,6 +766,7 @@ namespace MyShaderAnalysis.readers {
 
 
                 // INSPECTIONS
+                // requestCount[0] = true;
                 // string dyn_expression = ReadBytesAsStringAtPosition(offset, dynLength);
                 // AddCollectValueString(dyn_expression);
 
@@ -728,7 +788,7 @@ namespace MyShaderAnalysis.readers {
             // string mystr = $"({int0},{int1})";
             // string mystr = $"({int0},{float1})";
             // AddCollectValueString(mystr);
-             // AddCollectValueInt(int0);
+            // AddCollectValueInt(int0);
             // if (int0 > 0) {
             // Debug.WriteLine($"{filepath} {paramId}");
             // }
@@ -737,12 +797,12 @@ namespace MyShaderAnalysis.readers {
 
 
             // 6 parameters that may follow the dynamic expression
-            ShowBytes(24,4);
+            ShowBytes(24, 4);
 
 
             // a rarely seen file reference
             string name4 = readNullTermStringAtPosition(offset);
-            if (name4.Length>0) {
+            if (name4.Length > 0) {
                 OutputWriteLine($"// {name4}");
             }
             ShowBytes(64);
@@ -811,12 +871,12 @@ namespace MyShaderAnalysis.readers {
 
             // a command word, or pair of these
             string name5 = readNullTermStringAtPosition(offset);
-            if (name5.Length>0) {
+            if (name5.Length > 0) {
                 OutputWriteLine($"// {name5}");
             }
             ShowBytes(32);
             string name6 = readNullTermStringAtPosition(offset);
-            if (name6.Length>0) {
+            if (name6.Length > 0) {
                 OutputWriteLine($"// {name6}");
             }
             ShowBytes(32);
@@ -971,6 +1031,163 @@ namespace MyShaderAnalysis.readers {
             ShowByteCount();
             OutputWriteLine("EOF");
         }
+
+
+
+
+        public void ShowMurmurString() {
+            string nulltermstr = readNullTermStringAtPosition(offset);
+            uint murmur32 = ReadUIntAtPosition(offset + nulltermstr.Length + 1);
+
+            uint MURMUR2SEED = 0x31415926; // It's pi!
+            uint murmurCheck = MurmurHash2.Hash(nulltermstr.ToLower(), MURMUR2SEED);
+            if (murmur32 != murmurCheck) {
+                throw new ShaderParserException("not a murmur string!");
+            }
+
+            Debug.WriteLine($"// {nulltermstr} | 0x{murmur32:x08}");
+            ShowBytes(nulltermstr.Length + 1 + 4);
+
+
+        }
+
+
+        // return the header-size in bytes
+
+
+        private bool prevBlockWasZero = false;
+
+        public void ShowZDataSection() {
+            ShowZDataSection(-1);
+        }
+
+        public void ShowZDataSection(int blockId) {
+            int blockSize = ShowZBlockDataHeader(blockId);
+            ShowZBlockDataBody(blockSize);
+
+        }
+        public int ShowZBlockDataHeader(int blockId) {
+            int arg0 = ReadIntAtPosition(offset);
+            int arg1 = ReadIntAtPosition(offset+4);
+            int arg2 = ReadIntAtPosition(offset+8);
+
+            if (arg0==0 && arg1==0 && arg2==0) {
+                ShowBytesNoLineBreak(12);
+                TabPrintComment($"block[{blockId}]");
+                return 0;
+            }
+            string comment = "";
+            if (blockId >= 0) {
+                comment = $"block[{blockId}]";
+            }
+            int blockSize = ReadIntAtPosition(offset);
+            if (prevBlockWasZero) {
+                Debug.WriteLine("");
+            }
+            ShowByteCount(comment);
+            PrintIntWithValue();
+            PrintIntWithValue();
+            PrintIntWithValue();
+            return blockSize * 4;
+        }
+        public void ShowZBlockDataBody(int byteSize) {
+            if (byteSize == 0) {
+                prevBlockWasZero = true;
+                return;
+            } else {
+                prevBlockWasZero = false;
+            }
+            // ShowByteCount($"{byteSize/4}*4 bytes");
+            Debug.WriteLine($"// {byteSize/4}*4 bytes");
+            ShowBytes(byteSize);
+            Debug.WriteLine("");
+        }
+
+
+        public void ShowDynamicExpression(int dynExpLen) {
+
+            string dynExpByteStr = ReadBytesAsStringAtPosition(offset, dynExpLen);
+            string dynExp = getDynamicExpression(dynExpByteStr);
+            Debug.WriteLine($"// {dynExp}");
+            ShowBytes(dynExpLen);
+        }
+
+
+        private ParseDynamicExpressionShader myDynParser = new ParseDynamicExpressionShader();
+        string getDynamicExpression(string bytesAsString) {
+            byte[] databytes = ParseString(bytesAsString);
+            if (myDynParser == null) {
+                myDynParser = new ParseDynamicExpressionShader();
+            }
+            myDynParser.ParseExpression(databytes);
+            if (myDynParser.errorWhileParsing) {
+                // throw new ShaderParserException("error in dynamic expression!");
+
+                Debug.WriteLine(myDynParser.errorMessage);
+
+            }
+            return myDynParser.dynamicExpressionResult;
+        }
+        static byte[] ParseString(String bytestring) {
+            string[] tokens = bytestring.Trim().Split(" ");
+            byte[] databytes = new byte[tokens.Length];
+            for (int i = 0; i < tokens.Length; i++) {
+                databytes[i] = Convert.ToByte(tokens[i], 16);
+            }
+            return databytes;
+        }
+
+
+        public void ShowZFrameHeader() {
+            ShowByteCount("ZFrame header");
+            ShowBytes(2);
+            ShowMurmurString();
+            ShowBytes(3);
+            ShowMurmurString();
+            ShowBytes(8);
+            ShowMurmurString();
+            int dynExpLen = ReadIntAtPosition(offset + 3);
+            ShowBytes(7);
+            ShowDynamicExpression(dynExpLen);
+            ShowMurmurString();
+            dynExpLen = ReadIntAtPosition(offset + 3);
+            ShowBytes(7);
+            ShowDynamicExpression(dynExpLen);
+            ShowMurmurString();
+            dynExpLen = ReadIntAtPosition(offset + 3);
+            ShowBytes(7);
+            ShowDynamicExpression(dynExpLen);
+            ShowMurmurString();
+            Debug.WriteLine("");
+        }
+
+        public void ShowZDataDelim() {
+            ShowByteCount("Data delim");
+            ShowBytes(3);
+            ShowBytes(8);
+            ShowBytes(2);
+            Debug.WriteLine("");
+        }
+
+        public void ShowZSourceOffsets() {
+            ShowByteCount("glsl source offsets");
+            PrintIntWithValue();
+            ShowBytesNoLineBreak(4);
+            TabPrintComment("always 3");
+            PrintIntWithValue();
+            Debug.WriteLine("");
+        }
+
+        public void ShowZGlslSourceSummary(int sourceId) {
+            int endOfSource = offset + ReadIntAtPosition(offset-4);
+            Debug.WriteLine("");
+            ShowByteCount($"SOURCE[{sourceId}]");
+            ShowBytes(100);
+            offset = endOfSource;
+            Debug.WriteLine("...\n");
+        }
+
+
 
 
         public void ConfigureWriteToFile(StreamWriter sw) {

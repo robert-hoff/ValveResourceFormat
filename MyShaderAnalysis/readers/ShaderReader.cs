@@ -16,7 +16,9 @@ namespace MyShaderAnalysis.readers {
         DataReader datareader;
 
         DataPart headerData;
-        List<DataPart> zFrames = new();
+        // public List<DataPart> zFrames = new();
+        public List<ZFrameCompressed> zFrames = new();
+
 
 
         public ShaderReader(string filepath) {
@@ -40,18 +42,22 @@ namespace MyShaderAnalysis.readers {
                 int zFrameLength = datareader.ReadIntAtPosition(ind-4) + 12;
                 ZFrameCompressed zFrameData = new(datareader.databytes, ind-12, zFrameLength);
 
-                Debug.WriteLine(zFrameLength);
+                zFrames.Add(zFrameData);
 
-                byte[] zframedatabytes = zFrameData.DecompressFrame(zstdDictionary);
-                zFrames.Add(new DataPart(zframedatabytes, 0));
-                zFrameSizes += zFrameData.length;
+                // Debug.WriteLine(zFrameLength);
+
+                // byte[] zframedatabytes = zFrameData.DecompressFrame(zstdDictionary);
+                // zFrames.Add(new DataPart(zframedatabytes, 0));
+                // zFrameSizes += zFrameData.length;
 
             }
 
-            int totalSize = headerData.length + zFrameSizes;
-            if (totalSize != datareader.databytes.Length) {
-                throw new ShaderParserException("sizes don't add up!");
-            }
+
+            // TO DO - fix this crap
+            //int totalSize = headerData.length + zFrameSizes;
+            //if (totalSize != datareader.databytes.Length) {
+            //    throw new ShaderParserException("sizes don't add up!");
+            //}
             // Debug.WriteLine($"nr of zframes = {zFrames.Count}");
 
             uint vcsMagic = datareader.ReadUInt();
@@ -59,16 +65,33 @@ namespace MyShaderAnalysis.readers {
 
 
 
-            //Debug.WriteLine("HEADER");
-            //headerData.PrintAllBytes();
-            //Debug.WriteLine("ZFRAME");
-            //zFrames[0].PrintAllBytes();
+            // Debug.WriteLine("HEADER");
+            // headerData.PrintAllBytes();
 
+
+            return;
+
+
+            for (int i = 0; i < zFrames.Count; i++) {
+                Debug.WriteLine("");
+                Debug.WriteLine("");
+                Debug.WriteLine($"ZFRAME[{i}]");
+                zFrames[i].PrintAllBytes();
+                if (i==0) {
+                    break;
+                }
+            }
 
 
 
         }
 
+
+        public DataReader getZframeDataReader(int id) {
+
+            byte[] zframedatabytes = zFrames[id].DecompressFrame(zstdDictionary);
+            return new DataReader(zframedatabytes);
+        }
 
 
 
