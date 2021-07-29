@@ -235,7 +235,7 @@ namespace MyShaderAnalysis {
 
         static void ScanSizes() {
             ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR1 + @"\multiblend_pcgl_30_ps.vcs");
-            for (int i = 2; i < 3; i++) {
+            for (int i = 0; i < 3335; i++) {
                 Trial1ZGen(shaderReader, i);
             }
 
@@ -246,58 +246,17 @@ namespace MyShaderAnalysis {
         static void Trial1ZGen(ShaderReader shaderReader, int zframeId) {
 
 
-             Debug.WriteLine(zframeId);
+            Debug.WriteLine($"ZFRAME = {zframeId}");
             // return;
 
             DataReader datareader = shaderReader.getZframeDataReader(zframeId);
             // Debug.WriteLine($"{zframeId}    {datareader.databytes.Length}");
-              //datareader.DisableOutput = true;
-
-
-            datareader.ShowZDataSection(-1);
-            datareader.ShowByteCount("ZFrame header");
-            datareader.ShowBytes(2);
-            int nr_arguments = (int)datareader.ReadUInt16AtPosition(datareader.offset - 2);
-            datareader.ShowMurmurString();
-            datareader.ShowBytes(3);
-            datareader.ShowMurmurString();
-            datareader.ShowBytes(8);
-            datareader.ShowMurmurString();
-            int dynExpLen = datareader.ReadIntAtPosition(datareader.offset + 3);
-            datareader.ShowBytes(7);
-            datareader.ShowDynamicExpression(dynExpLen);
-            datareader.ShowMurmurString();
-            dynExpLen = datareader.ReadIntAtPosition(datareader.offset + 3);
-            datareader.ShowBytes(7);
-            datareader.ShowDynamicExpression(dynExpLen);
-            datareader.ShowMurmurString();
-            dynExpLen = datareader.ReadIntAtPosition(datareader.offset + 3);
-            datareader.ShowBytes(7);
-            datareader.ShowDynamicExpression(dynExpLen);
-
-            if (nr_arguments == 6) {
-                datareader.ShowMurmurString();
-                datareader.ShowBytes(11);
-            }
-
-            datareader.ShowBytesNoLineBreak(2);
-            int nr_of_blocks = (int)datareader.ReadUInt16AtPosition(datareader.offset - 2);
-            datareader.TabPrintComment($"nr of blocks ({nr_of_blocks})");
-            for (int i = 0; i < nr_of_blocks; i++) {
-                datareader.ShowZDataSection(i);
-            }
-
-
-            int blocksRegistered = datareader.ShowZBlocksRegisteredSection();
-            datareader.ShowZControlAndFlags();
+             datareader.DisableOutput = true;
 
 
 
-            //for (int i = 0; i < blocksRegistered; i++) {
-            //    datareader.ShowZSourceSection(i);
-            //}
-            //datareader.ShowZAllEndBlocks();
-            //datareader.EndOfFile();
+            datareader.ParseAndShowZFrame();
+
 
 
         }

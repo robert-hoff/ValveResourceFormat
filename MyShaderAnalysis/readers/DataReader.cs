@@ -1045,6 +1045,11 @@ namespace MyShaderAnalysis.readers {
             if (offset != databytes.Length) {
                 throw new ShaderParserException("End of file not reached!");
             }
+            // ShowByteCount("----------------------------------------------------------------------------------------");
+            // ShowBytesAtPosition(offset, 1000);
+
+            // DisableOutput = false;
+
             ShowByteCount();
             OutputWriteLine("EOF");
         }
@@ -1155,6 +1160,85 @@ namespace MyShaderAnalysis.readers {
         }
 
 
+
+        public void ParseAndShowZFrame() {
+
+            ShowZDataSection(-1);
+            ShowByteCount("ZFrame header");
+            ShowBytes(2);
+            int nr_arguments = (int)ReadUInt16AtPosition(offset - 2);
+            ShowMurmurString();
+            ShowBytes(3);
+            ShowMurmurString();
+            ShowBytes(8);
+            ShowMurmurString();
+            int dynExpLen = ReadIntAtPosition(offset + 3);
+            ShowBytes(7);
+            ShowDynamicExpression(dynExpLen);
+            ShowMurmurString();
+            dynExpLen = ReadIntAtPosition(offset + 3);
+            ShowBytes(7);
+            ShowDynamicExpression(dynExpLen);
+            ShowMurmurString();
+            dynExpLen = ReadIntAtPosition(offset + 3);
+            ShowBytes(7);
+            ShowDynamicExpression(dynExpLen);
+
+            if (nr_arguments == 6) {
+                ShowMurmurString();
+                ShowBytes(11);
+            }
+
+            ShowBytesNoLineBreak(2);
+            int nr_of_blocks = (int)ReadUInt16AtPosition(offset - 2);
+            TabPrintComment($"nr of blocks ({nr_of_blocks})");
+            for (int i = 0; i < nr_of_blocks; i++) {
+                ShowZDataSection(i);
+            }
+
+
+            // we don't need this number here!
+            // int blocksRegistered = ShowZBlocksRegisteredSection();
+
+            ShowZBlocksRegisteredSection();
+            // Debug.WriteLine($"blocks-registered: {blocksRegistered}");
+
+            ShowByteCount();
+            ShowBytesNoLineBreak(2);
+            TabPrintComment($"usually 1C 02, sometimes 00 00");
+
+            // this is totally wrong!
+            // TabPrintComment("if 00 00 we read one source, otherwise read one source per block");
+            //uint controlVal = ReadUInt16AtPosition(offset - 2);
+            //OutputWriteLine("");
+            //if (controlVal == 0) {
+            //    blocksRegistered = 1;
+            //}
+
+            // ShowZFlags();
+
+            // number of sources is the fourth byte in what I thought was the flags
+            ShowByteCount("flags");
+            byte sourceEntries = databytes[offset + 3];
+            // Debug.WriteLine(sourceEntries);
+            ShowBytes(4);
+            ShowBytes(4);
+            OutputWriteLine("");
+
+
+
+
+            for (int i = 0; i < sourceEntries; i++) {
+                ShowZSourceSection(i);
+            }
+            ShowZAllEndBlocks();
+            EndOfFile();
+
+
+        }
+
+
+
         public void ShowZFrameHeader() {
             ShowByteCount("ZFrame header");
             ShowBytes(2);
@@ -1213,13 +1297,13 @@ namespace MyShaderAnalysis.readers {
         }
 
 
-        public void ShowZControlAndFlags() {
-            ShowByteCount();
-            ShowBytesNoLineBreak(2);
-            TabPrintComment("control, always 1C 02");
-            OutputWriteLine("");
+        public void ShowZFlags() {
             ShowByteCount("flags");
+            byte b = databytes[offset + 3];
+            Debug.WriteLine(b);
+            DisableOutput = false;
             ShowBytes(4);
+            DisableOutput = true;
             ShowBytes(4);
             OutputWriteLine("");
         }
@@ -1263,6 +1347,9 @@ namespace MyShaderAnalysis.readers {
             TabPrintComment($"nr end blocks ({nr_end_blocks})");
             OutputWriteLine("");
             for (int i = 0; i < nr_end_blocks; i++) {
+                //if (i==nr_end_blocks-1) {
+                //    DisableOutput = false;
+                //}
                 ShowZEndBlock(i);
             }
         }
@@ -1275,9 +1362,15 @@ namespace MyShaderAnalysis.readers {
             ShowBytes(2);
             // ShowBytes(2);
             PrintUInt16WithValue();
+            int extraRows = ReadIntAtPosition(offset + 4);
+            if (extraRows>0) {
+                // Debug.WriteLine(extraRows);
+                ShowBytes(16);
+            }
+
             ShowBytes(16);
             ShowBytes(64, 16);
-            Debug.WriteLine("");
+            OutputWriteLine("");
 
         }
 
