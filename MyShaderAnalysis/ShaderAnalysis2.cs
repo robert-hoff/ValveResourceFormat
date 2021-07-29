@@ -29,8 +29,11 @@ namespace MyShaderAnalysis {
         public static void RunTrials() {
             // Trial3();
             // Trial2();
-            Trial1ZFrame1();
-            // Trial1ZFrame0();
+            // Trial1ScanHeaderData();
+            Trial1ZFrame05();
+            // Trial1ZFrame02();
+            // Trial1ZFrame01();
+            // Trial1ZFrame00();
         }
 
 
@@ -82,7 +85,7 @@ namespace MyShaderAnalysis {
                 int v1 = readers[i].ReadIntAtPosition(0);
                 int v2 = readers[i].ReadIntAtPosition(4);
                 int v3 = readers[i].ReadIntAtPosition(8);
-                entries.Add(new SortedRow(v1,v2,v3,bytebyte));
+                entries.Add(new SortedRow(v1, v2, v3, bytebyte));
             }
 
             entries.Sort();
@@ -111,7 +114,7 @@ namespace MyShaderAnalysis {
                 this.bytebyte = bytebyte;
 
 
-                 //Debug.WriteLine($"{v1}  {v2}  {v3}");
+                //Debug.WriteLine($"{v1}  {v2}  {v3}");
 
             }
 
@@ -157,7 +160,243 @@ namespace MyShaderAnalysis {
 
 
 
-        static void Trial1ZFrame1() {
+
+        static void Trial1ScanHeaderData() {
+            ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR1 + @"\multiblend_pcgl_30_ps.vcs");
+            for (int i = 0; i < 3335; i++) {
+                doScan(shaderReader, i);
+            }
+
+
+            // doScan(shaderReader, 3);
+
+        }
+
+
+
+        static void doScan(ShaderReader shaderReader, int zframeID) {
+
+
+            DataReader datareader = shaderReader.getZframeDataReader(zframeID);
+
+            datareader.DisableOutput = true;
+
+
+            datareader.ShowZDataSection(-1);
+            datareader.ShowByteCount("ZFrame header");
+            datareader.ShowBytes(2);
+            int nr_arguments = (int)datareader.ReadUInt16AtPosition(datareader.offset - 2);
+            //if (nr_arguments != 6) {
+            //    Debug.WriteLine($"{nr_arguments}    {zframeID}");
+            //}
+
+            datareader.ShowMurmurString();
+            datareader.ShowBytes(3);
+            datareader.ShowMurmurString();
+            datareader.ShowBytes(8);
+            datareader.ShowMurmurString();
+            int dynExpLen = datareader.ReadIntAtPosition(datareader.offset + 3);
+            datareader.ShowBytes(7);
+            datareader.ShowDynamicExpression(dynExpLen);
+            datareader.ShowMurmurString();
+            dynExpLen = datareader.ReadIntAtPosition(datareader.offset + 3);
+            datareader.ShowBytes(7);
+            datareader.ShowDynamicExpression(dynExpLen);
+            datareader.ShowMurmurString();
+            dynExpLen = datareader.ReadIntAtPosition(datareader.offset + 3);
+            datareader.ShowBytes(7);
+            datareader.ShowDynamicExpression(dynExpLen);
+
+            if (nr_arguments == 6) {
+                datareader.ShowMurmurString();
+                // datareader.ShowZDataDelim();
+                datareader.ShowBytes(11);
+            }
+            // Debug.WriteLine("");
+
+
+            datareader.ShowBytesNoLineBreak(2);
+            int nr_of_blocks = (int)datareader.ReadUInt16AtPosition(datareader.offset - 2);
+
+            // Debug.WriteLine(nr_of_blocks);
+            if (nr_of_blocks != 64) {
+                Debug.WriteLine($"{nr_of_blocks}    {zframeID}");
+            }
+
+
+
+        }
+
+
+
+        static void Trial1ZFrame05() {
+            ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR1 + @"\multiblend_pcgl_30_ps.vcs");
+            DataReader datareader = shaderReader.getZframeDataReader(5);
+            // datareader.DisableOutput = true;
+
+            datareader.ShowZDataSection(-1);
+            datareader.ShowByteCount("ZFrame header");
+            datareader.ShowBytes(2);
+            int nr_arguments = (int)datareader.ReadUInt16AtPosition(datareader.offset - 2);
+
+
+            datareader.ShowMurmurString();
+            datareader.ShowBytes(3);
+            datareader.ShowMurmurString();
+            datareader.ShowBytes(8);
+            datareader.ShowMurmurString();
+            int dynExpLen = datareader.ReadIntAtPosition(datareader.offset + 3);
+            datareader.ShowBytes(7);
+            datareader.ShowDynamicExpression(dynExpLen);
+            datareader.ShowMurmurString();
+            dynExpLen = datareader.ReadIntAtPosition(datareader.offset + 3);
+            datareader.ShowBytes(7);
+            datareader.ShowDynamicExpression(dynExpLen);
+            datareader.ShowMurmurString();
+            dynExpLen = datareader.ReadIntAtPosition(datareader.offset + 3);
+            datareader.ShowBytes(7);
+            datareader.ShowDynamicExpression(dynExpLen);
+
+            if (nr_arguments == 6) {
+                datareader.ShowMurmurString();
+                // datareader.ShowZDataDelim();
+                datareader.ShowBytes(11);
+            }
+            // Debug.WriteLine("");
+
+
+            datareader.ShowBytesNoLineBreak(2);
+            int nr_of_blocks = (int)datareader.ReadUInt16AtPosition(datareader.offset - 2);
+            datareader.TabPrintComment($"nr of blocks ({nr_of_blocks})");
+
+            for (int i = 0; i < nr_of_blocks; i++) {
+                datareader.ShowZDataSection(i);
+            }
+
+
+            Debug.WriteLine("");
+            datareader.ShowByteCount();
+            datareader.ShowBytes(2);
+            int blockEntryCount = (int)datareader.ReadUInt16AtPosition(datareader.offset - 2);
+            int blocksRegistered = datareader.ShowBlocksRegistered(blockEntryCount);
+            Debug.WriteLine("");
+
+            datareader.ShowByteCount();
+            datareader.ShowBytesNoLineBreak(2);
+            datareader.TabPrintComment("control, always 1C 02");
+            Debug.WriteLine("");
+
+
+            datareader.ShowByteCount("flags");
+            datareader.ShowBytes(4);
+            datareader.ShowBytes(4);
+            Debug.WriteLine("");
+
+
+
+
+            for (int i = 0; i < blocksRegistered; i++) {
+                datareader.ShowZSourceOffsets();
+                datareader.ShowZGlslSourceSummary(i);
+                datareader.ShowByteCount();
+                datareader.ShowBytesNoLineBreak(16);
+                datareader.TabPrintComment($"File ID");
+                Debug.WriteLine("");
+            }
+
+
+            datareader.ShowByteCount();
+            datareader.ShowBytesNoLineBreak(4);
+            int nr_end_blocks = datareader.ReadIntAtPosition(datareader.offset - 4);
+            datareader.TabPrintComment($"nr end blocks ({nr_end_blocks})");
+            Debug.WriteLine("");
+
+
+            for (int i = 0; i < nr_end_blocks; i++) {
+                datareader.ShowZEndBlock(i);
+            }
+
+            datareader.EndOfFile();
+
+
+            //Debug.WriteLine("");
+            //Debug.WriteLine("");
+            //Debug.WriteLine("");
+            //datareader.ShowByteCount("----------------------------------------------------------------------------------------");
+            //datareader.ShowBytesAtPosition(datareader.offset, 1000);
+            //Debug.WriteLine("");
+
+
+
+
+
+        }
+
+
+
+        static void Trial1ZFrame02() {
+            ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR1 + @"\multiblend_pcgl_30_ps.vcs");
+            DataReader datareader = shaderReader.getZframeDataReader(2);
+            datareader.ShowZDataSection(-1);
+            datareader.ShowZFrameHeader();
+            datareader.ShowZDataDelim();
+            for (int i = 0; i < 64; i++) {
+                datareader.ShowZDataSection(i);
+            }
+
+
+            // this section may be showing what blocks are described in this file
+            Debug.WriteLine("");
+            datareader.ShowByteCount();
+            int datasize = (int)datareader.ReadUInt16AtPosition(datareader.offset);
+            datareader.ShowBytes(2);
+            datareader.ShowBytes(datasize * 2);
+            Debug.WriteLine("");
+
+            datareader.ShowByteCount();
+            datareader.ShowBytesNoLineBreak(2);
+            datareader.TabPrintComment("control, always 1C 02");
+            Debug.WriteLine("");
+
+
+
+            datareader.ShowByteCount("flags");
+            datareader.ShowBytes(4);
+            datareader.ShowBytes(4);
+
+
+
+            datareader.ShowZSourceOffsets();
+            datareader.ShowZGlslSourceSummary(1);
+            datareader.ShowByteCount();
+            datareader.ShowBytesNoLineBreak(16);
+            datareader.TabPrintComment($"File ID");
+            Debug.WriteLine("");
+
+
+
+            datareader.ShowByteCount();
+            datareader.ShowBytesNoLineBreak(4);
+            datareader.TabPrintComment($"nr end blocks ({datareader.ReadIntAtPosition(datareader.offset - 4)})");
+
+            Debug.WriteLine("");
+            datareader.ShowByteCount();
+            datareader.ShowBytes(2);
+            datareader.ShowBytes(12, 4);
+            datareader.ShowBytes(80, 16);
+
+            datareader.EndOfFile();
+
+
+        }
+
+
+
+
+
+
+
+        static void Trial1ZFrame01() {
             ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR1 + @"\multiblend_pcgl_30_ps.vcs");
             DataReader datareader = shaderReader.getZframeDataReader(1);
 
@@ -169,13 +408,32 @@ namespace MyShaderAnalysis {
                 datareader.ShowZDataSection(i);
             }
 
+            // this section may be showing what blocks are described in this file
+            Debug.WriteLine("");
+            datareader.ShowByteCount();
+            uint datasize = datareader.ReadUInt16AtPosition(datareader.offset);
+            datareader.ShowBytes(2);
+
+            for (int i = 0; i < datasize; i++) {
+                datareader.ShowBytesNoLineBreak(2);
+                datareader.TabPrintComment($"{i}");
+            }
+
 
             Debug.WriteLine("");
             datareader.ShowByteCount();
-            int datasize = datareader.ReadIntAtPosition(datareader.offset);
-            datareader.ShowBytes(4);
-            datareader.ShowBytes(datasize * 2);
+            datareader.ShowBytesNoLineBreak(2);
+            datareader.TabPrintComment("control, always 1C 02");
             Debug.WriteLine("");
+
+
+            // int datasize = datareader.ReadIntAtPosition(datareader.offset);
+            // datareader.ShowBytes(4);
+            // datareader.ShowBytes(datasize * 2);
+            // Debug.WriteLine("");
+
+
+
 
             datareader.ShowByteCount("flags");
             datareader.ShowBytes(4);
@@ -188,13 +446,13 @@ namespace MyShaderAnalysis {
             datareader.TabPrintComment("always 3");
             datareader.PrintIntWithValue();
 
-            int sourceOffset = datareader.offset + datareader.ReadIntAtPosition(datareader.offset-4);
+            int sourceOffset = datareader.offset + datareader.ReadIntAtPosition(datareader.offset - 4);
 
 
             Debug.WriteLine("");
             datareader.ShowByteCount("SOURCE[0]");
             datareader.ShowBytes(100);
-            Debug.WriteLine("...");
+            Debug.WriteLine($"// ... ({sourceOffset - datareader.offset} bytes of data not shown)");
             datareader.offset = sourceOffset;
             Debug.WriteLine("");
 
@@ -228,7 +486,7 @@ namespace MyShaderAnalysis {
 
             datareader.ShowByteCount();
             datareader.ShowBytesNoLineBreak(4);
-            datareader.TabPrintComment("end blocks");
+            datareader.TabPrintComment($"nr end blocks ({datareader.ReadIntAtPosition(datareader.offset - 4)})");
 
             Debug.WriteLine("");
             datareader.ShowByteCount();
@@ -273,7 +531,7 @@ namespace MyShaderAnalysis {
 
 
         // ZFRAME0
-        static void Trial1ZFrame0() {
+        static void Trial1ZFrame00() {
             // new ShaderReader(ANALYSIS_DIR1 + @"\glow_output_pcgl_30_ps.vcs");
             ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR1 + @"\multiblend_pcgl_30_ps.vcs");
 
@@ -409,7 +667,7 @@ namespace MyShaderAnalysis {
 
             Debug.WriteLine("");
             datareader.ShowByteCount();
-            datareader.ShowBytes(18*4, 4);
+            datareader.ShowBytes(18 * 4, 4);
 
 
             Debug.WriteLine("");
@@ -456,7 +714,7 @@ namespace MyShaderAnalysis {
 
 
             Debug.WriteLine("");
-            datareader.ShowBytes(96,8);
+            datareader.ShowBytes(96, 8);
 
 
 

@@ -68,6 +68,23 @@ namespace MyShaderAnalysis.readers {
             return intval;
         }
 
+        public int ReadInt16() {
+            short b0 = ReadByte();
+            short b1 = ReadByte();
+            b1 <<= 8;
+            b1 += b0;
+            // short intval = (b1 << 8) + b0;
+            return b1;
+        }
+
+        public int ReadInt16AtPosition(int ind) {
+            short b1 = databytes[ind+1];
+            b1 <<= 8;
+            b1 += databytes[ind];
+            return b1;
+        }
+
+
         public uint ReadUInt16AtPosition(int ind) {
             uint b0 = databytes[start + ind];
             uint b1 = databytes[start + ind + 1];
@@ -1045,7 +1062,7 @@ namespace MyShaderAnalysis.readers {
                 throw new ShaderParserException("not a murmur string!");
             }
 
-            Debug.WriteLine($"// {nulltermstr} | 0x{murmur32:x08}");
+            OutputWriteLine($"// {nulltermstr} | 0x{murmur32:x08}");
             ShowBytes(nulltermstr.Length + 1 + 4);
 
 
@@ -1082,7 +1099,7 @@ namespace MyShaderAnalysis.readers {
             }
             int blockSize = ReadIntAtPosition(offset);
             if (prevBlockWasZero) {
-                Debug.WriteLine("");
+                OutputWriteLine("");
             }
             ShowByteCount(comment);
             PrintIntWithValue();
@@ -1098,9 +1115,9 @@ namespace MyShaderAnalysis.readers {
                 prevBlockWasZero = false;
             }
             // ShowByteCount($"{byteSize/4}*4 bytes");
-            Debug.WriteLine($"// {byteSize/4}*4 bytes");
+            OutputWriteLine($"// {byteSize/4}*4 bytes");
             ShowBytes(byteSize);
-            Debug.WriteLine("");
+            OutputWriteLine("");
         }
 
 
@@ -1108,7 +1125,7 @@ namespace MyShaderAnalysis.readers {
 
             string dynExpByteStr = ReadBytesAsStringAtPosition(offset, dynExpLen);
             string dynExp = getDynamicExpression(dynExpByteStr);
-            Debug.WriteLine($"// {dynExp}");
+            OutputWriteLine($"// {dynExp}");
             ShowBytes(dynExpLen);
         }
 
@@ -1158,16 +1175,35 @@ namespace MyShaderAnalysis.readers {
             ShowBytes(7);
             ShowDynamicExpression(dynExpLen);
             ShowMurmurString();
-            Debug.WriteLine("");
+            OutputWriteLine("");
         }
 
+
+        //  This delimiter is totally wrong!
         public void ShowZDataDelim() {
             ShowByteCount("Data delim");
             ShowBytes(3);
             ShowBytes(8);
-            ShowBytes(2);
-            Debug.WriteLine("");
+            ShowBytesNoLineBreak(2);
+            TabPrintComment($"nr of blocks ({ReadUInt16AtPosition(offset-2)})");
+            OutputWriteLine("");
         }
+
+
+        public int ShowBlocksRegistered(int blockEntryCount) {
+            int recordsFound = 0;
+            for (int i = 0; i < blockEntryCount; i++) {
+                int hasEntry = (int) ReadInt16AtPosition(offset + i * 2);
+                if (hasEntry != 0 && hasEntry != -1) {
+                    throw new ShaderParserException("unexpeted value!");
+                }
+                recordsFound += hasEntry == 0 ? 1 : 0;
+            }
+            ShowBytes(blockEntryCount*2, 32);
+            return recordsFound;
+        }
+
+
 
         public void ShowZSourceOffsets() {
             ShowByteCount("glsl source offsets");
@@ -1175,16 +1211,31 @@ namespace MyShaderAnalysis.readers {
             ShowBytesNoLineBreak(4);
             TabPrintComment("always 3");
             PrintIntWithValue();
-            Debug.WriteLine("");
+            OutputWriteLine("");
         }
 
         public void ShowZGlslSourceSummary(int sourceId) {
             int endOfSource = offset + ReadIntAtPosition(offset-4);
-            Debug.WriteLine("");
             ShowByteCount($"SOURCE[{sourceId}]");
             ShowBytes(100);
+            ShowByteCount();
+            OutputWriteLine($"// ... ({endOfSource-offset} bytes of data not shown)");
             offset = endOfSource;
-            Debug.WriteLine("...\n");
+            OutputWriteLine("");
+        }
+
+
+        public void ShowZEndBlock(int blockId) {
+            ShowByteCount($"END-BLOCK({blockId})");
+            ShowBytes(2);
+            ShowBytes(8);
+            ShowBytes(2);
+            // ShowBytes(2);
+            PrintUInt16WithValue();
+            ShowBytes(16);
+            ShowBytes(64, 16);
+            Debug.WriteLine("");
+
         }
 
 
