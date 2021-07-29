@@ -1190,6 +1190,11 @@ namespace MyShaderAnalysis.readers {
         }
 
 
+        public void ShowBlocksRegisteredSection() {
+
+        }
+
+
         public int ShowBlocksRegistered(int blockEntryCount) {
             int recordsFound = 0;
             for (int i = 0; i < blockEntryCount; i++) {
