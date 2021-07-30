@@ -390,8 +390,10 @@ namespace MyShaderAnalysis {
 
         static void ParseAllPsFiles() {
 
-            List<string> psFiles = getAllPsFiles();
-            foreach (string filenamepath in psFiles) {
+            // List<string> shaderFiles = getAllPsFiles();
+            // List<string> shaderFiles = getAllVsFiles();
+            List<string> shaderFiles = getAllZFrameFiles();
+            foreach (string filenamepath in shaderFiles) {
                 RunTrial1ZVsFrame01(filenamepath, true);
             }
             // RunTrial1ZVsFrame01(psFiles[0]);
@@ -408,6 +410,8 @@ namespace MyShaderAnalysis {
             // string filename = ANALYSIS_DIR_CORE + @"\tools_solid_pcgl_30_ps.vcs"; // frame 7
             // string filename = ANALYSIS_DIR_CORE + @"\visualize_cloth_pcgl_40_ps.vcs"; // frame 5
             // string filename = ANALYSIS_DIR_CORE + @"\visualize_nav_pcgl_40_ps.vcs"; // frame 10
+            // string filename = ANALYSIS_DIR_CORE + @"\tools_sprite_pcgl_40_gs.vcs"; // gs file
+            // string filename = ANALYSIS_DIR_NOT_CORE + @"\hero_pcgl_40_psrs.vcs"; // psrs file
             // RunTrial1ZVsFrame01(filename, false);
 
 
@@ -430,6 +434,9 @@ namespace MyShaderAnalysis {
             if (fileCode == "rs") {
                 filetype = PSRS_FILE;
             }
+            if (fileCode == "gs") {
+                filetype = GS_FILE;
+            }
 
             if (filetype == -1) {
                 throw new ShaderParserException($"unknown file type! {filenamepath}");
@@ -441,8 +448,8 @@ namespace MyShaderAnalysis {
 
             int min = 0;
             int zcount = shaderReader.zFrames.Count;
-            // int max = 11;
-            int max = zcount;
+            int max = 1000;
+            // int max = zcount;
 
             int numberToParse = zcount > max ? max : zcount;
 
@@ -460,6 +467,7 @@ namespace MyShaderAnalysis {
         const int PS_FILE = 0;
         const int VS_FILE = 1;
         const int PSRS_FILE = 2;
+        const int GS_FILE = 3;
 
 
         static void Trial1ZVsFrame01(ShaderReader shaderReader, int zframeId, int filetype, bool runningTest) {
@@ -543,13 +551,13 @@ namespace MyShaderAnalysis {
                 datareader.ShowZSourceSection(i);
             }
 
-            if (filetype == VS_FILE) {
+            if (filetype == VS_FILE || filetype == GS_FILE) {
                 datareader.ShowZAllEndBlocksTypeVs();
             }
 
 
 
-            if (filetype == PS_FILE) {
+            if (filetype == PS_FILE || filetype == PSRS_FILE) {
 
                 //  END BLOCKS
                 datareader.OutputWriteLine("");
@@ -1255,25 +1263,72 @@ namespace MyShaderAnalysis {
 
 
 
+
+
+
+
+
+
+        static List<string> getAllVsFiles() {
+            List<string> vsFiles = new();
+            string[] coreFileNames = Directory.GetFiles(ANALYSIS_DIR_CORE);
+            foreach (string filepath in coreFileNames) {
+                if (filepath.Substring(filepath.Length - 6, 2) == "vs") {
+                    vsFiles.Add(filepath);
+                }
+            }
+            string[] nonCoreFileNames = Directory.GetFiles(ANALYSIS_DIR_NOT_CORE);
+            foreach (string filepath in nonCoreFileNames) {
+                if (filepath.Substring(filepath.Length - 6, 2) == "vs") {
+                    vsFiles.Add(filepath);
+                }
+            }
+            return vsFiles;
+        }
+
+
         static List<string> getAllPsFiles() {
             List<string> psFiles = new();
             string[] coreFileNames = Directory.GetFiles(ANALYSIS_DIR_CORE);
             foreach (string filepath in coreFileNames) {
                 if (filepath.Substring(filepath.Length - 6, 2) == "ps") {
                     psFiles.Add(filepath);
-
                 }
             }
             string[] nonCoreFileNames = Directory.GetFiles(ANALYSIS_DIR_NOT_CORE);
             foreach (string filepath in nonCoreFileNames) {
                 if (filepath.Substring(filepath.Length - 6, 2) == "ps") {
                     psFiles.Add(filepath);
-
                 }
             }
             return psFiles;
         }
 
+
+
+        static List<string> getAllZFrameFiles() {
+            List<string> vcsFiles = new();
+            string[] coreFileNames = Directory.GetFiles(ANALYSIS_DIR_CORE);
+            foreach (string filepath in coreFileNames) {
+                if (filepath.Substring(filepath.Length - 12, 8) == "features") {
+                    continue;
+                }
+                if (filepath.Substring(filepath.Length - 3, 3) == "vcs") {
+                    vcsFiles.Add(filepath);
+                }
+            }
+            string[] nonCoreFileNames = Directory.GetFiles(ANALYSIS_DIR_NOT_CORE);
+            foreach (string filepath in nonCoreFileNames) {
+                if (filepath.Substring(filepath.Length - 12, 8) == "features") {
+                    continue;
+                }
+                if (filepath.Substring(filepath.Length - 3, 3) == "vcs") {
+                    vcsFiles.Add(filepath);
+                }
+            }
+            return vcsFiles;
+
+        }
 
 
 
