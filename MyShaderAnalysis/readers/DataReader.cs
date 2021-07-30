@@ -20,11 +20,11 @@ namespace MyShaderAnalysis.readers {
 
         public Dictionary<int, int> collectValuesInt = new();
         public Dictionary<string, int> collectValuesString = new();
-        private void AddCollectValueInt(int val) {
+        public void AddCollectValueInt(int val) {
             int currIterator = collectValuesInt.GetValueOrDefault(val, 0);
             collectValuesInt[val] = currIterator + 1;
         }
-        private void AddCollectValueString(string val) {
+        public void AddCollectValueString(string val) {
             int currIterator = collectValuesString.GetValueOrDefault(val, 0);
             collectValuesString[val] = currIterator + 1;
 
@@ -1090,17 +1090,25 @@ namespace MyShaderAnalysis.readers {
         }
         public int ShowZBlockDataHeader(int blockId) {
             int arg0 = ReadIntAtPosition(offset);
+
+            //if (blockId==-1) {
+            //    AddCollectValueInt(arg0);
+            //}
+
             int arg1 = ReadIntAtPosition(offset+4);
             int arg2 = ReadIntAtPosition(offset+8);
 
             if (arg0==0 && arg1==0 && arg2==0) {
                 ShowBytesNoLineBreak(12);
-                TabPrintComment($"block[{blockId}]");
+                TabPrintComment($"data-block[{blockId}]");
                 return 0;
             }
             string comment = "";
+            if (blockId == -1) {
+                comment = $"leading data";
+            }
             if (blockId >= 0) {
-                comment = $"block[{blockId}]";
+                comment = $"data-block[{blockId}]";
             }
             int blockSize = ReadIntAtPosition(offset);
             if (prevBlockWasZero) {
@@ -1277,8 +1285,12 @@ namespace MyShaderAnalysis.readers {
 
         public void ShowZFrameHeaderUpdated() {
             // starts with number of arguments
-            ShowBytes(2);
+            ShowByteCount("Frame header");
+            ShowBytesNoLineBreak(2);
             uint nrArgs = ReadUInt16AtPosition(offset-2);
+            TabPrintComment($"nr of arguments ({nrArgs})", 0);
+            OutputWriteLine("");
+
             for (int i = 0; i < nrArgs; i++) {
                 ShowMurmurString();
                 int headerOperator = databytes[offset];
@@ -1320,6 +1332,9 @@ namespace MyShaderAnalysis.readers {
                         continue;
                     }
                 }
+            }
+            if (nrArgs > 0) {
+                OutputWriteLine("");
             }
         }
 
@@ -1396,7 +1411,7 @@ namespace MyShaderAnalysis.readers {
         public void ShowZGlslSourceSummary(int sourceId) {
             int bytesToRead = ReadIntAtPosition(offset - 4);
             int endOfSource = offset + bytesToRead;
-            ShowByteCount($"SOURCE[{sourceId}]");
+            ShowByteCount($"GLSL-SOURCE[{sourceId}]");
             if (bytesToRead == 0) {
                 OutputWriteLine("// no source present");
             }
