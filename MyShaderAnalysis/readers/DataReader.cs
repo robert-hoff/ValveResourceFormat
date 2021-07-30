@@ -1287,6 +1287,17 @@ namespace MyShaderAnalysis.readers {
                     continue;
                 }
 
+                if (headerOperator == 1) {
+                    int dynExpLen = ReadIntAtPosition(offset + 3);
+                    if (dynExpLen == 0) {
+                        ShowBytes(8);
+                        continue;
+                    } else {
+                        ShowBytes(7);
+                        ShowDynamicExpression(dynExpLen);
+                        continue;
+                    }
+                }
                 if (headerOperator == 9) {
                     int dynExpLen = ReadIntAtPosition(offset + 3);
                     if (dynExpLen == 0) {

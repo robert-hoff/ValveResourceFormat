@@ -10,20 +10,20 @@ using System.Threading.Tasks;
 namespace MyShaderAnalysis {
     class ShaderAnalysis2 {
 
-        const string ANALYSIS_DIR1 = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders\vfx";
-        const string ANALYSIS_DIR2 = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders-core\vfx";
+        const string ANALYSIS_DIR_NOT_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders\vfx";
+        const string ANALYSIS_DIR_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders-core\vfx";
 
-        const string GLOW_OUPUT_PCGL_30_FEATURES = ANALYSIS_DIR1 + @"\glow_output_pcgl_30_features.vcs";
-        const string GLOW_OUPUT_PCGL_30_PS = ANALYSIS_DIR1 + @"\glow_output_pcgl_30_ps.vcs";
-        const string GLOW_OUPUT_PCGL_30_VS = ANALYSIS_DIR1 + @"\glow_output_pcgl_30_vs.vcs";
-        const string GLOW_OUPUT_PCGL_40_PS = ANALYSIS_DIR1 + @"\glow_output_pcgl_40_ps.vcs";
-        const string GLOW_OUPUT_PCGL_40_VS = ANALYSIS_DIR1 + @"\glow_output_pcgl_40_vs.vcs";
-        const string MULTIBLEND_PCGL_30_PS = ANALYSIS_DIR1 + @"\multiblend_pcgl_30_ps.vcs";
-        const string MULTIBLEND_PCGL_30_VS = ANALYSIS_DIR1 + @"\multiblend_pcgl_30_vs.vcs";
-        const string REFRACT_PCGL_30_FEATURES = ANALYSIS_DIR1 + @"\refract_pcgl_30_features.vcs";
-        const string UI_TWOTEXTURE_PCGL_30_FEATURES = ANALYSIS_DIR1 + @"\ui_twotexture_pcgl_30_features.vcs";
-        const string UI_TWOTEXTURE_PCGL_30_PS = ANALYSIS_DIR1 + @"\ui_twotexture_pcgl_30_ps.vcs";
-        const string UI_TWOTEXTURE_PCGL_30_VS = ANALYSIS_DIR1 + @"\ui_twotexture_pcgl_30_vs.vcs";
+        const string GLOW_OUPUT_PCGL_30_FEATURES = ANALYSIS_DIR_NOT_CORE + @"\glow_output_pcgl_30_features.vcs";
+        const string GLOW_OUPUT_PCGL_30_PS = ANALYSIS_DIR_NOT_CORE + @"\glow_output_pcgl_30_ps.vcs";
+        const string GLOW_OUPUT_PCGL_30_VS = ANALYSIS_DIR_NOT_CORE + @"\glow_output_pcgl_30_vs.vcs";
+        const string GLOW_OUPUT_PCGL_40_PS = ANALYSIS_DIR_NOT_CORE + @"\glow_output_pcgl_40_ps.vcs";
+        const string GLOW_OUPUT_PCGL_40_VS = ANALYSIS_DIR_NOT_CORE + @"\glow_output_pcgl_40_vs.vcs";
+        const string MULTIBLEND_PCGL_30_PS = ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
+        const string MULTIBLEND_PCGL_30_VS = ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_vs.vcs";
+        const string REFRACT_PCGL_30_FEATURES = ANALYSIS_DIR_NOT_CORE + @"\refract_pcgl_30_features.vcs";
+        const string UI_TWOTEXTURE_PCGL_30_FEATURES = ANALYSIS_DIR_NOT_CORE + @"\ui_twotexture_pcgl_30_features.vcs";
+        const string UI_TWOTEXTURE_PCGL_30_PS = ANALYSIS_DIR_NOT_CORE + @"\ui_twotexture_pcgl_30_ps.vcs";
+        const string UI_TWOTEXTURE_PCGL_30_VS = ANALYSIS_DIR_NOT_CORE + @"\ui_twotexture_pcgl_30_vs.vcs";
 
 
         public static void RunTrials() {
@@ -36,7 +36,8 @@ namespace MyShaderAnalysis {
             // ScanSizes();
 
             // Trial1ZVsGrasstileFile();
-            RunTrial1ZVsFrame01();
+            ParseAllPsFiles();
+            // RunTrial1ZVsFrame01();
             // Trial1ZVsFrame00();
             // Trial1ZFrame05();
             // Trial1ZFrame02();
@@ -49,7 +50,7 @@ namespace MyShaderAnalysis {
             StreamWriter sw = new StreamWriter(@"Z:\active\projects\dota2-sourcesdk-modding\shader-analysis-vcs-format\output-dump\!OUTPUT.txt");
 
 
-            ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR1 + @"\multiblend_pcgl_30_ps.vcs");
+            ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
             List<DataReader> readers = new();
             for (int i = 0; i < 3335; i++) {
                 readers.Add(shaderReader.getZframeDataReader(i));
@@ -83,7 +84,7 @@ namespace MyShaderAnalysis {
             int NUMROWS = 3335;
 
 
-            ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR1 + @"\multiblend_pcgl_30_ps.vcs");
+            ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
             List<DataReader> readers = new();
             for (int i = 0; i < NUMROWS; i++) {
                 readers.Add(shaderReader.getZframeDataReader(i));
@@ -145,7 +146,7 @@ namespace MyShaderAnalysis {
             List<string> entries = new();
 
 
-            ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR1 + @"\multiblend_pcgl_30_ps.vcs");
+            ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
             List<DataReader> readers = new();
             for (int i = 0; i < 3335; i++) {
                 readers.Add(shaderReader.getZframeDataReader(i));
@@ -170,7 +171,7 @@ namespace MyShaderAnalysis {
 
 
         static void Trial1ScanHeaderData() {
-            ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR1 + @"\multiblend_pcgl_30_ps.vcs");
+            ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
             for (int i = 0; i < 3335; i++) {
                 doScan(shaderReader, i);
             }
@@ -241,7 +242,7 @@ namespace MyShaderAnalysis {
 
         static void WriteZframeAnalysisToFile() {
             // ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR1 + @"\multiblend_pcgl_30_ps.vcs");
-            ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR1 + @"\multiblend_pcgl_30_ps.vcs");
+            ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
 
             for (int i = 0; i < 2; i++) {
 
@@ -271,7 +272,7 @@ namespace MyShaderAnalysis {
 
 
         static void ScanSizes() {
-            ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR1 + @"\multiblend_pcgl_30_ps.vcs");
+            ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
             for (int i = 0; i < 3335; i++) {
                 Trial1ZGen(shaderReader, i);
             }
@@ -298,7 +299,7 @@ namespace MyShaderAnalysis {
 
         static void Trial1ZVsGrasstileFile() {
 
-            ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR1 + @"\grasstile_pcgl_30_vs.vcs");
+            ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR_NOT_CORE + @"\grasstile_pcgl_30_vs.vcs");
             DataReader datareader = shaderReader.getZframeDataReader(0);
 
 
@@ -350,8 +351,7 @@ namespace MyShaderAnalysis {
 
 
 
-
-        static void RunTrial1ZVsFrame01() {
+        static void parseAFile() {
             // string filename = ANALYSIS_DIR1 + @"\3dskyboxstencil_pcgl_30_vs.vcs";
             // string filename = ANALYSIS_DIR1 + @"\3dskyboxstencil_pcgl_40_vs.vcs";
             // string filename = ANALYSIS_DIR1 + @"\bloom_dota_pcgl_30_vs.vcs";
@@ -374,17 +374,53 @@ namespace MyShaderAnalysis {
             // string filename = ANALYSIS_DIR2 + @"\error_pcgl_30_ps.vcs";
             // string filename = ANALYSIS_DIR2 + @"\generic_light_pcgl_30_ps.vcs";
             // string filename = ANALYSIS_DIR2 + @"\grasstile_pcgl_41_ps.vcs";
-            string filename = ANALYSIS_DIR2 + @"\panorama_fancyquad_pcgl_50_ps.vcs";
+            // string filename = ANALYSIS_DIR2 + @"\panorama_fancyquad_pcgl_50_ps.vcs"; // one massive zframe in this one
+            // string filename = ANALYSIS_DIR2 + @"\reconstruct_normals_pcgl_40_ps.vcs";
+            string filename = ANALYSIS_DIR_CORE + @"\sky_model_pcgl_40_ps.vcs";
+
+            // RunTrial1ZVsFrame01(filename);
+
+            List<string> psFiles = getAllPsFiles();
+            RunTrial1ZVsFrame01(psFiles[7], false);
+
+        }
 
 
 
 
-            // string filename = ANALYSIS_DIR1 + @"\hero_pcgl_30_psrs.vcs";
+        static void ParseAllPsFiles() {
 
+            List<string> psFiles = getAllPsFiles();
+            foreach (string filenamepath in psFiles) {
+                RunTrial1ZVsFrame01(filenamepath, true);
+            }
+            // RunTrial1ZVsFrame01(psFiles[0]);
+
+
+
+            // string filename = ANALYSIS_DIR_NOT_CORE + @"\crystal_pcgl_30_ps.vcs";
+            // string filename = ANALYSIS_DIR_CORE + @"\apply_fog_pcgl_40_ps.vcs";
+            // string filename = ANALYSIS_DIR_CORE + @"\depth_only_pcgl_30_ps.vcs";
+            // string filename = ANALYSIS_DIR_CORE + @"\grasstile_preview_pcgl_41_ps.vcs";
+            // string filename = ANALYSIS_DIR_CORE + @"\solidcolor_pcgl_30_ps.vcs";
+            // string filename = ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
+            // string filename = ANALYSIS_DIR_CORE + @"\physics_wireframe_pcgl_30_ps.vcs"; // frame 16
+            // string filename = ANALYSIS_DIR_CORE + @"\tools_solid_pcgl_30_ps.vcs"; // frame 7
+            // string filename = ANALYSIS_DIR_CORE + @"\visualize_cloth_pcgl_40_ps.vcs"; // frame 5
+            // string filename = ANALYSIS_DIR_CORE + @"\visualize_nav_pcgl_40_ps.vcs"; // frame 10
+            // RunTrial1ZVsFrame01(filename, false);
+
+
+
+        }
+
+
+
+
+        static void RunTrial1ZVsFrame01(string filenamepath, bool runningTest) {
             int filetype = -1;
 
-
-            string fileCode = filename.Substring(filename.Length - 6, 2);
+            string fileCode = filenamepath.Substring(filenamepath.Length - 6, 2);
             if (fileCode == "vs") {
                 filetype = VS_FILE;
             }
@@ -396,23 +432,23 @@ namespace MyShaderAnalysis {
             }
 
             if (filetype == -1) {
-                throw new ShaderParserException($"unknown file type! {filename}");
+                throw new ShaderParserException($"unknown file type! {filenamepath}");
             }
 
 
-            ShaderReader shaderReader = new ShaderReader(filename);
+            ShaderReader shaderReader = new(filenamepath);
 
 
             int min = 0;
-            int max = 1;
             int zcount = shaderReader.zFrames.Count;
+            // int max = 11;
+            int max = zcount;
 
+            int numberToParse = zcount > max ? max : zcount;
 
-            //max = zcount;
-
-
-            for (int i = min; i < (zcount > max ? max : zcount); i++) {
-                Trial1ZVsFrame01(shaderReader, i, filetype);
+            Debug.WriteLine($"parsing {shaderReader.filepath} frames [{min},{numberToParse})");
+            for (int i = min; i < (numberToParse); i++) {
+                Trial1ZVsFrame01(shaderReader, i, filetype, runningTest);
             }
         }
 
@@ -426,36 +462,31 @@ namespace MyShaderAnalysis {
         const int PSRS_FILE = 2;
 
 
-        static void Trial1ZVsFrame01(ShaderReader shaderReader, int zframeId, int filetype) {
+        static void Trial1ZVsFrame01(ShaderReader shaderReader, int zframeId, int filetype, bool runningTest) {
 
             DataReader datareader = shaderReader.getZframeDataReader(zframeId);
 
-
-            if (!datareader.DisableOutput) {
+            if (!runningTest) {
                 Debug.WriteLine($"parsing {shaderReader.filepath} ZFRAME{zframeId:d03}");
             }
+            if (runningTest) {
+                datareader.DisableOutput = true;
+            }
 
-            datareader.DisableOutput = true;
-
-
-
-
-            // Debug.WriteLine(shaderReader.zFrames.Count);
             datareader.ShowZDataSection(-1);
 
             //datareader.ShowBytes(2);
-            //uint nrArgs = datareader.ReadUInt16AtPosition(datareader.offset - 2);
             //datareader.ShowMurmurString();
             //datareader.ShowBytes(8);
-
-
-
-
+            //datareader.ShowMurmurString();
+            //datareader.ShowBytes(3);
+            //datareader.ShowMurmurString();
+            //datareader.ShowBytes(600);
+            //return;
             datareader.ShowZFrameHeaderUpdated();
-            // datareader.ShowBytes(400);
 
 
-            // return;
+
 
 
             // only for vs files (ps files don't have this section)
@@ -472,7 +503,6 @@ namespace MyShaderAnalysis {
 
 
             // return;
-
             datareader.OutputWriteLine("");
             int blockCount = datareader.ReadInt16AtPosition(datareader.offset);
             datareader.ShowByteCount($"nr of blocks ({blockCount})");
@@ -489,14 +519,16 @@ namespace MyShaderAnalysis {
             datareader.ShowBytes(blockSummaries2 * 2);
             datareader.OutputWriteLine("");
 
-            datareader.DisableOutput = false;
+
 
 
             // Debug.WriteLine("");
             datareader.ShowByteCount();
             datareader.ShowBytes(2);
-            datareader.ShowBytesNoLineBreak(3); // always 00 00 01 ?
-            datareader.TabPrintComment("always 00 00 01 ?");
+            datareader.ShowBytesNoLineBreak(2);
+            datareader.TabPrintComment("always 00 00", 7);
+            datareader.ShowBytesNoLineBreak(1);
+            datareader.TabPrintComment("values seen 0,1", 10);
 
             datareader.ShowBytesNoLineBreak(2); // this may be an integer, but reading it as a short
             uint glslSourceCount = datareader.ReadUInt16AtPosition(datareader.offset - 2);
@@ -507,31 +539,13 @@ namespace MyShaderAnalysis {
             datareader.OutputWriteLine("");
 
 
-            // datareader.ShowBytes(4);
-
-
-            // datareader.ShowBytes(4);
-
-
-            datareader.DisableOutput = true;
-
-
             for (int i = 0; i < glslSourceCount; i++) {
-
-                if (i > 1190) {
-                    datareader.DisableOutput = false;
-
-                }
-
                 datareader.ShowZSourceSection(i);
             }
 
             if (filetype == VS_FILE) {
                 datareader.ShowZAllEndBlocksTypeVs();
             }
-
-
-
 
 
 
@@ -558,14 +572,8 @@ namespace MyShaderAnalysis {
                 // 00 00 00 00 00 00 00 00 04 04 04 04 04 04 04 04
                 // 05 05 05 05 05 05 05 05 00 00 00 00 00 00 00 00
                 // 0F 0F 0F 0F 0F 0F 0F 0F 00 00 00 00 00 00 00 00
-                datareader.DisableOutput = true;
+
                 for (int i = 0; i < nrEndBlocks; i++) {
-
-
-                    if (i > 2200) {
-                        datareader.DisableOutput = false;
-                    }
-
                     datareader.OutputWriteLine("");
                     datareader.ShowByteCount($"END-BLOCK[{i}]");
                     datareader.ShowBytes(8);
@@ -577,22 +585,57 @@ namespace MyShaderAnalysis {
                     // datareader.ShowBytes(4);
 
 
+                    int checkExtraExtraShortBlock = datareader.ReadByteAtPosition(datareader.offset + 2);
+                    int checkExtraShortBlock = datareader.ReadByteAtPosition(datareader.offset + 3);
+                    int checkShortBlock = datareader.ReadByteAtPosition(datareader.offset + 4);
+                    if (checkExtraExtraShortBlock > 0 && checkExtraShortBlock > 0 && checkShortBlock > 0) {
+                        datareader.ShowBytes(5);
+                        continue;
+                    }
+                    if (checkExtraShortBlock > 0 && checkShortBlock > 0) {
+                        datareader.ShowBytes(16);
+                        datareader.ShowBytes(4);
+                        datareader.ShowBytes(1);
+                        continue;
+                    }
+                    if (checkExtraExtraShortBlock > 0 && checkShortBlock > 0) {
+                        datareader.ShowBytes(16);
+                        datareader.ShowBytes(8);
+                        datareader.ShowBytes(1);
+                        continue;
+                    }
+                    if (checkShortBlock > 0) {
+                        datareader.ShowBytes(16);
+                        datareader.ShowBytes(24);
+                        datareader.ShowBytes(1);
+                        continue;
+                    }
+
+
+
+
                     int checkLongStartingRow = datareader.ReadByteAtPosition(datareader.offset + 7);
                     if (checkLongStartingRow == 3) {
                         datareader.ShowBytes(36, 36);
-                    } else {
-                        datareader.ShowBytes(16);
-                        int checkExtraRow = datareader.ReadByteAtPosition(datareader.offset - 8);
-                        if (checkExtraRow > 0) {
-                            int checkLongRow = datareader.ReadByteAtPosition(datareader.offset + 7);
-                            if (checkLongRow > 0) {
-                                datareader.ShowBytes(36, 36);
-                            } else {
-                                datareader.ShowBytes(16);
-                            }
+                        datareader.ShowBytes(64, 16);
+                        continue;
+                    }
+                    datareader.ShowBytes(16);
+
+
+
+                    int checkExtraRow = datareader.ReadByteAtPosition(datareader.offset - 8);
+                    if (checkExtraRow > 0) {
+                        int checkLongRow = datareader.ReadByteAtPosition(datareader.offset + 7);
+                        if (checkLongRow == 2 || checkLongRow == 3 || checkLongRow == 4 || checkLongRow == 7) {
+                            datareader.ShowBytes(36, 36);
+                        } else {
+                            datareader.ShowBytes(16);
                         }
                     }
 
+
+                    datareader.ShowBytes(64, 16);
 
                     // variable length depending on the file
                     // datareader.ShowBytes(16);
@@ -602,15 +645,17 @@ namespace MyShaderAnalysis {
 
 
                     // these bits always the same
-                    datareader.ShowBytes(64, 16);
+
                 }
             }
 
 
 
+            if (runningTest) {
+                datareader.EndOfFile();
+                return;
+            }
 
-            // datareader.EndOfFile();
-            // return;
 
 
             // datareader.ShowByteCount();
@@ -633,7 +678,7 @@ namespace MyShaderAnalysis {
 
 
         static void Trial1ZVsFrame00() {
-            ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR1 + @"\3dskyboxstencil_pcgl_30_vs.vcs");
+            ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR_NOT_CORE + @"\3dskyboxstencil_pcgl_30_vs.vcs");
             DataReader datareader = shaderReader.getZframeDataReader(2);
 
 
@@ -696,7 +741,7 @@ namespace MyShaderAnalysis {
 
 
         static void Trial1ZFrame05() {
-            ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR1 + @"\multiblend_pcgl_30_ps.vcs");
+            ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
             DataReader datareader = shaderReader.getZframeDataReader(5);
             // datareader.DisableOutput = true;
 
@@ -783,7 +828,7 @@ namespace MyShaderAnalysis {
 
 
         static void Trial1ZFrame02() {
-            ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR1 + @"\multiblend_pcgl_30_ps.vcs");
+            ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
             DataReader datareader = shaderReader.getZframeDataReader(2);
             datareader.ShowZDataSection(-1);
             datareader.ShowZFrameHeader();
@@ -845,7 +890,7 @@ namespace MyShaderAnalysis {
 
 
         static void Trial1ZFrame01() {
-            ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR1 + @"\multiblend_pcgl_30_ps.vcs");
+            ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
             DataReader datareader = shaderReader.getZframeDataReader(1);
 
 
@@ -981,7 +1026,7 @@ namespace MyShaderAnalysis {
         // ZFRAME0
         static void Trial1ZFrame00() {
             // new ShaderReader(ANALYSIS_DIR1 + @"\glow_output_pcgl_30_ps.vcs");
-            ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR1 + @"\multiblend_pcgl_30_ps.vcs");
+            ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
 
             DataReader datareader = shaderReader.getZframeDataReader(0);
             datareader.ShowByteCount();
@@ -1207,6 +1252,29 @@ namespace MyShaderAnalysis {
             }
             return databytes;
         }
+
+
+
+        static List<string> getAllPsFiles() {
+            List<string> psFiles = new();
+            string[] coreFileNames = Directory.GetFiles(ANALYSIS_DIR_CORE);
+            foreach (string filepath in coreFileNames) {
+                if (filepath.Substring(filepath.Length - 6, 2) == "ps") {
+                    psFiles.Add(filepath);
+
+                }
+            }
+            string[] nonCoreFileNames = Directory.GetFiles(ANALYSIS_DIR_NOT_CORE);
+            foreach (string filepath in nonCoreFileNames) {
+                if (filepath.Substring(filepath.Length - 6, 2) == "ps") {
+                    psFiles.Add(filepath);
+
+                }
+            }
+            return psFiles;
+        }
+
+
 
 
 
