@@ -1121,7 +1121,13 @@ namespace MyShaderAnalysis.readers {
             }
             // ShowByteCount($"{byteSize/4}*4 bytes");
             OutputWriteLine($"// {byteSize/4}*4 bytes");
-            ShowBytes(byteSize);
+
+            // ShowBytes(byteSize);
+
+            DisableOutput = false;
+            ShowBytesNoLineBreak(byteSize);
+            DisableOutput = true;
+
             OutputWriteLine("");
         }
 
@@ -1260,6 +1266,33 @@ namespace MyShaderAnalysis.readers {
             ShowDynamicExpression(dynExpLen);
             ShowMurmurString();
             OutputWriteLine("");
+        }
+
+
+        public void ShowZFrameHeaderUpdated() {
+            // starts with number of arguments
+            ShowBytes(2);
+            uint nrArgs = ReadUInt16AtPosition(offset-2);
+            for (int i = 0; i < nrArgs; i++) {
+                ShowMurmurString();
+                int headerOperator = databytes[offset];
+                if (headerOperator == 0x0e) {
+                    ShowBytes(3);
+                    continue;
+                }
+
+                if (headerOperator == 5 || headerOperator == 9) {
+                    int dynExpLen = ReadIntAtPosition(offset + 3);
+                    if (dynExpLen == 0) {
+                        ShowBytes(8);
+                        continue;
+                    } else {
+                        ShowBytes(7);
+                        ShowDynamicExpression(dynExpLen);
+                        continue;
+                    }
+                }
+            }
         }
 
 

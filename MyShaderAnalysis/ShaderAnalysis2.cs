@@ -32,7 +32,12 @@ namespace MyShaderAnalysis {
             // Trial1ScanHeaderData();
 
 
-            ScanSizes();
+            // WriteZframeAnalysisToFile();
+            // ScanSizes();
+
+            // Trial1ZVsGrasstileFile();
+            RunTrial1ZVsFrame01();
+            // Trial1ZVsFrame00();
             // Trial1ZFrame05();
             // Trial1ZFrame02();
             // Trial1ZFrame01();
@@ -231,6 +236,38 @@ namespace MyShaderAnalysis {
         }
 
 
+        const string OUTPUT_DIR = @"Z:\active\projects\dota2-sourcesdk-modding\shader-analysis-vcs-format\zframedump";
+
+
+        static void WriteZframeAnalysisToFile() {
+            // ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR1 + @"\multiblend_pcgl_30_ps.vcs");
+            ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR1 + @"\multiblend_pcgl_30_ps.vcs");
+
+            for (int i = 0; i < 2; i++) {
+
+                string outputfile = OUTPUT_DIR + @$"\testfile{i:d03}.txt";
+                StreamWriter sw = new StreamWriter(outputfile);
+
+                Trial1ZGenFilesave(sw, shaderReader, i);
+                sw.Flush();
+                sw.Close();
+            }
+
+        }
+
+
+
+
+        static void Trial1ZGenFilesave(StreamWriter sw, ShaderReader shaderReader, int zframeId) {
+            Debug.WriteLine($"ZFRAME = {zframeId}");
+            // return;
+
+            DataReader datareader = shaderReader.getZframeDataReader(zframeId);
+            // Debug.WriteLine($"{zframeId}    {datareader.databytes.Length}");
+            datareader.ConfigureWriteToFile(sw);
+            datareader.ParseAndShowZFrame();
+        }
+
 
 
         static void ScanSizes() {
@@ -244,22 +281,224 @@ namespace MyShaderAnalysis {
         }
 
         static void Trial1ZGen(ShaderReader shaderReader, int zframeId) {
-
-
             Debug.WriteLine($"ZFRAME = {zframeId}");
             // return;
 
             DataReader datareader = shaderReader.getZframeDataReader(zframeId);
             // Debug.WriteLine($"{zframeId}    {datareader.databytes.Length}");
+            datareader.DisableOutput = true;
+            datareader.ParseAndShowZFrame();
+        }
+
+
+
+
+
+
+
+        static void Trial1ZVsGrasstileFile() {
+
+            ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR1 + @"\grasstile_pcgl_30_vs.vcs");
+            DataReader datareader = shaderReader.getZframeDataReader(0);
+
+
+            Debug.WriteLine(shaderReader.zFrames.Count);
+
+
+            datareader.ShowZDataSection(-1);
+
+            Debug.WriteLine("");
+            datareader.ShowBytes(2);
+            datareader.ShowBytes(2);
+            datareader.ShowBytes(24);
+
+
+            datareader.ShowBytes(2);
+            //datareader.ShowBytes(528, 44);
+            //datareader.ShowBytes(72, 24);
+
+            datareader.ShowBytes(528, 88);
+            datareader.ShowBytes(72, 12);
+
+            datareader.ShowBytes(2);
+            datareader.ShowBytes(24);
+
+
+
+            datareader.ShowBytes(2);
+            datareader.ShowBytes(4);
+            datareader.ShowBytes(4);
+            datareader.ShowBytes(4);
+            datareader.ShowBytes(4);
+            datareader.ShowBytes(4);
+
+
+
+            Debug.WriteLine("");
+            Debug.WriteLine("");
+            Debug.WriteLine("");
+            datareader.ShowByteCount("----------------------------------------------------------------------------------------");
+            datareader.ShowBytesAtPosition(datareader.offset, 400);
+            Debug.WriteLine("");
+
+
+
+            datareader.ShowByteCount();
+
+        }
+
+
+
+
+
+        static void RunTrial1ZVsFrame01() {
+
+
+            // ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR1 + @"\3dskyboxstencil_pcgl_30_vs.vcs");
+             ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR1 + @"\hero_pcgl_30_vs.vcs");
+            // ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR1 + @"\multiblend_pcgl_30_ps.vcs");
+
+            // ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR1 + @"\projected_dota_pcgl_30_ps.vcs");
+            // ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR1 + @"\refract_pcgl_40_ps.vcs");
+
+            for (int i = 0; i < 2000; i++) {  
+                Trial1ZVsFrame01(shaderReader, i);
+            }
+        }
+
+
+
+        static void Trial1ZVsFrame01(ShaderReader shaderReader, int zframeId) {
+
+            DataReader datareader = shaderReader.getZframeDataReader(zframeId);
              datareader.DisableOutput = true;
 
 
+            // Debug.WriteLine(shaderReader.zFrames.Count);
+            datareader.ShowZDataSection(-1);
+            datareader.ShowZFrameHeaderUpdated();
 
-            datareader.ParseAndShowZFrame();
+            int blockSummaries = datareader.ReadInt16AtPosition(datareader.offset);
+            if (blockSummaries == 0) {
+                datareader.ShowBytes(3);
+            } else {
+                datareader.ShowBytes(2);
+                datareader.ShowBytes(blockSummaries * 2);
+
+            }
+
+
+            //Debug.WriteLine("----------------------------------------");
+            Debug.WriteLine("");
+            //Debug.WriteLine("");
+            return;
+
+
+            Debug.WriteLine("");
+            int blockCount = datareader.ReadInt16AtPosition(datareader.offset);
+            datareader.ShowBytes(2);
+            for (int i = 0; i < blockCount; i++) {
+                datareader.ShowZDataSection(i);
+            }
+
+
+            int blockSummaries2 = datareader.ReadInt16AtPosition(datareader.offset);
+            datareader.ShowBytes(2);
+            datareader.ShowBytes(blockSummaries2 * 2);
+
+
+            Debug.WriteLine("");
+
+            datareader.ShowBytes(2);
+            datareader.ShowBytes(4);
+            int zframeCount = datareader.databytes[datareader.offset - 1];
+            datareader.ShowBytes(4);
+
+            for (int i = 0; i < zframeCount; i++) {
+                datareader.ShowZSourceSection(i);
+            }
+
+
+
+
+
+            Debug.WriteLine("");
+            Debug.WriteLine("");
+            Debug.WriteLine("");
+            datareader.ShowByteCount("----------------------------------------------------------------------------------------");
+            datareader.ShowBytesAtPosition(datareader.offset, 6000);
+            Debug.WriteLine("");
+
+
+
+            datareader.ShowByteCount();
+
+        }
+
+
+
+
+
+        static void Trial1ZVsFrame00() {
+            ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR1 + @"\3dskyboxstencil_pcgl_30_vs.vcs");
+            DataReader datareader = shaderReader.getZframeDataReader(2);
+
+
+            datareader.ShowZDataSection(-1);
+
+            Debug.WriteLine("");
+            datareader.ShowBytes(2);
+
+            datareader.ShowBytes(2);
+            datareader.ShowBytes(20);
+            datareader.ShowBytes(2);
+            datareader.ShowBytes(240, 24);
+            // datareader.ShowBytes(200, 20);
+            datareader.ShowBytes(2);
+            datareader.ShowBytes(20);
+
+
+
+            datareader.ShowBytes(2);
+            datareader.ShowBytes(4);
+            datareader.ShowBytes(4);
+
+
+
+            datareader.ShowZSourceSection(0);
+            //return;
+            datareader.ShowZSourceSection(1);
+            datareader.ShowZSourceSection(2);
+            datareader.ShowZSourceSection(3);
+            datareader.ShowZSourceSection(4);
+            datareader.ShowZSourceSection(5);
+            datareader.ShowZSourceSection(6);
+            datareader.ShowZSourceSection(7);
+            datareader.ShowZSourceSection(8);
+            datareader.ShowZSourceSection(9);
+
+
+
+
+            Debug.WriteLine("");
+            datareader.ShowByteCount();
+            datareader.ShowBytes(4);
+            datareader.ShowBytes(160, 16);
+
+
+
+
+            Debug.WriteLine("");
+            Debug.WriteLine("");
+            Debug.WriteLine("");
+            datareader.ShowByteCount("----------------------------------------------------------------------------------------");
+            datareader.ShowBytesAtPosition(datareader.offset, 400);
+            Debug.WriteLine("");
 
 
 
         }
+
 
 
 
