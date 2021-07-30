@@ -1110,6 +1110,12 @@ namespace MyShaderAnalysis.readers {
             PrintIntWithValue();
             PrintIntWithValue();
             PrintIntWithValue();
+
+            //DisableOutput = false;
+            //ShowBytesNoLineBreak(12);
+            //Debug.Write(" ");
+            //DisableOutput = true;
+
             return blockSize * 4;
         }
         public void ShowZBlockDataBody(int byteSize) {
@@ -1281,10 +1287,21 @@ namespace MyShaderAnalysis.readers {
                     continue;
                 }
 
-                if (headerOperator == 5 || headerOperator == 9) {
+                if (headerOperator == 9) {
                     int dynExpLen = ReadIntAtPosition(offset + 3);
                     if (dynExpLen == 0) {
                         ShowBytes(8);
+                        continue;
+                    } else {
+                        ShowBytes(7);
+                        ShowDynamicExpression(dynExpLen);
+                        continue;
+                    }
+                }
+                if (headerOperator == 5) {
+                    int dynExpLen = ReadIntAtPosition(offset + 3);
+                    if (dynExpLen == 0) {
+                        ShowBytes(11);
                         continue;
                     } else {
                         ShowBytes(7);
@@ -1354,6 +1371,11 @@ namespace MyShaderAnalysis.readers {
         public void ShowZSourceOffsets() {
             ShowByteCount("glsl source offsets");
             PrintIntWithValue();
+            uint offset1 = ReadUIntAtPosition(offset - 4);
+            if (offset1 == 0) {
+                return;
+            }
+
             ShowBytesNoLineBreak(4);
             TabPrintComment("always 3");
             PrintIntWithValue();
@@ -1361,15 +1383,38 @@ namespace MyShaderAnalysis.readers {
         }
 
         public void ShowZGlslSourceSummary(int sourceId) {
-            int endOfSource = offset + ReadIntAtPosition(offset-4);
+            int bytesToRead = ReadIntAtPosition(offset - 4);
+            int endOfSource = offset + bytesToRead;
             ShowByteCount($"SOURCE[{sourceId}]");
-            ShowBytes(100);
-            ShowByteCount();
-            OutputWriteLine($"// ... ({endOfSource-offset} bytes of data not shown)");
+            if (bytesToRead == 0) {
+                OutputWriteLine("// no source present");
+            }
+            if (bytesToRead>100) {
+                ShowBytes(100);
+                ShowByteCount();
+                OutputWriteLine($"// ... ({endOfSource-offset} bytes of data not shown)");
+            } else {
+                ShowBytes(bytesToRead);
+            }
+
             offset = endOfSource;
             OutputWriteLine("");
         }
 
+
+
+
+        public void ShowZAllEndBlocksTypeVs() {
+            ShowByteCount();
+            ShowBytesNoLineBreak(4);
+            int nr_end_blocks = ReadIntAtPosition(offset - 4);
+            TabPrintComment($"nr end blocks ({nr_end_blocks})");
+            OutputWriteLine("");
+
+            for (int i = 0; i < nr_end_blocks; i++) {
+                ShowBytes(16);
+            }
+        }
 
 
 
@@ -1379,6 +1424,7 @@ namespace MyShaderAnalysis.readers {
             int nr_end_blocks = ReadIntAtPosition(offset - 4);
             TabPrintComment($"nr end blocks ({nr_end_blocks})");
             OutputWriteLine("");
+
             for (int i = 0; i < nr_end_blocks; i++) {
                 //if (i==nr_end_blocks-1) {
                 //    DisableOutput = false;
@@ -1413,7 +1459,7 @@ namespace MyShaderAnalysis.readers {
         public void ConfigureWriteToFile(StreamWriter sw) {
             this.sw = sw;
         }
-        private void OutputWrite(string text) {
+        public void OutputWrite(string text) {
             if (DisableOutput) {
                 return;
             }
@@ -1424,7 +1470,7 @@ namespace MyShaderAnalysis.readers {
                 Debug.Write(text);
             }
         }
-        private void OutputWriteLine(string text) {
+        public void OutputWriteLine(string text) {
             OutputWrite(text + "\n");
         }
 

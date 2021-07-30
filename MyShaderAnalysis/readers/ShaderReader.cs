@@ -14,6 +14,7 @@ namespace MyShaderAnalysis.readers {
         const string ANALYSIS_DIR = @"X:\checkouts\ValveResourceFormat\files_under_analysis";
         byte[] zstdDictionary;
         DataReader datareader;
+        public string filepath;
 
         DataPart headerData;
         // public List<DataPart> zFrames = new();
@@ -22,6 +23,7 @@ namespace MyShaderAnalysis.readers {
 
 
         public ShaderReader(string filepath) {
+            this.filepath = filepath;
             datareader = new DataReader(File.ReadAllBytes(filepath));
             zstdDictionary = File.ReadAllBytes(ANALYSIS_DIR + @"\zstdictionary_2bc2fa87.dat");
             // zstdDictionary = File.ReadAllBytes(ANALYSIS_DIR + @"\zstdictionary_FALSE.dat");
