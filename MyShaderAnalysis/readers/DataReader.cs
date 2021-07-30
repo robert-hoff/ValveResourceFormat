@@ -1122,11 +1122,11 @@ namespace MyShaderAnalysis.readers {
             // ShowByteCount($"{byteSize/4}*4 bytes");
             OutputWriteLine($"// {byteSize/4}*4 bytes");
 
-            // ShowBytes(byteSize);
+            ShowBytes(byteSize);
 
-            DisableOutput = false;
-            ShowBytesNoLineBreak(byteSize);
-            DisableOutput = true;
+            //DisableOutput = false;
+            //ShowBytesNoLineBreak(byteSize);
+            //DisableOutput = true;
 
             OutputWriteLine("");
         }
