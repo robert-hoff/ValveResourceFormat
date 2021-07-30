@@ -419,11 +419,11 @@ namespace MyShaderAnalysis {
             // string filename = ANALYSIS_DIR_CORE + @"\depth_only_pcgl_30_ps.vcs";
             // string filename = ANALYSIS_DIR_CORE + @"\grasstile_preview_pcgl_41_ps.vcs";
             // string filename = ANALYSIS_DIR_CORE + @"\solidcolor_pcgl_30_ps.vcs";
-            string filename = ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
+            // string filename = ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
             // string filename = ANALYSIS_DIR_CORE + @"\physics_wireframe_pcgl_30_ps.vcs"; // frame 16
             // string filename = ANALYSIS_DIR_CORE + @"\tools_solid_pcgl_30_ps.vcs"; // frame 7
             // string filename = ANALYSIS_DIR_CORE + @"\visualize_cloth_pcgl_40_ps.vcs"; // frame 5
-            // string filename = ANALYSIS_DIR_CORE + @"\visualize_nav_pcgl_40_ps.vcs"; // frame 10
+            string filename = ANALYSIS_DIR_CORE + @"\visualize_nav_pcgl_40_ps.vcs"; // frame 10
             // string filename = ANALYSIS_DIR_CORE + @"\tools_sprite_pcgl_40_gs.vcs"; // gs file
             // string filename = ANALYSIS_DIR_NOT_CORE + @"\hero_pcgl_40_psrs.vcs"; // psrs file
             // string filename = ANALYSIS_DIR_CORE + @"\deferred_shading_pcgl_41_ps.vcs"; // cool one
@@ -461,9 +461,9 @@ namespace MyShaderAnalysis {
             ShaderReader shaderReader = new(filenamepath);
 
 
-            int min = 0;
+            int min = 10;
             int zcount = shaderReader.zFrames.Count;
-            int max = 1;
+            int max = 11;
             // int max = zcount;
 
             int numberToParse = zcount > max ? max : zcount;
@@ -591,56 +591,69 @@ namespace MyShaderAnalysis {
 
                 for (int i = 0; i < nrEndBlocks; i++) {
                     datareader.ShowByteCount($"END-BLOCK[{i}]");
-                    datareader.ShowBytes(8);
+                    datareader.ShowBytesNoLineBreak(4);
+                    int blockId = datareader.ReadInt16AtPosition(datareader.offset-4);
+                    datareader.TabPrintComment($"blockId ref ({blockId})");
+                    datareader.ShowBytesNoLineBreak(4);
+                    datareader.TabPrintComment("always 0");
+                    datareader.ShowBytesNoLineBreak(4);
+                    int sourceReference = datareader.ReadInt16AtPosition(datareader.offset-4);
+                    datareader.TabPrintComment($"source ref ({sourceReference})");
+
+                    // int int0 = datareader.ReadInt16AtPosition(datareader.offset-4);
+                    // datareader.AddCollectValueInt(int0);
+
                     datareader.ShowBytes(4);
-                    datareader.ShowBytes(2);
-                    //int int0 = datareader.ReadInt16AtPosition(datareader.offset);
-                    //datareader.AddCollectValueInt(int0);
+                    // datareader.ShowBytes(2);
+
+
+
                     //if (int0>0) {
                     //    Debug.WriteLine($"VAL: {int0} FILENAME: {shaderReader.filepath} ZFRAME: {zframeId:d03}");
                     //}
 
 
-                    int checkExtraExtraShortBlock = datareader.ReadByteAtPosition(datareader.offset + 2);
-                    int checkExtraShortBlock = datareader.ReadByteAtPosition(datareader.offset + 3);
-                    int checkShortBlock = datareader.ReadByteAtPosition(datareader.offset + 4);
+                    int checkExtraExtraShortBlock = datareader.ReadByteAtPosition(datareader.offset);
+                    int checkExtraShortBlock = datareader.ReadByteAtPosition(datareader.offset + 1);
+                    int checkShortBlock = datareader.ReadByteAtPosition(datareader.offset + 2);
                     if (checkExtraExtraShortBlock > 0 && checkExtraShortBlock > 0 && checkShortBlock > 0) {
-                        datareader.ShowBytes(5);
+                        datareader.ShowBytes(3);
                         datareader.OutputWriteLine("");
                         continue;
                     }
                     if (checkExtraShortBlock > 0 && checkShortBlock > 0) {
-                        datareader.ShowBytes(16);
+                        datareader.ShowBytes(14);
                         datareader.ShowBytes(4);
                         datareader.ShowBytes(1);
                         datareader.OutputWriteLine("");
                         continue;
                     }
                     if (checkExtraExtraShortBlock > 0 && checkShortBlock > 0) {
-                        datareader.ShowBytes(16);
+                        datareader.ShowBytes(14);
                         datareader.ShowBytes(8);
                         datareader.ShowBytes(1);
                         datareader.OutputWriteLine("");
                         continue;
                     }
                     if (checkShortBlock > 0) {
-                        datareader.ShowBytes(16);
+                        datareader.ShowBytes(14);
                         datareader.ShowBytes(24);
                         datareader.ShowBytes(1);
                         datareader.OutputWriteLine("");
                         continue;
                     }
-                    int checkLongStartingRow = datareader.ReadByteAtPosition(datareader.offset + 7);
+                    int checkLongStartingRow = datareader.ReadByteAtPosition(datareader.offset + 5);
                     if (checkLongStartingRow == 3) {
-                        datareader.ShowBytes(36, 36);
+                        datareader.ShowBytes(34, 36);
                         datareader.ShowBytes(64, 16);
                         datareader.OutputWriteLine("");
                         continue;
                     }
-                    datareader.ShowBytes(16);
 
 
 
+
+                    datareader.ShowBytes(14);
                     int checkExtraRow = datareader.ReadByteAtPosition(datareader.offset - 8);
                     if (checkExtraRow > 0) {
                         int checkLongRow = datareader.ReadByteAtPosition(datareader.offset + 7);
