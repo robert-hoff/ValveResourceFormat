@@ -361,7 +361,7 @@ namespace MyShaderAnalysis {
             // ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR1 + @"\projected_dota_pcgl_30_ps.vcs");
             // ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR1 + @"\refract_pcgl_40_ps.vcs");
 
-            for (int i = 0; i < 2000; i++) {  
+            for (int i = 0; i < 2000; i++) {
                 Trial1ZVsFrame01(shaderReader, i);
             }
         }
@@ -371,7 +371,7 @@ namespace MyShaderAnalysis {
         static void Trial1ZVsFrame01(ShaderReader shaderReader, int zframeId) {
 
             DataReader datareader = shaderReader.getZframeDataReader(zframeId);
-             datareader.DisableOutput = true;
+             // datareader.DisableOutput = true;
 
 
             // Debug.WriteLine(shaderReader.zFrames.Count);
