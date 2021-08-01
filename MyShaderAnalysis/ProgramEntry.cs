@@ -13,10 +13,10 @@ namespace MyShaderAnalysis {
 
 
             ShaderAnalysis3.RunTrials();
-            // ShaderAnalysis2.RunTrials();
-            // ShaderAnalysis1.RunTrials();
+            ShaderAnalysis2.RunTrials();
+            ShaderAnalysis1.RunTrials();
 
-            // ShaderTesting1.RunTrials();
+            ShaderTesting1.RunTrials();
             // UtilHelpers.RunTrials();
             // Murmur32.RunTrials();
 

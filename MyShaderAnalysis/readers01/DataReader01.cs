@@ -161,7 +161,7 @@ namespace MyShaderAnalysis.readers01 {
 
 
 
-        public string readNullTermStringAtPosition(int ind) {
+        public string ReadNullTermStringAtPosition(int ind) {
             string str = "";
             while (databytes[ind] > 0) {
                 str += (char)databytes[ind++];
@@ -438,7 +438,7 @@ namespace MyShaderAnalysis.readers01 {
             TabPrintComment($"{name_len} len of name");
             OutputWriteLine("");
 
-            string name = readNullTermStringAtPosition(offset);
+            string name = ReadNullTermStringAtPosition(offset);
             OutputWriteLine($"// {name}");
             ShowBytes(name.Length + 1);
             OutputWriteLine("");
@@ -480,7 +480,7 @@ namespace MyShaderAnalysis.readers01 {
             ShowByteCount();
 
             for (int i = 0; i < nrOfArguments; i++) {
-                string default_name = readNullTermStringAtPosition(offset);
+                string default_name = ReadNullTermStringAtPosition(offset);
                 OutputWriteLine($"// {default_name}");
                 ShowBytes(128);
                 uint sSymbols = ReadUIntAtPosition(offset);
@@ -489,7 +489,7 @@ namespace MyShaderAnalysis.readers01 {
                 for (int j = 0; j < sSymbols; j++) {
                     uint sSymbolArgValue = ReadUIntAtPosition(offset + 64);
                     // Debug.WriteLine($"{sSymbolArgValue}");
-                    string sSymbolName = readNullTermStringAtPosition(offset);
+                    string sSymbolName = ReadNullTermStringAtPosition(offset);
                     OutputWriteLine($"// {sSymbolName}");
                     ShowBytes(68);
                 }
@@ -602,7 +602,7 @@ namespace MyShaderAnalysis.readers01 {
 
             ShowByteCount();
             for (int i = 0; i < 2; i++) {
-                string name1 = readNullTermStringAtPosition(offset);
+                string name1 = ReadNullTermStringAtPosition(offset);
                 if (name1.Length > 0) {
                     OutputWriteLine($"// {name1}");
                 }
@@ -629,7 +629,7 @@ namespace MyShaderAnalysis.readers01 {
             int string_offset = offset;
             List<string> names = new();
             for (int i = 0; i < arg5; i++) {
-                string paramname = readNullTermStringAtPosition(string_offset);
+                string paramname = ReadNullTermStringAtPosition(string_offset);
                 names.Add(paramname);
                 string_offset += paramname.Length + 1;
             }
@@ -690,7 +690,7 @@ namespace MyShaderAnalysis.readers01 {
 
             OutputWriteLine($"[{offset}] COMPAT-BLOCK[{compatBlockId}]");
             ShowBytes(216);
-            string name1 = readNullTermStringAtPosition(offset);
+            string name1 = ReadNullTermStringAtPosition(offset);
             OutputWriteLine($"[{offset}] {name1}");
             ShowBytes(256);
             OutputWriteLine("");
@@ -705,7 +705,7 @@ namespace MyShaderAnalysis.readers01 {
             //AddCollectValueString(mystr);
 
 
-            string name1 = readNullTermStringAtPosition(offset);
+            string name1 = ReadNullTermStringAtPosition(offset);
             OutputWriteLine($"[{offset}] {name1}");
             ShowBytes(128);
             ShowBytes(12, 4);
@@ -763,16 +763,16 @@ namespace MyShaderAnalysis.readers01 {
 
 
             ShowByteCount($"PARAM-BLOCK[{paramId}]");
-            string name1 = readNullTermStringAtPosition(offset);
+            string name1 = ReadNullTermStringAtPosition(offset);
             OutputWriteLine($"// {name1}");
             ShowBytes(64);
-            string name2 = readNullTermStringAtPosition(offset);
+            string name2 = ReadNullTermStringAtPosition(offset);
             if (name2.Length > 0) {
                 OutputWriteLine($"// {name2}");
             }
             ShowBytes(64);
             ShowBytes(8);
-            string name3 = readNullTermStringAtPosition(offset);
+            string name3 = ReadNullTermStringAtPosition(offset);
             if (name3.Length > 0) {
                 OutputWriteLine($"// {name3}");
             }
@@ -823,7 +823,7 @@ namespace MyShaderAnalysis.readers01 {
 
 
             // a rarely seen file reference
-            string name4 = readNullTermStringAtPosition(offset);
+            string name4 = ReadNullTermStringAtPosition(offset);
             if (name4.Length > 0) {
                 OutputWriteLine($"// {name4}");
             }
@@ -892,12 +892,12 @@ namespace MyShaderAnalysis.readers01 {
 
 
             // a command word, or pair of these
-            string name5 = readNullTermStringAtPosition(offset);
+            string name5 = ReadNullTermStringAtPosition(offset);
             if (name5.Length > 0) {
                 OutputWriteLine($"// {name5}");
             }
             ShowBytes(32);
-            string name6 = readNullTermStringAtPosition(offset);
+            string name6 = ReadNullTermStringAtPosition(offset);
             if (name6.Length > 0) {
                 OutputWriteLine($"// {name6}");
             }
@@ -925,7 +925,7 @@ namespace MyShaderAnalysis.readers01 {
         public void PrintMipmapBlock(int mipmapId) {
             OutputWriteLine($"[{offset}] MIPMAP-BLOCK[{mipmapId}]");
             ShowBytes(24, 4);
-            string name1 = readNullTermStringAtPosition(offset);
+            string name1 = ReadNullTermStringAtPosition(offset);
             OutputWriteLine($"// {name1}");
             ShowBytes(256);
             OutputWriteLine("");
@@ -933,7 +933,7 @@ namespace MyShaderAnalysis.readers01 {
 
 
         public void PrintBufferBlock(int bufferBlockId) {
-            string blockname = readNullTermStringAtPosition(offset);
+            string blockname = ReadNullTermStringAtPosition(offset);
             ShowByteCount($"BUFFER-BLOCK[{bufferBlockId}] {blockname}");
             ShowBytes(64);
             uint bufferSize = ReadUIntAtPosition(offset);
@@ -945,7 +945,7 @@ namespace MyShaderAnalysis.readers01 {
             TabPrintComment($"{paramCount} param-count");
 
             for (int i = 0; i < paramCount; i++) {
-                string paramname = readNullTermStringAtPosition(offset);
+                string paramname = ReadNullTermStringAtPosition(offset);
                 OutputWriteLine($"// {paramname}");
                 ShowBytes(64);
                 uint paramIndex = ReadUIntAtPosition(offset);
@@ -977,7 +977,7 @@ namespace MyShaderAnalysis.readers01 {
             for (int i = 0; i < symbolGroupCount; i++) {
                 OutputWriteLine("");
                 for (int j = 0; j < 3; j++) {
-                    string symbolname = readNullTermStringAtPosition(offset);
+                    string symbolname = ReadNullTermStringAtPosition(offset);
                     OutputWriteLine($"// {symbolname}");
                     ShowBytes(symbolname.Length + 1);
                 }
@@ -1063,7 +1063,7 @@ namespace MyShaderAnalysis.readers01 {
 
 
         public void ShowMurmurString() {
-            string nulltermstr = readNullTermStringAtPosition(offset);
+            string nulltermstr = ReadNullTermStringAtPosition(offset);
             uint murmur32 = ReadUIntAtPosition(offset + nulltermstr.Length + 1);
 
             uint MURMUR2SEED = 0x31415926; // It's pi!

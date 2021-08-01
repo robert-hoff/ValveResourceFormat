@@ -27,14 +27,28 @@ namespace MyShaderAnalysis.readers {
             }
 
 
+            uint blockDelim = ReadUIntAtPosition();
+            if (blockDelim != 17) {
+                throw new ShaderParserException($"unexpected block delim value! {blockDelim}");
+            }
+            ShowByteCount();
+            ShowBytes(4, false);
+            TabComment($"block DELIM always 17");
+            BreakLine();
+
+            PrintAllSfBlocks();
 
 
+            //PrintDBlocks();
+            //PrintParamBlocks();
+            //PrintMipmapBlocks();
+            //PrintSymbolNameBlocks();
+            //PrintZframes();
 
         }
 
 
         private void PrintVcsFeaturesHeader() {
-
             ShowByteCount("vcs file");
             ShowBytes(4, false);
             TabComment("\"vcs2\"");
@@ -46,8 +60,8 @@ namespace MyShaderAnalysis.readers {
             int has_psrs_file = ReadIntAtPosition();
             ShowBytes(4, false);
             TabComment("has_psrs_file = "+(has_psrs_file>0?"True":"False"));
-            ShowBytes(4, false);
             int unknown_val = ReadIntAtPosition();
+            ShowBytes(4, false);
             TabComment($"unknown_val = {unknown_val} (usually 0");
             int len_name_description = ReadIntAtPosition();
             ShowBytes(4, false);
@@ -85,17 +99,102 @@ namespace MyShaderAnalysis.readers {
             int nr_of_arguments = ReadIntAtPosition();
             ShowBytes(4, false);
             TabComment($"nr of arguments {nr_of_arguments}");
+
+            if (has_psrs_file == 1) {
+                // NOTE nr_of_arguments is overwritten
+                nr_of_arguments = ReadIntAtPosition(offset);
+                ShowBytes(4, false);
+                TabComment($"nr of arguments overriden ({nr_of_arguments})");
+            }
             BreakLine();
 
             ShowByteCount();
-        }
+            for (int i = 0; i < nr_of_arguments; i++) {
+                string default_name = ReadNullTermStringAtPosition(offset);
 
+                Comment($"{default_name}");
+                ShowBytes(128);
+                uint has_s_argument = ReadUIntAtPosition(offset);
+                ShowBytes(4);
+
+                if (has_s_argument>0) {
+                    uint sSymbolArgValue = ReadUIntAtPosition(offset + 64);
+                    string sSymbolName = ReadNullTermStringAtPosition(offset);
+                    Comment($"{sSymbolName}");
+                    ShowBytes(68);
+                }
+            }
+
+            BreakLine();
+            ShowByteCount("File IDs");
+            ShowBytes(16, false);
+            Comment("file ID0");
+            ShowBytes(16, false);
+            Comment("file ID1 - ref to vs file");
+            ShowBytes(16, false);
+            Comment("file ID2 - ref to ps file");
+            ShowBytes(16, false);
+            Comment("file ID3");
+            ShowBytes(16, false);
+            Comment("file ID4");
+            ShowBytes(16, false);
+            Comment("file ID5");
+            ShowBytes(16, false);
+            Comment("file ID6");
+            if (has_psrs_file == 0) {
+            ShowBytes(16, false);
+                Comment("file ID7 - shared by all Dota2 vcs files");
+            }
+            if (has_psrs_file == 1) {
+            ShowBytes(16, false);
+                Comment("file ID7 - reference to psrs file");
+            ShowBytes(16, false);
+                Comment("file ID8 - shared by all Dota2 vcs files");
+            }
+            BreakLine();
+        }
 
         private void PrintVsPsHeader() {
 
             Debug.WriteLine("Vs/Ps file header here");
         }
 
+        private void PrintAllSfBlocks() {
+
+
+        }
+
+        private void PrintSfBlock() {
+
+        }
+
+        private void PrintDBlocks() {
+
+        }
+
+        private void PrintParamBlocks() {
+
+        }
+
+        private void PrintMipmapBlocks() {
+
+        }
+
+        private void PrintBufferBlocks() {
+
+        }
+
+        private void PrintSymbolNameBlocks() {
+
+        }
+
+        private void PrintZframes() {
+
+        }
+
+        private void EndOfFile() {
+
+        }
 
 
     }

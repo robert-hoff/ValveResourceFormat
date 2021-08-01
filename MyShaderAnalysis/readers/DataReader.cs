@@ -73,6 +73,10 @@ namespace MyShaderAnalysis.readers {
             return int0;
         }
 
+        public uint ReadUIntAtPosition() {
+            return ReadUIntAtPosition(offset);
+        }
+
         public uint ReadUIntAtPosition(int fromInd) {
             uint b0 = databytes[start + fromInd];
             uint b1 = databytes[start + fromInd + 1];
