@@ -1,4 +1,4 @@
-using MyShaderAnalysis.readers;
+using MyShaderAnalysis.readers01;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace MyShaderAnalysis {
-    class ShaderTesting {
+    class ShaderTesting1 {
 
 
         // PCGL dirs
@@ -46,7 +46,7 @@ namespace MyShaderAnalysis {
         static void Trial2() {
             // reading this uses 10 GB of data, doesn't seem to be released - is this maybe a Debug thing?
             string filepath = EXPORT_DIR_NOT_CORE + @"\hero_pcgl_30_ps.vcs";
-            ShaderReader shaderReader = new(filepath);
+            ShaderReader01 shaderReader = new(filepath);
             Debug.WriteLine(filepath);
         }
 
@@ -66,7 +66,7 @@ namespace MyShaderAnalysis {
                 if (!filepath.EndsWith("vcs")) {
                     continue;
                 }
-                ShaderReader shaderReader = new(filepath);
+                ShaderReader01 shaderReader = new(filepath);
                 Debug.WriteLine(filepath);
             }
 

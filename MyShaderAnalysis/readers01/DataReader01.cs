@@ -6,8 +6,8 @@ using System.Diagnostics;
 using System.IO;
 
 
-namespace MyShaderAnalysis.readers {
-    public class DataReader {
+namespace MyShaderAnalysis.readers01 {
+    public class DataReader01 {
 
         public byte[] databytes;
         public readonly int start;
@@ -39,12 +39,12 @@ namespace MyShaderAnalysis.readers {
 
 
 
-        public DataReader(byte[] data) {
+        public DataReader01(byte[] data) {
             this.databytes = data;
             this.start = 0;
             this.offset = 0;
         }
-        public DataReader(byte[] data, int start) {
+        public DataReader01(byte[] data, int start) {
             this.databytes = data;
             this.start = start;
             this.offset = start;

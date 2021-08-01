@@ -5,31 +5,31 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyShaderAnalysis.readers {
+namespace MyShaderAnalysis.readers01 {
 
 
-    public class DataPart {
+    public class DataPart01 {
 
         public int length;
-        public DataReader datareader;
+        public DataReader01 datareader;
 
 
-        public DataPart(byte[] databytes) {
+        public DataPart01(byte[] databytes) {
             this.length = databytes.Length;
-            this.datareader = new DataReader(databytes, 0);
+            this.datareader = new DataReader01(databytes, 0);
         }
 
-        public DataPart(byte[] databytes, int offset) {
+        public DataPart01(byte[] databytes, int offset) {
             this.length = databytes.Length;
-            this.datareader = new DataReader(databytes, offset);
+            this.datareader = new DataReader01(databytes, offset);
         }
 
-        public DataPart(byte[] databytes, int offset, int length) {
+        public DataPart01(byte[] databytes, int offset, int length) {
             if (length > databytes.Length - offset) {
                 throw new Exception("this doesn't make any sense");
             }
             this.length = length;
-            this.datareader = new DataReader(databytes, offset);
+            this.datareader = new DataReader01(databytes, offset);
         }
 
 

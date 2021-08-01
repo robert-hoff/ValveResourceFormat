@@ -7,10 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyShaderAnalysis.readers {
+namespace MyShaderAnalysis.readers01 {
 
 
-    public class ShaderFile2 {
+    public class ShaderFile02 {
 
         string filepath;
         string filename;
@@ -19,13 +19,13 @@ namespace MyShaderAnalysis.readers {
         private bool VS_FILE = false;
         private bool GS_FILE = false;
         private bool PSRS_FILE = false;
-        public DataReader datareader;
+        public DataReader01 datareader;
         string outputFile = null;
         StreamWriter sw = null;
         private bool DisableOutput = false;
 
 
-        public ShaderFile2(string filepath) {
+        public ShaderFile02(string filepath) {
             this.filepath = filepath;
             filename = Path.GetFileName(filepath);
             if (filepath.EndsWith("features.vcs")) {

@@ -7,24 +7,24 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 
 
-namespace MyShaderAnalysis.readers {
+namespace MyShaderAnalysis.readers01 {
 
-    public class ShaderReader {
+    public class ShaderReader01 {
 
         const string ANALYSIS_DIR = @"X:\checkouts\ValveResourceFormat\files_under_analysis";
         byte[] zstdDictionary;
-        DataReader datareader;
+        DataReader01 datareader;
         public string filepath;
 
-        DataPart headerData;
+        DataPart01 headerData;
         // public List<DataPart> zFrames = new();
-        public List<ZFrameCompressed> zFrames = new();
+        public List<ZFrameCompressed01> zFrames = new();
 
 
 
-        public ShaderReader(string filepath) {
+        public ShaderReader01(string filepath) {
             this.filepath = filepath;
-            datareader = new DataReader(File.ReadAllBytes(filepath));
+            datareader = new DataReader01(File.ReadAllBytes(filepath));
             zstdDictionary = File.ReadAllBytes(ANALYSIS_DIR + @"\zstdictionary_2bc2fa87.dat");
             // zstdDictionary = File.ReadAllBytes(ANALYSIS_DIR + @"\zstdictionary_FALSE.dat");
             // zstdDictionary = File.ReadAllBytes(ANALYSIS_DIR + @"\zstdictionary_FALSE3.dat");
@@ -32,9 +32,9 @@ namespace MyShaderAnalysis.readers {
             List<int> zframeIndexes = datareader.SearchForByteSequence(new byte[] {0x28, 0xb5, 0x2f, 0xfd});
 
             if (zframeIndexes.Count > 0) {
-                headerData = new DataPart(datareader.databytes, 0, zframeIndexes[0] - 12);
+                headerData = new DataPart01(datareader.databytes, 0, zframeIndexes[0] - 12);
             } else {
-                headerData = new DataPart(datareader.databytes);
+                headerData = new DataPart01(datareader.databytes);
             }
 
 
@@ -42,7 +42,7 @@ namespace MyShaderAnalysis.readers {
 
             foreach (int ind in zframeIndexes) {
                 int zFrameLength = datareader.ReadIntAtPosition(ind-4) + 12;
-                ZFrameCompressed zFrameData = new(datareader.databytes, ind-12, zFrameLength);
+                ZFrameCompressed01 zFrameData = new(datareader.databytes, ind-12, zFrameLength);
 
                 zFrames.Add(zFrameData);
 
@@ -89,10 +89,10 @@ namespace MyShaderAnalysis.readers {
         }
 
 
-        public DataReader getZframeDataReader(int id) {
+        public DataReader01 getZframeDataReader(int id) {
 
             byte[] zframedatabytes = zFrames[id].DecompressFrame(zstdDictionary);
-            return new DataReader(zframedatabytes);
+            return new DataReader01(zframedatabytes);
         }
 
 

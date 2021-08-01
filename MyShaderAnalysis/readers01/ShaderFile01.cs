@@ -2,9 +2,9 @@ using System.IO;
 using System.Diagnostics;
 using MyShaderAnalysis.utilhelpers;
 
-namespace MyShaderAnalysis.readers {
+namespace MyShaderAnalysis.readers01 {
 
-    public class ShaderFile {
+    public class ShaderFile01 {
 
 
         private bool FEATURES_FILE = false;
@@ -12,7 +12,7 @@ namespace MyShaderAnalysis.readers {
         private bool VC_FILE = false;
 
 
-        public ShaderFile(string filepath) {
+        public ShaderFile01(string filepath) {
 
 
             string filename = Path.GetFileName(filepath);
@@ -31,7 +31,7 @@ namespace MyShaderAnalysis.readers {
             }
 
 
-            DataReader datareader = new(File.ReadAllBytes(filepath));
+            DataReader01 datareader = new(File.ReadAllBytes(filepath));
             Debug.WriteLine($"parsing {filename}\n");
 
             datareader.PrintVcsFileHeader();

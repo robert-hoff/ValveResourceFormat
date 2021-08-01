@@ -25,4 +25,8 @@
     <ProjectReference Include="..\MyValveResourceFormat\MyValveResourceFormat.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="readers\" />
+  </ItemGroup>
+
 </Project>

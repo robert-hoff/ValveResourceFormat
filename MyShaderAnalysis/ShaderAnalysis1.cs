@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MyShaderAnalysis.readers;
+using MyShaderAnalysis.readers01;
 
 
 namespace MyShaderAnalysis {
@@ -111,7 +111,7 @@ namespace MyShaderAnalysis {
                     continue;
                 }
 
-                ShaderFile2 parser = new(filepath);
+                ShaderFile02 parser = new(filepath);
 
                 parser.datareader.collectValuesInt = collectValuesInt;
                 parser.datareader.collectValuesString = collectValuesString;
@@ -228,7 +228,7 @@ namespace MyShaderAnalysis {
 
 
         static void ParseShaderFile(string filepath, bool writeToFile) {
-            ShaderFile2 parser = new ShaderFile2(filepath);
+            ShaderFile02 parser = new ShaderFile02(filepath);
             if (writeToFile) {
                 parser.ConfigureWriteToFile(OUTPUT_DIR);
             }
@@ -260,7 +260,7 @@ namespace MyShaderAnalysis {
 
 
         static void WriteAllBytesToTemplateFile(string filepath) {
-            DataReader datareader = new(File.ReadAllBytes(filepath));
+            DataReader01 datareader = new(File.ReadAllBytes(filepath));
 
             FileStream stream = TouchFile(filepath);
             if (stream == null) {
@@ -298,7 +298,7 @@ namespace MyShaderAnalysis {
         // OLD CRAP - DON'T MIX UP FILES
         // **********************************************************************
         static void Trials2() {
-            DataReader datareader = new(GetFile(ANALYSIS_DIR+@"\glow_output_pcgl_30_Vs.vcs"));
+            DataReader01 datareader = new(GetFile(ANALYSIS_DIR+@"\glow_output_pcgl_30_Vs.vcs"));
             List<int> zframeIndexes = datareader.SearchForByteSequence(new byte[] { 0x28, 0xb5, 0x2f, 0xfd });
             datareader.ShowBytesSurrounding(zframeIndexes[0]);
             datareader.ShowBytesSurrounding(10);
@@ -309,7 +309,7 @@ namespace MyShaderAnalysis {
 
 
         static void Trials1GetDictionary() {
-            DataReader datareader = new(GetFile(ANALYSIS_DIR + @"\zstdictionary_2bc2fa87.dat"));
+            DataReader01 datareader = new(GetFile(ANALYSIS_DIR + @"\zstdictionary_2bc2fa87.dat"));
             datareader.ShowBytesSurrounding();
 
         }
@@ -318,7 +318,7 @@ namespace MyShaderAnalysis {
 
         static void Trials1() {
 
-            DataReader datareader = new(GetFile(ANALYSIS_DIR+@"\glow_output_pcgl_30_ps.vcs"));
+            DataReader01 datareader = new(GetFile(ANALYSIS_DIR+@"\glow_output_pcgl_30_ps.vcs"));
 
             uint magic = datareader.ReadUInt(); // the magic 0x32736376 indicates "vcs2"
             // Debug.WriteLine($"0x{magic:x08}");

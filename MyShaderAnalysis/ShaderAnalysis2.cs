@@ -1,4 +1,4 @@
-using MyShaderAnalysis.readers;
+using MyShaderAnalysis.readers01;
 using MyShaderAnalysis.utilhelpers;
 using System;
 using System.Collections.Generic;
@@ -63,7 +63,7 @@ namespace MyShaderAnalysis {
             }
 
 
-            ShaderReader shaderReader = new ShaderReader(filenamepath);
+            ShaderReader01 shaderReader = new ShaderReader01(filenamepath);
 
 
             // for (int i = 0; i < shaderReader.zFrames.Count; i++) {
@@ -128,7 +128,7 @@ namespace MyShaderAnalysis {
 
             int filetype = GetVcsFileType(filenamepath);
             string filename = Path.GetFileName(filenamepath);
-            ShaderReader shaderReader = new ShaderReader(filenamepath);
+            ShaderReader01 shaderReader = new ShaderReader01(filenamepath);
 
 
             for (int i = 0; i < shaderReader.zFrames.Count; i++) {
@@ -150,7 +150,7 @@ namespace MyShaderAnalysis {
 
         static void WriteZframeAnalysisToFile() {
             // ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR1 + @"\multiblend_pcgl_30_ps.vcs");
-            ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
+            ShaderReader01 shaderReader = new ShaderReader01(ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
 
             for (int i = 0; i < 2; i++) {
 
@@ -167,11 +167,11 @@ namespace MyShaderAnalysis {
 
 
 
-        static void Trial1ZGenFilesave(StreamWriter sw, ShaderReader shaderReader, int zframeId) {
+        static void Trial1ZGenFilesave(StreamWriter sw, ShaderReader01 shaderReader, int zframeId) {
             Debug.WriteLine($"ZFRAME = {zframeId}");
             // return;
 
-            DataReader datareader = shaderReader.getZframeDataReader(zframeId);
+            DataReader01 datareader = shaderReader.getZframeDataReader(zframeId);
             // Debug.WriteLine($"{zframeId}    {datareader.databytes.Length}");
             datareader.ConfigureWriteToFile(sw);
             datareader.ParseAndShowZFrame();
@@ -245,7 +245,7 @@ namespace MyShaderAnalysis {
 
         static void RunTrial1ZVsFrame01(string filenamepath, bool runningTest, int min, int max) {
             int filetype = GetVcsFileType(filenamepath);
-            ShaderReader shaderReader = new(filenamepath);
+            ShaderReader01 shaderReader = new(filenamepath);
 
             int zcount = shaderReader.zFrames.Count;
             if (max == -1) {
@@ -273,15 +273,15 @@ namespace MyShaderAnalysis {
         const int GS_FILE = 3; // parses the same as VS
 
 
-        static void Trial1ZVsFrame01(ShaderReader shaderReader, int zframeId, int filetype, bool runningTest) {
+        static void Trial1ZVsFrame01(ShaderReader01 shaderReader, int zframeId, int filetype, bool runningTest) {
             Trial1ZVsFrame01(shaderReader, zframeId, filetype, runningTest, null, false, false);
         }
 
         // NOTE - writeAsHtml not implemented
-        static void Trial1ZVsFrame01(ShaderReader shaderReader, int zframeId, int filetype,
+        static void Trial1ZVsFrame01(ShaderReader01 shaderReader, int zframeId, int filetype,
             bool disableOutput, StreamWriter sw, bool saveGlslSources, bool writeAsHtml) {
 
-            DataReader datareader = shaderReader.getZframeDataReader(zframeId);
+            DataReader01 datareader = shaderReader.getZframeDataReader(zframeId);
             datareader.collectValuesInt = collectValuesInt;
             datareader.collectValuesString = collectValuesString;
             datareader.requestCount = requestCount;
@@ -462,8 +462,8 @@ namespace MyShaderAnalysis {
 
         static void Trial4() {
             StreamWriter sw = new StreamWriter(@"Z:\active\projects\dota2-sourcesdk-modding\shader-analysis-vcs-format\output-dump\!OUTPUT.txt");
-            ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
-            List<DataReader> readers = new();
+            ShaderReader01 shaderReader = new ShaderReader01(ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
+            List<DataReader01> readers = new();
             for (int i = 0; i < 3335; i++) {
                 readers.Add(shaderReader.getZframeDataReader(i));
             }
@@ -497,8 +497,8 @@ namespace MyShaderAnalysis {
             List<SortedRow> entries = new();
             int NUMROWS = 3335;
 
-            ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
-            List<DataReader> readers = new();
+            ShaderReader01 shaderReader = new ShaderReader01(ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
+            List<DataReader01> readers = new();
             for (int i = 0; i < NUMROWS; i++) {
                 readers.Add(shaderReader.getZframeDataReader(i));
             }
@@ -558,8 +558,8 @@ namespace MyShaderAnalysis {
             List<string> entries = new();
 
 
-            ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
-            List<DataReader> readers = new();
+            ShaderReader01 shaderReader = new ShaderReader01(ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
+            List<DataReader01> readers = new();
             for (int i = 0; i < 3335; i++) {
                 readers.Add(shaderReader.getZframeDataReader(i));
             }
@@ -580,8 +580,8 @@ namespace MyShaderAnalysis {
 
 
         static void Trial1ZVsFrame00() {
-            ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR_NOT_CORE + @"\3dskyboxstencil_pcgl_30_vs.vcs");
-            DataReader datareader = shaderReader.getZframeDataReader(2);
+            ShaderReader01 shaderReader = new ShaderReader01(ANALYSIS_DIR_NOT_CORE + @"\3dskyboxstencil_pcgl_30_vs.vcs");
+            DataReader01 datareader = shaderReader.getZframeDataReader(2);
 
 
             datareader.ShowZDataSection(-1);
@@ -631,8 +631,8 @@ namespace MyShaderAnalysis {
 
 
         static void Trial1ZFrame05() {
-            ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
-            DataReader datareader = shaderReader.getZframeDataReader(5);
+            ShaderReader01 shaderReader = new ShaderReader01(ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
+            DataReader01 datareader = shaderReader.getZframeDataReader(5);
             // datareader.DisableOutput = true;
 
             datareader.ShowZDataSection(-1);
@@ -714,8 +714,8 @@ namespace MyShaderAnalysis {
 
 
         static void Trial1ZFrame02() {
-            ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
-            DataReader datareader = shaderReader.getZframeDataReader(2);
+            ShaderReader01 shaderReader = new ShaderReader01(ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
+            DataReader01 datareader = shaderReader.getZframeDataReader(2);
             datareader.ShowZDataSection(-1);
             datareader.ShowZFrameHeader();
             datareader.ShowZDataDelim();
@@ -767,8 +767,8 @@ namespace MyShaderAnalysis {
 
 
         static void Trial1ZFrame01() {
-            ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
-            DataReader datareader = shaderReader.getZframeDataReader(1);
+            ShaderReader01 shaderReader = new ShaderReader01(ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
+            DataReader01 datareader = shaderReader.getZframeDataReader(1);
 
 
             datareader.ShowZDataSection(-1);
@@ -898,9 +898,9 @@ namespace MyShaderAnalysis {
         // ZFRAME0
         static void Trial1ZFrame00() {
             // new ShaderReader(ANALYSIS_DIR1 + @"\glow_output_pcgl_30_ps.vcs");
-            ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
+            ShaderReader01 shaderReader = new ShaderReader01(ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
 
-            DataReader datareader = shaderReader.getZframeDataReader(0);
+            DataReader01 datareader = shaderReader.getZframeDataReader(0);
             datareader.ShowByteCount();
             datareader.ShowBytes(4);
             datareader.ShowBytes(4);

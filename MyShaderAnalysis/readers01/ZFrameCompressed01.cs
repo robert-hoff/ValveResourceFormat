@@ -7,16 +7,16 @@ using System.Threading.Tasks;
 
 using ZstdSharp;
 
-namespace MyShaderAnalysis.readers {
+namespace MyShaderAnalysis.readers01 {
 
-    public class ZFrameCompressed : DataPart {
+    public class ZFrameCompressed01 : DataPart01 {
 
         int uncompressed_length;
         int compressed_length;
         byte[] zframe;
 
 
-        public ZFrameCompressed(byte[] databytes, int offset, int length) : base(databytes, offset, length) {
+        public ZFrameCompressed01(byte[] databytes, int offset, int length) : base(databytes, offset, length) {
             uint checkbytes = datareader.ReadUInt();
             if (checkbytes != 0xFFFFFFFD) {
                 throw new ShaderParserException("wrong checkbytes!");
