@@ -1,6 +1,6 @@
 using System.IO;
 using System.Diagnostics;
-
+using MyShaderAnalysis.utilhelpers;
 
 namespace MyShaderAnalysis.readers {
 

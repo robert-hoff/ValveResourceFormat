@@ -1,6 +1,6 @@
-﻿using System;
+using System;
 
-namespace MyShaderAnalysis.readers {
+namespace MyShaderAnalysis.utilhelpers {
 
     public class ShaderParserException : Exception {
 

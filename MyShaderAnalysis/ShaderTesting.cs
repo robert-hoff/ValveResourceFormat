@@ -11,36 +11,50 @@ namespace MyShaderAnalysis {
     class ShaderTesting {
 
 
-        public static void RunTrials() {
+        // PCGL dirs
+        const string EXPORT_DIR_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders-core\vfx";
+        const string EXPORT_DIR_NOT_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders\vfx";
+        // PC dirs
+        const string EXPORT_DIR_PC_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pc\shaders-core\vfx";
+        const string EXPORT_DIR_PC_NOT_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pc\shaders\vfx";
 
+
+
+
+
+        /*
+         *
+         * I wrote this methods to test the zframe decomopression.
+         * If decompressing the frames in a large file (hero_pcgl_30_ps.vcs) the memory usage
+         * will grow to over 10 GB.
+         * I disabled afterwards the autmatic decompression when instantiating the ShaderReader class
+         *
+         *
+         *
+         *
+         */
+        public static void RunTrials() {
             // Trial1();
             // Trial2();
-
         }
+
+
+
 
 
         // read one file to look at memory usage
         static void Trial2() {
-
-
             // reading this uses 10 GB of data, doesn't seem to be released - is this maybe a Debug thing?
-            string filepath = DECOMPILED_SHADERS_DIR + @"\hero_pcgl_30_vs.vcs";
+            string filepath = EXPORT_DIR_NOT_CORE + @"\hero_pcgl_30_ps.vcs";
             ShaderReader shaderReader = new(filepath);
             Debug.WriteLine(filepath);
-
         }
 
 
 
 
-        const string DECOMPILED_SHADERS_DIR = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders\vfx";
-        // const string DECOMPILED_SHADERS_DIR = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders-core\vfx";
-        // const string DECOMPILED_SHADERS_DIR = @"X:\dota-2-VRF-exports\dota2-export-shaders-pc\shaders-core\vfx";
-        // const string DECOMPILED_SHADERS_DIR = @"X:\dota-2-VRF-exports\dota2-export-shaders-pc\shaders\vfx";
-
-
         static void Trial1() {
-            string[] files = Directory.GetFiles(DECOMPILED_SHADERS_DIR);
+            string[] files = Directory.GetFiles(EXPORT_DIR_NOT_CORE);
 
 
             // This works but the memory usage quickly grows upwards of 25 GB + (for the non-core dirs)
@@ -49,7 +63,7 @@ namespace MyShaderAnalysis {
             // It still isn't perfect though (far from it)
 
             foreach (string filepath in files) {
-                if (filepath.Substring(filepath.Length - 3) != "vcs") {
+                if (!filepath.EndsWith("vcs")) {
                     continue;
                 }
                 ShaderReader shaderReader = new(filepath);

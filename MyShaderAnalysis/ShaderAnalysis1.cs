@@ -13,15 +13,14 @@ namespace MyShaderAnalysis {
 
         // selected files
         const string ANALYSIS_DIR = @"X:\checkouts\ValveResourceFormat\files_under_analysis\compiled-shaders";
-
         // PCGL dirs
         const string ANALYSIS_DIR_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders-core\vfx";
         const string ANALYSIS_DIR_NOT_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders\vfx";
-        const string OUTPUT_DIR = @"Z:\active\projects\dota2-sourcesdk-modding\shader-analysis-vcs-format\output-dump";
-
+        // PC dirs
         const string EXPORT_DIR_PC_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pc\shaders-core\vfx";
         const string EXPORT_DIR_PC_NOT_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pc\shaders\vfx";
 
+        const string OUTPUT_DIR = @"Z:\active\projects\dota2-sourcesdk-modding\shader-analysis-vcs-format\output-dump";
 
 
 
@@ -62,7 +61,7 @@ namespace MyShaderAnalysis {
             // ParseShaderFile(ANALYSIS_DIR_NOT_CORE+@"\multiblend_pcgl_30_features.vcs");
 
             ParseShaderFile(ANALYSIS_DIR_CORE+@"\visualize_cloth_pcgl_40_features.vcs");
-            
+
 
             // ParseShaderFile(ANALYSIS_DIR_CORE+@"\generic_light_pcgl_30_features.vcs");
             // ParseShaderFile(ANALYSIS_DIR_CORE+@"\generic_light_pcgl_30_vs.vcs");
@@ -99,13 +98,6 @@ namespace MyShaderAnalysis {
 
 
         static void ParseAllShadersAnalysis(string path, bool printData) {
-
-
-
-            //for (int i = 0; i < 8; i++) {
-            //    Debug.WriteLine($"({i*32+216}) 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
-            //}
-
 
 
             Debug.WriteLine(path);

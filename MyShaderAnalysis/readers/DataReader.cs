@@ -1,3 +1,4 @@
+using MyShaderAnalysis.utilhelpers;
 using MyValveResourceFormat.ThirdParty;
 using System;
 using System.Collections.Generic;

@@ -1,4 +1,5 @@
 using MyShaderAnalysis.readers;
+using MyShaderAnalysis.utilhelpers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,17 +14,23 @@ namespace MyShaderAnalysis {
 
 
         public static void RunTrials() {
+
+            // -- pretty functional methods
+
+            RunParseSingleFile();
+            // ParseZFrameFiles();
+            // WriteZframeAnalysisToFileNewVersion();
+            // WriteZframesAsHtml();
+
+
+
+
+            // -- initial attempts
+
             // Trial3();
             // Trial2();
             // Trial1ScanHeaderData();
-
             // ScanSizes();
-
-
-            // RunParseSingleFile();
-            // ParseZFrameFiles();
-            // WriteZframeAnalysisToFileNewVersion();
-            WriteZframesAsHtml();
 
             // RunTrial1ZVsFrame01();
             // Trial1ZVsFrame00();
@@ -34,131 +41,16 @@ namespace MyShaderAnalysis {
         }
 
 
-        static void Trial4() {
-            StreamWriter sw = new StreamWriter(@"Z:\active\projects\dota2-sourcesdk-modding\shader-analysis-vcs-format\output-dump\!OUTPUT.txt");
-
-
-            ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
-            List<DataReader> readers = new();
-            for (int i = 0; i < 3335; i++) {
-                readers.Add(shaderReader.getZframeDataReader(i));
-            }
-            for (int i = 0; i < 3335; i++) {
-                // readers[i].ShowBytesAtPositionNoLineBreak(0, 200);
-                // string bytebte = readers[i].ReadBytesAsStringAtPosition(0, 200);
-                // Debug.WriteLine("");
-                // sw.WriteLine(bytebte);
-
-                int int0 = readers[i].ReadIntAtPosition(0);
-                int int1 = readers[i].ReadIntAtPosition(4);
-                int int2 = readers[i].ReadIntAtPosition(8);
-                Debug.WriteLine($"{int0,3} {int1,3} {int2,3} ");
-
-
-            }
-
-
-            sw.Flush();
-            sw.Close();
-
-        }
-
-
-
-        static void Trial3() {
-            StreamWriter sw = new StreamWriter(@"Z:\active\projects\dota2-sourcesdk-modding\shader-analysis-vcs-format\output-dump\!OUTPUT.txt");
-            List<SortedRow> entries = new();
-
-            int NUMROWS = 3335;
-
-
-            ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
-            List<DataReader> readers = new();
-            for (int i = 0; i < NUMROWS; i++) {
-                readers.Add(shaderReader.getZframeDataReader(i));
-            }
-            for (int i = 0; i < NUMROWS; i++) {
-                string bytebyte = readers[i].ReadBytesAsStringAtPosition(0, 2000);
-                int v1 = readers[i].ReadIntAtPosition(0);
-                int v2 = readers[i].ReadIntAtPosition(4);
-                int v3 = readers[i].ReadIntAtPosition(8);
-                entries.Add(new SortedRow(v1, v2, v3, bytebyte));
-            }
-
-            entries.Sort();
-            for (int i = 0; i < NUMROWS; i++) {
-                sw.WriteLine(entries[i].bytebyte);
-            }
-
-
-            sw.Flush();
-            sw.Close();
-        }
-
-
-
-        class SortedRow : IComparable<SortedRow> {
-
-            public int v1;
-            public int v2;
-            public int v3;
-            public string bytebyte;
-
-            public SortedRow(int v1, int v2, int v3, string bytebyte) {
-                this.v1 = v1;
-                this.v2 = v2;
-                this.v3 = v3;
-                this.bytebyte = bytebyte;
-
-
-                //Debug.WriteLine($"{v1}  {v2}  {v3}");
-
-            }
-
-            public int CompareTo(SortedRow other) {
-                if (v2 != other.v2) {
-                    return v2 - other.v2;
-                }
-                if (v1 != other.v1) {
-                    return v1 - other.v1;
-                }
-                return v3 - other.v3;
-            }
-        }
-
-
-
-
-        static void Trial2() {
-            StreamWriter sw = new StreamWriter(@"Z:\active\projects\dota2-sourcesdk-modding\shader-analysis-vcs-format\output-dump\!OUTPUT.txt");
-            List<string> entries = new();
-
-
-            ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
-            List<DataReader> readers = new();
-            for (int i = 0; i < 3335; i++) {
-                readers.Add(shaderReader.getZframeDataReader(i));
-            }
-            for (int i = 0; i < 3335; i++) {
-                string bytebyte = readers[i].ReadBytesAsStringAtPosition(0, 400);
-                entries.Add(bytebyte);
-            }
-
-            entries.Sort();
-            for (int i = 0; i < 3335; i++) {
-                sw.WriteLine(entries[i]);
-            }
-
-
-            sw.Flush();
-            sw.Close();
-        }
-
 
 
         const string OUTPUT_DIR = @"Z:\active\projects\dota2-sourcesdk-modding\shader-analysis-vcs-format\zframedump2";
 
-
+        /*
+         *
+         * NOTE - HTML stuff not completed, start a new class and rethink some of the approches
+         *
+         *
+         */
         static void WriteZframesAsHtml() {
             // string filenamepath = ANALYSIS_DIR_CORE + @"\generic_light_pcgl_30_vs.vcs";
             string filenamepath = ANALYSIS_DIR_CORE + @"\generic_light_pcgl_30_ps.vcs";
@@ -315,15 +207,14 @@ namespace MyShaderAnalysis {
             // string filenamepath = ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
             // string filenamepath = ANALYSIS_DIR_CORE + @"\physics_wireframe_pcgl_30_ps.vcs"; // frame 16
             // string filenamepath = ANALYSIS_DIR_CORE + @"\tools_solid_pcgl_30_ps.vcs"; // frame 7
-            // string filenamepath = ANALYSIS_DIR_CORE + @"\visualize_cloth_pcgl_40_ps.vcs"; // frame 5
+            string filenamepath = ANALYSIS_DIR_CORE + @"\visualize_cloth_pcgl_40_ps.vcs"; // frame 5
             // string filenamepath = ANALYSIS_DIR_CORE + @"\visualize_nav_pcgl_40_ps.vcs"; // frame 10
             // string filenamepath = ANALYSIS_DIR_CORE + @"\tools_sprite_pcgl_40_gs.vcs"; // gs file
             // string filenamepath = ANALYSIS_DIR_NOT_CORE + @"\hero_pcgl_40_psrs.vcs"; // psrs file
             // string filenamepath = ANALYSIS_DIR_CORE + @"\deferred_shading_pcgl_41_ps.vcs"; // interesting one
             // string filenamepath = ANALYSIS_DIR_NOT_CORE + @"\grasstile_pcgl_30_vs.vcs";
-
-            string filenamepath = ANALYSIS_DIR_CORE + @"\generic_light_pcgl_30_vs.vcs";
-            RunTrial1ZVsFrame01(filenamepath, false, 0, 1);
+            // string filenamepath = ANALYSIS_DIR_CORE + @"\generic_light_pcgl_30_vs.vcs";
+            RunTrial1ZVsFrame01(filenamepath, false, 0, 3);
 
 
             PrintReport();
@@ -354,31 +245,7 @@ namespace MyShaderAnalysis {
 
         static void RunTrial1ZVsFrame01(string filenamepath, bool runningTest, int min, int max) {
             int filetype = GetVcsFileType(filenamepath);
-
-            string fileCode = filenamepath.Substring(filenamepath.Length - 6, 2);
-            if (fileCode == "vs") {
-                filetype = VS_FILE;
-            }
-            if (fileCode == "ps") {
-                filetype = PS_FILE;
-            }
-            if (fileCode == "rs") {
-                filetype = PSRS_FILE;
-            }
-            if (fileCode == "gs") {
-                filetype = GS_FILE;
-            }
-
-            if (filetype == -1 && filenamepath.EndsWith("features.vcs")) {
-                Debug.WriteLine($"features files don't contain any zframes! {filenamepath}");
-                return;
-            }
-
-            if (filetype == -1) {
-                throw new ShaderParserException($"unknown file type! {filenamepath}");
-            }
             ShaderReader shaderReader = new(filenamepath);
-
 
             int zcount = shaderReader.zFrames.Count;
             if (max == -1) {
@@ -410,7 +277,7 @@ namespace MyShaderAnalysis {
             Trial1ZVsFrame01(shaderReader, zframeId, filetype, runningTest, null, false, false);
         }
 
-
+        // NOTE - writeAsHtml not implemented
         static void Trial1ZVsFrame01(ShaderReader shaderReader, int zframeId, int filetype,
             bool disableOutput, StreamWriter sw, bool saveGlslSources, bool writeAsHtml) {
 
@@ -592,6 +459,126 @@ namespace MyShaderAnalysis {
 
 
 
+
+        static void Trial4() {
+            StreamWriter sw = new StreamWriter(@"Z:\active\projects\dota2-sourcesdk-modding\shader-analysis-vcs-format\output-dump\!OUTPUT.txt");
+            ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
+            List<DataReader> readers = new();
+            for (int i = 0; i < 3335; i++) {
+                readers.Add(shaderReader.getZframeDataReader(i));
+            }
+            for (int i = 0; i < 3335; i++) {
+                // readers[i].ShowBytesAtPositionNoLineBreak(0, 200);
+                // string bytebte = readers[i].ReadBytesAsStringAtPosition(0, 200);
+                // Debug.WriteLine("");
+                // sw.WriteLine(bytebte);
+
+                int int0 = readers[i].ReadIntAtPosition(0);
+                int int1 = readers[i].ReadIntAtPosition(4);
+                int int2 = readers[i].ReadIntAtPosition(8);
+                Debug.WriteLine($"{int0,3} {int1,3} {int2,3} ");
+            }
+
+            sw.Flush();
+            sw.Close();
+
+        }
+
+
+        /*
+         *
+         * Large frame-by-frame comparison written to "!OUTPUT.txt"
+         * Collecting and sorting frames before writing
+         *
+         *
+         */
+        static void Trial3() {
+            StreamWriter sw = new StreamWriter(@"Z:\active\projects\dota2-sourcesdk-modding\shader-analysis-vcs-format\output-dump\!OUTPUT.txt");
+            List<SortedRow> entries = new();
+            int NUMROWS = 3335;
+
+            ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
+            List<DataReader> readers = new();
+            for (int i = 0; i < NUMROWS; i++) {
+                readers.Add(shaderReader.getZframeDataReader(i));
+            }
+            for (int i = 0; i < NUMROWS; i++) {
+                string bytebyte = readers[i].ReadBytesAsStringAtPosition(0, 2000);
+                int v1 = readers[i].ReadIntAtPosition(0);
+                int v2 = readers[i].ReadIntAtPosition(4);
+                int v3 = readers[i].ReadIntAtPosition(8);
+                entries.Add(new SortedRow(v1, v2, v3, bytebyte));
+            }
+
+            entries.Sort();
+            for (int i = 0; i < NUMROWS; i++) {
+                sw.WriteLine(entries[i].bytebyte);
+            }
+
+            sw.Flush();
+            sw.Close();
+        }
+
+
+        class SortedRow : IComparable<SortedRow> {
+            public int v1;
+            public int v2;
+            public int v3;
+            public string bytebyte;
+
+            public SortedRow(int v1, int v2, int v3, string bytebyte) {
+                this.v1 = v1;
+                this.v2 = v2;
+                this.v3 = v3;
+                this.bytebyte = bytebyte;
+                //Debug.WriteLine($"{v1}  {v2}  {v3}");
+
+            }
+            public int CompareTo(SortedRow other) {
+                if (v2 != other.v2) {
+                    return v2 - other.v2;
+                }
+                if (v1 != other.v1) {
+                    return v1 - other.v1;
+                }
+                return v3 - other.v3;
+            }
+        }
+
+
+
+        /*
+         *
+         * A large frame-by-frame comparison written to "!OUTPUT.txt" file
+         *
+         *
+         */
+        static void Trial2() {
+            StreamWriter sw = new(@"Z:\active\projects\dota2-sourcesdk-modding\shader-analysis-vcs-format\output-dump\!OUTPUT.txt");
+            List<string> entries = new();
+
+
+            ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
+            List<DataReader> readers = new();
+            for (int i = 0; i < 3335; i++) {
+                readers.Add(shaderReader.getZframeDataReader(i));
+            }
+            for (int i = 0; i < 3335; i++) {
+                string bytebyte = readers[i].ReadBytesAsStringAtPosition(0, 400);
+                entries.Add(bytebyte);
+            }
+
+            entries.Sort();
+            for (int i = 0; i < 3335; i++) {
+                sw.WriteLine(entries[i]);
+            }
+
+            sw.Flush();
+            sw.Close();
+        }
+
+
+
         static void Trial1ZVsFrame00() {
             ShaderReader shaderReader = new ShaderReader(ANALYSIS_DIR_NOT_CORE + @"\3dskyboxstencil_pcgl_30_vs.vcs");
             DataReader datareader = shaderReader.getZframeDataReader(2);
@@ -610,12 +597,9 @@ namespace MyShaderAnalysis {
             datareader.ShowBytes(2);
             datareader.ShowBytes(20);
 
-
-
             datareader.ShowBytes(2);
             datareader.ShowBytes(4);
             datareader.ShowBytes(4);
-
 
 
             datareader.ShowZSourceSection(0);
@@ -630,15 +614,10 @@ namespace MyShaderAnalysis {
             datareader.ShowZSourceSection(8);
             datareader.ShowZSourceSection(9);
 
-
-
-
             Debug.WriteLine("");
             datareader.ShowByteCount();
             datareader.ShowBytes(4);
             datareader.ShowBytes(160, 16);
-
-
 
 
             Debug.WriteLine("");
@@ -647,11 +626,7 @@ namespace MyShaderAnalysis {
             datareader.ShowByteCount("----------------------------------------------------------------------------------------");
             datareader.ShowBytesAtPosition(datareader.offset, 400);
             Debug.WriteLine("");
-
-
-
         }
-
 
 
 
@@ -734,10 +709,6 @@ namespace MyShaderAnalysis {
             //datareader.ShowBytesAtPosition(datareader.offset, 1000);
             //Debug.WriteLine("");
 
-
-
-
-
         }
 
 
@@ -766,12 +737,9 @@ namespace MyShaderAnalysis {
             datareader.TabPrintComment("control, always 1C 02");
             Debug.WriteLine("");
 
-
-
             datareader.ShowByteCount("flags");
             datareader.ShowBytes(4);
             datareader.ShowBytes(4);
-
 
 
             datareader.ShowZSourceOffsets();
@@ -780,7 +748,6 @@ namespace MyShaderAnalysis {
             datareader.ShowBytesNoLineBreak(16);
             datareader.TabPrintComment($"File ID");
             Debug.WriteLine("");
-
 
 
             datareader.ShowByteCount();
@@ -794,12 +761,7 @@ namespace MyShaderAnalysis {
             datareader.ShowBytes(80, 16);
 
             datareader.EndOfFile();
-
-
         }
-
-
-
 
 
 
@@ -929,12 +891,7 @@ namespace MyShaderAnalysis {
             datareader.ShowBytesAtPosition(datareader.offset, 1000);
             Debug.WriteLine("");
 
-
-
-
         }
-
-
 
 
 
@@ -1171,11 +1128,6 @@ namespace MyShaderAnalysis {
 
 
 
-
-
-
-
-
         static List<string> getAllVsFiles() {
             List<string> vsFiles = new();
             string[] coreFileNames = Directory.GetFiles(ANALYSIS_DIR_CORE);
@@ -1239,7 +1191,6 @@ namespace MyShaderAnalysis {
 
 
 
-
         static void PrintReport() {
 
             List<int> intvalues = new();
@@ -1276,9 +1227,12 @@ namespace MyShaderAnalysis {
 
 
 
-
-
     }
 
 
 }
+
+
+
+
+
