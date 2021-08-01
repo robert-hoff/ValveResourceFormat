@@ -7,7 +7,7 @@ using System.IO;
 
 
 namespace MyShaderAnalysis {
-    class ShaderAnalysis2 {
+    class ShaderAnalysis02 {
 
         const string ANALYSIS_DIR_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders-core\vfx";
         const string ANALYSIS_DIR_NOT_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders\vfx";

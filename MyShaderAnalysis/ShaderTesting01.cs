@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace MyShaderAnalysis {
-    class ShaderTesting1 {
+    class ShaderTesting01 {
 
 
         // PCGL dirs

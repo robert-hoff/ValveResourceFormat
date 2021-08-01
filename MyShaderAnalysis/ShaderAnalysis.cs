@@ -9,7 +9,7 @@ using System.IO;
 namespace MyShaderAnalysis {
 
 
-    class ShaderAnalysis3 {
+    class ShaderAnalysis {
 
         const string PCGL_DIR_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders-core\vfx";
         const string PCGL_DIR_NOT_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders\vfx";
@@ -48,7 +48,7 @@ namespace MyShaderAnalysis {
 
         static void Trial1(string filenamepath) {
 
-            ShaderFile shaderFile = new ShaderFile(filenamepath);
+            ShaderFile shaderFile = new(filenamepath);
 
 
         }

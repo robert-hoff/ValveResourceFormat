@@ -9,7 +9,7 @@ using MyShaderAnalysis.readers01;
 
 
 namespace MyShaderAnalysis {
-    public class ShaderAnalysis1 {
+    public class ShaderAnalysis01 {
 
         // selected files
         const string ANALYSIS_DIR = @"X:\checkouts\ValveResourceFormat\files_under_analysis\compiled-shaders";
