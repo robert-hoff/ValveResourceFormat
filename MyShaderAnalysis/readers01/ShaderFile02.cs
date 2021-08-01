@@ -151,28 +151,29 @@ namespace MyShaderAnalysis.readers01 {
             datareader.ShowBytesNoLineBreak(4);
             datareader.TabPrintComment($"{combatibilityBlockCount} compatibility blocks (472 bytes each)");
             OutputWriteLine("");
-
             for (int i = 0; i < combatibilityBlockCount; i++) {
                 datareader.PrintCompatibilitiesBlock(i);
             }
+
             datareader.ShowByteCount();
             uint dBlockCount = datareader.ReadUIntAtPosition(datareader.offset);
             datareader.ShowBytesNoLineBreak(4);
             datareader.TabPrintComment($"{dBlockCount} D-blocks (152 bytes each)");
             OutputWriteLine("");
-
             for (int i = 0; i < dBlockCount; i++) {
                 datareader.PrintDBlock();
             }
+
+
             datareader.ShowByteCount();
             uint unknownBlockCount = datareader.ReadUIntAtPosition(datareader.offset);
             datareader.ShowBytesNoLineBreak(4);
             datareader.TabPrintComment($"{unknownBlockCount} unknown block (472 bytes each)");
             OutputWriteLine("");
-
             for (int i = 0; i < unknownBlockCount; i++) {
                 datareader.PrintUnknownBlockType1(i);
             }
+
             datareader.ShowByteCount();
             uint paramBlockCount = datareader.ReadUIntAtPosition(datareader.offset);
             datareader.ShowBytesNoLineBreak(4);
@@ -181,6 +182,7 @@ namespace MyShaderAnalysis.readers01 {
             for (int i = 0; i < paramBlockCount; i++) {
                 datareader.PrintParameterBlock(i);
             }
+
             datareader.ShowByteCount();
             uint mipmapBlockCount = datareader.ReadUIntAtPosition(datareader.offset);
             datareader.ShowBytesNoLineBreak(4);
@@ -189,6 +191,7 @@ namespace MyShaderAnalysis.readers01 {
             for (int i = 0; i < mipmapBlockCount; i++) {
                 datareader.PrintMipmapBlock(i);
             }
+
             datareader.ShowByteCount();
             uint bufferBlockCount = datareader.ReadUIntAtPosition(datareader.offset);
             datareader.ShowBytesNoLineBreak(4);

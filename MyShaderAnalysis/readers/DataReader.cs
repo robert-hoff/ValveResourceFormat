@@ -13,6 +13,9 @@ namespace MyShaderAnalysis.readers {
         public readonly int start;
         public int offset;
 
+        private StreamWriter sw = null;
+        public bool DisableOutput = false;
+
 
         public DataReader(byte[] data, int start) {
             this.databytes = data;
@@ -27,7 +30,11 @@ namespace MyShaderAnalysis.readers {
         }
 
         public byte ReadByte() {
-            return databytes[offset++];
+            return databytes[start + offset++];
+        }
+
+        public byte ReadByteAtPosition() {
+            return ReadByteAtPosition(offset);
         }
 
         public byte ReadByteAtPosition(int fromInd) {
@@ -35,10 +42,13 @@ namespace MyShaderAnalysis.readers {
         }
 
         public uint ReadUInt16() {
-            uint b0 = ReadByte();
-            uint b1 = ReadByte();
-            uint uint0 = (b1 << 8) + b0;
+            uint uint0 = ReadUInt16AtPosition(offset);
+            offset += 2;
             return uint0;
+        }
+
+        public uint ReadUInt16AtPosition() {
+            return ReadUInt16AtPosition(offset);
         }
 
         public uint ReadUInt16AtPosition(int fromInd) {
@@ -48,15 +58,17 @@ namespace MyShaderAnalysis.readers {
             return int0;
         }
 
-        // need to do it like this for signed values to work
         public int ReadInt16() {
-            short b0 = ReadByte();
-            short b1 = ReadByte();
-            b1 <<= 8;
-            b1 += b0;
-            return b1;
+            int int0 = ReadInt16AtPosition(offset);
+            offset += 2;
+            return int0;
         }
 
+        public int ReadInt16AtPosition() {
+            return ReadInt16AtPosition(offset);
+        }
+
+        // need to do it like this for signed values to work
         public int ReadInt16AtPosition(int fromInd) {
             short b1 = databytes[start + fromInd + 1];
             b1 <<= 8;
@@ -65,11 +77,8 @@ namespace MyShaderAnalysis.readers {
         }
 
         public uint ReadUInt() {
-            uint b0 = ReadByte();
-            uint b1 = ReadByte();
-            uint b2 = ReadByte();
-            uint b3 = ReadByte();
-            uint int0 = (b3 << 24) + (b2 << 16) + (b1 << 8) + b0;
+            uint int0 = ReadUIntAtPosition(offset);
+            offset += 4;
             return int0;
         }
 
@@ -85,12 +94,10 @@ namespace MyShaderAnalysis.readers {
             uint int0 = (b3 << 24) + (b2 << 16) + (b1 << 8) + b0;
             return int0;
         }
+
         public int ReadInt() {
-            int b0 = ReadByte();
-            int b1 = ReadByte();
-            int b2 = ReadByte();
-            int b3 = ReadByte();
-            int int0 = (b3 << 24) + (b2 << 16) + (b1 << 8) + b0;
+            int int0 = ReadIntAtPosition(offset);
+            offset += 4;
             return int0;
         }
 
@@ -108,20 +115,23 @@ namespace MyShaderAnalysis.readers {
         }
 
         public float ReadFloat() {
-            float float0 = BitConverter.ToSingle(databytes, offset);
+            float float0 = ReadFloatAtPosition(offset);
             offset += 4;
             return float0;
         }
 
+        public float ReadFloatAtPosition() {
+            return ReadFloatAtPosition(offset);
+        }
+
         public float ReadFloatAtPosition(int fromInd) {
-            float float0 = BitConverter.ToSingle(databytes, fromInd);
+            float float0 = BitConverter.ToSingle(databytes, start+fromInd);
             return float0;
         }
+
         public byte[] ReadBytes(int len) {
-            byte[] bytes0 = new byte[len];
-            for (int i = 0; i < len; i++) {
-                bytes0[i] = ReadByte();
-            }
+            byte[] bytes0 = ReadBytesAtPosition(offset, len);
+            offset += len;
             return bytes0;
         }
 
@@ -145,15 +155,12 @@ namespace MyShaderAnalysis.readers {
             return str;
         }
 
-
-
-
         public void ShowByteCount() {
-            Debug.Write($"[{offset}]\n");
+            OutputWrite($"[{offset}]\n");
         }
 
         public void ShowByteCount(string message) {
-            Debug.Write($"[{offset}] {message}\n");
+            OutputWrite($"[{offset}] {message}\n");
         }
 
         public void ShowBytes(int len) {
@@ -170,13 +177,24 @@ namespace MyShaderAnalysis.readers {
 
         public void ShowBytes(int len, int breakLen, bool breakLine) {
             byte[] bytes0 = ReadBytes(len);
-            // ShowBytesByteArray(b, breakLen);
-            string byteString = BytesToString(bytes0);
-            Debug.Write(byteString+(breakLine ? "\n":""));
+            string byteString = BytesToString(bytes0, breakLen);
+            OutputWrite(byteString+(breakLine ? "\n":""));
         }
 
+
+        public void ShowBytesAtPosition(int fromInd, int len) {
+            ShowBytesAtPosition(fromInd, len, 32);
+        }
+
+        public void ShowBytesAtPosition(int fromInd, int len, int breakLen) {
+            byte[] bytes0 = ReadBytesAtPosition(fromInd, len);
+            string bytestr = BytesToString(bytes0, breakLen);
+            OutputWriteLine($"{bytestr}");
+        }
+
+
         public void BreakLine() {
-            Debug.Write("\n");
+            OutputWrite("\n");
         }
 
         public void Comment(string message) {
@@ -196,11 +214,8 @@ namespace MyShaderAnalysis.readers {
         }
 
         public void TabComment(string message, int tabLength, bool useSlashes) {
-            Debug.Write($"{"".PadLeft(tabLength)}"+(useSlashes?"// ":"")+$"{message}\n");
+            OutputWrite($"{"".PadLeft(tabLength)}"+(useSlashes?"// ":"")+$"{message}\n");
         }
-
-
-
 
         public static string BytesToString(byte[] databytes) {
             return BytesToString(databytes, 32);
@@ -221,6 +236,18 @@ namespace MyShaderAnalysis.readers {
             return bytestring.Trim();
         }
 
+        public void OutputWrite(string text) {
+            if (!DisableOutput)  {
+                Debug.Write(text);
+            }
+            if (sw != null) {
+                sw.Write(text);
+            }
+        }
+
+        public void OutputWriteLine(string text) {
+            OutputWrite(text + "\n");
+        }
 
 
     }

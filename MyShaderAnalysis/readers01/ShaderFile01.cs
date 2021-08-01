@@ -12,9 +12,11 @@ namespace MyShaderAnalysis.readers01 {
         private bool VC_FILE = false;
 
 
+
+        // NO LONGER IN USE - CAN DELETE
         public ShaderFile01(string filepath) {
 
-
+            /*
             string filename = Path.GetFileName(filepath);
             string name_wo_extension = filename[0..^4];
             if (name_wo_extension.Length >= 8 && name_wo_extension[^8..] == "features") {
@@ -146,6 +148,8 @@ namespace MyShaderAnalysis.readers01 {
             //datareader.ShowByteCount("----------------------------------------------------------------------------------------");
             //datareader.ShowBytesAtPosition(datareader.offset, 200);
             //Debug.WriteLine("");
+
+            */
 
         }
 
