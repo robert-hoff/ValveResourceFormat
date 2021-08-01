@@ -11,34 +11,16 @@ using MyShaderAnalysis.readers;
 namespace MyShaderAnalysis {
     public class ShaderAnalysis1 {
 
-
-
-
+        // selected files
         const string ANALYSIS_DIR = @"X:\checkouts\ValveResourceFormat\files_under_analysis\compiled-shaders";
-        // const string ANALYSIS_DIR = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders-core\vfx";
 
         // PCGL dirs
-        const string ANALYSIS_DIR1 = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders\vfx";
-        const string ANALYSIS_DIR2 = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders-core\vfx";
-
-
-        const string GLOW_OUPUT_PC_30_FEATURES = ANALYSIS_DIR + @"\glow_output_pc_30_features.vcs";
-        const string GLOW_OUPUT_PC_40_FEATURES = ANALYSIS_DIR + @"\glow_output_pc_40_features.vcs";
-        const string GLOW_OUPUT_PCGL_30_FEATURES = ANALYSIS_DIR + @"\glow_output_pcgl_30_features.vcs";
-        const string GLOW_OUPUT_PCGL_30_PS = ANALYSIS_DIR + @"\glow_output_pcgl_30_ps.vcs";
-        const string GLOW_OUPUT_PCGL_30_VS = ANALYSIS_DIR + @"\glow_output_pcgl_30_vs.vcs";
-        const string GLOW_OUPUT_PCGL_40_PS = ANALYSIS_DIR + @"\glow_output_pcgl_40_ps.vcs";
-        const string GLOW_OUPUT_PCGL_40_VS = ANALYSIS_DIR + @"\glow_output_pcgl_40_vs.vcs";
-        const string MULTIBLEND_PCGL_30_PS = ANALYSIS_DIR + @"\multiblend_pcgl_30_ps.vcs";
-        const string MULTIBLEND_PCGL_30_VS = ANALYSIS_DIR + @"\multiblend_pcgl_30_vs.vcs";
-        const string REFRACT_PCGL_30_FEATURES = ANALYSIS_DIR + @"\refract_pcgl_30_features.vcs";
-        const string UI_TWOTEXTURE_PCGL_30_FEATURES = ANALYSIS_DIR + @"\ui_twotexture_pcgl_30_features.vcs";
-        const string UI_TWOTEXTURE_PCGL_30_PS = ANALYSIS_DIR + @"\ui_twotexture_pcgl_30_ps.vcs";
-        const string UI_TWOTEXTURE_PCGL_30_VS = ANALYSIS_DIR + @"\ui_twotexture_pcgl_30_vs.vcs";
-
-
-
+        const string ANALYSIS_DIR_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders-core\vfx";
+        const string ANALYSIS_DIR_NOT_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders\vfx";
         const string OUTPUT_DIR = @"Z:\active\projects\dota2-sourcesdk-modding\shader-analysis-vcs-format\output-dump";
+
+        const string EXPORT_DIR_PC_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pc\shaders-core\vfx";
+        const string EXPORT_DIR_PC_NOT_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pc\shaders\vfx";
 
 
 
@@ -50,46 +32,57 @@ namespace MyShaderAnalysis {
             // Trials3();
 
 
+            // GS file
+            // ParseShaderFile(ANALYSIS_DIR_CORE+@"\visualize_physics_pcgl_30_gs.vcs");
+            // PSRS file
+            // ParseShaderFile(ANALYSIS_DIR_NOT_CORE+@"\spritecard_pcgl_40_psrs.vcs");
+
+            // NOT PCGL
+            // ParseShaderFile(EXPORT_DIR_PC_NOT_CORE+@"\3dskyboxstencil_pc_30_features.vcs");
+
+
             // ParseShaderFile(ANALYSIS_DIR+@"\3dskyboxstencil_pcgl_30_features.vcs");
             // ParseShaderFile(ANALYSIS_DIR+@"\3dskyboxstencil_pcgl_30_ps.vcs");
             // ParseShaderFile(ANALYSIS_DIR+@"\3dskyboxstencil_pcgl_30_vs.vcs");
-
-
             // ParseShaderFile(ANALYSIS_DIR+@"\3dskyboxstencil_pcgl_30_features.vcs");
             // ParseShaderFile(ANALYSIS_DIR+@"\bloom_dota_cs_pcgl_30_features.vcs");
             // ParseShaderFile(ANALYSIS_DIR+@"\bloom_dota_pcgl_30_features.vcs");
             // ParseShaderFile(ANALYSIS_DIR+@"\crystal_pcgl_30_features.vcs");
-
-
-
             // ParseShaderFile(ANALYSIS_DIR+@"\blur_cs_pcgl_30_features.vcs");
             // ParseShaderFile(ANALYSIS_DIR+@"\deferred_post_process_experimental_pcgl_30_features.vcs");
             // ParseShaderFile(ANALYSIS_DIR+@"\spritecard_pcgl_30_features.vcs");
-            // ParseShaderFile(ANALYSIS_DIR+@"\visualize_physics_pcgl_40_gs.vcs");
-            // ParseShaderFile(ANALYSIS_DIR+@"\spritecard_pcgl_40_psrs.vcs");
             // ParseShaderFile(ANALYSIS_DIR+@"\sky_pcgl_30_features.vcs");
             // ParseShaderFile(ANALYSIS_DIR+@"\tools_sprite_pcgl_40_features.vcs");
             // ParseShaderFile(ANALYSIS_DIR+@"\spritecard_pcgl_30_features.vcs");
             // ParseShaderFile(ANALYSIS_DIR+@"\vr_warp_pcgl_50_ps.vcs");
             // ParseShaderFile(ANALYSIS_DIR+@"\tools_visualize_tangent_frame_pcgl_40_vs.vcs");
-            // ParseShaderFile(ANALYSIS_DIR2+@"\blur_pcgl_30_features.vcs");
 
 
+            // ParseShaderFile(ANALYSIS_DIR_CORE+@"\blur_pcgl_30_features.vcs");
+            // ParseShaderFile(ANALYSIS_DIR_NOT_CORE+@"\multiblend_pcgl_30_features.vcs");
+
+            ParseShaderFile(ANALYSIS_DIR_CORE+@"\visualize_cloth_pcgl_40_features.vcs");
+            
+
+            // ParseShaderFile(ANALYSIS_DIR_CORE+@"\generic_light_pcgl_30_features.vcs");
+            // ParseShaderFile(ANALYSIS_DIR_CORE+@"\generic_light_pcgl_30_vs.vcs");
+            // ParseShaderFile(ANALYSIS_DIR_CORE+@"\generic_light_pcgl_30_ps.vcs");
 
 
+            // -- SCAN ALL FILES, COLLECTING VALUES
+            // ParseAllShadersAnalysis(ANALYSIS_DIR_NOT_CORE, false);
+            // ParseAllShadersAnalysis(ANALYSIS_DIR_CORE, true);
 
-            // ParseAllShadersAnalysis(ANALYSIS_DIR1, false);
-            // ParseAllShadersAnalysis(ANALYSIS_DIR2, true);
 
-
-
-            // NOTE - some files share the same name, doing the main dir (ANALYSIS_DIR1) last
+            // NOTE - some files share the same name, doing the main dir (ANALYSIS_DIR_NOT_CORE) last
             // will guarantee all those files are the ones I expect
-            // ParseAllShadersToFile(ANALYSIS_DIR2);
-            // ParseAllShadersToFile(ANALYSIS_DIR1);
+
+            // --- WRITE ALL SHADER FILES TO DISK
+            // ParseAllShadersToFile(ANALYSIS_DIR_CORE);
+            // ParseAllShadersToFile(ANALYSIS_DIR_NOT_CORE);
 
 
-            WriteAllBytesToTemplateFile(@"Z:\git\vcs-decompile\output2\zframe001.txt");
+            // WriteAllBytesToTemplateFile(@"Z:\git\vcs-decompile\output2\zframe001.txt");
 
         }
 
@@ -313,7 +306,7 @@ namespace MyShaderAnalysis {
         // OLD CRAP - DON'T MIX UP FILES
         // **********************************************************************
         static void Trials2() {
-            DataReader datareader = new(GetFile(GLOW_OUPUT_PCGL_30_VS));
+            DataReader datareader = new(GetFile(ANALYSIS_DIR+@"\glow_output_pcgl_30_Vs.vcs"));
             List<int> zframeIndexes = datareader.SearchForByteSequence(new byte[] { 0x28, 0xb5, 0x2f, 0xfd });
             datareader.ShowBytesSurrounding(zframeIndexes[0]);
             datareader.ShowBytesSurrounding(10);
@@ -333,9 +326,7 @@ namespace MyShaderAnalysis {
 
         static void Trials1() {
 
-
-
-            DataReader datareader = new(GetFile(GLOW_OUPUT_PCGL_30_PS));
+            DataReader datareader = new(GetFile(ANALYSIS_DIR+@"\glow_output_pcgl_30_ps.vcs"));
 
             uint magic = datareader.ReadUInt(); // the magic 0x32736376 indicates "vcs2"
             // Debug.WriteLine($"0x{magic:x08}");

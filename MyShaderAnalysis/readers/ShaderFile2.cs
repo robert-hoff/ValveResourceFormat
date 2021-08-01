@@ -27,20 +27,19 @@ namespace MyShaderAnalysis.readers {
         public ShaderFile2(string filepath) {
             this.filepath = filepath;
             filename = Path.GetFileName(filepath);
-            string name_wo_extension = filename[0..^4];
-            if (name_wo_extension.Length >= 8 && name_wo_extension[^8..] == "features") {
+            if (filepath.EndsWith("features.vcs")) {
                 FEATURES_FILE = true;
             }
-            if (name_wo_extension.Length >= 2 && name_wo_extension[^2..] == "ps") {
+            if (filepath.EndsWith("ps.vcs")) {
                 PS_FILE = true;
             }
-            if (name_wo_extension.Length >= 2 && name_wo_extension[^2..] == "vs") {
+            if (filepath.EndsWith("vs.vcs")) {
                 VS_FILE = true;
             }
-            if (name_wo_extension.Length >= 2 && name_wo_extension[^2..] == "gs") {
+            if (filepath.EndsWith("gs.vcs")) {
                 GS_FILE = true;
             }
-            if (name_wo_extension.Length >= 4 && name_wo_extension[^4..] == "psrs") {
+            if (filepath.EndsWith("psrs.vcs")) {
                 PSRS_FILE = true;
             }
             if (!FEATURES_FILE && !PS_FILE && !VS_FILE && !GS_FILE && !PSRS_FILE) {
@@ -116,9 +115,9 @@ namespace MyShaderAnalysis.readers {
 
         private void StartParsing() {
 
-            OutputWriteLine($"parsing {filename}\n");
+            OutputWriteLine($"parsing {filename}");
+            OutputWriteLine("");
 
-            // Debug.WriteLine($"{filename}");
             datareader.PrintVcsFileHeader();
 
             if (FEATURES_FILE) {
@@ -131,7 +130,6 @@ namespace MyShaderAnalysis.readers {
             if (blockDelim != 17) {
                 throw new ShaderParserException($"unexpected block delim value! {blockDelim}");
             }
-            OutputWriteLine("");
             datareader.ShowByteCount();
             datareader.ShowBytesNoLineBreak(4);
             datareader.TabPrintComment($"block DELIM always 17");
@@ -177,10 +175,10 @@ namespace MyShaderAnalysis.readers {
             datareader.ShowByteCount();
             uint paramBlockCount = datareader.ReadUIntAtPosition(datareader.offset);
             datareader.ShowBytesNoLineBreak(4);
-            datareader.TabPrintComment($"{paramBlockCount} Param-Blocks (may contain dynamic expressoins)");
+            datareader.TabPrintComment($"{paramBlockCount} Param-Blocks (may contain dynamic expressions)");
             OutputWriteLine("");
             for (int i = 0; i < paramBlockCount; i++) {
-                datareader.PrintParamAssignmentBlock(i);
+                datareader.PrintParameterBlock(i);
             }
             datareader.ShowByteCount();
             uint mipmapBlockCount = datareader.ReadUIntAtPosition(datareader.offset);
@@ -211,6 +209,8 @@ namespace MyShaderAnalysis.readers {
                 }
             }
             datareader.ParseZFramesSection();
+
+            // throws ShaderParserException() if not at end of file
             datareader.EndOfFile();
 
 

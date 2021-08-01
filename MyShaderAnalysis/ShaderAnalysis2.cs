@@ -17,12 +17,13 @@ namespace MyShaderAnalysis {
             // Trial2();
             // Trial1ScanHeaderData();
 
-            // WriteZframeAnalysisToFile();
             // ScanSizes();
 
 
-            RunParseSingleFile();
+            // RunParseSingleFile();
             // ParseZFrameFiles();
+            // WriteZframeAnalysisToFileNewVersion();
+            WriteZframesAsHtml();
 
             // RunTrial1ZVsFrame01();
             // Trial1ZVsFrame00();
@@ -155,7 +156,104 @@ namespace MyShaderAnalysis {
 
 
 
-        const string OUTPUT_DIR = @"Z:\active\projects\dota2-sourcesdk-modding\shader-analysis-vcs-format\zframedump";
+        const string OUTPUT_DIR = @"Z:\active\projects\dota2-sourcesdk-modding\shader-analysis-vcs-format\zframedump2";
+
+
+        static void WriteZframesAsHtml() {
+            // string filenamepath = ANALYSIS_DIR_CORE + @"\generic_light_pcgl_30_vs.vcs";
+            string filenamepath = ANALYSIS_DIR_CORE + @"\generic_light_pcgl_30_ps.vcs";
+
+            int filetype = GetVcsFileType(filenamepath);
+            string filename = Path.GetFileName(filenamepath);
+            string filetoken = null;
+            if (filetype != PS_FILE && filetype != VS_FILE) {
+                throw new ShaderParserException($"filetype not supported {filename}");
+            }
+
+
+            ShaderReader shaderReader = new ShaderReader(filenamepath);
+
+
+            // for (int i = 0; i < shaderReader.zFrames.Count; i++) {
+            for (int i = 0; i < 1; i++) {
+
+                string outputfile = OUTPUT_DIR + @$"\{filename}-zframe{i:d03}.html";
+
+                Debug.WriteLine(outputfile);
+
+                StreamWriter sw = new StreamWriter(outputfile);
+                string htmlHeader = GetHtmlHeader($"zframe{i:d03}", $"{filename}-ZFRAME{i:d03}");
+                sw.WriteLine(htmlHeader);
+
+                Trial1ZVsFrame01(shaderReader, i, filetype, false, sw, false, true);
+                // Trial1ZVsFrame01(shaderReader, i, filetype, true, null, true);
+
+                sw.WriteLine("</pre>\n</html>");
+                sw.Flush();
+                sw.Close();
+            }
+
+
+        }
+
+
+        static string GetHtmlHeader(string title, string filename) {
+            string html_header = ""+
+                $"<!DOCTYPE html>\n<html>\n<head>\n  <title>{title}</title>\n"+
+                $"  <link href='styles.css' rel='stylesheet' type='text/css' />\n" +
+                $"</head>\n<body>\n<b>{filename}</b>\n<pre>";
+
+            return html_header;
+        }
+
+
+
+        static void WriteZframeAnalysisToFileNewVersion() {
+
+            // string filenamepath = ANALYSIS_DIR_NOT_CORE + @"\crystal_pcgl_30_ps.vcs";
+            // string filenamepath = ANALYSIS_DIR_CORE + @"\apply_fog_pcgl_40_ps.vcs";
+            // string filenamepath = ANALYSIS_DIR_CORE + @"\depth_only_pcgl_30_ps.vcs";
+            // string filenamepath = ANALYSIS_DIR_CORE + @"\grasstile_preview_pcgl_41_ps.vcs";
+            // string filenamepath = ANALYSIS_DIR_CORE + @"\solidcolor_pcgl_30_ps.vcs";
+            // string filenamepath = ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
+            // string filenamepath = ANALYSIS_DIR_CORE + @"\physics_wireframe_pcgl_30_ps.vcs"; // frame 16
+            // string filenamepath = ANALYSIS_DIR_CORE + @"\tools_solid_pcgl_30_ps.vcs"; // frame 7
+
+            // frame 5 of visualize_cloth_pcgl_40_ps.vcs has a zero-length glsl source entry
+            // even so, the source entry still has a fileID associated with it
+            // string filenamepath = ANALYSIS_DIR_CORE + @"\visualize_cloth_pcgl_40_ps.vcs"; // frame 5
+            // string filenamepath = ANALYSIS_DIR_CORE + @"\visualize_nav_pcgl_40_ps.vcs"; // frame 10
+            // string filenamepath = ANALYSIS_DIR_CORE + @"\tools_sprite_pcgl_40_gs.vcs"; // gs file
+            // string filenamepath = ANALYSIS_DIR_NOT_CORE + @"\hero_pcgl_40_psrs.vcs"; // psrs file
+            // string filenamepath = ANALYSIS_DIR_CORE + @"\deferred_shading_pcgl_41_ps.vcs"; // interesting one
+            // string filenamepath = ANALYSIS_DIR_NOT_CORE + @"\grasstile_pcgl_30_vs.vcs";
+            // string filenamepath = ANALYSIS_DIR_CORE + @"\panorama_fancyquad_pcgl_30_ps.vcs";
+
+
+            string filenamepath = ANALYSIS_DIR_CORE + @"\generic_light_pcgl_30_vs.vcs";
+            // string filenamepath = ANALYSIS_DIR_CORE + @"\generic_light_pcgl_30_ps.vcs";
+
+
+            int filetype = GetVcsFileType(filenamepath);
+            string filename = Path.GetFileName(filenamepath);
+            ShaderReader shaderReader = new ShaderReader(filenamepath);
+
+
+            for (int i = 0; i < shaderReader.zFrames.Count; i++) {
+            // for (int i = 0; i < 1; i++) {
+
+                string outputfile = OUTPUT_DIR + @$"\{filename}-zframe{i:d03}.txt";
+                StreamWriter sw = new StreamWriter(outputfile);
+                Trial1ZVsFrame01(shaderReader, i, filetype, false, sw, true, false);
+                // Trial1ZVsFrame01(shaderReader, i, filetype, true, null, true, false);
+
+                sw.Flush();
+                sw.Close();
+            }
+
+        }
+
+
 
 
         static void WriteZframeAnalysisToFile() {
@@ -191,7 +289,7 @@ namespace MyShaderAnalysis {
 
         static Dictionary<int, int> collectValuesInt = new();
         static Dictionary<string, int> collectValuesString = new();
-        static bool[] requestCount = { false };
+        static bool[] requestCount = { true };
         static bool[] requestShowFile = { false };
 
 
@@ -209,21 +307,23 @@ namespace MyShaderAnalysis {
 
 
         static void RunParseSingleFile() {
-            // string filename = ANALYSIS_DIR_NOT_CORE + @"\crystal_pcgl_30_ps.vcs";
-            // string filename = ANALYSIS_DIR_CORE + @"\apply_fog_pcgl_40_ps.vcs";
-            // string filename = ANALYSIS_DIR_CORE + @"\depth_only_pcgl_30_ps.vcs";
-            // string filename = ANALYSIS_DIR_CORE + @"\grasstile_preview_pcgl_41_ps.vcs";
-            // string filename = ANALYSIS_DIR_CORE + @"\solidcolor_pcgl_30_ps.vcs";
-            string filename = ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
-            // string filename = ANALYSIS_DIR_CORE + @"\physics_wireframe_pcgl_30_ps.vcs"; // frame 16
-            // string filename = ANALYSIS_DIR_CORE + @"\tools_solid_pcgl_30_ps.vcs"; // frame 7
-            // string filename = ANALYSIS_DIR_CORE + @"\visualize_cloth_pcgl_40_ps.vcs"; // frame 5
-            // string filename = ANALYSIS_DIR_CORE + @"\visualize_nav_pcgl_40_ps.vcs"; // frame 10
-            // string filename = ANALYSIS_DIR_CORE + @"\tools_sprite_pcgl_40_gs.vcs"; // gs file
-            // string filename = ANALYSIS_DIR_NOT_CORE + @"\hero_pcgl_40_psrs.vcs"; // psrs file
-            // string filename = ANALYSIS_DIR_CORE + @"\deferred_shading_pcgl_41_ps.vcs"; // interesting one
-            // string filename = ANALYSIS_DIR_NOT_CORE + @"\grasstile_pcgl_30_vs.vcs";
-            RunTrial1ZVsFrame01(filename, false, 78, 79);
+            // string filenamepath = ANALYSIS_DIR_NOT_CORE + @"\crystal_pcgl_30_ps.vcs";
+            // string filenamepath = ANALYSIS_DIR_CORE + @"\apply_fog_pcgl_40_ps.vcs";
+            // string filenamepath = ANALYSIS_DIR_CORE + @"\depth_only_pcgl_30_ps.vcs";
+            // string filenamepath = ANALYSIS_DIR_CORE + @"\grasstile_preview_pcgl_41_ps.vcs";
+            // string filenamepath = ANALYSIS_DIR_CORE + @"\solidcolor_pcgl_30_ps.vcs";
+            // string filenamepath = ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
+            // string filenamepath = ANALYSIS_DIR_CORE + @"\physics_wireframe_pcgl_30_ps.vcs"; // frame 16
+            // string filenamepath = ANALYSIS_DIR_CORE + @"\tools_solid_pcgl_30_ps.vcs"; // frame 7
+            // string filenamepath = ANALYSIS_DIR_CORE + @"\visualize_cloth_pcgl_40_ps.vcs"; // frame 5
+            // string filenamepath = ANALYSIS_DIR_CORE + @"\visualize_nav_pcgl_40_ps.vcs"; // frame 10
+            // string filenamepath = ANALYSIS_DIR_CORE + @"\tools_sprite_pcgl_40_gs.vcs"; // gs file
+            // string filenamepath = ANALYSIS_DIR_NOT_CORE + @"\hero_pcgl_40_psrs.vcs"; // psrs file
+            // string filenamepath = ANALYSIS_DIR_CORE + @"\deferred_shading_pcgl_41_ps.vcs"; // interesting one
+            // string filenamepath = ANALYSIS_DIR_NOT_CORE + @"\grasstile_pcgl_30_vs.vcs";
+
+            string filenamepath = ANALYSIS_DIR_CORE + @"\generic_light_pcgl_30_vs.vcs";
+            RunTrial1ZVsFrame01(filenamepath, false, 0, 1);
 
 
             PrintReport();
@@ -231,9 +331,29 @@ namespace MyShaderAnalysis {
 
 
 
+        static int GetVcsFileType(string filenamepath) {
+            if (filenamepath.EndsWith("vs.vcs")) {
+                return VS_FILE;
+            }
+            if (filenamepath.EndsWith("ps.vcs")) {
+                return PS_FILE;
+            }
+            if (filenamepath.EndsWith("psrs.vcs")) {
+                return PSRS_FILE;
+            }
+            if (filenamepath.EndsWith("gs.vcs")) {
+                return GS_FILE;
+            }
+            if (filenamepath.EndsWith("features.vcs")) {
+                throw new ShaderParserException($"features files don't contain any zframes! {filenamepath}");
+            }
+            throw new ShaderParserException($"unknown file type! {filenamepath}");
+        }
+
+
 
         static void RunTrial1ZVsFrame01(string filenamepath, bool runningTest, int min, int max) {
-            int filetype = -1;
+            int filetype = GetVcsFileType(filenamepath);
 
             string fileCode = filenamepath.Substring(filenamepath.Length - 6, 2);
             if (fileCode == "vs") {
@@ -247,6 +367,11 @@ namespace MyShaderAnalysis {
             }
             if (fileCode == "gs") {
                 filetype = GS_FILE;
+            }
+
+            if (filetype == -1 && filenamepath.EndsWith("features.vcs")) {
+                Debug.WriteLine($"features files don't contain any zframes! {filenamepath}");
+                return;
             }
 
             if (filetype == -1) {
@@ -282,6 +407,12 @@ namespace MyShaderAnalysis {
 
 
         static void Trial1ZVsFrame01(ShaderReader shaderReader, int zframeId, int filetype, bool runningTest) {
+            Trial1ZVsFrame01(shaderReader, zframeId, filetype, runningTest, null, false, false);
+        }
+
+
+        static void Trial1ZVsFrame01(ShaderReader shaderReader, int zframeId, int filetype,
+            bool disableOutput, StreamWriter sw, bool saveGlslSources, bool writeAsHtml) {
 
             DataReader datareader = shaderReader.getZframeDataReader(zframeId);
             datareader.collectValuesInt = collectValuesInt;
@@ -289,12 +420,30 @@ namespace MyShaderAnalysis {
             datareader.requestCount = requestCount;
             datareader.requestShowFile = requestShowFile;
 
-            if (!runningTest) {
-                Debug.WriteLine($"parsing {shaderReader.filepath} ZFRAME{zframeId:d03}");
+            if (sw != null) {
+                Debug.WriteLine($"parsing and saving {shaderReader.filepath} ZFRAME{zframeId:d03}");
+                datareader.ConfigureWriteToFile(sw);
             }
-            if (runningTest) {
+            if (disableOutput) {
                 datareader.DisableOutput = true;
             }
+            if (!disableOutput && sw == null) {
+                Debug.WriteLine($"parsing {shaderReader.filepath} ZFRAME{zframeId:d03}");
+            }
+
+
+            // it is not meaningful to disable the output if saving to file
+            if (disableOutput && sw != null) {
+                Debug.WriteLine("WARN - output is disabled, nothing will written to file");
+            }
+
+
+            List<(int, int, string)> glslSources = new();
+
+
+
+            // datareader.DisableOutput = false;
+
 
             datareader.ShowZDataSection(-1);
             datareader.ShowZFrameHeaderUpdated();
@@ -345,7 +494,8 @@ namespace MyShaderAnalysis {
 
 
             for (int i = 0; i < glslSourceCount; i++) {
-                datareader.ShowZSourceSection(i);
+                var glslSourceItem = datareader.ShowZSourceSection(i);
+                glslSources.Add(glslSourceItem);
             }
 
             if (filetype == VS_FILE || filetype == GS_FILE) {
@@ -401,7 +551,7 @@ namespace MyShaderAnalysis {
             }
 
 
-            // throws if not at end of file
+            // throws ShaderParserException() if not at end of file
             datareader.EndOfFile();
 
 
@@ -413,6 +563,29 @@ namespace MyShaderAnalysis {
             //datareader.ShowByteCount("----------------------------------------------------------------------------------------");
             //datareader.ShowBytesAtPosition(datareader.offset, 6000);
             //Debug.WriteLine("");
+
+
+
+            if (saveGlslSources) {
+                foreach (var glslSourceItem in glslSources) {
+                    string sourceIdByteString = glslSourceItem.Item3.Replace(" ", "").ToLower();
+                    string glslFilenamepath = OUTPUT_DIR + @$"\glsl-{sourceIdByteString}.txt";
+
+                    if (File.Exists(glslFilenamepath)) {
+                        continue;
+                    }
+
+                    int glslOffset = glslSourceItem.Item1;
+                    int glslSize = glslSourceItem.Item2;
+                    byte[] glslSourceContent = datareader.ReadBytesAtPosition(glslOffset, glslSize);
+
+                    Debug.WriteLine($"writing {glslFilenamepath}");
+                    File.WriteAllBytes (glslFilenamepath, glslSourceContent);
+                }
+            }
+
+
+
         }
 
 

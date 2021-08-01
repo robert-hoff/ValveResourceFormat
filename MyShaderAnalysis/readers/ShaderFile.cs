@@ -100,7 +100,7 @@ namespace MyShaderAnalysis.readers {
             datareader.TabPrintComment($"{paramBlockCount} Param-Blocks (may contain dynamic expressoins)");
             Debug.WriteLine("");
             for (int i = 0; i < paramBlockCount; i++) {
-                datareader.PrintParamAssignmentBlock(i);
+                datareader.PrintParameterBlock(i);
             }
 
             datareader.ShowByteCount();

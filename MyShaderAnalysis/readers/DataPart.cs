@@ -35,7 +35,7 @@ namespace MyShaderAnalysis.readers {
 
 
         public void PrintFirstNrOfByte(int count) {
-            byte[] segmentbytes = datareader.ReadBytesAtPosition(length, 0);
+            byte[] segmentbytes = datareader.ReadBytesAtPosition(0, length);
             int i = 0;
             while (i < count) {
                 if (i == segmentbytes.Length) {
@@ -52,7 +52,7 @@ namespace MyShaderAnalysis.readers {
 
 
         public void PrintAllBytes() {
-            byte[] segmentbytes = datareader.ReadBytesAtPosition(length, 0);
+            byte[] segmentbytes = datareader.ReadBytesAtPosition(0, length);
             int i = 0;
             while (i < segmentbytes.Length) {
                 Debug.Write($"{segmentbytes[i]:X02} ");

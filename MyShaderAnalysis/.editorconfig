@@ -59,6 +59,7 @@ dotnet_diagnostic.IDE0058.severity = none
 dotnet_diagnostic.CA1806.severity = none
 dotnet_diagnostic.CS0219.severity = none
 dotnet_diagnostic.CA1822.severity = none
+dotnet_diagnostic.CA1310.severity = none
 
 
 
@@ -100,7 +101,7 @@ dotnet_diagnostic.CA1304.severity = suggestion
 dotnet_diagnostic.CA1307.severity = suggestion
 
 # CA1310: Specify StringComparison for correctness
-dotnet_diagnostic.CA1310.severity = suggestion
+# dotnet_diagnostic.CA1310.severity = suggestion
 
 # CA1508: Avoid dead conditional code
 dotnet_diagnostic.CA1508.severity = none

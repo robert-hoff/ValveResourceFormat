@@ -21,7 +21,6 @@ namespace MyValveResourceFormat.ThirdParty {
                 k *= M;
                 k ^= k >> R;
                 k *= M;
-
                 h *= M;
                 h ^= k;
                 length -= 4;
