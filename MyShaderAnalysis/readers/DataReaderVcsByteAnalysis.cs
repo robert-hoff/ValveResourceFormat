@@ -12,8 +12,20 @@ namespace MyShaderAnalysis.readers {
 
     public class DataReaderVcsByteAnalysis : DataReader {
 
+        FILETYPE fileType;
 
         public DataReaderVcsByteAnalysis(byte[] data, FILETYPE fileType) : base(data) {
+            this.fileType = fileType;
+
+        }
+
+        public void ConfigureWriteToFile(StreamWriter sw, bool disableOutput) {
+            this.sw = sw;
+            this.DisableOutput = disableOutput;
+        }
+
+
+        public void ParseFile() {
 
             // DisableOutput = true;
 
@@ -25,12 +37,10 @@ namespace MyShaderAnalysis.readers {
             } else {
                 throw new ShaderParserException($"can't parse this filetype: {fileType}");
             }
-
             uint blockDelim = ReadUIntAtPosition();
             if (blockDelim != 17) {
                 throw new ShaderParserException($"unexpected block delim value! {blockDelim}");
             }
-
 
             ShowByteCount();
             ShowBytes(4, false);
@@ -55,8 +65,9 @@ namespace MyShaderAnalysis.readers {
 
             PrintZframes();
             EndOfFile();
-
         }
+
+
 
 
         private void PrintVcsFeaturesHeader() {
@@ -582,8 +593,10 @@ namespace MyShaderAnalysis.readers {
             int compressed_length = ReadIntAtPosition();
             ShowBytes(4, false);
             TabComment($"{compressed_length,-8} compressed length");
-            ShowBytesAtPosition(offset, 96);
-            Comment("...");
+            ShowBytesAtPosition(offset, compressed_length>96 ? 96 : compressed_length);
+            if (compressed_length > 96) {
+                Comment("...");
+            }
             offset += compressed_length;
             BreakLine();
         }

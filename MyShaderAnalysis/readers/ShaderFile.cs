@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MyShaderAnalysis.utilhelpers;
-// using static MyShaderAnalysis.utilhelpers.UtilHelpers;
+using static MyShaderAnalysis.utilhelpers.UtilHelpers;
 
 
 namespace MyShaderAnalysis.readers {
@@ -14,33 +14,52 @@ namespace MyShaderAnalysis.readers {
     public class ShaderFile {
 
         public enum FILETYPE {
-            unknown, features_file, vs_file, ps_file, gs_file, psrs_file
+            unknown, any, features_file, vs_file, ps_file, gs_file, psrs_file
         };
 
 
         string filenamepath;
         string filename;
         private FILETYPE vcsFiletype = FILETYPE.unknown;
-        // public DataReader datareader;
+        byte[] databytes;
+
+
+        // public bool DisableOutput = false;
+
 
         public ShaderFile(string filenamepath) {
             this.filenamepath = filenamepath;
             filename = Path.GetFileName(filenamepath);
             vcsFiletype = GetVcsFileType(filenamepath);
-            // datareader = new(File.ReadAllBytes(filenamepath));
-
-            byte[] databytes = File.ReadAllBytes(filenamepath);
-
-            new DataReaderVcsByteAnalysis(databytes, vcsFiletype);
-
-
+            databytes = File.ReadAllBytes(filenamepath);
 
         }
 
+        public void PrintByteAnalysis() {
+            DataReaderVcsByteAnalysis vcsByteAnalysis = new(databytes, vcsFiletype);
+            Debug.WriteLine($"parsing {RemoveBaseDir(filenamepath)}");
+            Debug.WriteLine($"");
+            vcsByteAnalysis.ParseFile();
+        }
 
 
+        public void WriteByteAnalysisToFile(string outputDir) {
+            string outputFilename = filename[0..^4] + "-decompiled.txt";
+            string outputFilenamepath = @$"{outputDir}\{outputFilename}";
+            StreamWriter sw = new(outputFilenamepath);
 
+            Debug.WriteLine($"parsing {filenamepath}");
+            Debug.WriteLine($"writing to {outputFilenamepath}");
 
+            DataReaderVcsByteAnalysis vcsByteAnalysis = new DataReaderVcsByteAnalysis(databytes, vcsFiletype);
+            vcsByteAnalysis.ConfigureWriteToFile(sw, true);
+
+            sw.WriteLine($"parsing {RemoveBaseDir(filenamepath)}");
+            sw.WriteLine("");
+            vcsByteAnalysis.ParseFile();
+            sw.Flush();
+            sw.Close();
+        }
 
 
         static FILETYPE GetVcsFileType(string filenamepath) {
@@ -62,8 +81,6 @@ namespace MyShaderAnalysis.readers {
 
             throw new ShaderParserException($"don't know what this file is {filenamepath}");
         }
-
-
 
 
 

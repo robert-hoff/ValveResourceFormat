@@ -30,7 +30,20 @@ namespace MyShaderAnalysis.utilhelpers {
 
         }
 
+        public static string RemoveBaseDir(string filenamepath) {
+            string dirname = Path.GetDirectoryName(filenamepath);
+            string filename = Path.GetFileName(filenamepath);
+            if (dirname.EndsWith(@"\shaders\vfx")) {
+                return @"\shaders\vfx\" + filename;
+            }
+            else if (dirname.EndsWith(@"\shaders-core\vfx")) {
+                return @"\shaders-core\vfx\" + filename;
+            }
+            else {
 
+                return filenamepath;
+            }
+        }
 
 
 

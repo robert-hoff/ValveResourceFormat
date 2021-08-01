@@ -13,7 +13,7 @@ namespace MyShaderAnalysis.readers {
         public readonly int start;
         public int offset;
 
-        private StreamWriter sw = null;
+        protected StreamWriter sw = null;
         public bool DisableOutput = false;
 
 
@@ -181,7 +181,6 @@ namespace MyShaderAnalysis.readers {
             OutputWrite(byteString+(breakLine ? "\n":""));
         }
 
-
         public void ShowBytesAtPosition(int fromInd, int len) {
             ShowBytesAtPosition(fromInd, len, 32);
         }
@@ -191,7 +190,6 @@ namespace MyShaderAnalysis.readers {
             string bytestr = BytesToString(bytes0, breakLen);
             OutputWriteLine($"{bytestr}");
         }
-
 
         public void BreakLine() {
             OutputWrite("\n");
