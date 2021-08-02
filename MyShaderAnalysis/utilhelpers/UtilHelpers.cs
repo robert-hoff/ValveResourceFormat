@@ -15,20 +15,7 @@ namespace MyShaderAnalysis.utilhelpers {
 
 
 
-        public static void RunTrials() {
-            PrintByteCounter();
-        }
 
-
-
-
-        static void PrintByteCounter() {
-
-            for (int i = 0; i < 8; i++) {
-                Debug.WriteLine($"({i * 32 + 216}) 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
-            }
-
-        }
 
         public static string RemoveBaseDir(string filenamepath) {
             string dirname = Path.GetDirectoryName(filenamepath);
@@ -44,12 +31,6 @@ namespace MyShaderAnalysis.utilhelpers {
                 return filenamepath;
             }
         }
-
-
-
-
-
-
 
 
 

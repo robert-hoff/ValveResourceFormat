@@ -30,6 +30,10 @@ namespace MyShaderAnalysis {
 
         static void Trials3() {
 
+            string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_features.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
+            ShaderFile shaderFile = new ShaderFile(filenamepath);
+
         }
 
 

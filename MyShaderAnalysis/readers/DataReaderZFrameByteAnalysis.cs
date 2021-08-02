@@ -12,7 +12,7 @@ using static MyShaderAnalysis.utilhelpers.UtilHelpers;
 namespace MyShaderAnalysis.readers {
 
 
-    public class DataReaderZFrameByteAnalysis : DataReader {
+    public class DataReaderZFrameByteAnalysis : DataReader02 {
 
         FILETYPE filetype;
 

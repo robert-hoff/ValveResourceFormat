@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MyShaderAnalysis.readers01;
-using MyShaderAnalysis.utilhelpers;
 using static MyShaderAnalysis.utilhelpers.UtilHelpers;
 
 
@@ -123,7 +122,7 @@ namespace MyShaderAnalysis.readers {
         }
 
 
-        static FILETYPE GetVcsFileType(string filenamepath) {
+        private static FILETYPE GetVcsFileType(string filenamepath) {
             if (filenamepath.EndsWith("features.vcs")) {
                 return FILETYPE.features_file;
             }

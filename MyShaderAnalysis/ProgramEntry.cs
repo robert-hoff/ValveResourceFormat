@@ -17,7 +17,7 @@ namespace MyShaderAnalysis {
             // ShaderAnalysis01.RunTrials();
 
             // ShaderTesting01.RunTrials();
-            // UtilHelpers.RunTrials();
+            // Snippetcode.RunTrials();
             // Murmur32.RunTrials();
 
 

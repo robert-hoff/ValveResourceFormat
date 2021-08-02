@@ -7,26 +7,30 @@ using System.IO;
 
 namespace MyShaderAnalysis.readers {
 
-    public class DataReader {
+    public class DataReader02 {
 
         public byte[] databytes;
         public readonly int start;
-        public int offset;
+        protected int offset;
 
         protected StreamWriter sw = null;
         public bool DisableOutput = false;
 
 
-        public DataReader(byte[] data, int start) {
+        public DataReader02(byte[] data, int start) {
             this.databytes = data;
             this.start = start;
             this.offset = start;
         }
 
-        public DataReader(byte[] data) : this(data, 0) { }
+        public DataReader02(byte[] data) : this(data, 0) { }
 
         public void ResetOffset() {
             offset = start;
+        }
+
+        public int GetFileOffset() {
+            return offset;
         }
 
         public byte ReadByte() {
@@ -141,6 +145,11 @@ namespace MyShaderAnalysis.readers {
                 bytes0[i] = databytes[start + fromInd + i];
             }
             return bytes0;
+        }
+
+        public string ReadNullTermString() {
+            string str = ReadNullTermStringAtPosition(offset);
+            return null;
         }
 
         public string ReadNullTermStringAtPosition() {
