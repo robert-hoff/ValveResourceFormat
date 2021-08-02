@@ -1,3 +1,4 @@
+using MyShaderAnalysis.readers;
 using MyShaderAnalysis.utilhelpers;
 using System;
 using System.Collections.Generic;

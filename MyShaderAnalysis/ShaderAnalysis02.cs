@@ -1,3 +1,4 @@
+using MyShaderAnalysis.readers;
 using MyShaderAnalysis.readers01;
 using MyShaderAnalysis.utilhelpers;
 using System;
@@ -17,9 +18,9 @@ namespace MyShaderAnalysis {
 
             // -- pretty functional methods
 
-            RunParseSingleFile();
+            // RunParseSingleFile();
             // ParseZFrameFiles();
-            // WriteZframeAnalysisToFileNewVersion();
+            WriteZframeAnalysisToFileNewVersion();
             // WriteZframesAsHtml();
 
 
@@ -122,8 +123,11 @@ namespace MyShaderAnalysis {
             // string filenamepath = ANALYSIS_DIR_CORE + @"\panorama_fancyquad_pcgl_30_ps.vcs";
 
 
-            string filenamepath = ANALYSIS_DIR_CORE + @"\generic_light_pcgl_30_vs.vcs";
+            // string filenamepath = ANALYSIS_DIR_CORE + @"\generic_light_pcgl_30_vs.vcs";
             // string filenamepath = ANALYSIS_DIR_CORE + @"\generic_light_pcgl_30_ps.vcs";
+
+            string filenamepath = ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
+
 
 
             int filetype = GetVcsFileType(filenamepath);
@@ -131,8 +135,12 @@ namespace MyShaderAnalysis {
             ShaderReader01 shaderReader = new ShaderReader01(filenamepath);
 
 
-            for (int i = 0; i < shaderReader.zFrames.Count; i++) {
-            // for (int i = 0; i < 1; i++) {
+            // for (int i = 0; i < shaderReader.zFrames.Count; i++) {
+            for (int i = 0; i < 20; i++) {
+
+                if (i==shaderReader.zFrames.Count) {
+                    break;
+                }
 
                 string outputfile = OUTPUT_DIR + @$"\{filename}-zframe{i:d03}.txt";
                 StreamWriter sw = new StreamWriter(outputfile);

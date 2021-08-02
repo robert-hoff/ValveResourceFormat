@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using static MyShaderAnalysis.readers.ShaderFile;
+using static MyShaderAnalysis.readers.ShaderFileByteAnalysis;
 using static MyShaderAnalysis.utilhelpers.UtilHelpers;
 
 
@@ -21,13 +21,21 @@ namespace MyShaderAnalysis {
 
 
         public static void RunTrials() {
-            // string filenamepath = PCGL_DIR_NOT_CORE + @"\crystal_pcgl_30_ps.vcs";
-            // string filenamepath = PCGL_DIR_CORE + @"\apply_fog_pcgl_40_ps.vcs";
-            // string filenamepath = PCGL_DIR_CORE + @"\depth_only_pcgl_30_ps.vcs";
-            // string filenamepath = PCGL_DIR_CORE + @"\grasstile_preview_pcgl_41_ps.vcs";
-            // string filenamepath = PCGL_DIR_CORE + @"\solidcolor_pcgl_30_ps.vcs";
-            // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_vs.vcs";
-            // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
+
+            // Trials1VcsFiles();
+            // Trials2ZFrames();
+            Trials3();
+        }
+
+
+        static void Trials3() {
+
+        }
+
+
+
+
+        static void Trials2ZFrames() {
             // string filenamepath = PCGL_DIR_CORE + @"\physics_wireframe_pcgl_30_ps.vcs"; // frame 16
             // string filenamepath = PCGL_DIR_CORE + @"\tools_solid_pcgl_30_ps.vcs"; // frame 7
             // string filenamepath = PCGL_DIR_CORE + @"\visualize_cloth_pcgl_40_ps.vcs"; // frame 5 has an empty glsl file reference
@@ -38,75 +46,44 @@ namespace MyShaderAnalysis {
             // string filenamepath = PCGL_DIR_NOT_CORE + @"\grasstile_pcgl_30_vs.vcs";
             // string filenamepath = PCGL_DIR_NOT_CORE + @"\3dskyboxstencil_pcgl_30_features.vcs";
             // string filenamepath = PCGL_DIR_CORE + @"\tools_wireframe_pcgl_40_gs.vcs"; // this file has some very short zframes
-
-
-            // string filenamepath = PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_features.vcs";
-            // string filenamepath = PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_vs.vcs";
-            // string filenamepath = PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_ps.vcs";
-
-
-            // string filenamepath = PCGL_DIR_CORE + @"\generic_light_pcgl_30_features.vcs";
-            string filenamepath = PCGL_DIR_CORE + @"\generic_light_pcgl_30_vs.vcs";
-            // string filenamepath = PCGL_DIR_CORE + @"\generic_light_pcgl_30_ps.vcs";
-
-
-            // string filenamepath = PCGL_DIR_CORE + @"\apply_fog_pcgl_40_ps.vcs";
-
-            // List<string> files = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.features_file, 30);
-            // List<string> files = GetVcsFiles(PCGL_DIR_CORE, null, FILETYPE.features_file, 30);
-            // List<string> files = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.psrs_file, -1);
-            // List<string> files = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.gs_file, -1);
-            // List<string> files = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.gs_file, -1);
-
-
-            // parsing \shaders-core\vfx\apply_fog_pcgl_40_ps.vcs frames [0,1)
-            // Exception thrown: 'System.IndexOutOfRangeException' in MyShaderAnalysis.dll
-            // An unhandled exception of type 'System.IndexOutOfRangeException' occurred in MyShaderAnalysis.dll
-            // Index was outside the bounds of the array.
-
-
-
-            // X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders\vfx\water_dota_pcgl_40_vs.vcs
-            // X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders-core\vfx\apply_fog_pcgl_40_ps.vcs
-
-            // string filenamepath1 = PCGL_DIR_NOT_CORE + @"\water_dota_pcgl_40_vs.vcs";
-            // string filenamepath2 = PCGL_DIR_CORE + @"\apply_fog_pcgl_40_ps.vcs";
-
-
+            string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
 
             // ParseAllZFrames();
-            ParseZFrameRange(filenamepath, 0, 5, false, false);
+            // ParseZFrameRange(filenamepath, 0, 5, false, false);
             // ParseZFrameRange(filenamepath, 0, -1, false, false);
             // ParseZFrameRange(filenamepath, 0, 100, false, false);
-            // PrintZFrameByteAnalysis(filenamepath, 0);
-            // PrintByteAnalysis(filenamepath);
-            // WriteByteAnalysisToFile(filenamepath);
-
-
-
-            // parsing \shaders-core\vfx\apply_fog_pcgl_40_ps.vcs frames [0,1)
-            // X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders-core\vfx\apply_fog_pcgl_40_ps.vcs
-
-
-            // parsing \shaders-core\vfx\apply_fog_pcgl_40_ps.vcs frames [0,1)
-            // X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders-core\vfx\apply_fog_pcgl_40_ps.vcs
-
-
+            PrintZFrameByteAnalysis(filenamepath, 416);
         }
 
 
 
+        static void Trials1VcsFiles() {
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_vs.vcs";
+            string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_features.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_vs.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_ps.vcs";
+            // string filenamepath = PCGL_DIR_CORE + @"\generic_light_pcgl_30_features.vcs";
+            // string filenamepath = PCGL_DIR_CORE + @"\generic_light_pcgl_30_vs.vcs";
+            // string filenamepath = PCGL_DIR_CORE + @"\generic_light_pcgl_30_ps.vcs";
+            // string filenamepath = PCGL_DIR_CORE + @"\apply_fog_pcgl_40_ps.vcs";
+
+
+            PrintByteAnalysis(filenamepath);
+            // WriteByteAnalysisToFile(filenamepath);
+            // ParseAndWriteAllVcsFiles();
+        }
 
 
 
 
         static void PrintZFrameByteAnalysis(string filenamepath, int zframeId) {
-            ShaderFile shaderFile = new(filenamepath);
+            ShaderFileByteAnalysis shaderFile = new(filenamepath);
             shaderFile.PrintZFrameByteAnalysis(zframeId);
         }
 
         static void ParseZFrameRange(string filenamepath, int min, int max, bool disableOutput, bool disableStatus) {
-            ShaderFile shaderFile = new(filenamepath);
+            ShaderFileByteAnalysis shaderFile = new(filenamepath);
             shaderFile.ParseZFramesRange(min, max, disableOutput, disableStatus);
         }
 
@@ -117,8 +94,6 @@ namespace MyShaderAnalysis {
             files.AddRange(GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.ps_file, -1));
             files.AddRange(GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.gs_file, -1));
             files.AddRange(GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.psrs_file, -1));
-
-
             // List<string> files = GetVcsFiles(PCGL_DIR_CORE, null, FILETYPE.ps_file, -1);
             foreach (string filenamepath in files) {
                 ParseZFrameRange(filenamepath, 0, 100, true, true);
@@ -128,12 +103,12 @@ namespace MyShaderAnalysis {
 
 
         static void PrintByteAnalysis(string filenamepath) {
-            ShaderFile shaderFile = new(filenamepath);
+            ShaderFileByteAnalysis shaderFile = new(filenamepath);
             shaderFile.PrintByteAnalysis();
         }
 
         static void WriteByteAnalysisToFile(string filenamepath) {
-            ShaderFile shaderFile = new(filenamepath);
+            ShaderFileByteAnalysis shaderFile = new(filenamepath);
             shaderFile.WriteByteAnalysisToFile(OUTPUT_DIR);
         }
 
@@ -220,9 +195,6 @@ namespace MyShaderAnalysis {
             }
             return filesFound;
         }
-
-
-
 
 
         static void ShowDuplicateFiles() {

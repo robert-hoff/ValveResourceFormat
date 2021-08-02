@@ -13,7 +13,7 @@ namespace MyShaderAnalysis {
 
 
             ShaderAnalysis.RunTrials();
-            // ShaderAnalysis02.RunTrials();
+            // ShaderAnalysis02.RunTrials(); // filewriting here still works (set to write to file)
             // ShaderAnalysis01.RunTrials();
 
             // ShaderTesting01.RunTrials();

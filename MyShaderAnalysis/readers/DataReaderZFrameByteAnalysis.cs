@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MyShaderAnalysis.utilhelpers;
-using static MyShaderAnalysis.readers.ShaderFile;
+using static MyShaderAnalysis.readers.ShaderFileByteAnalysis;
 using static MyShaderAnalysis.utilhelpers.UtilHelpers;
 
 namespace MyShaderAnalysis.readers {
