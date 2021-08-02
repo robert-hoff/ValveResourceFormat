@@ -22,17 +22,18 @@ namespace MyShaderAnalysis {
 
         public static void RunTrials() {
 
-            // Trials1VcsFiles();
+            Trials1VcsFiles();
             // Trials2ZFrames();
-            Trials3();
+            // Trials3();
         }
 
 
         static void Trials3() {
 
-            string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_features.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_features.vcs";
+            string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_vs.vcs";
             // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
-            ShaderFile shaderFile = new ShaderFile(filenamepath);
+            ShaderFile shaderFile = new(filenamepath);
 
         }
 
@@ -63,7 +64,7 @@ namespace MyShaderAnalysis {
 
         static void Trials1VcsFiles() {
             // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_vs.vcs";
-            string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
             // string filenamepath = PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_features.vcs";
             // string filenamepath = PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_vs.vcs";
             // string filenamepath = PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_ps.vcs";
@@ -71,11 +72,17 @@ namespace MyShaderAnalysis {
             // string filenamepath = PCGL_DIR_CORE + @"\generic_light_pcgl_30_vs.vcs";
             // string filenamepath = PCGL_DIR_CORE + @"\generic_light_pcgl_30_ps.vcs";
             // string filenamepath = PCGL_DIR_CORE + @"\apply_fog_pcgl_40_ps.vcs";
+            // string filenamepath = PCGL_DIR_CORE + @"\tools_wireframe_pcgl_40_gs.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"\spring_meteor_pcgl_30_vs.vcs";
+            string filenamepath = PCGL_DIR_NOT_CORE + @"\cables_pcgl_30_features.vcs";
 
 
-            PrintByteAnalysis(filenamepath);
+            // PrintByteAnalysis(filenamepath);
             // WriteByteAnalysisToFile(filenamepath);
-            // ParseAndWriteAllVcsFiles();
+            ParseAndWriteAllVcsFiles();
+
+
+            // ParseCollectionDisableOutput();
         }
 
 
@@ -114,6 +121,18 @@ namespace MyShaderAnalysis {
         static void WriteByteAnalysisToFile(string filenamepath) {
             ShaderFileByteAnalysis shaderFile = new(filenamepath);
             shaderFile.WriteByteAnalysisToFile(OUTPUT_DIR);
+        }
+
+
+
+        static void ParseCollectionDisableOutput() {
+            List<string> files = GetVcsFiles(PCGL_DIR_CORE, null, FILETYPE.any, -1);
+            foreach (string s in files) {
+                ShaderFileByteAnalysis shaderFile = new(s);
+                shaderFile.ParseFileDisableOutput();
+
+            }
+
         }
 
 

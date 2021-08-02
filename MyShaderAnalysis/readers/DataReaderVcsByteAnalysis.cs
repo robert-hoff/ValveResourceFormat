@@ -19,6 +19,8 @@ namespace MyShaderAnalysis.readers {
         }
 
         public void ParseFile() {
+            // DisableOutput = true;
+
             BreakLine();
             if (filetype == FILETYPE.features_file) {
                 PrintVcsFeaturesHeader();
@@ -47,6 +49,7 @@ namespace MyShaderAnalysis.readers {
             if (filetype == FILETYPE.features_file || filetype == FILETYPE.vs_file) {
                 PrintAllSymbolNameBlocks();
             }
+
             PrintZframes();
             EndOfFile();
         }
@@ -128,28 +131,28 @@ namespace MyShaderAnalysis.readers {
             BreakLine();
             ShowByteCount("File IDs");
             ShowBytes(16, false);
-            Comment("file ID0");
+            TabComment("file ID0");
             ShowBytes(16, false);
-            Comment("file ID1 - ref to vs file");
+            TabComment("file ID1 - ref to vs file");
             ShowBytes(16, false);
-            Comment("file ID2 - ref to ps file");
+            TabComment("file ID2 - ref to ps file");
             ShowBytes(16, false);
-            Comment("file ID3");
+            TabComment("file ID3");
             ShowBytes(16, false);
-            Comment("file ID4");
+            TabComment("file ID4");
             ShowBytes(16, false);
-            Comment("file ID5");
+            TabComment("file ID5");
             ShowBytes(16, false);
-            Comment("file ID6");
+            TabComment("file ID6");
             if (has_psrs_file == 0) {
                 ShowBytes(16, false);
-                Comment("file ID7 - shared by all Dota2 vcs files");
+                TabComment("file ID7 - shared by all Dota2 vcs files");
             }
             if (has_psrs_file == 1) {
                 ShowBytes(16, false);
-                Comment("file ID7 - reference to psrs file");
+                TabComment("file ID7 - reference to psrs file");
                 ShowBytes(16, false);
-                Comment("file ID8 - shared by all Dota2 vcs files");
+                TabComment("file ID8 - shared by all Dota2 vcs files");
             }
             BreakLine();
         }
@@ -191,6 +194,9 @@ namespace MyShaderAnalysis.readers {
                 if (name1.Length > 0) {
                     Comment($"{name1}");
                 }
+                //if (i==1) {
+                //    Debug.WriteLine($"{name1}");
+                //}
                 ShowBytes(64);
             }
             int arg0 = ReadIntAtPosition(offset);
@@ -476,7 +482,7 @@ namespace MyShaderAnalysis.readers {
                 uint attributeCount = ReadUIntAtPosition(offset + 4);
                 uint size = ReadUIntAtPosition(offset + 8);
                 ShowBytes(12, false);
-                TabComment($"({vertexSize},{attributeCount},{size}) (vertex-size, attribute-count, size)");
+                TabComment($"({vertexSize},{attributeCount},{size}) (vertex-size, attribute-count, length)");
             }
             BreakLine();
             ShowBytes(4, false);
@@ -494,6 +500,7 @@ namespace MyShaderAnalysis.readers {
                 BreakLine();
                 PrintSymbolNameBlock(i);
             }
+            BreakLine();
         }
 
         private void PrintSymbolNameBlock(int symbolsBlockId) {
@@ -502,15 +509,15 @@ namespace MyShaderAnalysis.readers {
             ShowBytes(4, false);
             TabComment($"{symbolGroupCount} string groups in this block");
             for (int i = 0; i < symbolGroupCount; i++) {
-                OutputWriteLine("");
                 for (int j = 0; j < 3; j++) {
                     string symbolname = ReadNullTermStringAtPosition(offset);
                     OutputWriteLine($"// {symbolname}");
                     ShowBytes(symbolname.Length + 1);
                 }
                 ShowBytes(4);
+                BreakLine();
             }
-            OutputWriteLine("");
+            if (symbolGroupCount == 0) BreakLine();
         }
 
         private void PrintZframes() {
@@ -525,10 +532,10 @@ namespace MyShaderAnalysis.readers {
             List<uint> zFrameIndexes = new();
             ShowByteCount("zFrame IDs");
             for (int i = 0; i < zframe_count; i++) {
-                uint zframe_index = ReadUIntAtPosition(offset);
+                uint zframeId = ReadUIntAtPosition(offset);
                 ShowBytes(8, false);
-                TabComment($"zframe[{zframe_index}]");
-                zFrameIndexes.Add(zframe_index);
+                TabComment($"zframe[{zframeId,10}]          {Convert.ToString(zframeId, 2).PadLeft(20,'0')}");
+                zFrameIndexes.Add(zframeId);
             }
             OutputWriteLine("");
             ShowByteCount("zFrame file offsets");
@@ -558,9 +565,9 @@ namespace MyShaderAnalysis.readers {
             int compressed_length = ReadIntAtPosition();
             ShowBytes(4, false);
             TabComment($"{compressed_length,-8} compressed length");
-            ShowBytesAtPosition(offset, compressed_length>96 ? 96 : compressed_length);
+            ShowBytesAtPosition(offset, compressed_length > 96 ? 96 : compressed_length);
             if (compressed_length > 96) {
-                Comment("...");
+                Comment($"... ({compressed_length - 96} bytes not shown)");
             }
             offset += compressed_length;
             BreakLine();

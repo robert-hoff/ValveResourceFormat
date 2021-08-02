@@ -11,16 +11,21 @@ namespace MyShaderAnalysis.readers {
         int unknown_val;
         string file_description;
 
+        // not sure what these are yet
+        int arg0;
+        int arg1;
+        int arg2;
+        int arg3;
+        int arg4;
+        int arg5;
+        int arg6;
+        int arg7;
 
-        public DataBlockFeaturesHeader(byte[] data) : base(data) {
-            int magic = ReadInt();
-            if (magic != 0x32736376) {
-                throw new ShaderParserException($"wrong file id {magic:x}");
-            }
-            int version = ReadInt();
-            if (version != 64) {
-                throw new ShaderParserException($"wrong version {version}, expecting 64");
-            }
+        List<(string, string)> mainParams = new();
+        List<string> fileIDs = new();
+
+
+        public DataBlockFeaturesHeader(byte[] data, int start) : base(data, start) {
             int psrs_arg = ReadInt();
             if (psrs_arg != 0 && psrs_arg != 1) {
                 throw new ShaderParserException($"unexpected value psrs_arg = {psrs_arg}");
@@ -28,117 +33,41 @@ namespace MyShaderAnalysis.readers {
             has_psrs_file = psrs_arg > 0;
             unknown_val = ReadInt();
             ReadInt(); // length of name, but not needed because it's always null-term
-            file_description = ReadNullTermStringAtPosition();
+            file_description = ReadNullTermString();
 
+            arg0 = ReadInt();
+            arg1 = ReadInt();
+            arg2 = ReadInt();
+            arg3 = ReadInt();
+            arg4 = ReadInt();
+            arg5 = ReadInt();
+            arg6 = ReadInt();
+            arg7 = ReadInt();
 
-            Debug.WriteLine($"{file_description}");
-
-        }
-
-
-        private void PrintVcsFeaturesHeader() {
-            ShowByteCount("vcs file");
-            ShowBytes(4, false);
-            TabComment("\"vcs2\"");
-            ShowBytes(4, false);
-            TabComment("version 64");
-            BreakLine();
-            ShowByteCount("features header");
-            int has_psrs_file = ReadIntAtPosition();
-            ShowBytes(4, false);
-            TabComment("has_psrs_file = " + (has_psrs_file > 0 ? "True" : "False"));
-            int unknown_val = ReadIntAtPosition();
-            ShowBytes(4, false);
-            TabComment($"unknown_val = {unknown_val} (usually 0)");
-            int len_name_description = ReadIntAtPosition();
-            ShowBytes(4, false);
-            TabComment($"{len_name_description} len of name");
-            BreakLine();
-
-            string name_desc = ReadNullTermStringAtPosition();
-            ShowByteCount(name_desc);
-            ShowBytes(len_name_description + 1);
-            BreakLine();
-
-            ShowByteCount();
-            uint arg1 = ReadUIntAtPosition(offset);
-            uint arg2 = ReadUIntAtPosition(offset + 4);
-            uint arg3 = ReadUIntAtPosition(offset + 8);
-            uint arg4 = ReadUIntAtPosition(offset + 12);
-            ShowBytes(4);
-            ShowBytes(4);
-            ShowBytes(4);
-            ShowBytes(4, false);
-            TabComment($"({arg1},{arg2},{arg3},{arg4})");
-            uint arg5 = ReadUIntAtPosition(offset);
-            uint arg6 = ReadUIntAtPosition(offset + 4);
-            uint arg7 = ReadUIntAtPosition(offset + 8);
-            uint arg8 = ReadUIntAtPosition(offset + 12);
-            ShowBytes(4);
-            ShowBytes(4);
-            ShowBytes(4);
-            ShowBytes(4, false);
-            TabComment($"({arg5},{arg6},{arg7},{arg8})");
-            BreakLine();
-
-            ShowByteCount();
-            int nr_of_arguments = ReadIntAtPosition();
-            ShowBytes(4, false);
-            TabComment($"nr of arguments {nr_of_arguments}");
-            if (has_psrs_file == 1) {
-                // NOTE nr_of_arguments is overwritten
-                nr_of_arguments = ReadIntAtPosition(offset);
-                ShowBytes(4, false);
-                TabComment($"nr of arguments overriden ({nr_of_arguments})");
+            int nr_of_arguments = ReadInt();
+             // NOTE nr_of_arguments is overwritten
+            if (has_psrs_file) {
+                nr_of_arguments = ReadInt();
             }
-            BreakLine();
 
-            ShowByteCount();
             for (int i = 0; i < nr_of_arguments; i++) {
-                string default_name = ReadNullTermStringAtPosition(offset);
-
-                Comment($"{default_name}");
-                ShowBytes(128);
-                uint has_s_argument = ReadUIntAtPosition(offset);
-                ShowBytes(4);
-
-                if (has_s_argument > 0) {
-                    uint sSymbolArgValue = ReadUIntAtPosition(offset + 64);
-                    string sSymbolName = ReadNullTermStringAtPosition(offset);
-                    Comment($"{sSymbolName}");
-                    ShowBytes(68);
+                string string_arg0 = ReadNullTermStringAtPosition();
+                string string_arg1 = null;
+                offset += 128;
+                if (ReadInt() > 0) {
+                    string_arg1 = ReadNullTermStringAtPosition();
+                    offset += 68;
                 }
+                mainParams.Add((string_arg0, string_arg0));
             }
 
-            BreakLine();
-            ShowByteCount("File IDs");
-            ShowBytes(16, false);
-            Comment("file ID0");
-            ShowBytes(16, false);
-            Comment("file ID1 - ref to vs file");
-            ShowBytes(16, false);
-            Comment("file ID2 - ref to ps file");
-            ShowBytes(16, false);
-            Comment("file ID3");
-            ShowBytes(16, false);
-            Comment("file ID4");
-            ShowBytes(16, false);
-            Comment("file ID5");
-            ShowBytes(16, false);
-            Comment("file ID6");
-            if (has_psrs_file == 0) {
-                ShowBytes(16, false);
-                Comment("file ID7 - shared by all Dota2 vcs files");
+            for (int i = 0; i < 8; i++) {
+                fileIDs.Add(ReadBytesAsString(16).Replace(" ", "").ToLower());
             }
-            if (has_psrs_file == 1) {
-                ShowBytes(16, false);
-                Comment("file ID7 - reference to psrs file");
-                ShowBytes(16, false);
-                Comment("file ID8 - shared by all Dota2 vcs files");
+            if (has_psrs_file) {
+                fileIDs.Add(ReadBytesAsString(16).Replace(" ", "").ToLower());
             }
-            BreakLine();
         }
-
 
 
     }

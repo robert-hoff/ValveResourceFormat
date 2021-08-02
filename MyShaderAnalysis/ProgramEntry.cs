@@ -12,7 +12,7 @@ namespace MyShaderAnalysis {
 
 
 
-            ShaderAnalysis.RunTrials();
+            // ShaderAnalysis.RunTrials();
             // ShaderAnalysis02.RunTrials(); // filewriting here still works (set to write to file)
             // ShaderAnalysis01.RunTrials();
 
@@ -20,6 +20,8 @@ namespace MyShaderAnalysis {
             // Snippetcode.RunTrials();
             // Murmur32.RunTrials();
 
+            CompatRules2.RunTrials();
+            // CompatRules.RunTrials();
 
 
 

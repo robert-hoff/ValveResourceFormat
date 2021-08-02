@@ -5,9 +5,16 @@ using System.Diagnostics;
 using System.IO;
 
 
-namespace MyShaderAnalysis.readers {
 
-    public class DataReader {
+/*
+ *
+ * I don't think I need this start thing, because I don't think I ever need to use relative offsets
+ *
+ *
+ */
+namespace MyShaderAnalysis.readers01 {
+
+    public class DataReader02 {
 
         public byte[] databytes;
         public readonly int start;
@@ -17,13 +24,13 @@ namespace MyShaderAnalysis.readers {
         public bool DisableOutput = false;
 
 
-        public DataReader(byte[] data, int start) {
+        public DataReader02(byte[] data, int start) {
             this.databytes = data;
             this.start = start;
             this.offset = start;
         }
 
-        public DataReader(byte[] data) : this(data, 0) { }
+        public DataReader02(byte[] data) : this(data, 0) { }
 
         public void ResetOffset() {
             offset = start;
@@ -34,7 +41,7 @@ namespace MyShaderAnalysis.readers {
         }
 
         public byte ReadByte() {
-            return databytes[offset++];
+            return databytes[start + offset++];
         }
 
         public byte ReadByteAtPosition() {
@@ -42,7 +49,7 @@ namespace MyShaderAnalysis.readers {
         }
 
         public byte ReadByteAtPosition(int fromInd) {
-            return databytes[fromInd];
+            return databytes[start + fromInd];
         }
 
         public uint ReadUInt16() {
@@ -56,8 +63,8 @@ namespace MyShaderAnalysis.readers {
         }
 
         public uint ReadUInt16AtPosition(int fromInd) {
-            uint b0 = databytes[fromInd];
-            uint b1 = databytes[fromInd + 1];
+            uint b0 = databytes[start + fromInd];
+            uint b1 = databytes[start + fromInd + 1];
             uint int0 = (b1 << 8) + b0;
             return int0;
         }
@@ -74,9 +81,9 @@ namespace MyShaderAnalysis.readers {
 
         // need to do it like this for signed values to work
         public int ReadInt16AtPosition(int fromInd) {
-            short b1 = databytes[fromInd + 1];
+            short b1 = databytes[start + fromInd + 1];
             b1 <<= 8;
-            b1 += databytes[fromInd];
+            b1 += databytes[start + fromInd];
             return b1;
         }
 
@@ -91,10 +98,10 @@ namespace MyShaderAnalysis.readers {
         }
 
         public uint ReadUIntAtPosition(int fromInd) {
-            uint b0 = databytes[fromInd];
-            uint b1 = databytes[fromInd + 1];
-            uint b2 = databytes[fromInd + 2];
-            uint b3 = databytes[fromInd + 3];
+            uint b0 = databytes[start + fromInd];
+            uint b1 = databytes[start + fromInd + 1];
+            uint b2 = databytes[start + fromInd + 2];
+            uint b3 = databytes[start + fromInd + 3];
             uint int0 = (b3 << 24) + (b2 << 16) + (b1 << 8) + b0;
             return int0;
         }
@@ -110,10 +117,10 @@ namespace MyShaderAnalysis.readers {
         }
 
         public int ReadIntAtPosition(int fromInd) {
-            int b0 = databytes[fromInd];
-            int b1 = databytes[fromInd + 1];
-            int b2 = databytes[fromInd + 2];
-            int b3 = databytes[fromInd + 3];
+            int b0 = databytes[start + fromInd];
+            int b1 = databytes[start + fromInd + 1];
+            int b2 = databytes[start + fromInd + 2];
+            int b3 = databytes[start + fromInd + 3];
             int int0 = (b3 << 24) + (b2 << 16) + (b1 << 8) + b0;
             return int0;
         }
@@ -129,7 +136,7 @@ namespace MyShaderAnalysis.readers {
         }
 
         public float ReadFloatAtPosition(int fromInd) {
-            float float0 = BitConverter.ToSingle(databytes, fromInd);
+            float float0 = BitConverter.ToSingle(databytes, start+fromInd);
             return float0;
         }
 
@@ -139,26 +146,17 @@ namespace MyShaderAnalysis.readers {
             return bytes0;
         }
 
-        public string ReadBytesAsString(int len) {
-            byte[] bytes0 = ReadBytesAtPosition(offset, len);
-            offset += len;
-            return BytesToString(bytes0);
-        }
-
-
-
         public byte[] ReadBytesAtPosition(int fromInd, int len) {
             byte[] bytes0 = new byte[len];
             for (int i = 0; i < len; i++) {
-                bytes0[i] = databytes[fromInd + i];
+                bytes0[i] = databytes[start + fromInd + i];
             }
             return bytes0;
         }
 
         public string ReadNullTermString() {
             string str = ReadNullTermStringAtPosition(offset);
-            offset += str.Length + 1;
-            return str;
+            return null;
         }
 
         public string ReadNullTermStringAtPosition() {

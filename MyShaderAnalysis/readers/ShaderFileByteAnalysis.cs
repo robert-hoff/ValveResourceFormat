@@ -103,8 +103,16 @@ namespace MyShaderAnalysis.readers {
         }
 
 
+        public void ParseFileDisableOutput() {
+            DataReaderVcsByteAnalysis vcsByteAnalysis = new(databytes, vcsFiletype);
+            vcsByteAnalysis.DisableOutput = true;
+            Debug.WriteLine($"parsing {RemoveBaseDir(filenamepath)}");
+            vcsByteAnalysis.ParseFile();
+        }
+
+
         public void WriteByteAnalysisToFile(string outputDir) {
-            string outputFilename = filename[0..^4] + "-decompiled.txt";
+            string outputFilename = filename[0..^4] + "-annotated.txt";
             string outputFilenamepath = @$"{outputDir}\{outputFilename}";
             StreamWriter sw = new(outputFilenamepath);
 
