@@ -374,19 +374,19 @@ namespace MyShaderAnalysis.readers01 {
         public void PrintUInt16WithValue() {
             uint intval = ReadUInt16AtPosition(offset);
             ShowBytesNoLineBreak(2);
-            TabPrintComment($"{intval}");
+            TabComment($"{intval}");
         }
 
         public void PrintIntWithValue() {
             int intval = ReadIntAtPosition(offset);
             ShowBytesNoLineBreak(4);
-            TabPrintComment($"{intval}");
+            TabComment($"{intval}");
         }
 
 
 
 
-        public void TabPrintComment(string message) {
+        public void TabComment(string message) {
             TabPrintComment(message, 4);
         }
 
@@ -407,13 +407,13 @@ namespace MyShaderAnalysis.readers01 {
                 throw new ShaderParserException("wrong magic!");
             }
             ShowBytesNoLineBreak(4);
-            TabPrintComment("\"vcs2\"");
+            TabComment("\"vcs2\"");
             uint version = ReadUIntAtPosition(offset);
             if (version != 0x40) {
                 throw new ShaderParserException("wrong version!");
             }
             ShowBytesNoLineBreak(4);
-            TabPrintComment("version 64");
+            TabComment("version 64");
             OutputWriteLine("");
         }
 
@@ -427,15 +427,15 @@ namespace MyShaderAnalysis.readers01 {
                 throw new ShaderParserException("unexpected value!");
             }
             ShowBytesNoLineBreak(4);
-            TabPrintComment($"has_psrs_file = {has_psrs_file>0}");
+            TabComment($"has_psrs_file = {has_psrs_file>0}");
 
             ShowBytesNoLineBreak(4);
             uint unk0 = ReadUIntAtPosition(offset-4);
-            TabPrintComment($"unknown_val = {unk0} (usually 0)");
+            TabComment($"unknown_val = {unk0} (usually 0)");
 
             ShowBytesNoLineBreak(4);
             uint name_len = ReadUIntAtPosition(offset-4);
-            TabPrintComment($"{name_len} len of name");
+            TabComment($"{name_len} len of name");
             OutputWriteLine("");
 
             string name = ReadNullTermStringAtPosition(offset);
@@ -452,7 +452,7 @@ namespace MyShaderAnalysis.readers01 {
             ShowBytes(4);
             ShowBytes(4);
             ShowBytesNoLineBreak(4);
-            TabPrintComment($"({arg1},{arg2},{arg3},{arg4})");
+            TabComment($"({arg1},{arg2},{arg3},{arg4})");
             uint arg5 = ReadUIntAtPosition(offset);
             uint arg6 = ReadUIntAtPosition(offset + 4);
             uint arg7 = ReadUIntAtPosition(offset + 8);
@@ -461,19 +461,19 @@ namespace MyShaderAnalysis.readers01 {
             ShowBytes(4);
             ShowBytes(4);
             ShowBytesNoLineBreak(4);
-            TabPrintComment($"({arg5},{arg6},{arg7},{arg8})");
+            TabComment($"({arg5},{arg6},{arg7},{arg8})");
             OutputWriteLine("");
 
             ShowByteCount();
             uint nrOfArguments = ReadUIntAtPosition(offset);
             ShowBytesNoLineBreak(4);
-            TabPrintComment($"nr of arguments ({nrOfArguments})");
+            TabComment($"nr of arguments ({nrOfArguments})");
 
             if (has_psrs_file == 1) {
                 // NOTE nrOfArguments is overwritten
                 nrOfArguments = ReadUIntAtPosition(offset);
                 ShowBytesNoLineBreak(4);
-                TabPrintComment($"nr of arguments overriden ({nrOfArguments})");
+                TabComment($"nr of arguments overriden ({nrOfArguments})");
             }
 
             OutputWriteLine("");
@@ -521,28 +521,28 @@ namespace MyShaderAnalysis.readers01 {
             OutputWriteLine("");
             ShowByteCount("File IDs");
             ShowBytesNoLineBreak(16);
-            TabPrintComment("file ID0");
+            TabComment("file ID0");
             ShowBytesNoLineBreak(16);
-            TabPrintComment("file ID1 - ref to vs file");
+            TabComment("file ID1 - ref to vs file");
             ShowBytesNoLineBreak(16);
-            TabPrintComment("file ID2 - ref to ps file");
+            TabComment("file ID2 - ref to ps file");
             ShowBytesNoLineBreak(16);
-            TabPrintComment("file ID3");
+            TabComment("file ID3");
             ShowBytesNoLineBreak(16);
-            TabPrintComment("file ID4");
+            TabComment("file ID4");
             ShowBytesNoLineBreak(16);
-            TabPrintComment("file ID5");
+            TabComment("file ID5");
             ShowBytesNoLineBreak(16);
-            TabPrintComment("file ID6");
+            TabComment("file ID6");
             if (has_psrs_file == 0) {
                 ShowBytesNoLineBreak(16);
-                TabPrintComment("file ID7 - shared by all Dota2 vcs files");
+                TabComment("file ID7 - shared by all Dota2 vcs files");
             }
             if (has_psrs_file == 1) {
                 ShowBytesNoLineBreak(16);
-                TabPrintComment("file ID7 - reference to psrs file");
+                TabComment("file ID7 - reference to psrs file");
                 ShowBytesNoLineBreak(16);
-                TabPrintComment("file ID8 - shared by all Dota2 vcs files");
+                TabComment("file ID8 - shared by all Dota2 vcs files");
             }
             OutputWriteLine("");
 
@@ -553,7 +553,7 @@ namespace MyShaderAnalysis.readers01 {
             ShowByteCount("ps/vs header");
             ShowBytesNoLineBreak(4);
             uint has_psrs_file = ReadUIntAtPosition(offset-4);
-            TabPrintComment($"has_psrs_file = {has_psrs_file>0}");
+            TabComment($"has_psrs_file = {has_psrs_file>0}");
 
             //string fileId0 = ReadBytesAsStringAtPosition(offset, 16);
             //string fileId1 = ReadBytesAsStringAtPosition(offset+16, 16);
@@ -561,9 +561,9 @@ namespace MyShaderAnalysis.readers01 {
             //AddCollectValueString($"{fileId1} fileId1 {filepath}");
 
             ShowBytesNoLineBreak(16);
-            TabPrintComment("file ID0");
+            TabComment("file ID0");
             ShowBytesNoLineBreak(16);
-            TabPrintComment("file ID1 - shared by all Dota2 vcs files");
+            TabComment("file ID1 - shared by all Dota2 vcs files");
             OutputWriteLine("");
         }
 
@@ -619,13 +619,13 @@ namespace MyShaderAnalysis.readers01 {
 
             ShowBytes(12, 4);
             ShowBytesNoLineBreak(4);
-            TabPrintComment($"({arg0},{arg1},{arg2},{arg3})");
+            TabComment($"({arg0},{arg1},{arg2},{arg3})");
 
             ShowBytesNoLineBreak(4);
-            TabPrintComment($"({arg4}) known values [-1,28]");
+            TabComment($"({arg4}) known values [-1,28]");
 
             ShowBytesNoLineBreak(4);
-            TabPrintComment($"{arg5} additional string params");
+            TabComment($"{arg5} additional string params");
             int string_offset = offset;
             List<string> names = new();
             for (int i = 0; i < arg5; i++) {
@@ -938,11 +938,11 @@ namespace MyShaderAnalysis.readers01 {
             ShowBytes(64);
             uint bufferSize = ReadUIntAtPosition(offset);
             ShowBytesNoLineBreak(4);
-            TabPrintComment($"{bufferSize} buffer-size");
+            TabComment($"{bufferSize} buffer-size");
             ShowBytes(4);
             uint paramCount = ReadUIntAtPosition(offset);
             ShowBytesNoLineBreak(4);
-            TabPrintComment($"{paramCount} param-count");
+            TabComment($"{paramCount} param-count");
 
             for (int i = 0; i < paramCount; i++) {
                 string paramname = ReadNullTermStringAtPosition(offset);
@@ -958,12 +958,12 @@ namespace MyShaderAnalysis.readers01 {
                 uint size = ReadUIntAtPosition(offset + 8);
 
                 ShowBytesNoLineBreak(12);
-                TabPrintComment($"({vertexSize},{attributeCount},{size}) (vertex-size, attribute-count, size)");
+                TabComment($"({vertexSize},{attributeCount},{size}) (vertex-size, attribute-count, size)");
             }
 
             OutputWriteLine("");
             ShowBytesNoLineBreak(4);
-            TabPrintComment("blockID (some kind of crc/check)");
+            TabComment("blockID (some kind of crc/check)");
             OutputWriteLine("");
             OutputWriteLine("");
         }
@@ -973,7 +973,7 @@ namespace MyShaderAnalysis.readers01 {
             ShowByteCount($"SYMBOL-NAMES-BLOCK[{block_id}]");
             uint symbolGroupCount = ReadUIntAtPosition(offset);
             ShowBytesNoLineBreak(4);
-            TabPrintComment($"{symbolGroupCount} string groups in this block");
+            TabComment($"{symbolGroupCount} string groups in this block");
             for (int i = 0; i < symbolGroupCount; i++) {
                 OutputWriteLine("");
                 for (int j = 0; j < 3; j++) {
@@ -992,7 +992,7 @@ namespace MyShaderAnalysis.readers01 {
             ShowByteCount();
             uint zframe_count = ReadUIntAtPosition(offset);
             ShowBytesNoLineBreak(4);
-            TabPrintComment($"{zframe_count} zframes");
+            TabComment($"{zframe_count} zframes");
             OutputWriteLine("");
 
             if (zframe_count == 0) {
@@ -1004,7 +1004,7 @@ namespace MyShaderAnalysis.readers01 {
             for (int i = 0; i < zframe_count; i++) {
                 uint zframe_index = ReadUIntAtPosition(offset);
                 ShowBytesNoLineBreak(8);
-                TabPrintComment($"zframe[{zframe_index}]");
+                TabComment($"zframe[{zframe_index}]");
                 zFrameIndexes.Add(zframe_index);
             }
             OutputWriteLine("");
@@ -1013,12 +1013,12 @@ namespace MyShaderAnalysis.readers01 {
             foreach (int zframeIndex in zFrameIndexes) {
                 uint zframe_offset = ReadUIntAtPosition(offset);
                 ShowBytesNoLineBreak(4);
-                TabPrintComment($"{zframe_offset,-10} index of zframe[{zframeIndex}]");
+                TabComment($"{zframe_offset,-10} index of zframe[{zframeIndex}]");
             }
 
             uint total_size = ReadUIntAtPosition(offset);
             ShowBytesNoLineBreak(4);
-            TabPrintComment($"{total_size} - end of file");
+            TabComment($"{total_size} - end of file");
             OutputWriteLine("");
 
             foreach (int zframeIndex in zFrameIndexes) {
@@ -1030,14 +1030,14 @@ namespace MyShaderAnalysis.readers01 {
         public void PrintCompressedZFrame(int zframeId) {
             OutputWriteLine($"[{offset}] zframe[{zframeId}]");
             ShowBytesNoLineBreak(4);
-            TabPrintComment("DELIM (0xfffffffd)");
+            TabComment("DELIM (0xfffffffd)");
             ShowBytesAtPositionNoLineBreak(offset, 4);
             int uncompressed_length = ReadInt();
-            TabPrintComment($"{uncompressed_length,-8} uncompressed length");
+            TabComment($"{uncompressed_length,-8} uncompressed length");
             // TabPrintComment(uncompressed_length.ToString().PadRight(8));
             ShowBytesAtPositionNoLineBreak(offset, 4);
             int compressed_length = ReadInt();
-            TabPrintComment($"{compressed_length,-8} compressed length");
+            TabComment($"{compressed_length,-8} compressed length");
             ShowBytesAtPosition(offset, 96);
             OutputWriteLine("// ...");
             offset += compressed_length;
@@ -1105,7 +1105,7 @@ namespace MyShaderAnalysis.readers01 {
 
             if (arg0 == 0 && arg1 == 0 && arg2 == 0) {
                 ShowBytesNoLineBreak(12);
-                TabPrintComment($"data-block[{blockId}]");
+                TabComment($"data-block[{blockId}]");
                 return 0;
             }
             string comment = "";
@@ -1216,7 +1216,7 @@ namespace MyShaderAnalysis.readers01 {
 
             ShowBytesNoLineBreak(2);
             int nr_of_blocks = (int)ReadUInt16AtPosition(offset - 2);
-            TabPrintComment($"nr of blocks ({nr_of_blocks})");
+            TabComment($"nr of blocks ({nr_of_blocks})");
             for (int i = 0; i < nr_of_blocks; i++) {
                 ShowZDataSection(i);
             }
@@ -1230,7 +1230,7 @@ namespace MyShaderAnalysis.readers01 {
 
             ShowByteCount();
             ShowBytesNoLineBreak(2);
-            TabPrintComment($"usually 1C 02, sometimes 00 00");
+            TabComment($"usually 1C 02, sometimes 00 00");
 
             // this is totally wrong!
             // TabPrintComment("if 00 00 we read one source, otherwise read one source per block");
@@ -1350,7 +1350,7 @@ namespace MyShaderAnalysis.readers01 {
             ShowBytes(3);
             ShowBytes(8);
             ShowBytesNoLineBreak(2);
-            TabPrintComment($"nr of blocks ({ReadUInt16AtPosition(offset - 2)})");
+            TabComment($"nr of blocks ({ReadUInt16AtPosition(offset - 2)})");
             OutputWriteLine("");
         }
 
@@ -1397,7 +1397,7 @@ namespace MyShaderAnalysis.readers01 {
             ShowByteCount();
             string fileId = ReadBytesAsString(16, 16).Trim();
             OutputWrite(fileId);
-            TabPrintComment($"File ID");
+            TabComment($"File ID");
             OutputWriteLine("");
             // AddCollectValueString(fileId);
             return (sourceOffset, sourceSize, fileId);
@@ -1411,7 +1411,7 @@ namespace MyShaderAnalysis.readers01 {
                 return 0;
             }
             ShowBytesNoLineBreak(4);
-            TabPrintComment("always 3");
+            TabComment("always 3");
             PrintIntWithValue();
             int sourceSize = ReadIntAtPosition(offset - 4) - 1; // one less because of null-term
             OutputWriteLine("");
@@ -1444,7 +1444,7 @@ namespace MyShaderAnalysis.readers01 {
             ShowByteCount();
             ShowBytesNoLineBreak(4);
             int nr_end_blocks = ReadIntAtPosition(offset - 4);
-            TabPrintComment($"nr end blocks ({nr_end_blocks})");
+            TabComment($"nr end blocks ({nr_end_blocks})");
             OutputWriteLine("");
 
             for (int i = 0; i < nr_end_blocks; i++) {
@@ -1458,7 +1458,7 @@ namespace MyShaderAnalysis.readers01 {
             ShowByteCount();
             ShowBytesNoLineBreak(4);
             int nr_end_blocks = ReadIntAtPosition(offset - 4);
-            TabPrintComment($"nr end blocks ({nr_end_blocks})");
+            TabComment($"nr end blocks ({nr_end_blocks})");
             OutputWriteLine("");
 
             for (int i = 0; i < nr_end_blocks; i++) {

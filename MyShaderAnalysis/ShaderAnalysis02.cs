@@ -322,7 +322,7 @@ namespace MyShaderAnalysis {
                 int blockCountInput = datareader.ReadInt16AtPosition(datareader.offset);
                 datareader.ShowByteCount("Uniforms state");
                 datareader.ShowBytesNoLineBreak(2); ;
-                datareader.TabPrintComment($"nr of data-blocks ({blockCountInput}), input state");
+                datareader.TabComment($"nr of data-blocks ({blockCountInput}), input state");
                 datareader.ShowBytes(blockCountInput * 2);
                 datareader.OutputWriteLine("");
             }
@@ -330,7 +330,7 @@ namespace MyShaderAnalysis {
             int blockCount = datareader.ReadInt16AtPosition(datareader.offset);
             datareader.ShowByteCount("Data blocks");
             datareader.ShowBytesNoLineBreak(2);
-            datareader.TabPrintComment($"nr of data-blocks ({blockCount})");
+            datareader.TabComment($"nr of data-blocks ({blockCount})");
             datareader.OutputWriteLine("");
             for (int i = 0; i < blockCount; i++) {
                 datareader.ShowZDataSection(i);
@@ -375,23 +375,23 @@ namespace MyShaderAnalysis {
                 datareader.ShowByteCount();
                 datareader.ShowBytesNoLineBreak(4);
                 int nrEndBlocks = datareader.ReadIntAtPosition(datareader.offset - 4);
-                datareader.TabPrintComment($"nr of end blocks ({nrEndBlocks})");
+                datareader.TabComment($"nr of end blocks ({nrEndBlocks})");
                 datareader.OutputWriteLine("");
 
                 for (int i = 0; i < nrEndBlocks; i++) {
                     datareader.ShowByteCount($"End-block[{i}]");
                     datareader.ShowBytesNoLineBreak(4);
                     int blockId = datareader.ReadInt16AtPosition(datareader.offset - 4);
-                    datareader.TabPrintComment($"blockId ref ({blockId})");
+                    datareader.TabComment($"blockId ref ({blockId})");
                     datareader.ShowBytesNoLineBreak(4);
-                    datareader.TabPrintComment("always 0");
+                    datareader.TabComment("always 0");
                     datareader.ShowBytesNoLineBreak(4);
                     int sourceReference = datareader.ReadInt16AtPosition(datareader.offset - 4);
-                    datareader.TabPrintComment($"source ref ({sourceReference})");
+                    datareader.TabComment($"source ref ({sourceReference})");
 
                     datareader.ShowBytesNoLineBreak(4);
                     uint glslPointer = datareader.ReadUIntAtPosition(datareader.offset - 4);
-                    datareader.TabPrintComment($"glsl source pointer ({glslPointer})");
+                    datareader.TabComment($"glsl source pointer ({glslPointer})");
 
                     datareader.ShowBytesNoLineBreak(3);
                     bool hasData0 = datareader.databytes[datareader.offset - 3] == 0;
@@ -668,7 +668,7 @@ namespace MyShaderAnalysis {
 
             datareader.ShowBytesNoLineBreak(2);
             int nr_of_blocks = (int)datareader.ReadUInt16AtPosition(datareader.offset - 2);
-            datareader.TabPrintComment($"nr of blocks ({nr_of_blocks})");
+            datareader.TabComment($"nr of blocks ({nr_of_blocks})");
             for (int i = 0; i < nr_of_blocks; i++) {
                 datareader.ShowZDataSection(i);
             }
@@ -682,7 +682,7 @@ namespace MyShaderAnalysis {
 
             datareader.ShowByteCount();
             datareader.ShowBytesNoLineBreak(2);
-            datareader.TabPrintComment("control, always 1C 02");
+            datareader.TabComment("control, always 1C 02");
             Debug.WriteLine("");
 
 
@@ -734,7 +734,7 @@ namespace MyShaderAnalysis {
 
             datareader.ShowByteCount();
             datareader.ShowBytesNoLineBreak(2);
-            datareader.TabPrintComment("control, always 1C 02");
+            datareader.TabComment("control, always 1C 02");
             Debug.WriteLine("");
 
             datareader.ShowByteCount("flags");
@@ -746,13 +746,13 @@ namespace MyShaderAnalysis {
             datareader.ShowZGlslSourceSummary(1);
             datareader.ShowByteCount();
             datareader.ShowBytesNoLineBreak(16);
-            datareader.TabPrintComment($"File ID");
+            datareader.TabComment($"File ID");
             Debug.WriteLine("");
 
 
             datareader.ShowByteCount();
             datareader.ShowBytesNoLineBreak(4);
-            datareader.TabPrintComment($"nr end blocks ({datareader.ReadIntAtPosition(datareader.offset - 4)})");
+            datareader.TabComment($"nr end blocks ({datareader.ReadIntAtPosition(datareader.offset - 4)})");
 
             Debug.WriteLine("");
             datareader.ShowByteCount();
@@ -786,14 +786,14 @@ namespace MyShaderAnalysis {
 
             for (int i = 0; i < datasize; i++) {
                 datareader.ShowBytesNoLineBreak(2);
-                datareader.TabPrintComment($"{i}");
+                datareader.TabComment($"{i}");
             }
 
 
             Debug.WriteLine("");
             datareader.ShowByteCount();
             datareader.ShowBytesNoLineBreak(2);
-            datareader.TabPrintComment("control, always 1C 02");
+            datareader.TabComment("control, always 1C 02");
             Debug.WriteLine("");
 
 
@@ -813,7 +813,7 @@ namespace MyShaderAnalysis {
             datareader.ShowByteCount("glsl source offsets");
             datareader.PrintIntWithValue();
             datareader.ShowBytesNoLineBreak(4);
-            datareader.TabPrintComment("always 3");
+            datareader.TabComment("always 3");
             datareader.PrintIntWithValue();
 
             int sourceOffset = datareader.offset + datareader.ReadIntAtPosition(datareader.offset - 4);
@@ -829,21 +829,21 @@ namespace MyShaderAnalysis {
 
             datareader.ShowByteCount();
             datareader.ShowBytesNoLineBreak(16);
-            datareader.TabPrintComment($"File ID");
+            datareader.TabComment($"File ID");
             Debug.WriteLine("");
 
             datareader.ShowZSourceOffsets();
             datareader.ShowZGlslSourceSummary(1);
             datareader.ShowByteCount();
             datareader.ShowBytesNoLineBreak(16);
-            datareader.TabPrintComment($"File ID");
+            datareader.TabComment($"File ID");
             Debug.WriteLine("");
 
             datareader.ShowZSourceOffsets();
             datareader.ShowZGlslSourceSummary(2);
             datareader.ShowByteCount();
             datareader.ShowBytesNoLineBreak(16);
-            datareader.TabPrintComment($"File ID");
+            datareader.TabComment($"File ID");
             Debug.WriteLine("");
 
 
@@ -851,12 +851,12 @@ namespace MyShaderAnalysis {
             datareader.ShowZGlslSourceSummary(3);
             datareader.ShowByteCount();
             datareader.ShowBytesNoLineBreak(16);
-            datareader.TabPrintComment($"File ID");
+            datareader.TabComment($"File ID");
             Debug.WriteLine("");
 
             datareader.ShowByteCount();
             datareader.ShowBytesNoLineBreak(4);
-            datareader.TabPrintComment($"nr end blocks ({datareader.ReadIntAtPosition(datareader.offset - 4)})");
+            datareader.TabComment($"nr end blocks ({datareader.ReadIntAtPosition(datareader.offset - 4)})");
 
             Debug.WriteLine("");
             datareader.ShowByteCount();
@@ -949,7 +949,7 @@ namespace MyShaderAnalysis {
             Debug.WriteLine("");
             datareader.ShowByteCount();
             datareader.ShowBytesNoLineBreak(3);
-            datareader.TabPrintComment($"{someval} (?)    (14,74)"); // [116] 0E 4A 00
+            datareader.TabComment($"{someval} (?)    (14,74)"); // [116] 0E 4A 00
 
             Debug.WriteLine("");
             datareader.ShowMurmurString(); // SupportsMappingDimensions
@@ -969,7 +969,7 @@ namespace MyShaderAnalysis {
 
             int dynExpLen0 = datareader.ReadIntAtPosition(datareader.offset);
             datareader.ShowBytesNoLineBreak(4);
-            datareader.TabPrintComment($"dyn-exp len = {dynExpLen0}");
+            datareader.TabComment($"dyn-exp len = {dynExpLen0}");
 
             string dynExpStr = datareader.ReadBytesAsStringAtPosition(datareader.offset, dynExpLen0);
             string dynExp0 = getDynamicExpression(dynExpStr);
@@ -990,7 +990,7 @@ namespace MyShaderAnalysis {
 
             int dynExpLen1 = datareader.ReadIntAtPosition(datareader.offset);
             datareader.ShowBytesNoLineBreak(4);
-            datareader.TabPrintComment($"dyn-exp len = {dynExpLen1}");
+            datareader.TabComment($"dyn-exp len = {dynExpLen1}");
             string dynExpStr1 = datareader.ReadBytesAsStringAtPosition(datareader.offset, dynExpLen1);
             string dynExp1 = getDynamicExpression(dynExpStr1);
             Debug.WriteLine($"// {dynExp1}");
@@ -1007,7 +1007,7 @@ namespace MyShaderAnalysis {
 
             int dynExpLen2 = datareader.ReadIntAtPosition(datareader.offset);
             datareader.ShowBytesNoLineBreak(4);
-            datareader.TabPrintComment($"dyn-exp len = {dynExpLen2}");
+            datareader.TabComment($"dyn-exp len = {dynExpLen2}");
             string dynExpStr2 = datareader.ReadBytesAsStringAtPosition(datareader.offset, dynExpLen2);
             string dynExp2 = getDynamicExpression(dynExpStr2);
             Debug.WriteLine($"// {dynExp2}");

@@ -133,14 +133,14 @@ namespace MyShaderAnalysis.readers01 {
             }
             datareader.ShowByteCount();
             datareader.ShowBytesNoLineBreak(4);
-            datareader.TabPrintComment($"block DELIM always 17");
+            datareader.TabComment($"block DELIM always 17");
             OutputWriteLine("");
 
 
             datareader.ShowByteCount();
             uint sfBlockCount = datareader.ReadUIntAtPosition(datareader.offset);
             datareader.ShowBytesNoLineBreak(4);
-            datareader.TabPrintComment($"{sfBlockCount} SF blocks (usually 152 bytes each)");
+            datareader.TabComment($"{sfBlockCount} SF blocks (usually 152 bytes each)");
             OutputWriteLine("");
             for (int i = 0; i < sfBlockCount; i++) {
                 datareader.PrintSFBlock();
@@ -149,7 +149,7 @@ namespace MyShaderAnalysis.readers01 {
             datareader.ShowByteCount();
             uint combatibilityBlockCount = datareader.ReadUIntAtPosition(datareader.offset);
             datareader.ShowBytesNoLineBreak(4);
-            datareader.TabPrintComment($"{combatibilityBlockCount} compatibility blocks (472 bytes each)");
+            datareader.TabComment($"{combatibilityBlockCount} compatibility blocks (472 bytes each)");
             OutputWriteLine("");
             for (int i = 0; i < combatibilityBlockCount; i++) {
                 datareader.PrintCompatibilitiesBlock(i);
@@ -158,7 +158,7 @@ namespace MyShaderAnalysis.readers01 {
             datareader.ShowByteCount();
             uint dBlockCount = datareader.ReadUIntAtPosition(datareader.offset);
             datareader.ShowBytesNoLineBreak(4);
-            datareader.TabPrintComment($"{dBlockCount} D-blocks (152 bytes each)");
+            datareader.TabComment($"{dBlockCount} D-blocks (152 bytes each)");
             OutputWriteLine("");
             for (int i = 0; i < dBlockCount; i++) {
                 datareader.PrintDBlock();
@@ -168,7 +168,7 @@ namespace MyShaderAnalysis.readers01 {
             datareader.ShowByteCount();
             uint unknownBlockCount = datareader.ReadUIntAtPosition(datareader.offset);
             datareader.ShowBytesNoLineBreak(4);
-            datareader.TabPrintComment($"{unknownBlockCount} unknown block (472 bytes each)");
+            datareader.TabComment($"{unknownBlockCount} unknown block (472 bytes each)");
             OutputWriteLine("");
             for (int i = 0; i < unknownBlockCount; i++) {
                 datareader.PrintUnknownBlockType1(i);
@@ -177,7 +177,7 @@ namespace MyShaderAnalysis.readers01 {
             datareader.ShowByteCount();
             uint paramBlockCount = datareader.ReadUIntAtPosition(datareader.offset);
             datareader.ShowBytesNoLineBreak(4);
-            datareader.TabPrintComment($"{paramBlockCount} Param-Blocks (may contain dynamic expressions)");
+            datareader.TabComment($"{paramBlockCount} Param-Blocks (may contain dynamic expressions)");
             OutputWriteLine("");
             for (int i = 0; i < paramBlockCount; i++) {
                 datareader.PrintParameterBlock(i);
@@ -186,7 +186,7 @@ namespace MyShaderAnalysis.readers01 {
             datareader.ShowByteCount();
             uint mipmapBlockCount = datareader.ReadUIntAtPosition(datareader.offset);
             datareader.ShowBytesNoLineBreak(4);
-            datareader.TabPrintComment($"{mipmapBlockCount} Mipmap blocks (280 bytes each)");
+            datareader.TabComment($"{mipmapBlockCount} Mipmap blocks (280 bytes each)");
             OutputWriteLine("");
             for (int i = 0; i < mipmapBlockCount; i++) {
                 datareader.PrintMipmapBlock(i);
@@ -195,7 +195,7 @@ namespace MyShaderAnalysis.readers01 {
             datareader.ShowByteCount();
             uint bufferBlockCount = datareader.ReadUIntAtPosition(datareader.offset);
             datareader.ShowBytesNoLineBreak(4);
-            datareader.TabPrintComment($"{bufferBlockCount} buffer blocks (variable length)");
+            datareader.TabComment($"{bufferBlockCount} buffer blocks (variable length)");
             OutputWriteLine("");
             for (int i = 0; i < bufferBlockCount; i++) {
                 datareader.PrintBufferBlock(i);
@@ -206,7 +206,7 @@ namespace MyShaderAnalysis.readers01 {
                 datareader.ShowByteCount();
                 uint symbolBlockCount = datareader.ReadUIntAtPosition(datareader.offset);
                 datareader.ShowBytesNoLineBreak(4);
-                datareader.TabPrintComment($"{symbolBlockCount} symbol/names blocks");
+                datareader.TabComment($"{symbolBlockCount} symbol/names blocks");
                 for (int i = 0; i < symbolBlockCount; i++) {
                     OutputWriteLine("");
                     datareader.PrintNamesBlock(i);

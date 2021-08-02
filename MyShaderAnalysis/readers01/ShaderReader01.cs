@@ -89,8 +89,13 @@ namespace MyShaderAnalysis.readers01 {
         }
 
 
-        public DataReader01 getZframeDataReader(int id) {
+        public byte[] getZframeDataBytes(int id) {
+            byte[] zframedatabytes = zFrames[id].DecompressFrame(zstdDictionary);
+            return zframedatabytes;
+        }
 
+
+        public DataReader01 getZframeDataReader(int id) {
             byte[] zframedatabytes = zFrames[id].DecompressFrame(zstdDictionary);
             return new DataReader01(zframedatabytes);
         }

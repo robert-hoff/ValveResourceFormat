@@ -11,64 +11,45 @@ using static MyShaderAnalysis.readers.ShaderFile;
 namespace MyShaderAnalysis.readers {
 
     public class DataReaderVcsByteAnalysis : DataReader {
+        FILETYPE filetype;
 
-        FILETYPE fileType;
-
-        public DataReaderVcsByteAnalysis(byte[] data, FILETYPE fileType) : base(data) {
-            this.fileType = fileType;
+        public DataReaderVcsByteAnalysis(byte[] data, FILETYPE filetype) : base(data) {
+            this.filetype = filetype;
 
         }
-
-        public void ConfigureWriteToFile(StreamWriter sw, bool disableOutput) {
-            this.sw = sw;
-            this.DisableOutput = disableOutput;
-        }
-
 
         public void ParseFile() {
-
-            // DisableOutput = true;
-
-            if (fileType == FILETYPE.features_file) {
+            BreakLine();
+            if (filetype == FILETYPE.features_file) {
                 PrintVcsFeaturesHeader();
-            } else if (fileType == FILETYPE.vs_file || fileType == FILETYPE.ps_file
-                  || fileType == FILETYPE.gs_file || fileType == FILETYPE.psrs_file) {
+            } else if (filetype == FILETYPE.vs_file || filetype == FILETYPE.ps_file
+                  || filetype == FILETYPE.gs_file || filetype == FILETYPE.psrs_file) {
                 PrintVsPsHeader();
             } else {
-                throw new ShaderParserException($"can't parse this filetype: {fileType}");
+                throw new ShaderParserException($"can't parse this filetype: {filetype}");
             }
             uint blockDelim = ReadUIntAtPosition();
             if (blockDelim != 17) {
                 throw new ShaderParserException($"unexpected block delim value! {blockDelim}");
             }
-
             ShowByteCount();
             ShowBytes(4, false);
             TabComment($"block DELIM always 17");
             BreakLine();
-
             PrintAllSfBlocks();
             PrintAllCompatibilityBlocks();
-
-            // DisableOutput = false;
-
             PrintAllDBlocks();
             PrintAllUknownBlocks();
             PrintAllParamBlocks();
             PrintAllMipmapBlocks();
             PrintAllBufferBlocks();
-
             // for some reason only features and vs files observe symbol blocks
-            if (fileType == FILETYPE.features_file || fileType == FILETYPE.vs_file) {
+            if (filetype == FILETYPE.features_file || filetype == FILETYPE.vs_file) {
                 PrintAllSymbolNameBlocks();
             }
-
             PrintZframes();
             EndOfFile();
         }
-
-
-
 
         private void PrintVcsFeaturesHeader() {
             ShowByteCount("vcs file");
@@ -77,7 +58,6 @@ namespace MyShaderAnalysis.readers {
             ShowBytes(4, false);
             TabComment("version 64");
             BreakLine();
-
             ShowByteCount("features header");
             int has_psrs_file = ReadIntAtPosition();
             ShowBytes(4, false);
@@ -91,7 +71,6 @@ namespace MyShaderAnalysis.readers {
             BreakLine();
 
             string name_desc = ReadNullTermStringAtPosition();
-            // Comment(name_desc);
             ShowByteCount(name_desc);
             ShowBytes(len_name_description + 1);
             BreakLine();
@@ -121,7 +100,6 @@ namespace MyShaderAnalysis.readers {
             int nr_of_arguments = ReadIntAtPosition();
             ShowBytes(4, false);
             TabComment($"nr of arguments {nr_of_arguments}");
-
             if (has_psrs_file == 1) {
                 // NOTE nr_of_arguments is overwritten
                 nr_of_arguments = ReadIntAtPosition(offset);
@@ -206,7 +184,6 @@ namespace MyShaderAnalysis.readers {
                 PrintSfBlock();
             }
         }
-
         private void PrintSfBlock() {
             ShowByteCount();
             for (int i = 0; i < 2; i++) {
@@ -216,21 +193,17 @@ namespace MyShaderAnalysis.readers {
                 }
                 ShowBytes(64);
             }
-
             int arg0 = ReadIntAtPosition(offset);
             int arg1 = ReadIntAtPosition(offset + 4);
             int arg2 = ReadIntAtPosition(offset + 8);
             int arg3 = ReadIntAtPosition(offset + 12);
             int arg4 = ReadIntAtPosition(offset + 16);
             int arg5 = ReadIntAtPosition(offset + 20);
-
             ShowBytes(12, 4);
             ShowBytes(4, false);
             TabComment($"({arg0},{arg1},{arg2},{arg3})");
-
             ShowBytes(4, false);
             TabComment($"({arg4}) known values [-1,28]");
-
             ShowBytes(4, false);
             TabComment($"{arg5} additional string params");
             int string_offset = offset;
@@ -258,7 +231,6 @@ namespace MyShaderAnalysis.readers {
             BreakLine();
         }
 
-
         private void PrintAllCompatibilityBlocks() {
             ShowByteCount();
             uint combatibilityBlockCount = ReadUIntAtPosition();
@@ -278,7 +250,6 @@ namespace MyShaderAnalysis.readers {
             ShowBytes(256);
             BreakLine();
         }
-
 
         private void PrintAllDBlocks() {
             ShowByteCount();
@@ -494,7 +465,6 @@ namespace MyShaderAnalysis.readers {
             uint paramCount = ReadUIntAtPosition(offset);
             ShowBytes(4, false);
             TabComment($"{paramCount} param-count");
-
             for (int i = 0; i < paramCount; i++) {
                 string paramname = ReadNullTermStringAtPosition(offset);
                 OutputWriteLine($"// {paramname}");
@@ -508,7 +478,6 @@ namespace MyShaderAnalysis.readers {
                 ShowBytes(12, false);
                 TabComment($"({vertexSize},{attributeCount},{size}) (vertex-size, attribute-count, size)");
             }
-
             BreakLine();
             ShowBytes(4, false);
             TabComment("blockID (some kind of crc/check)");
@@ -550,11 +519,9 @@ namespace MyShaderAnalysis.readers {
             ShowBytes(4, false);
             TabComment($"{zframe_count} zframes");
             BreakLine();
-
             if (zframe_count == 0) {
                 return;
             }
-
             List<uint> zFrameIndexes = new();
             ShowByteCount("zFrame IDs");
             for (int i = 0; i < zframe_count; i++) {
@@ -564,19 +531,17 @@ namespace MyShaderAnalysis.readers {
                 zFrameIndexes.Add(zframe_index);
             }
             OutputWriteLine("");
-
             ShowByteCount("zFrame file offsets");
             foreach (int zframeIndex in zFrameIndexes) {
                 uint zframe_offset = ReadUIntAtPosition(offset);
                 ShowBytes(4, false);
-                TabComment($"{zframe_offset,-10} index of zframe[{zframeIndex}]");
+                TabComment($"{zframe_offset,-10} offset of zframe[{zframeIndex}]");
             }
 
             uint total_size = ReadUIntAtPosition(offset);
             ShowBytes(4, false);
             TabComment($"{total_size} - end of file");
             OutputWriteLine("");
-
             foreach (int zframeIndex in zFrameIndexes) {
                 PrintCompressedZFrame(zframeIndex);
             }
@@ -608,15 +573,10 @@ namespace MyShaderAnalysis.readers {
             ShowByteCount();
             OutputWriteLine("EOF");
         }
-
-
-
-
     }
-
-
-
 }
+
+
 
 
 

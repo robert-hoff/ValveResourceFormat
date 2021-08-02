@@ -233,7 +233,10 @@ namespace MyShaderAnalysis.readers {
             }
             return bytestring.Trim();
         }
-
+        public void ConfigureWriteToFile(StreamWriter sw, bool disableOutput) {
+            this.sw = sw;
+            this.DisableOutput = disableOutput;
+        }
         public void OutputWrite(string text) {
             if (!DisableOutput)  {
                 Debug.Write(text);
@@ -254,6 +257,8 @@ namespace MyShaderAnalysis.readers {
 
 
 }
+
+
 
 
 

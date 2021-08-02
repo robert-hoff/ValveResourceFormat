@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MyShaderAnalysis.readers01;
 using MyShaderAnalysis.utilhelpers;
 using static MyShaderAnalysis.utilhelpers.UtilHelpers;
 
@@ -32,8 +33,72 @@ namespace MyShaderAnalysis.readers {
             filename = Path.GetFileName(filenamepath);
             vcsFiletype = GetVcsFileType(filenamepath);
             databytes = File.ReadAllBytes(filenamepath);
-
         }
+
+
+        private ShaderReader01  myShaderReader = null;
+
+        public void PrintZFrameByteAnalysis(int zframeId) {
+            DataReaderZFrameByteAnalysis zframeByteAnalysis = getZFrameByteAnalysisReader(zframeId);
+            if (zframeByteAnalysis == null) {
+                return;
+            }
+            Debug.WriteLine($"parsing {RemoveBaseDir(filenamepath)}-ZFRAME{zframeId:d03}");
+            Debug.WriteLine($"");
+            zframeByteAnalysis.ParseFile();
+        }
+
+
+        public void ParseZFramesRange(int min, int max, bool disableOutput, bool disableStatus) {
+            int zcount = getZframeCount();
+            if (max == -1) {
+                max = zcount;
+            }
+            int numberToParse = zcount > max ? max : zcount;
+
+            if (min >= zcount) {
+                Debug.WriteLine($"our of range [{min},{max}) for {RemoveBaseDir(filenamepath)}, nothing to parse. zmax = {zcount - 1}");
+                return;
+            } else {
+                Debug.WriteLine($"parsing {RemoveBaseDir(filenamepath)} frames [{min},{numberToParse})");
+            }
+            for (int i = min; i < numberToParse; i++) {
+                // Trial1ZVsFrame01(shaderReader, i, filetype, runningTest);
+                DataReaderZFrameByteAnalysis zframeByteAnalysis = getZFrameByteAnalysisReader(i);
+                zframeByteAnalysis.DisableOutput = disableOutput;
+                if (!disableStatus) {
+                    Debug.WriteLine($"{RemoveBaseDir(filenamepath)}-ZFRAME{i:d03}");
+                }
+                zframeByteAnalysis.ParseFile();
+            }
+        }
+
+
+
+        private int getZframeCount() {
+            if (myShaderReader == null) {
+                myShaderReader = new ShaderReader01(filenamepath);
+            }
+            return myShaderReader.zFrames.Count;
+        }
+
+
+        private DataReaderZFrameByteAnalysis getZFrameByteAnalysisReader(int zframeId) {
+            if (myShaderReader == null) {
+                myShaderReader = new ShaderReader01(filenamepath);
+            }
+            int zcount = myShaderReader.zFrames.Count;
+            if (zframeId > zcount-1) {
+                Debug.WriteLine($"zframe index out of range ({zframeId}). Max index = {zcount-1}");
+                return null;
+            }
+            byte[] zframeDatabytes = myShaderReader.getZframeDataBytes(zframeId);
+            DataReaderZFrameByteAnalysis zframeByteAnalysis = new(zframeDatabytes, vcsFiletype);
+            return zframeByteAnalysis;
+        }
+
+
+
 
         public void PrintByteAnalysis() {
             DataReaderVcsByteAnalysis vcsByteAnalysis = new(databytes, vcsFiletype);
