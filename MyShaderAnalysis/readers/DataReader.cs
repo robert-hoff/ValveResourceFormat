@@ -7,7 +7,7 @@ using System.IO;
 
 namespace MyShaderAnalysis.readers {
 
-    public class DataReader02 {
+    public class DataReader {
 
         public byte[] databytes;
         public readonly int start;
@@ -17,13 +17,13 @@ namespace MyShaderAnalysis.readers {
         public bool DisableOutput = false;
 
 
-        public DataReader02(byte[] data, int start) {
+        public DataReader(byte[] data, int start) {
             this.databytes = data;
             this.start = start;
             this.offset = start;
         }
 
-        public DataReader02(byte[] data) : this(data, 0) { }
+        public DataReader(byte[] data) : this(data, 0) { }
 
         public void ResetOffset() {
             offset = start;

@@ -5,7 +5,7 @@ using System.Diagnostics;
 namespace MyShaderAnalysis.readers {
 
 
-    public class DataBlockFeaturesHeader : DataReader02 {
+    public class DataBlockFeaturesHeader : DataReader {
 
         bool has_psrs_file;
         int unknown_val;

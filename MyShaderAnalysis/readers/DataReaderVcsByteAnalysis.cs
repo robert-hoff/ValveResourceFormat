@@ -10,7 +10,7 @@ using static MyShaderAnalysis.readers.ShaderFileByteAnalysis;
 
 namespace MyShaderAnalysis.readers {
 
-    public class DataReaderVcsByteAnalysis : DataReader02 {
+    public class DataReaderVcsByteAnalysis : DataReader {
         FILETYPE filetype;
 
         public DataReaderVcsByteAnalysis(byte[] data, FILETYPE filetype) : base(data) {
