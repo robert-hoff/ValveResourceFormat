@@ -1,11 +1,5 @@
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MyShaderAnalysis.readers01;
 using static MyShaderAnalysis.utilhelpers.UtilHelpers;
 
 
@@ -13,25 +7,19 @@ namespace MyShaderAnalysis.readers {
 
     public class ShaderFileByteAnalysis {
 
-
         string filenamepath;
         string filename;
         private FILETYPE vcsFiletype = FILETYPE.unknown;
         byte[] databytes;
-
-
-        // public bool DisableOutput = false;
-
+        ShaderFile shaderFile;
 
         public ShaderFileByteAnalysis(string filenamepath) {
             this.filenamepath = filenamepath;
             filename = Path.GetFileName(filenamepath);
-            vcsFiletype = GetVcsFileType(filenamepath);
+            vcsFiletype = ShaderFile.GetVcsFileType(filenamepath);
             databytes = File.ReadAllBytes(filenamepath);
+            shaderFile = new ShaderFile(filenamepath);
         }
-
-
-        private ShaderReader01  myShaderReader = null;
 
         public void PrintZFrameByteAnalysis(int zframeId) {
             DataReaderZFrameByteAnalysis zframeByteAnalysis = getZFrameByteAnalysisReader(zframeId);
@@ -43,14 +31,12 @@ namespace MyShaderAnalysis.readers {
             zframeByteAnalysis.ParseFile();
         }
 
-
         public void ParseZFramesRange(int min, int max, bool disableOutput, bool disableStatus) {
-            int zcount = getZframeCount();
+            int zcount = shaderFile.GetZFrameCount();
             if (max == -1) {
                 max = zcount;
             }
             int numberToParse = zcount > max ? max : zcount;
-
             if (min >= zcount) {
                 Debug.WriteLine($"our of range [{min},{max}) for {RemoveBaseDir(filenamepath)}, nothing to parse. zmax = {zcount - 1}");
                 return;
@@ -58,7 +44,6 @@ namespace MyShaderAnalysis.readers {
                 Debug.WriteLine($"parsing {RemoveBaseDir(filenamepath)} frames [{min},{numberToParse})");
             }
             for (int i = min; i < numberToParse; i++) {
-                // Trial1ZVsFrame01(shaderReader, i, filetype, runningTest);
                 DataReaderZFrameByteAnalysis zframeByteAnalysis = getZFrameByteAnalysisReader(i);
                 zframeByteAnalysis.DisableOutput = disableOutput;
                 if (!disableStatus) {
@@ -68,32 +53,16 @@ namespace MyShaderAnalysis.readers {
             }
         }
 
-
-
-        private int getZframeCount() {
-            if (myShaderReader == null) {
-                myShaderReader = new ShaderReader01(filenamepath);
-            }
-            return myShaderReader.zFrames.Count;
-        }
-
-
-        private DataReaderZFrameByteAnalysis getZFrameByteAnalysisReader(int zframeId) {
-            if (myShaderReader == null) {
-                myShaderReader = new ShaderReader01(filenamepath);
-            }
-            int zcount = myShaderReader.zFrames.Count;
-            if (zframeId > zcount-1) {
-                Debug.WriteLine($"zframe index out of range ({zframeId}). Max index = {zcount-1}");
+        private DataReaderZFrameByteAnalysis getZFrameByteAnalysisReader(int zframeIndex) {
+            int zcount = shaderFile.GetZFrameCount();
+            if (zframeIndex > zcount-1) {
+                Debug.WriteLine($"zframe index out of range ({zframeIndex}). Max index = {zcount-1}");
                 return null;
             }
-            byte[] zframeDatabytes = myShaderReader.getZframeDataBytes(zframeId);
+            byte[] zframeDatabytes = shaderFile.GetDecompressedZFrameByIndex(zframeIndex);
             DataReaderZFrameByteAnalysis zframeByteAnalysis = new(zframeDatabytes, vcsFiletype);
             return zframeByteAnalysis;
         }
-
-
-
 
         public void PrintByteAnalysis() {
             DataReaderVcsByteAnalysis vcsByteAnalysis = new(databytes, vcsFiletype);
@@ -102,7 +71,6 @@ namespace MyShaderAnalysis.readers {
             vcsByteAnalysis.ParseFile();
         }
 
-
         public void ParseFileDisableOutput() {
             DataReaderVcsByteAnalysis vcsByteAnalysis = new(databytes, vcsFiletype);
             vcsByteAnalysis.DisableOutput = true;
@@ -110,44 +78,30 @@ namespace MyShaderAnalysis.readers {
             vcsByteAnalysis.ParseFile();
         }
 
-
         public void WriteByteAnalysisToHtml(string outputDir) {
             string outputFilename = filename[0..^4] + "-analysis.html";
             string outputFilenamepath = @$"{outputDir}\{outputFilename}";
-
-
-
             StreamWriter sw = new(outputFilenamepath);
-
             DataReaderVcsByteAnalysis vcsByteAnalysis = new(databytes, vcsFiletype);
             vcsByteAnalysis.ConfigureWriteToFile(sw, true);
             vcsByteAnalysis.ConfigureWriteFileAsHtml(filename);
-
-
             Debug.WriteLine($"writing to {outputFilenamepath}");
-
             string htmlHeader = GetHtmlHeader(filename, RemoveBaseDir(filenamepath));
             sw.WriteLine($"{htmlHeader}");
             vcsByteAnalysis.ParseFile();
             sw.WriteLine($"{GetHtmlFooter()}");
             sw.Flush();
             sw.Close();
-
         }
-
-
 
         public void WriteByteAnalysisToFile(string outputDir) {
             string outputFilename = filename[0..^4] + "-annotated.txt";
             string outputFilenamepath = @$"{outputDir}\{outputFilename}";
             StreamWriter sw = new(outputFilenamepath);
-
             Debug.WriteLine($"parsing {filenamepath}");
             Debug.WriteLine($"writing to {outputFilenamepath}");
-
             DataReaderVcsByteAnalysis vcsByteAnalysis = new(databytes, vcsFiletype);
             vcsByteAnalysis.ConfigureWriteToFile(sw, true);
-
             sw.WriteLine($"parsing {RemoveBaseDir(filenamepath)}");
             sw.WriteLine("");
             vcsByteAnalysis.ParseFile();
@@ -156,31 +110,15 @@ namespace MyShaderAnalysis.readers {
         }
 
 
-        private static FILETYPE GetVcsFileType(string filenamepath) {
-            if (filenamepath.EndsWith("features.vcs")) {
-                return FILETYPE.features_file;
-            }
-            if (filenamepath.EndsWith("vs.vcs")) {
-                return FILETYPE.vs_file;
-            }
-            if (filenamepath.EndsWith("ps.vcs")) {
-                return FILETYPE.ps_file;
-            }
-            if (filenamepath.EndsWith("psrs.vcs")) {
-                return FILETYPE.psrs_file;
-            }
-            if (filenamepath.EndsWith("gs.vcs")) {
-                return FILETYPE.gs_file;
-            }
-
-            throw new ShaderParserException($"don't know what this file is {filenamepath}");
-        }
-
-
-
 
     }
 }
+
+
+
+
+
+
 
 
 

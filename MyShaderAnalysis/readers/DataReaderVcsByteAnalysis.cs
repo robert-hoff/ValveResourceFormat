@@ -1,12 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MyShaderAnalysis.utilhelpers;
-using static MyShaderAnalysis.readers.ShaderFileByteAnalysis;
 using static MyShaderAnalysis.utilhelpers.UtilHelpers;
 
 namespace MyShaderAnalysis.readers {
@@ -42,7 +35,6 @@ namespace MyShaderAnalysis.readers {
             if (blockDelim != 17) {
                 throw new ShaderParserException($"unexpected block delim value! {blockDelim}");
             }
-
 
             ShowByteCount();
             ShowBytes(4, false);
@@ -219,9 +211,6 @@ namespace MyShaderAnalysis.readers {
                 if (name1.Length > 0) {
                     Comment($"{name1}");
                 }
-                //if (i==1) {
-                //    Debug.WriteLine($"{name1}");
-                //}
                 ShowBytes(64);
             }
             int arg0 = ReadIntAtPosition(offset);
@@ -570,7 +559,6 @@ namespace MyShaderAnalysis.readers {
                 return;
             }
 
-
             OutputWriteLine("");
             ShowByteCount("zFrame file offsets");
             foreach (uint zframeId in zFrameIndexes) {
@@ -607,7 +595,6 @@ namespace MyShaderAnalysis.readers {
             BreakLine();
         }
 
-
         private string getZFrameIdString(uint zframeId) {
             if (writeAsHtml) {
                 return GetZframeHtmlLink(zframeId, vcsFilename);
@@ -615,7 +602,6 @@ namespace MyShaderAnalysis.readers {
                 return $"zframe[0x{zframeId:x08}]";
             }
         }
-
 
         private void EndOfFile() {
             if (offset != databytes.Length) {

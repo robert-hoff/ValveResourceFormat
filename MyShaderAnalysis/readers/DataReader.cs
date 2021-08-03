@@ -1,9 +1,6 @@
-using MyShaderAnalysis.utilhelpers;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-
 
 namespace MyShaderAnalysis.readers {
 
@@ -12,10 +9,8 @@ namespace MyShaderAnalysis.readers {
         public byte[] databytes;
         public readonly int start;
         protected int offset;
-
         protected StreamWriter sw = null;
         public bool DisableOutput = false;
-
 
         public DataReader(byte[] data, int start) {
             this.databytes = data;
@@ -128,7 +123,6 @@ namespace MyShaderAnalysis.readers {
             return long0;
         }
 
-
         public float ReadFloat() {
             float float0 = ReadFloatAtPosition(offset);
             offset += 4;
@@ -155,8 +149,6 @@ namespace MyShaderAnalysis.readers {
             offset += len;
             return BytesToString(bytes0);
         }
-
-
 
         public byte[] ReadBytesAtPosition(int fromInd, int len) {
             byte[] bytes0 = new byte[len];
@@ -280,10 +272,9 @@ namespace MyShaderAnalysis.readers {
         }
 
 
+
+
     }
-
-
-
 
 }
 

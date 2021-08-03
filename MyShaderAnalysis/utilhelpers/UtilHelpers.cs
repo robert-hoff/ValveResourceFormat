@@ -1,31 +1,20 @@
-using MyShaderAnalysis.readers;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-
+using MyShaderAnalysis.readers;
 
 
 namespace MyShaderAnalysis.utilhelpers {
 
-
     public class UtilHelpers {
-
-
 
         private static byte[] zstdDictionary = null;
 
         public static byte[] getZFrameDictionary() {
             if (zstdDictionary == null) {
-                zstdDictionary = File.ReadAllBytes(@"X:\checkouts\ValveResourceFormat\files_under_analysis\zstdictionary_2bc2fa87.dat");
+                zstdDictionary = File.ReadAllBytes(@"..\..\zstdictionary_2bc2fa87.dat");
             }
             return zstdDictionary;
         }
-
-
 
         public static string RemoveBaseDir(string filenamepath) {
             string dirname = Path.GetDirectoryName(filenamepath);
@@ -40,8 +29,6 @@ namespace MyShaderAnalysis.utilhelpers {
             }
         }
 
-
-
         public static uint MurmurHashPiSeed(byte[] data) {
             uint PI_SEED = 0x31415926;
             return MurmurHash(data, PI_SEED);
@@ -50,7 +37,6 @@ namespace MyShaderAnalysis.utilhelpers {
             uint PI_SEED = 0x31415926;
             return MurmurHash(data, PI_SEED);
         }
-
 
         public static uint MurmurHash(string data, uint seed) => MurmurHash(Encoding.ASCII.GetBytes(data), seed);
 
@@ -94,8 +80,6 @@ namespace MyShaderAnalysis.utilhelpers {
             h ^= h >> 15;
             return h;
         }
-
-
         public static string GetHtmlHeader(string title, string filename) {
             string html_header = "" +
                 $"<!DOCTYPE html>\n<html>\n<head>\n  <title>{title}</title>\n" +
@@ -108,11 +92,6 @@ namespace MyShaderAnalysis.utilhelpers {
         public static string GetHtmlFooter() {
             return "</pre>\n</html>";
         }
-
-
-
-
-
 
         public static string GetGlslHtmlLink(string glslByteString) {
             return $"<a href='{GetGlslHtmlFilename(glslByteString)}'>{glslByteString}</a>";

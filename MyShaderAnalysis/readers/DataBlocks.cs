@@ -1,20 +1,11 @@
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 
 /*
  * most of these need implementation, the complete parser is implemented in DataReaderVcsByteAnalysis.cs
- * but this class only prints the data either to console or file
- *
+ * but DataReaderVcsByteAnalysis only prints the data and doesn't make any attempt to capture it
  *
  */
 namespace MyShaderAnalysis.readers {
-
-
 
     public class DataBlockFeaturesHeader : DataReader {
 
@@ -42,7 +33,6 @@ namespace MyShaderAnalysis.readers {
             unknown_val = ReadInt();
             ReadInt(); // length of name, but not needed because it's always null-term
             file_description = ReadNullTermString();
-
             arg0 = ReadInt();
             arg1 = ReadInt();
             arg2 = ReadInt();
@@ -78,10 +68,36 @@ namespace MyShaderAnalysis.readers {
         }
     }
 
-
     // needs implemenation
     public class DataBlockVsPsHeader : DataReader {
         public DataBlockVsPsHeader(byte[] data, int start) : base(data, start) {
+        }
+    }
+
+    public class DataBlockSfBlock : DataReader {
+        string name0;
+        string name1;
+        int arg0;
+        int arg1;
+        int arg2;
+        int arg3;
+        int arg4;
+        List<string> additionalParams = new();
+
+        public DataBlockSfBlock(byte[] data, int start) : base(data, start) {
+            name0 = ReadNullTermStringAtPosition();
+            offset += 64;
+            name1 = ReadNullTermStringAtPosition();
+            offset += 64;
+            arg0 = ReadInt();
+            arg1 = ReadInt();
+            arg2 = ReadInt();
+            arg3 = ReadInt();
+            arg4 = ReadInt();
+            int additionalStringsCount = ReadInt();
+            for (int i = 0; i < additionalStringsCount; i++) {
+                additionalParams.Add(ReadNullTermString());
+            }
         }
     }
 
@@ -97,13 +113,14 @@ namespace MyShaderAnalysis.readers {
         }
     }
 
-    // needs implemenation
+    // needs implemenation (parser works by moving the offset 152 bytes for each d-block)
     public class DBlock : DataReader {
         public DBlock(byte[] data, int start) : base(data, start) {
 
         }
     }
 
+    // needs implemenation (parser works by moving the offset 472 bytes for each unknown-block)
     public class UnknownBlock : DataReader {
         public UnknownBlock(byte[] data, int start) : base(data, start) {
 
@@ -190,14 +207,12 @@ namespace MyShaderAnalysis.readers {
         }
     }
 
-
+    // needs implemenation (parser works by moving the offset 280 bytes for each mipmap-block)
     public class MipmapBlock : DataReader {
         public MipmapBlock(byte[] data, int start) : base(data, start) {
 
         }
     }
-
-
 
     public class BufferBlock : DataReader {
         string name;
@@ -224,9 +239,6 @@ namespace MyShaderAnalysis.readers {
         }
     }
 
-
-
-
     public class SymbolsBlock : DataReader {
         List<(string, string, string, int)> symbolParams = new();
 
@@ -246,6 +258,8 @@ namespace MyShaderAnalysis.readers {
 
 
 }
+
+
 
 
 

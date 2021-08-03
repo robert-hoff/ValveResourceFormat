@@ -3,29 +3,21 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ZstdSharp;
 using static MyShaderAnalysis.utilhelpers.UtilHelpers;
 
-
 namespace MyShaderAnalysis.readers {
-
 
     public enum FILETYPE {
         unknown, any, features_file, vs_file, ps_file, gs_file, psrs_file
     };
 
-
     public class ShaderFile : DataReader {
-
         string filenamepath;
         string filename;
         private FILETYPE vcsFiletype = FILETYPE.unknown;
-
         DataBlockFeaturesHeader featuresHeader = null;
         DataBlockVsPsHeader vspsHeader = null;
-
         List<DataBlockSfBlock> sfBlocks = new();
         List<CompatibilityBlock> compatibilityBlocks = new();
         List<DBlock> dBlocks = new();
@@ -35,7 +27,6 @@ namespace MyShaderAnalysis.readers {
         List<BufferBlock> bufferBlocks = new();
         List<SymbolsBlock> symbolBlocks = new();
         Dictionary<long, int> zframesLookup = new(); // (frameID to offset)
-
 
         public ShaderFile(string filenamepath) : base(File.ReadAllBytes(filenamepath)) {
             this.filenamepath = filenamepath;
@@ -50,7 +41,6 @@ namespace MyShaderAnalysis.readers {
             if (version != 64) {
                 throw new ShaderParserException($"wrong version {version}, expecting 64");
             }
-
 
             if (vcsFiletype == FILETYPE.features_file) {
                 featuresHeader = new DataBlockFeaturesHeader(databytes, 8);
@@ -89,6 +79,7 @@ namespace MyShaderAnalysis.readers {
                 offset += 152;
             }
 
+            // always 472 bytes
             int unknownBlockCount = ReadInt();
             for (int i = 0; i < unknownBlockCount; i++) {
                 UnknownBlock nextUnknownBlock = new(databytes, offset);
@@ -103,6 +94,7 @@ namespace MyShaderAnalysis.readers {
                 offset = nextParamBlock.GetFileOffset();
             }
 
+            // always 280 bytes
             int mipmapBlockCount = ReadInt();
             for (int i = 0; i < mipmapBlockCount; i++) {
                 MipmapBlock nextMipmapBlock = new(databytes, offset);
@@ -126,37 +118,37 @@ namespace MyShaderAnalysis.readers {
                 }
             }
 
-
-            // the only value I need to retrieve the zframe is its offset
-
-
             List<long> zframeIDs = new();
-
             int zframesCount = ReadInt();
             for (int i = 0; i < zframesCount; i++) {
                 zframeIDs.Add(ReadLong());
             }
 
-
             foreach (long zframeID in zframeIDs) {
                 zframesLookup.Add(zframeID, ReadInt());
             }
-
-            //foreach (var item in zframesLookup) {
-            //    Debug.WriteLine($"ZFRAME-{item.Key:x08}    {item.Value}");
-            //}
         }
 
-
-
+        public void WriteZFrameToFile(int zframeIndex, string outputdir) {
+            long zframeId = zframesLookup.ElementAt(zframeIndex).Key;
+            // string outputFilename = $"{filename[0..^4]}-ZFRAME{zframeId:x08}.txt";
+            string outputFilename = GetZframeTxtFilename((uint) zframeId, filename);
+            string outputFilenamepath = @$"{outputdir}\{outputFilename}";
+            byte[] uncompressedZframe = GetDecompressedZFrameByIndex(zframeIndex);
+            DataReaderZFrameByteAnalysis zFrameParser = new(uncompressedZframe, vcsFiletype);
+            Debug.WriteLine($"writing to {outputFilenamepath}");
+            StreamWriter sw = new(outputFilenamepath);
+            zFrameParser.ConfigureWriteToFile(sw, true);
+            zFrameParser.ParseFile();
+            sw.Flush();
+            sw.Close();
+        }
 
         public void WriteAllZFramesToHtml(string outputDir, bool includeGlslSources) {
             for (int i = 0; i < zframesLookup.Count; i++) {
                 WriteZFrameToHtml(i, outputDir, includeGlslSources);
             }
         }
-
-
 
         public void WriteZFrameToHtml(int zframeIndex, string outputDir, bool includeGlslSources) {
             long zframeId = zframesLookup.ElementAt(zframeIndex).Key;
@@ -179,33 +171,6 @@ namespace MyShaderAnalysis.readers {
             sw.Flush();
             sw.Close();
         }
-
-
-        public void WriteZFrameToFile(int zframeIndex, string outputdir) {
-
-            long zframeId = zframesLookup.ElementAt(zframeIndex).Key;
-            // string outputFilename = $"{filename[0..^4]}-ZFRAME{zframeId:x08}.txt";
-            string outputFilename = GetZframeTxtFilename((uint) zframeId, filename);
-            string outputFilenamepath = @$"{outputdir}\{outputFilename}";
-
-            byte[] uncompressedZframe = GetDecompressedZFrameByIndex(zframeIndex);
-            DataReaderZFrameByteAnalysis zFrameParser = new(uncompressedZframe, vcsFiletype);
-
-            Debug.WriteLine($"writing to {outputFilenamepath}");
-
-
-            StreamWriter sw = new(outputFilenamepath);
-            zFrameParser.ConfigureWriteToFile(sw, true);
-            zFrameParser.ParseFile();
-            sw.Flush();
-            sw.Close();
-
-
-
-        }
-
-
-
 
         public int GetZFrameCount() {
             return zframesLookup.Count;
@@ -234,12 +199,12 @@ namespace MyShaderAnalysis.readers {
             if (zframeUncompressed.Length != uncompressed_length) {
                 throw new ShaderParserException("zframe length mismatch!");
             }
-            // unsure if this is advisable
+            // unsure if we want to do this
             // decompressor.Dispose();
             return zframeUncompressed.ToArray();
         }
 
-        private static FILETYPE GetVcsFileType(string filenamepath) {
+        public static FILETYPE GetVcsFileType(string filenamepath) {
             if (filenamepath.EndsWith("features.vcs")) {
                 return FILETYPE.features_file;
             }
@@ -255,17 +220,9 @@ namespace MyShaderAnalysis.readers {
             if (filenamepath.EndsWith("gs.vcs")) {
                 return FILETYPE.gs_file;
             }
-
             throw new ShaderParserException($"don't know what this file is {filenamepath}");
         }
-
-
-
-
     }
-
-
-
 
 
     public class ShaderParserException : Exception {
@@ -275,7 +232,13 @@ namespace MyShaderAnalysis.readers {
     }
 
 
-
 }
+
+
+
+
+
+
+
 
 

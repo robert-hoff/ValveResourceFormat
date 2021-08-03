@@ -2,15 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MyShaderAnalysis.utilhelpers;
-using static MyShaderAnalysis.readers.ShaderFileByteAnalysis;
 using static MyShaderAnalysis.utilhelpers.UtilHelpers;
 
 namespace MyShaderAnalysis.readers {
-
 
     public class DataReaderZFrameByteAnalysis : DataReader {
 
@@ -36,8 +30,6 @@ namespace MyShaderAnalysis.readers {
             saveGlslSources = true;
             this.outputDir = outputDir;
         }
-
-
 
 
         public void ParseFile() {
@@ -187,8 +179,6 @@ namespace MyShaderAnalysis.readers {
             }
         }
 
-
-
         private void SaveGlslSourcestoTxt(List<(int, int, string)> glslSources) {
             foreach (var glslSourceItem in glslSources) {
                 string glslFilenamepath = @$"{outputDir}\{GetGlslTxtFilename(glslSourceItem.Item3)}";
@@ -204,23 +194,19 @@ namespace MyShaderAnalysis.readers {
             }
         }
 
-
-
-
         public void PrintIntWithValue() {
             int intval = ReadIntAtPosition(offset);
             ShowBytes(4, false);
             TabComment($"{intval}");
         }
 
-
         private bool prevBlockWasZero = false;
-
         public void ShowZDataSection(int blockId) {
             int blockSize = ShowZBlockDataHeader(blockId);
             ShowZBlockDataBody(blockSize);
 
         }
+
         public int ShowZBlockDataHeader(int blockId) {
             int arg0 = ReadIntAtPosition(offset);
             int arg1 = ReadIntAtPosition(offset + 4);
@@ -314,7 +300,6 @@ namespace MyShaderAnalysis.readers {
             }
         }
 
-
         public (int, int, string) ShowZSourceSection(int blockId) {
             int sourceSize = ShowZSourceOffsets();
             int sourceOffset = offset;
@@ -327,8 +312,6 @@ namespace MyShaderAnalysis.readers {
             } else {
                 OutputWrite(fileIdStr);
             }
-
-
             TabComment($"File ID");
             BreakLine();
             return (sourceOffset, sourceSize, fileIdStr);
@@ -367,7 +350,6 @@ namespace MyShaderAnalysis.readers {
             BreakLine();
         }
 
-
         public void ShowZAllEndBlocksTypeVs() {
             ShowByteCount();
             ShowBytes(4, false);
@@ -379,7 +361,6 @@ namespace MyShaderAnalysis.readers {
             }
         }
 
-
         private void EndOfFile() {
             if (offset != databytes.Length) {
                 throw new ShaderParserException("End of file not reached!");
@@ -388,7 +369,6 @@ namespace MyShaderAnalysis.readers {
             OutputWriteLine("EOF");
             BreakLine();
         }
-
 
         private void ShowMurmurString() {
             string nulltermstr = ReadNullTermStringAtPosition(offset);

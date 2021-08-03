@@ -1,7 +1,4 @@
-using MyShaderAnalysis.utilhelpers;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+using static MyShaderAnalysis.utilhelpers.UtilHelpers;
 
 namespace MyShaderAnalysis {
 
@@ -11,8 +8,7 @@ namespace MyShaderAnalysis {
         static void Main() {
 
 
-
-            ShaderAnalysis.RunTrials();
+             ShaderAnalysis.RunTrials();
             // ShaderAnalysis02.RunTrials(); // filewriting here still works (set to write to file)
             // ShaderAnalysis01.RunTrials();
 
