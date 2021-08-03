@@ -21,6 +21,8 @@ namespace MyShaderAnalysis.vcsparsing {
         }
 
 
+        uint zFrameCount = 0;
+
         public void ParseFile() {
             // DisableOutput = true;
             if (filetype == FILETYPE.features_file) {
@@ -53,7 +55,8 @@ namespace MyShaderAnalysis.vcsparsing {
             }
             PrintZframes();
 
-            if (writeAsHtml) {
+            // if (zFrameCount>0 && writeAsHtml) {
+            if (zFrameCount > 0) {
                 return;
             }
 
@@ -536,23 +539,26 @@ namespace MyShaderAnalysis.vcsparsing {
 
         private void PrintZframes() {
             ShowByteCount();
-            uint zframe_count = ReadUIntAtPosition(offset);
+            zFrameCount = ReadUIntAtPosition(offset);
             ShowBytes(4, false);
-            TabComment($"{zframe_count} zframes");
+            TabComment($"{zFrameCount} zframes");
             BreakLine();
-            if (zframe_count == 0) {
+            if (zFrameCount == 0) {
                 return;
             }
             List<uint> zFrameIndexes = new();
             ShowByteCount("zFrame IDs");
-            for (int i = 0; i < zframe_count; i++) {
+            for (int i = 0; i < zFrameCount; i++) {
                 uint zframeId = ReadUIntAtPosition(offset);
                 ShowBytes(8, false);
                 TabComment($"{getZFrameIdString(zframeId)}    {Convert.ToString(zframeId, 2).PadLeft(20, '0')}");
                 zFrameIndexes.Add(zframeId);
             }
 
-            if (writeAsHtml) {
+
+
+            // if (writeAsHtml) {
+            if (zFrameCount > 0) {
                 BreakLine();
                 Comment("rest of data contains compressed zframes");
                 BreakLine();

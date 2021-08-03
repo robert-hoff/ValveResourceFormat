@@ -15,15 +15,47 @@ namespace MyShaderAnalysis {
         const string PCGL_DIR_NOT_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders\vfx";
         const string PC_DIR_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pc\shaders-core\vfx";
         const string PC_DIR_NOT_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pc\shaders\vfx";
-        const string OUTPUT_DIR = @"..\..\..\GEN-OUTPUT";
+        // const string OUTPUT_DIR = @"..\..\..\GEN-OUTPUT";
+        const string OUTPUT_DIR = @"Z:\active\projects\dota2-sourcesdk-modding\shader-analysis-vcs-format\OUTPUT_DUMP";
 
 
         public static void RunTrials() {
 
-            WriteAllFilesToHtml();
-            // WriteZFramesToFile();
-            // ParseZFrames();
             // ParseVcsFiles();
+            // ParseZFrames();
+            // WriteZFramesToFile();
+            // WriteAllVcsFilesToHtml();
+            // WriteAllFilesToHtml();
+            // StaticAnalysisSelectedSets();
+            ProblemIllustration();
+        }
+
+
+
+        /*
+         * I cannot configure the ShaderFile to have it and all its
+         * datablock companions write to a new streamwriter without configuration
+         * all DataBlock children for the ShaderFile!!
+         *
+         *
+         */
+        static void ProblemIllustration() {
+            string filenamepath = PCGL_DIR_NOT_CORE + @"\cables_pcgl_30_features.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"\cables_pcgl_30_vs.vcs";
+            ShaderFile shaderFile = new(filenamepath);
+            StreamWriter sw = new(OUTPUT_DIR+@"\testfile.txt");
+            shaderFile.ConfigureWriteToFile(sw, true);
+            shaderFile.PrintDatabyteAnalysis();
+            sw.Close();
+        }
+
+
+
+        static void StaticAnalysisSelectedSets() {
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_features.vcs";
+            // ShaderFile shaderFile = new(filenamepath);
+
+
         }
 
 
@@ -45,8 +77,6 @@ namespace MyShaderAnalysis {
             string directoryToUse = PCGL_DIR_NOT_CORE;
             string[] filenames = { "crystal_pcgl_30_features.vcs", "crystal_pcgl_30_vs.vcs", "crystal_pcgl_30_ps.vcs" };
 
-
-
             foreach (var filename in filenames) {
                 string filenamepath = @$"{directoryToUse}\{filename}";
                 ShaderFileByteAnalysis shaderFileByteAnalysis = new(filenamepath);
@@ -54,6 +84,17 @@ namespace MyShaderAnalysis {
                 ShaderFile shaderFile = new(filenamepath);
                 shaderFile.WriteAllZFramesToHtml(OUTPUT_DIR, true);
             }
+        }
+
+
+
+
+        // NEEDS IMPLEMENTATION
+        static void WriteAllVcsFilesToHtml() {
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_features.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_vs.vcs";
+            // ShaderFileByteAnalysis shaderFileBA = new(filenamepath);
+            // shaderFileBA.PrintByteAnalysis();
 
         }
 
@@ -99,7 +140,7 @@ namespace MyShaderAnalysis {
 
 
         static void ParseVcsFiles() {
-            string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_vs.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_vs.vcs";
             // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
             // string filenamepath = PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_features.vcs";
             // string filenamepath = PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_vs.vcs";
@@ -111,6 +152,7 @@ namespace MyShaderAnalysis {
             // string filenamepath = PCGL_DIR_CORE + @"\tools_wireframe_pcgl_40_gs.vcs";
             // string filenamepath = PCGL_DIR_NOT_CORE + @"\spring_meteor_pcgl_30_vs.vcs";
             // string filenamepath = PCGL_DIR_NOT_CORE + @"\cables_pcgl_30_features.vcs";
+            string filenamepath = PCGL_DIR_NOT_CORE + @"\cables_pcgl_30_vs.vcs";
             // string filenamepath = PCGL_DIR_NOT_CORE + @"\spritecard_pcgl_30_features.vcs";
 
 

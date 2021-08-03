@@ -38,7 +38,7 @@ namespace MyShaderAnalysis.vcsparsing {
             }
             int numberToParse = zcount > max ? max : zcount;
             if (min >= zcount) {
-                Debug.WriteLine($"our of range [{min},{max}) for {RemoveBaseDir(filenamepath)}, nothing to parse. zmax = {zcount - 1}");
+                Debug.WriteLine($"out of range [{min},{max}) for {RemoveBaseDir(filenamepath)}, nothing to parse. zmax = {zcount - 1}");
                 return;
             } else {
                 Debug.WriteLine($"parsing {RemoveBaseDir(filenamepath)} frames [{min},{numberToParse})");

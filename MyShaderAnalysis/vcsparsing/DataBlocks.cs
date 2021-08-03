@@ -66,7 +66,17 @@ namespace MyShaderAnalysis.vcsparsing {
                 fileIDs.Add(ReadBytesAsString(16).Replace(" ", "").ToLower());
             }
         }
+
+
+        public void PrintSummary() {
+            OutputWriteLine("features-header summary");
+        }
+
+
     }
+
+
+
 
     // needs implemenation
     public class DataBlockVsPsHeader : DataReader {

@@ -129,6 +129,12 @@ namespace MyShaderAnalysis.vcsparsing {
             }
         }
 
+        public void PrintDatabyteAnalysis() {
+            OutputWriteLine("shaderfile hello");
+            featuresHeader.PrintSummary();
+        }
+
+
         public void WriteZFrameToFile(int zframeIndex, string outputdir) {
             long zframeId = zframesLookup.ElementAt(zframeIndex).Key;
             // string outputFilename = $"{filename[0..^4]}-ZFRAME{zframeId:x08}.txt";
