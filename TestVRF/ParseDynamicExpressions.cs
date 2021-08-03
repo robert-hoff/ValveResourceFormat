@@ -87,26 +87,39 @@ namespace TestVRF
             MODULO = 0x17,               // 17		%					23
             NEGATE = 0x18,
             EXTVAR = 0x19,
+            EXTCOND = 0x1A,          // deduced from vcs files
+            EXTEVAL = 0x1D,           // deduced from vcs files
             SWIZZLE = 0x1E,
             EXISTS = 0x1F,
             // NOT_AN_OPS = 0xff,
         };
 
-        private Stack<string> expressions = new Stack<string>();
+        private Stack<string> expressions = null;
         private DataReader datareader;
 
         // check on each OPS if we are exiting a branch,
         // when we do we should combine expressions on the stack
         private Stack<uint> offsetAtBranchExits = new Stack<uint>();
 
-        public ParseDynamicExpressions(byte[] binary_blob)
+        public ParseDynamicExpressions()
         {
             if (externalVarsReference.Count == 0)
             {
                 buildExternalVarsReference();
             }
+        }
 
+
+        public void ParseExpression(byte[] binary_blob)
+        {
+
+
+            dynamicExpressionResult = "";
+            expressions = new Stack<string>();
             datareader = new DataReader(binary_blob);
+            offsetAtBranchExits = new Stack<uint>();
+            dynamicExpressionList = new List<string>();
+
             offsetAtBranchExits.Push(0);
 
             while (datareader.hasData())
@@ -130,7 +143,10 @@ namespace TestVRF
             {
                 dynamicExpressionResult += $"{s}\n";
             }
+            dynamicExpressionResult = dynamicExpressionResult.Trim();
         }
+
+
 
 
         private const uint IFELSE_BRANCH = 0;     //    <cond> : <e1> ? <e2>
@@ -232,12 +248,11 @@ namespace TestVRF
 
                 // for <e1>||<e2> expressions we are looking for the pattern
                 // 04 17 00 1F 00     07 00 00 80 3F
-                if (pointer2 - pointer1 == 8 && b[p] == 7 && b[p + 1] == 0 && b[p + 2] == 0 && b[p + 3] == 0x80 && b[p + 4] == 0x3F)
-                {
-                    offsetAtBranchExits.Push(OR_BRANCH);
-                    datareader.offset += 5;
-                    return;
-                }
+                //if (pointer2 - pointer1 == 8 && b[p] == 7 && b[p + 1] == 0 && b[p + 2] == 0 && b[p + 3] == 0x80 && b[p + 4] == 0x3F) {
+                //    offsetAtBranchExits.Push(OR_BRANCH);
+                //    datareader.offset += 5;
+                //    return;
+                //}
 
                 offsetAtBranchExits.Push(IFELSE_BRANCH);
                 return;
@@ -350,6 +365,25 @@ namespace TestVRF
                 return;
             }
 
+            if (op == OPCODE.EXTCOND)
+            {
+                uint expressionId = datareader.nextByte();
+                expressions.Push($"COND[{expressionId}]");
+                return;
+            }
+
+            if (op == OPCODE.EXTEVAL)
+            {
+                // uint b0 = datareader.nextByte();
+                // uint b1 = datareader.nextByte();
+                uint intval = datareader.nextInt();
+                string refname = externalVarsReference.GetValueOrDefault(intval, $"{intval:x08}");
+
+                // expressions.Push($"EXTVAL[0x{intval:x04}]");
+                expressions.Push($"EVAL[{refname}]");
+                return;
+            }
+
             if (op == OPCODE.SWIZZLE)
             {
                 string exp = expressions.Pop();
@@ -376,11 +410,13 @@ namespace TestVRF
                     return;
                 }
                 string final_exp = expressions.Pop();
-                while (final_exp.Length > 2 && final_exp[0] == '(' && final_exp[final_exp.Length - 1] == ')')
-                {
+                // NOTE - there are examples where this will fail!
+                //while (final_exp.Length > 2 && final_exp[0] == '(' && final_exp[final_exp.Length - 1] == ')')
+                //{
                     final_exp = trimb(final_exp);
-                }
-                dynamicExpressionList.Add($"return {final_exp};");
+                //}
+                // dynamicExpressionList.Add($"return {final_exp};");
+                dynamicExpressionList.Add($"{final_exp}");
                 return;
             }
 
@@ -441,7 +477,7 @@ namespace TestVRF
 
 
 
-        private Dictionary<uint, string> externalVariables = new Dictionary<uint, string>();
+        private static Dictionary<uint, string> externalVariables = new Dictionary<uint, string>();
         private Dictionary<uint, string> localVariables = new Dictionary<uint, string>();
 
         // naming external variables    EXT, EXT2, EXT3,..
@@ -454,19 +490,21 @@ namespace TestVRF
                 return varKnownName;
             }
 
+            string varName = String.Format($"EXT[{varId:x08}]");
 
-            externalVariables.TryGetValue(varId, out string varName);
-            if (varName == null)
-            {
-                if (externalVariables.Count == 0)
-                {
-                    varName = "EXT";
-                } else
-                {
-                    varName = String.Format("EXT{0}", externalVariables.Count + 1);
-                }
-                externalVariables.Add(varId, varName);
-            }
+
+            //externalVariables.TryGetValue(varId, out string varName);
+            //if (varName == null)
+            //{
+            //    if (externalVariables.Count == 0)
+            //    {
+            //        varName = "EXT";
+            //    } else
+            //    {
+            //        varName = String.Format("EXT{0}", externalVariables.Count + 1);
+            //    }
+            //    externalVariables.Add(varId, varName);
+            //}
             return varName;
         }
 

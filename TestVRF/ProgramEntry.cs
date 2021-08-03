@@ -19,6 +19,9 @@ namespace TestVRF
         static void Main()
         {
 
+            ShaderAnalysis.RunTrials();
+
+
             // RunParseDynamicExpressions.RunTestData();
             // CheckExternalVarsHashes.checkNames();
 
@@ -26,7 +29,7 @@ namespace TestVRF
             // CollectRenderAttributes.collectAttributes(HLALYX_VPK_ARCHIVE);
 
             // ReadExpressionsFromPackage.DecompileDynamicExpressions(DOTA2_VPK_ARCHIVE);
-            ReadExpressionsFromPackage.DecompileDynamicExpressions(HLALYX_VPK_ARCHIVE);
+            // ReadExpressionsFromPackage.DecompileDynamicExpressions(HLALYX_VPK_ARCHIVE);
 
 
         }
