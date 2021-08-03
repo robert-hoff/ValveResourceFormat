@@ -8,60 +8,6 @@ namespace MyShaderAnalysis.vcsparsing {
 
 
 
-    public class IncrementValue1 {
-        public int offset = 0;
-
-        public IncrementValue1() {
-
-        }
-
-        public static IncrementValue1 operator ++(IncrementValue1 a) {
-            a.offset += 1;
-            return a;
-        }
-
-        public static IncrementValue1 operator +(IncrementValue1 a, int b) {
-            a.offset += b;
-            return a;
-        }
-
-
-        //public static int operator *(IncrementValue1 a, int b) {
-        //    return a.offset*b;
-        //}
-
-
-        //public static IncrementValue1 operator =(IncrementValue1 a, int b) {
-        //    return a;
-        //}
-
-
-
-
-        public override string ToString(){
-            return offset.ToString();
-        }
-
-
-    }
-
-
-
-
-    public class IncrementValue2 {
-        public decimal val;
-        public IncrementValue2(decimal val) {
-            this.val = val;
-        }
-        public void IncreaseVal() {
-            val++;
-        }
-    }
-
-
-
-
-
     /*
     public class DataBlockFeaturesHeader : DataBlock {
 

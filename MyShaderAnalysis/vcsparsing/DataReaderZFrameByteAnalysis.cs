@@ -75,8 +75,8 @@ namespace MyShaderAnalysis.vcsparsing {
             ShowBytes(1, breakLine: false);
             TabComment("values seen 0,1", 16);
 
+            uint glslSourceCount = ReadUIntAtPosition();
             ShowBytes(4, breakLine: false);
-            uint glslSourceCount = ReadUIntAtPosition(offset - 4);
             TabComment($"glsl source files ({glslSourceCount})", 7);
             ShowBytes(1, breakLine: false);
             TabComment("values seen 0,1", 16);
@@ -97,24 +97,24 @@ namespace MyShaderAnalysis.vcsparsing {
             //  End blocks for ps and psrs files
             if (filetype == FILETYPE.ps_file || filetype == FILETYPE.psrs_file) {
                 ShowByteCount();
+                int nrEndBlocks = ReadIntAtPosition();
                 ShowBytes(4, breakLine: false);
-                int nrEndBlocks = ReadIntAtPosition(offset - 4);
                 TabComment($"nr of end blocks ({nrEndBlocks})");
                 OutputWriteLine("");
 
                 for (int i = 0; i < nrEndBlocks; i++) {
                     ShowByteCount($"End-block[{i}]");
+                    int blockId = ReadInt16AtPosition();
                     ShowBytes(4, breakLine: false);
-                    int blockId = ReadInt16AtPosition(offset - 4);
                     TabComment($"blockId ref ({blockId})");
                     ShowBytes(4, breakLine: false);
                     TabComment("always 0");
+                    int sourceReference = ReadInt16AtPosition();
                     ShowBytes(4, breakLine: false);
-                    int sourceReference = ReadInt16AtPosition(offset - 4);
                     TabComment($"source ref ({sourceReference})");
 
+                    uint glslPointer = ReadUIntAtPosition();
                     ShowBytes(4, breakLine: false);
-                    uint glslPointer = ReadUIntAtPosition(offset - 4);
                     TabComment($"glsl source pointer ({glslPointer})");
 
                     ShowBytes(3, breakLine: false);
@@ -165,7 +165,7 @@ namespace MyShaderAnalysis.vcsparsing {
                 }
                 int glslOffset = glslSourceItem.Item1;
                 int glslSize = glslSourceItem.Item2;
-                byte[] glslSourceContent = ReadBytesAtPosition(glslOffset, glslSize);
+                byte[] glslSourceContent = ReadBytesAtPosition(glslOffset, glslSize, rel: false);
                 Debug.WriteLine($"writing {glslFilenamepath}");
                 StreamWriter glslFileWriter = new(glslFilenamepath);
                 string htmlHeader = GetHtmlHeader(htmlFilename[0..^5], htmlFilename[0..^5]);
@@ -187,7 +187,7 @@ namespace MyShaderAnalysis.vcsparsing {
                 }
                 int glslOffset = glslSourceItem.Item1;
                 int glslSize = glslSourceItem.Item2;
-                byte[] glslSourceContent = ReadBytesAtPosition(glslOffset, glslSize);
+                byte[] glslSourceContent = ReadBytesAtPosition(glslOffset, glslSize, rel: false);
 
                 Debug.WriteLine($"writing {glslFilenamepath}");
                 File.WriteAllBytes(glslFilenamepath, glslSourceContent);
@@ -195,7 +195,7 @@ namespace MyShaderAnalysis.vcsparsing {
         }
 
         public void PrintIntWithValue() {
-            int intval = ReadIntAtPosition(offset);
+            int intval = ReadIntAtPosition();
             ShowBytes(4, breakLine: false);
             TabComment($"{intval}");
         }
@@ -208,9 +208,9 @@ namespace MyShaderAnalysis.vcsparsing {
         }
 
         public int ShowZBlockDataHeader(int blockId) {
-            int arg0 = ReadIntAtPosition(offset);
-            int arg1 = ReadIntAtPosition(offset + 4);
-            int arg2 = ReadIntAtPosition(offset + 8);
+            int arg0 = ReadIntAtPosition();
+            int arg1 = ReadIntAtPosition(4);
+            int arg2 = ReadIntAtPosition(8);
 
             if (arg0 == 0 && arg1 == 0 && arg2 == 0) {
                 ShowBytes(12, breakLine: false);
@@ -224,7 +224,7 @@ namespace MyShaderAnalysis.vcsparsing {
             if (blockId >= 0) {
                 comment = $"data-block[{blockId}]";
             }
-            int blockSize = ReadIntAtPosition(offset);
+            int blockSize = ReadIntAtPosition();
             if (prevBlockWasZero) {
                 OutputWriteLine("");
             }
@@ -249,8 +249,8 @@ namespace MyShaderAnalysis.vcsparsing {
 
         public void ShowZFrameHeaderUpdated() {
             ShowByteCount("Frame header");
+            uint nrArgs = ReadUInt16AtPosition();
             ShowBytes(2, breakLine: false);
-            uint nrArgs = ReadUInt16AtPosition(offset - 2);
             TabComment($"nr of arguments ({nrArgs})");
             OutputWriteLine("");
 
@@ -262,7 +262,7 @@ namespace MyShaderAnalysis.vcsparsing {
                     continue;
                 }
                 if (headerOperator == 1) {
-                    int dynExpLen = ReadIntAtPosition(offset + 3);
+                    int dynExpLen = ReadIntAtPosition(3);
                     if (dynExpLen == 0) {
                         ShowBytes(8);
                         continue;
@@ -273,7 +273,7 @@ namespace MyShaderAnalysis.vcsparsing {
                     }
                 }
                 if (headerOperator == 9) {
-                    int dynExpLen = ReadIntAtPosition(offset + 3);
+                    int dynExpLen = ReadIntAtPosition(3);
                     if (dynExpLen == 0) {
                         ShowBytes(8);
                         continue;
@@ -284,7 +284,7 @@ namespace MyShaderAnalysis.vcsparsing {
                     }
                 }
                 if (headerOperator == 5) {
-                    int dynExpLen = ReadIntAtPosition(offset + 3);
+                    int dynExpLen = ReadIntAtPosition(3);
                     if (dynExpLen == 0) {
                         ShowBytes(11);
                         continue;
@@ -319,21 +319,22 @@ namespace MyShaderAnalysis.vcsparsing {
 
         public int ShowZSourceOffsets() {
             ShowByteCount("glsl source offsets");
+            uint offset1 = ReadUIntAtPosition();
             PrintIntWithValue();
-            uint offset1 = ReadUIntAtPosition(offset - 4);
             if (offset1 == 0) {
                 return 0;
             }
             ShowBytes(4, breakLine: false);
             TabComment("always 3");
+            int sourceSize = ReadIntAtPosition() - 1; // one less because of null-term
             PrintIntWithValue();
-            int sourceSize = ReadIntAtPosition(offset - 4) - 1; // one less because of null-term
             BreakLine();
             return sourceSize;
         }
 
+        // FIXME - can't I pass the source size here?
         public void ShowZGlslSourceSummary(int sourceId) {
-            int bytesToRead = ReadIntAtPosition(offset - 4);
+            int bytesToRead = ReadIntAtPosition(-4);
             int endOfSource = offset + bytesToRead;
             ShowByteCount($"GLSL-SOURCE[{sourceId}]");
             if (bytesToRead == 0) {
@@ -352,8 +353,8 @@ namespace MyShaderAnalysis.vcsparsing {
 
         public void ShowZAllEndBlocksTypeVs() {
             ShowByteCount();
+            int nr_end_blocks = ReadIntAtPosition();
             ShowBytes(4, breakLine: false);
-            int nr_end_blocks = ReadIntAtPosition(offset - 4);
             TabComment($"nr end blocks ({nr_end_blocks})");
             BreakLine();
             for (int i = 0; i < nr_end_blocks; i++) {
@@ -371,8 +372,8 @@ namespace MyShaderAnalysis.vcsparsing {
         }
 
         private void ShowMurmurString() {
-            string nulltermstr = ReadNullTermStringAtPosition(offset);
-            uint murmur32 = ReadUIntAtPosition(offset + nulltermstr.Length + 1);
+            string nulltermstr = ReadNullTermStringAtPosition();
+            uint murmur32 = ReadUIntAtPosition(nulltermstr.Length + 1);
             uint murmurCheck = MurmurHashPiSeed(nulltermstr.ToLower());
             if (murmur32 != murmurCheck) {
                 throw new ShaderParserException("not a murmur string!");
@@ -382,7 +383,7 @@ namespace MyShaderAnalysis.vcsparsing {
         }
 
         private void ShowDynamicExpression(int dynExpLen) {
-            byte[] dynExpDatabytes = ReadBytesAtPosition(offset, dynExpLen);
+            byte[] dynExpDatabytes = ReadBytesAtPosition(0, dynExpLen);
             string dynExp = getDynamicExpression(dynExpDatabytes);
             OutputWriteLine($"// {dynExp}");
             ShowBytes(dynExpLen);
