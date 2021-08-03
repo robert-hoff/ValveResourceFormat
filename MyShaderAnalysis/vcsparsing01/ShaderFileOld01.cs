@@ -1,10 +1,8 @@
-using System.IO;
-using System.Diagnostics;
-using MyShaderAnalysis.utilhelpers;
 
-namespace MyShaderAnalysis.readers01 {
 
-    public class ShaderFile01 {
+namespace MyShaderAnalysis.vcsparsing01 {
+
+    public class ShaderFileOld01 {
 
 
         private bool FEATURES_FILE = false;
@@ -14,7 +12,7 @@ namespace MyShaderAnalysis.readers01 {
 
 
         // NO LONGER IN USE - CAN DELETE
-        public ShaderFile01(string filepath) {
+        public ShaderFileOld01(string filepath) {
 
             /*
             string filename = Path.GetFileName(filepath);

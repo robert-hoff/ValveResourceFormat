@@ -1,3 +1,4 @@
+using MyShaderAnalysis.utilhelpers;
 using System.Collections.Generic;
 
 /*
@@ -5,9 +6,9 @@ using System.Collections.Generic;
  * but DataReaderVcsByteAnalysis only prints the data and doesn't make any attempt to capture it
  *
  */
-namespace MyShaderAnalysis.vcsparsing {
+namespace MyShaderAnalysis.vcsparsing02 {
 
-    public class DataBlockFeaturesHeader : DataReader {
+    public class DataBlockFeaturesHeader : DataReader02 {
 
         bool has_psrs_file;
         int unknown_val;
@@ -79,12 +80,12 @@ namespace MyShaderAnalysis.vcsparsing {
 
 
     // needs implemenation
-    public class DataBlockVsPsHeader : DataReader {
+    public class DataBlockVsPsHeader : DataReader02 {
         public DataBlockVsPsHeader(byte[] data, int start) : base(data, start) {
         }
     }
 
-    public class DataBlockSfBlock : DataReader {
+    public class DataBlockSfBlock : DataReader02 {
         string name0;
         string name1;
         int arg0;
@@ -117,27 +118,27 @@ namespace MyShaderAnalysis.vcsparsing {
      * the blocks and incrementing the offste by 472. (i.e. no data is retrieved)
      *
      */
-    public class CompatibilityBlock : DataReader {
+    public class CompatibilityBlock : DataReader02 {
         public CompatibilityBlock(byte[] data, int start) : base(data, start) {
 
         }
     }
 
     // needs implemenation (parser works by moving the offset 152 bytes for each d-block)
-    public class DBlock : DataReader {
+    public class DBlock : DataReader02 {
         public DBlock(byte[] data, int start) : base(data, start) {
 
         }
     }
 
     // needs implemenation (parser works by moving the offset 472 bytes for each unknown-block)
-    public class UnknownBlock : DataReader {
+    public class UnknownBlock : DataReader02 {
         public UnknownBlock(byte[] data, int start) : base(data, start) {
 
         }
     }
 
-    public class ParamBlock : DataReader {
+    public class ParamBlock : DataReader02 {
         string name0;
         string name1;
         string name2;
@@ -218,13 +219,13 @@ namespace MyShaderAnalysis.vcsparsing {
     }
 
     // needs implemenation (parser works by moving the offset 280 bytes for each mipmap-block)
-    public class MipmapBlock : DataReader {
+    public class MipmapBlock : DataReader02 {
         public MipmapBlock(byte[] data, int start) : base(data, start) {
 
         }
     }
 
-    public class BufferBlock : DataReader {
+    public class BufferBlock : DataReader02 {
         string name;
         int bufferSize;
         List<(string, int, int, int, int)> bufferParams = new();
@@ -249,7 +250,7 @@ namespace MyShaderAnalysis.vcsparsing {
         }
     }
 
-    public class SymbolsBlock : DataReader {
+    public class SymbolsBlock : DataReader02 {
         List<(string, string, string, int)> symbolParams = new();
 
         public SymbolsBlock(byte[] data, int start) : base(data, start) {

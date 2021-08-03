@@ -2,15 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using static MyShaderAnalysis.vcsparsing.UtilHelpers;
+using MyShaderAnalysis.utilhelpers;
+using static MyShaderAnalysis.vcsparsing02.UtilHelpers02;
 
-namespace MyShaderAnalysis.vcsparsing {
 
-    public class DataReaderZFrameByteAnalysis : DataReader {
+namespace MyShaderAnalysis.vcsparsing02 {
+
+    public class DataReaderZFrameByteAnalysis02 : DataReader02 {
 
         FILETYPE filetype;
 
-        public DataReaderZFrameByteAnalysis(byte[] data, FILETYPE filetype) : base(data) {
+        public DataReaderZFrameByteAnalysis02(byte[] data, FILETYPE filetype) : base(data) {
             if (filetype == FILETYPE.features_file) {
                 throw new ShaderParserException("file type cannot be features, as they don't contain any zframes");
             }

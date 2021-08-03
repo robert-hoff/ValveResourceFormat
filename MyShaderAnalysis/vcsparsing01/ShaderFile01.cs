@@ -1,13 +1,13 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using MyShaderAnalysis.vcsparsing;
+using MyShaderAnalysis.utilhelpers;
 
 
-namespace MyShaderAnalysis.readers01 {
+namespace MyShaderAnalysis.vcsparsing01 {
 
 
-    public class ShaderFile02 {
+    public class ShaderFile01 {
 
         string filepath;
         string filename;
@@ -16,13 +16,13 @@ namespace MyShaderAnalysis.readers01 {
         private bool VS_FILE = false;
         private bool GS_FILE = false;
         private bool PSRS_FILE = false;
-        public DataReader01 datareader;
+        public DataReaderOld01 datareader;
         string outputFile = null;
         StreamWriter sw = null;
         private bool DisableOutput = false;
 
 
-        public ShaderFile02(string filepath) {
+        public ShaderFile01(string filepath) {
             this.filepath = filepath;
             filename = Path.GetFileName(filepath);
             if (filepath.EndsWith("features.vcs")) {

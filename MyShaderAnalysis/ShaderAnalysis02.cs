@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using MyShaderAnalysis.vcsparsing;
-using MyShaderAnalysis.readers01;
-
+using MyShaderAnalysis.vcsparsing02;
+using MyShaderAnalysis.vcsparsing01;
+using MyShaderAnalysis.utilhelpers;
 
 namespace MyShaderAnalysis {
     class ShaderAnalysis02 {
@@ -178,7 +178,7 @@ namespace MyShaderAnalysis {
             Debug.WriteLine($"ZFRAME = {zframeId}");
             // return;
 
-            DataReader01 datareader = shaderReader.getZframeDataReader(zframeId);
+            DataReaderOld01 datareader = shaderReader.getZframeDataReader(zframeId);
             // Debug.WriteLine($"{zframeId}    {datareader.databytes.Length}");
             datareader.ConfigureWriteToFile(sw);
             datareader.ParseAndShowZFrame();
@@ -288,7 +288,7 @@ namespace MyShaderAnalysis {
         static void Trial1ZVsFrame01(ShaderReader01 shaderReader, int zframeId, int filetype,
             bool disableOutput, StreamWriter sw, bool saveGlslSources, bool writeAsHtml) {
 
-            DataReader01 datareader = shaderReader.getZframeDataReader(zframeId);
+            DataReaderOld01 datareader = shaderReader.getZframeDataReader(zframeId);
             datareader.collectValuesInt = collectValuesInt;
             datareader.collectValuesString = collectValuesString;
             datareader.requestCount = requestCount;
@@ -470,7 +470,7 @@ namespace MyShaderAnalysis {
         static void Trial4() {
             StreamWriter sw = new StreamWriter(@"Z:\active\projects\dota2-sourcesdk-modding\shader-analysis-vcs-format\output-dump\!OUTPUT.txt");
             ShaderReader01 shaderReader = new ShaderReader01(ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
-            List<DataReader01> readers = new();
+            List<DataReaderOld01> readers = new();
             for (int i = 0; i < 3335; i++) {
                 readers.Add(shaderReader.getZframeDataReader(i));
             }
@@ -505,7 +505,7 @@ namespace MyShaderAnalysis {
             int NUMROWS = 3335;
 
             ShaderReader01 shaderReader = new ShaderReader01(ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
-            List<DataReader01> readers = new();
+            List<DataReaderOld01> readers = new();
             for (int i = 0; i < NUMROWS; i++) {
                 readers.Add(shaderReader.getZframeDataReader(i));
             }
@@ -566,7 +566,7 @@ namespace MyShaderAnalysis {
 
 
             ShaderReader01 shaderReader = new ShaderReader01(ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
-            List<DataReader01> readers = new();
+            List<DataReaderOld01> readers = new();
             for (int i = 0; i < 3335; i++) {
                 readers.Add(shaderReader.getZframeDataReader(i));
             }
@@ -588,7 +588,7 @@ namespace MyShaderAnalysis {
 
         static void Trial1ZVsFrame00() {
             ShaderReader01 shaderReader = new ShaderReader01(ANALYSIS_DIR_NOT_CORE + @"\3dskyboxstencil_pcgl_30_vs.vcs");
-            DataReader01 datareader = shaderReader.getZframeDataReader(2);
+            DataReaderOld01 datareader = shaderReader.getZframeDataReader(2);
 
 
             datareader.ShowZDataSection(-1);
@@ -639,7 +639,7 @@ namespace MyShaderAnalysis {
 
         static void Trial1ZFrame05() {
             ShaderReader01 shaderReader = new ShaderReader01(ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
-            DataReader01 datareader = shaderReader.getZframeDataReader(5);
+            DataReaderOld01 datareader = shaderReader.getZframeDataReader(5);
             // datareader.DisableOutput = true;
 
             datareader.ShowZDataSection(-1);
@@ -722,7 +722,7 @@ namespace MyShaderAnalysis {
 
         static void Trial1ZFrame02() {
             ShaderReader01 shaderReader = new ShaderReader01(ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
-            DataReader01 datareader = shaderReader.getZframeDataReader(2);
+            DataReaderOld01 datareader = shaderReader.getZframeDataReader(2);
             datareader.ShowZDataSection(-1);
             datareader.ShowZFrameHeader();
             datareader.ShowZDataDelim();
@@ -775,7 +775,7 @@ namespace MyShaderAnalysis {
 
         static void Trial1ZFrame01() {
             ShaderReader01 shaderReader = new ShaderReader01(ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
-            DataReader01 datareader = shaderReader.getZframeDataReader(1);
+            DataReaderOld01 datareader = shaderReader.getZframeDataReader(1);
 
 
             datareader.ShowZDataSection(-1);
@@ -907,7 +907,7 @@ namespace MyShaderAnalysis {
             // new ShaderReader(ANALYSIS_DIR1 + @"\glow_output_pcgl_30_ps.vcs");
             ShaderReader01 shaderReader = new ShaderReader01(ANALYSIS_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
 
-            DataReader01 datareader = shaderReader.getZframeDataReader(0);
+            DataReaderOld01 datareader = shaderReader.getZframeDataReader(0);
             datareader.ShowByteCount();
             datareader.ShowBytes(4);
             datareader.ShowBytes(4);

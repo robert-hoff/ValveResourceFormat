@@ -1,10 +1,11 @@
+using MyShaderAnalysis.utilhelpers;
 using System.IO;
 using System.Text;
 
 
-namespace MyShaderAnalysis.vcsparsing {
+namespace MyShaderAnalysis.vcsparsing02 {
 
-    public class UtilHelpers {
+    public class UtilHelpers02 {
 
         private static byte[] zstdDictionary = null;
 

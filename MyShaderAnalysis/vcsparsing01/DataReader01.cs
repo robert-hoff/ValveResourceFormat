@@ -1,10 +1,7 @@
-using MyShaderAnalysis.utilhelpers;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-
-
+// using MyShaderAnalysis.utilhelpers;
 
 /*
  *
@@ -12,9 +9,9 @@ using System.IO;
  *
  *
  */
-namespace MyShaderAnalysis.readers01 {
+namespace MyShaderAnalysis.vcsparsing01 {
 
-    public class DataReader02 {
+    public class DataReader01 {
 
         public byte[] databytes;
         public readonly int start;
@@ -24,13 +21,13 @@ namespace MyShaderAnalysis.readers01 {
         public bool DisableOutput = false;
 
 
-        public DataReader02(byte[] data, int start) {
+        public DataReader01(byte[] data, int start) {
             this.databytes = data;
             this.start = start;
             this.offset = start;
         }
 
-        public DataReader02(byte[] data) : this(data, 0) { }
+        public DataReader01(byte[] data) : this(data, 0) { }
 
         public void ResetOffset() {
             offset = start;

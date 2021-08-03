@@ -1,19 +1,15 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Diagnostics;
 
 
-namespace MyShaderAnalysis.readers01 {
+namespace MyShaderAnalysis.vcsparsing01 {
 
     public class ShaderReader01 {
 
         const string ANALYSIS_DIR = @"X:\checkouts\ValveResourceFormat\files_under_analysis";
         byte[] zstdDictionary;
-        DataReader01 datareader;
+        DataReaderOld01 datareader;
         public string filepath;
 
         DataPart01 headerData;
@@ -24,7 +20,7 @@ namespace MyShaderAnalysis.readers01 {
 
         public ShaderReader01(string filepath) {
             this.filepath = filepath;
-            datareader = new DataReader01(File.ReadAllBytes(filepath));
+            datareader = new DataReaderOld01(File.ReadAllBytes(filepath));
             zstdDictionary = File.ReadAllBytes(ANALYSIS_DIR + @"\zstdictionary_2bc2fa87.dat");
             // zstdDictionary = File.ReadAllBytes(ANALYSIS_DIR + @"\zstdictionary_FALSE.dat");
             // zstdDictionary = File.ReadAllBytes(ANALYSIS_DIR + @"\zstdictionary_FALSE3.dat");
@@ -95,9 +91,9 @@ namespace MyShaderAnalysis.readers01 {
         }
 
 
-        public DataReader01 getZframeDataReader(int id) {
+        public DataReaderOld01 getZframeDataReader(int id) {
             byte[] zframedatabytes = zFrames[id].DecompressFrame(zstdDictionary);
-            return new DataReader01(zframedatabytes);
+            return new DataReaderOld01(zframedatabytes);
         }
 
 

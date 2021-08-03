@@ -1,18 +1,20 @@
+using MyShaderAnalysis.utilhelpers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using ZstdSharp;
-using static MyShaderAnalysis.vcsparsing.UtilHelpers;
+using static MyShaderAnalysis.vcsparsing02.UtilHelpers02;
 
-namespace MyShaderAnalysis.vcsparsing {
+
+namespace MyShaderAnalysis.vcsparsing02 {
 
     public enum FILETYPE {
         unknown, any, features_file, vs_file, ps_file, gs_file, psrs_file
     };
 
-    public class ShaderFile : DataReader {
+    public class ShaderFile02 : DataReader02 {
         string filenamepath;
         string filename;
         private FILETYPE vcsFiletype = FILETYPE.unknown;
@@ -28,7 +30,7 @@ namespace MyShaderAnalysis.vcsparsing {
         List<SymbolsBlock> symbolBlocks = new();
         Dictionary<long, int> zframesLookup = new(); // (frameID to offset)
 
-        public ShaderFile(string filenamepath) : base(File.ReadAllBytes(filenamepath)) {
+        public ShaderFile02(string filenamepath) : base(File.ReadAllBytes(filenamepath)) {
             this.filenamepath = filenamepath;
             filename = Path.GetFileName(filenamepath);
             vcsFiletype = GetVcsFileType(filenamepath);
@@ -141,7 +143,7 @@ namespace MyShaderAnalysis.vcsparsing {
             string outputFilename = GetZframeTxtFilename((uint) zframeId, filename);
             string outputFilenamepath = @$"{outputdir}\{outputFilename}";
             byte[] uncompressedZframe = GetDecompressedZFrameByIndex(zframeIndex);
-            DataReaderZFrameByteAnalysis zFrameParser = new(uncompressedZframe, vcsFiletype);
+            DataReaderZFrameByteAnalysis02 zFrameParser = new(uncompressedZframe, vcsFiletype);
             Debug.WriteLine($"writing to {outputFilenamepath}");
             StreamWriter sw = new(outputFilenamepath);
             zFrameParser.ConfigureWriteToFile(sw, true);
@@ -163,7 +165,7 @@ namespace MyShaderAnalysis.vcsparsing {
             string outputFilenamepath = @$"{outputDir}\{outputFilename}";
 
             byte[] uncompressedZframe = GetDecompressedZFrameByIndex(zframeIndex);
-            DataReaderZFrameByteAnalysis zFrameParser = new(uncompressedZframe, vcsFiletype);
+            DataReaderZFrameByteAnalysis02 zFrameParser = new(uncompressedZframe, vcsFiletype);
 
             Debug.WriteLine($"writing to {outputFilenamepath}");
             StreamWriter sw = new(outputFilenamepath);
@@ -231,11 +233,7 @@ namespace MyShaderAnalysis.vcsparsing {
     }
 
 
-    public class ShaderParserException : Exception {
-        public ShaderParserException() { }
-        public ShaderParserException(string message) : base(message) { }
-        public ShaderParserException(string message, Exception innerException) : base(message, innerException) { }
-    }
+
 
 
 }

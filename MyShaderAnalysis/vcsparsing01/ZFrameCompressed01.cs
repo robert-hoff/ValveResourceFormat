@@ -1,10 +1,9 @@
 using System;
 using ZstdSharp;
-using MyShaderAnalysis.vcsparsing;
+using MyShaderAnalysis.utilhelpers;
 
 
-
-namespace MyShaderAnalysis.readers01 {
+namespace MyShaderAnalysis.vcsparsing01 {
 
     public class ZFrameCompressed01 : DataPart01 {
 

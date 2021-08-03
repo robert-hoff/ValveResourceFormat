@@ -1,13 +1,15 @@
 using System;
 using System.Collections.Generic;
-using static MyShaderAnalysis.vcsparsing.UtilHelpers;
+using MyShaderAnalysis.utilhelpers;
+using static MyShaderAnalysis.vcsparsing02.UtilHelpers02;
 
-namespace MyShaderAnalysis.vcsparsing {
 
-    public class DataReaderVcsByteAnalysis : DataReader {
+namespace MyShaderAnalysis.vcsparsing02 {
+
+    public class DataReaderVcsByteAnalysis02 : DataReader02 {
         FILETYPE filetype;
 
-        public DataReaderVcsByteAnalysis(byte[] data, FILETYPE filetype) : base(data) {
+        public DataReaderVcsByteAnalysis02(byte[] data, FILETYPE filetype) : base(data) {
             this.filetype = filetype;
 
         }

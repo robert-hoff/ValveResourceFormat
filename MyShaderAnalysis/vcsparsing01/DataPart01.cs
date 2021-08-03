@@ -1,27 +1,23 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace MyShaderAnalysis.readers01 {
+namespace MyShaderAnalysis.vcsparsing01 {
 
 
     public class DataPart01 {
 
         public int length;
-        public DataReader01 datareader;
+        public DataReaderOld01 datareader;
 
 
         public DataPart01(byte[] databytes) {
             this.length = databytes.Length;
-            this.datareader = new DataReader01(databytes, 0);
+            this.datareader = new DataReaderOld01(databytes, 0);
         }
 
         public DataPart01(byte[] databytes, int offset) {
             this.length = databytes.Length;
-            this.datareader = new DataReader01(databytes, offset);
+            this.datareader = new DataReaderOld01(databytes, offset);
         }
 
         public DataPart01(byte[] databytes, int offset, int length) {
@@ -29,7 +25,7 @@ namespace MyShaderAnalysis.readers01 {
                 throw new Exception("this doesn't make any sense");
             }
             this.length = length;
-            this.datareader = new DataReader01(databytes, offset);
+            this.datareader = new DataReaderOld01(databytes, offset);
         }
 
 

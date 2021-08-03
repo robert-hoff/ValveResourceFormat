@@ -1,28 +1,28 @@
 using System.Diagnostics;
 using System.IO;
-using static MyShaderAnalysis.vcsparsing.UtilHelpers;
+using static MyShaderAnalysis.vcsparsing02.UtilHelpers02;
 
 
-namespace MyShaderAnalysis.vcsparsing {
+namespace MyShaderAnalysis.vcsparsing02 {
 
-    public class ShaderFileByteAnalysis {
+    public class ShaderFileByteAnalysis02 {
 
         string filenamepath;
         string filename;
         private FILETYPE vcsFiletype = FILETYPE.unknown;
         byte[] databytes;
-        ShaderFile shaderFile;
+        ShaderFile02 shaderFile;
 
-        public ShaderFileByteAnalysis(string filenamepath) {
+        public ShaderFileByteAnalysis02(string filenamepath) {
             this.filenamepath = filenamepath;
             filename = Path.GetFileName(filenamepath);
-            vcsFiletype = ShaderFile.GetVcsFileType(filenamepath);
+            vcsFiletype = ShaderFile02.GetVcsFileType(filenamepath);
             databytes = File.ReadAllBytes(filenamepath);
-            shaderFile = new ShaderFile(filenamepath);
+            shaderFile = new ShaderFile02(filenamepath);
         }
 
         public void PrintZFrameByteAnalysis(int zframeId) {
-            DataReaderZFrameByteAnalysis zframeByteAnalysis = getZFrameByteAnalysisReader(zframeId);
+            DataReaderZFrameByteAnalysis02 zframeByteAnalysis = getZFrameByteAnalysisReader(zframeId);
             if (zframeByteAnalysis == null) {
                 return;
             }
@@ -44,7 +44,7 @@ namespace MyShaderAnalysis.vcsparsing {
                 Debug.WriteLine($"parsing {RemoveBaseDir(filenamepath)} frames [{min},{numberToParse})");
             }
             for (int i = min; i < numberToParse; i++) {
-                DataReaderZFrameByteAnalysis zframeByteAnalysis = getZFrameByteAnalysisReader(i);
+                DataReaderZFrameByteAnalysis02 zframeByteAnalysis = getZFrameByteAnalysisReader(i);
                 zframeByteAnalysis.DisableOutput = disableOutput;
                 if (!disableStatus) {
                     Debug.WriteLine($"{RemoveBaseDir(filenamepath)}-ZFRAME{i:d03}");
@@ -53,26 +53,26 @@ namespace MyShaderAnalysis.vcsparsing {
             }
         }
 
-        private DataReaderZFrameByteAnalysis getZFrameByteAnalysisReader(int zframeIndex) {
+        private DataReaderZFrameByteAnalysis02 getZFrameByteAnalysisReader(int zframeIndex) {
             int zcount = shaderFile.GetZFrameCount();
             if (zframeIndex > zcount-1) {
                 Debug.WriteLine($"zframe index out of range ({zframeIndex}). Max index = {zcount-1}");
                 return null;
             }
             byte[] zframeDatabytes = shaderFile.GetDecompressedZFrameByIndex(zframeIndex);
-            DataReaderZFrameByteAnalysis zframeByteAnalysis = new(zframeDatabytes, vcsFiletype);
+            DataReaderZFrameByteAnalysis02 zframeByteAnalysis = new(zframeDatabytes, vcsFiletype);
             return zframeByteAnalysis;
         }
 
         public void PrintByteAnalysis() {
-            DataReaderVcsByteAnalysis vcsByteAnalysis = new(databytes, vcsFiletype);
+            DataReaderVcsByteAnalysis02 vcsByteAnalysis = new(databytes, vcsFiletype);
             Debug.WriteLine($"parsing {RemoveBaseDir(filenamepath)}");
             Debug.WriteLine($"");
             vcsByteAnalysis.ParseFile();
         }
 
         public void ParseFileDisableOutput() {
-            DataReaderVcsByteAnalysis vcsByteAnalysis = new(databytes, vcsFiletype);
+            DataReaderVcsByteAnalysis02 vcsByteAnalysis = new(databytes, vcsFiletype);
             vcsByteAnalysis.DisableOutput = true;
             Debug.WriteLine($"parsing {RemoveBaseDir(filenamepath)}");
             vcsByteAnalysis.ParseFile();
@@ -82,7 +82,7 @@ namespace MyShaderAnalysis.vcsparsing {
             string outputFilename = filename[0..^4] + "-analysis.html";
             string outputFilenamepath = @$"{outputDir}\{outputFilename}";
             StreamWriter sw = new(outputFilenamepath);
-            DataReaderVcsByteAnalysis vcsByteAnalysis = new(databytes, vcsFiletype);
+            DataReaderVcsByteAnalysis02 vcsByteAnalysis = new(databytes, vcsFiletype);
             vcsByteAnalysis.ConfigureWriteToFile(sw, true);
             vcsByteAnalysis.ConfigureWriteFileAsHtml(filename);
             Debug.WriteLine($"writing to {outputFilenamepath}");
@@ -100,7 +100,7 @@ namespace MyShaderAnalysis.vcsparsing {
             StreamWriter sw = new(outputFilenamepath);
             Debug.WriteLine($"parsing {filenamepath}");
             Debug.WriteLine($"writing to {outputFilenamepath}");
-            DataReaderVcsByteAnalysis vcsByteAnalysis = new(databytes, vcsFiletype);
+            DataReaderVcsByteAnalysis02 vcsByteAnalysis = new(databytes, vcsFiletype);
             vcsByteAnalysis.ConfigureWriteToFile(sw, true);
             sw.WriteLine($"parsing {RemoveBaseDir(filenamepath)}");
             sw.WriteLine("");

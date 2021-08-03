@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using MyShaderAnalysis.vcsparsing;
+using MyShaderAnalysis.vcsparsing02;
 
 // using static MyShaderAnalysis.utilhelpers.UtilHelpers;
 
@@ -9,7 +9,7 @@ using MyShaderAnalysis.vcsparsing;
 namespace MyShaderAnalysis {
 
 
-    class ShaderAnalysis {
+    class ShaderAnalysis03 {
 
         const string PCGL_DIR_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders-core\vfx";
         const string PCGL_DIR_NOT_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders\vfx";
@@ -21,13 +21,13 @@ namespace MyShaderAnalysis {
 
         public static void RunTrials() {
 
-            // ParseVcsFiles();
+            ParseVcsFiles();
             // ParseZFrames();
             // WriteZFramesToFile();
             // WriteAllVcsFilesToHtml();
             // WriteAllFilesToHtml();
             // StaticAnalysisSelectedSets();
-            ProblemIllustration();
+            // ProblemIllustration();
         }
 
 
@@ -42,7 +42,7 @@ namespace MyShaderAnalysis {
         static void ProblemIllustration() {
             string filenamepath = PCGL_DIR_NOT_CORE + @"\cables_pcgl_30_features.vcs";
             // string filenamepath = PCGL_DIR_NOT_CORE + @"\cables_pcgl_30_vs.vcs";
-            ShaderFile shaderFile = new(filenamepath);
+            ShaderFile02 shaderFile = new(filenamepath);
             StreamWriter sw = new(OUTPUT_DIR+@"\testfile.txt");
             shaderFile.ConfigureWriteToFile(sw, true);
             shaderFile.PrintDatabyteAnalysis();
@@ -79,9 +79,9 @@ namespace MyShaderAnalysis {
 
             foreach (var filename in filenames) {
                 string filenamepath = @$"{directoryToUse}\{filename}";
-                ShaderFileByteAnalysis shaderFileByteAnalysis = new(filenamepath);
+                ShaderFileByteAnalysis02 shaderFileByteAnalysis = new(filenamepath);
                 shaderFileByteAnalysis.WriteByteAnalysisToHtml(OUTPUT_DIR);
-                ShaderFile shaderFile = new(filenamepath);
+                ShaderFile02 shaderFile = new(filenamepath);
                 shaderFile.WriteAllZFramesToHtml(OUTPUT_DIR, true);
             }
         }
@@ -108,7 +108,7 @@ namespace MyShaderAnalysis {
             // string filenamepath = PCGL_DIR_CORE + @"\generic_light_pcgl_30_vs.vcs";
             string filenamepath = PCGL_DIR_CORE + @"\generic_light_pcgl_30_ps.vcs";
 
-            ShaderFile shaderFile = new(filenamepath);
+            ShaderFile02 shaderFile = new(filenamepath);
             // shaderFile.WriteZFrameToFile(0, OUTPUT_DIR);
             // shaderFile.WriteZFrameToHtml(0, OUTPUT_DIR, true);
             shaderFile.WriteAllZFramesToHtml(OUTPUT_DIR, true);
@@ -167,12 +167,12 @@ namespace MyShaderAnalysis {
 
 
         static void PrintZFrameByteAnalysis(string filenamepath, int zframeId) {
-            ShaderFileByteAnalysis shaderFile = new(filenamepath);
+            ShaderFileByteAnalysis02 shaderFile = new(filenamepath);
             shaderFile.PrintZFrameByteAnalysis(zframeId);
         }
 
         static void ParseZFrameRange(string filenamepath, int min, int max, bool disableOutput, bool disableStatus) {
-            ShaderFileByteAnalysis shaderFile = new(filenamepath);
+            ShaderFileByteAnalysis02 shaderFile = new(filenamepath);
             shaderFile.ParseZFramesRange(min, max, disableOutput, disableStatus);
         }
 
@@ -191,17 +191,17 @@ namespace MyShaderAnalysis {
 
 
         static void PrintVcsByteAnalysis(string filenamepath) {
-            ShaderFileByteAnalysis shaderFile = new(filenamepath);
+            ShaderFileByteAnalysis02 shaderFile = new(filenamepath);
             shaderFile.PrintByteAnalysis();
         }
 
         static void WriteVcsByteAnalysisToHtml(string filenamepath) {
-            ShaderFileByteAnalysis shaderFile = new(filenamepath);
+            ShaderFileByteAnalysis02 shaderFile = new(filenamepath);
             shaderFile.WriteByteAnalysisToHtml(OUTPUT_DIR);
         }
 
         static void WriteVcsByteAnalysisToFile(string filenamepath) {
-            ShaderFileByteAnalysis shaderFile = new(filenamepath);
+            ShaderFileByteAnalysis02 shaderFile = new(filenamepath);
             shaderFile.WriteByteAnalysisToFile(OUTPUT_DIR);
         }
 
@@ -209,7 +209,7 @@ namespace MyShaderAnalysis {
         static void ParseVcsFilesDisableOutput() {
             List<string> files = GetVcsFiles(PCGL_DIR_CORE, null, FILETYPE.any, -1);
             foreach (string s in files) {
-                ShaderFileByteAnalysis shaderFile = new(s);
+                ShaderFileByteAnalysis02 shaderFile = new(s);
                 shaderFile.ParseFileDisableOutput();
             }
         }

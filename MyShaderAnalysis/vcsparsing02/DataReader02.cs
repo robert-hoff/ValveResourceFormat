@@ -2,9 +2,9 @@ using System;
 using System.Diagnostics;
 using System.IO;
 
-namespace MyShaderAnalysis.vcsparsing {
+namespace MyShaderAnalysis.vcsparsing02 {
 
-    public class DataReader {
+    public class DataReader02 {
 
         public byte[] databytes;
         public readonly int start;
@@ -12,13 +12,13 @@ namespace MyShaderAnalysis.vcsparsing {
         protected StreamWriter sw = null;
         public bool DisableOutput = false;
 
-        public DataReader(byte[] data, int start) {
+        public DataReader02(byte[] data, int start) {
             this.databytes = data;
             this.start = start;
             this.offset = start;
         }
 
-        public DataReader(byte[] data) : this(data, 0) { }
+        public DataReader02(byte[] data) : this(data, 0) { }
 
         public void ResetOffset() {
             offset = start;

@@ -1,11 +1,6 @@
-using MyShaderAnalysis.readers01;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MyShaderAnalysis.vcsparsing01;
 
 namespace MyShaderAnalysis {
     class ShaderTesting01 {

@@ -1,13 +1,13 @@
-using MyValveResourceFormat.ThirdParty;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using MyShaderAnalysis.vcsparsing;
+using MyValveResourceFormat.ThirdParty;
+using MyShaderAnalysis.utilhelpers;
 
 
-namespace MyShaderAnalysis.readers01 {
-    public class DataReader01 {
+namespace MyShaderAnalysis.vcsparsing01 {
+    public class DataReaderOld01 {
 
         public byte[] databytes;
         public readonly int start;
@@ -39,12 +39,12 @@ namespace MyShaderAnalysis.readers01 {
 
 
 
-        public DataReader01(byte[] data) {
+        public DataReaderOld01(byte[] data) {
             this.databytes = data;
             this.start = 0;
             this.offset = 0;
         }
-        public DataReader01(byte[] data, int start) {
+        public DataReaderOld01(byte[] data, int start) {
             this.databytes = data;
             this.start = start;
             this.offset = start;
