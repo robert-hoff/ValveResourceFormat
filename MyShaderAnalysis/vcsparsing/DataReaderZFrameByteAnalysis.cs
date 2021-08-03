@@ -4,15 +4,15 @@ using System.Diagnostics;
 using System.IO;
 using static MyShaderAnalysis.vcsparsing.UtilHelpers;
 
-namespace MyShaderAnalysis.vcsparsing02 {
+namespace MyShaderAnalysis.vcsparsing {
 
-    public class DataReaderZFrameByteAnalysis : DataReader02 {
+    public class DataReaderZFrameByteAnalysis : DataReader {
 
         FILETYPE filetype;
 
         public DataReaderZFrameByteAnalysis(byte[] data, FILETYPE filetype) : base(data) {
             if (filetype == FILETYPE.features_file) {
-                throw new ShaderParserException02("file type cannot be features, as they don't contain any zframes");
+                throw new ShaderParserException("file type cannot be features, as they don't contain any zframes");
             }
             this.filetype = filetype;
         }
@@ -44,7 +44,7 @@ namespace MyShaderAnalysis.vcsparsing02 {
                 // 1,2,4,5,8,10,12,16,20,40,48,80,120,160
                 int blockCountInput = ReadInt16AtPosition();
                 ShowByteCount("Some kind of state summary (uniforms/variables input?)");
-                ShowBytes(2, false);
+                ShowBytes(2, breakLine: false);
                 TabComment($"nr of data-blocks ({blockCountInput})");
                 ShowBytes(blockCountInput * 2);
                 OutputWriteLine("");
@@ -52,7 +52,7 @@ namespace MyShaderAnalysis.vcsparsing02 {
 
             int blockCount = ReadInt16AtPosition();
             ShowByteCount("Data blocks");
-            ShowBytes(2, false);
+            ShowBytes(2, breakLine: false);
             TabComment($"nr of data-blocks ({blockCount})");
             OutputWriteLine("");
             for (int i = 0; i < blockCount; i++) {
@@ -62,23 +62,23 @@ namespace MyShaderAnalysis.vcsparsing02 {
 
             ShowByteCount("Some kind of state summary (uniforms/variables output?)");
             int blockCountOutput = ReadInt16AtPosition();
-            ShowBytes(2, false);
+            ShowBytes(2, breakLine: false);
             TabComment($"nr of data-blocks ({blockCountOutput})", 1);
             ShowBytes(blockCountOutput * 2);
             BreakLine();
 
             ShowByteCount();
-            ShowBytes(4, false);
+            ShowBytes(4, breakLine: false);
             int bin0 = databytes[offset - 4];
             int bin1 = databytes[offset - 3];
             TabComment($"possible flags {Convert.ToString(bin0, 2).PadLeft(8, '0')} {Convert.ToString(bin1, 2).PadLeft(8, '0')}", 7);
-            ShowBytes(1, false);
+            ShowBytes(1, breakLine: false);
             TabComment("values seen 0,1", 16);
 
-            ShowBytes(4, false);
+            ShowBytes(4, breakLine: false);
             uint glslSourceCount = ReadUIntAtPosition(offset - 4);
             TabComment($"glsl source files ({glslSourceCount})", 7);
-            ShowBytes(1, false);
+            ShowBytes(1, breakLine: false);
             TabComment("values seen 0,1", 16);
             BreakLine();
 
@@ -97,27 +97,27 @@ namespace MyShaderAnalysis.vcsparsing02 {
             //  End blocks for ps and psrs files
             if (filetype == FILETYPE.ps_file || filetype == FILETYPE.psrs_file) {
                 ShowByteCount();
-                ShowBytes(4, false);
+                ShowBytes(4, breakLine: false);
                 int nrEndBlocks = ReadIntAtPosition(offset - 4);
                 TabComment($"nr of end blocks ({nrEndBlocks})");
                 OutputWriteLine("");
 
                 for (int i = 0; i < nrEndBlocks; i++) {
                     ShowByteCount($"End-block[{i}]");
-                    ShowBytes(4, false);
+                    ShowBytes(4, breakLine: false);
                     int blockId = ReadInt16AtPosition(offset - 4);
                     TabComment($"blockId ref ({blockId})");
-                    ShowBytes(4, false);
+                    ShowBytes(4, breakLine: false);
                     TabComment("always 0");
-                    ShowBytes(4, false);
+                    ShowBytes(4, breakLine: false);
                     int sourceReference = ReadInt16AtPosition(offset - 4);
                     TabComment($"source ref ({sourceReference})");
 
-                    ShowBytes(4, false);
+                    ShowBytes(4, breakLine: false);
                     uint glslPointer = ReadUIntAtPosition(offset - 4);
                     TabComment($"glsl source pointer ({glslPointer})");
 
-                    ShowBytes(3, false);
+                    ShowBytes(3, breakLine: false);
                     bool hasData0 = databytes[offset - 3] == 0;
                     bool hasData1 = databytes[offset - 2] == 0;
                     bool hasData2 = databytes[offset - 1] == 0;
@@ -196,7 +196,7 @@ namespace MyShaderAnalysis.vcsparsing02 {
 
         public void PrintIntWithValue() {
             int intval = ReadIntAtPosition(offset);
-            ShowBytes(4, false);
+            ShowBytes(4, breakLine: false);
             TabComment($"{intval}");
         }
 
@@ -213,7 +213,7 @@ namespace MyShaderAnalysis.vcsparsing02 {
             int arg2 = ReadIntAtPosition(offset + 8);
 
             if (arg0 == 0 && arg1 == 0 && arg2 == 0) {
-                ShowBytes(12, false);
+                ShowBytes(12, breakLine: false);
                 TabComment($"data-block[{blockId}]");
                 return 0;
             }
@@ -249,7 +249,7 @@ namespace MyShaderAnalysis.vcsparsing02 {
 
         public void ShowZFrameHeaderUpdated() {
             ShowByteCount("Frame header");
-            ShowBytes(2, false);
+            ShowBytes(2, breakLine: false);
             uint nrArgs = ReadUInt16AtPosition(offset - 2);
             TabComment($"nr of arguments ({nrArgs})");
             OutputWriteLine("");
@@ -324,7 +324,7 @@ namespace MyShaderAnalysis.vcsparsing02 {
             if (offset1 == 0) {
                 return 0;
             }
-            ShowBytes(4, false);
+            ShowBytes(4, breakLine: false);
             TabComment("always 3");
             PrintIntWithValue();
             int sourceSize = ReadIntAtPosition(offset - 4) - 1; // one less because of null-term
@@ -352,7 +352,7 @@ namespace MyShaderAnalysis.vcsparsing02 {
 
         public void ShowZAllEndBlocksTypeVs() {
             ShowByteCount();
-            ShowBytes(4, false);
+            ShowBytes(4, breakLine: false);
             int nr_end_blocks = ReadIntAtPosition(offset - 4);
             TabComment($"nr end blocks ({nr_end_blocks})");
             BreakLine();
@@ -363,7 +363,7 @@ namespace MyShaderAnalysis.vcsparsing02 {
 
         private void EndOfFile() {
             if (offset != databytes.Length) {
-                throw new ShaderParserException02("End of file not reached!");
+                throw new ShaderParserException("End of file not reached!");
             }
             ShowByteCount();
             OutputWriteLine("EOF");
@@ -375,7 +375,7 @@ namespace MyShaderAnalysis.vcsparsing02 {
             uint murmur32 = ReadUIntAtPosition(offset + nulltermstr.Length + 1);
             uint murmurCheck = MurmurHashPiSeed(nulltermstr.ToLower());
             if (murmur32 != murmurCheck) {
-                throw new ShaderParserException02("not a murmur string!");
+                throw new ShaderParserException("not a murmur string!");
             }
             Comment($"{nulltermstr} | 0x{murmur32:x08}");
             ShowBytes(nulltermstr.Length + 1 + 4);

@@ -80,13 +80,13 @@ namespace MyShaderAnalysis.vcsparsing {
             ShowBytes(len_name_description + 1);
             BreakLine();
             ShowByteCount();
-            uint arg1 = ReadUIntAtPosition();
+            uint arg1 = ReadUIntAtPosition(0);
             uint arg2 = ReadUIntAtPosition(4);
             uint arg3 = ReadUIntAtPosition(8);
             uint arg4 = ReadUIntAtPosition(12);
             ShowBytes(16, 4, breakLine: false);
             TabComment($"({arg1},{arg2},{arg3},{arg4})");
-            uint arg5 = ReadUIntAtPosition();
+            uint arg5 = ReadUIntAtPosition(0);
             uint arg6 = ReadUIntAtPosition(4);
             uint arg7 = ReadUIntAtPosition(8);
             uint arg8 = ReadUIntAtPosition(12);
@@ -177,7 +177,7 @@ namespace MyShaderAnalysis.vcsparsing {
                 }
                 ShowBytes(64);
             }
-            int arg0 = ReadIntAtPosition();
+            int arg0 = ReadIntAtPosition(0);
             int arg1 = ReadIntAtPosition(4);
             int arg2 = ReadIntAtPosition(8);
             int arg3 = ReadIntAtPosition(12);
@@ -293,11 +293,9 @@ namespace MyShaderAnalysis.vcsparsing {
                 OutputWriteLine($"// {name3}");
             }
             ShowBytes(64);
-
             uint paramType = ReadUIntAtPosition();
             OutputWriteLine($"// param-type, 6 or 7 lead dynamic-exp. Known values: 0,1,5,6,7,8,10,11,13");
             ShowBytes(4);
-
             if (paramType == 6 || paramType == 7) {
                 int dynLength = ReadIntAtPosition();
                 ShowBytes(4, breakLine: false);
@@ -306,74 +304,63 @@ namespace MyShaderAnalysis.vcsparsing {
                 ShowBytes(dynLength, breakLine: false);
                 TabComment("dynamic expression", 1);
             }
-
             // 6 int parameters follow the dynamic expression
             ShowBytes(24, 4);
-
             // a rarely seen file reference
             string name4 = ReadNullTermStringAtPosition();
             if (name4.Length > 0) {
                 OutputWriteLine($"// {name4}");
             }
             ShowBytes(64);
-
             // float or int arguments
-            int a0 = ReadIntAtPosition();
+            int a0 = ReadIntAtPosition(0);
             int a1 = ReadIntAtPosition(4);
             int a2 = ReadIntAtPosition(8);
             int a3 = ReadIntAtPosition(12);
             ShowBytes(16, breakLine: false);
             TabComment($"ints   ({Format(a0)},{Format(a1)},{Format(a2)},{Format(a3)})", 10);
-
-            a0 = ReadIntAtPosition();
+            a0 = ReadIntAtPosition(0);
             a1 = ReadIntAtPosition(4);
             a2 = ReadIntAtPosition(8);
             a3 = ReadIntAtPosition(12);
             ShowBytes(16, breakLine: false);
             TabComment($"ints   ({Format(a0)},{Format(a1)},{Format(a2)},{Format(a3)})", 10);
-
-            a0 = ReadIntAtPosition();
+            a0 = ReadIntAtPosition(0);
             a1 = ReadIntAtPosition(4);
             a2 = ReadIntAtPosition(8);
             a3 = ReadIntAtPosition(12);
             ShowBytes(16, breakLine: false);
             TabComment($"ints   ({Format(a0)},{Format(a1)},{Format(a2)},{Format(a3)})", 10);
-
-            float f0 = ReadFloatAtPosition();
+            float f0 = ReadFloatAtPosition(0);
             float f1 = ReadFloatAtPosition(4);
             float f2 = ReadFloatAtPosition(8);
             float f3 = ReadFloatAtPosition(12);
             ShowBytes(16, breakLine: false);
             TabComment($"floats ({Format(f0)},{Format(f1)},{Format(f2)},{Format(f3)})", 10);
-
-            f0 = ReadFloatAtPosition();
+            f0 = ReadFloatAtPosition(0);
             f1 = ReadFloatAtPosition(4);
             f2 = ReadFloatAtPosition(8);
             f3 = ReadFloatAtPosition(12);
             ShowBytes(16, breakLine: false);
             TabComment($"floats ({Format(f0)},{Format(f1)},{Format(f2)},{Format(f3)})", 10);
-
-            f0 = ReadFloatAtPosition();
+            f0 = ReadFloatAtPosition(0);
             f1 = ReadFloatAtPosition(4);
             f2 = ReadFloatAtPosition(8);
             f3 = ReadFloatAtPosition(12);
             ShowBytes(16, breakLine: false);
             TabComment($"floats ({Format(f0)},{Format(f1)},{Format(f2)},{Format(f3)})", 10);
-
-            a0 = ReadIntAtPosition();
+            a0 = ReadIntAtPosition(0);
             a1 = ReadIntAtPosition(4);
             a2 = ReadIntAtPosition(8);
             a3 = ReadIntAtPosition(12);
             ShowBytes(16, breakLine: false);
             TabComment($"ints   ({Format(a0)},{Format(a1)},{Format(a2)},{Format(a3)})", 10);
-
-            a0 = ReadIntAtPosition();
+            a0 = ReadIntAtPosition(0);
             a1 = ReadIntAtPosition(4);
             a2 = ReadIntAtPosition(8);
             a3 = ReadIntAtPosition(12);
             ShowBytes(16, breakLine: false);
             TabComment($"ints   ({Format(a0)},{Format(a1)},{Format(a2)},{Format(a3)})", 10);
-
             // a command word, or pair of these
             string name5 = ReadNullTermStringAtPosition();
             if (name5.Length > 0) {
@@ -500,13 +487,11 @@ namespace MyShaderAnalysis.vcsparsing {
                 zFrameIndexes.Add(zframeId);
             }
             BreakLine();
-
             if (shortenOutput && zFrameCount > 10) {
                 Comment("rest of data contains compressed zframes");
                 BreakLine();
                 return;
             }
-
             ShowByteCount("zFrame file offsets");
             foreach (uint zframeId in zFrameIndexes) {
                 uint zframe_offset = ReadUIntAtPosition();
