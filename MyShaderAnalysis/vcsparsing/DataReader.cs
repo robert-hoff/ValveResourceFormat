@@ -30,11 +30,12 @@ namespace MyShaderAnalysis.vcsparsing {
                 sw.Write(text);
             }
         }
+
+
+
         public void OutputWriteLine(string text) {
             OutputWrite(text + "\n");
         }
-
-
         public byte ReadByte() {
             return databytes[offset++];
         }

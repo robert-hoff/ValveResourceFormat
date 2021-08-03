@@ -30,7 +30,9 @@ namespace MyShaderAnalysis.vcsparsing {
         private uint zFrameCount = 0;
 
         public void PrintByteAnalysis() {
-            // DisableOutput = true;
+            // SetDisableOutput(true);
+
+
             if (filetype == FILETYPE.features_file) {
                 PrintVcsFeaturesHeader();
             } else if (filetype == FILETYPE.vs_file || filetype == FILETYPE.ps_file
@@ -94,7 +96,7 @@ namespace MyShaderAnalysis.vcsparsing {
             BreakLine();
 
             ShowByteCount();
-            uint arg1 = ReadUIntAtPosition(offset);
+            uint arg1 = ReadUIntAtPosition();
             uint arg2 = ReadUIntAtPosition(offset + 4);
             uint arg3 = ReadUIntAtPosition(offset + 8);
             uint arg4 = ReadUIntAtPosition(offset + 12);
@@ -128,16 +130,16 @@ namespace MyShaderAnalysis.vcsparsing {
 
             ShowByteCount();
             for (int i = 0; i < nr_of_arguments; i++) {
-                string default_name = ReadNullTermStringAtPosition(offset);
+                string default_name = ReadNullTermStringAtPosition();
 
                 Comment($"{default_name}");
                 ShowBytes(128);
-                uint has_s_argument = ReadUIntAtPosition(offset);
+                uint has_s_argument = ReadUIntAtPosition();
                 ShowBytes(4);
 
                 if (has_s_argument > 0) {
                     uint sSymbolArgValue = ReadUIntAtPosition(offset + 64);
-                    string sSymbolName = ReadNullTermStringAtPosition(offset);
+                    string sSymbolName = ReadNullTermStringAtPosition();
                     Comment($"{sSymbolName}");
                     ShowBytes(68);
                 }
@@ -619,6 +621,8 @@ namespace MyShaderAnalysis.vcsparsing {
             OutputWriteLine("EOF");
         }
     }
+
+
 }
 
 

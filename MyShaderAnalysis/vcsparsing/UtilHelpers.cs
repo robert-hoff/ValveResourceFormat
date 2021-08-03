@@ -205,8 +205,6 @@ namespace MyShaderAnalysis.vcsparsing {
 
 
     }
-
-
 }
 
 

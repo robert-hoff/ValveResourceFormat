@@ -20,11 +20,40 @@ namespace MyShaderAnalysis {
 
         public static void RunTrials() {
 
-             ParseVcsFiles();
-            // ParseZFrames();
-            // WriteZFramesToFile();
             // StaticAnalysisSelectedSets();
+            // WriteZFramesToFile();
+            ParseZFrames();
+            // ParseVcsFiles();
         }
+
+
+
+
+
+        static void ParseZFrames() {
+
+
+            IncrementValue1 myinc = new();
+
+            testOverload(myinc + 10);
+
+
+
+            Debug.WriteLine(myinc);
+
+
+
+        }
+
+
+        static void testOverload(IncrementValue1 sdf) {
+            Debug.WriteLine($"hello");
+        }
+
+
+
+
+
 
 
         static void ParseVcsFiles() {
@@ -44,17 +73,13 @@ namespace MyShaderAnalysis {
             // string filenamepath = PCGL_DIR_NOT_CORE + @"\spritecard_pcgl_30_features.vcs";
 
 
-
-            // ShowVcsByteAnalysis(filenamepath);
+            ShowVcsByteAnalysis(filenamepath);
             // WriteAllVcsFilesToTxt();
             // WriteVcsByteAnalysisToTxt(filenamepath);
             // WriteAllVcsFilesToHtml();
             // WriteVcsByteAnalysisToHtml(filenamepath);
-            ParseAllVcsFilesDisableOutput();
+            // ParseAllVcsFilesDisableOutput();
         }
-
-
-
 
         static void ShowVcsByteAnalysis(string filenamepath) {
             Debug.WriteLine($"parsing {RemoveBaseDir(filenamepath)}\n");
@@ -107,6 +132,8 @@ namespace MyShaderAnalysis {
          */
         static void ParseAllVcsFilesDisableOutput() {
             List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
+            int filesParsed = 0;
+            int[] typesParsed = new int[10];
             foreach (string filenamepath in vcsFiles) {
                 Debug.Write($"parsing {RemoveBaseDir(filenamepath)}");
                 DataReaderVcsByteAnalysis shaderByteAnalysis = new(filenamepath);
@@ -114,7 +141,15 @@ namespace MyShaderAnalysis {
                 shaderByteAnalysis.SetDisableOutput(true);
                 shaderByteAnalysis.PrintByteAnalysis();
                 Debug.WriteLine($" [SUCCESS]");
+                typesParsed[(int) GetVcsFileType(filenamepath)]++;
+                filesParsed++;
             }
+            Debug.WriteLine($"{filesParsed} files were parsed. " +
+                $"features({typesParsed[(int)FILETYPE.features_file]}), " +
+                $"vs({typesParsed[(int)FILETYPE.vs_file]}), " +
+                $"ps({typesParsed[(int)FILETYPE.ps_file]}), " +
+                $"gs({typesParsed[(int)FILETYPE.gs_file]}), " +
+                $"psrs({typesParsed[(int)FILETYPE.psrs_file]})");
         }
 
 

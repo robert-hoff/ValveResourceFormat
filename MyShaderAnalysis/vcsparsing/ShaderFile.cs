@@ -7,12 +7,15 @@ using System.Threading.Tasks;
 namespace MyShaderAnalysis.vcsparsing {
 
 
+
+
     public class ShaderFile {
 
 
 
 
     }
+
 
 
 
@@ -30,7 +33,6 @@ namespace MyShaderAnalysis.vcsparsing {
     public enum FILETYPE {
         unknown, any, features_file, vs_file, ps_file, gs_file, psrs_file
     };
-
 
 }
 
