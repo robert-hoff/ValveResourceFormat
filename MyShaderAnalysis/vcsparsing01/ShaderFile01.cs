@@ -1,8 +1,6 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using MyShaderAnalysis.utilhelpers;
-
 
 namespace MyShaderAnalysis.vcsparsing01 {
 

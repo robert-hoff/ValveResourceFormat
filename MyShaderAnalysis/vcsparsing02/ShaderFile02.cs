@@ -1,4 +1,3 @@
-using MyShaderAnalysis.utilhelpers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -6,7 +5,6 @@ using System.IO;
 using System.Linq;
 using ZstdSharp;
 using static MyShaderAnalysis.vcsparsing02.UtilHelpers02;
-
 
 namespace MyShaderAnalysis.vcsparsing02 {
 

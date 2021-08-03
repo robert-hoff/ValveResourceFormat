@@ -1,6 +1,5 @@
 using System;
 using ZstdSharp;
-using MyShaderAnalysis.utilhelpers;
 
 
 namespace MyShaderAnalysis.vcsparsing01 {

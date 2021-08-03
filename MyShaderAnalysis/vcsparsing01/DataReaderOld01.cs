@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using MyValveResourceFormat.ThirdParty;
-using MyShaderAnalysis.utilhelpers;
 
 
 namespace MyShaderAnalysis.vcsparsing01 {
