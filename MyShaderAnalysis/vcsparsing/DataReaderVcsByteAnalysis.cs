@@ -32,7 +32,6 @@ namespace MyShaderAnalysis.vcsparsing {
         public void PrintByteAnalysis() {
             // SetDisableOutput(true);
 
-
             if (filetype == FILETYPE.features_file) {
                 PrintVcsFeaturesHeader();
             } else if (filetype == FILETYPE.vs_file || filetype == FILETYPE.ps_file
@@ -47,8 +46,7 @@ namespace MyShaderAnalysis.vcsparsing {
             }
 
             ShowByteCount();
-            ShowBytes(4, false);
-            TabComment($"block DELIM always 17");
+            ShowBytes(4, $"block DELIM always 17");
             BreakLine();
             PrintAllSfBlocks();
             PrintAllCompatibilityBlocks();
@@ -73,8 +71,7 @@ namespace MyShaderAnalysis.vcsparsing {
 
         private void PrintVcsFeaturesHeader() {
             ShowByteCount("vcs file");
-            ShowBytes(4, false);
-            TabComment("\"vcs2\"");
+            ShowBytes(4, "\"vcs2\"");
             ShowBytes(4, false);
             TabComment("version 64");
             BreakLine();
@@ -97,18 +94,18 @@ namespace MyShaderAnalysis.vcsparsing {
 
             ShowByteCount();
             uint arg1 = ReadUIntAtPosition();
-            uint arg2 = ReadUIntAtPosition(offset + 4);
-            uint arg3 = ReadUIntAtPosition(offset + 8);
-            uint arg4 = ReadUIntAtPosition(offset + 12);
+            uint arg2 = ReadUIntAtPosition(4);
+            uint arg3 = ReadUIntAtPosition(8);
+            uint arg4 = ReadUIntAtPosition(12);
             ShowBytes(4);
             ShowBytes(4);
             ShowBytes(4);
             ShowBytes(4, false);
             TabComment($"({arg1},{arg2},{arg3},{arg4})");
-            uint arg5 = ReadUIntAtPosition(offset);
-            uint arg6 = ReadUIntAtPosition(offset + 4);
-            uint arg7 = ReadUIntAtPosition(offset + 8);
-            uint arg8 = ReadUIntAtPosition(offset + 12);
+            uint arg5 = ReadUIntAtPosition();
+            uint arg6 = ReadUIntAtPosition(4);
+            uint arg7 = ReadUIntAtPosition(8);
+            uint arg8 = ReadUIntAtPosition(12);
             ShowBytes(4);
             ShowBytes(4);
             ShowBytes(4);
@@ -122,7 +119,7 @@ namespace MyShaderAnalysis.vcsparsing {
             TabComment($"nr of arguments {nr_of_arguments}");
             if (has_psrs_file == 1) {
                 // NOTE nr_of_arguments is overwritten
-                nr_of_arguments = ReadIntAtPosition(offset);
+                nr_of_arguments = ReadIntAtPosition();
                 ShowBytes(4, false);
                 TabComment($"nr of arguments overriden ({nr_of_arguments})");
             }
@@ -138,7 +135,7 @@ namespace MyShaderAnalysis.vcsparsing {
                 ShowBytes(4);
 
                 if (has_s_argument > 0) {
-                    uint sSymbolArgValue = ReadUIntAtPosition(offset + 64);
+                    uint sSymbolArgValue = ReadUIntAtPosition(64);
                     string sSymbolName = ReadNullTermStringAtPosition();
                     Comment($"{sSymbolName}");
                     ShowBytes(68);
@@ -218,18 +215,18 @@ namespace MyShaderAnalysis.vcsparsing {
         private void PrintSfBlock() {
             ShowByteCount();
             for (int i = 0; i < 2; i++) {
-                string name1 = ReadNullTermStringAtPosition(offset);
+                string name1 = ReadNullTermStringAtPosition();
                 if (name1.Length > 0) {
                     Comment($"{name1}");
                 }
                 ShowBytes(64);
             }
-            int arg0 = ReadIntAtPosition(offset);
-            int arg1 = ReadIntAtPosition(offset + 4);
-            int arg2 = ReadIntAtPosition(offset + 8);
-            int arg3 = ReadIntAtPosition(offset + 12);
-            int arg4 = ReadIntAtPosition(offset + 16);
-            int arg5 = ReadIntAtPosition(offset + 20);
+            int arg0 = ReadIntAtPosition();
+            int arg1 = ReadIntAtPosition(4);
+            int arg2 = ReadIntAtPosition(8);
+            int arg3 = ReadIntAtPosition(12);
+            int arg4 = ReadIntAtPosition(16);
+            int arg5 = ReadIntAtPosition(20);
             ShowBytes(12, 4);
             ShowBytes(4, false);
             TabComment($"({arg0},{arg1},{arg2},{arg3})");
@@ -240,7 +237,7 @@ namespace MyShaderAnalysis.vcsparsing {
             int string_offset = offset;
             List<string> names = new();
             for (int i = 0; i < arg5; i++) {
-                string paramname = ReadNullTermStringAtPosition(string_offset);
+                string paramname = ReadNullTermStringAtPosition(string_offset, rel: false);
                 names.Add(paramname);
                 string_offset += paramname.Length + 1;
             }
@@ -276,7 +273,7 @@ namespace MyShaderAnalysis.vcsparsing {
         private void PrintCompatibilityBlock(int compatBlockId) {
             ShowByteCount($"COMPAT-BLOCK[{compatBlockId}]");
             ShowBytes(216);
-            string name1 = ReadNullTermStringAtPosition(offset);
+            string name1 = ReadNullTermStringAtPosition();
             OutputWriteLine($"[{offset}] {name1}");
             ShowBytes(256);
             BreakLine();
@@ -333,27 +330,27 @@ namespace MyShaderAnalysis.vcsparsing {
 
         private void PrintParameterBlock(int paramBlockId) {
             ShowByteCount($"PARAM-BLOCK[{paramBlockId}]");
-            string name1 = ReadNullTermStringAtPosition(offset);
+            string name1 = ReadNullTermStringAtPosition();
             OutputWriteLine($"// {name1}");
             ShowBytes(64);
-            string name2 = ReadNullTermStringAtPosition(offset);
+            string name2 = ReadNullTermStringAtPosition();
             if (name2.Length > 0) {
                 OutputWriteLine($"// {name2}");
             }
             ShowBytes(64);
             ShowBytes(8);
-            string name3 = ReadNullTermStringAtPosition(offset);
+            string name3 = ReadNullTermStringAtPosition();
             if (name3.Length > 0) {
                 OutputWriteLine($"// {name3}");
             }
             ShowBytes(64);
 
-            uint paramType = ReadUIntAtPosition(offset);
+            uint paramType = ReadUIntAtPosition();
             OutputWriteLine($"// param-type, 6 or 7 lead dynamic-exp. Known values: 0,1,5,6,7,8,10,11,13");
             ShowBytes(4);
 
             if (paramType == 6 || paramType == 7) {
-                int dynLength = ReadIntAtPosition(offset);
+                int dynLength = ReadIntAtPosition();
                 ShowBytes(4, false);
                 TabComment("dyn-exp len", 1);
 
@@ -365,76 +362,76 @@ namespace MyShaderAnalysis.vcsparsing {
             ShowBytes(24, 4);
 
             // a rarely seen file reference
-            string name4 = ReadNullTermStringAtPosition(offset);
+            string name4 = ReadNullTermStringAtPosition();
             if (name4.Length > 0) {
                 OutputWriteLine($"// {name4}");
             }
             ShowBytes(64);
 
             // float or int arguments
-            int a0 = ReadIntAtPosition(offset);
-            int a1 = ReadIntAtPosition(offset + 4);
-            int a2 = ReadIntAtPosition(offset + 8);
-            int a3 = ReadIntAtPosition(offset + 12);
+            int a0 = ReadIntAtPosition();
+            int a1 = ReadIntAtPosition(4);
+            int a2 = ReadIntAtPosition(8);
+            int a3 = ReadIntAtPosition(12);
             ShowBytes(16, false);
             TabComment($"ints   ({Format(a0)},{Format(a1)},{Format(a2)},{Format(a3)})", 10);
 
-            a0 = ReadIntAtPosition(offset);
-            a1 = ReadIntAtPosition(offset + 4);
-            a2 = ReadIntAtPosition(offset + 8);
-            a3 = ReadIntAtPosition(offset + 12);
+            a0 = ReadIntAtPosition();
+            a1 = ReadIntAtPosition(4);
+            a2 = ReadIntAtPosition(8);
+            a3 = ReadIntAtPosition(12);
             ShowBytes(16, false);
             TabComment($"ints   ({Format(a0)},{Format(a1)},{Format(a2)},{Format(a3)})", 10);
 
-            a0 = ReadIntAtPosition(offset);
-            a1 = ReadIntAtPosition(offset + 4);
-            a2 = ReadIntAtPosition(offset + 8);
-            a3 = ReadIntAtPosition(offset + 12);
+            a0 = ReadIntAtPosition();
+            a1 = ReadIntAtPosition(4);
+            a2 = ReadIntAtPosition(8);
+            a3 = ReadIntAtPosition(12);
             ShowBytes(16, false);
             TabComment($"ints   ({Format(a0)},{Format(a1)},{Format(a2)},{Format(a3)})", 10);
 
-            float f0 = ReadFloatAtPosition(offset);
-            float f1 = ReadFloatAtPosition(offset + 4);
-            float f2 = ReadFloatAtPosition(offset + 8);
-            float f3 = ReadFloatAtPosition(offset + 12);
+            float f0 = ReadFloatAtPosition();
+            float f1 = ReadFloatAtPosition(4);
+            float f2 = ReadFloatAtPosition(8);
+            float f3 = ReadFloatAtPosition(12);
             ShowBytes(16, false);
             TabComment($"floats ({Format(f0)},{Format(f1)},{Format(f2)},{Format(f3)})", 10);
 
-            f0 = ReadFloatAtPosition(offset);
-            f1 = ReadFloatAtPosition(offset + 4);
-            f2 = ReadFloatAtPosition(offset + 8);
-            f3 = ReadFloatAtPosition(offset + 12);
+            f0 = ReadFloatAtPosition();
+            f1 = ReadFloatAtPosition(4);
+            f2 = ReadFloatAtPosition(8);
+            f3 = ReadFloatAtPosition(12);
             ShowBytes(16, false);
             TabComment($"floats ({Format(f0)},{Format(f1)},{Format(f2)},{Format(f3)})", 10);
 
-            f0 = ReadFloatAtPosition(offset);
-            f1 = ReadFloatAtPosition(offset + 4);
-            f2 = ReadFloatAtPosition(offset + 8);
-            f3 = ReadFloatAtPosition(offset + 12);
+            f0 = ReadFloatAtPosition();
+            f1 = ReadFloatAtPosition(4);
+            f2 = ReadFloatAtPosition(8);
+            f3 = ReadFloatAtPosition(12);
             ShowBytes(16, false);
             TabComment($"floats ({Format(f0)},{Format(f1)},{Format(f2)},{Format(f3)})", 10);
 
-            a0 = ReadIntAtPosition(offset);
-            a1 = ReadIntAtPosition(offset + 4);
-            a2 = ReadIntAtPosition(offset + 8);
-            a3 = ReadIntAtPosition(offset + 12);
+            a0 = ReadIntAtPosition();
+            a1 = ReadIntAtPosition(4);
+            a2 = ReadIntAtPosition(8);
+            a3 = ReadIntAtPosition(12);
             ShowBytes(16, false);
             TabComment($"ints   ({Format(a0)},{Format(a1)},{Format(a2)},{Format(a3)})", 10);
 
-            a0 = ReadIntAtPosition(offset);
-            a1 = ReadIntAtPosition(offset + 4);
-            a2 = ReadIntAtPosition(offset + 8);
-            a3 = ReadIntAtPosition(offset + 12);
+            a0 = ReadIntAtPosition();
+            a1 = ReadIntAtPosition(4);
+            a2 = ReadIntAtPosition(8);
+            a3 = ReadIntAtPosition(12);
             ShowBytes(16, false);
             TabComment($"ints   ({Format(a0)},{Format(a1)},{Format(a2)},{Format(a3)})", 10);
 
             // a command word, or pair of these
-            string name5 = ReadNullTermStringAtPosition(offset);
+            string name5 = ReadNullTermStringAtPosition();
             if (name5.Length > 0) {
                 OutputWriteLine($"// {name5}");
             }
             ShowBytes(32);
-            string name6 = ReadNullTermStringAtPosition(offset);
+            string name6 = ReadNullTermStringAtPosition();
             if (name6.Length > 0) {
                 OutputWriteLine($"// {name6}");
             }
@@ -468,7 +465,7 @@ namespace MyShaderAnalysis.vcsparsing {
         private void PrintMipmapBlock(int mipmapBlockId) {
             ShowByteCount($"MIPMAP-BLOCK[{mipmapBlockId}]");
             ShowBytes(24, 4);
-            string name1 = ReadNullTermStringAtPosition(offset);
+            string name1 = ReadNullTermStringAtPosition();
             Comment($"{name1}");
             ShowBytes(256);
             BreakLine();
@@ -486,26 +483,26 @@ namespace MyShaderAnalysis.vcsparsing {
         }
 
         private void PrintBufferBlock(int bufferBlockId) {
-            string blockname = ReadNullTermStringAtPosition(offset);
+            string blockname = ReadNullTermStringAtPosition();
             ShowByteCount($"BUFFER-BLOCK[{bufferBlockId}] {blockname}");
             ShowBytes(64);
-            uint bufferSize = ReadUIntAtPosition(offset);
+            uint bufferSize = ReadUIntAtPosition();
             ShowBytes(4, false);
             TabComment($"{bufferSize} buffer-size");
             ShowBytes(4);
-            uint paramCount = ReadUIntAtPosition(offset);
+            uint paramCount = ReadUIntAtPosition();
             ShowBytes(4, false);
             TabComment($"{paramCount} param-count");
             for (int i = 0; i < paramCount; i++) {
-                string paramname = ReadNullTermStringAtPosition(offset);
+                string paramname = ReadNullTermStringAtPosition();
                 OutputWriteLine($"// {paramname}");
                 ShowBytes(64);
-                uint paramIndex = ReadUIntAtPosition(offset);
+                uint paramIndex = ReadUIntAtPosition();
                 ShowBytes(4, false);
                 TabComment($"{paramIndex} buffer-offset", 28);
-                uint vertexSize = ReadUIntAtPosition(offset);
-                uint attributeCount = ReadUIntAtPosition(offset + 4);
-                uint size = ReadUIntAtPosition(offset + 8);
+                uint vertexSize = ReadUIntAtPosition();
+                uint attributeCount = ReadUIntAtPosition(4);
+                uint size = ReadUIntAtPosition(8);
                 ShowBytes(12, false);
                 TabComment($"({vertexSize},{attributeCount},{size}) (vertex-size, attribute-count, length)");
             }
@@ -530,12 +527,12 @@ namespace MyShaderAnalysis.vcsparsing {
 
         private void PrintSymbolNameBlock(int symbolsBlockId) {
             ShowByteCount($"SYMBOL-NAMES-BLOCK[{symbolsBlockId}]");
-            uint symbolGroupCount = ReadUIntAtPosition(offset);
+            uint symbolGroupCount = ReadUIntAtPosition();
             ShowBytes(4, false);
             TabComment($"{symbolGroupCount} string groups in this block");
             for (int i = 0; i < symbolGroupCount; i++) {
                 for (int j = 0; j < 3; j++) {
-                    string symbolname = ReadNullTermStringAtPosition(offset);
+                    string symbolname = ReadNullTermStringAtPosition();
                     OutputWriteLine($"// {symbolname}");
                     ShowBytes(symbolname.Length + 1);
                 }
@@ -547,7 +544,7 @@ namespace MyShaderAnalysis.vcsparsing {
 
         private void PrintZframes() {
             ShowByteCount();
-            zFrameCount = ReadUIntAtPosition(offset);
+            zFrameCount = ReadUIntAtPosition();
             ShowBytes(4, false);
             TabComment($"{zFrameCount} zframes");
             BreakLine();
@@ -557,7 +554,7 @@ namespace MyShaderAnalysis.vcsparsing {
             List<uint> zFrameIndexes = new();
             ShowByteCount("zFrame IDs");
             for (int i = 0; i < zFrameCount; i++) {
-                uint zframeId = ReadUIntAtPosition(offset);
+                uint zframeId = ReadUIntAtPosition();
                 ShowBytes(8, false);
                 TabComment($"{getZFrameIdString(zframeId)}    {Convert.ToString(zframeId, 2).PadLeft(20, '0')}");
                 zFrameIndexes.Add(zframeId);
@@ -572,12 +569,12 @@ namespace MyShaderAnalysis.vcsparsing {
 
             ShowByteCount("zFrame file offsets");
             foreach (uint zframeId in zFrameIndexes) {
-                uint zframe_offset = ReadUIntAtPosition(offset);
+                uint zframe_offset = ReadUIntAtPosition();
                 ShowBytes(4, false);
                 TabComment($"{zframe_offset} offset of {getZFrameIdString(zframeId)}");
             }
 
-            uint total_size = ReadUIntAtPosition(offset);
+            uint total_size = ReadUIntAtPosition();
             ShowBytes(4, false);
             TabComment($"{total_size} - end of file");
             OutputWriteLine("");
@@ -597,7 +594,9 @@ namespace MyShaderAnalysis.vcsparsing {
             int compressed_length = ReadIntAtPosition();
             ShowBytes(4, false);
             TabComment($"{compressed_length,-8} compressed length");
-            ShowBytesAtPosition(offset, compressed_length > 96 ? 96 : compressed_length);
+
+            // PROBLEM HERE?
+            ShowBytesAtPosition(0, compressed_length > 96 ? 96 : compressed_length);
             if (compressed_length > 96) {
                 Comment($"... ({compressed_length - 96} bytes not shown)");
             }
