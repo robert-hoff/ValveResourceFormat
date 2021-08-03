@@ -16,16 +16,17 @@ namespace MyShaderAnalysis {
         const string PC_DIR_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pc\shaders-core\vfx";
         const string PC_DIR_NOT_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pc\shaders\vfx";
         // const string OUTPUT_DIR = @"..\..\..\GEN-OUTPUT";
-        const string OUTPUT_DIR = @"Z:\active\projects\dota2-sourcesdk-modding\shader-analysis-vcs-format\OUTPUT_DUMP";
+        // const string OUTPUT_DIR = @"Z:\active\projects\dota2-sourcesdk-modding\shader-analysis-vcs-format\OUTPUT_DUMP";
+        const string OUTPUT_DIR = @"Z:\dev\www\vcs.codecreation.dev\hero_pcgl_30";
 
 
         public static void RunTrials() {
 
-            ParseVcsFiles();
+            // ParseVcsFiles();
             // ParseZFrames();
             // WriteZFramesToFile();
             // WriteAllVcsFilesToHtml();
-            // WriteAllFilesToHtml();
+            WriteFileCollectionToHtml();
             // StaticAnalysisSelectedSets();
             // ProblemIllustration();
         }
@@ -60,7 +61,7 @@ namespace MyShaderAnalysis {
 
 
 
-        static void WriteAllFilesToHtml() {
+        static void WriteFileCollectionToHtml() {
             // string directoryToUse = PCGL_DIR_CORE;
             // string[] filenames = {"cables_pcgl_30_features.vcs", "cables_pcgl_30_vs.vcs", "cables_pcgl_30_ps.vcs"};
 
@@ -74,8 +75,15 @@ namespace MyShaderAnalysis {
             // string directoryToUse = PCGL_DIR_NOT_CORE;
             // string[] filenames = { "multiblend_pcgl_30_features.vcs", "multiblend_pcgl_30_vs.vcs", "multiblend_pcgl_30_ps.vcs" };
 
+            // WARN this collection has at least 200,000 files (don't know exactly)
+            // string directoryToUse = PCGL_DIR_NOT_CORE;
+            // string[] filenames = {"hero_pcgl_30_features.vcs", "hero_pcgl_30_vs.vcs", "hero_pcgl_30_ps.vcs"};
+
             string directoryToUse = PCGL_DIR_NOT_CORE;
             string[] filenames = { "crystal_pcgl_30_features.vcs", "crystal_pcgl_30_vs.vcs", "crystal_pcgl_30_ps.vcs" };
+
+
+
 
             foreach (var filename in filenames) {
                 string filenamepath = @$"{directoryToUse}\{filename}";

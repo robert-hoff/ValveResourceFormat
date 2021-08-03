@@ -26,7 +26,7 @@ namespace MyShaderAnalysis.vcsparsing02 {
         List<MipmapBlock> mipmapBlocks = new();
         List<BufferBlock> bufferBlocks = new();
         List<SymbolsBlock> symbolBlocks = new();
-        Dictionary<long, int> zframesLookup = new(); // (frameID to offset)
+        SortedDictionary<long, int> zframesLookup = new(); // (frameID to offset)
 
         public ShaderFile02(string filenamepath) : base(File.ReadAllBytes(filenamepath)) {
             this.filenamepath = filenamepath;

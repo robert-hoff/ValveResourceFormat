@@ -6,27 +6,34 @@ namespace MyShaderAnalysis.vcsparsing {
 
     public class DataReader {
 
+        public int offset; // public
         public byte[] databytes;
-        public readonly int start;
-        protected int offset;
-        protected StreamWriter sw = null;
-        public bool DisableOutput = false;
-
-        public DataReader(byte[] data, int start) {
+        public DataReader(byte[] data) {
             this.databytes = data;
-            this.start = start;
-            this.offset = start;
+            this.offset = 0;
         }
 
-        public DataReader(byte[] data) : this(data, 0) { }
-
-        public void ResetOffset() {
-            offset = start;
+        private bool disableOutput = false;
+        public void SetDisableOutput(bool disableOutput) {
+            this.disableOutput = disableOutput;
+        }
+        private StreamWriter sw = null;
+        public void ConfigureWriteToFile(StreamWriter sw, bool disableOutput) {
+            this.sw = sw;
+            this.disableOutput = disableOutput;
+        }
+        public void OutputWrite(string text) {
+            if (!disableOutput) {
+                Debug.Write(text);
+            }
+            if (sw != null) {
+                sw.Write(text);
+            }
+        }
+        public void OutputWriteLine(string text) {
+            OutputWrite(text + "\n");
         }
 
-        public int GetFileOffset() {
-            return offset;
-        }
 
         public byte ReadByte() {
             return databytes[offset++];
@@ -254,22 +261,7 @@ namespace MyShaderAnalysis.vcsparsing {
             }
             return bytestring.Trim();
         }
-        public void ConfigureWriteToFile(StreamWriter sw, bool disableOutput) {
-            this.sw = sw;
-            this.DisableOutput = disableOutput;
-        }
-        public void OutputWrite(string text) {
-            if (!DisableOutput) {
-                Debug.Write(text);
-            }
-            if (sw != null) {
-                sw.Write(text);
-            }
-        }
 
-        public void OutputWriteLine(string text) {
-            OutputWrite(text + "\n");
-        }
 
 
 

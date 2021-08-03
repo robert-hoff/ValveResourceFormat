@@ -1,30 +1,35 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using static MyShaderAnalysis.vcsparsing.UtilHelpers;
 
 
 namespace MyShaderAnalysis.vcsparsing {
 
     public class DataReaderVcsByteAnalysis : DataReader {
-        FILETYPE filetype;
 
-        public DataReaderVcsByteAnalysis(byte[] data, FILETYPE filetype) : base(data) {
-            this.filetype = filetype;
-
+        private FILETYPE filetype;
+        private string vcsFilename = null;
+        public DataReaderVcsByteAnalysis(string filenamepath) : base(File.ReadAllBytes(filenamepath)) {
+            this.filetype = GetVcsFileType(filenamepath);
+            this.vcsFilename = filenamepath;
         }
 
-        bool writeAsHtml = false;
-        string vcsFilename = null;
+        private bool writeHtmlLinks = false;
+        public void SetWriteHtmlLinks(bool writeHtmlLinks) {
+            this.writeHtmlLinks = writeHtmlLinks;
+        }
 
-        public void ConfigureWriteFileAsHtml(string filename) {
-            writeAsHtml = true;
-            this.vcsFilename = filename;
+        private bool shortenOutput = true;
+        public void SetShortenOutput(bool shortenOutput) {
+            this.shortenOutput = shortenOutput;
         }
 
 
-        uint zFrameCount = 0;
 
-        public void ParseFile() {
+        private uint zFrameCount = 0;
+
+        public void PrintByteAnalysis() {
             // DisableOutput = true;
             if (filetype == FILETYPE.features_file) {
                 PrintVcsFeaturesHeader();
@@ -57,7 +62,7 @@ namespace MyShaderAnalysis.vcsparsing {
             PrintZframes();
 
             // if (zFrameCount>0 && writeAsHtml) {
-            if (zFrameCount > 0) {
+            if (shortenOutput && zFrameCount > 10) {
                 return;
             }
 
@@ -143,14 +148,14 @@ namespace MyShaderAnalysis.vcsparsing {
             ShowBytes(16, false);
             TabComment("file ID0");
 
-            if (writeAsHtml) {
+            if (writeHtmlLinks) {
                 OutputWrite($"{GetVsHtmlLink(vcsFilename, ReadBytesAsString(16))}");
             } else {
                 ShowBytes(16, false);
             }
             TabComment("file ID1 - ref to vs file");
 
-            if (writeAsHtml) {
+            if (writeHtmlLinks) {
                 OutputWrite($"{GetPsHtmlLink(vcsFilename, ReadBytesAsString(16))}");
             } else {
                 ShowBytes(16, false);
@@ -555,18 +560,14 @@ namespace MyShaderAnalysis.vcsparsing {
                 TabComment($"{getZFrameIdString(zframeId)}    {Convert.ToString(zframeId, 2).PadLeft(20, '0')}");
                 zFrameIndexes.Add(zframeId);
             }
+            BreakLine();
 
-
-
-            // if (writeAsHtml) {
-            if (zFrameCount > 0) {
-                BreakLine();
+            if (shortenOutput && zFrameCount > 10) {
                 Comment("rest of data contains compressed zframes");
                 BreakLine();
                 return;
             }
 
-            OutputWriteLine("");
             ShowByteCount("zFrame file offsets");
             foreach (uint zframeId in zFrameIndexes) {
                 uint zframe_offset = ReadUIntAtPosition(offset);
@@ -603,7 +604,7 @@ namespace MyShaderAnalysis.vcsparsing {
         }
 
         private string getZFrameIdString(uint zframeId) {
-            if (writeAsHtml) {
+            if (writeHtmlLinks) {
                 return GetZframeHtmlLink(zframeId, vcsFilename);
             } else {
                 return $"zframe[0x{zframeId:x08}]";
