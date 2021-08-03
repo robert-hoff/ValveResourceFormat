@@ -37,11 +37,11 @@ namespace MyShaderAnalysis.vcsparsing02 {
 
             int magic = ReadInt();
             if (magic != 0x32736376) {
-                throw new ShaderParserException($"wrong file id {magic:x}");
+                throw new ShaderParserException02($"wrong file id {magic:x}");
             }
             int version = ReadInt();
             if (version != 64) {
-                throw new ShaderParserException($"wrong version {version}, expecting 64");
+                throw new ShaderParserException02($"wrong version {version}, expecting 64");
             }
 
             if (vcsFiletype == FILETYPE.features_file) {
@@ -52,12 +52,12 @@ namespace MyShaderAnalysis.vcsparsing02 {
                 vspsHeader = new DataBlockVsPsHeader(databytes, 8);
                 offset += 36;
             } else {
-                throw new ShaderParserException($"can't parse this filetype: {vcsFiletype}");
+                throw new ShaderParserException02($"can't parse this filetype: {vcsFiletype}");
             }
 
             int block_delim = ReadInt();
             if (block_delim != 17) {
-                throw new ShaderParserException($"unexpected value for block_delom = {block_delim}, expecting 17");
+                throw new ShaderParserException02($"unexpected value for block_delom = {block_delim}, expecting 17");
             }
             int sfBlockCount = ReadInt();
             for (int i = 0; i < sfBlockCount; i++) {
@@ -193,7 +193,7 @@ namespace MyShaderAnalysis.vcsparsing02 {
             offset = zframeBlock.Value;
             uint delim = ReadUInt();
             if (delim != 0xfffffffd) {
-                throw new ShaderParserException("unexpected zframe delimiter");
+                throw new ShaderParserException02("unexpected zframe delimiter");
             }
             int uncompressed_length = ReadInt();
             int compressed_length = ReadInt();
@@ -205,7 +205,7 @@ namespace MyShaderAnalysis.vcsparsing02 {
 
             Span<byte> zframeUncompressed = decompressor.Unwrap(compressedZframe);
             if (zframeUncompressed.Length != uncompressed_length) {
-                throw new ShaderParserException("zframe length mismatch!");
+                throw new ShaderParserException02("zframe length mismatch!");
             }
             // unsure if we want to do this
             // decompressor.Dispose();
@@ -228,7 +228,7 @@ namespace MyShaderAnalysis.vcsparsing02 {
             if (filenamepath.EndsWith("gs.vcs")) {
                 return FILETYPE.gs_file;
             }
-            throw new ShaderParserException($"don't know what this file is {filenamepath}");
+            throw new ShaderParserException02($"don't know what this file is {filenamepath}");
         }
     }
 

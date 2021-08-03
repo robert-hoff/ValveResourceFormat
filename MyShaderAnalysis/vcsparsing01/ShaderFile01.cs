@@ -41,7 +41,7 @@ namespace MyShaderAnalysis.vcsparsing01 {
                 PSRS_FILE = true;
             }
             if (!FEATURES_FILE && !PS_FILE && !VS_FILE && !GS_FILE && !PSRS_FILE) {
-                throw new ShaderParserException($"Cannot parse this filetype! {filename}");
+                throw new ShaderParserException01($"Cannot parse this filetype! {filename}");
                 // Debug.WriteLine($"unknown file! {filename}");
                 // return;
             }
@@ -126,7 +126,7 @@ namespace MyShaderAnalysis.vcsparsing01 {
 
             uint blockDelim = datareader.ReadUIntAtPosition(datareader.offset);
             if (blockDelim != 17) {
-                throw new ShaderParserException($"unexpected block delim value! {blockDelim}");
+                throw new ShaderParserException01($"unexpected block delim value! {blockDelim}");
             }
             datareader.ShowByteCount();
             datareader.ShowBytesNoLineBreak(4);

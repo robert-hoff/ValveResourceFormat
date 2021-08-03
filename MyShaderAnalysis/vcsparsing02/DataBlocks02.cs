@@ -28,7 +28,7 @@ namespace MyShaderAnalysis.vcsparsing02 {
         public DataBlockFeaturesHeader(byte[] data, int start) : base(data, start) {
             int psrs_arg = ReadInt();
             if (psrs_arg != 0 && psrs_arg != 1) {
-                throw new ShaderParserException($"unexpected value psrs_arg = {psrs_arg}");
+                throw new ShaderParserException02($"unexpected value psrs_arg = {psrs_arg}");
             }
             has_psrs_file = psrs_arg > 0;
             unknown_val = ReadInt();

@@ -398,19 +398,19 @@ namespace MyShaderAnalysis.vcsparsing01 {
 
         public void PrintVcsFileHeader() {
             if (offset > 0) {
-                throw new ShaderParserException("the offset is not at zero!");
+                throw new ShaderParserException01("the offset is not at zero!");
             }
             ShowByteCount("vcs file header");
 
             uint magicId = ReadUIntAtPosition(offset);
             if (magicId != 0x32736376) {
-                throw new ShaderParserException("wrong magic!");
+                throw new ShaderParserException01("wrong magic!");
             }
             ShowBytesNoLineBreak(4);
             TabComment("\"vcs2\"");
             uint version = ReadUIntAtPosition(offset);
             if (version != 0x40) {
-                throw new ShaderParserException("wrong version!");
+                throw new ShaderParserException01("wrong version!");
             }
             ShowBytesNoLineBreak(4);
             TabComment("version 64");
@@ -424,7 +424,7 @@ namespace MyShaderAnalysis.vcsparsing01 {
 
             uint has_psrs_file = ReadUIntAtPosition(offset);
             if (has_psrs_file != 0 && has_psrs_file != 1) {
-                throw new ShaderParserException("unexpected value!");
+                throw new ShaderParserException01("unexpected value!");
             }
             ShowBytesNoLineBreak(4);
             TabComment($"has_psrs_file = {has_psrs_file>0}");
@@ -1048,7 +1048,7 @@ namespace MyShaderAnalysis.vcsparsing01 {
 
         public void EndOfFile() {
             if (offset != databytes.Length) {
-                throw new ShaderParserException("End of file not reached!");
+                throw new ShaderParserException01("End of file not reached!");
             }
             // ShowByteCount("----------------------------------------------------------------------------------------");
             // ShowBytesAtPosition(offset, 1000);
@@ -1069,7 +1069,7 @@ namespace MyShaderAnalysis.vcsparsing01 {
             uint MURMUR2SEED = 0x31415926; // It's pi!
             uint murmurCheck = MurmurHash2.Hash(nulltermstr.ToLower(), MURMUR2SEED);
             if (murmur32 != murmurCheck) {
-                throw new ShaderParserException("not a murmur string!");
+                throw new ShaderParserException01("not a murmur string!");
             }
 
             OutputWriteLine($"// {nulltermstr} | 0x{murmur32:x08}");
@@ -1369,7 +1369,7 @@ namespace MyShaderAnalysis.vcsparsing01 {
             for (int i = 0; i < blockEntryCount; i++) {
                 int hasEntry = (int)ReadInt16AtPosition(offset + i * 2);
                 if (hasEntry != 0 && hasEntry != -1) {
-                    throw new ShaderParserException("unexpeted value!");
+                    throw new ShaderParserException01("unexpeted value!");
                 }
                 recordsFound += hasEntry == 0 ? 1 : 0;
             }

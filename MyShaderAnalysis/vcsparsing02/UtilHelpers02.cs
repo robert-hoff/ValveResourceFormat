@@ -111,7 +111,7 @@ namespace MyShaderAnalysis.vcsparsing02 {
 
         public static string GetVsHtmlFilename(string vcsFeaturesFilename) {
             if (!vcsFeaturesFilename.EndsWith("features.vcs")) {
-                throw new ShaderParserException($"this needs to be features vcs file {vcsFeaturesFilename}");
+                throw new ShaderParserException02($"this needs to be features vcs file {vcsFeaturesFilename}");
             }
             return $"{vcsFeaturesFilename[0..^12]}vs-analysis.html";
         }
@@ -122,7 +122,7 @@ namespace MyShaderAnalysis.vcsparsing02 {
 
         public static string GetPsHtmlFilename(string vcsFeaturesFilename) {
             if (!vcsFeaturesFilename.EndsWith("features.vcs")) {
-                throw new ShaderParserException($"this needs to be features vcs file {vcsFeaturesFilename}");
+                throw new ShaderParserException02($"this needs to be features vcs file {vcsFeaturesFilename}");
             }
             return $"{vcsFeaturesFilename[0..^12]}ps-analysis.html";
         }

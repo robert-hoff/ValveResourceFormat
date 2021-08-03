@@ -1,6 +1,6 @@
 using System;
 
-namespace MyShaderAnalysis.utilhelpers {
+namespace MyShaderAnalysis.vcsparsing {
     public class ShaderParserException : Exception {
         public ShaderParserException() { }
         public ShaderParserException(string message) : base(message) { }

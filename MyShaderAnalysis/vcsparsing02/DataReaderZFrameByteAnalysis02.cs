@@ -14,7 +14,7 @@ namespace MyShaderAnalysis.vcsparsing02 {
 
         public DataReaderZFrameByteAnalysis02(byte[] data, FILETYPE filetype) : base(data) {
             if (filetype == FILETYPE.features_file) {
-                throw new ShaderParserException("file type cannot be features, as they don't contain any zframes");
+                throw new ShaderParserException02("file type cannot be features, as they don't contain any zframes");
             }
             this.filetype = filetype;
         }
@@ -365,7 +365,7 @@ namespace MyShaderAnalysis.vcsparsing02 {
 
         private void EndOfFile() {
             if (offset != databytes.Length) {
-                throw new ShaderParserException("End of file not reached!");
+                throw new ShaderParserException02("End of file not reached!");
             }
             ShowByteCount();
             OutputWriteLine("EOF");
@@ -377,7 +377,7 @@ namespace MyShaderAnalysis.vcsparsing02 {
             uint murmur32 = ReadUIntAtPosition(offset + nulltermstr.Length + 1);
             uint murmurCheck = MurmurHashPiSeed(nulltermstr.ToLower());
             if (murmur32 != murmurCheck) {
-                throw new ShaderParserException("not a murmur string!");
+                throw new ShaderParserException02("not a murmur string!");
             }
             Comment($"{nulltermstr} | 0x{murmur32:x08}");
             ShowBytes(nulltermstr.Length + 1 + 4);

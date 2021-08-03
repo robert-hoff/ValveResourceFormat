@@ -59,7 +59,7 @@ namespace MyShaderAnalysis {
             string filename = Path.GetFileName(filenamepath);
             string filetoken = null;
             if (filetype != PS_FILE && filetype != VS_FILE) {
-                throw new ShaderParserException($"filetype not supported {filename}");
+                throw new vcsparsing01.ShaderParserException01($"filetype not supported {filename}");
             }
 
 
@@ -243,9 +243,9 @@ namespace MyShaderAnalysis {
                 return GS_FILE;
             }
             if (filenamepath.EndsWith("features.vcs")) {
-                throw new ShaderParserException($"features files don't contain any zframes! {filenamepath}");
+                throw new vcsparsing01.ShaderParserException01($"features files don't contain any zframes! {filenamepath}");
             }
-            throw new ShaderParserException($"unknown file type! {filenamepath}");
+            throw new vcsparsing01.ShaderParserException01($"unknown file type! {filenamepath}");
         }
 
 

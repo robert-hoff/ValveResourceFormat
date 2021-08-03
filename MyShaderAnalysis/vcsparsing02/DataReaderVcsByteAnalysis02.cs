@@ -33,11 +33,11 @@ namespace MyShaderAnalysis.vcsparsing02 {
                   || filetype == FILETYPE.gs_file || filetype == FILETYPE.psrs_file) {
                 PrintVsPsHeader();
             } else {
-                throw new ShaderParserException($"can't parse this filetype: {filetype}");
+                throw new ShaderParserException02($"can't parse this filetype: {filetype}");
             }
             uint blockDelim = ReadUIntAtPosition();
             if (blockDelim != 17) {
-                throw new ShaderParserException($"unexpected block delim value! {blockDelim}");
+                throw new ShaderParserException02($"unexpected block delim value! {blockDelim}");
             }
 
             ShowByteCount();
@@ -613,7 +613,7 @@ namespace MyShaderAnalysis.vcsparsing02 {
 
         private void EndOfFile() {
             if (offset != databytes.Length) {
-                throw new ShaderParserException("End of file not reached!");
+                throw new ShaderParserException02("End of file not reached!");
             }
             ShowByteCount();
             OutputWriteLine("EOF");
