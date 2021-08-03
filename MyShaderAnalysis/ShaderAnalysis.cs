@@ -63,7 +63,7 @@ namespace MyShaderAnalysis {
             // string filenamepath = PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_vs.vcs";
             // string filenamepath = PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_ps.vcs";
             // string filenamepath = PCGL_DIR_CORE + @"\generic_light_pcgl_30_features.vcs";
-            // string filenamepath = PCGL_DIR_CORE + @"\generic_light_pcgl_30_vs.vcs";
+            string filenamepath = PCGL_DIR_CORE + @"\generic_light_pcgl_30_vs.vcs";
             // string filenamepath = PCGL_DIR_CORE + @"\generic_light_pcgl_30_ps.vcs";
             // string filenamepath = PCGL_DIR_CORE + @"\apply_fog_pcgl_40_ps.vcs";
             // string filenamepath = PCGL_DIR_CORE + @"\tools_wireframe_pcgl_40_gs.vcs";
@@ -71,7 +71,7 @@ namespace MyShaderAnalysis {
             // string filenamepath = PCGL_DIR_NOT_CORE + @"\cables_pcgl_30_features.vcs";
             // string filenamepath = PCGL_DIR_NOT_CORE + @"\cables_pcgl_30_vs.vcs";
             // string filenamepath = PCGL_DIR_NOT_CORE + @"\spritecard_pcgl_30_features.vcs";
-            string filenamepath = PCGL_DIR_NOT_CORE + @"\blur_pcgl_30_features.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"\blur_pcgl_30_features.vcs";
 
 
             ShowVcsByteAnalysis(filenamepath);

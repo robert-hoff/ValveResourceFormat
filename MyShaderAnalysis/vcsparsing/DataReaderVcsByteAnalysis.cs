@@ -26,12 +26,9 @@ namespace MyShaderAnalysis.vcsparsing {
         }
 
 
-
         private uint zFrameCount = 0;
 
         public void PrintByteAnalysis() {
-            // SetDisableOutput(true);
-
             if (filetype == FILETYPE.features_file) {
                 PrintVcsFeaturesHeader();
             } else if (filetype == FILETYPE.vs_file || filetype == FILETYPE.ps_file
@@ -44,7 +41,6 @@ namespace MyShaderAnalysis.vcsparsing {
             if (blockDelim != 17) {
                 throw new ShaderParserException($"unexpected block delim value! {blockDelim}");
             }
-
             ShowByteCount();
             ShowBytes(4, $"block DELIM always 17");
             BreakLine();
@@ -60,80 +56,59 @@ namespace MyShaderAnalysis.vcsparsing {
                 PrintAllSymbolNameBlocks();
             }
             PrintZframes();
-
-            // if (zFrameCount>0 && writeAsHtml) {
             if (shortenOutput && zFrameCount > 10) {
                 return;
             }
-
             EndOfFile();
         }
 
         private void PrintVcsFeaturesHeader() {
             ShowByteCount("vcs file");
             ShowBytes(4, "\"vcs2\"");
-            ShowBytes(4, false);
-            TabComment("version 64");
+            ShowBytes(4, "version 64");
             BreakLine();
             ShowByteCount("features header");
             int has_psrs_file = ReadIntAtPosition();
-            ShowBytes(4, false);
-            TabComment("has_psrs_file = " + (has_psrs_file > 0 ? "True" : "False"));
+            ShowBytes(4, "has_psrs_file = " + (has_psrs_file > 0 ? "True" : "False"));
             int unknown_val = ReadIntAtPosition();
-            ShowBytes(4, false);
-            TabComment($"unknown_val = {unknown_val} (usually 0)");
+            ShowBytes(4, $"unknown_val = {unknown_val} (usually 0)");
             int len_name_description = ReadIntAtPosition();
-            ShowBytes(4, false);
-            TabComment($"{len_name_description} len of name");
+            ShowBytes(4, $"{len_name_description} len of name");
             BreakLine();
-
             string name_desc = ReadNullTermStringAtPosition();
             ShowByteCount(name_desc);
             ShowBytes(len_name_description + 1);
             BreakLine();
-
             ShowByteCount();
             uint arg1 = ReadUIntAtPosition();
             uint arg2 = ReadUIntAtPosition(4);
             uint arg3 = ReadUIntAtPosition(8);
             uint arg4 = ReadUIntAtPosition(12);
-            ShowBytes(4);
-            ShowBytes(4);
-            ShowBytes(4);
-            ShowBytes(4, false);
+            ShowBytes(16, 4, breakLine: false);
             TabComment($"({arg1},{arg2},{arg3},{arg4})");
             uint arg5 = ReadUIntAtPosition();
             uint arg6 = ReadUIntAtPosition(4);
             uint arg7 = ReadUIntAtPosition(8);
             uint arg8 = ReadUIntAtPosition(12);
-            ShowBytes(4);
-            ShowBytes(4);
-            ShowBytes(4);
-            ShowBytes(4, false);
+            ShowBytes(16, 4, breakLine: false);
             TabComment($"({arg5},{arg6},{arg7},{arg8})");
             BreakLine();
-
             ShowByteCount();
             int nr_of_arguments = ReadIntAtPosition();
-            ShowBytes(4, false);
-            TabComment($"nr of arguments {nr_of_arguments}");
+            ShowBytes(4, $"nr of arguments {nr_of_arguments}");
             if (has_psrs_file == 1) {
                 // NOTE nr_of_arguments is overwritten
                 nr_of_arguments = ReadIntAtPosition();
-                ShowBytes(4, false);
-                TabComment($"nr of arguments overriden ({nr_of_arguments})");
+                ShowBytes(4, $"nr of arguments overriden ({nr_of_arguments})");
             }
             BreakLine();
-
             ShowByteCount();
             for (int i = 0; i < nr_of_arguments; i++) {
                 string default_name = ReadNullTermStringAtPosition();
-
                 Comment($"{default_name}");
                 ShowBytes(128);
                 uint has_s_argument = ReadUIntAtPosition();
                 ShowBytes(4);
-
                 if (has_s_argument > 0) {
                     uint sSymbolArgValue = ReadUIntAtPosition(64);
                     string sSymbolName = ReadNullTermStringAtPosition();
@@ -141,77 +116,58 @@ namespace MyShaderAnalysis.vcsparsing {
                     ShowBytes(68);
                 }
             }
-
             BreakLine();
             ShowByteCount("File IDs");
-            ShowBytes(16, false);
-            TabComment("file ID0");
-
+            ShowBytes(16, "file ID0");
             if (writeHtmlLinks) {
                 OutputWrite($"{GetVsHtmlLink(vcsFilename, ReadBytesAsString(16))}");
             } else {
-                ShowBytes(16, false);
+                ShowBytes(16, breakLine: false);
             }
             TabComment("file ID1 - ref to vs file");
-
             if (writeHtmlLinks) {
                 OutputWrite($"{GetPsHtmlLink(vcsFilename, ReadBytesAsString(16))}");
             } else {
-                ShowBytes(16, false);
+                ShowBytes(16, breakLine: false);
             }
             TabComment("file ID2 - ref to ps file");
-
-            ShowBytes(16, false);
-            TabComment("file ID3");
-            ShowBytes(16, false);
-            TabComment("file ID4");
-            ShowBytes(16, false);
-            TabComment("file ID5");
-            ShowBytes(16, false);
-            TabComment("file ID6");
+            ShowBytes(16, "file ID3");
+            ShowBytes(16, "file ID4");
+            ShowBytes(16, "file ID5");
+            ShowBytes(16, "file ID6");
             if (has_psrs_file == 0) {
-                ShowBytes(16, false);
-                TabComment("file ID7 - shared by all Dota2 vcs files");
+                ShowBytes(16, "file ID7 - shared by all Dota2 vcs files");
             }
             if (has_psrs_file == 1) {
-                ShowBytes(16, false);
-                TabComment("file ID7 - reference to psrs file");
-                ShowBytes(16, false);
-                TabComment("file ID8 - shared by all Dota2 vcs files");
+                ShowBytes(16, "file ID7 - reference to psrs file");
+                ShowBytes(16, "file ID8 - shared by all Dota2 vcs files");
             }
             BreakLine();
         }
 
         private void PrintVsPsHeader() {
             ShowByteCount("vcs file");
-            ShowBytes(4, false);
-            TabComment("\"vcs2\"");
-            ShowBytes(4, false);
-            TabComment("version 64");
+            ShowBytes(4, "\"vcs2\"");
+            ShowBytes(4, "version 64");
             BreakLine();
-
             ShowByteCount("ps/vs header");
             int has_psrs_file = ReadIntAtPosition();
-            ShowBytes(4, false);
-            TabComment("has_psrs_file = " + (has_psrs_file > 0 ? "True" : "False"));
-
-            ShowBytes(16, false);
-            TabComment("file ID0");
-            ShowBytes(16, false);
-            TabComment("file ID1 - shared by all Dota2 vcs files");
+            ShowBytes(4, $"has_psrs_file = {(has_psrs_file > 0 ? "True" : "False")}");
+            ShowBytes(16, "file ID0");
+            ShowBytes(16, "file ID1 - shared by all Dota2 vcs files");
             BreakLine();
         }
 
         private void PrintAllSfBlocks() {
             ShowByteCount();
             uint sfBlockCount = ReadUIntAtPosition();
-            ShowBytes(4, false);
-            TabComment($"{sfBlockCount} SF blocks (usually 152 bytes each)");
+            ShowBytes(4, $"{sfBlockCount} SF blocks (usually 152 bytes each)");
             BreakLine();
             for (int i = 0; i < sfBlockCount; i++) {
                 PrintSfBlock();
             }
         }
+
         private void PrintSfBlock() {
             ShowByteCount();
             for (int i = 0; i < 2; i++) {
@@ -227,13 +183,10 @@ namespace MyShaderAnalysis.vcsparsing {
             int arg3 = ReadIntAtPosition(12);
             int arg4 = ReadIntAtPosition(16);
             int arg5 = ReadIntAtPosition(20);
-            ShowBytes(12, 4);
-            ShowBytes(4, false);
+            ShowBytes(16, 4, breakLine: false);
             TabComment($"({arg0},{arg1},{arg2},{arg3})");
-            ShowBytes(4, false);
-            TabComment($"({arg4}) known values [-1,28]");
-            ShowBytes(4, false);
-            TabComment($"{arg5} additional string params");
+            ShowBytes(4, $"({arg4}) known values [-1,28]");
+            ShowBytes(4, $"{arg5} additional string params");
             int string_offset = offset;
             List<string> names = new();
             for (int i = 0; i < arg5; i++) {
@@ -262,8 +215,7 @@ namespace MyShaderAnalysis.vcsparsing {
         private void PrintAllCompatibilityBlocks() {
             ShowByteCount();
             uint combatibilityBlockCount = ReadUIntAtPosition();
-            ShowBytes(4, false);
-            TabComment($"{combatibilityBlockCount} compatibility blocks (472 bytes each)");
+            ShowBytes(4, $"{combatibilityBlockCount} compatibility blocks (472 bytes each)");
             BreakLine();
             for (int i = 0; i < combatibilityBlockCount; i++) {
                 PrintCompatibilityBlock(i);
@@ -282,8 +234,7 @@ namespace MyShaderAnalysis.vcsparsing {
         private void PrintAllDBlocks() {
             ShowByteCount();
             uint dBlockCount = ReadUIntAtPosition();
-            ShowBytes(4, false);
-            TabComment($"{dBlockCount} D-blocks (152 bytes each)");
+            ShowBytes(4, $"{dBlockCount} D-blocks (152 bytes each)");
             BreakLine();
             for (int i = 0; i < dBlockCount; i++) {
                 PrintDBlock(i);
@@ -303,8 +254,7 @@ namespace MyShaderAnalysis.vcsparsing {
         private void PrintAllUknownBlocks() {
             ShowByteCount();
             uint unknownBlockCount = ReadUIntAtPosition();
-            ShowBytes(4, false);
-            TabComment($"{unknownBlockCount} unknown blocks (472 bytes each)");
+            ShowBytes(4, $"{unknownBlockCount} unknown blocks (472 bytes each)");
             BreakLine();
             for (int i = 0; i < unknownBlockCount; i++) {
                 PrintUnknownBlock(i);
@@ -320,8 +270,7 @@ namespace MyShaderAnalysis.vcsparsing {
         private void PrintAllParamBlocks() {
             ShowByteCount();
             uint paramBlockCount = ReadUIntAtPosition();
-            ShowBytes(4, false);
-            TabComment($"{paramBlockCount} Param-Blocks (may contain dynamic expressions)");
+            ShowBytes(4, $"{paramBlockCount} Param-Blocks (may contain dynamic expressions)");
             BreakLine();
             for (int i = 0; i < paramBlockCount; i++) {
                 PrintParameterBlock(i);
@@ -351,10 +300,10 @@ namespace MyShaderAnalysis.vcsparsing {
 
             if (paramType == 6 || paramType == 7) {
                 int dynLength = ReadIntAtPosition();
-                ShowBytes(4, false);
+                ShowBytes(4, breakLine: false);
                 TabComment("dyn-exp len", 1);
 
-                ShowBytes(dynLength, false);
+                ShowBytes(dynLength, breakLine: false);
                 TabComment("dynamic expression", 1);
             }
 
@@ -373,56 +322,56 @@ namespace MyShaderAnalysis.vcsparsing {
             int a1 = ReadIntAtPosition(4);
             int a2 = ReadIntAtPosition(8);
             int a3 = ReadIntAtPosition(12);
-            ShowBytes(16, false);
+            ShowBytes(16, breakLine: false);
             TabComment($"ints   ({Format(a0)},{Format(a1)},{Format(a2)},{Format(a3)})", 10);
 
             a0 = ReadIntAtPosition();
             a1 = ReadIntAtPosition(4);
             a2 = ReadIntAtPosition(8);
             a3 = ReadIntAtPosition(12);
-            ShowBytes(16, false);
+            ShowBytes(16, breakLine: false);
             TabComment($"ints   ({Format(a0)},{Format(a1)},{Format(a2)},{Format(a3)})", 10);
 
             a0 = ReadIntAtPosition();
             a1 = ReadIntAtPosition(4);
             a2 = ReadIntAtPosition(8);
             a3 = ReadIntAtPosition(12);
-            ShowBytes(16, false);
+            ShowBytes(16, breakLine: false);
             TabComment($"ints   ({Format(a0)},{Format(a1)},{Format(a2)},{Format(a3)})", 10);
 
             float f0 = ReadFloatAtPosition();
             float f1 = ReadFloatAtPosition(4);
             float f2 = ReadFloatAtPosition(8);
             float f3 = ReadFloatAtPosition(12);
-            ShowBytes(16, false);
+            ShowBytes(16, breakLine: false);
             TabComment($"floats ({Format(f0)},{Format(f1)},{Format(f2)},{Format(f3)})", 10);
 
             f0 = ReadFloatAtPosition();
             f1 = ReadFloatAtPosition(4);
             f2 = ReadFloatAtPosition(8);
             f3 = ReadFloatAtPosition(12);
-            ShowBytes(16, false);
+            ShowBytes(16, breakLine: false);
             TabComment($"floats ({Format(f0)},{Format(f1)},{Format(f2)},{Format(f3)})", 10);
 
             f0 = ReadFloatAtPosition();
             f1 = ReadFloatAtPosition(4);
             f2 = ReadFloatAtPosition(8);
             f3 = ReadFloatAtPosition(12);
-            ShowBytes(16, false);
+            ShowBytes(16, breakLine: false);
             TabComment($"floats ({Format(f0)},{Format(f1)},{Format(f2)},{Format(f3)})", 10);
 
             a0 = ReadIntAtPosition();
             a1 = ReadIntAtPosition(4);
             a2 = ReadIntAtPosition(8);
             a3 = ReadIntAtPosition(12);
-            ShowBytes(16, false);
+            ShowBytes(16, breakLine: false);
             TabComment($"ints   ({Format(a0)},{Format(a1)},{Format(a2)},{Format(a3)})", 10);
 
             a0 = ReadIntAtPosition();
             a1 = ReadIntAtPosition(4);
             a2 = ReadIntAtPosition(8);
             a3 = ReadIntAtPosition(12);
-            ShowBytes(16, false);
+            ShowBytes(16, breakLine: false);
             TabComment($"ints   ({Format(a0)},{Format(a1)},{Format(a2)},{Format(a3)})", 10);
 
             // a command word, or pair of these
@@ -454,8 +403,7 @@ namespace MyShaderAnalysis.vcsparsing {
         private void PrintAllMipmapBlocks() {
             ShowByteCount();
             uint mipmapBlockCount = ReadUIntAtPosition();
-            ShowBytes(4, false);
-            TabComment($"{mipmapBlockCount} Mipmap blocks (280 bytes each)");
+            ShowBytes(4, $"{mipmapBlockCount} Mipmap blocks (280 bytes each)");
             BreakLine();
             for (int i = 0; i < mipmapBlockCount; i++) {
                 PrintMipmapBlock(i);
@@ -474,8 +422,7 @@ namespace MyShaderAnalysis.vcsparsing {
         private void PrintAllBufferBlocks() {
             ShowByteCount();
             uint bufferBlockCount = ReadUIntAtPosition();
-            ShowBytes(4, false);
-            TabComment($"{bufferBlockCount} Buffer blocks (variable length)");
+            ShowBytes(4, $"{bufferBlockCount} Buffer blocks (variable length)");
             BreakLine();
             for (int i = 0; i < bufferBlockCount; i++) {
                 PrintBufferBlock(i);
@@ -487,28 +434,24 @@ namespace MyShaderAnalysis.vcsparsing {
             ShowByteCount($"BUFFER-BLOCK[{bufferBlockId}] {blockname}");
             ShowBytes(64);
             uint bufferSize = ReadUIntAtPosition();
-            ShowBytes(4, false);
-            TabComment($"{bufferSize} buffer-size");
+            ShowBytes(4, $"{bufferSize} buffer-size");
             ShowBytes(4);
             uint paramCount = ReadUIntAtPosition();
-            ShowBytes(4, false);
-            TabComment($"{paramCount} param-count");
+            ShowBytes(4, $"{paramCount} param-count");
             for (int i = 0; i < paramCount; i++) {
                 string paramname = ReadNullTermStringAtPosition();
                 OutputWriteLine($"// {paramname}");
                 ShowBytes(64);
                 uint paramIndex = ReadUIntAtPosition();
-                ShowBytes(4, false);
+                ShowBytes(4, breakLine: false);
                 TabComment($"{paramIndex} buffer-offset", 28);
                 uint vertexSize = ReadUIntAtPosition();
                 uint attributeCount = ReadUIntAtPosition(4);
                 uint size = ReadUIntAtPosition(8);
-                ShowBytes(12, false);
-                TabComment($"({vertexSize},{attributeCount},{size}) (vertex-size, attribute-count, length)");
+                ShowBytes(12, $"({vertexSize},{attributeCount},{size}) (vertex-size, attribute-count, length)");
             }
             BreakLine();
-            ShowBytes(4, false);
-            TabComment("bufferID (some kind of crc/check)");
+            ShowBytes(4, "bufferID (some kind of crc/check)");
             BreakLine();
             BreakLine();
         }
@@ -516,8 +459,7 @@ namespace MyShaderAnalysis.vcsparsing {
         private void PrintAllSymbolNameBlocks() {
             ShowByteCount();
             uint symbolBlockCount = ReadUIntAtPosition();
-            ShowBytes(4, false);
-            TabComment($"{symbolBlockCount} symbol/names blocks");
+            ShowBytes(4, $"{symbolBlockCount} symbol/names blocks");
             for (int i = 0; i < symbolBlockCount; i++) {
                 BreakLine();
                 PrintSymbolNameBlock(i);
@@ -528,8 +470,7 @@ namespace MyShaderAnalysis.vcsparsing {
         private void PrintSymbolNameBlock(int symbolsBlockId) {
             ShowByteCount($"SYMBOL-NAMES-BLOCK[{symbolsBlockId}]");
             uint symbolGroupCount = ReadUIntAtPosition();
-            ShowBytes(4, false);
-            TabComment($"{symbolGroupCount} string groups in this block");
+            ShowBytes(4, $"{symbolGroupCount} string groups in this block");
             for (int i = 0; i < symbolGroupCount; i++) {
                 for (int j = 0; j < 3; j++) {
                     string symbolname = ReadNullTermStringAtPosition();
@@ -545,8 +486,7 @@ namespace MyShaderAnalysis.vcsparsing {
         private void PrintZframes() {
             ShowByteCount();
             zFrameCount = ReadUIntAtPosition();
-            ShowBytes(4, false);
-            TabComment($"{zFrameCount} zframes");
+            ShowBytes(4, $"{zFrameCount} zframes");
             BreakLine();
             if (zFrameCount == 0) {
                 return;
@@ -555,7 +495,7 @@ namespace MyShaderAnalysis.vcsparsing {
             ShowByteCount("zFrame IDs");
             for (int i = 0; i < zFrameCount; i++) {
                 uint zframeId = ReadUIntAtPosition();
-                ShowBytes(8, false);
+                ShowBytes(8, breakLine: false);
                 TabComment($"{getZFrameIdString(zframeId)}    {Convert.ToString(zframeId, 2).PadLeft(20, '0')}");
                 zFrameIndexes.Add(zframeId);
             }
@@ -570,13 +510,10 @@ namespace MyShaderAnalysis.vcsparsing {
             ShowByteCount("zFrame file offsets");
             foreach (uint zframeId in zFrameIndexes) {
                 uint zframe_offset = ReadUIntAtPosition();
-                ShowBytes(4, false);
-                TabComment($"{zframe_offset} offset of {getZFrameIdString(zframeId)}");
+                ShowBytes(4, $"{zframe_offset} offset of {getZFrameIdString(zframeId)}");
             }
-
             uint total_size = ReadUIntAtPosition();
-            ShowBytes(4, false);
-            TabComment($"{total_size} - end of file");
+            ShowBytes(4, $"{total_size} - end of file");
             OutputWriteLine("");
             foreach (uint zframeId in zFrameIndexes) {
                 PrintCompressedZFrame(zframeId);
@@ -585,17 +522,12 @@ namespace MyShaderAnalysis.vcsparsing {
 
         public void PrintCompressedZFrame(uint zframeId) {
             OutputWriteLine($"[{offset}] {getZFrameIdString(zframeId)}");
-            ShowBytes(4, false);
-            TabComment("DELIM (0xfffffffd)");
+            ShowBytes(4, "DELIM (0xfffffffd)");
             int uncompressed_length = ReadIntAtPosition();
-            ShowBytes(4, false);
-            TabComment($"{uncompressed_length,-8} uncompressed length");
+            ShowBytes(4, $"{uncompressed_length,-8} uncompressed length");
             // TabPrintComment(uncompressed_length.ToString().PadRight(8));
             int compressed_length = ReadIntAtPosition();
-            ShowBytes(4, false);
-            TabComment($"{compressed_length,-8} compressed length");
-
-            // PROBLEM HERE?
+            ShowBytes(4, $"{compressed_length,-8} compressed length");
             ShowBytesAtPosition(0, compressed_length > 96 ? 96 : compressed_length);
             if (compressed_length > 96) {
                 Comment($"... ({compressed_length - 96} bytes not shown)");

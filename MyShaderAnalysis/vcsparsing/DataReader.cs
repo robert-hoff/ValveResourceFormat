@@ -165,12 +165,12 @@ namespace MyShaderAnalysis.vcsparsing {
 
 
         public void ShowByteCount(string message = null) {
-            OutputWrite($"[{offset}]{(message != null ? message.PadLeft(1) : "")}\n");
+            OutputWrite($"[{offset}]{(message != null ? " "+message : "")}\n");
         }
 
-        public void ShowBytes(int len, bool breakLine) {
-            ShowBytes(len, 32, breakLine: breakLine);
-        }
+        //public void ShowBytes(int len, bool breakLine) {
+        //    ShowBytes(len, 32, breakLine: breakLine);
+        //}
 
         public void ShowBytes(int len, string message = null, int tabLen = 4, bool use_slashes = true, bool breakLine = true) {
             ShowBytes(len, 32, message, tabLen, use_slashes, breakLine);
@@ -182,9 +182,8 @@ namespace MyShaderAnalysis.vcsparsing {
             OutputWrite(byteString);
             if (message != null) {
                 TabComment(message, tabLen, use_slashes);
-                return;
             }
-            if (breakLine) {
+            if (message == null && breakLine) {
                 BreakLine();
             }
         }
