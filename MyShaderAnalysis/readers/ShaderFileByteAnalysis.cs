@@ -111,6 +111,32 @@ namespace MyShaderAnalysis.readers {
         }
 
 
+        public void WriteByteAnalysisToHtml(string outputDir) {
+            string outputFilename = filename[0..^4] + "-analysis.html";
+            string outputFilenamepath = @$"{outputDir}\{outputFilename}";
+
+
+
+            StreamWriter sw = new(outputFilenamepath);
+
+            DataReaderVcsByteAnalysis vcsByteAnalysis = new(databytes, vcsFiletype);
+            vcsByteAnalysis.ConfigureWriteToFile(sw, true);
+            vcsByteAnalysis.ConfigureWriteFileAsHtml(filename);
+
+
+            Debug.WriteLine($"writing to {outputFilenamepath}");
+
+            string htmlHeader = GetHtmlHeader(filename, RemoveBaseDir(filenamepath));
+            sw.WriteLine($"{htmlHeader}");
+            vcsByteAnalysis.ParseFile();
+            sw.WriteLine($"{GetHtmlFooter()}");
+            sw.Flush();
+            sw.Close();
+
+        }
+
+
+
         public void WriteByteAnalysisToFile(string outputDir) {
             string outputFilename = filename[0..^4] + "-annotated.txt";
             string outputFilenamepath = @$"{outputDir}\{outputFilename}";

@@ -21,12 +21,28 @@ namespace MyShaderAnalysis.readers {
                 throw new ShaderParserException("file type cannot be features, as they don't contain any zframes");
             }
             this.filetype = filetype;
-
         }
 
 
+        bool writeAsHtml = true;
+        public void ConfigureWriteFileAsHtml() {
+            writeAsHtml = true;
+        }
+
+        bool saveGlslSources = false;
+        string outputDir = null;
+
+        public void RequestGlslFileSave(string outputDir) {
+            saveGlslSources = true;
+            this.outputDir = outputDir;
+        }
+
+
+
+
         public void ParseFile() {
-            BreakLine();
+            List<(int, int, string)> glslSources = new();
+
             ShowZDataSection(-1);
             ShowZFrameHeaderUpdated();
 
@@ -72,11 +88,12 @@ namespace MyShaderAnalysis.readers {
             TabComment($"glsl source files ({glslSourceCount})", 7);
             ShowBytes(1, false);
             TabComment("values seen 0,1", 16);
-            OutputWriteLine("");
+            BreakLine();
+
 
             for (int i = 0; i < glslSourceCount; i++) {
                 var glslSourceItem = ShowZSourceSection(i);
-                // glslSources.Add(glslSourceItem);
+                glslSources.Add(glslSourceItem);
             }
 
             //  End blocks for vs and gs files
@@ -131,9 +148,63 @@ namespace MyShaderAnalysis.readers {
                     OutputWriteLine("");
                 }
             }
-
             EndOfFile();
+
+
+            // write the gsls source, if indicated
+            if (saveGlslSources && !writeAsHtml) {
+                SaveGlslSourcestoTxt(glslSources);
+            }
+            if (saveGlslSources && writeAsHtml) {
+                SaveGlslSourcestoHtml(glslSources);
+            }
+
+
         }
+
+
+
+        private void SaveGlslSourcestoHtml(List<(int, int, string)> glslSources) {
+            foreach (var glslSourceItem in glslSources) {
+                string htmlFilename = GetGlslHtmlFilename(glslSourceItem.Item3);
+                string glslFilenamepath = @$"{outputDir}\{htmlFilename}";
+                if (File.Exists(glslFilenamepath)) {
+                    continue;
+                }
+                int glslOffset = glslSourceItem.Item1;
+                int glslSize = glslSourceItem.Item2;
+                byte[] glslSourceContent = ReadBytesAtPosition(glslOffset, glslSize);
+                Debug.WriteLine($"writing {glslFilenamepath}");
+                StreamWriter glslFileWriter = new(glslFilenamepath);
+                string htmlHeader = GetHtmlHeader(htmlFilename[0..^5], htmlFilename[0..^5]);
+                glslFileWriter.WriteLine($"{htmlHeader}");
+                glslFileWriter.Flush();
+                glslFileWriter.BaseStream.Write(glslSourceContent, 0, glslSourceContent.Length);
+                glslFileWriter.Flush();
+                glslFileWriter.WriteLine($"{GetHtmlFooter()}");
+                glslFileWriter.Flush();
+                glslFileWriter.Close();
+            }
+        }
+
+
+
+        private void SaveGlslSourcestoTxt(List<(int, int, string)> glslSources) {
+            foreach (var glslSourceItem in glslSources) {
+                string glslFilenamepath = @$"{outputDir}\{GetGlslTxtFilename(glslSourceItem.Item3)}";
+                if (File.Exists(glslFilenamepath)) {
+                    continue;
+                }
+                int glslOffset = glslSourceItem.Item1;
+                int glslSize = glslSourceItem.Item2;
+                byte[] glslSourceContent = ReadBytesAtPosition(glslOffset, glslSize);
+
+                Debug.WriteLine($"writing {glslFilenamepath}");
+                File.WriteAllBytes(glslFilenamepath, glslSourceContent);
+            }
+        }
+
+
 
 
         public void PrintIntWithValue() {
@@ -251,7 +322,13 @@ namespace MyShaderAnalysis.readers {
             ShowByteCount();
             byte[] fileIdBytes = ReadBytes(16);
             string fileIdStr = BytesToString(fileIdBytes);
-            OutputWrite(fileIdStr);
+            if (writeAsHtml) {
+                OutputWrite(GetGlslHtmlLink(fileIdStr));
+            } else {
+                OutputWrite(fileIdStr);
+            }
+
+
             TabComment($"File ID");
             BreakLine();
             return (sourceOffset, sourceSize, fileIdStr);
@@ -283,8 +360,7 @@ namespace MyShaderAnalysis.readers {
                 ShowBytes(100);
                 ShowByteCount();
                 Comment($"... ({endOfSource - offset} bytes of data not shown)");
-            }
-            else if (bytesToRead <= 100 && bytesToRead > 0) {
+            } else if (bytesToRead <= 100 && bytesToRead > 0) {
                 ShowBytes(bytesToRead);
             }
             offset = endOfSource;

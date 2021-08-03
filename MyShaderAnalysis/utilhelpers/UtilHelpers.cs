@@ -1,3 +1,4 @@
+using MyShaderAnalysis.readers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,6 +16,15 @@ namespace MyShaderAnalysis.utilhelpers {
 
 
 
+        private static byte[] zstdDictionary = null;
+
+        public static byte[] getZFrameDictionary() {
+            if (zstdDictionary == null) {
+                zstdDictionary = File.ReadAllBytes(@"X:\checkouts\ValveResourceFormat\files_under_analysis\zstdictionary_2bc2fa87.dat");
+            }
+            return zstdDictionary;
+        }
+
 
 
         public static string RemoveBaseDir(string filenamepath) {
@@ -22,11 +32,9 @@ namespace MyShaderAnalysis.utilhelpers {
             string filename = Path.GetFileName(filenamepath);
             if (dirname.EndsWith(@"\shaders\vfx")) {
                 return @"\shaders\vfx\" + filename;
-            }
-            else if (dirname.EndsWith(@"\shaders-core\vfx")) {
+            } else if (dirname.EndsWith(@"\shaders-core\vfx")) {
                 return @"\shaders-core\vfx\" + filename;
-            }
-            else {
+            } else {
 
                 return filenamepath;
             }
@@ -88,7 +96,69 @@ namespace MyShaderAnalysis.utilhelpers {
         }
 
 
+        public static string GetHtmlHeader(string title, string filename) {
+            string html_header = "" +
+                $"<!DOCTYPE html>\n<html>\n<head>\n  <title>{title}</title>\n" +
+                $"  <link href='../styles.css' rel='stylesheet' type='text/css' />\n" +
+                $"</head>\n<body>\n<b>{filename}</b>\n<pre>";
 
+            return html_header;
+        }
+
+        public static string GetHtmlFooter() {
+            return "</pre>\n</html>";
+        }
+
+
+
+
+
+
+        public static string GetGlslHtmlLink(string glslByteString) {
+            return $"<a href='{GetGlslHtmlFilename(glslByteString)}'>{glslByteString}</a>";
+        }
+
+        public static string GetGlslHtmlFilename(string glslByteString) {
+            return $"glsl-{glslByteString.Trim().Replace(" ", "").ToLower()}.html";
+        }
+
+        public static string GetGlslTxtFilename(string glslByteString) {
+            return $"glsl-{glslByteString.Trim().Replace(" ", "").ToLower()}.txt";
+        }
+
+        public static string GetVsHtmlLink(string vcsFeaturesFilename, string urlText) {
+            return $"<a href='{GetVsHtmlFilename(vcsFeaturesFilename)}'>{urlText}</a>";
+        }
+
+        public static string GetVsHtmlFilename(string vcsFeaturesFilename) {
+            if (!vcsFeaturesFilename.EndsWith("features.vcs")) {
+                throw new ShaderParserException($"this needs to be features vcs file {vcsFeaturesFilename}");
+            }
+            return $"{vcsFeaturesFilename[0..^12]}vs-analysis.html";
+        }
+
+        public static string GetPsHtmlLink(string vcsFeaturesFilename, string urlText) {
+            return $"<a href='{GetPsHtmlFilename(vcsFeaturesFilename)}'>{urlText}</a>";
+        }
+
+        public static string GetPsHtmlFilename(string vcsFeaturesFilename) {
+            if (!vcsFeaturesFilename.EndsWith("features.vcs")) {
+                throw new ShaderParserException($"this needs to be features vcs file {vcsFeaturesFilename}");
+            }
+            return $"{vcsFeaturesFilename[0..^12]}ps-analysis.html";
+        }
+
+        public static string GetZframeTxtFilename(uint zframeId, string vcsFilename) {
+            return $"{vcsFilename[0..^4]}-ZFRAME{zframeId:x08}.txt";
+        }
+
+        public static string GetZframeHtmlFilename(uint zframeId, string vcsFilename) {
+            return $"{vcsFilename[0..^4]}-ZFRAME{zframeId:x08}.html";
+        }
+
+        public static string GetZframeHtmlLink(uint zframeId, string vcsFilename) {
+            return $"<a href='{GetZframeHtmlFilename(zframeId, vcsFilename)}'>zframe[0x{zframeId:x08}]</a>";
+        }
 
 
     }

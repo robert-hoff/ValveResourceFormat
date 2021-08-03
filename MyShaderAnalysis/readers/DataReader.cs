@@ -118,6 +118,17 @@ namespace MyShaderAnalysis.readers {
             return int0;
         }
 
+        public long ReadLong() {
+            long long0 = 0;
+            for (int i = 7; i >=0; i--) {
+                long0 <<= 8;
+                long0 |= databytes[offset+i];
+            }
+            offset += 8;
+            return long0;
+        }
+
+
         public float ReadFloat() {
             float float0 = ReadFloatAtPosition(offset);
             offset += 4;
@@ -196,7 +207,7 @@ namespace MyShaderAnalysis.readers {
         public void ShowBytes(int len, int breakLen, bool breakLine) {
             byte[] bytes0 = ReadBytes(len);
             string byteString = BytesToString(bytes0, breakLen);
-            OutputWrite(byteString+(breakLine ? "\n":""));
+            OutputWrite(byteString + (breakLine ? "\n" : ""));
         }
 
         public void ShowBytesAtPosition(int fromInd, int len) {
@@ -230,7 +241,7 @@ namespace MyShaderAnalysis.readers {
         }
 
         public void TabComment(string message, int tabLength, bool useSlashes) {
-            OutputWrite($"{"".PadLeft(tabLength)}"+(useSlashes?"// ":"")+$"{message}\n");
+            OutputWrite($"{"".PadLeft(tabLength)}" + (useSlashes ? "// " : "") + $"{message}\n");
         }
 
         public static string BytesToString(byte[] databytes) {
@@ -256,7 +267,7 @@ namespace MyShaderAnalysis.readers {
             this.DisableOutput = disableOutput;
         }
         public void OutputWrite(string text) {
-            if (!DisableOutput)  {
+            if (!DisableOutput) {
                 Debug.Write(text);
             }
             if (sw != null) {

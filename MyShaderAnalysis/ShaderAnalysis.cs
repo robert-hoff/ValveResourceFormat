@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using static MyShaderAnalysis.readers.ShaderFileByteAnalysis;
 using static MyShaderAnalysis.utilhelpers.UtilHelpers;
 
@@ -15,25 +16,100 @@ namespace MyShaderAnalysis {
 
         const string PCGL_DIR_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders-core\vfx";
         const string PCGL_DIR_NOT_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders\vfx";
-        const string PC_DIR_PC_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pc\shaders-core\vfx";
-        const string PC_DIR_PC_NOT_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pc\shaders\vfx";
+        const string PC_DIR_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pc\shaders-core\vfx";
+        const string PC_DIR_NOT_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pc\shaders\vfx";
         const string OUTPUT_DIR = @"Z:\active\projects\dota2-sourcesdk-modding\shader-analysis-vcs-format\OUTPUT_DUMP";
+        // const string OUTPUT_DIR = @"Z:\dev\www\vcs.codecreation.dev\multiblend_pcgl_30";
+
+
+        // string urlLink = GetVsHtmlLink("generic_light_pcgl_30_features.vcs", "26 DE E9 0C 44 A2 47 9E 95 48 F4 79 52 50 1B 4A");
+        // string urlLink = GetPsHtmlLink("generic_light_pcgl_30_features.vcs", "6F A2 92 37 A5 A9 CC 52 F3 8D AD 18 72 BC F5 C0");
+        // Debug.WriteLine($"{urlLink}");
 
 
         public static void RunTrials() {
 
-            Trials1VcsFiles();
+            // Trials1VcsFiles();
             // Trials2ZFrames();
             // Trials3();
+            Trials4();
         }
+
+
+        static void Trials4() {
+            // string directoryToUse = PCGL_DIR_CORE;
+            // string[] filenames = {"cables_pcgl_30_features.vcs", "cables_pcgl_30_vs.vcs", "cables_pcgl_30_ps.vcs"};
+
+
+            // Be a bit careful with this kind of stuff because it overloads my filesystem!
+            // note the spritecard files exists in both directories! The one in the NOT_CORE directory is a 'has_psrs' version
+            // string directoryToUse = PCGL_DIR_NOT_CORE;
+            // string directoryToUse = PCGL_DIR_CORE;
+            // string[] filenames = {"spritecard_pcgl_30_features.vcs", "spritecard_pcgl_30_vs.vcs", "spritecard_pcgl_30_ps.vcs"};
+
+            // this collection contains 45000 glsl sources so is even heavier going than the spritecards
+            // string directoryToUse = PCGL_DIR_NOT_CORE;
+            // string[] filenames = { "multiblend_pcgl_30_features.vcs", "multiblend_pcgl_30_vs.vcs", "multiblend_pcgl_30_ps.vcs" };
+
+            string directoryToUse = PCGL_DIR_NOT_CORE;
+            string[] filenames = { "crystal_pcgl_30_features.vcs", "crystal_pcgl_30_vs.vcs", "crystal_pcgl_30_ps.vcs" };
+
+
+
+            // string directoryToUse = PCGL_DIR_NOT_CORE;
+            // string[] filenames = {"", "", ""};
+
+
+            foreach (var filename in filenames) {
+                string filenamepath = @$"{directoryToUse}\{filename}";
+                ShaderFileByteAnalysis shaderFileByteAnalysis = new(filenamepath);
+                shaderFileByteAnalysis.WriteByteAnalysisToHtml(OUTPUT_DIR);
+                ShaderFile shaderFile = new(filenamepath);
+                shaderFile.WriteAllZFramesToHtml(OUTPUT_DIR, true);
+            }
+
+        }
+
 
 
         static void Trials3() {
 
             // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_features.vcs";
-            string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_vs.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_vs.vcs";
             // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
+
+
+            // string filenamepath = PCGL_DIR_CORE + @"\generic_light_pcgl_30_features.vcs";
+            // string filenamepath = PCGL_DIR_CORE + @"\generic_light_pcgl_30_vs.vcs";
+            string filenamepath = PCGL_DIR_CORE + @"\generic_light_pcgl_30_ps.vcs";
+
+
             ShaderFile shaderFile = new(filenamepath);
+
+            // shaderFile.WriteZFrameToFile(0, OUTPUT_DIR);
+            // shaderFile.WriteZFrameToHtml(0, OUTPUT_DIR, true);
+
+            shaderFile.WriteAllZFramesToHtml(OUTPUT_DIR, true);
+
+
+            // string s =GetGlslHtmlLink("0E 08 34 14 78 BA DA 16 B2 63 54 E9 38 BB 89 89");
+            // Debug.WriteLine($"{s}");
+
+
+            //using FileStream fsStream = new(@$"{OUTPUT_DIR}\Bytes.data", FileMode.Create);
+            //using BinaryWriter writer = new(fsStream, Encoding.UTF8);
+            //writer.Write("The");
+            //writer.Write(" strings");
+            //writer.Write(" I");
+            //writer.Write(" want");
+            //writer.Write(".");
+            //writer.Write(new byte[] { 0x50, 0x51, 0x52, 0x53 });
+            //fsStream.Flush();
+            //fsStream.Close();
+
+
+
+
 
         }
 
@@ -63,7 +139,7 @@ namespace MyShaderAnalysis {
 
 
         static void Trials1VcsFiles() {
-            // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_vs.vcs";
+            string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_vs.vcs";
             // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
             // string filenamepath = PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_features.vcs";
             // string filenamepath = PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_vs.vcs";
@@ -74,13 +150,15 @@ namespace MyShaderAnalysis {
             // string filenamepath = PCGL_DIR_CORE + @"\apply_fog_pcgl_40_ps.vcs";
             // string filenamepath = PCGL_DIR_CORE + @"\tools_wireframe_pcgl_40_gs.vcs";
             // string filenamepath = PCGL_DIR_NOT_CORE + @"\spring_meteor_pcgl_30_vs.vcs";
-            string filenamepath = PCGL_DIR_NOT_CORE + @"\cables_pcgl_30_features.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"\cables_pcgl_30_features.vcs";
+
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"\spritecard_pcgl_30_features.vcs";
 
 
             // PrintByteAnalysis(filenamepath);
+            WriteByteAnalysisToHtml(filenamepath);
             // WriteByteAnalysisToFile(filenamepath);
-            ParseAndWriteAllVcsFiles();
-
+            // ParseAndWriteAllVcsFiles();
 
             // ParseCollectionDisableOutput();
         }
@@ -92,6 +170,9 @@ namespace MyShaderAnalysis {
             ShaderFileByteAnalysis shaderFile = new(filenamepath);
             shaderFile.PrintZFrameByteAnalysis(zframeId);
         }
+
+
+
 
         static void ParseZFrameRange(string filenamepath, int min, int max, bool disableOutput, bool disableStatus) {
             ShaderFileByteAnalysis shaderFile = new(filenamepath);
@@ -117,6 +198,12 @@ namespace MyShaderAnalysis {
             ShaderFileByteAnalysis shaderFile = new(filenamepath);
             shaderFile.PrintByteAnalysis();
         }
+
+        static void WriteByteAnalysisToHtml(string filenamepath) {
+            ShaderFileByteAnalysis shaderFile = new(filenamepath);
+            shaderFile.WriteByteAnalysisToHtml(OUTPUT_DIR);
+        }
+
 
         static void WriteByteAnalysisToFile(string filenamepath) {
             ShaderFileByteAnalysis shaderFile = new(filenamepath);
@@ -247,6 +334,14 @@ namespace MyShaderAnalysis {
         }
 
 
+        static string GetHtmlHeader(string title, string filename) {
+            string html_header = "" +
+                $"<!DOCTYPE html>\n<html>\n<head>\n  <title>{title}</title>\n" +
+                $"  <link href='styles.css' rel='stylesheet' type='text/css' />\n" +
+                $"</head>\n<body>\n<b>{filename}</b>\n<pre>";
+
+            return html_header;
+        }
 
 
 

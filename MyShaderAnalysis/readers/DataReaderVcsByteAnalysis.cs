@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MyShaderAnalysis.utilhelpers;
 using static MyShaderAnalysis.readers.ShaderFileByteAnalysis;
+using static MyShaderAnalysis.utilhelpers.UtilHelpers;
 
 namespace MyShaderAnalysis.readers {
 
@@ -18,10 +19,17 @@ namespace MyShaderAnalysis.readers {
 
         }
 
+        bool writeAsHtml = false;
+        string vcsFilename = null;
+
+        public void ConfigureWriteFileAsHtml(string filename) {
+            writeAsHtml = true;
+            this.vcsFilename = filename;
+        }
+
+
         public void ParseFile() {
             // DisableOutput = true;
-
-            BreakLine();
             if (filetype == FILETYPE.features_file) {
                 PrintVcsFeaturesHeader();
             } else if (filetype == FILETYPE.vs_file || filetype == FILETYPE.ps_file
@@ -34,6 +42,8 @@ namespace MyShaderAnalysis.readers {
             if (blockDelim != 17) {
                 throw new ShaderParserException($"unexpected block delim value! {blockDelim}");
             }
+
+
             ShowByteCount();
             ShowBytes(4, false);
             TabComment($"block DELIM always 17");
@@ -49,8 +59,12 @@ namespace MyShaderAnalysis.readers {
             if (filetype == FILETYPE.features_file || filetype == FILETYPE.vs_file) {
                 PrintAllSymbolNameBlocks();
             }
-
             PrintZframes();
+
+            if (writeAsHtml) {
+                return;
+            }
+
             EndOfFile();
         }
 
@@ -132,10 +146,21 @@ namespace MyShaderAnalysis.readers {
             ShowByteCount("File IDs");
             ShowBytes(16, false);
             TabComment("file ID0");
-            ShowBytes(16, false);
+
+            if (writeAsHtml) {
+                OutputWrite($"{GetVsHtmlLink(vcsFilename, ReadBytesAsString(16))}");
+            } else {
+                ShowBytes(16, false);
+            }
             TabComment("file ID1 - ref to vs file");
-            ShowBytes(16, false);
+
+            if (writeAsHtml) {
+                OutputWrite($"{GetPsHtmlLink(vcsFilename, ReadBytesAsString(16))}");
+            } else {
+                ShowBytes(16, false);
+            }
             TabComment("file ID2 - ref to ps file");
+
             ShowBytes(16, false);
             TabComment("file ID3");
             ShowBytes(16, false);
@@ -336,7 +361,7 @@ namespace MyShaderAnalysis.readers {
                 TabComment("dynamic expression", 1);
             }
 
-            // 6 parameters that may follow the dynamic expression
+            // 6 int parameters follow the dynamic expression
             ShowBytes(24, 4);
 
             // a rarely seen file reference
@@ -486,7 +511,7 @@ namespace MyShaderAnalysis.readers {
             }
             BreakLine();
             ShowBytes(4, false);
-            TabComment("blockID (some kind of crc/check)");
+            TabComment("bufferID (some kind of crc/check)");
             BreakLine();
             BreakLine();
         }
@@ -534,28 +559,37 @@ namespace MyShaderAnalysis.readers {
             for (int i = 0; i < zframe_count; i++) {
                 uint zframeId = ReadUIntAtPosition(offset);
                 ShowBytes(8, false);
-                TabComment($"zframe[{zframeId,10}]          {Convert.ToString(zframeId, 2).PadLeft(20,'0')}");
+                TabComment($"{getZFrameIdString(zframeId)}    {Convert.ToString(zframeId, 2).PadLeft(20, '0')}");
                 zFrameIndexes.Add(zframeId);
             }
+
+            if (writeAsHtml) {
+                BreakLine();
+                Comment("rest of data contains compressed zframes");
+                BreakLine();
+                return;
+            }
+
+
             OutputWriteLine("");
             ShowByteCount("zFrame file offsets");
-            foreach (int zframeIndex in zFrameIndexes) {
+            foreach (uint zframeId in zFrameIndexes) {
                 uint zframe_offset = ReadUIntAtPosition(offset);
                 ShowBytes(4, false);
-                TabComment($"{zframe_offset,-10} offset of zframe[{zframeIndex}]");
+                TabComment($"{zframe_offset} offset of {getZFrameIdString(zframeId)}");
             }
 
             uint total_size = ReadUIntAtPosition(offset);
             ShowBytes(4, false);
             TabComment($"{total_size} - end of file");
             OutputWriteLine("");
-            foreach (int zframeIndex in zFrameIndexes) {
-                PrintCompressedZFrame(zframeIndex);
+            foreach (uint zframeId in zFrameIndexes) {
+                PrintCompressedZFrame(zframeId);
             }
         }
 
-        public void PrintCompressedZFrame(int zframeId) {
-            OutputWriteLine($"[{offset}] zframe[{zframeId}]");
+        public void PrintCompressedZFrame(uint zframeId) {
+            OutputWriteLine($"[{offset}] {getZFrameIdString(zframeId)}");
             ShowBytes(4, false);
             TabComment("DELIM (0xfffffffd)");
             int uncompressed_length = ReadIntAtPosition();
@@ -572,6 +606,16 @@ namespace MyShaderAnalysis.readers {
             offset += compressed_length;
             BreakLine();
         }
+
+
+        private string getZFrameIdString(uint zframeId) {
+            if (writeAsHtml) {
+                return GetZframeHtmlLink(zframeId, vcsFilename);
+            } else {
+                return $"zframe[0x{zframeId:x08}]";
+            }
+        }
+
 
         private void EndOfFile() {
             if (offset != databytes.Length) {
