@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using static MyShaderAnalysis.utilhelpers.UtilHelpers;
+using static MyShaderAnalysis.vcsparsing.UtilHelpers;
 
-namespace MyShaderAnalysis.readers {
+namespace MyShaderAnalysis.vcsparsing {
 
     public class DataReaderZFrameByteAnalysis : DataReader {
 

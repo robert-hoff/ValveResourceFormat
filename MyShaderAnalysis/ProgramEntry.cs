@@ -1,4 +1,4 @@
-using static MyShaderAnalysis.utilhelpers.UtilHelpers;
+using static MyShaderAnalysis.vcsparsing.UtilHelpers;
 
 namespace MyShaderAnalysis {
 

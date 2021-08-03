@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using static MyShaderAnalysis.utilhelpers.UtilHelpers;
+using static MyShaderAnalysis.vcsparsing.UtilHelpers;
 
-namespace MyShaderAnalysis.readers {
+namespace MyShaderAnalysis.vcsparsing {
 
     public class DataReaderVcsByteAnalysis : DataReader {
         FILETYPE filetype;

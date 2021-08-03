@@ -1,9 +1,8 @@
 using System.IO;
 using System.Text;
-using MyShaderAnalysis.readers;
 
 
-namespace MyShaderAnalysis.utilhelpers {
+namespace MyShaderAnalysis.vcsparsing {
 
     public class UtilHelpers {
 

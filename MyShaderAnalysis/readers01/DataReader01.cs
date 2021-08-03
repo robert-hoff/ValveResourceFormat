@@ -1,10 +1,9 @@
-using MyShaderAnalysis.readers;
-using MyShaderAnalysis.utilhelpers;
 using MyValveResourceFormat.ThirdParty;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using MyShaderAnalysis.vcsparsing;
 
 
 namespace MyShaderAnalysis.readers01 {

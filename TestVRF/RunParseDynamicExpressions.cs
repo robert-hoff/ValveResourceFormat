@@ -32,7 +32,8 @@ namespace TestVRF
 
 
             byte[] databytes = parseString(input_string);
-            ParseDynamicExpressions result = new ParseDynamicExpressions(databytes);
+            ParseDynamicExpressions result = new ParseDynamicExpressions();
+            result.ParseExpression(databytes);
 
             Debug.WriteLine(result.dynamicExpressionResult);
 

@@ -19,7 +19,10 @@ namespace TestVRF
         static void Main()
         {
 
-            RunParseDynamicExpressions.RunTestData();
+            ShaderAnalysis.RunTrials();
+
+
+            // RunParseDynamicExpressions.RunTestData();
             // CheckExternalVarsHashes.checkNames();
 
             // CollectRenderAttributes.collectAttributes(DOTA2_VPK_ARCHIVE);

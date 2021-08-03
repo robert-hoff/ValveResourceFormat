@@ -1,12 +1,8 @@
-using MyShaderAnalysis.readers;
-using MyShaderAnalysis.utilhelpers;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 using ZstdSharp;
+using MyShaderAnalysis.vcsparsing;
+
+
 
 namespace MyShaderAnalysis.readers01 {
 

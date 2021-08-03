@@ -4,9 +4,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using ZstdSharp;
-using static MyShaderAnalysis.utilhelpers.UtilHelpers;
+using static MyShaderAnalysis.vcsparsing.UtilHelpers;
 
-namespace MyShaderAnalysis.readers {
+namespace MyShaderAnalysis.vcsparsing {
 
     public enum FILETYPE {
         unknown, any, features_file, vs_file, ps_file, gs_file, psrs_file

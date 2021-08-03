@@ -1,10 +1,9 @@
-using MyShaderAnalysis.readers;
-using MyShaderAnalysis.readers01;
-using MyShaderAnalysis.utilhelpers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using MyShaderAnalysis.vcsparsing;
+using MyShaderAnalysis.readers01;
 
 
 namespace MyShaderAnalysis {

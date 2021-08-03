@@ -5,7 +5,7 @@ using System.Collections.Generic;
  * but DataReaderVcsByteAnalysis only prints the data and doesn't make any attempt to capture it
  *
  */
-namespace MyShaderAnalysis.readers {
+namespace MyShaderAnalysis.vcsparsing {
 
     public class DataBlockFeaturesHeader : DataReader {
 

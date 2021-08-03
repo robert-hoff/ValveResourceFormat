@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using MyShaderAnalysis.vcsparsing;
+using TestVRF.vcsparsing;
 
 // using static MyShaderAnalysis.utilhelpers.UtilHelpers;
 
 
-namespace MyShaderAnalysis {
+namespace TestVRF {
 
 
     class ShaderAnalysis {
@@ -20,9 +20,9 @@ namespace MyShaderAnalysis {
 
         public static void RunTrials() {
 
-            WriteAllFilesToHtml();
+            // WriteAllFilesToHtml();
             // WriteZFramesToFile();
-            // ParseZFrames();
+            ParseZFrames();
             // ParseVcsFiles();
         }
 

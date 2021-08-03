@@ -61,7 +61,8 @@ namespace TestVRF {
                     }
 
 
-                    ParseDynamicExpressions decompiledDynamicExpression = new ParseDynamicExpressions(databytes);
+                    ParseDynamicExpressions decompiledDynamicExpression = new ParseDynamicExpressions();
+                    decompiledDynamicExpression.ParseExpression(databytes);
                     Debug.WriteLine($"    {prop_name}");
 
                     showDatabytes(databytes);
