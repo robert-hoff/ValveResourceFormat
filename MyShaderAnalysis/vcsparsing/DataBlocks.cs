@@ -1,26 +1,27 @@
 using System;
 using System.Collections.Generic;
-
+using System.Diagnostics;
 
 namespace MyShaderAnalysis.vcsparsing {
 
 
     public class DataBlockFeaturesHeader : DataBlock {
 
-        bool has_psrs_file;
-        int unknown_val;
-        string file_description;
+        public bool has_psrs_file;
+        public int unknown_val;
+        public string file_description;
         // not sure what these are
-        int arg0;
-        int arg1;
-        int arg2;
-        int arg3;
-        int arg4;
-        int arg5;
-        int arg6;
-        int arg7;
-        List<(string, string)> mainParams = new();
-        List<string> fileIDs = new();
+        public int arg0;
+        public int arg1;
+        public int arg2;
+        public int arg3;
+        public int arg4;
+        public int arg5;
+        public int arg6;
+        public int arg7;
+        public List<(string, string)> mainParams = new();
+        public List<string> fileIDs = new();
+
 
         public DataBlockFeaturesHeader(DataReader datareader, int start) : base(datareader, start) {
             int psrs_arg = datareader.ReadInt();
@@ -48,13 +49,13 @@ namespace MyShaderAnalysis.vcsparsing {
 
             for (int i = 0; i < nr_of_arguments; i++) {
                 string string_arg0 = datareader.ReadNullTermStringAtPosition();
-                string string_arg1 = null;
+                string string_arg1 = "";
                 datareader.offset += 128;
                 if (datareader.ReadInt() > 0) {
                     string_arg1 = datareader.ReadNullTermStringAtPosition();
                     datareader.offset += 68;
                 }
-                mainParams.Add((string_arg0, string_arg0));
+                mainParams.Add((string_arg0, string_arg1));
             }
 
             for (int i = 0; i < 8; i++) {
@@ -65,11 +66,92 @@ namespace MyShaderAnalysis.vcsparsing {
             }
         }
 
+
         public override void PrintByteSummary() {
-            datareader.OutputWriteLine("features-header summary");
-            throw new NotImplementedException();
+            datareader.offset = start;
+            datareader.ShowByteCount("features header");
+            int has_psrs_file = datareader.ReadIntAtPosition();
+            datareader.ShowBytes(4, "has_psrs_file = " + (has_psrs_file > 0 ? "True" : "False"));
+            int unknown_val = datareader.ReadIntAtPosition();
+            datareader.ShowBytes(4, $"unknown_val = {unknown_val} (usually 0)");
+            int len_name_description = datareader.ReadIntAtPosition();
+            datareader.ShowBytes(4, $"{len_name_description} len of name");
+            datareader.BreakLine();
+            string name_desc = datareader.ReadNullTermStringAtPosition();
+            datareader.ShowByteCount(name_desc);
+            datareader.ShowBytes(len_name_description + 1);
+            datareader.BreakLine();
+            datareader.ShowByteCount();
+            uint arg1 = datareader.ReadUIntAtPosition(0);
+            uint arg2 = datareader.ReadUIntAtPosition(4);
+            uint arg3 = datareader.ReadUIntAtPosition(8);
+            uint arg4 = datareader.ReadUIntAtPosition(12);
+            datareader.ShowBytes(16, 4, breakLine: false);
+            datareader.TabComment($"({arg1},{arg2},{arg3},{arg4})");
+            uint arg5 = datareader.ReadUIntAtPosition(0);
+            uint arg6 = datareader.ReadUIntAtPosition(4);
+            uint arg7 = datareader.ReadUIntAtPosition(8);
+            uint arg8 = datareader.ReadUIntAtPosition(12);
+            datareader.ShowBytes(16, 4, breakLine: false);
+            datareader.TabComment($"({arg5},{arg6},{arg7},{arg8})");
+            datareader.BreakLine();
+            datareader.ShowByteCount();
+            int nr_of_arguments = datareader.ReadIntAtPosition();
+            datareader.ShowBytes(4, $"nr of arguments {nr_of_arguments}");
+            if (has_psrs_file == 1) {
+                // NOTE nr_of_arguments is overwritten
+                nr_of_arguments = datareader.ReadIntAtPosition();
+                datareader.ShowBytes(4, $"nr of arguments overriden ({nr_of_arguments})");
+            }
+            datareader.BreakLine();
+            datareader.ShowByteCount();
+            for (int i = 0; i < nr_of_arguments; i++) {
+                string default_name = datareader.ReadNullTermStringAtPosition();
+                datareader.Comment($"{default_name}");
+                datareader.ShowBytes(128);
+                uint has_s_argument = datareader.ReadUIntAtPosition();
+                datareader.ShowBytes(4);
+                if (has_s_argument > 0) {
+                    uint sSymbolArgValue = datareader.ReadUIntAtPosition(64);
+                    string sSymbolName = datareader.ReadNullTermStringAtPosition();
+                    datareader.Comment($"{sSymbolName}");
+                    datareader.ShowBytes(68);
+                }
+            }
+            datareader.BreakLine();
+            datareader.ShowByteCount("File IDs");
+            datareader.ShowBytes(16, "file ID0");
+            datareader.ShowBytes(16, breakLine: false);
+            datareader.TabComment("file ID1 - ref to vs file");
+            datareader.ShowBytes(16, breakLine: false);
+            datareader.TabComment("file ID2 - ref to ps file");
+            datareader.ShowBytes(16, "file ID3");
+            datareader.ShowBytes(16, "file ID4");
+            datareader.ShowBytes(16, "file ID5");
+            datareader.ShowBytes(16, "file ID6");
+            if (has_psrs_file == 0) {
+                datareader.ShowBytes(16, "file ID7 - shared by all Dota2 vcs files");
+            }
+            if (has_psrs_file == 1) {
+                datareader.ShowBytes(16, "file ID7 - reference to psrs file");
+                datareader.ShowBytes(16, "file ID8 - shared by all Dota2 vcs files");
+            }
+            datareader.BreakLine();
         }
+
+
+        public void ShowMainParams() {
+
+            foreach (var parampair in mainParams) {
+                Debug.WriteLine($"       {parampair.Item1.PadRight(50)} {parampair.Item2}");
+            }
+
+        }
+
     }
+
+
+
 
 
 
@@ -87,14 +169,14 @@ namespace MyShaderAnalysis.vcsparsing {
 
 
     public class DataBlockSfBlock : DataBlock {
-        string name0;
-        string name1;
-        int arg0;
-        int arg1;
-        int arg2;
-        int arg3;
-        int arg4;
-        List<string> additionalParams = new();
+        public string name0;
+        public string name1;
+        public int arg0;
+        public int arg1;
+        public int arg2;
+        public int arg3;
+        public int arg4;
+        public List<string> additionalParams = new();
 
         public DataBlockSfBlock(DataReader datareader, int start) : base(datareader, start) {
             name0 = datareader.ReadNullTermStringAtPosition();

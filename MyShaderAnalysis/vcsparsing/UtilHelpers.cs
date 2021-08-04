@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 
@@ -80,6 +81,42 @@ namespace MyShaderAnalysis.vcsparsing {
             }
             return filesFound;
         }
+
+
+
+        public static (string, string, string) GetTriple(string ft) {
+            if (!ft.EndsWith("features.vcs")) {
+                throw new System.Exception("not a features file");
+            }
+            string vs = $"{ft[0..^12]}vs.vcs";
+            string ps = $"{ft[0..^12]}ps.vcs";
+
+            if (File.Exists(vs) && File.Exists(ps)) {
+                return (ft, vs, ps);
+            } else {
+                throw new System.Exception($"ps/vs files don't exist for {ft}");
+            }
+        }
+
+
+        public static List<(string, string, string)> GetFeaturesVsPsFileTriple(string dir1, string dir2) {
+            List<(string, string, string)> fileTriplets = new();
+            List<string> featuresFiles = GetVcsFiles(dir1, dir2, FILETYPE.features_file, -1);
+            foreach (string featFile in featuresFiles) {
+                string vsFile = $"{featFile[0..^12]}vs.vcs";
+                string psFile = $"{featFile[0..^12]}ps.vcs";
+                if (File.Exists(vsFile) && File.Exists(psFile)) {
+                    fileTriplets.Add((featFile, vsFile, psFile));
+                }
+            }
+
+            fileTriplets.Sort();
+            return fileTriplets;
+        }
+
+
+
+
 
         public static string RemoveBaseDir(string filenamepath) {
             string dirname = Path.GetDirectoryName(filenamepath);
@@ -201,6 +238,55 @@ namespace MyShaderAnalysis.vcsparsing {
             h *= M;
             h ^= h >> 15;
             return h;
+        }
+
+
+
+        public static Dictionary<int, int> collectValuesInt = new();
+        public static Dictionary<string, int> collectValuesString = new();
+
+        public static void CollectIntValue(int val) {
+            int currIterator = collectValuesInt.GetValueOrDefault(val, 0);
+            collectValuesInt[val] = currIterator + 1;
+        }
+        public static void CollectStringValue(string val) {
+            int currIterator = collectValuesString.GetValueOrDefault(val, 0);
+            collectValuesString[val] = currIterator + 1;
+        }
+
+
+        public static void PrintReport(bool showCount = true) {
+            List<int> intvalues = new();
+            foreach (int i in collectValuesInt.Keys) {
+                intvalues.Add(i);
+            }
+            intvalues.Sort();
+            foreach (int i in intvalues) {
+                if (showCount) {
+                    collectValuesInt.TryGetValue(i, out int instanceCount);
+                    Debug.WriteLine($"{i,5}        {instanceCount,3}");
+                } else {
+                    Debug.WriteLine($"{i}");
+                }
+            }
+
+            List<string> stringvalues = new();
+            foreach (string s in collectValuesString.Keys) {
+                stringvalues.Add(s);
+            }
+            stringvalues.Sort();
+            foreach (string s in stringvalues) {
+                if (showCount) {
+                    collectValuesString.TryGetValue(s, out int instanceCount);
+                    Debug.WriteLine($"{s.PadRight(80)}        {instanceCount,3}");
+                } else {
+                    Debug.WriteLine($"{s}");
+                }
+            }
+
+            collectValuesInt = new();
+            collectValuesString = new();
+
         }
 
 

@@ -9,20 +9,20 @@ using static MyShaderAnalysis.vcsparsing.UtilHelpers;
 namespace MyShaderAnalysis.vcsparsing {
 
     public class ShaderFile {
-        DataReader datareader;
+        private DataReader datareader;
         public string filenamepath;
         public FILETYPE vcsFiletype = FILETYPE.unknown;
-        DataBlockFeaturesHeader featuresHeader = null;
-        DataBlockVsPsHeader vspsHeader = null;
-        List<DataBlockSfBlock> sfBlocks = new();
-        List<CompatibilityBlock> compatibilityBlocks = new();
-        List<DBlock> dBlocks = new();
-        List<UnknownBlock> unknownBlocks = new();
-        List<ParamBlock> paramBlocks = new();
-        List<MipmapBlock> mipmapBlocks = new();
-        List<BufferBlock> bufferBlocks = new();
-        List<SymbolsBlock> symbolBlocks = new();
-        SortedDictionary<long, int> zframesLookup = new(); // (frameID to offset)
+        public DataBlockFeaturesHeader featuresHeader = null;
+        public DataBlockVsPsHeader vspsHeader = null;
+        public List<DataBlockSfBlock> sfBlocks = new();
+        public List<CompatibilityBlock> compatibilityBlocks = new();
+        public List<DBlock> dBlocks = new();
+        public List<UnknownBlock> unknownBlocks = new();
+        public List<ParamBlock> paramBlocks = new();
+        public List<MipmapBlock> mipmapBlocks = new();
+        public List<BufferBlock> bufferBlocks = new();
+        public List<SymbolsBlock> symbolBlocks = new();
+        public SortedDictionary<long, int> zframesLookup = new(); // (frameID to offset)
 
 
         public ShaderFile(string filenamepath) {
