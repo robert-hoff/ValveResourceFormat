@@ -1,13 +1,11 @@
+using System;
 using System.Collections.Generic;
 
-/*
- * most of these need implementation, the complete parser is implemented in DataReaderVcsByteAnalysis.cs
- * but DataReaderVcsByteAnalysis only prints the data and doesn't make any attempt to capture it
- *
- */
+
 namespace TestVRF.vcsparsing {
 
-    public class DataBlockFeaturesHeader : DataReader {
+
+    public class DataBlockFeaturesHeader : DataBlock {
 
         bool has_psrs_file;
         int unknown_val;
@@ -24,57 +22,71 @@ namespace TestVRF.vcsparsing {
         List<(string, string)> mainParams = new();
         List<string> fileIDs = new();
 
-        public DataBlockFeaturesHeader(byte[] data, int start) : base(data, start) {
-            int psrs_arg = ReadInt();
+        public DataBlockFeaturesHeader(DataReader datareader, int start) : base(datareader, start) {
+            int psrs_arg = datareader.ReadInt();
             if (psrs_arg != 0 && psrs_arg != 1) {
                 throw new ShaderParserException($"unexpected value psrs_arg = {psrs_arg}");
             }
             has_psrs_file = psrs_arg > 0;
-            unknown_val = ReadInt();
-            ReadInt(); // length of name, but not needed because it's always null-term
-            file_description = ReadNullTermString();
-            arg0 = ReadInt();
-            arg1 = ReadInt();
-            arg2 = ReadInt();
-            arg3 = ReadInt();
-            arg4 = ReadInt();
-            arg5 = ReadInt();
-            arg6 = ReadInt();
-            arg7 = ReadInt();
+            unknown_val = datareader.ReadInt();
+            datareader.ReadInt(); // length of name, but not needed because it's always null-term
+            file_description = datareader.ReadNullTermString();
+            arg0 = datareader.ReadInt();
+            arg1 = datareader.ReadInt();
+            arg2 = datareader.ReadInt();
+            arg3 = datareader.ReadInt();
+            arg4 = datareader.ReadInt();
+            arg5 = datareader.ReadInt();
+            arg6 = datareader.ReadInt();
+            arg7 = datareader.ReadInt();
 
-            int nr_of_arguments = ReadInt();
+            int nr_of_arguments = datareader.ReadInt();
              // NOTE nr_of_arguments is overwritten
             if (has_psrs_file) {
-                nr_of_arguments = ReadInt();
+                nr_of_arguments = datareader.ReadInt();
             }
 
             for (int i = 0; i < nr_of_arguments; i++) {
-                string string_arg0 = ReadNullTermStringAtPosition();
+                string string_arg0 = datareader.ReadNullTermStringAtPosition();
                 string string_arg1 = null;
-                offset += 128;
-                if (ReadInt() > 0) {
-                    string_arg1 = ReadNullTermStringAtPosition();
-                    offset += 68;
+                datareader.offset += 128;
+                if (datareader.ReadInt() > 0) {
+                    string_arg1 = datareader.ReadNullTermStringAtPosition();
+                    datareader.offset += 68;
                 }
                 mainParams.Add((string_arg0, string_arg0));
             }
 
             for (int i = 0; i < 8; i++) {
-                fileIDs.Add(ReadBytesAsString(16).Replace(" ", "").ToLower());
+                fileIDs.Add(datareader.ReadBytesAsString(16).Replace(" ", "").ToLower());
             }
             if (has_psrs_file) {
-                fileIDs.Add(ReadBytesAsString(16).Replace(" ", "").ToLower());
+                fileIDs.Add(datareader.ReadBytesAsString(16).Replace(" ", "").ToLower());
             }
         }
-    }
 
-    // needs implemenation
-    public class DataBlockVsPsHeader : DataReader {
-        public DataBlockVsPsHeader(byte[] data, int start) : base(data, start) {
+        public override void PrintByteSummary() {
+            datareader.OutputWriteLine("features-header summary");
+            throw new NotImplementedException();
         }
     }
 
-    public class DataBlockSfBlock : DataReader {
+
+
+
+    // needs implemenation
+    public class DataBlockVsPsHeader : DataBlock {
+        public DataBlockVsPsHeader(DataReader datareader, int start) : base(datareader, start) {
+            datareader.offset += 36;
+        }
+
+        public override void PrintByteSummary() {
+            throw new NotImplementedException();
+        }
+    }
+
+
+    public class DataBlockSfBlock : DataBlock {
         string name0;
         string name1;
         int arg0;
@@ -84,50 +96,63 @@ namespace TestVRF.vcsparsing {
         int arg4;
         List<string> additionalParams = new();
 
-        public DataBlockSfBlock(byte[] data, int start) : base(data, start) {
-            name0 = ReadNullTermStringAtPosition();
-            offset += 64;
-            name1 = ReadNullTermStringAtPosition();
-            offset += 64;
-            arg0 = ReadInt();
-            arg1 = ReadInt();
-            arg2 = ReadInt();
-            arg3 = ReadInt();
-            arg4 = ReadInt();
-            int additionalStringsCount = ReadInt();
+        public DataBlockSfBlock(DataReader datareader, int start) : base(datareader, start) {
+            name0 = datareader.ReadNullTermStringAtPosition();
+            datareader.offset += 64;
+            name1 = datareader.ReadNullTermStringAtPosition();
+            datareader.offset += 64;
+            arg0 = datareader.ReadInt();
+            arg1 = datareader.ReadInt();
+            arg2 = datareader.ReadInt();
+            arg3 = datareader.ReadInt();
+            arg4 = datareader.ReadInt();
+            int additionalStringsCount = datareader.ReadInt();
             for (int i = 0; i < additionalStringsCount; i++) {
-                additionalParams.Add(ReadNullTermString());
+                additionalParams.Add(datareader.ReadNullTermString());
             }
         }
-    }
 
-    /*
-     * needs implemenation
-     * All CompatibilityBlocks are 472, the current parser works by instantiating
-     * the blocks and incrementing the offste by 472. (i.e. no data is retrieved)
-     *
-     */
-    public class CompatibilityBlock : DataReader {
-        public CompatibilityBlock(byte[] data, int start) : base(data, start) {
-
+        public override void PrintByteSummary() {
+            throw new NotImplementedException();
         }
     }
+
+
+    public class CompatibilityBlock : DataBlock {
+        public CompatibilityBlock(DataReader datareader, int start) : base(datareader, start) {
+
+        }
+
+        public override void PrintByteSummary() {
+            throw new NotImplementedException();
+        }
+    }
+
 
     // needs implemenation (parser works by moving the offset 152 bytes for each d-block)
-    public class DBlock : DataReader {
-        public DBlock(byte[] data, int start) : base(data, start) {
+    public class DBlock : DataBlock {
+        public DBlock(DataReader datareader, int start) : base(datareader, start) {
 
         }
+
+        public override void PrintByteSummary() {
+            throw new NotImplementedException();
+        }
     }
+
 
     // needs implemenation (parser works by moving the offset 472 bytes for each unknown-block)
-    public class UnknownBlock : DataReader {
-        public UnknownBlock(byte[] data, int start) : base(data, start) {
+    public class UnknownBlock : DataBlock {
+        public UnknownBlock(DataReader datareader, int start) : base(datareader, start) {
 
+        }
+        public override void PrintByteSummary() {
+            throw new NotImplementedException();
         }
     }
 
-    public class ParamBlock : DataReader {
+
+    public class ParamBlock : DataBlock {
         string name0;
         string name1;
         string name2;
@@ -153,112 +178,127 @@ namespace TestVRF.vcsparsing {
         string command0;
         string command1;
 
-        public ParamBlock(byte[] data, int start) : base(data, start) {
-            name0 = ReadNullTermStringAtPosition();
-            offset += 64;
-            name1 = ReadNullTermStringAtPosition();
-            offset += 64;
-            lead0 = ReadInt();
-            lead1 = ReadFloat();
-            name2 = ReadNullTermStringAtPosition();
-            offset += 64;
-            paramType = ReadInt();
+        public ParamBlock(DataReader datareader, int start) : base(datareader, start) {
+            name0 = datareader.ReadNullTermStringAtPosition();
+            datareader.offset += 64;
+            name1 = datareader.ReadNullTermStringAtPosition();
+            datareader.offset += 64;
+            lead0 = datareader.ReadInt();
+            lead1 = datareader.ReadFloat();
+            name2 = datareader.ReadNullTermStringAtPosition();
+            datareader.offset += 64;
+            paramType = datareader.ReadInt();
             if (paramType == 6 || paramType == 7) {
-                int dynExpLen = ReadInt();
-                dynExp = ReadBytes(dynExpLen);
+                int dynExpLen = datareader.ReadInt();
+                dynExp = datareader.ReadBytes(dynExpLen);
             }
-            arg0 = ReadInt();
-            arg1 = ReadInt();
-            arg2 = ReadInt();
-            arg3 = ReadInt();
-            arg4 = ReadInt();
-            arg5 = ReadInt();
+            arg0 = datareader.ReadInt();
+            arg1 = datareader.ReadInt();
+            arg2 = datareader.ReadInt();
+            arg3 = datareader.ReadInt();
+            arg4 = datareader.ReadInt();
+            arg5 = datareader.ReadInt();
+            fileref = datareader.ReadNullTermStringAtPosition();
+            datareader.offset += 64;
+            for (int i = 0; i < 4; i++) {
+                ranges0[i] = datareader.ReadInt();
+            }
+            for (int i = 0; i < 4; i++) {
+                ranges1[i] = datareader.ReadInt();
+            }
+            for (int i = 0; i < 4; i++) {
+                ranges2[i] = datareader.ReadInt();
+            }
+            for (int i = 0; i < 4; i++) {
+                ranges3[i] = datareader.ReadFloat();
+            }
+            for (int i = 0; i < 4; i++) {
+                ranges4[i] = datareader.ReadFloat();
+            }
+            for (int i = 0; i < 4; i++) {
+                ranges5[i] = datareader.ReadFloat();
+            }
+            for (int i = 0; i < 4; i++) {
+                ranges6[i] = datareader.ReadInt();
+            }
+            for (int i = 0; i < 4; i++) {
+                ranges7[i] = datareader.ReadInt();
+            }
+            command0 = datareader.ReadNullTermStringAtPosition();
+            datareader.offset += 32;
+            command1 = datareader.ReadNullTermStringAtPosition();
+            datareader.offset += 32;
+        }
 
-            fileref = ReadNullTermStringAtPosition();
-            offset += 64;
-            for (int i = 0; i < 4; i++) {
-                ranges0[i] = ReadInt();
-            }
-            for (int i = 0; i < 4; i++) {
-                ranges1[i] = ReadInt();
-            }
-            for (int i = 0; i < 4; i++) {
-                ranges2[i] = ReadInt();
-            }
-            for (int i = 0; i < 4; i++) {
-                ranges3[i] = ReadFloat();
-            }
-            for (int i = 0; i < 4; i++) {
-                ranges4[i] = ReadFloat();
-            }
-            for (int i = 0; i < 4; i++) {
-                ranges5[i] = ReadFloat();
-            }
-            for (int i = 0; i < 4; i++) {
-                ranges6[i] = ReadInt();
-            }
-            for (int i = 0; i < 4; i++) {
-                ranges7[i] = ReadInt();
-            }
-            command0 = ReadNullTermStringAtPosition();
-            offset += 32;
-            command1 = ReadNullTermStringAtPosition();
-            offset += 32;
+        public override void PrintByteSummary() {
+            throw new NotImplementedException();
         }
     }
+
 
     // needs implemenation (parser works by moving the offset 280 bytes for each mipmap-block)
-    public class MipmapBlock : DataReader {
-        public MipmapBlock(byte[] data, int start) : base(data, start) {
+    public class MipmapBlock : DataBlock {
+        public MipmapBlock(DataReader datareader, int start) : base(datareader, start) {
 
+        }
+
+        public override void PrintByteSummary() {
+            throw new NotImplementedException();
         }
     }
 
-    public class BufferBlock : DataReader {
+
+    public class BufferBlock : DataBlock {
         string name;
         int bufferSize;
         List<(string, int, int, int, int)> bufferParams = new();
         uint blockId;
 
-        public BufferBlock(byte[] data, int start) : base(data, start) {
-            name = ReadNullTermStringAtPosition();
-            offset += 64;
-            bufferSize = ReadInt();
-            offset += 4; // next 4 bytes are always 0
-            int paramCount = ReadInt();
+        public BufferBlock(DataReader datareader, int start) : base(datareader, start) {
+            name = datareader.ReadNullTermStringAtPosition();
+            datareader.offset += 64;
+            bufferSize = datareader.ReadInt();
+            datareader.offset += 4; // next 4 bytes are always 0
+            int paramCount = datareader.ReadInt();
             for (int i = 0; i < paramCount; i++) {
-                string paramName = ReadNullTermStringAtPosition();
-                offset += 64;
-                int bufferIndex = ReadInt();
-                int arg0 = ReadInt();
-                int arg1 = ReadInt();
-                int arg2 = ReadInt();
+                string paramName = datareader.ReadNullTermStringAtPosition();
+                datareader.offset += 64;
+                int bufferIndex = datareader.ReadInt();
+                int arg0 = datareader.ReadInt();
+                int arg1 = datareader.ReadInt();
+                int arg2 = datareader.ReadInt();
                 bufferParams.Add((paramName, bufferIndex, arg0, arg1, arg2));
             }
-            blockId = ReadUInt();
+            blockId = datareader.ReadUInt();
+        }
+
+        public override void PrintByteSummary() {
+            throw new NotImplementedException();
         }
     }
 
-    public class SymbolsBlock : DataReader {
+
+    public class SymbolsBlock : DataBlock {
         List<(string, string, string, int)> symbolParams = new();
 
-        public SymbolsBlock(byte[] data, int start) : base(data, start) {
-            int namesCount = ReadInt();
+        public SymbolsBlock(DataReader datareader, int start) : base(datareader, start) {
+            int namesCount = datareader.ReadInt();
             for (int i = 0; i < namesCount; i++) {
-                string name0 = ReadNullTermString();
-                string name1 = ReadNullTermString();
-                string name2 = ReadNullTermString();
-                int int0 = ReadInt();
+                string name0 = datareader.ReadNullTermString();
+                string name1 = datareader.ReadNullTermString();
+                string name2 = datareader.ReadNullTermString();
+                int int0 = datareader.ReadInt();
                 symbolParams.Add((name0, name1, name2, int0));
             }
         }
+
+        public override void PrintByteSummary() {
+            throw new NotImplementedException();
+        }
     }
 
 
-
-
 }
-
 
 
 

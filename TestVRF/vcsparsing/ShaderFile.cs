@@ -1,21 +1,17 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
+using System.IO;
 using ZstdSharp;
 using static TestVRF.vcsparsing.UtilHelpers;
 
+
 namespace TestVRF.vcsparsing {
 
-    public enum FILETYPE {
-        unknown, any, features_file, vs_file, ps_file, gs_file, psrs_file
-    };
-
-    public class ShaderFile : DataReader {
-        string filenamepath;
-        string filename;
-        private FILETYPE vcsFiletype = FILETYPE.unknown;
+    public class ShaderFile {
+        DataReader datareader;
+        public string filenamepath;
+        public FILETYPE vcsFiletype = FILETYPE.unknown;
         DataBlockFeaturesHeader featuresHeader = null;
         DataBlockVsPsHeader vspsHeader = null;
         List<DataBlockSfBlock> sfBlocks = new();
@@ -26,151 +22,120 @@ namespace TestVRF.vcsparsing {
         List<MipmapBlock> mipmapBlocks = new();
         List<BufferBlock> bufferBlocks = new();
         List<SymbolsBlock> symbolBlocks = new();
-        Dictionary<long, int> zframesLookup = new(); // (frameID to offset)
+        SortedDictionary<long, int> zframesLookup = new(); // (frameID to offset)
 
-        public ShaderFile(string filenamepath) : base(File.ReadAllBytes(filenamepath)) {
+
+        public ShaderFile(string filenamepath) {
             this.filenamepath = filenamepath;
-            filename = Path.GetFileName(filenamepath);
             vcsFiletype = GetVcsFileType(filenamepath);
+            datareader = new DataReader(File.ReadAllBytes(filenamepath));
 
-            int magic = ReadInt();
+            int magic = datareader.ReadInt();
             if (magic != 0x32736376) {
                 throw new ShaderParserException($"wrong file id {magic:x}");
             }
-            int version = ReadInt();
+            int version = datareader.ReadInt();
             if (version != 64) {
                 throw new ShaderParserException($"wrong version {version}, expecting 64");
             }
 
             if (vcsFiletype == FILETYPE.features_file) {
-                featuresHeader = new DataBlockFeaturesHeader(databytes, 8);
-                offset = featuresHeader.GetFileOffset();
+                featuresHeader = new DataBlockFeaturesHeader(datareader, datareader.offset);
             } else if (vcsFiletype == FILETYPE.vs_file || vcsFiletype == FILETYPE.ps_file
                    || vcsFiletype == FILETYPE.gs_file || vcsFiletype == FILETYPE.psrs_file) {
-                vspsHeader = new DataBlockVsPsHeader(databytes, 8);
-                offset += 36;
+                vspsHeader = new DataBlockVsPsHeader(datareader, datareader.offset);
+
             } else {
                 throw new ShaderParserException($"can't parse this filetype: {vcsFiletype}");
             }
 
-            int block_delim = ReadInt();
+
+
+            int block_delim = datareader.ReadInt();
             if (block_delim != 17) {
                 throw new ShaderParserException($"unexpected value for block_delom = {block_delim}, expecting 17");
             }
-            int sfBlockCount = ReadInt();
+            int sfBlockCount = datareader.ReadInt();
             for (int i = 0; i < sfBlockCount; i++) {
-                DataBlockSfBlock nextSfBlock = new(databytes, offset);
+                DataBlockSfBlock nextSfBlock = new(datareader, datareader.offset);
                 sfBlocks.Add(nextSfBlock);
-                offset = nextSfBlock.GetFileOffset();
             }
             // always 472 bytes
-            int compatBlockCount = ReadInt();
+            int compatBlockCount = datareader.ReadInt();
             for (int i = 0; i < compatBlockCount; i++) {
-                CompatibilityBlock nextCompatibilityBlock = new(databytes, offset);
+                CompatibilityBlock nextCompatibilityBlock = new(datareader, datareader.offset);
                 compatibilityBlocks.Add(nextCompatibilityBlock);
-                offset += 472;
+                datareader.offset += 472;
 
             }
+
+
+
             // always 152 bytes
-            int dBlockCount = ReadInt();
+            int dBlockCount = datareader.ReadInt();
             for (int i = 0; i < dBlockCount; i++) {
-                DBlock nextDBlock = new(databytes, offset);
+                DBlock nextDBlock = new(datareader, datareader.offset);
                 dBlocks.Add(nextDBlock);
-                offset += 152;
+                datareader.offset += 152;
             }
 
             // always 472 bytes
-            int unknownBlockCount = ReadInt();
+            int unknownBlockCount = datareader.ReadInt();
             for (int i = 0; i < unknownBlockCount; i++) {
-                UnknownBlock nextUnknownBlock = new(databytes, offset);
+                UnknownBlock nextUnknownBlock = new(datareader, datareader.offset);
                 unknownBlocks.Add(nextUnknownBlock);
-                offset += 472;
+                datareader.offset += 472;
             }
 
-            int paramBlockCount = ReadInt();
+            int paramBlockCount = datareader.ReadInt();
             for (int i = 0; i < paramBlockCount; i++) {
-                ParamBlock nextParamBlock = new(databytes, offset);
+                ParamBlock nextParamBlock = new(datareader, datareader.offset);
                 paramBlocks.Add(nextParamBlock);
-                offset = nextParamBlock.GetFileOffset();
             }
 
             // always 280 bytes
-            int mipmapBlockCount = ReadInt();
+            int mipmapBlockCount = datareader.ReadInt();
             for (int i = 0; i < mipmapBlockCount; i++) {
-                MipmapBlock nextMipmapBlock = new(databytes, offset);
+                MipmapBlock nextMipmapBlock = new(datareader, datareader.offset);
                 mipmapBlocks.Add(nextMipmapBlock);
-                offset += 280;
+                datareader.offset += 280;
             }
 
-            int bufferBlockCount = ReadInt();
+            int bufferBlockCount = datareader.ReadInt();
             for (int i = 0; i < bufferBlockCount; i++) {
-                BufferBlock nextBufferBlock = new(databytes, offset);
+                BufferBlock nextBufferBlock = new(datareader, datareader.offset);
                 bufferBlocks.Add(nextBufferBlock);
-                offset = nextBufferBlock.GetFileOffset();
             }
+
+
 
             if (vcsFiletype == FILETYPE.features_file || vcsFiletype == FILETYPE.vs_file) {
-                int sybmolsBlockCount = ReadInt();
+                int sybmolsBlockCount = datareader.ReadInt();
                 for (int i = 0; i < sybmolsBlockCount; i++) {
-                    SymbolsBlock nextSymbolsBlock = new(databytes, offset);
+                    SymbolsBlock nextSymbolsBlock = new(datareader, datareader.offset);
                     symbolBlocks.Add(nextSymbolsBlock);
-                    offset = nextSymbolsBlock.GetFileOffset();
                 }
             }
 
             List<long> zframeIDs = new();
-            int zframesCount = ReadInt();
+            int zframesCount = datareader.ReadInt();
             for (int i = 0; i < zframesCount; i++) {
-                zframeIDs.Add(ReadLong());
+                zframeIDs.Add(datareader.ReadLong());
             }
 
             foreach (long zframeID in zframeIDs) {
-                zframesLookup.Add(zframeID, ReadInt());
+                zframesLookup.Add(zframeID, datareader.ReadInt());
+            }
+
+            if (zframesCount>0) {
+                datareader.offset = datareader.ReadInt();
+            }
+            if (datareader.offset != datareader.databytes.Length) {
+                throw new ShaderParserException("End of file not reached!");
             }
         }
 
-        public void WriteZFrameToFile(int zframeIndex, string outputdir) {
-            long zframeId = zframesLookup.ElementAt(zframeIndex).Key;
-            // string outputFilename = $"{filename[0..^4]}-ZFRAME{zframeId:x08}.txt";
-            string outputFilename = GetZframeTxtFilename((uint) zframeId, filename);
-            string outputFilenamepath = @$"{outputdir}\{outputFilename}";
-            byte[] uncompressedZframe = GetDecompressedZFrameByIndex(zframeIndex);
-            DataReaderZFrameByteAnalysis zFrameParser = new(uncompressedZframe, vcsFiletype);
-            Debug.WriteLine($"writing to {outputFilenamepath}");
-            StreamWriter sw = new(outputFilenamepath);
-            zFrameParser.ConfigureWriteToFile(sw, true);
-            zFrameParser.ParseFile();
-            sw.Flush();
-            sw.Close();
-        }
 
-        public void WriteAllZFramesToHtml(string outputDir, bool includeGlslSources) {
-            for (int i = 0; i < zframesLookup.Count; i++) {
-                WriteZFrameToHtml(i, outputDir, includeGlslSources);
-            }
-        }
-
-        public void WriteZFrameToHtml(int zframeIndex, string outputDir, bool includeGlslSources) {
-            long zframeId = zframesLookup.ElementAt(zframeIndex).Key;
-            // string outputFilename = $"{filename[0..^4]}-ZFRAME{zframeId:x08}.txt";
-            string outputFilename = GetZframeHtmlFilename((uint) zframeId, filename);
-            string outputFilenamepath = @$"{outputDir}\{outputFilename}";
-
-            byte[] uncompressedZframe = GetDecompressedZFrameByIndex(zframeIndex);
-            DataReaderZFrameByteAnalysis zFrameParser = new(uncompressedZframe, vcsFiletype);
-
-            Debug.WriteLine($"writing to {outputFilenamepath}");
-            StreamWriter sw = new(outputFilenamepath);
-            zFrameParser.ConfigureWriteToFile(sw, true);
-            zFrameParser.RequestGlslFileSave(outputDir);
-
-            string htmlHeader = GetHtmlHeader(outputFilename, outputFilename[0..^5]);
-            sw.WriteLine($"{htmlHeader}");
-            zFrameParser.ParseFile();
-            sw.WriteLine($"{GetHtmlFooter()}");
-            sw.Flush();
-            sw.Close();
-        }
 
         public int GetZFrameCount() {
             return zframesLookup.Count;
@@ -182,45 +147,22 @@ namespace TestVRF.vcsparsing {
 
         public byte[] GetDecompressedZFrameByIndex(int zframeIndex) {
             var zframeBlock = zframesLookup.ElementAt(zframeIndex);
-            offset = zframeBlock.Value;
-            uint delim = ReadUInt();
+            datareader.offset = zframeBlock.Value;
+            uint delim = datareader.ReadUInt();
             if (delim != 0xfffffffd) {
                 throw new ShaderParserException("unexpected zframe delimiter");
             }
-            int uncompressed_length = ReadInt();
-            int compressed_length = ReadInt();
-
-            byte[] compressedZframe = ReadBytes(compressed_length);
-
+            int uncompressed_length = datareader.ReadInt();
+            int compressed_length = datareader.ReadInt();
+            byte[] compressedZframe = datareader.ReadBytes(compressed_length);
             using var decompressor = new Decompressor();
-            decompressor.LoadDictionary(getZFrameDictionary());
-
+            decompressor.LoadDictionary(GetZFrameDictionary());
             Span<byte> zframeUncompressed = decompressor.Unwrap(compressedZframe);
             if (zframeUncompressed.Length != uncompressed_length) {
                 throw new ShaderParserException("zframe length mismatch!");
             }
-            // unsure if we want to do this
-            // decompressor.Dispose();
+            // decompressor.Dispose(); // dispose or not?
             return zframeUncompressed.ToArray();
-        }
-
-        public static FILETYPE GetVcsFileType(string filenamepath) {
-            if (filenamepath.EndsWith("features.vcs")) {
-                return FILETYPE.features_file;
-            }
-            if (filenamepath.EndsWith("vs.vcs")) {
-                return FILETYPE.vs_file;
-            }
-            if (filenamepath.EndsWith("ps.vcs")) {
-                return FILETYPE.ps_file;
-            }
-            if (filenamepath.EndsWith("psrs.vcs")) {
-                return FILETYPE.psrs_file;
-            }
-            if (filenamepath.EndsWith("gs.vcs")) {
-                return FILETYPE.gs_file;
-            }
-            throw new ShaderParserException($"don't know what this file is {filenamepath}");
         }
     }
 
@@ -231,11 +173,12 @@ namespace TestVRF.vcsparsing {
         public ShaderParserException(string message, Exception innerException) : base(message, innerException) { }
     }
 
+    public enum FILETYPE {
+        unknown, any, features_file, vs_file, ps_file, gs_file, psrs_file
+    };
+
 
 }
-
-
-
 
 
 

@@ -2,9 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using TestVRF;
 using static TestVRF.vcsparsing.UtilHelpers;
-
 
 namespace TestVRF.vcsparsing {
 
@@ -20,9 +18,9 @@ namespace TestVRF.vcsparsing {
         }
 
 
-        bool writeAsHtml = true;
-        public void ConfigureWriteFileAsHtml() {
-            writeAsHtml = true;
+        bool writeAsHtml = false;
+        public void SetWriteAsHtml(bool writeAsHtml) {
+            this.writeAsHtml = writeAsHtml;
         }
 
         bool saveGlslSources = false;
@@ -34,7 +32,7 @@ namespace TestVRF.vcsparsing {
         }
 
 
-        public void ParseFile() {
+        public void PrintByteAnalysis() {
             List<(int, int, string)> glslSources = new();
 
             ShowZDataSection(-1);
@@ -46,7 +44,7 @@ namespace TestVRF.vcsparsing {
                 // 1,2,4,5,8,10,12,16,20,40,48,80,120,160
                 int blockCountInput = ReadInt16AtPosition();
                 ShowByteCount("Some kind of state summary (uniforms/variables input?)");
-                ShowBytes(2, false);
+                ShowBytes(2, breakLine: false);
                 TabComment($"nr of data-blocks ({blockCountInput})");
                 ShowBytes(blockCountInput * 2);
                 OutputWriteLine("");
@@ -54,7 +52,7 @@ namespace TestVRF.vcsparsing {
 
             int blockCount = ReadInt16AtPosition();
             ShowByteCount("Data blocks");
-            ShowBytes(2, false);
+            ShowBytes(2, breakLine: false);
             TabComment($"nr of data-blocks ({blockCount})");
             OutputWriteLine("");
             for (int i = 0; i < blockCount; i++) {
@@ -64,23 +62,23 @@ namespace TestVRF.vcsparsing {
 
             ShowByteCount("Some kind of state summary (uniforms/variables output?)");
             int blockCountOutput = ReadInt16AtPosition();
-            ShowBytes(2, false);
+            ShowBytes(2, breakLine: false);
             TabComment($"nr of data-blocks ({blockCountOutput})", 1);
             ShowBytes(blockCountOutput * 2);
             BreakLine();
 
             ShowByteCount();
-            ShowBytes(4, false);
+            ShowBytes(4, breakLine: false);
             int bin0 = databytes[offset - 4];
             int bin1 = databytes[offset - 3];
             TabComment($"possible flags {Convert.ToString(bin0, 2).PadLeft(8, '0')} {Convert.ToString(bin1, 2).PadLeft(8, '0')}", 7);
-            ShowBytes(1, false);
+            ShowBytes(1, breakLine: false);
             TabComment("values seen 0,1", 16);
 
-            ShowBytes(4, false);
-            uint glslSourceCount = ReadUIntAtPosition(offset - 4);
+            uint glslSourceCount = ReadUIntAtPosition();
+            ShowBytes(4, breakLine: false);
             TabComment($"glsl source files ({glslSourceCount})", 7);
-            ShowBytes(1, false);
+            ShowBytes(1, breakLine: false);
             TabComment("values seen 0,1", 16);
             BreakLine();
 
@@ -99,27 +97,27 @@ namespace TestVRF.vcsparsing {
             //  End blocks for ps and psrs files
             if (filetype == FILETYPE.ps_file || filetype == FILETYPE.psrs_file) {
                 ShowByteCount();
-                ShowBytes(4, false);
-                int nrEndBlocks = ReadIntAtPosition(offset - 4);
+                int nrEndBlocks = ReadIntAtPosition();
+                ShowBytes(4, breakLine: false);
                 TabComment($"nr of end blocks ({nrEndBlocks})");
                 OutputWriteLine("");
 
                 for (int i = 0; i < nrEndBlocks; i++) {
                     ShowByteCount($"End-block[{i}]");
-                    ShowBytes(4, false);
-                    int blockId = ReadInt16AtPosition(offset - 4);
+                    int blockId = ReadInt16AtPosition();
+                    ShowBytes(4, breakLine: false);
                     TabComment($"blockId ref ({blockId})");
-                    ShowBytes(4, false);
+                    ShowBytes(4, breakLine: false);
                     TabComment("always 0");
-                    ShowBytes(4, false);
-                    int sourceReference = ReadInt16AtPosition(offset - 4);
+                    int sourceReference = ReadInt16AtPosition();
+                    ShowBytes(4, breakLine: false);
                     TabComment($"source ref ({sourceReference})");
 
-                    ShowBytes(4, false);
-                    uint glslPointer = ReadUIntAtPosition(offset - 4);
+                    uint glslPointer = ReadUIntAtPosition();
+                    ShowBytes(4, breakLine: false);
                     TabComment($"glsl source pointer ({glslPointer})");
 
-                    ShowBytes(3, false);
+                    ShowBytes(3, breakLine: false);
                     bool hasData0 = databytes[offset - 3] == 0;
                     bool hasData1 = databytes[offset - 2] == 0;
                     bool hasData2 = databytes[offset - 1] == 0;
@@ -153,7 +151,6 @@ namespace TestVRF.vcsparsing {
                 SaveGlslSourcestoHtml(glslSources);
             }
 
-
         }
 
 
@@ -167,7 +164,7 @@ namespace TestVRF.vcsparsing {
                 }
                 int glslOffset = glslSourceItem.Item1;
                 int glslSize = glslSourceItem.Item2;
-                byte[] glslSourceContent = ReadBytesAtPosition(glslOffset, glslSize);
+                byte[] glslSourceContent = ReadBytesAtPosition(glslOffset, glslSize, rel: false);
                 Debug.WriteLine($"writing {glslFilenamepath}");
                 StreamWriter glslFileWriter = new(glslFilenamepath);
                 string htmlHeader = GetHtmlHeader(htmlFilename[0..^5], htmlFilename[0..^5]);
@@ -189,7 +186,7 @@ namespace TestVRF.vcsparsing {
                 }
                 int glslOffset = glslSourceItem.Item1;
                 int glslSize = glslSourceItem.Item2;
-                byte[] glslSourceContent = ReadBytesAtPosition(glslOffset, glslSize);
+                byte[] glslSourceContent = ReadBytesAtPosition(glslOffset, glslSize, rel: false);
 
                 Debug.WriteLine($"writing {glslFilenamepath}");
                 File.WriteAllBytes(glslFilenamepath, glslSourceContent);
@@ -197,8 +194,8 @@ namespace TestVRF.vcsparsing {
         }
 
         public void PrintIntWithValue() {
-            int intval = ReadIntAtPosition(offset);
-            ShowBytes(4, false);
+            int intval = ReadIntAtPosition();
+            ShowBytes(4, breakLine: false);
             TabComment($"{intval}");
         }
 
@@ -210,12 +207,12 @@ namespace TestVRF.vcsparsing {
         }
 
         public int ShowZBlockDataHeader(int blockId) {
-            int arg0 = ReadIntAtPosition(offset);
-            int arg1 = ReadIntAtPosition(offset + 4);
-            int arg2 = ReadIntAtPosition(offset + 8);
+            int arg0 = ReadIntAtPosition();
+            int arg1 = ReadIntAtPosition(4);
+            int arg2 = ReadIntAtPosition(8);
 
             if (arg0 == 0 && arg1 == 0 && arg2 == 0) {
-                ShowBytes(12, false);
+                ShowBytes(12, breakLine: false);
                 TabComment($"data-block[{blockId}]");
                 return 0;
             }
@@ -226,7 +223,7 @@ namespace TestVRF.vcsparsing {
             if (blockId >= 0) {
                 comment = $"data-block[{blockId}]";
             }
-            int blockSize = ReadIntAtPosition(offset);
+            int blockSize = ReadIntAtPosition();
             if (prevBlockWasZero) {
                 OutputWriteLine("");
             }
@@ -251,8 +248,8 @@ namespace TestVRF.vcsparsing {
 
         public void ShowZFrameHeaderUpdated() {
             ShowByteCount("Frame header");
-            ShowBytes(2, false);
-            uint nrArgs = ReadUInt16AtPosition(offset - 2);
+            uint nrArgs = ReadUInt16AtPosition();
+            ShowBytes(2, breakLine: false);
             TabComment($"nr of arguments ({nrArgs})");
             OutputWriteLine("");
 
@@ -264,7 +261,7 @@ namespace TestVRF.vcsparsing {
                     continue;
                 }
                 if (headerOperator == 1) {
-                    int dynExpLen = ReadIntAtPosition(offset + 3);
+                    int dynExpLen = ReadIntAtPosition(3);
                     if (dynExpLen == 0) {
                         ShowBytes(8);
                         continue;
@@ -275,7 +272,7 @@ namespace TestVRF.vcsparsing {
                     }
                 }
                 if (headerOperator == 9) {
-                    int dynExpLen = ReadIntAtPosition(offset + 3);
+                    int dynExpLen = ReadIntAtPosition(3);
                     if (dynExpLen == 0) {
                         ShowBytes(8);
                         continue;
@@ -286,7 +283,7 @@ namespace TestVRF.vcsparsing {
                     }
                 }
                 if (headerOperator == 5) {
-                    int dynExpLen = ReadIntAtPosition(offset + 3);
+                    int dynExpLen = ReadIntAtPosition(3);
                     if (dynExpLen == 0) {
                         ShowBytes(11);
                         continue;
@@ -321,21 +318,22 @@ namespace TestVRF.vcsparsing {
 
         public int ShowZSourceOffsets() {
             ShowByteCount("glsl source offsets");
+            uint offset1 = ReadUIntAtPosition();
             PrintIntWithValue();
-            uint offset1 = ReadUIntAtPosition(offset - 4);
             if (offset1 == 0) {
                 return 0;
             }
-            ShowBytes(4, false);
+            ShowBytes(4, breakLine: false);
             TabComment("always 3");
+            int sourceSize = ReadIntAtPosition() - 1; // one less because of null-term
             PrintIntWithValue();
-            int sourceSize = ReadIntAtPosition(offset - 4) - 1; // one less because of null-term
             BreakLine();
             return sourceSize;
         }
 
+        // FIXME - can't I pass the source size here?
         public void ShowZGlslSourceSummary(int sourceId) {
-            int bytesToRead = ReadIntAtPosition(offset - 4);
+            int bytesToRead = ReadIntAtPosition(-4);
             int endOfSource = offset + bytesToRead;
             ShowByteCount($"GLSL-SOURCE[{sourceId}]");
             if (bytesToRead == 0) {
@@ -354,8 +352,8 @@ namespace TestVRF.vcsparsing {
 
         public void ShowZAllEndBlocksTypeVs() {
             ShowByteCount();
-            ShowBytes(4, false);
-            int nr_end_blocks = ReadIntAtPosition(offset - 4);
+            int nr_end_blocks = ReadIntAtPosition();
+            ShowBytes(4, breakLine: false);
             TabComment($"nr end blocks ({nr_end_blocks})");
             BreakLine();
             for (int i = 0; i < nr_end_blocks; i++) {
@@ -373,8 +371,8 @@ namespace TestVRF.vcsparsing {
         }
 
         private void ShowMurmurString() {
-            string nulltermstr = ReadNullTermStringAtPosition(offset);
-            uint murmur32 = ReadUIntAtPosition(offset + nulltermstr.Length + 1);
+            string nulltermstr = ReadNullTermStringAtPosition();
+            uint murmur32 = ReadUIntAtPosition(nulltermstr.Length + 1);
             uint murmurCheck = MurmurHashPiSeed(nulltermstr.ToLower());
             if (murmur32 != murmurCheck) {
                 throw new ShaderParserException("not a murmur string!");
@@ -384,13 +382,13 @@ namespace TestVRF.vcsparsing {
         }
 
         private void ShowDynamicExpression(int dynExpLen) {
-            byte[] dynExpDatabytes = ReadBytesAtPosition(offset, dynExpLen);
+            byte[] dynExpDatabytes = ReadBytesAtPosition(0, dynExpLen);
             string dynExp = getDynamicExpression(dynExpDatabytes);
             OutputWriteLine($"// {dynExp}");
             ShowBytes(dynExpLen);
         }
 
-        private ParseDynamicExpressions myDynParser = new ParseDynamicExpressions();
+        private ParseDynamicExpressions myDynParser = null;
         private string getDynamicExpression(byte[] dynExpDatabytes) {
             if (myDynParser == null) {
                 myDynParser = new ParseDynamicExpressions();
@@ -403,10 +401,6 @@ namespace TestVRF.vcsparsing {
             }
             return myDynParser.dynamicExpressionResult;
         }
-
-
-
-
 
     }
 }
