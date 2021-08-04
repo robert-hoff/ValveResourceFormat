@@ -30,11 +30,12 @@ namespace MyShaderAnalysis.vcsparsing {
                 sw.Write(text);
             }
         }
-
-
         public void OutputWriteLine(string text) {
             OutputWrite(text + "\n");
         }
+
+
+
         public byte ReadByte() {
             return databytes[offset++];
         }
@@ -163,14 +164,9 @@ namespace MyShaderAnalysis.vcsparsing {
             return str;
         }
 
-
         public void ShowByteCount(string message = null) {
             OutputWrite($"[{offset}]{(message != null ? " "+message : "")}\n");
         }
-
-        //public void ShowBytes(int len, bool breakLine) {
-        //    ShowBytes(len, 32, breakLine: breakLine);
-        //}
 
         public void ShowBytes(int len, string message = null, int tabLen = 4, bool use_slashes = true, bool breakLine = true) {
             ShowBytes(len, 32, message, tabLen, use_slashes, breakLine);
@@ -220,8 +216,6 @@ namespace MyShaderAnalysis.vcsparsing {
             }
             return bytestring.Trim();
         }
-
-
 
 
 

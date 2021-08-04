@@ -18,9 +18,9 @@ namespace MyShaderAnalysis.vcsparsing {
         }
 
 
-        bool writeAsHtml = true;
-        public void ConfigureWriteFileAsHtml() {
-            writeAsHtml = true;
+        bool writeAsHtml = false;
+        public void SetWriteAsHtml(bool writeAsHtml) {
+            this.writeAsHtml = writeAsHtml;
         }
 
         bool saveGlslSources = false;
@@ -32,7 +32,7 @@ namespace MyShaderAnalysis.vcsparsing {
         }
 
 
-        public void ParseFile() {
+        public void PrintByteAnalysis() {
             List<(int, int, string)> glslSources = new();
 
             ShowZDataSection(-1);
@@ -150,7 +150,6 @@ namespace MyShaderAnalysis.vcsparsing {
             if (saveGlslSources && writeAsHtml) {
                 SaveGlslSourcestoHtml(glslSources);
             }
-
 
         }
 

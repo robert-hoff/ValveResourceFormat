@@ -19,8 +19,8 @@ namespace MyShaderAnalysis.vcsparsing02 {
         }
 
 
-        bool writeAsHtml = true;
-        public void ConfigureWriteFileAsHtml() {
+        bool writeAsHtml = false;
+        public void SetWriteFileAsHtml() {
             writeAsHtml = true;
         }
 

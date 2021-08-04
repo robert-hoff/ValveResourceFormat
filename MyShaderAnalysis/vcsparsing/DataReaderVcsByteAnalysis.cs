@@ -4,6 +4,7 @@ using System.IO;
 using static MyShaderAnalysis.vcsparsing.UtilHelpers;
 
 
+
 namespace MyShaderAnalysis.vcsparsing {
 
     public class DataReaderVcsByteAnalysis : DataReader {

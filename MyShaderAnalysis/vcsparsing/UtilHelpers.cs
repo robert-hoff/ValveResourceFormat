@@ -97,7 +97,7 @@ namespace MyShaderAnalysis.vcsparsing {
         public static string GetHtmlHeader(string browserTitle, string pageHeader) {
             string html_header = "" +
                 $"<!DOCTYPE html>\n<html>\n<head>\n  <title>{browserTitle}</title>\n" +
-                $"  <link href='../styles.css' rel='stylesheet' type='text/css' />\n" +
+                $"  <link href='/includes/styles.css' rel='stylesheet' type='text/css' />\n" +
                 $"</head>\n<body>\n<b>{pageHeader}</b>\n<pre>";
 
             return html_header;
@@ -143,11 +143,11 @@ namespace MyShaderAnalysis.vcsparsing {
         }
 
         public static string GetZframeTxtFilename(uint zframeId, string vcsFilename) {
-            return $"{vcsFilename[0..^4]}-ZFRAME{zframeId:x08}.txt";
+            return $"{Path.GetFileName(vcsFilename)[0..^4]}-ZFRAME{zframeId:x08}.txt";
         }
 
         public static string GetZframeHtmlFilename(uint zframeId, string vcsFilename) {
-            return $"{vcsFilename[0..^4]}-ZFRAME{zframeId:x08}.html";
+            return $"{Path.GetFileName(vcsFilename)[0..^4]}-ZFRAME{zframeId:x08}.html";
         }
 
         public static string GetZframeHtmlLink(uint zframeId, string vcsFilename) {
