@@ -73,19 +73,24 @@ namespace MyShaderAnalysis {
             // CompareTriplesMainParams3();
 
 
-
-
-
+            // CompareTriplesMainParams(@"Z:\dev\www\vcs.codecreation.dev\GEN-output\SF-names.html");
             CompareTriplesMainParams();
 
 
 
             PrintReport();
+            CloseStreamWriter();
         }
 
 
 
-        static void CompareTriplesMainParams() {
+        static void CompareTriplesMainParams(string outputFilenamepath = null) {
+            if (outputFilenamepath != null) {
+                ConfigureOutputFile(outputFilenamepath);
+                WriteHtmlFile();
+            }
+
+
             List<(string, string, string)> triples = GetFeaturesVsPsFileTriples();
             // List<(string, string, string)> triples = new();
             // triples.Add(GetTriple(@$"{PCGL_DIR_CORE}\depth_only_pcgl_30_features.vcs"));
@@ -94,9 +99,9 @@ namespace MyShaderAnalysis {
             foreach (var triple in triples) {
 
                 string title = $"{RemoveBaseDir(triple.Item1)} + vs, ps files";
-                Debug.WriteLine($"{title}");
+                OutputWriteLine($"{title}");
                 // new String('-', 5);
-                Debug.WriteLine(new string('-', title.Length));
+                OutputWriteLine(new string('-', title.Length));
                 Dictionary<int, string[]> p = new();
                 for (int i = 0; i < 30; i++) {
                     p.Add(i, new string[] { "", "", "" });
@@ -135,15 +140,22 @@ namespace MyShaderAnalysis {
                 }
 
 
-
+                // features-header
+                int ftHeaderNrArguments = ftFile.featuresHeader.mainParams.Count;
+                OutputWriteLine($"<span style='color: #3783ed'>Arguments in {Path.GetFileName(triple.Item1)} header ({ftHeaderNrArguments})</span>");
                 // print the features main args
                 int max_len = 0;
                 foreach (var mp in ftFile.featuresHeader.mainParams) {
                     max_len = mp.Item1.Length > max_len ? mp.Item1.Length : max_len;
                 }
                 foreach (var mp in ftFile.featuresHeader.mainParams) {
-                    Debug.WriteLine($"<span style='color: #3783ed'>{mp.Item1.PadRight(max_len)} {mp.Item2}</span>");
+                    OutputWriteLine($"<span style='color: #3783ed'>{mp.Item1.PadRight(max_len)} {mp.Item2}</span>");
                 }
+                OutputWriteLine("");
+
+
+                OutputWriteLine($"{"FEATURES-FILE".PadRight(50)} {"VS_FILE".PadRight(50)} {"PS-FILE".PadRight(50)}");
+                OutputWriteLine($"{"-------------".PadRight(50)} {"-------".PadRight(50)} {"-------".PadRight(50)}");
 
 
                 // print the negative values
@@ -161,7 +173,7 @@ namespace MyShaderAnalysis {
                     // string e2 = (item.Value & 1) > 0 ? $"{item.Key}(-1)" : "";
                     // string e3 = (item.Value & 2) > 0 ? $"{item.Key}(-1)" : "";
                     string reportStr = $"{e1.PadRight(50)} {e2.PadRight(50)} {e3.PadRight(50)}";
-                    Debug.WriteLine($"{reportStr}");
+                    OutputWriteLine($"{reportStr}");
                 }
                 for (int i = 0; i < 30; i++) {
                     if (!string.IsNullOrEmpty(p[i][0]) || !string.IsNullOrEmpty(p[i][1]) || !string.IsNullOrEmpty(p[i][2])) {
@@ -186,7 +198,7 @@ namespace MyShaderAnalysis {
                         } else {
                         }
                         string reportStr = $"{e1.PadRight(50 + e1len)} {e2.PadRight(50 + e2len)} {e3.PadRight(50 + e3len)}";
-                        Debug.WriteLine($"{reportStr}");
+                        OutputWriteLine($"{reportStr}");
                     }
                 }
 
@@ -206,20 +218,20 @@ namespace MyShaderAnalysis {
                 string reportStr2 = $"{f0.PadRight(50)} " +
                     $"{f1.PadRight(50 + vsStyle.Length - 2 - (vsMaxD==0 ? 1 : vsMaxD))} " +
                     $"{f2.PadRight(50 + psStyle.Length - 2 - (psMaxD==0 ? 1 : psMaxD))}";
-                Debug.WriteLine($"{reportStr2}");
+                OutputWriteLine($"{reportStr2}");
 
                 // print the argument count for vs/ps
                 int vsArgCount = CountActiveModes(vs_items);
                 int psArgCount = CountActiveModes(ps_items);
                 string vsArgCountStr = $"VSARGS = {vsArgCount}";
                 string psArgCountStr = $"PSARGS = {psArgCount}";
-                Debug.WriteLine($"{"",-50} {vsArgCountStr,-50} {psArgCountStr,-50}");
+                OutputWriteLine($"{"",-50} {vsArgCountStr,-50} {psArgCountStr,-50}");
 
 
-                Debug.WriteLine($"");
-                Debug.WriteLine($"");
-                Debug.WriteLine($"");
-                Debug.WriteLine($"");
+                OutputWriteLine($"");
+                OutputWriteLine($"");
+                OutputWriteLine($"");
+                OutputWriteLine($"");
             }
 
         }
@@ -403,6 +415,46 @@ namespace MyShaderAnalysis {
 
 
 
+
+
+        private static StreamWriter sw = null;
+        private static bool DisableOutput = false;
+        private static bool WriteAsHtml = false;
+
+        private static void WriteHtmlFile() {
+            if (sw == null) {
+                throw new ShaderParserException("StreamWriter needs to be setup before calling this");
+            }
+            WriteAsHtml = true;
+            sw.WriteLine(GetHtmlHeader("SF names","SF names for vcs, vs, ps triples"));
+        }
+
+
+        private static void ConfigureOutputFile(string filepathname, bool disableOutput = false) {
+            DisableOutput = disableOutput;
+            Debug.WriteLine($"writing to {filepathname}");
+            sw = new StreamWriter(filepathname);
+        }
+        private static void CloseStreamWriter() {
+            if (WriteAsHtml) {
+                sw.WriteLine(GetHtmlFooter());
+            }
+            if (sw != null) {
+                sw.Close();
+            }
+        }
+
+        public static void OutputWrite(string text) {
+            if (!DisableOutput) {
+                Debug.Write(text);
+            }
+            if (sw != null) {
+                sw.Write(text);
+            }
+        }
+        public static void OutputWriteLine(string text) {
+            OutputWrite(text + "\n");
+        }
 
 
     }
