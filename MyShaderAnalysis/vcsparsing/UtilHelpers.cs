@@ -39,7 +39,7 @@ namespace MyShaderAnalysis.vcsparsing {
             return GetVcsFiles(dir1, null, fileType, -1);
         }
 
-        public static List<string> GetVcsFiles(string dir1, string dir2, FILETYPE fileType, int numEnding) {
+        public static List<string> GetVcsFiles(string dir1, string dir2, FILETYPE fileType, int numEnding, bool sortFiles = true) {
             List<string> filesFound = new();
             if (fileType == FILETYPE.features_file || fileType == FILETYPE.any) {
                 string endsWith = numEnding > -1 ? $"{numEnding}_features.vcs" : "features.vcs";
@@ -65,6 +65,9 @@ namespace MyShaderAnalysis.vcsparsing {
                 string endsWith = numEnding > -1 ? $"{numEnding}_psrs.vcs" : "psrs.vcs";
                 filesFound.AddRange(GetAllFilesWithEnding(dir1, endsWith));
                 filesFound.AddRange(GetAllFilesWithEnding(dir2, endsWith));
+            }
+            if (sortFiles) {
+                filesFound.Sort();
             }
             return filesFound;
         }
@@ -242,8 +245,8 @@ namespace MyShaderAnalysis.vcsparsing {
 
 
 
-        public static Dictionary<int, int> collectValuesInt = new();
-        public static Dictionary<string, int> collectValuesString = new();
+        private static Dictionary<int, int> collectValuesInt = new();
+        private static Dictionary<string, int> collectValuesString = new();
 
         public static void CollectIntValue(int val) {
             int currIterator = collectValuesInt.GetValueOrDefault(val, 0);

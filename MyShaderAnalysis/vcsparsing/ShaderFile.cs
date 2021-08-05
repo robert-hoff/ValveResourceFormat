@@ -63,10 +63,8 @@ namespace MyShaderAnalysis.vcsparsing {
             // always 472 bytes
             int compatBlockCount = datareader.ReadInt();
             for (int i = 0; i < compatBlockCount; i++) {
-                CompatibilityBlock nextCompatibilityBlock = new(datareader, datareader.offset);
+                CompatibilityBlock nextCompatibilityBlock = new(datareader, datareader.offset, i);
                 compatibilityBlocks.Add(nextCompatibilityBlock);
-                datareader.offset += 472;
-
             }
 
 
