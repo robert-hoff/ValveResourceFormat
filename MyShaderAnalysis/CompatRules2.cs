@@ -10,9 +10,9 @@ namespace MyShaderAnalysis {
 
         public static void RunTrials() {
 
-            // Trial1MultiblendPcgl30Ps();
+            Trial1MultiblendPcgl30Ps();
             // Trial1GlobalLitSimpleVs();
-            Trial1GenericLightPcgl30Ps();
+            // Trial1GenericLightPcgl30Ps();
         }
 
 

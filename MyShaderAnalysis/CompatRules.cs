@@ -12,8 +12,8 @@ namespace MyShaderAnalysis {
 
 
         public static void RunTrials() {
-            // Trial1MultiblendPcgl30Vs();
-            Trial1MultiblendPcgl30Ps();
+            Trial1MultiblendPcgl30Vs();
+            // Trial1MultiblendPcgl30Ps();
         }
 
 
@@ -44,7 +44,7 @@ namespace MyShaderAnalysis {
                     }
                 }
                 if (!exclude) {
-                    Debug.WriteLine($"{i,3}               {Convert.ToString(i, 2).PadLeft(9,'0')}");
+                    Debug.WriteLine($"{i:x04}               {Convert.ToString(i, 2).PadLeft(9,'0')}");
                 }
             }
 

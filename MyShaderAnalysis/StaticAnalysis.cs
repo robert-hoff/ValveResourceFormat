@@ -74,7 +74,7 @@ namespace MyShaderAnalysis {
             // CompareTriplesMainParams2();
             // CompareTriplesMainParams3();
 
-            // CompareTriplesMainParams($@"{SERVER_OUTPUT_DIR}\SF-names.html", writeFile: false);
+            // CompareTriplesMainParams($@"{SERVER_OUTPUT_DIR}\SF-names.html", writeFile: true);
             // CompatBlockPresence($@"{SERVER_OUTPUT_DIR}\Compat-block-count.html", writeFile: false);
 
 
@@ -86,17 +86,159 @@ namespace MyShaderAnalysis {
 
 
             // CompatBlockDetailsConcise(PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
-             CompatBlockConciseAll($@"{SERVER_OUTPUT_DIR}\Compat-block-details-all2.html", writeFile: true);
+            // CompatBlockConciseAll($@"{SERVER_OUTPUT_DIR}\Compat-blocks-summary.html", writeFile: true);
 
             // CompatibilityBlocksSurveyIntRange(92, 3);
+            // CompatBlockRelationships();
 
 
+            // slight changes here
+            // CompatBlockResolveSfReferences($@"{SERVER_OUTPUT_DIR}\Compat-blocks-resolved-names.html", writeFile: true);
+
+            // multiblend
+            CompatBlockResolveSfReferences($@"{SERVER_OUTPUT_DIR}\Compat-blocks-sf-names-multiblend.html", writeFile: true);
+
+
+
+            // ShowSfArgumentList();
 
 
             PrintReport();
             CloseStreamWriter();
         }
 
+
+
+        static void ShowSfArgumentList() {
+            ShaderFile shaderFile = new(PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
+
+
+            for (int i = 0; i < shaderFile.sfBlocks.Count; i++) {
+                Debug.WriteLine($"{i}    {shaderFile.sfBlocks[i].name0}");
+            }
+
+        }
+
+
+
+        /*
+         *
+         *
+         * I believe refer to the SF arguments in the compat-blocks based on the index of their appearance in the vcs files
+         * let's try this
+         *
+         * to build better understanding about the data, I should build up more complete printouts of the files
+         * the way to achieve this is to write it into the parser
+         *
+         *
+         * But I'm already building the tables the way they should be!
+         *
+         */
+        static void CompatBlockResolveSfReferences(string outputFilenamepath = null, bool writeFile = true) {
+            if (outputFilenamepath != null && writeFile) {
+                ConfigureOutputFile(outputFilenamepath);
+                WriteHtmlFile("Cblocks", "Compatibility blocks, with resolved symbol names");
+            }
+            // List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
+            List<string> allVcsFiles = new();
+            allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_features.vcs");
+            allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_vs.vcs");
+            allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
+            //allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_features.vcs");
+            //allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_vs.vcs");
+            //allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_ps.vcs");
+
+            string h0 = "Block";
+            string h5 = "params";
+            string h1 = "Rule";
+            // string h2 = "arg0";
+            string h3 = "flags";
+            string h4 = "symbols";
+            string h6 = "range1";
+            string h7 = "range2";
+            // string header = $"{h0,-7}{h5,-16}{h1,-6}{h2,-6}{h4,-70}{h6,-8}{h7,-8}";
+            string header = $"{h0,-7}{h1,-10}{h5,-16}{h4,-70}{h6,-8}{h7,-8}";
+            OutputWriteLine(header);
+            OutputWriteLine(new string('-', header.Length));
+            foreach (string filenamepath in allVcsFiles) {
+                CompatBlockDetailsConcise2(filenamepath);
+            }
+            // Debug.WriteLine($"{blockCount}");
+        }
+
+        static void CompatBlockDetailsConcise2(string filenamepath) {
+
+            ShaderFile shaderFile = new(filenamepath);
+            bool newFile = true;
+
+            foreach (CompatibilityBlock cBlock in shaderFile.compatibilityBlocks) {
+
+                if (newFile) {
+                    OutputWriteLine("");
+                    OutputWriteLine(GetHtmlLink(filenamepath));
+                    // OutputWriteLine(RemoveBaseDir(filenamepath));
+                    OutputWriteLine("");
+                }
+                newFile = false;
+
+
+                string[] sfNames = new string[cBlock.range0.Length];
+                for (int i = 0; i < sfNames.Length; i++) {
+                    sfNames[i] = shaderFile.sfBlocks[cBlock.range0[i]].name0;
+                }
+
+
+                string s0 = $"[{cBlock.blockIndex,2}]";
+                string s1 = (cBlock.relRule == 1 || cBlock.relRule == 2) ? $"INC({cBlock.relRule})" : $"EXC({cBlock.relRule})";
+                // string s2 = $"{cBlock.arg0}";
+                string s3 = $"{cBlock.ReadByteFlags()}";
+                string s4 = $"{CombineValues(sfNames)}";
+                string s5 = $"{CombineValues2(cBlock.range0)}";
+                string s6 = $"{CombineValues2(cBlock.range1)}";
+                string s7 = $"{CombineValues2(cBlock.range2)}";
+                // string blockSummary = $"{s0.PadRight(10)} {s1.PadRight(6)} {s2.PadRight(6)} {s3.PadRight(18)} s4.PadRight(20)} {s5.PadRight(8)} {s6.PadRight(8)}";
+                string blockSummary = $"{s0.PadRight(7)}{s1.PadRight(10)}{s5.PadRight(16)}{s4.PadRight(70)}{s6.PadRight(8)}{s7.PadRight(8)}";
+
+
+                OutputWrite(blockSummary);
+                OutputWriteLine("");
+
+
+
+
+
+
+            }
+        }
+
+
+
+
+
+
+
+
+        static void CompatBlockRelationships() {
+            List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
+            foreach (string filenamepath in allVcsFiles) {
+                ShaderFile shaderFile = new(filenamepath);
+                foreach (var cBlock in shaderFile.compatibilityBlocks) {
+                    if (cBlock.range2[1] != cBlock.range0.Length) {
+                        Debug.WriteLine($"ERROR!");
+                    }
+
+                    if (cBlock.arg0 == 1 && shaderFile.vcsFiletype != FILETYPE.features_file) {
+                        Debug.WriteLine($"error!");
+                    }
+
+                    if (cBlock.arg0 == 2) {
+                        Debug.WriteLine($"{filenamepath}");
+                    }
+
+
+                }
+            }
+        }
 
 
 
@@ -121,20 +263,25 @@ namespace MyShaderAnalysis {
             string h4 = "range0";
             string h5 = "range1";
             string h6 = "range2";
-            string header = $"{h0.PadRight(10)} {h1.PadRight(6)} {h2.PadRight(6)} {h3.PadRight(18)} " +
-                $"{h4.PadRight(20)} {h5.PadRight(8)} {h6.PadRight(8)}";
+            // string header = $"{h0.PadRight(10)} {h1.PadRight(6)} {h2.PadRight(6)} {h3.PadRight(18)} {h4.PadRight(20)} {h5.PadRight(8)} {h6.PadRight(8)}";
+            string header = $"{h0.PadRight(7)}{h1.PadRight(6)}{h2.PadRight(6)}{h4.PadRight(16)}{h5.PadRight(8)}{h6.PadRight(8)}";
             OutputWriteLine(header);
             OutputWriteLine(new string('-', header.Length));
 
-                //OutputWrite($"{s0.PadRight(10)} {s1.PadRight(6)} {s2.PadRight(6)} {s3.PadRight(14)} " +
-                //    $"{s4.PadRight(20)} {s5.PadRight(8)} {s6.PadRight(8)}");
+            //OutputWrite($"{s0.PadRight(10)} {s1.PadRight(6)} {s2.PadRight(6)} {s3.PadRight(14)} " +
+            //    $"{s4.PadRight(20)} {s5.PadRight(8)} {s6.PadRight(8)}");
 
 
             foreach (string filenamepath in allVcsFiles) {
                 CompatBlockDetailsConcise(filenamepath);
             }
+            // Debug.WriteLine($"{blockCount}");
         }
 
+
+
+
+        static int blockCount = 0;
 
         static void CompatBlockDetailsConcise(string filenamepath) {
 
@@ -148,25 +295,34 @@ namespace MyShaderAnalysis {
 
             bool newFile = true;
 
+
             foreach (CompatibilityBlock cBlock in shaderFile.compatibilityBlocks) {
-                string s0 = $"CBLK[{cBlock.blockIndex}]";
-                string s1 = $"{cBlock.arg0}";
-                string s2 = $"{cBlock.arg1}";
+                string s0 = $"[{cBlock.blockIndex,2}]";
+                string s1 = $"{cBlock.relRule}";
+                string s2 = $"{cBlock.arg0}";
                 string s3 = $"{cBlock.ReadByteFlags()}";
                 string s4 = $"{CombineValues2(cBlock.range0)}";
                 string s5 = $"{CombineValues2(cBlock.range1)}";
                 string s6 = $"{CombineValues2(cBlock.range2)}";
-                OutputWrite($"{s0.PadRight(10)} {s1.PadRight(6)} {s2.PadRight(6)} {s3.PadRight(18)} " +
-                    $"{s4.PadRight(20)} {s5.PadRight(8)} {s6.PadRight(8)}");
-                // OutputWriteLine($"{cBlock.description}");
-                // OutputWriteLine($"");
+                // string blockSummary = $"{s0.PadRight(10)} {s1.PadRight(6)} {s2.PadRight(6)} {s3.PadRight(18)} s4.PadRight(20)} {s5.PadRight(8)} {s6.PadRight(8)}";
+                string blockSummary = $"{s0.PadRight(7)}{s1.PadRight(6)}{s2.PadRight(6)}{s4.PadRight(16)}{s5.PadRight(8)}{s6.PadRight(8)}";
+
+                OutputWrite($"{blockSummary}");
+
                 if (newFile) {
-                    OutputWriteLine($"<a href='../vcs-all/{Path.GetFileName(filenamepath)[0..^4]}-analysis.html'>{Path.GetFileName(filenamepath)}</a>");
+                    OutputWrite(GetHtmlLink(filenamepath) + " ");
+                } else {
+                    OutputWrite("");
+                }
+
+                if (cBlock.description.Length > 0) {
+                    // OutputWriteLine($"{blockSummary}  {cBlock.description.PadRight(70)} {GetHtmlLink(filenamepath)}");
+                    OutputWriteLine($"{cBlock.description}");
                 } else {
                     OutputWriteLine("");
                 }
-                newFile = false;
 
+                newFile = false;
             }
         }
 
@@ -206,8 +362,8 @@ namespace MyShaderAnalysis {
             foreach (CompatibilityBlock cBlock in shaderFile.compatibilityBlocks) {
 
                 OutputWriteLine($"COMPAT-BLOCK[{cBlock.blockIndex}]");
-                OutputWriteLine($"rule = {cBlock.arg0}");
-                OutputWriteLine($"arg1 = {cBlock.arg1}");
+                OutputWriteLine($"rule = {cBlock.relRule}");
+                OutputWriteLine($"arg1 = {cBlock.arg0}");
                 // OutputWriteLine($"{CombineValues(cBlock.flags)}");
                 OutputWriteLine($"      {cBlock.ReadByteFlags()}");
                 OutputWriteLine($"{CombineValues(cBlock.range0)}");
@@ -373,7 +529,7 @@ namespace MyShaderAnalysis {
 
 
         static string CombineValues(SortedDictionary<int, int> values) {
-            String valueString = "";
+            string valueString = "";
             foreach (var item in values) {
                 valueString += $"{item.Key}, ";
             }
@@ -381,12 +537,21 @@ namespace MyShaderAnalysis {
         }
 
         static string CombineValues(SortedDictionary<string, int> values) {
-            String valueString = "";
+            string valueString = "";
             foreach (var item in values) {
                 valueString += $"{item.Key}, ";
             }
             return valueString[0..^2];
         }
+
+        static string CombineValues(string[] values) {
+            string valueString = "";
+            foreach (var item in values) {
+                valueString += $"{item}, ";
+            }
+            return valueString[0..^2];
+        }
+
 
 
 
@@ -568,8 +733,10 @@ namespace MyShaderAnalysis {
                 OutputWriteLine($"{reportStr2}");
 
                 // print the argument count for vs/ps
-                int vsArgCount = CountActiveModes(vs_items);
-                int psArgCount = CountActiveModes(ps_items);
+                // int vsArgCount = CountActiveModes(vs_items);
+                // int psArgCount = CountActiveModes(ps_items);
+                int vsArgCount = vs_items.Count;
+                int psArgCount = ps_items.Count;
                 string vsArgCountStr = $"VSARGS = {vsArgCount}";
                 string psArgCountStr = $"PSARGS = {psArgCount}";
                 OutputWriteLine($"{"",-50} {vsArgCountStr,-50} {psArgCountStr,-50}");

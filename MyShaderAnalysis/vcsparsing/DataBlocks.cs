@@ -203,8 +203,8 @@ namespace MyShaderAnalysis.vcsparsing {
     public class CompatibilityBlock : DataBlock {
 
         public int blockIndex;
-        public int arg0;
-        public int arg1;
+        public int relRule;  // 1 = dependency (feature file), 2 = dependency (other files), 3 = exclusion
+        public int arg0; // this is just 1 for features files and 2 for all other files
         public int[] flags;
         public int[] range0;
         public int[] range1;
@@ -213,8 +213,8 @@ namespace MyShaderAnalysis.vcsparsing {
 
         public CompatibilityBlock(DataReader datareader, int start, int blockIndex) : base(datareader, start) {
             this.blockIndex = blockIndex;
+            relRule = datareader.ReadInt();
             arg0 = datareader.ReadInt();
-            arg1 = datareader.ReadInt();
             flags = ReadByteFlagsUpdated();
             range0 = ReadIntRange();
             datareader.offset += 68 - range0.Length * 4;

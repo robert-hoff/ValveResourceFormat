@@ -135,6 +135,7 @@ namespace MyShaderAnalysis.vcsparsing {
 
 
 
+
         public int GetZFrameCount() {
             return zframesLookup.Count;
         }

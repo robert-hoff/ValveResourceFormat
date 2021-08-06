@@ -10,7 +10,7 @@ namespace MyShaderAnalysis {
 
     public class ShaderAnalysis {
         const string PCGL_DIR_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders-core\vfx";
-        const string PCGL_DIR_NOT_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders\vfx";
+        const string PCGL_DIR_NOT_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders\vfx"; // i.e. Dota2 specific
         const string PC_DIR_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pc\shaders-core\vfx";
         const string PC_DIR_NOT_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pc\shaders\vfx";
         // const string OUTPUT_DIR = @"..\..\..\GEN-OUTPUT";
@@ -55,7 +55,7 @@ namespace MyShaderAnalysis {
             // WriteZFrameToFile(filenamepath, 0);
             // ParseABunchOfZframes();
             // WriteFirstZFrmeEveryFile();
-            WriteVcsCollectionAsHtml();
+            // WriteVcsCollectionAsHtml();
             // ShowVcsByteAnalysis(filenamepath);
             // WriteAllVcsFilesToTxt();
             // WriteVcsByteAnalysisToTxt(filenamepath);
@@ -221,7 +221,8 @@ namespace MyShaderAnalysis {
         }
 
         static void WriteAllVcsFilesToHtml() {
-            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
+            // List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
+            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_NOT_CORE, null, FILETYPE.any, -1);
             foreach (string vcsFile in vcsFiles) {
                 WriteVcsByteAnalysisToHtml(vcsFile);
             }

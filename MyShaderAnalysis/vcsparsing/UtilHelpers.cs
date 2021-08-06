@@ -159,9 +159,31 @@ namespace MyShaderAnalysis.vcsparsing {
             return $"glsl-{glslByteString.Trim().Replace(" ", "").ToLower()}.txt";
         }
 
+        // converts a features filename or filenamepath to an output file ending in ps-analysis.html
+        // for links in the features file to relates ps and vs files
         public static string GetVsHtmlLink(string vcsFeaturesFilename, string urlText) {
             return $"<a href='{GetVsHtmlFilename(vcsFeaturesFilename)}'>{urlText}</a>";
         }
+
+        public static string GetHtmlLink(string vcsFileName, string urlText = null) {
+            if (urlText == null) {
+                urlText = Path.GetFileName(vcsFileName);
+            }
+            return $"<a href='/vcs-all/{GetCoreOrDotaString(vcsFileName)}/{Path.GetFileName(vcsFileName)[0..^4]}-analysis.html'>{urlText}</a>";
+        }
+
+        public static string GetCoreOrDotaString(string vcsFileName) {
+            if (Path.GetDirectoryName(vcsFileName).EndsWith("shaders\\vfx")) {
+                return "dota";
+            }
+            if (Path.GetDirectoryName(vcsFileName).EndsWith("shaders-core\\vfx")) {
+                return "core";
+            }
+            throw new ShaderParserException("don't know where this file belongs");
+        }
+
+
+
 
         public static string GetVsHtmlFilename(string vcsFeaturesFilename) {
             if (!vcsFeaturesFilename.EndsWith("features.vcs")) {
