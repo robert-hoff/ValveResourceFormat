@@ -57,7 +57,7 @@ namespace MyShaderAnalysis.vcsparsing {
             }
             int sfBlockCount = datareader.ReadInt();
             for (int i = 0; i < sfBlockCount; i++) {
-                DataBlockSfBlock nextSfBlock = new(datareader, datareader.offset);
+                DataBlockSfBlock nextSfBlock = new(datareader, datareader.offset, i);
                 sfBlocks.Add(nextSfBlock);
             }
             // always 472 bytes
@@ -74,15 +74,13 @@ namespace MyShaderAnalysis.vcsparsing {
             for (int i = 0; i < dBlockCount; i++) {
                 DBlock nextDBlock = new(datareader, datareader.offset);
                 dBlocks.Add(nextDBlock);
-                datareader.offset += 152;
             }
 
             // always 472 bytes
             int unknownBlockCount = datareader.ReadInt();
             for (int i = 0; i < unknownBlockCount; i++) {
-                UnknownBlock nextUnknownBlock = new(datareader, datareader.offset);
+                UnknownBlock nextUnknownBlock = new(datareader, datareader.offset, i);
                 unknownBlocks.Add(nextUnknownBlock);
-                datareader.offset += 472;
             }
 
             int paramBlockCount = datareader.ReadInt();

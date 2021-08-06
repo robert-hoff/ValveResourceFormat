@@ -11,6 +11,11 @@ namespace MyShaderAnalysis.vcsparsing {
             this.datareader = datareader;
         }
         public abstract void PrintByteSummary();
+
+        public int ReadIntegerAtPosition(int relOffset) {
+            return datareader.ReadIntAtPosition(start + relOffset, rel: false);
+        }
+
     }
 
 

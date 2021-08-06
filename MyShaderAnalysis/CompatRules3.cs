@@ -12,6 +12,9 @@ namespace MyShaderAnalysis {
 
         public static void RunTrials() {
             // Trial1MultiblendPcgl30VsAttempt2();
+
+
+            // THIS IS MY BEST INTERPRATION YET - DON'T CHANGE IT
             Trial1MultiblendPcgl30PsAttempt5();
 
 
@@ -29,6 +32,65 @@ namespace MyShaderAnalysis {
 
         /*
          * It looks like S_LAYER_BORDER_TINT might have two entries
+         *
+         * This seemed promising and is correct up until 17f8
+         *
+         *                          765432210987654321
+         * 6136    17f8           00000001011111111000
+         * 6152    1808           00000001100000001000
+         *
+         * The problematic entry is
+         *
+         * 6152    1808           00000001100000001000
+         *
+         * The next entry should be
+         *
+         *         1818           00000001100000011000
+         *
+         * thinking more about this layer stuff, the system DOES want the generation of
+         *
+         *         1008           00000001000000001000
+         *
+         * which the code is currently agreeing with. Here I'm interpreting the top bit as somehow
+         * related to S_LAYER_BORDER_TINT on layer 2 (or something like that)
+         *
+         *
+         *
+         * Now, if this double layer thing appears together, as in 1808. The system seems to want both
+         * 4,5 to be present.
+         *
+         * The system is not liking this either
+         *
+         *                           65432210987654321
+         * 6200    1838           00000001100000111000
+         *
+         * Which is the presence of a 6. Now, 6 has no mention of layers like the 4 and 5 rules.
+         *
+         *
+         *
+         *
+         *
+         *
+         *
+         *
+         *
+         *
+         * Bute the SYSTEM WANTS this one. Why? 6 should be excluded by all the parallax layers
+         * with exclusion rules of this type (16,6,2)
+         *
+         *          65432210987654321
+         *       00011000000000000000
+         *
+         * If S_PARALLAX_MAP_ON_2 and S_PARALLAX_MAP_ON_3 operate on different layers this doesn't
+         * seem to be expressed in the data. Maybe it's known externally, but if so, why is
+         * S_LAYER_BORDER_TINT expressed with layer information?
+         *
+         *
+         *
+         *
+         *
+         *
+         *
          *
          *
          */
@@ -48,9 +110,9 @@ namespace MyShaderAnalysis {
             remappingTable.Add(11, 10);  // S_TINT_MASK_2             mapped to 10
             remappingTable.Add(12, 11);  // S_LAYER_BORDER_TINT       mapped to 11
             remappingTable.Add(13, 13);  // S_PARALLAX_MAP_ON_0       mapped to 12
-            remappingTable.Add(14, 14);  // S_PARALLAX_MAP_ON_2       mapped to 13
-            remappingTable.Add(15, 15);  // S_PARALLAX_MAP_ON_3       mapped to 14
-            remappingTable.Add(16, 16);  // S_PARALLAX_MAP_ON_4       mapped to 15
+            remappingTable.Add(14, 14);  // S_PARALLAX_MAP_ON_1       mapped to 13
+            remappingTable.Add(15, 15);  // S_PARALLAX_MAP_ON_2       mapped to 14
+            remappingTable.Add(16, 16);  // S_PARALLAX_MAP_ON_3       mapped to 15
             remappingTable.Add(17, 17);  // S_GLOBAL_TINT             mapped to 16
 
             // remappingTable.Add(18, 11);  // S_LAYER_BORDER_TINT       mapped to 11
@@ -229,8 +291,8 @@ namespace MyShaderAnalysis {
 
 
             for (int i = 0; i < 262144; i++) {
-            // for (int i = 2048; i < 4096; i++) {
-            // for (int i = 0; i < 5000; i++) {
+                // for (int i = 2048; i < 4096; i++) {
+                // for (int i = 0; i < 5000; i++) {
                 bool exclude = false;
                 foreach (var exclRule in exclusions) {
                     int b0 = exclRule.Item1;

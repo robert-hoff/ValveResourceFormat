@@ -9,7 +9,7 @@ namespace MyShaderAnalysis {
         static void Main() {
 
 
-            // StaticAnalysis.RunTrials();
+            StaticAnalysis.RunTrials();
 
             // ShaderAnalysis.RunTrials();
             // ShaderAnalysis03.RunTrials();
@@ -20,7 +20,11 @@ namespace MyShaderAnalysis {
             // Snippetcode.RunTrials();
             // Murmur32.RunTrials();
 
-            CompatRules3.RunTrials();
+
+            // CompatRulesGlobalLitSimple.RunTrials();
+            // CompatRules5.RunTrials();
+            // CompatRules4.RunTrials();
+            // CompatRules3.RunTrials();
             // CompatRules2.RunTrials();
             // CompatRules.RunTrials();
 

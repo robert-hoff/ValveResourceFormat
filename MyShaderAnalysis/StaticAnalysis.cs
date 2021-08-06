@@ -86,6 +86,8 @@ namespace MyShaderAnalysis {
 
 
             // CompatBlockDetailsConcise(PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
+
+
             // CompatBlockConciseAll($@"{SERVER_OUTPUT_DIR}\Compat-blocks-summary.html", writeFile: true);
 
             // CompatibilityBlocksSurveyIntRange(92, 3);
@@ -96,11 +98,25 @@ namespace MyShaderAnalysis {
             // CompatBlockResolveSfReferences($@"{SERVER_OUTPUT_DIR}\Compat-blocks-resolved-names.html", writeFile: true);
 
             // multiblend
-            CompatBlockResolveSfReferences($@"{SERVER_OUTPUT_DIR}\Compat-blocks-sf-names-multiblend.html", writeFile: true);
+            // CompatBlockResolveSfReferences($@"{SERVER_OUTPUT_DIR}\Compat-blocks-sf-names-multiblend.html", writeFile: true);
+
+            // CompatBlockResolveSfReferences();
 
 
 
             // ShowSfArgumentList();
+            // ShowDBlock();
+            // DBlockSurvey();
+            // ShowUnknownBlock();
+            // UnknownBlocksSurvey();
+            // BlockCountSurvery($@"{SERVER_OUTPUT_DIR}\block-counts.html", writeFile: true);
+
+            // ShowUnknownBlockConcise();
+
+            // ScanForValueSfBlocks();
+
+
+            RunRuleSummaryGivenFile();
 
 
             PrintReport();
@@ -108,11 +124,338 @@ namespace MyShaderAnalysis {
         }
 
 
+        static void RunRuleSummaryGivenFile() {
+            RuleSummaryGivenFile(PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
+        }
+
+
+        // let's develop this in a new file!
+
+        static void RuleSummaryGivenFile(string filenamepath) {
+            ShaderFile shaderFile = new(filenamepath);
+
+            foreach (var sfBlock in shaderFile.sfBlocks) {
+                Debug.WriteLine($"[{sfBlock.blockId,2}]    {sfBlock.name0}");
+
+
+            }
+
+
+
+        }
+
+
+
+        static void ScanForValueSfBlocks() {
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"\water_dota_pcgl_30_ps.vcs";
+
+            List<string> result = new();
+
+            List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, 30);
+            foreach (string filenamepath in allVcsFiles) {
+                ShaderFile shaderFile = new(filenamepath);
+                foreach (var sfBlock in shaderFile.sfBlocks) {
+                    // Debug.WriteLine($"{sfBlock.arg3}");
+                    // if (sfBlock.arg2 != 1 && sfBlock.arg3 != 0) {
+
+
+                    // if (sfBlock.arg2 == 2) {
+                    // if (sfBlock.arg2 == 3) {
+                    // if (sfBlock.arg2 == 0) {
+                    // if (sfBlock.arg2 == 5) {
+                    // if (sfBlock.arg3 == 2) {
+                    // if (sfBlock.arg3 == 4) {
+                    if (sfBlock.arg3 == 7) {
+                        result.Add($"{sfBlock.arg0,3} {sfBlock.arg2,3} {sfBlock.arg3,3} {sfBlock.arg4,3}     " +
+                            $"{sfBlock.name0,-25} {ShortHandName(filenamepath)}");
+                    }
+
+
+
+                    //if (sfBlock.arg0 == 1) {
+                    //    Debug.Write($"{sfBlock.arg0} {sfBlock.arg1} {sfBlock.arg2} {sfBlock.arg3}    ");
+                    //    Debug.WriteLine($"{sfBlock.name0,-25}    {RemoveBaseDir(filenamepath)}");
+                    //}
+
+
+                    // Debug.WriteLine($"{sfBlock.arg0,3} {sfBlock.arg2,3} {sfBlock.arg3,3} {sfBlock.arg4,3}        {sfBlock.name0}");
+
+                }
+            }
+
+            // result.Sort();
+            foreach (string item in result) {
+                Debug.WriteLine($"{item}");
+            }
+
+        }
+
+
+
+        static void BlockCountSurvery(string outputFilenamepath = null, bool writeFile = true) {
+            if (outputFilenamepath != null && writeFile) {
+                ConfigureOutputFile(outputFilenamepath);
+                WriteHtmlFile("Block count", "Block count - all files");
+            }
+            string fH = "File";
+            string sfH = "SF blocks";
+            string cH = "compat";
+            string dH = "Dblocks";
+            string uH = "ukn";
+            string pH = "params";
+            string mH = "mmaps";
+            string bH = "buffer";
+            string sH = "symbols";
+            string zH = "zframes";
+            const int pad = 10;
+            string header = $"{fH,-60}{sfH,pad}{cH,pad}{dH,pad}{uH,pad}{pH,pad}{mH,pad}{bH,pad}{sH,pad}{zH,pad}";
+            OutputWriteLine($"{header}");
+            List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
+            foreach (string filenamepath in allVcsFiles) {
+                FileBlockCount(filenamepath);
+
+            }
+        }
+
+        static void FileBlockCount(string filenamepath) {
+            ShaderFile shaderFile = new(filenamepath);
+            int sfCount = shaderFile.sfBlocks.Count;
+            int cCount = shaderFile.compatibilityBlocks.Count;
+            int dCount = shaderFile.dBlocks.Count;
+            int uCount = shaderFile.unknownBlocks.Count;
+            int pCount = shaderFile.paramBlocks.Count;
+            int mCount = shaderFile.mipmapBlocks.Count;
+            int bCount = shaderFile.bufferBlocks.Count;
+            int sCount = shaderFile.symbolBlocks.Count;
+            int zCount = shaderFile.zframesLookup.Count;
+            const int pad = 10;
+            //OutputWriteLine($"{RemoveBaseDir(shaderFile.filenamepath),-70}{sfCount,pad}{cCount,pad}{dCount,pad}" +
+            //    $"{uCount,pad}{pCount,pad}{mCount,pad}{bCount,pad}{sCount,pad}{zCount,pad}");
+
+            int filepadlength = 60 - Path.GetFileName(filenamepath).Length;
+            if (filepadlength < 0) filepadlength = 0;
+            string empty = "";
+
+            OutputWriteLine($"{GetHtmlLink(filenamepath)}{new string(' ', filepadlength)}{sfCount,pad}{cCount,pad}{dCount,pad}" +
+                $"{uCount,pad}{pCount,pad}{mCount,pad}{bCount,pad}{sCount,pad}{zCount,pad}");
+        }
+
+
+
+        static void ShowUnknownBlockConcise() {
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
+
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"\global_lit_simple_pcgl_30_features.vcs"; // 0 d-blocks
+            string filenamepath = PCGL_DIR_NOT_CORE + @"\global_lit_simple_pcgl_30_vs.vcs";
+            UknownBlockConcise(filenamepath);
+            filenamepath = PCGL_DIR_NOT_CORE + @"\global_lit_simple_pcgl_30_ps.vcs";
+            UknownBlockConcise(filenamepath);
+        }
+
+
+        static void UknownBlockConcise(string filenamepath) {
+            ShaderFile shaderFile = new(filenamepath);
+            bool newFile = true;
+
+            foreach (UnknownBlock uBlock in shaderFile.unknownBlocks) {
+
+                if (newFile) {
+                    OutputWriteLine("");
+                    OutputWriteLine(GetHtmlLink(filenamepath));
+                    // OutputWriteLine(RemoveBaseDir(filenamepath));
+                    OutputWriteLine("");
+                }
+                newFile = false;
+
+
+                //string[] sfNames = new string[uBlock.range0.Length];
+                //for (int i = 0; i < sfNames.Length; i++) {
+                //    sfNames[i] = shaderFile.sfBlocks[uBlock.range0[i]].name0;
+                //}
+
+                string[] uknNames = new string[uBlock.flags.Length];
+                for (int i = 0; i < uknNames.Length; i++) {
+                    if (uBlock.flags[i] == 3) {
+                        uknNames[i] = shaderFile.dBlocks[uBlock.range0[i]].name0;
+                        continue;
+                    }
+                    if (uBlock.flags[i] == 2) {
+                        uknNames[i] = shaderFile.sfBlocks[uBlock.range0[i]].name0;
+                        continue;
+                    }
+                    throw new ShaderParserException($"unknown flag value {uBlock.flags[i]}");
+
+                }
+
+
+
+                string s0 = $"[{uBlock.blockIndex,2}]";
+                string s1 = (uBlock.relRule == 1 || uBlock.relRule == 2) ? $"INC({uBlock.relRule})" : $"EXC({uBlock.relRule})";
+                // string s2 = $"{cBlock.arg0}";
+                string s3 = $"{uBlock.ReadByteFlags()}";
+                string s4 = $"{CombineValues(uknNames)}";
+                // string s4 = "NAMES HERE";
+                string s5 = $"{CombineValues2(uBlock.range0)}";
+                string s6 = $"{CombineValues2(uBlock.range1)}";
+                string s7 = $"{CombineValues2(uBlock.range2)}";
+                // string blockSummary = $"{s0.PadRight(10)} {s1.PadRight(6)} {s2.PadRight(6)} {s3.PadRight(18)} s4.PadRight(20)} {s5.PadRight(8)} {s6.PadRight(8)}";
+                string blockSummary = $"{s0,-7}{s1,-10}{s3,-20}{s5,-16}{s4,-80}{s6,-8}{s7,-8}";
+
+
+                OutputWrite(blockSummary);
+                OutputWriteLine("");
+            }
+
+        }
+
+
+
+
+
+        static void UnknownBlocksSurvey(string outputFilenamepath = null, bool writeFile = true) {
+            if (outputFilenamepath != null && writeFile) {
+                ConfigureOutputFile(outputFilenamepath);
+                WriteHtmlFile("CBlock values", "Compatibility block value ranges, bytes 0 to 212");
+            }
+            List<SortedDictionary<int, int>> values = new();
+            SortedDictionary<string, int> byteflags = new();
+            for (int i = 0; i < 54; i++) {
+                values.Add(new SortedDictionary<int, int>());
+            }
+
+            List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
+            foreach (string filenamepath in allVcsFiles) {
+                ShaderFile shaderFile = new(filenamepath);
+                foreach (UnknownBlock uBlock in shaderFile.unknownBlocks) {
+                    for (int i = 0; i < 8; i += 4) {
+                        int val = uBlock.ReadIntegerAtPosition(i);
+                        int curVal = values[i / 4].GetValueOrDefault(val, 0);
+                        values[i / 4][val] = curVal + 1;
+                    }
+                    {
+                        // 16 bytes long, so these are skipped in the next part
+                        string val = uBlock.ReadByteFlags();
+                        int curVal = byteflags.GetValueOrDefault(val, 0);
+                        byteflags[val] = curVal + 1;
+                    }
+                    for (int i = 24; i < 216; i += 4) {
+                        int val = uBlock.ReadIntegerAtPosition(i);
+                        int curVal = values[i / 4].GetValueOrDefault(val, 0);
+                        values[i / 4][val] = curVal + 1;
+                    }
+                }
+            }
+            OutputWriteLine($"  BYTE    VALUES SEEN");
+            OutputWriteLine($"  -----   -----------");
+            for (int i = 0; i < 2; i++) {
+                OutputWriteLine($"  ({i * 4,3})       {CombineValues(values[i])}");
+            }
+            OutputWriteLine($"  ({8,3})      {CombineValues(byteflags)}");
+            for (int i = 6; i < 54; i++) {
+                string tab = "";
+                if (!values[i].ContainsKey(-1)) {
+                    tab = "    ";
+                }
+                OutputWriteLine($"  ({i * 4,3})   {tab}{CombineValues(values[i])}");
+            }
+        }
+
+
+
+
+
+        static void ShowUnknownBlock() {
+            ShaderFile shaderFile = new(PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
+            Debug.WriteLine($"{RemoveBaseDir(shaderFile.filenamepath)}");
+
+            //for (int i = 0; i < shaderFile.unknownBlocks.Count; i++) {
+            //    UnknownBlock uBlock = shaderFile.unknownBlocks[i];
+            //    Debug.WriteLine($"{uBlock.arg0}");
+            //}
+
+
+            foreach (UnknownBlock uBlock in shaderFile.unknownBlocks) {
+
+                OutputWriteLine($"COMPAT-BLOCK[{uBlock.blockIndex}]");
+                OutputWriteLine($"rule = {uBlock.relRule}");
+                OutputWriteLine($"arg1 = {uBlock.arg0}");
+                // OutputWriteLine($"{CombineValues(cBlock.flags)}");
+                OutputWriteLine($"      {CombineValues(uBlock.flags)}");
+                OutputWriteLine($"{CombineValues(uBlock.range0)}");
+                OutputWriteLine($"{CombineValues(uBlock.range1)}");
+                OutputWriteLine($"{CombineValues(uBlock.range2)}");
+                OutputWriteLine($"{uBlock.description}");
+                OutputWriteLine($"");
+
+            }
+
+        }
+
+
+
+
+
+        static void DBlockSurvey(string outputFilenamepath = null, bool writeFile = true) {
+            if (outputFilenamepath != null && writeFile) {
+                ConfigureOutputFile(outputFilenamepath);
+                WriteHtmlFile("DBlock survery", "DBlocks - values seen");
+            }
+
+            int ARG_OFFSET = 128;
+
+            List<SortedDictionary<int, int>> values = new();
+            for (int i = 0; i < 6; i++) {
+                values.Add(new SortedDictionary<int, int>());
+            }
+
+            List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
+            // List<string> allVcsFiles = new();
+            // allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
+
+            foreach (string filenamepath in allVcsFiles) {
+                ShaderFile shaderFile = new(filenamepath);
+                foreach (DBlock dBlock in shaderFile.dBlocks) {
+                    for (int i = ARG_OFFSET; i < ARG_OFFSET + 24; i += 4) {
+                        int val = dBlock.ReadIntegerAtPosition(i);
+                        int curVal = values[(i - ARG_OFFSET) / 4].GetValueOrDefault(val, 0);
+                        values[(i - ARG_OFFSET) / 4][val] = curVal + 1;
+
+                    }
+                }
+            }
+
+            OutputWriteLine($"  BYTE    VALUES SEEN");
+            OutputWriteLine($"  -----   -----------");
+            for (int i = 0; i < 6; i++) {
+                OutputWriteLine($"  ({i * 4,3})       {CombineValues(values[i])}");
+            }
+            //OutputWriteLine($"  ({8,3})      {CombineValues(byteflags)}");
+            //for (int i = 6; i < 54; i++) {
+            //    string tab = "";
+            //    if (!values[i].ContainsKey(-1)) {
+            //        tab = "    ";
+            //    }
+            //    OutputWriteLine($"  ({i * 4,3})   {tab}{CombineValues(values[i])}");
+            //}
+
+        }
+
+
+        static void ShowDBlock() {
+            ShaderFile shaderFile = new(PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
+            Debug.WriteLine($"{RemoveBaseDir(shaderFile.filenamepath)}");
+
+            for (int i = 0; i < shaderFile.dBlocks.Count; i++) {
+                Debug.WriteLine($"{i}    {shaderFile.dBlocks[i].name0}");
+            }
+
+
+        }
+
+
 
         static void ShowSfArgumentList() {
             ShaderFile shaderFile = new(PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
-
-
             for (int i = 0; i < shaderFile.sfBlocks.Count; i++) {
                 Debug.WriteLine($"{i}    {shaderFile.sfBlocks[i].name0}");
             }
@@ -134,19 +477,25 @@ namespace MyShaderAnalysis {
          * But I'm already building the tables the way they should be!
          *
          */
-        static void CompatBlockResolveSfReferences(string outputFilenamepath = null, bool writeFile = true) {
+        static void CompatBlockResolveSfReferences(string outputFilenamepath = null, bool writeFile = false) {
             if (outputFilenamepath != null && writeFile) {
                 ConfigureOutputFile(outputFilenamepath);
                 WriteHtmlFile("Cblocks", "Compatibility blocks, with resolved symbol names");
             }
             // List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
             List<string> allVcsFiles = new();
-            allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_features.vcs");
-            allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_vs.vcs");
-            allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
+
+            // allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_features.vcs");
+            // allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_vs.vcs");
+            // allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
+
             //allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_features.vcs");
             //allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_vs.vcs");
             //allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_ps.vcs");
+
+            allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\global_lit_simple_pcgl_30_features.vcs");
+            allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\global_lit_simple_pcgl_30_vs.vcs");
+            allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\global_lit_simple_pcgl_30_ps.vcs");
 
             string h0 = "Block";
             string h5 = "params";
@@ -242,7 +591,7 @@ namespace MyShaderAnalysis {
 
 
 
-        static void CompatBlockConciseAll(string outputFilenamepath = null, bool writeFile = true) {
+        static void CompatBlockConciseAll(string outputFilenamepath = null, bool writeFile = false) {
             if (outputFilenamepath != null && writeFile) {
                 ConfigureOutputFile(outputFilenamepath);
                 WriteHtmlFile("Cblock details", "Compatibility blocks summary");
@@ -328,7 +677,7 @@ namespace MyShaderAnalysis {
 
 
 
-        static void CompatBlockDetails(string outputFilenamepath = null, bool writeFile = true) {
+        static void CompatBlockDetails(string outputFilenamepath = null, bool writeFile = false) {
             if (outputFilenamepath != null && writeFile) {
                 ConfigureOutputFile(outputFilenamepath);
                 WriteHtmlFile("Cblock details", "Cblock details selected files");
@@ -379,7 +728,7 @@ namespace MyShaderAnalysis {
 
 
 
-        static void CompatibilityBlocksSurveyIntRange(int offset, int count, string outputFilenamepath = null, bool writeFile = true) {
+        static void CompatibilityBlocksSurveyIntRange(int offset, int count, string outputFilenamepath = null, bool writeFile = false) {
             if (outputFilenamepath != null && writeFile) {
                 ConfigureOutputFile(outputFilenamepath);
                 WriteHtmlFile("", "");
@@ -418,7 +767,7 @@ namespace MyShaderAnalysis {
 
 
 
-        static void CompatibilityBlocksSurvey(string outputFilenamepath = null, bool writeFile = true) {
+        static void CompatibilityBlocksSurvey(string outputFilenamepath = null, bool writeFile = false) {
             if (outputFilenamepath != null && writeFile) {
                 ConfigureOutputFile(outputFilenamepath);
                 WriteHtmlFile("CBlock values", "Compatibility block value ranges, bytes 0 to 212");
@@ -469,7 +818,7 @@ namespace MyShaderAnalysis {
 
 
 
-        static void CompatibilityBlocksValuesSeenAtOffset(int offset, string outputFilenamepath = null, bool writeFile = true) {
+        static void CompatibilityBlocksValuesSeenAtOffset(int offset, string outputFilenamepath = null, bool writeFile = false) {
             if (outputFilenamepath != null && writeFile) {
                 ConfigureOutputFile(outputFilenamepath);
                 WriteHtmlFile("", "");
@@ -489,7 +838,7 @@ namespace MyShaderAnalysis {
 
 
 
-        static void CompatibilityBlocksValuesSeenAtOffset0(string outputFilenamepath = null, bool writeFile = true) {
+        static void CompatibilityBlocksValuesSeenAtOffset0(string outputFilenamepath = null, bool writeFile = false) {
             if (outputFilenamepath != null && writeFile) {
                 ConfigureOutputFile(outputFilenamepath);
                 WriteHtmlFile("", "");
@@ -555,7 +904,7 @@ namespace MyShaderAnalysis {
 
 
 
-        static void CompatibilityBlockValuesExample(string outputFilenamepath = null, bool writeFile = true) {
+        static void CompatibilityBlockValuesExample(string outputFilenamepath = null, bool writeFile = false) {
             if (outputFilenamepath != null && writeFile) {
                 ConfigureOutputFile(outputFilenamepath);
                 WriteHtmlFile("", "");
@@ -579,7 +928,7 @@ namespace MyShaderAnalysis {
 
 
 
-        static void CompatBlockPresence(string outputFilenamepath = null, bool writeFile = true) {
+        static void CompatBlockPresence(string outputFilenamepath = null, bool writeFile = false) {
             if (outputFilenamepath != null && writeFile) {
                 ConfigureOutputFile(outputFilenamepath);
                 WriteHtmlFile("CBlock count", "Compatibility block count, all files");
@@ -596,7 +945,7 @@ namespace MyShaderAnalysis {
 
 
 
-        static void CompareTriplesMainParams(string outputFilenamepath = null, bool writeFile = true) {
+        static void CompareTriplesMainParams(string outputFilenamepath = null, bool writeFile = false) {
             if (outputFilenamepath != null && writeFile) {
                 ConfigureOutputFile(outputFilenamepath);
                 WriteHtmlFile("SF names", "SF names for vcs, vs, ps triples");

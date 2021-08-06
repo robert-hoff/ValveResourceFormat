@@ -169,6 +169,7 @@ namespace MyShaderAnalysis.vcsparsing {
 
 
     public class DataBlockSfBlock : DataBlock {
+        public int blockId;
         public string name0;
         public string name1;
         public int arg0;
@@ -178,7 +179,8 @@ namespace MyShaderAnalysis.vcsparsing {
         public int arg4;
         public List<string> additionalParams = new();
 
-        public DataBlockSfBlock(DataReader datareader, int start) : base(datareader, start) {
+        public DataBlockSfBlock(DataReader datareader, int start, int blockId) : base(datareader, start) {
+            this.blockId = blockId;
             name0 = datareader.ReadNullTermStringAtPosition();
             datareader.offset += 64;
             name1 = datareader.ReadNullTermStringAtPosition();
@@ -215,11 +217,15 @@ namespace MyShaderAnalysis.vcsparsing {
             this.blockIndex = blockIndex;
             relRule = datareader.ReadInt();
             arg0 = datareader.ReadInt();
+            // flags are at (8)
             flags = ReadByteFlagsUpdated();
+            // range 0 at (24)
             range0 = ReadIntRange();
             datareader.offset += 68 - range0.Length * 4;
+            // range 1 at (92)
             range1 = ReadIntRange();
             datareader.offset += 60 - range1.Length * 4;
+            // range 2 at (152)
             range2 = ReadIntRange();
             datareader.offset += 64 - range2.Length * 4;
 
@@ -261,9 +267,7 @@ namespace MyShaderAnalysis.vcsparsing {
             throw new NotImplementedException();
         }
 
-        public int ReadIntegerAtPosition(int relOffset) {
-            return datareader.ReadIntAtPosition(start + relOffset, rel: false);
-        }
+
 
         // 1 to 5 byte flags occur at position 8 (it looks like there is provision for a maximum of 16 byte-flags)
         public string ReadByteFlags() {
@@ -282,20 +286,124 @@ namespace MyShaderAnalysis.vcsparsing {
 
     // needs implemenation (parser works by moving the offset 152 bytes for each d-block)
     public class DBlock : DataBlock {
+
+        public string name0;
+        public string name1; // it looks like d-blocks might have the provision for 2 strings (unsure)
+        public int arg0;
+        public int arg1;
+        public int arg2;
+        public int arg3;
+        public int arg4;
+        public int arg5;
+
+
         public DBlock(DataReader datareader, int start) : base(datareader, start) {
 
+            name0 = datareader.ReadNullTermStringAtPosition();
+            datareader.offset += 64;
+            name1 = datareader.ReadNullTermStringAtPosition();
+            datareader.offset += 64;
+            arg0 = datareader.ReadInt();
+            arg1 = datareader.ReadInt();
+            arg2 = datareader.ReadInt();
+            arg3 = datareader.ReadInt();
+            arg4 = datareader.ReadInt();
+            arg5 = datareader.ReadInt();
         }
+
+
+
+
+
 
         public override void PrintByteSummary() {
             throw new NotImplementedException();
         }
+
+
+
+
+
     }
+
+
+
+
+
+
+
 
 
     // needs implemenation (parser works by moving the offset 472 bytes for each unknown-block)
     public class UnknownBlock : DataBlock {
-        public UnknownBlock(DataReader datareader, int start) : base(datareader, start) {
 
+        public int blockIndex;
+        public int relRule;  // 1 = dependency (feature file), 2 = dependency (other files), 3 = exclusion
+        public int arg0; // this is just 1 for features files and 2 for all other files
+        public int[] flags;
+        public int[] range0;
+        public int[] range1;
+        public int[] range2;
+        public string description;
+
+        public UnknownBlock(DataReader datareader, int start, int blockIndex) : base(datareader, start) {
+            this.blockIndex = blockIndex;
+
+            this.blockIndex = blockIndex;
+            relRule = datareader.ReadInt();
+            arg0 = datareader.ReadInt();
+            flags = ReadByteFlagsUpdated();
+
+            // FIXME - some of how this is read needs to be verified
+            // there is a known integer at (88) which is not being picked up
+            range0 = ReadIntRange();
+            datareader.offset += 68 - range0.Length * 4;
+            range1 = ReadIntRange();
+            datareader.offset += 60 - range1.Length * 4;
+            range2 = ReadIntRange();
+            datareader.offset += 64 - range2.Length * 4;
+
+
+            description = datareader.ReadNullTermStringAtPosition();
+            datareader.offset += 256;
+            // datareader.offset += 472;
+
+        }
+
+        private int[] ReadIntRange() {
+            List<int> ints0 = new();
+            while (datareader.ReadIntAtPosition() >= 0) {
+                ints0.Add(datareader.ReadInt());
+            }
+            return ints0.ToArray();
+        }
+
+        private int[] ReadByteFlagsUpdated() {
+            int count = 0;
+            int ind = datareader.offset;
+            while (datareader.databytes[ind] > 0 && count < 16) {
+                count++;
+                ind++;
+            }
+            int[] byteFlags = new int[count];
+            for (int i = 0; i < count; i++) {
+                byteFlags[i] = datareader.databytes[datareader.offset + i];
+            }
+            datareader.offset += 16;
+            return byteFlags;
+        }
+
+
+        // FIXME - I shouldn't need this method
+        // 1 to 5 byte flags occur at position 8 (it looks like there is provision for a maximum of 16 byte-flags)
+        public string ReadByteFlags() {
+            // byte[] bflag = new byte[16];
+            string bflags = "";
+            int ind = 8;
+            while (datareader.databytes[start + ind] > 0 || ind >= 24) {
+                bflags += $"{datareader.databytes[start + ind++]}, ";
+            }
+            return $"({bflags[0..^2]})";
         }
         public override void PrintByteSummary() {
             throw new NotImplementedException();

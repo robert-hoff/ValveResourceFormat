@@ -134,6 +134,20 @@ namespace MyShaderAnalysis.vcsparsing {
             }
         }
 
+        public static string ShortHandName(string filenamepath) {
+            string dirname = Path.GetDirectoryName(filenamepath);
+            string filename = Path.GetFileName(filenamepath);
+            if (dirname.EndsWith(@"\shaders\vfx")) {
+                return @"\dota\" + filename;
+            } else if (dirname.EndsWith(@"\shaders-core\vfx")) {
+                return @"\core\" + filename;
+            } else {
+
+                return filenamepath;
+            }
+        }
+
+
         public static string GetHtmlHeader(string browserTitle, string pageHeader) {
             string html_header = "" +
                 $"<!DOCTYPE html>\n<html>\n<head>\n  <title>{browserTitle}</title>\n" +
