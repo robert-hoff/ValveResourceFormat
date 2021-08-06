@@ -72,7 +72,7 @@ namespace MyShaderAnalysis.vcsparsing {
             // always 152 bytes
             int dBlockCount = datareader.ReadInt();
             for (int i = 0; i < dBlockCount; i++) {
-                DBlock nextDBlock = new(datareader, datareader.offset);
+                DBlock nextDBlock = new(datareader, datareader.offset, i);
                 dBlocks.Add(nextDBlock);
             }
 

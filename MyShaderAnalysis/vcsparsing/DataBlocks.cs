@@ -287,6 +287,7 @@ namespace MyShaderAnalysis.vcsparsing {
     // needs implemenation (parser works by moving the offset 152 bytes for each d-block)
     public class DBlock : DataBlock {
 
+        public int blockIndex;
         public string name0;
         public string name1; // it looks like d-blocks might have the provision for 2 strings (unsure)
         public int arg0;
@@ -297,8 +298,8 @@ namespace MyShaderAnalysis.vcsparsing {
         public int arg5;
 
 
-        public DBlock(DataReader datareader, int start) : base(datareader, start) {
-
+        public DBlock(DataReader datareader, int start, int blockIndex) : base(datareader, start) {
+            this.blockIndex = blockIndex;
             name0 = datareader.ReadNullTermStringAtPosition();
             datareader.offset += 64;
             name1 = datareader.ReadNullTermStringAtPosition();
@@ -401,9 +402,9 @@ namespace MyShaderAnalysis.vcsparsing {
             string bflags = "";
             int ind = 8;
             while (datareader.databytes[start + ind] > 0 || ind >= 24) {
-                bflags += $"{datareader.databytes[start + ind++]}, ";
+                bflags += $"{datareader.databytes[start + ind++]},";
             }
-            return $"({bflags[0..^2]})";
+            return $"({bflags[0..^1]})";
         }
         public override void PrintByteSummary() {
             throw new NotImplementedException();

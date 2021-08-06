@@ -1,12 +1,15 @@
 
 
 
+using MyShaderAnalysis.compat;
+
 namespace MyShaderAnalysis {
 
 
     class ProgramEntry {
 
         static void Main() {
+
 
 
             StaticAnalysis.RunTrials();
@@ -20,7 +23,8 @@ namespace MyShaderAnalysis {
             // Snippetcode.RunTrials();
             // Murmur32.RunTrials();
 
-
+            // CompatRulesNewApproach.RunTrials();
+            // CompatRulesWater.RunTrials();
             // CompatRulesGlobalLitSimple.RunTrials();
             // CompatRules5.RunTrials();
             // CompatRules4.RunTrials();

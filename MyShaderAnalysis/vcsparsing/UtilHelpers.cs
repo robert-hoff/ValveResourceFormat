@@ -196,6 +196,27 @@ namespace MyShaderAnalysis.vcsparsing {
             throw new ShaderParserException("don't know where this file belongs");
         }
 
+        public static string GetShortName(string vcsFileName) {
+            string shortName = "";
+            string token = "";
+            string filename = Path.GetFileName(vcsFileName);
+            FILETYPE vcsFiletype = GetVcsFileType(filename);
+            if (vcsFiletype == FILETYPE.features_file) {
+                shortName = filename[0..^16];
+                token = "ft";
+            } else if (vcsFiletype == FILETYPE.psrs_file) {
+                shortName = filename[0..^12];
+                token = "psrs";
+            } else {
+                shortName = filename[0..^10];
+                token = $"{vcsFiletype.ToString()[0..^5]}";
+            }
+            if (!shortName.EndsWith("pcgl")) {
+                throw new ShaderParserException("this is only implemented for pcgl files");
+            }
+            return $"{shortName[0..^5]}({token})";
+        }
+
 
 
 
