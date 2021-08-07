@@ -12,7 +12,7 @@ namespace MyShaderAnalysis {
 
 
 
-            StaticAnalysis.RunTrials();
+            // StaticAnalysis.RunTrials();
 
             // ShaderAnalysis.RunTrials();
             // ShaderAnalysis03.RunTrials();
@@ -32,6 +32,8 @@ namespace MyShaderAnalysis {
             // CompatRules2.RunTrials();
             // CompatRules.RunTrials();
 
+
+            BitTestGeneration.RunTrials();
 
 
 

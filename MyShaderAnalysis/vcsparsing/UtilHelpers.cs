@@ -97,7 +97,8 @@ namespace MyShaderAnalysis.vcsparsing {
             if (File.Exists(vs) && File.Exists(ps)) {
                 return (ft, vs, ps);
             } else {
-                throw new System.Exception($"ps/vs files don't exist for {ft}");
+                return (null,null,null);
+                // throw new System.Exception($"ps/vs files don't exist for {ft}");
             }
         }
 

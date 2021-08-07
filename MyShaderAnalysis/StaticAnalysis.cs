@@ -31,11 +31,7 @@ namespace MyShaderAnalysis {
         // const string OUTPUT_DIR = @"..\..\..\GEN-OUTPUT";
         const string OUTPUT_DIR = @"Z:\active\projects\dota2-sourcesdk-modding\shader-analysis-vcs-format\OUTPUT_DUMP";
         const string SERVER_OUTPUT_DIR = @"Z:\dev\www\vcs.codecreation.dev\GEN-output";
-
-
-        public static void RunTrials() {
-
-            FileSummaryAllFiles();
+        const string OUTPUT_SUB_DIR = @"\GEN-output";
 
 
             // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
@@ -46,7 +42,22 @@ namespace MyShaderAnalysis {
             // string filenamepath = PCGL_DIR_NOT_CORE + @"\spring_meteor_pcgl_30_vs.vcs";
             // string filenamepath = PCGL_DIR_NOT_CORE + @"\cables_pcgl_30_features.vcs";
             // string filenamepath = PCGL_DIR_NOT_CORE + @"\spritecard_pcgl_30_features.vcs";
-            string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
+
+
+        public static void RunTrials() {
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
+
+            // -- writes a useful summary for every file (pretty long process)
+            // FileSummaryAllFiles();
+
+            // - prints a single page summary and links to all the files produced with FileSummaryAllFiles()
+            // BlockCountSurvery($@"{SERVER_OUTPUT_DIR}\file-overview.html", writeFile: true);
+            // FileBlockCount(filenamepath);
+
+
+
+            ZFramePrintout();
+
 
 
 
@@ -62,7 +73,7 @@ namespace MyShaderAnalysis {
 
 
 
-            // -- setting up comprehensive summary for particular file
+            // -- setting up comprehensive summary for particular file (NEEDS UPDATE)
             // FullFileSummary(@$"{PCGL_DIR_NOT_CORE}\water_dota_pcgl_30_features.vcs", "water", $@"{SERVER_OUTPUT_DIR}\summary-water.html", writeFile: true);
             // FullFileSummary(@$"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_features.vcs", "multiblend", $@"{SERVER_OUTPUT_DIR}\summary-multi.html", writeFile: true);
             // FullFileSummary(@$"{PCGL_DIR_NOT_CORE}\spritecard_pcgl_30_features.vcs", "sprite", $@"{SERVER_OUTPUT_DIR}\summary-sprite.html", writeFile: true);
@@ -73,31 +84,19 @@ namespace MyShaderAnalysis {
             // FullFileSummary(@$"{PCGL_DIR_NOT_CORE}\water_dota_pcgl_30_features.vcs", "water", $@"{SERVER_OUTPUT_DIR}\summary-water.html", writeFile: false);
 
 
-
-
-
             // -- useful methods
             // CompareTriplesMainParams($@"{SERVER_OUTPUT_DIR}\SF-names.html", writeFile: true);
             // CompatBlockPresence($@"{SERVER_OUTPUT_DIR}\Compat-block-count.html", writeFile: false);
-
-
 
             // CompatibilityBlocksValuesSeenAtOffset(24);
             // CompatibilityBlocksSurvery($@"{SERVER_OUTPUT_DIR}\CBlock-value-survey.html", writeFile: false);
             // CompatBlockDetails($@"{SERVER_OUTPUT_DIR}\Compat-block-details.html", writeFile: true);
             // CompatBlockDetails($@"{SERVER_OUTPUT_DIR}\Compat-block-details-all.html", writeFile: true);
 
-
-
             // CompatBlockDetailsConcise2(PCGL_DIR_NOT_CORE + @"\hero_pcgl_40_ps.vcs", showLink: false);
-
-
-
             // CompatBlockConciseAll($@"{SERVER_OUTPUT_DIR}\Compat-blocks-summary.html", writeFile: true);
-
             // CompatibilityBlocksSurveyIntRange(92, 3);
             // CompatBlockRelationships();
-
 
             // slight changes here
             // CompatBlockResolveSfReferences($@"{SERVER_OUTPUT_DIR}\Compat-blocks-resolved-names.html", writeFile: true);
@@ -106,26 +105,17 @@ namespace MyShaderAnalysis {
             // CompatBlockResolveSfReferences($@"{SERVER_OUTPUT_DIR}\Compat-blocks-sf-names-multiblend.html", writeFile: true);
 
             // CompatBlockResolveSfReferences();
-
-
-
             // ShowSfArgumentList(PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
             // ShowDBlock(PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
             // DBlockSurvey();
             // ShowUnknownBlock();
             // UnknownBlocksSurvey();
-            // BlockCountSurvery($@"{SERVER_OUTPUT_DIR}\block-counts.html", writeFile: true);
-
             // ShowUnknownBlockConcise();
-
             // ScanForValueSfBlocks();
-
-
-
-
             // TestHelperMethods();
 
 
+            // TestRun();
 
 
 
@@ -135,15 +125,87 @@ namespace MyShaderAnalysis {
 
 
 
-        static void FileSummaryAllFiles() {
-            // List<(string, string, string)> triples = new();
+        static void TestRun() {
+            // string targetFile = @$"{PCGL_DIR_CORE}\depth_only_pcgl_40_vs.vcs";
+            // UnknownBlockConcise(targetFile, showLink: false);
+            FileSummarySingleFile();
+        }
+
+
+
+        static void ZFramePrintout() {
+            string filenamepath = @$"{PCGL_DIR_NOT_CORE}\water_dota_pcgl_30_ps.vcs";
+            ShaderFile shaderFile = new(filenamepath);
+
+            foreach (var item in shaderFile.zframesLookup) {
+                // Debug.WriteLine($"{item.Key:x04}");
+
+               string binaryString = Convert.ToString(item.Key, 2).PadLeft(12, '0');
+                // Debug.WriteLine($"{binaryString}");
+
+                string spacedOutBinary = "";
+                foreach (var item2 in binaryString.ToCharArray()) {
+                    spacedOutBinary += $"{item2}    ";
+                }
+                spacedOutBinary = spacedOutBinary.Trim();
+
+
+                // Debug.WriteLine($"{Convert.ToString(item.Key, 2).PadLeft(12, '0')} {item.Key,5}      {item.Key:x04}       {spacedOutBinary}");
+                Debug.WriteLine($"{Convert.ToString(item.Key, 2).PadLeft(12, '0')}");  
+
+
+            }
+
+
+        }
+
+
+
+
+        static string GetSFSummaryLink(string filenamepath) {
+            // string linkName = "(det.)";
+            FILETYPE vcsFiletype = GetVcsFileType(filenamepath);
+            if (vcsFiletype == FILETYPE.vs_file || vcsFiletype == FILETYPE.ps_file) {
+                string ftNamepath = $"{filenamepath[0..^6]}features.vcs";
+                var triple = GetTriple(ftNamepath);
+                if (triple.Item1 == null) {
+                    // return new string(' ', linkName.Length); ;
+                    return "";
+                }
+                string token = GetCoreOrDotaString(filenamepath);
+                string htmlFilename = $"{Path.GetFileName(filenamepath)[0..^4]}-summary.html";
+                string targetHtmlPath = $@"{OUTPUT_SUB_DIR}\sf-summaries\{token}\{htmlFilename}";
+                string htmlUrl = $"<a href='{targetHtmlPath}'>det.</a>";
+                return htmlUrl;
+
+            }
+            return "";
+        }
+
+
+
+
+        static void FileSummarySingleFile() {
+            List<(string, string, string)> triples = new();
             // triples.Add(GetTriple(@$"{PCGL_DIR_NOT_CORE}\hero_pcgl_30_features.vcs"));
             // triples.Add(GetTriple(@$"{PCGL_DIR_CORE}\visualize_cloth_pcgl_40_features.vcs"));
+            // triples.Add(GetTriple(@$"{PCGL_DIR_CORE}\depth_only_pcgl_40_features.vcs"));
+            // triples.Add(GetTriple(@$"{PCGL_DIR_CORE}\convolve_environment_map_pcgl_41_features.vcs"));
+            triples.Add(GetTriple(@$"{PCGL_DIR_CORE}\apply_fog_pcgl_40_features.vcs"));
+            WriteVsPsFileSummary(triples[0], FILETYPE.ps_file);
+        }
+
+
+
+        static void FileSummaryAllFiles() {
             List<(string, string, string)> triples = GetFeaturesVsPsFileTriples();
             foreach (var triple in triples) {
                 WriteVsPsFileSummary(triple, FILETYPE.vs_file);
+                CloseStreamWriter();
                 WriteVsPsFileSummary(triple, FILETYPE.ps_file);
+                CloseStreamWriter();
             }
+
         }
 
 
@@ -212,25 +274,25 @@ namespace MyShaderAnalysis {
         static void BlockCountSurvery(string outputFilenamepath = null, bool writeFile = true) {
             if (outputFilenamepath != null && writeFile) {
                 ConfigureOutputFile(outputFilenamepath);
-                WriteHtmlFile("Block count", "Block count - all files");
+                WriteHtmlFile("File", "File summary");
             }
             string fH = "File";
             string sfH = "SF blocks";
+            string link = "";
             string cH = "compat";
             string dH = "Dblocks";
-            string uH = "ukn";
+            string uH = "DRules";
             string pH = "params";
             string mH = "mmaps";
             string bH = "buffer";
             string sH = "symbols";
             string zH = "zframes";
-            const int pad = 10;
-            string header = $"{fH,-60}{sfH,pad}{cH,pad}{dH,pad}{uH,pad}{pH,pad}{mH,pad}{bH,pad}{sH,pad}{zH,pad}";
+            const int pad = 8;
+            string header = $"{fH,-55}{link,3}{sfH,pad}{cH,pad}{dH,pad}{uH,pad}{pH,pad}{mH,pad}{bH,pad}{sH,pad}{zH,pad}";
             OutputWriteLine($"{header}");
             List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
             foreach (string filenamepath in allVcsFiles) {
                 FileBlockCount(filenamepath);
-
             }
         }
 
@@ -245,15 +307,18 @@ namespace MyShaderAnalysis {
             int bCount = shaderFile.bufferBlocks.Count;
             int sCount = shaderFile.symbolBlocks.Count;
             int zCount = shaderFile.zframesLookup.Count;
-            const int pad = 10;
+            const int pad = 8;
             //OutputWriteLine($"{RemoveBaseDir(shaderFile.filenamepath),-70}{sfCount,pad}{cCount,pad}{dCount,pad}" +
             //    $"{uCount,pad}{pCount,pad}{mCount,pad}{bCount,pad}{sCount,pad}{zCount,pad}");
 
-            int filepadlength = 60 - Path.GetFileName(filenamepath).Length;
+            int filepadlength = 55 - Path.GetFileName(filenamepath).Length;
             if (filepadlength < 0) filepadlength = 0;
-            string empty = "";
+            // string empty = "";
+            string detLink = GetSFSummaryLink(filenamepath);
+            const int linkLength = 4; // "det."
 
-            OutputWriteLine($"{GetHtmlLink(filenamepath)}{new string(' ', filepadlength)}{sfCount,pad}{cCount,pad}{dCount,pad}" +
+            OutputWriteLine($"{GetHtmlLink(filenamepath)}{new string(' ', filepadlength)}{detLink, linkLength}" +
+                $"{sfCount,pad}{cCount,pad}{dCount,pad}" +
                 $"{uCount,pad}{pCount,pad}{mCount,pad}{bCount,pad}{sCount,pad}{zCount,pad}");
         }
 
@@ -266,12 +331,12 @@ namespace MyShaderAnalysis {
             // string filenamepath = PCGL_DIR_NOT_CORE + @"\global_lit_simple_pcgl_30_vs.vcs";
             string filenamepath = PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_ps.vcs";
 
-            UknownBlockConcise(filenamepath);
+            UnknownBlockConcise(filenamepath);
 
         }
 
 
-        static void UknownBlockConcise(string filenamepath, bool showLink = true) {
+        static void UnknownBlockConcise(string filenamepath, bool showLink = true) {
             ShaderFile shaderFile = new(filenamepath);
             bool newFile = true;
 
@@ -286,7 +351,6 @@ namespace MyShaderAnalysis {
                     // OutputWriteLine("");
                 }
                 newFile = false;
-
 
                 //string[] sfNames = new string[uBlock.range0.Length];
                 //for (int i = 0; i < sfNames.Length; i++) {
@@ -304,17 +368,10 @@ namespace MyShaderAnalysis {
                         continue;
                     }
                     throw new ShaderParserException($"unknown flag value {uBlock.flags[i]}");
-
                 }
-
-
-
-
 
                 const int BL = 70;
                 string[] breakNames = CombineValuesBreakString(uknNames, BL);
-
-
                 string s0 = $"[{uBlock.blockIndex,2}]";
                 string s1 = (uBlock.relRule == 1 || uBlock.relRule == 2) ? $"INC({uBlock.relRule})" : $"EXC({uBlock.relRule})";
                 // string s2 = $"{cBlock.arg0}";
@@ -330,9 +387,6 @@ namespace MyShaderAnalysis {
                 for (int i = 1; i < breakNames.Length; i++) {
                     blockSummary += $"\n{(""),-7}{(""),-10}{(""),-15}{(""),-16}{breakNames[i],-BL}";
                 }
-
-
-
                 OutputWrite(blockSummary);
                 OutputWriteLine("");
             }
@@ -397,17 +451,11 @@ namespace MyShaderAnalysis {
 
 
         static void ShowUnknownBlock() {
-            ShaderFile shaderFile = new(PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
+            // ShaderFile shaderFile = new(PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
+            ShaderFile shaderFile = new(PCGL_DIR_CORE + @"\depth_only_pcgl_40_vs.vcs");
             Debug.WriteLine($"{RemoveBaseDir(shaderFile.filenamepath)}");
 
-            //for (int i = 0; i < shaderFile.unknownBlocks.Count; i++) {
-            //    UnknownBlock uBlock = shaderFile.unknownBlocks[i];
-            //    Debug.WriteLine($"{uBlock.arg0}");
-            //}
-
-
             foreach (UnknownBlock uBlock in shaderFile.unknownBlocks) {
-
                 OutputWriteLine($"COMPAT-BLOCK[{uBlock.blockIndex}]");
                 OutputWriteLine($"rule = {uBlock.relRule}");
                 OutputWriteLine($"arg1 = {uBlock.arg0}");
@@ -418,7 +466,6 @@ namespace MyShaderAnalysis {
                 OutputWriteLine($"{CombineValues(uBlock.range2)}");
                 OutputWriteLine($"{uBlock.description}");
                 OutputWriteLine($"");
-
             }
 
         }
@@ -478,7 +525,7 @@ namespace MyShaderAnalysis {
          * dBlock.arg0 is always 2
          * dBlock.arg1 and dBlock.arg5 are always 0
          */
-        static void ShowDBlock(string filenamepath, bool showHtmlLink = true) {
+        static void ShowDBlockArgumentList(string filenamepath, bool showHtmlLink = true) {
             ShaderFile shaderFile = new(filenamepath);
             OutputWriteLine($"DYNAMIC PARAMS");
             if (showHtmlLink) {
@@ -500,6 +547,9 @@ namespace MyShaderAnalysis {
                 string v4 = $"{dBlock.arg4,2}";
                 string blockSummary = $"{v0.PadRight(pad[0])} {v1.PadRight(pad[1])} {v2.PadRight(pad[2])} {v3.PadRight(pad[3])} {v4.PadRight(pad[4])}";
                 OutputWriteLine(blockSummary);
+            }
+            if (shaderFile.dBlocks.Count == 0) {
+                OutputWrite("[empty list]");
             }
             OutputWriteLine("");
         }
@@ -527,6 +577,10 @@ namespace MyShaderAnalysis {
                 string blockSummary = $"{v0.PadRight(pad[0])} {v1.PadRight(pad[1])} {v2.PadRight(pad[2])} {v3.PadRight(pad[3])}";
                 OutputWriteLine(blockSummary);
             }
+            if (shaderFile.sfBlocks.Count == 0) {
+                OutputWrite("[empty list]");
+            }
+
             OutputWriteLine("");
         }
 
@@ -539,18 +593,18 @@ namespace MyShaderAnalysis {
                 throw new ShaderParserException("need to target either vs or ps file");
             }
             string ftFile = triple.Item1;
+            string targetFile = targetFileType == FILETYPE.vs_file ? triple.Item2 : triple.Item3;
             if (outputFilenamepath != null && writeFile) {
                 ConfigureOutputFile(outputFilenamepath);
-                WriteHtmlFile(title, $"{RemoveBaseDir(ftFile)}");
+                WriteHtmlFile(title, $"SF SUMMARY for {Path.GetFileName(targetFile)} ({GetCoreOrDotaString(targetFile)})");
             }
             List<(string, string, string)> triples = new();
             triples.Add(triple);
             SfSummaryOfFileTriple(triples);
-            string targetFile = targetFileType == FILETYPE.vs_file ? triple.Item2 : triple.Item3;
             ShowSfArgumentList(targetFile);
             CompatBlockDetailsConcise2(targetFile, showLink: false);
-            ShowDBlock(targetFile, showHtmlLink: false);
-            UknownBlockConcise(targetFile, showLink: false);
+            ShowDBlockArgumentList(targetFile, showHtmlLink: false);
+            UnknownBlockConcise(targetFile, showLink: false);
         }
 
 
@@ -567,8 +621,8 @@ namespace MyShaderAnalysis {
             SfSummaryOfFileTriple(triples);
             ShowSfArgumentList(psFile);
             CompatBlockDetailsConcise2(psFile, showLink: false);
-            ShowDBlock(psFile, showHtmlLink: false);
-            UknownBlockConcise(psFile, showLink: false);
+            ShowDBlockArgumentList(psFile, showHtmlLink: false);
+            UnknownBlockConcise(psFile, showLink: false);
         }
 
 
@@ -1447,11 +1501,14 @@ namespace MyShaderAnalysis {
             Debug.WriteLine($"writing to {filepathname}");
             sw = new StreamWriter(filepathname);
         }
+
+
+        // This basestream != null is nonsense, it doesn't check if the file is open
         private static void CloseStreamWriter() {
-            if (WriteAsHtml) {
+            if (WriteAsHtml && sw.BaseStream != null) {
                 sw.WriteLine(GetHtmlFooter());
             }
-            if (sw != null) {
+            if (sw != null && sw.BaseStream != null) {
                 sw.Close();
             }
         }
