@@ -55,7 +55,7 @@ namespace MyShaderAnalysis {
             // WriteZFrameToFile(filenamepath, 0);
             // ParseABunchOfZframes();
             // WriteFirstZFrmeEveryFile();
-            // WriteVcsCollectionAsHtml();
+            WriteVcsCollectionAsHtml();
             // ShowVcsByteAnalysis(filenamepath);
             // WriteAllVcsFilesToTxt();
             // WriteVcsByteAnalysisToTxt(filenamepath);
@@ -71,8 +71,12 @@ namespace MyShaderAnalysis {
             // string directoryToUse = PCGL_DIR_NOT_CORE;
             // string[] filenames = { "crystal_pcgl_30_features.vcs", "crystal_pcgl_30_vs.vcs", "crystal_pcgl_30_ps.vcs" };
 
+            // (string, string, string) triple = GetTriple(PCGL_DIR_CORE+@"\visualize_cloth_pcgl_40_features.vcs");
 
-            (string, string, string) triple = GetTriple(PCGL_DIR_CORE+@"\visualize_cloth_pcgl_40_features.vcs");
+
+            (string, string, string) triple = GetTriple(PCGL_DIR_CORE+@"\blur_pcgl_30_features.vcs");
+
+
 
             string[] filenames = {triple.Item1, triple.Item2, triple.Item3};
             // foreach (var filename in filenames) {

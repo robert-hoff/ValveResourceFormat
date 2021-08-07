@@ -29,8 +29,8 @@ namespace MyShaderAnalysis.compat {
 
         static void Trial1() {
 
-            string filenamepath = @$"{PCGL_DIR_NOT_CORE}\water_dota_pcgl_30_ps.vcs";
-            ShaderFile shaderFile = new(filenamepath);
+            // string filenamepath = @$"{PCGL_DIR_NOT_CORE}\water_dota_pcgl_30_ps.vcs";
+            // ShaderFile shaderFile = new(filenamepath);
             // ShowBitGeneration();
 
             AddExclusion(1, 2);
@@ -126,9 +126,7 @@ namespace MyShaderAnalysis.compat {
             for (int i = 1; i < state.Length; i++) {
                 stateStr = $"{state[i]} {stateStr}";
             }
-
             Debug.WriteLine($"{stateStr[0..^1]}");
-
         }
 
 
@@ -140,7 +138,6 @@ namespace MyShaderAnalysis.compat {
                 state[i] = res;
             }
             return state;
-
         }
 
 

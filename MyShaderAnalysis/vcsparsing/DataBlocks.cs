@@ -174,7 +174,7 @@ namespace MyShaderAnalysis.vcsparsing {
         public string name1;
         public int arg0;
         public int arg1;
-        public int arg2;
+        public int arg2; // layers
         public int arg3;
         public int arg4;
         public List<string> additionalParams = new();

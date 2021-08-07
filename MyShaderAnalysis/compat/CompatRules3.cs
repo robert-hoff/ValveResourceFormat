@@ -118,48 +118,48 @@ namespace MyShaderAnalysis {
             // remappingTable.Add(18, 11);  // S_LAYER_BORDER_TINT       mapped to 11
 
 
-            AddExlusion(1, 2);             // compat[0]
-            AddExlusion(1, 3);             // compat[0]
-            AddExlusion(2, 3);             // compat[0]
-            AddExlusion(2, 3);             // compat[1]
-            AddExlusion(2, 4);             // compat[1]
-            AddExlusion(3, 4);             // compat[1]
+            AddExclusion(1, 2);             // compat[0]
+            AddExclusion(1, 3);             // compat[0]
+            AddExclusion(2, 3);             // compat[0]
+            AddExclusion(2, 3);             // compat[1]
+            AddExclusion(2, 4);             // compat[1]
+            AddExclusion(3, 4);             // compat[1]
             // AddExlusion(2, 3);          // compat[2] - already listed
-            AddExlusion(2, 5);             // compat[2]
-            AddExlusion(3, 5);             // compat[2]
+            AddExclusion(2, 5);             // compat[2]
+            AddExclusion(3, 5);             // compat[2]
             // AddExlusion(2, 3);          // compat[4] - already listed
-            AddExlusion(2, 7);             // compat[4]
-            AddExlusion(3, 7);             // compat[4]
+            AddExclusion(2, 7);             // compat[4]
+            AddExclusion(3, 7);             // compat[4]
             // AddExlusion(2, 0);          // compat[6] - index 0 is removed
             // AddExlusion(3, 0);          // compat[6] - index 0 is removed
             // AddExlusion(2, 3);          // compat[6] - already listed
             // AddExlusion(2, 3);          // compat[8] - already listed
-            AddExlusion(2, 10);            // compat[8]
-            AddExlusion(3, 10);            // compat[8]
+            AddExclusion(2, 10);            // compat[8]
+            AddExclusion(3, 10);            // compat[8]
             // AddExlusion(2, 3);          // compat[9] - already listed
-            AddExlusion(2, 11);            // compat[9]
-            AddExlusion(3, 11);            // compat[9]
-            AddExlusion(2, 6);             // compat[11]
-            AddExlusion(2, 13);            // compat[11]
-            AddExlusion(6, 13);            // compat[11]
+            AddExclusion(2, 11);            // compat[9]
+            AddExclusion(3, 11);            // compat[9]
+            AddExclusion(2, 6);             // compat[11]
+            AddExclusion(2, 13);            // compat[11]
+            AddExclusion(6, 13);            // compat[11]
             // AddExlusion(2, 6);          // compat[14] - already listed
-            AddExlusion(2, 14);            // compat[14]
-            AddExlusion(6, 14);            // compat[14]
+            AddExclusion(2, 14);            // compat[14]
+            AddExclusion(6, 14);            // compat[14]
 
             // AddExlusion(2, 6);             // compat[17] - already listed
-            AddExlusion(2, 15);            // compat[17]
-            AddExlusion(6, 15);            // compat[17]
+            AddExclusion(2, 15);            // compat[17]
+            AddExclusion(6, 15);            // compat[17]
 
             // AddExlusion(2, 6);             // compat[20] - already listed
-            AddExlusion(2, 16);            // compat[20]
-            AddExlusion(6, 16);            // compat[20]
+            AddExclusion(2, 16);            // compat[20]
+            AddExclusion(6, 16);            // compat[20]
 
             // AddExlusion(2, 17);            // compat[23] - already listed
-            AddExlusion(2, 17);            // compat[23]
-            AddExlusion(6, 17);            // compat[23]
+            AddExclusion(2, 17);            // compat[23]
+            AddExclusion(6, 17);            // compat[23]
 
-            AddExlusion(9, 17);            // compat[24]
-            AddExlusion(6, 17);            // compat[24]
+            AddExclusion(9, 17);            // compat[24]
+            AddExclusion(6, 17);            // compat[24]
 
 
 
@@ -353,27 +353,27 @@ namespace MyShaderAnalysis {
             remappingTable.Add(17, 16);  // S_GLOBAL_TINT             mapped to 16
 
 
-            AddExlusion(1, 2);             // compat[0]
-            AddExlusion(1, 3);             // compat[0]
-            AddExlusion(2, 3);             // compat[0]
-            AddExlusion(2, 3);             // compat[1]
-            AddExlusion(2, 4);             // compat[1]
-            AddExlusion(3, 4);             // compat[1]
+            AddExclusion(1, 2);             // compat[0]
+            AddExclusion(1, 3);             // compat[0]
+            AddExclusion(2, 3);             // compat[0]
+            AddExclusion(2, 3);             // compat[1]
+            AddExclusion(2, 4);             // compat[1]
+            AddExclusion(3, 4);             // compat[1]
             // AddExlusion(2, 3);             // compat[2] - already listed
-            AddExlusion(2, 5);             // compat[2]
-            AddExlusion(3, 5);             // compat[2]
+            AddExclusion(2, 5);             // compat[2]
+            AddExclusion(3, 5);             // compat[2]
             // AddExlusion(2, 3);             // compat[4] - already listed
-            AddExlusion(2, 7);             // compat[4]
-            AddExlusion(3, 7);             // compat[4]
+            AddExclusion(2, 7);             // compat[4]
+            AddExclusion(3, 7);             // compat[4]
             // AddExlusion(2, 0);             // compat[6] - index 0 is removed
             // AddExlusion(3, 0);             // compat[6] - index 0 is removed
             // AddExlusion(2, 3);             // compat[6] - already listed
             // AddExlusion(2, 3);            // compat[8] - already listed
-            AddExlusion(2, 10);            // compat[8]
-            AddExlusion(3, 10);            // compat[8]
+            AddExclusion(2, 10);            // compat[8]
+            AddExclusion(3, 10);            // compat[8]
             // AddExlusion(2, 3);            // compat[9] - already listed
-            AddExlusion(2, 11);            // compat[9]
-            AddExlusion(3, 11);            // compat[9]
+            AddExclusion(2, 11);            // compat[9]
+            AddExclusion(3, 11);            // compat[9]
             // AddExlusion(2, 6);             // compat[11]
             // AddExlusion(2, 13);            // compat[11]
             // AddExlusion(6, 13);            // compat[11]
@@ -383,13 +383,13 @@ namespace MyShaderAnalysis {
 
             // haven't written in [17],[20] and [24] because they are written as decreasing
             // trying some variations
-            AddExlusion(2, 6);
+            AddExclusion(2, 6);
 
 
 
 
-            AddExlusion(2, 17);            // compat[23]
-            AddExlusion(6, 17);            // compat[23]
+            AddExclusion(2, 17);            // compat[23]
+            AddExclusion(6, 17);            // compat[23]
 
             // inclusions
             AddInclusion(5, 4);            // compat[3]
@@ -604,37 +604,37 @@ namespace MyShaderAnalysis {
 
 
 
-            AddExlusion(1, 2);             // compat[0]
-            AddExlusion(1, 3);             // compat[0]
-            AddExlusion(2, 3);             // compat[0]
-            AddExlusion(2, 3);             // compat[1]
-            AddExlusion(2, 4);             // compat[1]
-            AddExlusion(3, 4);             // compat[1]
+            AddExclusion(1, 2);             // compat[0]
+            AddExclusion(1, 3);             // compat[0]
+            AddExclusion(2, 3);             // compat[0]
+            AddExclusion(2, 3);             // compat[1]
+            AddExclusion(2, 4);             // compat[1]
+            AddExclusion(3, 4);             // compat[1]
             // AddExlusion(2, 3);             // compat[2] - already listed
-            AddExlusion(2, 5);             // compat[2]
-            AddExlusion(3, 5);             // compat[2]
+            AddExclusion(2, 5);             // compat[2]
+            AddExclusion(3, 5);             // compat[2]
             // AddExlusion(2, 3);             // compat[4] - already listed
-            AddExlusion(2, 7);             // compat[4]
-            AddExlusion(3, 7);             // compat[4]
+            AddExclusion(2, 7);             // compat[4]
+            AddExclusion(3, 7);             // compat[4]
             // AddExlusion(2, 0);             // compat[6] - index 0 is removed
             // AddExlusion(3, 0);             // compat[6] - index 0 is removed
             // AddExlusion(2, 3);             // compat[6] - already listed
             // AddExlusion(2, 3);            // compat[8] - already listed
-            AddExlusion(2, 10);            // compat[8]
-            AddExlusion(3, 10);            // compat[8]
+            AddExclusion(2, 10);            // compat[8]
+            AddExclusion(3, 10);            // compat[8]
             // AddExlusion(2, 3);            // compat[9] - already listed
-            AddExlusion(2, 11);            // compat[9]
-            AddExlusion(3, 11);            // compat[9]
-            AddExlusion(2, 6);             // compat[11]
-            AddExlusion(2, 13);            // compat[11]
-            AddExlusion(6, 13);            // compat[11]
+            AddExclusion(2, 11);            // compat[9]
+            AddExclusion(3, 11);            // compat[9]
+            AddExclusion(2, 6);             // compat[11]
+            AddExclusion(2, 13);            // compat[11]
+            AddExclusion(6, 13);            // compat[11]
             // AddExlusion(2, 6);             // compat[14] - already listed
-            AddExlusion(2, 14);             // compat[14]
-            AddExlusion(6, 14);             // compat[14]
+            AddExclusion(2, 14);             // compat[14]
+            AddExclusion(6, 14);             // compat[14]
 
 
-            AddExlusion(2, 17);            // compat[23]
-            AddExlusion(6, 17);            // compat[23]
+            AddExclusion(2, 17);            // compat[23]
+            AddExclusion(6, 17);            // compat[23]
 
             // inclusions
             AddInclusion(5, 4);            // compat[3]
@@ -709,13 +709,13 @@ namespace MyShaderAnalysis {
             remappingTable.Add(8, 7);   // S_WORLDSPACE_UVS              mapped to 7
             remappingTable.Add(9, 8);   // S_NO_VERTEX_COLOR             mapped to 8
 
-            AddExlusion(2, 3);
-            AddExlusion(3, 4);
-            AddExlusion(3, 5);
-            AddExlusion(3, 1);
-            AddExlusion(3, 7);
-            AddExlusion(3, 8);
-            AddExlusion(7, 8);
+            AddExclusion(2, 3);
+            AddExclusion(3, 4);
+            AddExclusion(3, 5);
+            AddExclusion(3, 1);
+            AddExclusion(3, 7);
+            AddExclusion(3, 8);
+            AddExclusion(7, 8);
             AddInclusion(5, 4);
 
 
@@ -763,7 +763,7 @@ namespace MyShaderAnalysis {
 
 
 
-        static void AddExlusion(int b0, int b1) {
+        static void AddExclusion(int b0, int b1) {
             b0 = remappingTable[b0];
             b1 = remappingTable[b1];
             if (b0 == -1 || b1 == -1) {

@@ -5,6 +5,7 @@ using System.Linq;
 using MyShaderAnalysis.vcsparsing;
 using static MyShaderAnalysis.vcsparsing.UtilHelpers;
 using System;
+using MyShaderAnalysis.compat;
 
 
 
@@ -56,7 +57,7 @@ namespace MyShaderAnalysis {
 
 
 
-            ZFramePrintout();
+            // ZFramePrintout();
 
 
 
@@ -75,7 +76,8 @@ namespace MyShaderAnalysis {
 
             // -- setting up comprehensive summary for particular file (NEEDS UPDATE)
             // FullFileSummary(@$"{PCGL_DIR_NOT_CORE}\water_dota_pcgl_30_features.vcs", "water", $@"{SERVER_OUTPUT_DIR}\summary-water.html", writeFile: true);
-            // FullFileSummary(@$"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_features.vcs", "multiblend", $@"{SERVER_OUTPUT_DIR}\summary-multi.html", writeFile: true);
+            FullFileSummary(@$"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_features.vcs",
+                "multiblend", $@"{SERVER_OUTPUT_DIR}\sf-summaries/dota/multiblend_pcgl_30_ps-summary.html", writeFile: true);
             // FullFileSummary(@$"{PCGL_DIR_NOT_CORE}\spritecard_pcgl_30_features.vcs", "sprite", $@"{SERVER_OUTPUT_DIR}\summary-sprite.html", writeFile: true);
             // FullFileSummary(@$"{PCGL_DIR_NOT_CORE}\hero_pcgl_30_features.vcs", "hero", $@"{SERVER_OUTPUT_DIR}\summary-hero.html", writeFile: true);
 
@@ -151,7 +153,7 @@ namespace MyShaderAnalysis {
 
 
                 // Debug.WriteLine($"{Convert.ToString(item.Key, 2).PadLeft(12, '0')} {item.Key,5}      {item.Key:x04}       {spacedOutBinary}");
-                Debug.WriteLine($"{Convert.ToString(item.Key, 2).PadLeft(12, '0')}");  
+                Debug.WriteLine($"{Convert.ToString(item.Key, 2).PadLeft(12, '0')}");
 
 
             }
@@ -555,6 +557,10 @@ namespace MyShaderAnalysis {
         }
 
 
+        static SortedDictionary<string, int> abbreviationsUsed = new();
+
+
+
         static void ShowSfArgumentList(string filenamepath, bool showLink = true) {
             ShaderFile shaderFile = new(filenamepath);
             if (showLink) {
@@ -572,6 +578,12 @@ namespace MyShaderAnalysis {
             foreach (var sfBlock in shaderFile.sfBlocks) {
                 string v0 = $"[{sfBlock.blockId,2}]";
                 string v1 = sfBlock.name0;
+
+                string abbreviation = $"{sfBlock.name0}({ShortenShaderParam(sfBlock.name0).ToLower()})";
+                abbreviationsUsed[abbreviation] = 1;
+
+
+
                 string v2 = "" + sfBlock.arg2;
                 string v3 = "" + sfBlock.arg3;
                 string blockSummary = $"{v0.PadRight(pad[0])} {v1.PadRight(pad[1])} {v2.PadRight(pad[2])} {v3.PadRight(pad[3])}";
@@ -623,6 +635,26 @@ namespace MyShaderAnalysis {
             CompatBlockDetailsConcise2(psFile, showLink: false);
             ShowDBlockArgumentList(psFile, showHtmlLink: false);
             UnknownBlockConcise(psFile, showLink: false);
+
+
+
+            OutputWriteLine("");
+            OutputWriteLine("ZFRAMES (3335)");
+            OutputWriteLine("--------------");
+
+            string[] abbreviations = new string[abbreviationsUsed.Count];
+            int ind = 0;
+            foreach (var item in abbreviationsUsed) {
+                abbreviations[ind++] = item.Key;
+            }
+            string[] breakabbreviations = CombineValuesBreakString(abbreviations, 120);
+            // OutputWriteLine("");
+            foreach (string abbr in breakabbreviations) {
+                OutputWriteLine(abbr.Replace("(", "<span style='color: blue'>(").Replace(")", "</span>)"));
+            }
+
+            OutputWriteLine("");
+            CompatRulesMultiframe.Trial1();
         }
 
 

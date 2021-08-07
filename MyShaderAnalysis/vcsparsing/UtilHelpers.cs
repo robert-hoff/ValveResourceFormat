@@ -97,7 +97,7 @@ namespace MyShaderAnalysis.vcsparsing {
             if (File.Exists(vs) && File.Exists(ps)) {
                 return (ft, vs, ps);
             } else {
-                return (null,null,null);
+                return (null, null, null);
                 // throw new System.Exception($"ps/vs files don't exist for {ft}");
             }
         }
@@ -249,7 +249,7 @@ namespace MyShaderAnalysis.vcsparsing {
         }
 
         public static string GetZframeHtmlLink(uint zframeId, string vcsFilename) {
-            return $"<a href='{GetZframeHtmlFilename(zframeId, Path.GetFileName(vcsFilename))}'>zframe[0x{zframeId:x08}]</a>";
+            return $"<a href='/multiblend_pcgl_30/{GetZframeHtmlFilename(zframeId, Path.GetFileName(vcsFilename))}'>zframe[0x{zframeId:x08}]</a>";
         }
         public static uint MurmurHashPiSeed(byte[] data) {
             uint PI_SEED = 0x31415926;
@@ -349,6 +349,46 @@ namespace MyShaderAnalysis.vcsparsing {
             collectValuesString = new();
 
         }
+
+
+
+        public static string ShortenShaderParam(string shaderParam) {
+            if (shaderParam.Length <= 4) {
+                return shaderParam;
+            }
+            string[] splitName = shaderParam[2..].Split("_");
+
+
+            string newName = "";
+
+            if (splitName[0] == "MODE") {
+                if (splitName.Length == 2) {
+                    return splitName[1].Length > 3 ? $"M_{splitName[1][0..3]}" : $"M_{splitName[1]}";
+                }
+                newName = "M_";
+                for (int i = 1; i < splitName.Length; i++) {
+                    newName += splitName[i][0..1];
+                }
+                return newName;
+            }
+
+            if (splitName.Length > 2) {
+                for (int i = 0; i < splitName.Length && i < 5; i++) {
+                    newName += splitName[i].Substring(0, 1);
+                }
+                return newName;
+            }
+
+            if (splitName.Length == 1) {
+                return splitName[0].Length > 4 ? splitName[0].Substring(0,4) : splitName[0];
+            }
+
+            newName = splitName[0].Length > 3 ? splitName[0][0..3] : splitName[0];
+            return $"{newName}_{splitName[1][0..1]}";
+        }
+
+
+
 
 
     }
