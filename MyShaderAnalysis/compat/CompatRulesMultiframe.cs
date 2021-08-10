@@ -52,7 +52,7 @@ namespace MyShaderAnalysis.compat {
 
 
         // static int[] offset = { 1, 1, 2, 4, 8, 16, 32, 64, 128, 384, 768, 1536 };
-        // static int[] layers = { 0, 1, 1, 1, 1, 1,   1, 1,   2, 1, 1, 1 };
+        // static int[] layers = { 0, 1, 1, 1, 1,  1,  1,  1,   2,  1,    1,    1 };
 
         static int[] offset;
         static int[] layers;
@@ -60,8 +60,8 @@ namespace MyShaderAnalysis.compat {
 
         public static void Trial1() {
 
-            string filenamepath = @$"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_ps.vcs";
-            ShaderFile shaderFile = new(filenamepath);
+            string vcsFilenamepath = @$"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_ps.vcs";
+            ShaderFile shaderFile = new(vcsFilenamepath);
 
             offset = new int[shaderFile.sfBlocks.Count];
             layers = new int[shaderFile.sfBlocks.Count];
@@ -105,15 +105,17 @@ namespace MyShaderAnalysis.compat {
             AddInclusion(16, 4);           // compat[22]
             AddInclusion(11, 10);          // compat[25]
 
-            for (int i = 0; i < offset[17] * 2; i++) {
+
+            string htmlBasedir = "/multiblend_pcgl_30/";
+            for (int zframeId = 0; zframeId < offset[17] * 2; zframeId++) {
             // for (int i = 0; i <100; i++) {
-                if (CheckZFrame(i)) {
-                    int[] thisState = GetBitPattern(i);
+                if (CheckZFrame(zframeId)) {
+                    int[] thisState = GetBitPattern(zframeId);
                     string sfNameList = getSfNameList(shaderFile, thisState);
                     // string stateList = GetStateString(thisState);
                     // StaticAnalysis.OutputWriteLine($"zframe[{i:x08}]   {Convert.ToString(i, 2).PadLeft(20, '0')}    {sfNameList}");
                     // StaticAnalysis.OutputWriteLine($"zframe[{i:x08}]  {sfNameList}");
-                    StaticAnalysis.OutputWriteLine($"{GetZframeHtmlLink((uint) i, filenamepath)}  {sfNameList}");
+                    StaticAnalysis.OutputWriteLine($"{GetZframeHtmlLink((uint) zframeId, vcsFilenamepath, htmlBasedir)}  {sfNameList}");
                 }
             }
 

@@ -248,9 +248,22 @@ namespace MyShaderAnalysis.vcsparsing {
             return $"{Path.GetFileName(vcsFilename)[0..^4]}-ZFRAME{zframeId:x08}.html";
         }
 
-        public static string GetZframeHtmlLink(uint zframeId, string vcsFilename) {
-            return $"<a href='/multiblend_pcgl_30/{GetZframeHtmlFilename(zframeId, Path.GetFileName(vcsFilename))}'>zframe[0x{zframeId:x08}]</a>";
+        public static string GetZframeHtmlLink(uint zframeId, string vcsFilenamepath, string basedir = "") {
+            return $"<a href='{basedir}{GetZframeHtmlFilename(zframeId, Path.GetFileName(vcsFilenamepath))}'>zframe[0x{zframeId:x08}]</a>";
         }
+
+        public static string GetZframeHtmlLinkCheckExists(uint zframeId, string vcsFilenamepath, string serverdir, string basedir = "") {
+            string zframeName = $"zframe[0x{zframeId:x08}]";
+            string zframeHtmlFilename = GetZframeHtmlFilename(zframeId, Path.GetFileName(vcsFilenamepath));
+            if (File.Exists($"{serverdir}/{basedir}/{zframeHtmlFilename}")) {
+                return $"<a href='{basedir}{GetZframeHtmlFilename(zframeId, Path.GetFileName(vcsFilenamepath))}'>{zframeName}</a>";
+            } else {
+                return $"{zframeName}";
+            }
+        }
+
+
+
         public static uint MurmurHashPiSeed(byte[] data) {
             uint PI_SEED = 0x31415926;
             return MurmurHash(data, PI_SEED);

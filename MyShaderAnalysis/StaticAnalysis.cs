@@ -32,23 +32,25 @@ namespace MyShaderAnalysis {
         // const string OUTPUT_DIR = @"..\..\..\GEN-OUTPUT";
         const string OUTPUT_DIR = @"Z:\active\projects\dota2-sourcesdk-modding\shader-analysis-vcs-format\OUTPUT_DUMP";
         const string SERVER_OUTPUT_DIR = @"Z:\dev\www\vcs.codecreation.dev\GEN-output";
+        const string SERVER_BASEDIR = @"Z:\dev\www\vcs.codecreation.dev";
         const string OUTPUT_SUB_DIR = @"\GEN-output";
 
 
-            // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
-            // string filenamepath = PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_features.vcs";
-            // string filenamepath = PCGL_DIR_CORE + @"\generic_light_pcgl_30_features.vcs";
-            // string filenamepath = PCGL_DIR_CORE + @"\apply_fog_pcgl_40_ps.vcs";
-            // string filenamepath = PCGL_DIR_CORE + @"\tools_wireframe_pcgl_40_gs.vcs";
-            // string filenamepath = PCGL_DIR_NOT_CORE + @"\spring_meteor_pcgl_30_vs.vcs";
-            // string filenamepath = PCGL_DIR_NOT_CORE + @"\cables_pcgl_30_features.vcs";
-            // string filenamepath = PCGL_DIR_NOT_CORE + @"\spritecard_pcgl_30_features.vcs";
+        // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
+        // string filenamepath = PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_features.vcs";
+        // string filenamepath = PCGL_DIR_CORE + @"\generic_light_pcgl_30_features.vcs";
+        // string filenamepath = PCGL_DIR_CORE + @"\apply_fog_pcgl_40_ps.vcs";
+        // string filenamepath = PCGL_DIR_CORE + @"\tools_wireframe_pcgl_40_gs.vcs";
+        // string filenamepath = PCGL_DIR_NOT_CORE + @"\spring_meteor_pcgl_30_vs.vcs";
+        // string filenamepath = PCGL_DIR_NOT_CORE + @"\cables_pcgl_30_features.vcs";
+        // string filenamepath = PCGL_DIR_NOT_CORE + @"\spritecard_pcgl_30_features.vcs";
 
 
         public static void RunTrials() {
             // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
 
             // -- writes a useful summary for every file (pretty long process)
+            // DON'T OVERWRITE MULTIBLEND!
             // FileSummaryAllFiles();
 
             // - prints a single page summary and links to all the files produced with FileSummaryAllFiles()
@@ -57,7 +59,8 @@ namespace MyShaderAnalysis {
 
 
 
-            // ZFramePrintout();
+            // FileSummarySingleFile();
+            ZFramePrintout();
 
 
 
@@ -75,11 +78,10 @@ namespace MyShaderAnalysis {
 
 
             // -- setting up comprehensive summary for particular file (NEEDS UPDATE)
-            // FullFileSummary(@$"{PCGL_DIR_NOT_CORE}\water_dota_pcgl_30_features.vcs", "water", $@"{SERVER_OUTPUT_DIR}\summary-water.html", writeFile: true);
-            FullFileSummary(@$"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_features.vcs",
-                "multiblend", $@"{SERVER_OUTPUT_DIR}\sf-summaries/dota/multiblend_pcgl_30_ps-summary.html", writeFile: true);
-            // FullFileSummary(@$"{PCGL_DIR_NOT_CORE}\spritecard_pcgl_30_features.vcs", "sprite", $@"{SERVER_OUTPUT_DIR}\summary-sprite.html", writeFile: true);
-            // FullFileSummary(@$"{PCGL_DIR_NOT_CORE}\hero_pcgl_30_features.vcs", "hero", $@"{SERVER_OUTPUT_DIR}\summary-hero.html", writeFile: true);
+            // FileSummaryPsFile(@$"{PCGL_DIR_NOT_CORE}\water_dota_pcgl_30_features.vcs", "water", $@"{SERVER_OUTPUT_DIR}\summary-water.html", writeFile: true);
+            FileSummaryPsFile(@$"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_features.vcs", $@"{SERVER_OUTPUT_DIR}\sf-summaries\dota\multiblend_pcgl_30_ps-summary.html", writeFile: true);
+            // FileSummaryPsFile(@$"{PCGL_DIR_NOT_CORE}\spritecard_pcgl_30_features.vcs", "sprite", $@"{SERVER_OUTPUT_DIR}\summary-sprite.html", writeFile: true);
+            // FileSummaryPsFile(@$"{PCGL_DIR_NOT_CORE}\hero_pcgl_30_features.vcs", "hero", $@"{SERVER_OUTPUT_DIR}\summary-hero.html", writeFile: true);
 
 
 
@@ -135,6 +137,12 @@ namespace MyShaderAnalysis {
 
 
 
+        /*
+         * This method just prints the zframe IDs for a given file,
+         * I wrote it mainly to help investigating how the zframes are generated.
+         *
+         *
+         */
         static void ZFramePrintout() {
             string filenamepath = @$"{PCGL_DIR_NOT_CORE}\water_dota_pcgl_30_ps.vcs";
             ShaderFile shaderFile = new(filenamepath);
@@ -142,7 +150,7 @@ namespace MyShaderAnalysis {
             foreach (var item in shaderFile.zframesLookup) {
                 // Debug.WriteLine($"{item.Key:x04}");
 
-               string binaryString = Convert.ToString(item.Key, 2).PadLeft(12, '0');
+                string binaryString = Convert.ToString(item.Key, 2).PadLeft(12, '0');
                 // Debug.WriteLine($"{binaryString}");
 
                 string spacedOutBinary = "";
@@ -189,11 +197,15 @@ namespace MyShaderAnalysis {
 
         static void FileSummarySingleFile() {
             List<(string, string, string)> triples = new();
-            // triples.Add(GetTriple(@$"{PCGL_DIR_NOT_CORE}\hero_pcgl_30_features.vcs"));
+            triples.Add(GetTriple(@$"{PCGL_DIR_NOT_CORE}\hero_pcgl_30_features.vcs"));
             // triples.Add(GetTriple(@$"{PCGL_DIR_CORE}\visualize_cloth_pcgl_40_features.vcs"));
             // triples.Add(GetTriple(@$"{PCGL_DIR_CORE}\depth_only_pcgl_40_features.vcs"));
             // triples.Add(GetTriple(@$"{PCGL_DIR_CORE}\convolve_environment_map_pcgl_41_features.vcs"));
-            triples.Add(GetTriple(@$"{PCGL_DIR_CORE}\apply_fog_pcgl_40_features.vcs"));
+            // triples.Add(GetTriple(@$"{PCGL_DIR_CORE}\apply_fog_pcgl_40_features.vcs"));
+            // triples.Add(GetTriple(@$"{PCGL_DIR_CORE}\blur_pcgl_30_features.vcs"));
+            // triples.Add(GetTriple(@$"{PCGL_DIR_NOT_CORE}\water_dota_pcgl_30_features.vcs"));
+
+
             WriteVsPsFileSummary(triples[0], FILETYPE.ps_file);
         }
 
@@ -319,7 +331,7 @@ namespace MyShaderAnalysis {
             string detLink = GetSFSummaryLink(filenamepath);
             const int linkLength = 4; // "det."
 
-            OutputWriteLine($"{GetHtmlLink(filenamepath)}{new string(' ', filepadlength)}{detLink, linkLength}" +
+            OutputWriteLine($"{GetHtmlLink(filenamepath)}{new string(' ', filepadlength)}{detLink,linkLength}" +
                 $"{sfCount,pad}{cCount,pad}{dCount,pad}" +
                 $"{uCount,pad}{pCount,pad}{mCount,pad}{bCount,pad}{sCount,pad}{zCount,pad}");
         }
@@ -562,6 +574,7 @@ namespace MyShaderAnalysis {
 
 
         static void ShowSfArgumentList(string filenamepath, bool showLink = true) {
+            abbreviationsUsed = new();
             ShaderFile shaderFile = new(filenamepath);
             if (showLink) {
                 OutputWriteLine($"SF params for {GetHtmlLink(filenamepath)}");
@@ -579,9 +592,9 @@ namespace MyShaderAnalysis {
                 string v0 = $"[{sfBlock.blockId,2}]";
                 string v1 = sfBlock.name0;
 
+                // R: the abbreviations are only used later if printing the zframes (instantited to new() at start of method)
                 string abbreviation = $"{sfBlock.name0}({ShortenShaderParam(sfBlock.name0).ToLower()})";
                 abbreviationsUsed[abbreviation] = 1;
-
 
 
                 string v2 = "" + sfBlock.arg2;
@@ -599,8 +612,8 @@ namespace MyShaderAnalysis {
 
 
 
-        static void FileSummaryVsPSFile((string, string, string) triple, FILETYPE targetFileType,
-            string title = "summary", string outputFilenamepath = null, bool writeFile = false) {
+        static void FileSummaryVsPSFile((string, string, string) triple, FILETYPE targetFileType, string title = "summary",
+                string outputFilenamepath = null, bool writeFile = false) {
             if (targetFileType != FILETYPE.vs_file && targetFileType != FILETYPE.ps_file) {
                 throw new ShaderParserException("need to target either vs or ps file");
             }
@@ -617,19 +630,42 @@ namespace MyShaderAnalysis {
             CompatBlockDetailsConcise2(targetFile, showLink: false);
             ShowDBlockArgumentList(targetFile, showHtmlLink: false);
             UnknownBlockConcise(targetFile, showLink: false);
+
+            // break after 100 zframes (that's all I've compiled)
+            int zframeCount = 0;
+
+
+            // print the zframes
+            string zFrameBaseDir = $"/vcs-all/{GetCoreOrDotaString(targetFile)}/zsource/";
+            ShaderFile shaderFile = new(targetFile);
+            OutputWriteLine("");
+            string zframesHeader = $"ZFRAMES ({shaderFile.GetZFrameCount()})";
+            OutputWriteLine(zframesHeader);
+            OutputWriteLine(new string('-', zframesHeader.Length));
+            foreach (var item in shaderFile.zframesLookup) {
+                zframeCount++;
+                OutputWriteLine($"{GetZframeHtmlLinkCheckExists((uint) item.Key, targetFile, SERVER_BASEDIR, zFrameBaseDir)}");
+                if (zframeCount == 100 && shaderFile.GetZFrameCount() > 100) {
+                    OutputWriteLine($"... ({shaderFile.GetZFrameCount()-100} additional zframes)");
+                    break;
+                }
+            }
+
         }
 
 
 
 
-        static void FullFileSummary(string featuresfile, string title = "summary", string outputFilenamepath = null, bool writeFile = false) {
-            if (outputFilenamepath != null && writeFile) {
-                ConfigureOutputFile(outputFilenamepath);
-                WriteHtmlFile(title, $"{RemoveBaseDir(featuresfile)}");
-            }
+        static void FileSummaryPsFile(string featuresfile, string outputFilenamepath = null, bool writeFile = false) {
             List<(string, string, string)> triples = new();
             triples.Add(GetTriple(featuresfile));
             string psFile = featuresfile[0..^12] + "ps.vcs";
+            string htmlTitle = GetShortName(psFile);
+
+            if (outputFilenamepath != null && writeFile) {
+                ConfigureOutputFile(outputFilenamepath);
+                WriteHtmlFile(htmlTitle, $"SF SUMMARY for {Path.GetFileName(psFile)} ({GetCoreOrDotaString(psFile)})");
+            }
             SfSummaryOfFileTriple(triples);
             ShowSfArgumentList(psFile);
             CompatBlockDetailsConcise2(psFile, showLink: false);
@@ -637,26 +673,24 @@ namespace MyShaderAnalysis {
             UnknownBlockConcise(psFile, showLink: false);
 
 
-
+            // R: zframes specific to multiblend_pcgl_30_ps.vcs only
             OutputWriteLine("");
             OutputWriteLine("ZFRAMES (3335)");
             OutputWriteLine("--------------");
-
             string[] abbreviations = new string[abbreviationsUsed.Count];
             int ind = 0;
             foreach (var item in abbreviationsUsed) {
                 abbreviations[ind++] = item.Key;
             }
             string[] breakabbreviations = CombineValuesBreakString(abbreviations, 120);
-            // OutputWriteLine("");
             foreach (string abbr in breakabbreviations) {
                 OutputWriteLine(abbr.Replace("(", "<span style='color: blue'>(").Replace(")", "</span>)"));
             }
-
             OutputWriteLine("");
             CompatRulesMultiframe.Trial1();
-        }
 
+
+        }
 
 
         /*

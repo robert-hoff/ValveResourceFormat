@@ -45,22 +45,32 @@ namespace MyShaderAnalysis {
             // string filenamepath = PCGL_DIR_NOT_CORE + @"\grasstile_pcgl_30_vs.vcs";
             // string filenamepath = PCGL_DIR_NOT_CORE + @"\3dskyboxstencil_pcgl_30_features.vcs";
             // string filenamepath = PCGL_DIR_CORE + @"\tools_wireframe_pcgl_40_gs.vcs"; // this file has some very short zframes
-            string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"\blur_pcgl_30_ps.vcs";
+            // string filenamepath = PCGL_DIR_CORE + @"\apply_fog_pcgl_40_ps.vcs";
 
 
 
 
-
-
+            // WriteFirst100ZFramesEveryFile();
+            // WriteAZFrameToFile();
             // WriteZFrameToFile(filenamepath, 0);
             // ParseABunchOfZframes();
-            // WriteFirstZFrmeEveryFile();
-            WriteVcsCollectionAsHtml();
+            // WriteFirstZFrameEveryFile();
+
+
+
+            // R: currently writes the blur_pcgl_30_features.vcs + vs, ps collection into my OUTPUT dir (not the server)
+            // WriteVcsCollectionAsHtml();
+
+
             // ShowVcsByteAnalysis(filenamepath);
             // WriteAllVcsFilesToTxt();
             // WriteVcsByteAnalysisToTxt(filenamepath);
+
+            // R: I wrote the core and dota files separately and copied them onto the server
             // WriteAllVcsFilesToHtml();
-            // WriteVcsByteAnalysisToHtml(filenamepath);
+            // WriteVcsByteAnalysisToHtml(filenamepath, writeHtmlLinks: true);
             // ParseAllVcsFilesDisableOutput();
         }
 
@@ -74,11 +84,11 @@ namespace MyShaderAnalysis {
             // (string, string, string) triple = GetTriple(PCGL_DIR_CORE+@"\visualize_cloth_pcgl_40_features.vcs");
 
 
-            (string, string, string) triple = GetTriple(PCGL_DIR_CORE+@"\blur_pcgl_30_features.vcs");
+            (string, string, string) triple = GetTriple(PCGL_DIR_CORE + @"\blur_pcgl_30_features.vcs");
 
 
 
-            string[] filenames = {triple.Item1, triple.Item2, triple.Item3};
+            string[] filenames = { triple.Item1, triple.Item2, triple.Item3 };
             // foreach (var filename in filenames) {
             foreach (var filenamepath in filenames) {
                 // string filenamepath = @$"{directoryToUse}\{filename}";
@@ -92,17 +102,55 @@ namespace MyShaderAnalysis {
         }
 
 
-        static void WriteZframeAsHtml(ShaderFile shaderFile, int zframeIndex) {
+
+
+        static void WriteFirst100ZFramesEveryFile() {
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
+            // string filenamepath = PCGL_DIR_CORE + @"\blur_pcgl_30_ps.vcs";
+            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
+            foreach (string filenamepath in vcsFiles) {
+                string token = GetCoreOrDotaString(filenamepath);
+                string outputdir = @$"Z:\dev\www\vcs.codecreation.dev\vcs-all\{token}\zsource";
+
+                ShaderFile shaderFile = new(filenamepath);
+                int zframesToWrite = 100;
+                if (shaderFile.GetZFrameCount() < zframesToWrite) {
+                    zframesToWrite = shaderFile.GetZFrameCount();
+                }
+                for (int i = 0; i < zframesToWrite; i++) {
+                    WriteZframeAsHtml(shaderFile, i, outputdir);
+                }
+            }
+        }
+
+
+
+        //static void WriteAZFrameToFile() {
+        //    string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
+        //    string outputdir = null;
+        //    // string outputdir = @"Z:\dev\www\vcs.codecreation.dev\vcs-all\dota\zsource";
+        //    ShaderFile shaderFile = new(filenamepath);
+        //    WriteZframeAsHtml(shaderFile, 0, outputdir);
+        //}
+
+
+
+
+        static void WriteZframeAsHtml(ShaderFile shaderFile, int zframeIndex, string outputdir = null) {
+            if (outputdir == null) {
+                outputdir = OUTPUT_DIR;
+            }
+
             byte[] zframeDatabytes = GetZFrameByIndex(shaderFile, zframeIndex);
-            uint zframeId = (uint) shaderFile.GetZFrameIdByIndex(zframeIndex);
+            uint zframeId = (uint)shaderFile.GetZFrameIdByIndex(zframeIndex);
             string outputFilename = GetZframeHtmlFilename(zframeId, shaderFile.filenamepath);
-            string outputFilenamepath = @$"{OUTPUT_DIR}\{outputFilename}";
+            string outputFilenamepath = @$"{outputdir}\{outputFilename}";
             DataReaderZFrameByteAnalysis zFrameParser = new DataReaderZFrameByteAnalysis(zframeDatabytes, shaderFile.vcsFiletype);
             Debug.WriteLine($"writing to {outputFilenamepath}");
             StreamWriter sw = new(outputFilenamepath);
             zFrameParser.ConfigureWriteToFile(sw, true);
             zFrameParser.SetWriteAsHtml(true);
-            zFrameParser.RequestGlslFileSave(OUTPUT_DIR);
+            zFrameParser.RequestGlslFileSave(outputdir);
             string htmlHeader = GetHtmlHeader(outputFilename, outputFilename[0..^5]);
             sw.WriteLine($"{htmlHeader}");
             zFrameParser.PrintByteAnalysis();
@@ -111,7 +159,7 @@ namespace MyShaderAnalysis {
         }
 
 
-        static void WriteFirstZFrmeEveryFile() {
+        static void WriteFirstZFrameEveryFile() {
             List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
             foreach (string vcsFile in vcsFiles) {
                 ShaderFile shaderFile = new(vcsFile);
@@ -125,7 +173,6 @@ namespace MyShaderAnalysis {
                 Debug.WriteLine($"writing to {outputFilenamepath}");
                 PrintZFrame(zframeDatabytes, GetVcsFileType(vcsFile), true, sw);
                 sw.Close();
-
             }
         }
 
@@ -224,11 +271,13 @@ namespace MyShaderAnalysis {
             sw.Close();
         }
 
+
         static void WriteAllVcsFilesToHtml() {
             // List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
-            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_NOT_CORE, null, FILETYPE.any, -1);
+            // List<string> vcsFiles = GetVcsFiles(PCGL_DIR_NOT_CORE, null, FILETYPE.any, -1);
+            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, null, FILETYPE.any, -1);
             foreach (string vcsFile in vcsFiles) {
-                WriteVcsByteAnalysisToHtml(vcsFile);
+                WriteVcsByteAnalysisToHtml(vcsFile, writeHtmlLinks: true);
             }
         }
 

@@ -9,6 +9,8 @@ namespace MyShaderAnalysis.vcsparsing {
 
     public class DataReaderVcsByteAnalysis : DataReader {
 
+        const string SERVER_BASEDIR = @"Z:\dev\www\vcs.codecreation.dev";
+
         private FILETYPE filetype;
         private string vcsFilename = null;
         public DataReaderVcsByteAnalysis(string filenamepath) : base(File.ReadAllBytes(filenamepath)) {
@@ -28,6 +30,8 @@ namespace MyShaderAnalysis.vcsparsing {
 
 
         private uint zFrameCount = 0;
+
+        const int LIMIT_ZFRAMES = 0;
 
         public void PrintByteAnalysis() {
             if (filetype == FILETYPE.features_file) {
@@ -57,7 +61,7 @@ namespace MyShaderAnalysis.vcsparsing {
                 PrintAllSymbolNameBlocks();
             }
             PrintZframes();
-            if (shortenOutput && zFrameCount > 10) {
+            if (shortenOutput && zFrameCount > LIMIT_ZFRAMES) {
                 return;
             }
             EndOfFile();
@@ -488,7 +492,7 @@ namespace MyShaderAnalysis.vcsparsing {
                 zFrameIndexes.Add(zframeId);
             }
             BreakLine();
-            if (shortenOutput && zFrameCount > 10) {
+            if (shortenOutput && zFrameCount > LIMIT_ZFRAMES) {
                 Comment("rest of data contains compressed zframes");
                 BreakLine();
                 return;
@@ -524,7 +528,11 @@ namespace MyShaderAnalysis.vcsparsing {
 
         private string getZFrameIdString(uint zframeId) {
             if (writeHtmlLinks) {
-                return GetZframeHtmlLink(zframeId, vcsFilename);
+                // return GetZframeHtmlLink(zframeId, vcsFilename);
+                string serverdir = SERVER_BASEDIR;
+                string basedir = $"/vcs-all/{GetCoreOrDotaString(vcsFilename)}/zsource/";
+
+                return GetZframeHtmlLinkCheckExists(zframeId, vcsFilename, serverdir, basedir);
             } else {
                 return $"zframe[0x{zframeId:x08}]";
             }
