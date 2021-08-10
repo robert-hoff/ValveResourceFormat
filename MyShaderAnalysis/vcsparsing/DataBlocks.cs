@@ -324,18 +324,12 @@ namespace MyShaderAnalysis.vcsparsing {
 
 
 
-
-
-
-
-
-
-    // needs implemenation (parser works by moving the offset 472 bytes for each unknown-block)
     public class UnknownBlock : DataBlock {
 
         public int blockIndex;
         public int relRule;  // 2 = dependency (other files), 3 = exclusion (1 not present, as in the compat-blocks)
         public int arg0; // ALWAYS 3 (for compat-blocks, this value is 1 for features files and 2 for all other files)
+        public int arg1; // arg1 at (88) sometimes has a value > -1 (in compat-blocks this value is always seen to be -1)
         public int[] flags;
         public int[] range0;
         public int[] range1;
@@ -344,30 +338,27 @@ namespace MyShaderAnalysis.vcsparsing {
 
         public UnknownBlock(DataReader datareader, int start, int blockIndex) : base(datareader, start) {
             this.blockIndex = blockIndex;
-
-            this.blockIndex = blockIndex;
             relRule = datareader.ReadInt();
             arg0 = datareader.ReadInt();
             if (arg0 != 3) {
                 throw new ShaderParserException("unexpected value!");
             }
-
+            // flags at (8)
             flags = ReadByteFlagsUpdated();
-
-            // FIXME - some of how this is read needs to be verified
-            // there is a known integer at (88) which is not being picked up
+            // range0 at (24)
             range0 = ReadIntRange();
-            datareader.offset += 68 - range0.Length * 4;
+            datareader.offset += 64 - range0.Length * 4;
+            // integer at (88)
+            arg1 = datareader.ReadInt();
+            // range1 at (92)
             range1 = ReadIntRange();
             datareader.offset += 60 - range1.Length * 4;
+            // range1 at (152)
             range2 = ReadIntRange();
             datareader.offset += 64 - range2.Length * 4;
-
-
+            // there seems to be a provision here for a description, but for the dota2 set it is always null
             description = datareader.ReadNullTermStringAtPosition();
             datareader.offset += 256;
-            // datareader.offset += 472;
-
         }
 
         private int[] ReadIntRange() {

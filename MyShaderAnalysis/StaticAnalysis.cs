@@ -123,7 +123,7 @@ namespace MyShaderAnalysis {
             // CompatRuleKeyDescriptionSurvey();
             // CompatRuleKeyValuesAnalysis();
             // DBlockRuleKeyDescriptionSurvey();
-            // DBlockRuleKeyValuesAnalysis();
+            DBlockRuleKeyValuesAnalysis();
 
             PrintReport();
             CloseStreamWriter();
@@ -171,8 +171,13 @@ namespace MyShaderAnalysis {
                     //        $"{uknBlock.GetResolvedNames(shaderFile.sfBlocks, shaderFile.dBlocks)}");
                     //}
 
-                    if (uknBlock.relRule == 2 && uknBlock.range1.Length == 0 && uknBlock.flags.Length >= 3) {
-                        Debug.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {uknBlock.GetConciseDescription(new int[] {8, 4, 12, 5})} " +
+                    //if (uknBlock.relRule == 2 && uknBlock.range1.Length == 0 && uknBlock.flags.Length >= 3) {
+                    //    Debug.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {uknBlock.GetConciseDescription(new int[] {8, 4, 12, 5})} " +
+                    //        $"{uknBlock.GetResolvedNames(shaderFile.sfBlocks, shaderFile.dBlocks)}");
+                    //}
+
+                    if (uknBlock.arg1 > -1) {
+                        Debug.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {uknBlock.GetConciseDescription(new int[] { 8, 4, 12, 5 })} " +
                             $"{uknBlock.GetResolvedNames(shaderFile.sfBlocks, shaderFile.dBlocks)}");
                     }
 
