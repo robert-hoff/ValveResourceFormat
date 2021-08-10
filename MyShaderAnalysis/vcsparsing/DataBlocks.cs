@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using static MyShaderAnalysis.vcsparsing.UtilHelpers;
+
 
 namespace MyShaderAnalysis.vcsparsing {
 
@@ -245,8 +247,6 @@ namespace MyShaderAnalysis.vcsparsing {
             return ints0.ToArray();
         }
 
-
-
         private int[] ReadByteFlagsUpdated() {
             int count = 0;
             int ind = datareader.offset;
@@ -262,6 +262,10 @@ namespace MyShaderAnalysis.vcsparsing {
             return byteFlags;
         }
 
+
+        public string RelRuleDescribe() {
+            return relRule == 3 ? "EXC(3)" : $"INC({relRule})";
+        }
 
         public override void PrintByteSummary() {
             throw new NotImplementedException();
@@ -313,18 +317,9 @@ namespace MyShaderAnalysis.vcsparsing {
         }
 
 
-
-
-
-
         public override void PrintByteSummary() {
             throw new NotImplementedException();
         }
-
-
-
-
-
     }
 
 
@@ -339,8 +334,8 @@ namespace MyShaderAnalysis.vcsparsing {
     public class UnknownBlock : DataBlock {
 
         public int blockIndex;
-        public int relRule;  // 1 = dependency (feature file), 2 = dependency (other files), 3 = exclusion
-        public int arg0; // this is just 1 for features files and 2 for all other files
+        public int relRule;  // 2 = dependency (other files), 3 = exclusion (1 not present, as in the compat-blocks)
+        public int arg0; // ALWAYS 3 (for compat-blocks, this value is 1 for features files and 2 for all other files)
         public int[] flags;
         public int[] range0;
         public int[] range1;
@@ -353,6 +348,10 @@ namespace MyShaderAnalysis.vcsparsing {
             this.blockIndex = blockIndex;
             relRule = datareader.ReadInt();
             arg0 = datareader.ReadInt();
+            if (arg0 != 3) {
+                throw new ShaderParserException("unexpected value!");
+            }
+
             flags = ReadByteFlagsUpdated();
 
             // FIXME - some of how this is read needs to be verified
@@ -406,6 +405,49 @@ namespace MyShaderAnalysis.vcsparsing {
             }
             return $"({bflags[0..^1]})";
         }
+
+        public bool AllFlagsAre3() {
+            bool flagsAre3 = true;
+            foreach (int flag in flags) {
+                if (flag != 3) {
+                    flagsAre3 = false;
+                }
+            }
+            return flagsAre3;
+        }
+
+
+        public string GetConciseDescription(int[] usePadding = null) {
+            int[] p = { 10, 8, 15, 5 };
+            if (usePadding != null) {
+                p = usePadding;
+            }
+            string relRuleKeyDesciption = $"{RelRuleDescribe().PadRight(p[0])}{CombineIntArray(range1).PadRight(p[1])}" +
+                $"{CombineIntArray(flags, includeParenth: true).PadRight(p[2])}{CombineIntArray(range2).PadRight(p[3])}";
+            return relRuleKeyDesciption;
+        }
+
+        public string GetResolvedNames(List<DataBlockSfBlock> sfBlocks, List<DBlock> dBlocks) {
+            List<string> names = new();
+            for (int i = 0; i < flags.Length; i++) {
+                if (flags[i] == 2) {
+                    names.Add(sfBlocks[range0[i]].name0);
+                    continue;
+                }
+                if (flags[i] == 3) {
+                    names.Add(dBlocks[range0[i]].name0);
+                    continue;
+                }
+                throw new ShaderParserException("this cannot happen!");
+            }
+            return CombineStringArray(names.ToArray());
+        }
+
+
+        public string RelRuleDescribe() {
+            return relRule == 3 ? "EXC(3)" : $"INC({relRule})";
+        }
+
         public override void PrintByteSummary() {
             throw new NotImplementedException();
         }

@@ -402,6 +402,27 @@ namespace MyShaderAnalysis.vcsparsing {
 
 
 
+        public static string CombineIntArray(int[] ints0, bool includeParenth = false) {
+            if (ints0.Length == 0) return $"_";
+            string valueString = "";
+            foreach (int i in ints0) {
+                valueString += $"{i},";
+            }
+            valueString = valueString[0..^1];
+            return includeParenth ? $"({valueString})" : $"{valueString}";
+        }
+
+
+        public static string CombineStringArray(string[] strings0, bool includeParenth = false) {
+            if (strings0.Length == 0) return $"_";
+            string combinedString = "";
+            foreach (string s in strings0) {
+                combinedString += $"{s}, ";
+            }
+            combinedString = combinedString[0..^2];
+            return includeParenth ? $"({combinedString})" : $"{combinedString}";
+        }
+
 
 
     }

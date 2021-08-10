@@ -3,9 +3,9 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using MyShaderAnalysis.vcsparsing;
-using static MyShaderAnalysis.vcsparsing.UtilHelpers;
 using System;
 using MyShaderAnalysis.compat;
+using static MyShaderAnalysis.vcsparsing.UtilHelpers;
 
 
 
@@ -60,7 +60,7 @@ namespace MyShaderAnalysis {
 
 
             // FileSummarySingleFile();
-            ZFramePrintout();
+            // ZFramePrintout();
 
 
 
@@ -79,7 +79,7 @@ namespace MyShaderAnalysis {
 
             // -- setting up comprehensive summary for particular file (NEEDS UPDATE)
             // FileSummaryPsFile(@$"{PCGL_DIR_NOT_CORE}\water_dota_pcgl_30_features.vcs", "water", $@"{SERVER_OUTPUT_DIR}\summary-water.html", writeFile: true);
-            FileSummaryPsFile(@$"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_features.vcs", $@"{SERVER_OUTPUT_DIR}\sf-summaries\dota\multiblend_pcgl_30_ps-summary.html", writeFile: true);
+            // FileSummaryPsFile(@$"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_features.vcs", $@"{SERVER_OUTPUT_DIR}\sf-summaries\dota\multiblend_pcgl_30_ps-summary.html", writeFile: true);
             // FileSummaryPsFile(@$"{PCGL_DIR_NOT_CORE}\spritecard_pcgl_30_features.vcs", "sprite", $@"{SERVER_OUTPUT_DIR}\summary-sprite.html", writeFile: true);
             // FileSummaryPsFile(@$"{PCGL_DIR_NOT_CORE}\hero_pcgl_30_features.vcs", "hero", $@"{SERVER_OUTPUT_DIR}\summary-hero.html", writeFile: true);
 
@@ -120,12 +120,110 @@ namespace MyShaderAnalysis {
 
 
             // TestRun();
-
-
+            // CompatRuleKeyDescriptionSurvey();
+            // CompatRuleKeyValuesAnalysis();
+            // DBlockRuleKeyDescriptionSurvey();
+            // DBlockRuleKeyValuesAnalysis();
 
             PrintReport();
             CloseStreamWriter();
         }
+
+
+
+
+
+        static void DBlockRuleKeyValuesAnalysis() {
+            List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
+            // List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, null, FILETYPE.any, 30);
+            foreach (string vcsFilenamepath in allVcsFiles) {
+                ShaderFile shaderFile = new(vcsFilenamepath);
+                foreach (UnknownBlock uknBlock in shaderFile.unknownBlocks) {
+
+                    // check on the rules that have range2 = (0,1)
+                    //if (uknBlock.range2[0] == 0) {
+                    //    Debug.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {uknBlock.GetConciseDescription(new int[] { 8, 4, 7, 5 })}" +
+                    //        $"{shaderFile.dBlocks[0].name0,-33}");
+                    //}
+
+                    //if (uknBlock.relRule == 2 && uknBlock.AllFlagsAre3()) {
+                    //    Debug.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {uknBlock.GetConciseDescription(new int[] {8, 4, 7, 5})}" +
+                    //        $"{shaderFile.dBlocks[0].name0,-33} {shaderFile.dBlocks[1].name0}");
+                    //}
+
+                    //if (uknBlock.relRule == 3 && uknBlock.AllFlagsAre3() && uknBlock.flags.Length>=2) {
+                    //    Debug.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-44} {uknBlock.GetConciseDescription(new int[] {8, 4, 12, 5})} " +
+                    //        $"{uknBlock.GetResolvedNames(shaderFile.sfBlocks, shaderFile.dBlocks)}");
+                    //}
+
+                    //if (uknBlock.relRule == 2 && uknBlock.flags.Length==2 && uknBlock.flags[1]==2 && uknBlock.range1.Length==1) {
+                    //    Debug.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {uknBlock.GetConciseDescription(new int[] {8, 4, 12, 5})} " +
+                    //        $"{uknBlock.GetResolvedNames(shaderFile.sfBlocks, shaderFile.dBlocks)}");
+                    //}
+
+                    //if (uknBlock.range1.Length == 1 && uknBlock.range1[0] == 0) {
+                    //    Debug.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {uknBlock.GetConciseDescription(new int[] {8, 4, 12, 5})} " +
+                    //        $"{uknBlock.GetResolvedNames(shaderFile.sfBlocks, shaderFile.dBlocks)}");
+                    //}
+
+                    //if (uknBlock.range1.Length > 1) {
+                    //    Debug.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {uknBlock.GetConciseDescription(new int[] {8, 4, 12, 5})} " +
+                    //        $"{uknBlock.GetResolvedNames(shaderFile.sfBlocks, shaderFile.dBlocks)}");
+                    //}
+
+                    if (uknBlock.relRule == 2 && uknBlock.range1.Length == 0 && uknBlock.flags.Length >= 3) {
+                        Debug.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {uknBlock.GetConciseDescription(new int[] {8, 4, 12, 5})} " +
+                            $"{uknBlock.GetResolvedNames(shaderFile.sfBlocks, shaderFile.dBlocks)}");
+                    }
+
+
+                }
+            }
+        }
+
+
+
+        static void DBlockRuleKeyDescriptionSurvey() {
+            List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
+            foreach (string vcsFilenamepath in allVcsFiles) {
+                ShaderFile shaderFile = new(vcsFilenamepath);
+                foreach (UnknownBlock unkBlock in shaderFile.unknownBlocks) {
+                    string relRuleKeyDesciption = $"{unkBlock.RelRuleDescribe(),-10} {CombineValues2(unkBlock.range1),-8} " +
+                        $"{CombineValues2(unkBlock.flags, includeParenth: true),-15} {CombineValues2(unkBlock.range2)}";
+                    CollectStringValue(relRuleKeyDesciption);
+                }
+            }
+        }
+
+
+        static void CompatRuleKeyValuesAnalysis() {
+            List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
+            // List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, null, FILETYPE.any, 30);
+            foreach (string vcsFilenamepath in allVcsFiles) {
+                ShaderFile shaderFile = new(vcsFilenamepath);
+                foreach (CompatibilityBlock cBlock in shaderFile.compatibilityBlocks) {
+                    if (cBlock.range2[0] == 0) {
+                        Debug.Write($"{ShortHandName(vcsFilenamepath),-50}");
+                        Debug.WriteLine($"nr arguments {cBlock.range0.Length} {shaderFile.sfBlocks[cBlock.range0[0]].name0}");
+                    }
+                }
+            }
+        }
+
+
+        static void CompatRuleKeyDescriptionSurvey() {
+            List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
+            foreach (string vcsFilenamepath in allVcsFiles) {
+                ShaderFile shaderFile = new(vcsFilenamepath);
+                foreach (CompatibilityBlock cBlock in shaderFile.compatibilityBlocks) {
+                    string relRuleKeyDesciption = $"{cBlock.RelRuleDescribe(),-10} {CombineValues2(cBlock.range1),-7} {CombineValues2(cBlock.range2)}";
+                    CollectStringValue(relRuleKeyDesciption);
+                }
+            }
+        }
+
+
+
 
 
 
@@ -644,9 +742,9 @@ namespace MyShaderAnalysis {
             OutputWriteLine(new string('-', zframesHeader.Length));
             foreach (var item in shaderFile.zframesLookup) {
                 zframeCount++;
-                OutputWriteLine($"{GetZframeHtmlLinkCheckExists((uint) item.Key, targetFile, SERVER_BASEDIR, zFrameBaseDir)}");
+                OutputWriteLine($"{GetZframeHtmlLinkCheckExists((uint)item.Key, targetFile, SERVER_BASEDIR, zFrameBaseDir)}");
                 if (zframeCount == 100 && shaderFile.GetZFrameCount() > 100) {
-                    OutputWriteLine($"... ({shaderFile.GetZFrameCount()-100} additional zframes)");
+                    OutputWriteLine($"... ({shaderFile.GetZFrameCount() - 100} additional zframes)");
                     break;
                 }
             }
@@ -1117,13 +1215,14 @@ namespace MyShaderAnalysis {
 
 
 
-        static string CombineValues2(int[] ints0) {
+        static string CombineValues2(int[] ints0, bool includeParenth = false) {
             if (ints0.Length == 0) return $"_";
             string valueString = "";
             foreach (int i in ints0) {
                 valueString += $"{i},";
             }
-            return $"{valueString[0..^1]}";
+            valueString = valueString[0..^1];
+            return includeParenth ? $"({valueString})" : $"{valueString}";
         }
 
 

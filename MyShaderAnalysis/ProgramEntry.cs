@@ -11,7 +11,7 @@ namespace MyShaderAnalysis {
 
         static void Main() {
 
-            // StaticAnalysis.RunTrials();
+            StaticAnalysis.RunTrials();
 
             // ShaderAnalysis.RunTrials();
             // ShaderAnalysis03.RunTrials();
@@ -22,8 +22,9 @@ namespace MyShaderAnalysis {
             // Snippetcode.RunTrials();
             // Murmur32.RunTrials();
 
+            // CompatRulesGeneric.RunTrials();
             // CompatRulesMultiframe.RunTrials();
-            CompatRulesWater2.RunTrials();
+            // CompatRulesWater2.RunTrials();
             // CompatRulesNewApproach.RunTrials();
             // CompatRulesWater.RunTrials();
             // CompatRulesGlobalLitSimple.RunTrials();
