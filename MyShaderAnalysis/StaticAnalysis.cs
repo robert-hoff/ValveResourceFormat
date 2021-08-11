@@ -79,7 +79,7 @@ namespace MyShaderAnalysis {
 
             // -- setting up comprehensive summary for particular file (NEEDS UPDATE)
             // FileSummaryPsFile(@$"{PCGL_DIR_NOT_CORE}\water_dota_pcgl_30_features.vcs", "water", $@"{SERVER_OUTPUT_DIR}\summary-water.html", writeFile: true);
-            // FileSummaryMultiblendPs(@$"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_features.vcs", $@"{SERVER_OUTPUT_DIR}\sf-summaries\dota\multiblend_pcgl_30_ps-summary.html", writeFile: true);
+            FileSummaryMultiblendPs(@$"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_features.vcs", $@"{SERVER_OUTPUT_DIR}\sf-summaries\dota\multiblend_pcgl_30_ps-summary.html", writeFile: true);
             // FileSummaryPsFile(@$"{PCGL_DIR_NOT_CORE}\spritecard_pcgl_30_features.vcs", "sprite", $@"{SERVER_OUTPUT_DIR}\summary-sprite.html", writeFile: true);
             // FileSummaryPsFile(@$"{PCGL_DIR_NOT_CORE}\hero_pcgl_30_features.vcs", "hero", $@"{SERVER_OUTPUT_DIR}\summary-hero.html", writeFile: true);
 
@@ -837,8 +837,10 @@ namespace MyShaderAnalysis {
             OutputWriteLine("");
 
 
+            // I need to use the multiblend directory to get all the files
 
-            string zFrameBaseDir = $"/vcs-all/{GetCoreOrDotaString(multiBlendPsFile)}/zsource/";
+
+            string zFrameBaseDir = $"/multiblend_pcgl_30/";
             ShaderFile shaderFile = new ShaderFile(multiBlendPsFile);
             CompatRulesGeneration configGen = new(shaderFile);
             int zframeCount = 0;

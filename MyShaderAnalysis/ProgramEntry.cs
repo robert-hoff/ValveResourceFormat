@@ -11,7 +11,9 @@ namespace MyShaderAnalysis {
 
         static void Main() {
 
-            StaticAnalysis.RunTrials();
+
+            StaticAnalysisZframes.RunTrials();
+            // StaticAnalysis.RunTrials();
 
             // ShaderAnalysis.RunTrials();
             // ShaderAnalysis03.RunTrials();

@@ -36,7 +36,7 @@ namespace MyShaderAnalysis.vcsparsing {
             List<(int, int, string)> glslSources = new();
 
             ShowZDataSection(-1);
-            ShowZFrameHeaderUpdated();
+            ShowZFrameHeader();
 
             // this applies only to vs files (ps, gs and psrs files don't have this section)
             if (filetype == FILETYPE.vs_file) {
@@ -246,7 +246,7 @@ namespace MyShaderAnalysis.vcsparsing {
             BreakLine();
         }
 
-        public void ShowZFrameHeaderUpdated() {
+        public void ShowZFrameHeader() {
             ShowByteCount("Frame header");
             uint nrArgs = ReadUInt16AtPosition();
             ShowBytes(2, breakLine: false);

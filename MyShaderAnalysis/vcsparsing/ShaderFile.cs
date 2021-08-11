@@ -4,7 +4,7 @@ using System.Linq;
 using System.IO;
 using ZstdSharp;
 using static MyShaderAnalysis.vcsparsing.UtilHelpers;
-
+using System.Diagnostics;
 
 namespace MyShaderAnalysis.vcsparsing {
 
@@ -123,7 +123,7 @@ namespace MyShaderAnalysis.vcsparsing {
                 zframesLookup.Add(zframeID, datareader.ReadInt());
             }
 
-            if (zframesCount>0) {
+            if (zframesCount > 0) {
                 datareader.offset = datareader.ReadInt();
             }
             if (datareader.offset != datareader.databytes.Length) {
@@ -144,7 +144,11 @@ namespace MyShaderAnalysis.vcsparsing {
 
         public byte[] GetDecompressedZFrameByIndex(int zframeIndex) {
             var zframeBlock = zframesLookup.ElementAt(zframeIndex);
-            datareader.offset = zframeBlock.Value;
+            return GetDecompressedZFrame(zframeBlock.Key);
+        }
+
+        public byte[] GetDecompressedZFrame(long zframeId) {
+            datareader.offset = zframesLookup[zframeId];
             uint delim = datareader.ReadUInt();
             if (delim != 0xfffffffd) {
                 throw new ShaderParserException("unexpected zframe delimiter");
@@ -161,7 +165,20 @@ namespace MyShaderAnalysis.vcsparsing {
             // decompressor.Dispose(); // dispose or not?
             return zframeUncompressed.ToArray();
         }
+
+        public ZFrameFile GetZFrameFile(long zframeId) {
+            return new ZFrameFile(GetDecompressedZFrame(zframeId), filenamepath, zframeId);
+        }
+
+        public ZFrameFile GetZFrameFileByIndex(int zframeIndex) {
+            long zframeId = zframesLookup.ElementAt(zframeIndex).Key;
+            return GetZFrameFile(zframeId);
+        }
+
+
     }
+
+
 
 
     public class ShaderParserException : Exception {
