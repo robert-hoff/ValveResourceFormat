@@ -17,17 +17,19 @@ namespace MyShaderAnalysis.vcsparsing {
 
         public ZDataBlock leadingData;
         public List<ZFrameParam> zframeParams;
-        public byte[] leadSummary = null;
+        public int[] leadSummary = null;
         public List<ZDataBlock> dataBlocks = new();
-        public byte[] tailSummary = null;
+        public int[] tailSummary = null;
         public int flags0;
         public int flagbyte0;
         public int glslSourceCount;
         public int flagbyte1;
         public List<GlslSource> glslSources = new();
 
-        List<VsEndBlock> vsEndBlocks = new();
-        List<PsEndBlock> psEndBlocks = new();
+        public List<VsEndBlock> vsEndBlocks = new();
+        public List<PsEndBlock> psEndBlocks = new();
+        public int nrEndBlocks;
+        public int nonZeroDataBlockCount = 0;
 
 
 
@@ -48,17 +50,26 @@ namespace MyShaderAnalysis.vcsparsing {
 
             if (vcsFiletype == FILETYPE.vs_file) {
                 int summaryLength = datareader.ReadInt16();
-                leadSummary = datareader.ReadBytes(summaryLength * 2);
+                leadSummary = new int[summaryLength];
+                for (int i = 0; i < summaryLength; i++) {
+                    leadSummary[i] = datareader.ReadInt16();
+                }
             }
 
             int dataBlockCount = datareader.ReadInt16();
             for (int blockId = 0; blockId < dataBlockCount; blockId++) {
                 ZDataBlock dataBlock = new(datareader, datareader.offset, blockId);
+                if (dataBlock.h0 > 0) {
+                    nonZeroDataBlockCount++;
+                }
                 dataBlocks.Add(dataBlock);
             }
 
             int tailSummaryLength = datareader.ReadInt16();
-            tailSummary = datareader.ReadBytes(tailSummaryLength * 2);
+            tailSummary = new int[tailSummaryLength];
+            for (int i = 0; i < tailSummaryLength; i++) {
+                tailSummary[i] = datareader.ReadInt16();
+            }
 
             flags0 = datareader.ReadInt();
             flagbyte0 = datareader.ReadByte();
@@ -70,7 +81,7 @@ namespace MyShaderAnalysis.vcsparsing {
                 glslSources.Add(glslSource);
             }
 
-            int nrEndBlocks = datareader.ReadInt();
+            nrEndBlocks = datareader.ReadInt();
             for (int i = 0; i < nrEndBlocks; i++) {
                 if (vcsFiletype == FILETYPE.vs_file || vcsFiletype == FILETYPE.gs_file) {
                     VsEndBlock vsEndBlock = new(datareader);
@@ -95,14 +106,28 @@ namespace MyShaderAnalysis.vcsparsing {
             }
         }
 
+        public string GetZFrameHeaderStringDescription() {
+            string zframeHeaderString = "";
+            foreach (ZFrameParam zParam in zframeParams) {
+                zframeHeaderString += $"{zParam}\n";
+            }
+            return zframeHeaderString;
+        }
+
 
         public void ShowLeadSummary() {
             if (vcsFiletype != FILETYPE.vs_file) {
                 Debug.WriteLine("only vs files have this section");
                 return;
             }
-            Debug.WriteLine($"{leadSummary.Length / 2:X02} 00");
-            Debug.WriteLine($"{DataReader.BytesToString(leadSummary)}");
+            Debug.WriteLine($"{leadSummary.Length:X02} 00   // nr of datablocks ({leadSummary.Length})");
+            for (int i = 0; i < leadSummary.Length; i++) {
+                if (i > 0 && i % 16 == 0) {
+                    Debug.WriteLine("");
+                }
+                Debug.Write(leadSummary[i] > -1 ? $"{leadSummary[i],-3}" : "_  ");
+            }
+            Debug.WriteLine($"");
         }
 
         public void ShowDatablocks() {
@@ -117,8 +142,14 @@ namespace MyShaderAnalysis.vcsparsing {
         }
 
         public void ShowTailSummary() {
-            Debug.WriteLine($"{tailSummary.Length / 2:X02} 00");
-            Debug.WriteLine($"{DataReader.BytesToString(tailSummary)}");
+            Debug.WriteLine($"{tailSummary.Length:X02} 00   // nr of datablocks ({tailSummary.Length})");
+            for (int i = 0; i < tailSummary.Length; i++) {
+                if (i > 0 && i % 16 == 0) {
+                    Debug.WriteLine("");
+                }
+                Debug.Write(tailSummary[i] > -1 ? $"{tailSummary[i],-3}" : "_  ");
+            }
+            Debug.WriteLine($"");
         }
 
         public void ShowGlslSources() {

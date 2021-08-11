@@ -24,20 +24,32 @@ namespace MyShaderAnalysis {
 
 
         public static void RunTrials() {
-            Trial1();
+            // Trial1();
 
 
 
 
+            StateSummariesValuesSeen();
+            // DifferencesInSuccessiveH0H2();
+            // ZFrameHeaderComparisonGivenFile();
+            // CheckB0ToB3Uniqeness();
+            // CheckB0ValueAgainstParameterCount();
+            // CheckB0ValuesUniqeness();
+            // ShowB0ValuesSelectedFile();
+            // SurveryEndBlockAndGlslSourceCounts();
+            // DataBlockCountSurvey();
+            // DataBlockCountSelectedfile();
+            // SurveryH1ValuesInDatablocks();
+            // SurveryH0H2RelationshipInSpriteCardPs();
             // SurveryHeaderParams();
             // SurveryBytesInLeadingDataload();
-            //SurveryLeadingDataSingleFile();
+            // SurveryLeadingDataSingleFile();
 
 
 
             // Debug.WriteLine($"{123:x}");
 
-            PrintReport(showCount: false);
+            PrintReport(showCount: true);
             CloseStreamWriter();
         }
 
@@ -47,15 +59,15 @@ namespace MyShaderAnalysis {
 
 
         static void Trial1() {
-            // string filenamepath = $@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_vs.vcs";
-            // string filenamepath = $@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_ps.vcs";
-            string filenamepath = $@"{PCGL_DIR_NOT_CORE}\refract_pcgl_30_ps.vcs";
+            // string filenamepath = $@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_vs.vcs"; int useZFrame = 0x24;
+            // string filenamepath = $@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_ps.vcs"; int useZFrame = 0xc9;
+            string filenamepath = $@"{PCGL_DIR_CORE}\depth_only_pcgl_30_vs.vcs"; int useZFrame = 0x68;
+            // string filenamepath = $@"{PCGL_DIR_NOT_CORE}\refract_pcgl_30_ps.vcs";
             // string filenamepath = $@"{PCGL_DIR_CORE}\visualize_cloth_pcgl_40_ps.vcs";
 
             ShaderFile shaderFile = new(filenamepath);
-            // ZFrameFile zframeFile = shaderFile.GetZFrameFile(0x24);
-            ZFrameFile zframeFile = shaderFile.GetZFrameFile(0xa);
-            // ZFrameFile zframeFile = shaderFile.GetZFrameFile(0x3b);
+            ZFrameFile zframeFile = shaderFile.GetZFrameFile(useZFrame);
+
 
             // ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(5);
 
@@ -65,17 +77,388 @@ namespace MyShaderAnalysis {
             // Debug.WriteLine($"{DataReader.BytesToString(zframeFile.leadingData.dataload)}");
 
             // zframeFile.ShowZFrameHeader();
-            // zframeFile.ShowLeadSummary();
+            zframeFile.ShowLeadSummary();
             // zframeFile.ShowDatablocks();
-            // zframeFile.ShowTailSummary();
+            zframeFile.ShowTailSummary();
             // zframeFile.ShowGlslSources();
-
-            zframeFile.ShowEndBlocks();
+            // zframeFile.ShowEndBlocks();
 
         }
 
 
 
+
+        static void StateSummariesValuesSeen() {
+            // List<string> vcsFiles = new();
+            // vcsFiles.Add($@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_ps.vcs");
+            List<string> vcsFiles = GetFileSelectionWithLimitedZframes();
+
+            foreach (string vcsFilenamepath in vcsFiles) {
+                ShaderFile shaderFile = new(vcsFilenamepath);
+                for (int zframeIndex = 0; zframeIndex < shaderFile.GetZFrameCount(); zframeIndex++) {
+                    ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(zframeIndex);
+
+                    foreach (int v in zframeFile.tailSummary) {
+                        CollectIntValue(v);
+                    }
+
+
+
+                    // leadSummary values - some strange values encountered here
+                    //if (zframeFile.leadSummary == null) {
+                    //    continue;
+                    //}
+                    //foreach (int v in zframeFile.leadSummary) {
+                    //    CollectIntValue(v);
+                    //    if (v == 41) {
+                    //        Debug.WriteLine($"{RemoveBaseDir(vcsFilenamepath)} {zframeFile.zframeId:x}");
+                    //    }
+                    //}
+
+                }
+            }
+        }
+
+
+
+
+        /*
+         * doesn't appear to be any defnition limitations for these,
+         * but multiples of 8 seem to occur by far the most common
+         *
+         *
+         */
+        static void DifferencesInSuccessiveH0H2() {
+            List<string> vcsFiles = new();
+            vcsFiles.Add($@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_ps.vcs");
+            // List<string> vcsFiles = GetFileSelectionWithLimitedZframes();
+
+            foreach (string vcsFilenamepath in vcsFiles) {
+                ShaderFile shaderFile = new(vcsFilenamepath);
+                for (int zframeIndex = 0; zframeIndex < shaderFile.GetZFrameCount(); zframeIndex++) {
+                    ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(zframeIndex);
+
+                    for (int i = 1; i < zframeFile.dataBlocks.Count; i++) {
+
+                        int h2last = zframeFile.dataBlocks[i - 1].h2;
+                        int h2cur = zframeFile.dataBlocks[i].h2;
+
+                        if (h2cur > 0 && h2last > 0) {
+                            // Debug.WriteLine($"{h2last-h2cur}");
+                            CollectIntValue(h2last - h2cur);
+                        }
+
+
+                        //if (diff == 4) {
+                        //    Debug.WriteLine($"{RemoveBaseDir(vcsFilenamepath)} {zframeFile.zframeId:x} " +
+                        //        $"{zframeFile.dataBlocks[i].blockId}");
+                        //}
+                    }
+                }
+            }
+        }
+
+
+
+        static void ZFrameHeaderComparisonGivenFile() {
+            List<string> vcsFiles = new();
+            // vcsFiles.Add($@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_ps.vcs");
+            vcsFiles.Add($@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_vs.vcs");
+
+            // List<string> vcsFiles = GetFileSelectionWithLimitedZframes();
+            foreach (string vcsFilenamepath in vcsFiles) {
+                ShaderFile shaderFile = new(vcsFilenamepath);
+                for (int zframeIndex = 0; zframeIndex < shaderFile.GetZFrameCount(); zframeIndex++) {
+                    ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(zframeIndex);
+                    // Debug.WriteLine($"{zframeFile.GetZFrameHeaderStringDescription()}");
+                    // Debug.WriteLine($"");
+                    // CollectStringValue(zframeFile.GetZFrameHeaderStringDescription());
+
+                    if (zframeFile.zframeParams.Count == 4) {
+                        Debug.WriteLine($"{zframeFile.zframeId:X}");
+                    }
+                }
+            }
+        }
+
+
+
+        /*
+         * The
+         * DepthPassBatchID                         2c5b5105   05 FF FF   1
+         * parameter is missing in the cases where S_MODE_TOOLS_WIREFRAME is enabled
+         *
+         *
+         */
+        static void MultiblendPsHeadersWhereDepthPassIsMissing() {
+            List<string> vcsFiles = new();
+            vcsFiles.Add($@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_ps.vcs");
+            // List<string> vcsFiles = GetFileSelectionWithLimitedZframes();
+            foreach (string vcsFilenamepath in vcsFiles) {
+                ShaderFile shaderFile = new(vcsFilenamepath);
+                for (int zframeIndex = 0; zframeIndex < shaderFile.GetZFrameCount(); zframeIndex++) {
+                    ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(zframeIndex);
+                    if (zframeFile.zframeParams.Count == 5) {
+                        Debug.WriteLine($"{zframeFile.zframeId:X}");
+                    }
+                }
+            }
+        }
+
+
+
+        static void CheckB0ToB3Uniqeness() {
+            List<string> vcsFiles = GetFileSelectionWithLimitedZframes();
+            foreach (string vcsFilenamepath in vcsFiles) {
+                ShaderFile shaderFile = new(vcsFilenamepath);
+                for (int zframeIndex = 0; zframeIndex < shaderFile.GetZFrameCount(); zframeIndex++) {
+                    ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(zframeIndex);
+                    // Debug.WriteLine($"zframeFile {zframeFile.zframeId}");
+                    foreach (ZDataBlock dataBlock in zframeFile.dataBlocks) {
+                        Dictionary<int, int> boundaryValues = new();
+                        if (dataBlock.dataload != null) {
+                            for (int i = 0; i < dataBlock.dataload.Length; i += 4) {
+                                int b0 = dataBlock.dataload[i];
+                                int b1 = dataBlock.dataload[i + 1];
+                                int b2 = dataBlock.dataload[i + 2];
+                                int b3 = dataBlock.dataload[i + 3];
+                                int combinedValue = (b3 << 24) + (b2 << 16) + (b1 << 8) + b0;
+                                boundaryValues.TryGetValue(combinedValue, out int count);
+                                if (count > 0) {
+                                    Debug.WriteLine($"repeated value found");
+                                    Debug.WriteLine($"{RemoveBaseDir(vcsFilenamepath)} {zframeFile.zframeId:x} {dataBlock.blockId}");
+                                    break;
+                                }
+                                boundaryValues[combinedValue] = count + 1;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+
+        /*
+         *
+         * The b0 values never exceed the file's parameter count
+         *
+         */
+        static void CheckB0ValueAgainstParameterCount() {
+            // List<string> vcsFiles = new();
+            // vcsFiles.Add($@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_ps.vcs");
+
+            List<string> vcsFiles = GetFileSelectionWithLimitedZframes();
+            foreach (string vcsFilenamepath in vcsFiles) {
+                ShaderFile shaderFile = new(vcsFilenamepath);
+                int paramCount = shaderFile.paramBlocks.Count;
+                Debug.WriteLine($"{RemoveBaseDir(vcsFilenamepath)} param-count={paramCount}");
+                for (int zframeIndex = 0; zframeIndex < shaderFile.GetZFrameCount(); zframeIndex++) {
+                    ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(zframeIndex);
+                    foreach (ZDataBlock dataBlock in zframeFile.dataBlocks) {
+                        if (dataBlock.dataload != null) {
+                            for (int i = 0; i < dataBlock.dataload.Length; i += 4) {
+                                if (dataBlock.dataload[i] > paramCount) {
+                                    Debug.WriteLine($"b0 val exceeded param count");
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+
+
+        /*
+         * The b0 byte within the dataloads do sometimes repeat
+         * I suppose this might imply that it's meaningful to write the same parameter to multiple places
+         *
+         */
+        static void CheckB0ValuesUniqeness() {
+            // List<string> vcsFiles = new();
+            // vcsFiles.Add($@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_vs.vcs");
+
+            List<string> vcsFiles = GetFileSelectionWithLimitedZframes();
+            foreach (string vcsFilenamepath in vcsFiles) {
+                ShaderFile shaderFile = new(vcsFilenamepath);
+                for (int zframeIndex = 0; zframeIndex < shaderFile.GetZFrameCount(); zframeIndex++) {
+                    ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(zframeIndex);
+                    // Debug.WriteLine($"zframeFile {zframeFile.zframeId}");
+                    foreach (ZDataBlock dataBlock in zframeFile.dataBlocks) {
+                        Dictionary<int, int> b0Values = new();
+                        if (dataBlock.dataload != null) {
+                            for (int i = 0; i < dataBlock.dataload.Length; i += 4) {
+                                b0Values.TryGetValue(dataBlock.dataload[i], out int count);
+                                if (count > 0) {
+                                    Debug.WriteLine($"repeated value found");
+                                    Debug.WriteLine($"{RemoveBaseDir(vcsFilenamepath)} {zframeFile.zframeId:x} {dataBlock.blockId}");
+                                    break;
+                                    //int b0 = dataBlock.dataload[i];
+                                    //int b1 = dataBlock.dataload[i+1];
+                                    //int b2 = dataBlock.dataload[i+2];
+                                    //int b3 = dataBlock.dataload[i+3];
+                                    //CollectStringValue($"{b0:X02} {b1:X02} {b2:X02} {b3:X02}");
+
+                                }
+                                b0Values[dataBlock.dataload[i]] = count + 1;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+
+        static void ShowB0ValuesSelectedFile() {
+            // List<string> vcsFiles = GetFileSelectionWithLimitedZframes();
+            List<string> vcsFiles = new();
+            vcsFiles.Add($@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_vs.vcs");
+            foreach (string vcsFilenamepath in vcsFiles) {
+                ShaderFile shaderFile = new(vcsFilenamepath);
+                // Dictionary<int, int> b0Values = new();
+                for (int zframeIndex = 0; zframeIndex < shaderFile.GetZFrameCount(); zframeIndex++) {
+                    ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(zframeIndex);
+                    Debug.WriteLine($"zframeFile {zframeFile.zframeId}");
+                    foreach (ZDataBlock dataBlock in zframeFile.dataBlocks) {
+                        if (dataBlock.dataload != null) {
+                            for (int i = 0; i < dataBlock.dataload.Length; i += 4) {
+                                Debug.Write($"{dataBlock.dataload[i]:X02} ");
+                            }
+                            Debug.WriteLine("");
+                        }
+                    }
+                }
+            }
+
+        }
+
+
+        /*
+         * nr of end blocks and source-count is not the same, but
+         * nr of sources never exceeds the number of end blocks as each end block
+         * needs a source reference
+         *
+         * the nonZeroDataBlockCount and nrEndBlocks are usually the same, but in some cases a
+         * datablock that matches a valid configuration may be empty.
+         * This appears to be most common when zframeId = 0, and quite uncommon if zframeId != 0
+         *
+         */
+        static void SurveryEndBlockAndGlslSourceCounts() {
+            List<string> vcsFiles = GetFileSelectionWithLimitedZframes();
+            foreach (string vcsFilenamepath in vcsFiles) {
+                ShaderFile shaderFile = new(vcsFilenamepath);
+                for (int i = 0; i < shaderFile.GetZFrameCount(); i++) {
+                    ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(i);
+                    // CollectStringValue($"{zframeFile.glslSourceCount}  {zframeFile.nrEndBlocks}");
+                    // CollectStringValue($"{zframeFile.nonZeroDataBlockCount}  {zframeFile.nrEndBlocks}");
+
+                    //if (zframeFile.nonZeroDataBlockCount == 0) {
+                    //    Debug.WriteLine($"{vcsFilenamepath}");
+                    //    Debug.WriteLine($"{zframeFile.zframeId}");
+                    //}
+
+                    if (zframeFile.zframeId != 0) {
+                        CollectStringValue($"{zframeFile.nonZeroDataBlockCount}  {zframeFile.nrEndBlocks}");
+                    }
+
+
+                }
+            }
+        }
+
+
+
+        static void DataBlockCountSurvey() {
+            List<string> vcsFiles = GetFileSelectionWithLimitedZframes();
+            foreach (string vcsFilenamepath in vcsFiles) {
+                ShaderFile shaderFile = new(vcsFilenamepath);
+                for (int i = 0; i < shaderFile.GetZFrameCount(); i++) {
+                    ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(0);
+                    CollectIntValue(zframeFile.dataBlocks.Count);
+                }
+            }
+        }
+
+
+
+        static void DataBlockCountSelectedfile() {
+            // string filenamepath = $@"{PCGL_DIR_NOT_CORE}\spritecard_pcgl_30_ps.vcs";
+            // string filenamepath = $@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_ps.vcs";
+            string filenamepath = $@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_vs.vcs";
+            ShaderFile shaderFile = new(filenamepath);
+            for (int i = 0; i < shaderFile.GetZFrameCount(); i++) {
+                if (i % 1000 == 0) {
+                    Debug.WriteLine($"{i}");
+                }
+                ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(i);
+                CollectIntValue(zframeFile.dataBlocks.Count);
+            }
+        }
+
+
+
+        /*
+         * The value of the h1 argument for all non-leading datablocks is 0
+         *
+         */
+        static void SurveryH1ValuesInDatablocks() {
+            List<string> vcsFiles = GetFileSelectionWithLimitedZframes();
+            foreach (string vcsFilenamepath in vcsFiles) {
+                ShaderFile shaderFile = new(vcsFilenamepath);
+                for (int i = 0; i < shaderFile.GetZFrameCount(); i++) {
+                    ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(i);
+
+                    // check h0 values
+                    //foreach (ZDataBlock zBlock in zframeFile.dataBlocks) {
+                    //    CollectIntValue(zBlock.h0);
+                    //}
+
+                    // check h0-h2 difference
+                    //CollectIntValue(zframeFile.leadingData.h0 - zframeFile.leadingData.h2);
+                    //foreach (ZDataBlock zBlock in zframeFile.dataBlocks) {
+                    //    CollectIntValue(zBlock.h0-zBlock.h2);
+                    //}
+
+                    // check h0-h2 ratio (shows nan if h0==0 and inf if h2==0)
+                    // this ratio can be anything and is not interesting
+                    //CollectStringValue($"{(double)zframeFile.leadingData.h0 / zframeFile.leadingData.h2}");
+                    //foreach (ZDataBlock zBlock in zframeFile.dataBlocks) {
+                    //    CollectStringValue($"{(double)zBlock.h0 / zBlock.h2}");
+                    //}
+
+                    // check h2 values
+                    //foreach (ZDataBlock zBlock in zframeFile.dataBlocks) {
+                    //    CollectIntValue(zBlock.h2);
+                    //}
+
+                }
+            }
+        }
+
+
+        /*
+         * for spritecard_pcgl_30_ps.vcs the differece h0-h2 in
+         * all datablocks (including leading data) is zero
+         *
+         */
+        static void SurveryH0H2RelationshipInSpriteCardPs() {
+            // string filenamepath = $@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_ps.vcs";
+            string filenamepath = $@"{PCGL_DIR_NOT_CORE}\spritecard_pcgl_30_ps.vcs";
+            ShaderFile shaderFile = new(filenamepath);
+            for (int i = 0; i < shaderFile.GetZFrameCount(); i++) {
+                if (i % 1000 == 0) {
+                    Debug.WriteLine($"{i}");
+                }
+                ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(i);
+                CollectIntValue(zframeFile.leadingData.h0 - zframeFile.leadingData.h2);
+                foreach (ZDataBlock zBlock in zframeFile.dataBlocks) {
+                    CollectIntValue(zBlock.h0 - zBlock.h2);
+                }
+            }
+        }
 
 
 
@@ -95,7 +478,6 @@ namespace MyShaderAnalysis {
                     }
                 }
             }
-
         }
 
 
@@ -154,7 +536,10 @@ namespace MyShaderAnalysis {
 
         static List<string> GetFileSelectionWithLimitedZframes() {
             List<string> vcsFiles = new();
-            List<string> selectedFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, 30);
+            // List<string> selectedFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, 30);
+            List<string> selectedFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.vs_file, 30);
+
+
             foreach (string checkVcsFile in selectedFiles) {
                 ShaderFile shaderFile = new ShaderFile(checkVcsFile);
                 if (shaderFile.GetZFrameCount() < 4000 && shaderFile.GetZFrameCount() > 0) {
