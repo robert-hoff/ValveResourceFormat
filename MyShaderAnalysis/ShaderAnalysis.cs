@@ -51,8 +51,9 @@ namespace MyShaderAnalysis {
 
 
 
-
-            // WriteFirst100ZFramesEveryFile();
+            // WARN - even 3 every 100 is a lot of files
+            // Write3ZFramesEveryHundedAfter300();
+            // WriteFirst200ZFramesEveryFile();
             // WriteAZFrameToFile();
             // WriteZFrameToFile(filenamepath, 0);
             // ParseABunchOfZframes();
@@ -103,8 +104,61 @@ namespace MyShaderAnalysis {
 
 
 
+        static void Write3ZFramesEveryHundedAfter300() {
+            // string filenamespecific = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
+            // string filenamespecific1 = PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_ps.vcs";
+            // string filenamespecific2 = PCGL_DIR_NOT_CORE + @"\hero_pcgl_40_ps.vcs";
+            // string filenamespecific = PCGL_DIR_CORE + @"\blur_pcgl_30_ps.vcs";
+            // List<string> vcsFiles = new();
+            // vcsFiles.Add(filenamespecific1);
+            // vcsFiles.Add(filenamespecific2);
 
-        static void WriteFirst100ZFramesEveryFile() {
+            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
+
+
+
+            foreach (string filenamepath in vcsFiles) {
+
+                // skip hero files, they are too big
+                if (filenamepath.Equals(PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_ps.vcs")) {
+                    continue;
+                }
+                if (filenamepath.Equals(PCGL_DIR_NOT_CORE + @"\hero_pcgl_40_ps.vcs")) {
+                    continue;
+                }
+
+
+                string token = GetCoreOrDotaString(filenamepath);
+                string outputdir = @$"Z:\dev\www\vcs.codecreation.dev\vcs-all\{token}\zsource";
+
+                ShaderFile shaderFile = new(filenamepath);
+                //int zframesToWrite = 100;
+                //if (shaderFile.GetZFrameCount() < zframesToWrite) {
+                //    zframesToWrite = shaderFile.GetZFrameCount();
+                //}
+                //for (int i = 0; i < zframesToWrite; i++) {
+                //    WriteZframeAsHtml(shaderFile, i, outputdir);
+                //}
+                int i = 300;
+                while (i<shaderFile.GetZFrameCount()) {
+                    WriteZframeAsHtml(shaderFile, i, outputdir);
+                    if (i + 1 < shaderFile.GetZFrameCount()) {
+                        WriteZframeAsHtml(shaderFile, i + 1, outputdir);
+                    }
+                    if (i + 2 < shaderFile.GetZFrameCount()) {
+                        WriteZframeAsHtml(shaderFile, i + 2, outputdir);
+                    }
+                    i += 100;
+                }
+
+
+            }
+
+        }
+
+
+
+        static void WriteFirst200ZFramesEveryFile() {
             // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
             // string filenamepath = PCGL_DIR_CORE + @"\blur_pcgl_30_ps.vcs";
             List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
@@ -113,7 +167,7 @@ namespace MyShaderAnalysis {
                 string outputdir = @$"Z:\dev\www\vcs.codecreation.dev\vcs-all\{token}\zsource";
 
                 ShaderFile shaderFile = new(filenamepath);
-                int zframesToWrite = 100;
+                int zframesToWrite = 200;
                 if (shaderFile.GetZFrameCount() < zframesToWrite) {
                     zframesToWrite = shaderFile.GetZFrameCount();
                 }
@@ -274,8 +328,8 @@ namespace MyShaderAnalysis {
 
         static void WriteAllVcsFilesToHtml() {
             // List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
-            // List<string> vcsFiles = GetVcsFiles(PCGL_DIR_NOT_CORE, null, FILETYPE.any, -1);
-            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, null, FILETYPE.any, -1);
+            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_NOT_CORE, null, FILETYPE.any, -1);
+            // List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, null, FILETYPE.any, -1);
             foreach (string vcsFile in vcsFiles) {
                 WriteVcsByteAnalysisToHtml(vcsFile, writeHtmlLinks: true);
             }

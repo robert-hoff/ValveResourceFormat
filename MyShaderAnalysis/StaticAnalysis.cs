@@ -50,7 +50,7 @@ namespace MyShaderAnalysis {
             // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
 
             // -- writes a useful summary for every file (pretty long process)
-            // DON'T OVERWRITE MULTIBLEND!
+            // Don't overwrite multiblend! (the zframes are stored in a different directory)
             // FileSummaryAllFiles();
 
             // - prints a single page summary and links to all the files produced with FileSummaryAllFiles()
@@ -79,7 +79,7 @@ namespace MyShaderAnalysis {
 
             // -- setting up comprehensive summary for particular file (NEEDS UPDATE)
             // FileSummaryPsFile(@$"{PCGL_DIR_NOT_CORE}\water_dota_pcgl_30_features.vcs", "water", $@"{SERVER_OUTPUT_DIR}\summary-water.html", writeFile: true);
-            // FileSummaryPsFile(@$"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_features.vcs", $@"{SERVER_OUTPUT_DIR}\sf-summaries\dota\multiblend_pcgl_30_ps-summary.html", writeFile: true);
+            // FileSummaryMultiblendPs(@$"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_features.vcs", $@"{SERVER_OUTPUT_DIR}\sf-summaries\dota\multiblend_pcgl_30_ps-summary.html", writeFile: true);
             // FileSummaryPsFile(@$"{PCGL_DIR_NOT_CORE}\spritecard_pcgl_30_features.vcs", "sprite", $@"{SERVER_OUTPUT_DIR}\summary-sprite.html", writeFile: true);
             // FileSummaryPsFile(@$"{PCGL_DIR_NOT_CORE}\hero_pcgl_30_features.vcs", "hero", $@"{SERVER_OUTPUT_DIR}\summary-hero.html", writeFile: true);
 
@@ -123,7 +123,7 @@ namespace MyShaderAnalysis {
             // CompatRuleKeyDescriptionSurvey();
             // CompatRuleKeyValuesAnalysis();
             // DBlockRuleKeyDescriptionSurvey();
-            DBlockRuleKeyValuesAnalysis();
+            // DBlockRuleKeyValuesAnalysis();
 
             PrintReport();
             CloseStreamWriter();
@@ -300,32 +300,46 @@ namespace MyShaderAnalysis {
 
         static void FileSummarySingleFile() {
             List<(string, string, string)> triples = new();
-            triples.Add(GetTriple(@$"{PCGL_DIR_NOT_CORE}\hero_pcgl_30_features.vcs"));
+            // triples.Add(GetTriple(@$"{PCGL_DIR_NOT_CORE}\hero_pcgl_30_features.vcs"));
             // triples.Add(GetTriple(@$"{PCGL_DIR_CORE}\visualize_cloth_pcgl_40_features.vcs"));
             // triples.Add(GetTriple(@$"{PCGL_DIR_CORE}\depth_only_pcgl_40_features.vcs"));
             // triples.Add(GetTriple(@$"{PCGL_DIR_CORE}\convolve_environment_map_pcgl_41_features.vcs"));
             // triples.Add(GetTriple(@$"{PCGL_DIR_CORE}\apply_fog_pcgl_40_features.vcs"));
             // triples.Add(GetTriple(@$"{PCGL_DIR_CORE}\blur_pcgl_30_features.vcs"));
             // triples.Add(GetTriple(@$"{PCGL_DIR_NOT_CORE}\water_dota_pcgl_30_features.vcs"));
+            triples.Add(GetTriple(@$"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_features.vcs"));
 
 
-            WriteVsPsFileSummary(triples[0], FILETYPE.ps_file);
+            WriteVsPsFileSummary(triples[0], FILETYPE.vs_file);
         }
 
 
 
+        /*
+         * recommend disable output, need to do it in the function call for FileSummaryVsPSFile()
+         *
+         */
         static void FileSummaryAllFiles() {
             List<(string, string, string)> triples = GetFeaturesVsPsFileTriples();
+
             foreach (var triple in triples) {
+                if (triple.Item3.Equals(@$"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_ps.vcs")) {
+                    continue;
+                }
                 WriteVsPsFileSummary(triple, FILETYPE.vs_file);
                 CloseStreamWriter();
                 WriteVsPsFileSummary(triple, FILETYPE.ps_file);
                 CloseStreamWriter();
             }
 
+            swWriterAlreadyClosed = true;
         }
 
 
+        /*
+         * FIXME LATER - output directories are completely tied up in the current server layout
+         *
+         */
         static void WriteVsPsFileSummary((string, string, string) triple, FILETYPE targetFileType) {
             if (targetFileType != FILETYPE.vs_file && targetFileType != FILETYPE.ps_file) {
                 throw new ShaderParserException("need to target either vs or ps file");
@@ -723,7 +737,7 @@ namespace MyShaderAnalysis {
             string ftFile = triple.Item1;
             string targetFile = targetFileType == FILETYPE.vs_file ? triple.Item2 : triple.Item3;
             if (outputFilenamepath != null && writeFile) {
-                ConfigureOutputFile(outputFilenamepath);
+                ConfigureOutputFile(outputFilenamepath, disableOutput: false);
                 WriteHtmlFile(title, $"SF SUMMARY for {Path.GetFileName(targetFile)} ({GetCoreOrDotaString(targetFile)})");
             }
             List<(string, string, string)> triples = new();
@@ -734,6 +748,11 @@ namespace MyShaderAnalysis {
             ShowDBlockArgumentList(targetFile, showHtmlLink: false);
             UnknownBlockConcise(targetFile, showLink: false);
 
+
+
+
+
+            // R: it's better to print all, I'm checking if the file exists for purposes of linking
             // break after 100 zframes (that's all I've compiled)
             int zframeCount = 0;
 
@@ -741,39 +760,65 @@ namespace MyShaderAnalysis {
             // print the zframes
             string zFrameBaseDir = $"/vcs-all/{GetCoreOrDotaString(targetFile)}/zsource/";
             ShaderFile shaderFile = new(targetFile);
+
+            // prepare the lookup to determine configuration state
+            CompatRulesGeneration configGen = new(shaderFile);
+
+
+
             OutputWriteLine("");
             string zframesHeader = $"ZFRAMES ({shaderFile.GetZFrameCount()})";
             OutputWriteLine(zframesHeader);
             OutputWriteLine(new string('-', zframesHeader.Length));
+
+
+            // collect names in the order they appear
+            List<string> sfNames = new();
+            foreach (DataBlockSfBlock sfBlock in shaderFile.sfBlocks) {
+                sfNames.Add(ShortenShaderParam(sfBlock.name0).ToLower());
+            }
+
+
+            string configHeader = CombineStringsSpaceSep(sfNames.ToArray(), 6);
+            configHeader = $"{new string(' ', 19)}{configHeader}";
+            // OutputWriteLine(configHeader);
+
             foreach (var item in shaderFile.zframesLookup) {
-                zframeCount++;
-                OutputWriteLine($"{GetZframeHtmlLinkCheckExists((uint)item.Key, targetFile, SERVER_BASEDIR, zFrameBaseDir)}");
-                if (zframeCount == 100 && shaderFile.GetZFrameCount() > 100) {
-                    OutputWriteLine($"... ({shaderFile.GetZFrameCount() - 100} additional zframes)");
-                    break;
+                if (zframeCount%100==0) {
+                    OutputWriteLine($"{configHeader}");
                 }
+                int[] configState = configGen.GetConfigState(item.Key);
+                string zframeLink = $"{GetZframeHtmlLinkCheckExists((uint)item.Key, targetFile, SERVER_BASEDIR, zFrameBaseDir)}";
+                OutputWriteLine($"{zframeLink} {CombineIntsSpaceSep(configState, 6)}");
+                zframeCount++;
+
             }
 
         }
 
 
 
-
-        static void FileSummaryPsFile(string featuresfile, string outputFilenamepath = null, bool writeFile = false) {
+        /*
+         * FIXME WARN - this has been overwritten to output data for multiblend ONLY!!
+         * (in general this method has been retired by the ones above)
+         *
+         *
+         */
+        static void FileSummaryMultiblendPs(string featuresfile, string outputFilenamepath = null, bool writeFile = false) {
             List<(string, string, string)> triples = new();
             triples.Add(GetTriple(featuresfile));
-            string psFile = featuresfile[0..^12] + "ps.vcs";
-            string htmlTitle = GetShortName(psFile);
+            string multiBlendPsFile = featuresfile[0..^12] + "ps.vcs";
+            string htmlTitle = GetShortName(multiBlendPsFile);
 
             if (outputFilenamepath != null && writeFile) {
                 ConfigureOutputFile(outputFilenamepath);
-                WriteHtmlFile(htmlTitle, $"SF SUMMARY for {Path.GetFileName(psFile)} ({GetCoreOrDotaString(psFile)})");
+                WriteHtmlFile(htmlTitle, $"SF SUMMARY for {Path.GetFileName(multiBlendPsFile)} ({GetCoreOrDotaString(multiBlendPsFile)})");
             }
             SfSummaryOfFileTriple(triples);
-            ShowSfArgumentList(psFile);
-            CompatBlockDetailsConcise2(psFile, showLink: false);
-            ShowDBlockArgumentList(psFile, showHtmlLink: false);
-            UnknownBlockConcise(psFile, showLink: false);
+            ShowSfArgumentList(multiBlendPsFile);
+            CompatBlockDetailsConcise2(multiBlendPsFile, showLink: false);
+            ShowDBlockArgumentList(multiBlendPsFile, showHtmlLink: false);
+            UnknownBlockConcise(multiBlendPsFile, showLink: false);
 
 
             // R: zframes specific to multiblend_pcgl_30_ps.vcs only
@@ -790,7 +835,36 @@ namespace MyShaderAnalysis {
                 OutputWriteLine(abbr.Replace("(", "<span style='color: blue'>(").Replace(")", "</span>)"));
             }
             OutputWriteLine("");
-            CompatRulesMultiframe.Trial1();
+
+
+
+            string zFrameBaseDir = $"/vcs-all/{GetCoreOrDotaString(multiBlendPsFile)}/zsource/";
+            ShaderFile shaderFile = new ShaderFile(multiBlendPsFile);
+            CompatRulesGeneration configGen = new(shaderFile);
+            int zframeCount = 0;
+
+            // collect names in the order they appear
+            List<string> sfNames = new();
+            foreach (DataBlockSfBlock sfBlock in shaderFile.sfBlocks) {
+                sfNames.Add(ShortenShaderParam(sfBlock.name0).ToLower());
+            }
+
+
+            string configHeader = CombineStringsSpaceSep(sfNames.ToArray(), 6);
+            configHeader = $"{new string(' ', 19)}{configHeader}";
+            // OutputWriteLine(configHeader);
+
+            foreach (var item in shaderFile.zframesLookup) {
+                if (zframeCount%100==0) {
+                    OutputWriteLine($"{configHeader}");
+                }
+                int[] configState = configGen.GetConfigState(item.Key);
+                string zframeLink = $"{GetZframeHtmlLinkCheckExists((uint)item.Key, multiBlendPsFile, SERVER_BASEDIR, zFrameBaseDir)}";
+                OutputWriteLine($"{zframeLink} {CombineIntsSpaceSep(configState, 6)}");
+                zframeCount++;
+
+            }
+
 
 
         }
@@ -1673,12 +1747,15 @@ namespace MyShaderAnalysis {
         }
 
 
+        private static bool swWriterAlreadyClosed = false;
+
+
         // This basestream != null is nonsense, it doesn't check if the file is open
         private static void CloseStreamWriter() {
-            if (WriteAsHtml && sw.BaseStream != null) {
+            if (WriteAsHtml && !swWriterAlreadyClosed) {
                 sw.WriteLine(GetHtmlFooter());
             }
-            if (sw != null && sw.BaseStream != null) {
+            if (sw != null && !swWriterAlreadyClosed) {
                 sw.Close();
             }
         }

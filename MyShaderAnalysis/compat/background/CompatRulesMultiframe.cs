@@ -108,14 +108,14 @@ namespace MyShaderAnalysis.compat {
 
             string htmlBasedir = "/multiblend_pcgl_30/";
             for (int zframeId = 0; zframeId < offset[17] * 2; zframeId++) {
-            // for (int i = 0; i <100; i++) {
+                // for (int i = 0; i <100; i++) {
                 if (CheckZFrame(zframeId)) {
                     int[] thisState = GetBitPattern(zframeId);
                     string sfNameList = getSfNameList(shaderFile, thisState);
                     // string stateList = GetStateString(thisState);
                     // StaticAnalysis.OutputWriteLine($"zframe[{i:x08}]   {Convert.ToString(i, 2).PadLeft(20, '0')}    {sfNameList}");
                     // StaticAnalysis.OutputWriteLine($"zframe[{i:x08}]  {sfNameList}");
-                    StaticAnalysis.OutputWriteLine($"{GetZframeHtmlLink((uint) zframeId, vcsFilenamepath, htmlBasedir)}  {sfNameList}");
+                    StaticAnalysis.OutputWriteLine($"{GetZframeHtmlLink((uint)zframeId, vcsFilenamepath, htmlBasedir)}  {sfNameList}");
                 }
             }
 
@@ -126,20 +126,20 @@ namespace MyShaderAnalysis.compat {
             string nameList = "";
             for (int i = 0; i < thisState.Length; i++) {
                 int val = thisState[i];
-                if (val==0) {
+                if (val == 0) {
                     // nameList += "".PadRight(7);
                     // Debug.WriteLine($"{i}");
                     continue;
                 }
                 string paramLayer = "";
-                if (layers[i]>1) {
+                if (layers[i] > 1) {
                     paramLayer = $"({val})";
                 }
 
                 // Debug.WriteLine($"{i}");
                 string parmDisplayName = $"{ShortenShaderParam(shaderFile.sfBlocks[i].name0)}{paramLayer}";
                 // nameList += parmDisplayName.PadRight(7);
-                nameList += parmDisplayName.ToLower()+", ";
+                nameList += parmDisplayName.ToLower() + ", ";
             }
             return nameList;
         }
@@ -149,7 +149,7 @@ namespace MyShaderAnalysis.compat {
 
         // WARN - get these array lengths sorted out
 
-            static bool CheckZFrame(int zframe) {
+        static bool CheckZFrame(int zframe) {
             int[] state = GetBitPattern(zframe);
             for (int j = 2; j < offset.Length; j++) {
                 for (int i = 1; i < j; i++) {

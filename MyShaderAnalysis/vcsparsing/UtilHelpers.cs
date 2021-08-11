@@ -360,7 +360,6 @@ namespace MyShaderAnalysis.vcsparsing {
 
             collectValuesInt = new();
             collectValuesString = new();
-
         }
 
 
@@ -412,6 +411,26 @@ namespace MyShaderAnalysis.vcsparsing {
             return includeParenth ? $"({valueString})" : $"{valueString}";
         }
 
+        public static string CombineIntsSpaceSep(int[] ints0, int padding = 5) {
+            if (ints0.Length == 0) return $"_".PadLeft(padding);
+            string valueString = "";
+            foreach (int v in ints0) {
+                string intPadded = $"{(v!=0 ? v:"_")}".PadLeft(padding);
+                valueString += $"{intPadded}";
+            }
+            // return $"{valueString[0..^padding]}";
+            return $"{valueString}";
+        }
+
+        public static string CombineStringsSpaceSep(string[] strings0, int padding = 5) {
+            string combinedString = "";
+            foreach (string s in strings0) {
+                combinedString += s.PadLeft(padding);
+            }
+            return combinedString;
+        }
+
+
 
         public static string CombineStringArray(string[] strings0, bool includeParenth = false) {
             if (strings0.Length == 0) return $"_";
@@ -422,6 +441,21 @@ namespace MyShaderAnalysis.vcsparsing {
             combinedString = combinedString[0..^2];
             return includeParenth ? $"({combinedString})" : $"{combinedString}";
         }
+
+        public static void ShowIntArray(int[] ints0, int padding = 5, string label = null, bool hex = false) {
+            string intsString = "";
+            foreach (int v in ints0) {
+                string val = hex ? $"{v:x}" : $"{v}";
+
+                intsString += $"{(v!=0 ? val:"_")}".PadLeft(padding);
+            }
+
+            string labelstr = (label != null && hex) ? $"{label}(0x)" : "";
+            labelstr = label != null ? $"{labelstr,12} = " : "";
+
+            Debug.WriteLine($"{labelstr}{intsString.Trim()}");
+        }
+
 
 
 
