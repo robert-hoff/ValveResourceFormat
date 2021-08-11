@@ -24,12 +24,12 @@ namespace MyShaderAnalysis {
 
 
         public static void RunTrials() {
-            // Trial1();
+            Trial1();
 
 
 
 
-            SurveryHeaderParams();
+            // SurveryHeaderParams();
             // SurveryBytesInLeadingDataload();
             //SurveryLeadingDataSingleFile();
 
@@ -47,15 +47,30 @@ namespace MyShaderAnalysis {
 
 
         static void Trial1() {
-            string filenamepath = $@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_vs.vcs";
+            // string filenamepath = $@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_vs.vcs";
+            // string filenamepath = $@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_ps.vcs";
+            string filenamepath = $@"{PCGL_DIR_NOT_CORE}\refract_pcgl_30_ps.vcs";
+            // string filenamepath = $@"{PCGL_DIR_CORE}\visualize_cloth_pcgl_40_ps.vcs";
+
             ShaderFile shaderFile = new(filenamepath);
-            ZFrameFile zframeFile = shaderFile.GetZFrameFile(0x1b);
+            // ZFrameFile zframeFile = shaderFile.GetZFrameFile(0x24);
+            ZFrameFile zframeFile = shaderFile.GetZFrameFile(0xa);
+            // ZFrameFile zframeFile = shaderFile.GetZFrameFile(0x3b);
+
+            // ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(5);
+
             // Debug.WriteLine($"{zframeFile.leadingData.h0}");
             // Debug.WriteLine($"{zframeFile.leadingData.h1}");
             // Debug.WriteLine($"{zframeFile.leadingData.h2}");
             // Debug.WriteLine($"{DataReader.BytesToString(zframeFile.leadingData.dataload)}");
 
-            zframeFile.ShowZFrameHeader();
+            // zframeFile.ShowZFrameHeader();
+            // zframeFile.ShowLeadSummary();
+            // zframeFile.ShowDatablocks();
+            // zframeFile.ShowTailSummary();
+            // zframeFile.ShowGlslSources();
+
+            zframeFile.ShowEndBlocks();
 
         }
 
@@ -142,7 +157,7 @@ namespace MyShaderAnalysis {
             List<string> selectedFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, 30);
             foreach (string checkVcsFile in selectedFiles) {
                 ShaderFile shaderFile = new ShaderFile(checkVcsFile);
-                if (shaderFile.GetZFrameCount() < 14000 && shaderFile.GetZFrameCount() > 0) {
+                if (shaderFile.GetZFrameCount() < 4000 && shaderFile.GetZFrameCount() > 0) {
                     vcsFiles.Add(checkVcsFile);
                 }
             }
