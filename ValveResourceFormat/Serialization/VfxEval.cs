@@ -56,6 +56,11 @@ namespace ValveResourceFormat.Serialization.VfxEval
             ("length",     1),     // 22
             ("sqr",        1),     // 23
             ("TextureSize",1),     // 24
+            ("rotation2d", 1),     // 25
+            ("rotate2d",   2),     // 26
+            ("sincos",     1),     // 27
+
+
         };
 
         private static readonly string[] OperatorSymbols = {
@@ -65,12 +70,17 @@ namespace ValveResourceFormat.Serialization.VfxEval
         private enum OPCODE
         {
             ENDOFDATA = 0x00,
+            // unknown = 0x01
             BRANCH_SEP = 0x02,
+            // unknown = 0x03
             BRANCH = 0x04,
+            // unknown = 0x05
             FUNC = 0x06,
             FLOAT = 0x07,
             ASSIGN = 0x08,
             LOCALVAR = 0x09,
+            // unknown = 0x0A
+            // unknown = 0x0B
             NOT = 0x0C,
             EQUALS = 0x0D,               // 0D		==					13
             NEQUALS = 0x0E,              // 0E		!=					14
@@ -85,8 +95,14 @@ namespace ValveResourceFormat.Serialization.VfxEval
             MODULO = 0x17,               // 17		%					23
             NEGATE = 0x18,
             EXTVAR = 0x19,
+            // unknown = 0x1A
+            // unknown = 0x1B
+            // unknown = 0x1C
+            // unknown = 0x1D
             SWIZZLE = 0x1E,
             EXISTS = 0x1F,
+            // unknown = 0x20
+            // unknown = 0x21
             // NOT_AN_OPS = 0xff,
         };
 
@@ -168,7 +184,7 @@ namespace ValveResourceFormat.Serialization.VfxEval
                         if (Expressions.Count < 3)
                         {
                             ErrorWhileParsing = true;
-                            ErrorMessage = "error! - not on a branch exit";
+                            ErrorMessage = "parse error - not on a branch exit";
                             return;
                         }
                         {
@@ -396,7 +412,6 @@ namespace ValveResourceFormat.Serialization.VfxEval
             }
 
             // this point should never be reached
-            // throw new Exception($"UNKNOWN OPCODE = 0x{(int)op:x2}, offset = {dataReader.BaseStream.Position}");
             ErrorWhileParsing = true;
             ErrorMessage = $"UNKNOWN OPCODE = 0x{(int)op:x2}, offset = {dataReader.BaseStream.Position}";
         }
@@ -454,16 +469,12 @@ namespace ValveResourceFormat.Serialization.VfxEval
         {
             return exp[0] == '(' && exp[^1] == ')' ? exp[1..^1] : exp;
         }
-        //private string Trimb2(string exp)
-        //{
-        //    return OffsetAtBranchExits.Count == 1 ? Trimb(exp) : exp;
-        //}
 
 
         private readonly Dictionary<uint, string> ExternalVariablesPlaceholderNames = new();
         private readonly Dictionary<uint, string> LocalVariableNames = new();
 
-        // naming external variables EXT, EXT2, EXT3,.. where not found
+        // naming external variables UNKNOWN, UNKNOWN2, UNKNOWN3,.. where not found
         private string GetExternalVarName(uint varId)
         {
             ExternalVarsReference.TryGetValue(varId, out var varKnownName);
@@ -477,11 +488,11 @@ namespace ValveResourceFormat.Serialization.VfxEval
             {
                 if (ExternalVariablesPlaceholderNames.Count == 0)
                 {
-                    varName = "EXT";
+                    varName = "UNKNOWN";
                 }
                 else
                 {
-                    varName = string.Format("EXT{0}", ExternalVariablesPlaceholderNames.Count + 1);
+                    varName = string.Format("UNKNOWN{0}", ExternalVariablesPlaceholderNames.Count + 1);
                 }
                 ExternalVariablesPlaceholderNames.Add(varId, varName);
             }

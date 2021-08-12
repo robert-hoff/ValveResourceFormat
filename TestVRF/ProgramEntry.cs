@@ -19,8 +19,8 @@ namespace TestVRF
         static void Main()
         {
 
-            ShaderAnalysis.RunTrials();
-
+            RunVfxEval.RunTrials();
+            // ShaderAnalysis.RunTrials();
 
             // RunParseDynamicExpressions.RunTestData();
             // CheckExternalVarsHashes.checkNames();
