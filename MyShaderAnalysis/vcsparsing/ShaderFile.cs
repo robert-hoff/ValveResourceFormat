@@ -5,6 +5,7 @@ using System.IO;
 using ZstdSharp;
 using static MyShaderAnalysis.vcsparsing.UtilHelpers;
 using System.Diagnostics;
+using MyShaderAnalysis.compat;
 
 namespace MyShaderAnalysis.vcsparsing {
 
@@ -23,6 +24,8 @@ namespace MyShaderAnalysis.vcsparsing {
         public List<BufferBlock> bufferBlocks = new();
         public List<SymbolsBlock> symbolBlocks = new();
         public SortedDictionary<long, int> zframesLookup = new(); // (frameID to offset)
+
+        private DBlockConfigurationMap dBlockConfigGen;
 
 
         public ShaderFile(string filenamepath) {
@@ -129,6 +132,12 @@ namespace MyShaderAnalysis.vcsparsing {
             if (datareader.offset != datareader.databytes.Length) {
                 throw new ShaderParserException("End of file not reached!");
             }
+
+
+
+            dBlockConfigGen = new DBlockConfigurationMap(this);
+
+
         }
 
 
@@ -174,6 +183,12 @@ namespace MyShaderAnalysis.vcsparsing {
             long zframeId = zframesLookup.ElementAt(zframeIndex).Key;
             return GetZFrameFile(zframeId);
         }
+
+
+        public int[] GetDBlockConfig(int blockId) {
+            return dBlockConfigGen.GetConfigState(blockId);
+        }
+
 
 
     }

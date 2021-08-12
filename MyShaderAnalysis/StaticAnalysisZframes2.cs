@@ -39,8 +39,8 @@ namespace MyShaderAnalysis {
         static void Trial1() {
 
             // string filenamepath = $@"{PCGL_DIR_CORE}\bilateral_blur_pcgl_30_vs.vcs"; int useZFrame = 0;
-            string filenamepath = $@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_vs.vcs"; int useZFrame = 0xab;
-            // string filenamepath = $@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_ps.vcs"; int useZFrame = 0xc9;
+            // string filenamepath = $@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_vs.vcs"; int useZFrame = 0xab;
+            string filenamepath = $@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_ps.vcs"; int useZFrame = 0xc9;
             // string filenamepath = $@"{PCGL_DIR_CORE}\depth_only_pcgl_30_vs.vcs"; int useZFrame = 0x68;
             // string filenamepath = $@"{PCGL_DIR_NOT_CORE}\refract_pcgl_30_ps.vcs";
             // string filenamepath = $@"{PCGL_DIR_CORE}\visualize_cloth_pcgl_40_ps.vcs";
@@ -55,6 +55,8 @@ namespace MyShaderAnalysis {
 
 
         static void ZFileSummary(string vcsFile, long zframeId, string outputFilenamepath = null, bool writeFile = false) {
+            // writeFile = false;
+
             ShaderFile shaderFile = new(vcsFile);
             ZFrameFile zframeFile = shaderFile.GetZFrameFile(zframeId);
             if (outputFilenamepath != null && writeFile) {
@@ -64,24 +66,80 @@ namespace MyShaderAnalysis {
 
 
             PrintConfigurationState(shaderFile, zframeId);
-
+            // PrintDataBlocks1(shaderFile, zframeFile);
 
 
             SortedDictionary<int, int> writeSequences = GetWriteSequences(zframeFile);
-            // zframeFile.leadingData.dataload
             PrintWriteSequences(shaderFile, zframeFile, writeSequences);
+            PrintDataBlocks2(shaderFile, zframeFile, writeSequences);
+
+
+        }
+
+
+
+        static void PrintDataBlocks2(ShaderFile shaderFile, ZFrameFile zframeFile, SortedDictionary<int, int> writeSequences) {
+
+            string configHeader = "D-PARAM CONFIGURATIONS (XXX)";
+            OutputWriteLine(configHeader);
+            OutputWriteLine(new string('-', configHeader.Length));
+            PrintAbbreviations(shaderFile);
+            OutputWriteLine("");
+
+            List<string> dParamNames = new();
+            foreach (DBlock dBlock in shaderFile.dBlocks) {
+                dParamNames.Add(ShortenShaderParam(dBlock.name0).ToLower());
+            }
+            string configNames = CombineStringsSpaceSep(dParamNames.ToArray(), 6);
+            configNames = $"{new string(' ', 5)}{configNames}";
+
+            int dBlockCount = 0;
+            for (int blockId = 0; blockId < zframeFile.dataBlocks.Count; blockId++) {
+                if (zframeFile.dataBlocks[blockId].h0 == 0) {
+                    continue;
+                }
+                if (dBlockCount % 100 == 0) {
+                    OutputWriteLine($"{configNames}");
+                }
+                dBlockCount++;
+                int[] dBlockConfig = shaderFile.GetDBlockConfig(blockId);
+                string configStr = CombineIntsSpaceSep(dBlockConfig, 6);
+                OutputWriteLine($"[{blockId:X02}] {configStr}          WRITESEQ[{writeSequences[blockId]}]");
+                // OutputWriteLine(DataReader.BytesToString(zBlock.dataload));
+                // OutputWriteLine("");
+
+            }
+
+
+            static void PrintAbbreviations(ShaderFile shaderFile) {
+                List<string> abbreviations = new();
+                foreach (var dBlock in shaderFile.dBlocks) {
+                    string abbreviation = $"{dBlock.name0}({ShortenShaderParam(dBlock.name0).ToLower()})";
+                    abbreviations.Add(abbreviation);
+                }
+                string[] breakabbreviations = CombineValuesBreakString(abbreviations.ToArray(), 120);
+                foreach (string abbr in breakabbreviations) {
+                    OutputWriteLine(abbr.Replace("(", "<span style='color: blue'>(").Replace(")", "</span>)"));
+                }
+            }
 
 
 
 
 
-            //PrintZBlock(shaderFile, zframeFile.leadingData);
-            //for (int i = 0; i < zframeFile.dataBlocks.Count; i++) {
-            //    if (i > 0 && zframeFile.dataBlocks[i].h0 > 0 && zframeFile.dataBlocks[i - 1].h0 == 0) {
-            //        OutputWriteLine("");
+
+            //foreach (var item in shaderFile.zframesLookup) {
+            //    if (zframeCount % 100 == 0) {
+            //        OutputWriteLine($"{configHeader}");
             //    }
-            //    PrintZBlock(shaderFile, zframeFile.dataBlocks[i]);
+            //    int[] configState = configGen.GetConfigState(item.Key);
+            //    string zframeLink = $"{GetZframeHtmlLinkCheckExists((uint)item.Key, targetFile, SERVER_BASEDIR, zFrameBaseDir)}";
+            //    OutputWriteLine($"{zframeLink} {CombineIntsSpaceSep(configState, 6)}");
+            //    zframeCount++;
             //}
+
+
+
         }
 
 
@@ -153,14 +211,20 @@ namespace MyShaderAnalysis {
             string b2Desc = "dest";
             string b3Desc = "control";
             // string dataBlockHeader = $"{new string(' ', 5)} {new string(' ', 28)} {b2Desc,-11} {b3Desc}";
-            string dataBlockHeader = $"{seqName,-34} {b2Desc,-11} {b3Desc}";
+            string dataBlockHeader = $"{seqName,-35} {b2Desc,-11} {b3Desc}";
             OutputWriteLine(dataBlockHeader);
             for (int i = 0; i < h0; i++) {
                 int paramId = dataload[i * 4];
                 int b2 = dataload[i * 4 + 2];
                 int b3 = dataload[i * 4 + 3];
-                string b2Text = $"{b2,2} ({b2:X02})";
-                string b3Text = $"{b3,2} ({b3:X02})";
+                string b2Text = $"{b2,3} ({b2:X02})";
+                if (b2 == 0xff) {
+                    b2Text = $"  _ ({b2:X02})";
+                }
+                string b3Text = $"{b3,3} ({b3:X02})";
+                if (b3 == 0xff) {
+                    b3Text = $"  _ ({b2:X02})";
+                }
                 OutputWrite($"[{paramId,3}] {shaderFile.paramBlocks[paramId].name0,-30} {b2Text,-14} {b3Text}");
                 if (i + 1 == h0) {
                     OutputWrite($"   // {h0}");
@@ -176,6 +240,17 @@ namespace MyShaderAnalysis {
         }
 
 
+
+
+        static void PrintDataBlocks1(ShaderFile shaderFile, ZFrameFile zframeFile) {
+            PrintZBlock(shaderFile, zframeFile.leadingData);
+            for (int i = 0; i < zframeFile.dataBlocks.Count; i++) {
+                if (i > 0 && zframeFile.dataBlocks[i].h0 > 0 && zframeFile.dataBlocks[i - 1].h0 == 0) {
+                    OutputWriteLine("");
+                }
+                PrintZBlock(shaderFile, zframeFile.dataBlocks[i]);
+            }
+        }
 
         static void PrintZBlock(ShaderFile shaderFile, ZDataBlock zBlock) {
             int h0 = zBlock.h0;

@@ -446,14 +446,33 @@ namespace MyShaderAnalysis.vcsparsing {
             string intsString = "";
             foreach (int v in ints0) {
                 string val = hex ? $"{v:x}" : $"{v}";
-
                 intsString += $"{(v!=0 ? val:"_")}".PadLeft(padding);
             }
-
-            string labelstr = (label != null && hex) ? $"{label}(0x)" : "";
+            string labelstr = (label != null && hex) ? $"{label}(0x)" : $"{label}";
             labelstr = label != null ? $"{labelstr,12} = " : "";
-
             Debug.WriteLine($"{labelstr}{intsString.Trim()}");
+        }
+
+
+        public static string[] CombineValuesBreakString(string[] strings0, int breakLen) {
+            List<string> stringCollection = new();
+            if (strings0.Length == 0) {
+                stringCollection.Add("");
+                return stringCollection.ToArray();
+            }
+            string line = strings0[0] + ", ";
+            for (int i = 1; i < strings0.Length; i++) {
+                if (line.Length + strings0[i].Length + 1 < breakLen) {
+                    line += strings0[i] + ", ";
+                } else {
+                    stringCollection.Add(line[0..^2]);
+                    line = strings0[i] + ", ";
+                }
+            }
+            if (line.Length > 0) {
+                stringCollection.Add(line[0..^2]);
+            }
+            return stringCollection.ToArray(); ;
         }
 
 
