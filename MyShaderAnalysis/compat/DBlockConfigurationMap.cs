@@ -28,7 +28,7 @@ namespace MyShaderAnalysis.compat {
 
         private void GenerateOffsetAndLayers(ShaderFile shaderFile) {
 
-            if (shaderFile.sfBlocks.Count == 0) {
+            if (shaderFile.dBlocks.Count == 0) {
                 offsets = new int[] { 1 };
                 layers = new int[] { 0 };
                 return;

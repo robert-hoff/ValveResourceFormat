@@ -6,7 +6,7 @@ using MyShaderAnalysis.vcsparsing;
 using System;
 using MyShaderAnalysis.compat;
 using static MyShaderAnalysis.vcsparsing.UtilHelpers;
-
+using static MyShaderAnalysis.vcsparsing.ZFrameFile;
 
 namespace MyShaderAnalysis {
 
@@ -39,27 +39,35 @@ namespace MyShaderAnalysis {
         static void Trial1() {
 
             // string filenamepath = $@"{PCGL_DIR_CORE}\bilateral_blur_pcgl_30_vs.vcs"; int useZFrame = 0;
-            string filenamepath = $@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_vs.vcs"; int useZFrame = 0xab;
-            // string filenamepath = $@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_ps.vcs"; int useZFrame = 0xc9;
+            // string filenamepath = $@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_vs.vcs"; int useZFrame = 0xab;
+            string filenamepath = $@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_ps.vcs"; int useZFrame = 0xc9;
+            // string filenamepath = $@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_ps.vcs"; int useZFrame = 0xa9;
             // string filenamepath = $@"{PCGL_DIR_CORE}\depth_only_pcgl_30_vs.vcs"; int useZFrame = 0x68;
             // string filenamepath = $@"{PCGL_DIR_NOT_CORE}\refract_pcgl_30_ps.vcs";
             // string filenamepath = $@"{PCGL_DIR_CORE}\visualize_cloth_pcgl_40_ps.vcs";
 
 
 
-            ZFileSummary(filenamepath, useZFrame, $@"{SERVER_OUTPUT_DIR}\testrun2.html", writeFile: true);
+            ZFileSummary(filenamepath, useZFrame, $@"{SERVER_OUTPUT_DIR}\zframes", writeFile: true);
 
 
         }
 
 
 
-        static void ZFileSummary(string vcsFile, long zframeId, string outputFilenamepath = null, bool writeFile = false) {
+        static void ZFileSummary(string vcsFile, long zframeId, string outputDir = null, bool writeFile = false) {
             // writeFile = false;
+
+
+            string outputFilenamepath = @$"{outputDir}\{Path.GetFileName(vcsFile)[0..^4]}-zframe{zframeId:x08}.html";
+
+            //Debug.WriteLine($"{outputDir}");
+            //Debug.WriteLine($"{outputFilenamepath}");
+            //return;
 
             ShaderFile shaderFile = new(vcsFile);
             ZFrameFile zframeFile = shaderFile.GetZFrameFile(zframeId);
-            if (outputFilenamepath != null && writeFile) {
+            if (outputDir != null && writeFile) {
                 ConfigureOutputFile(outputFilenamepath);
                 WriteHtmlFile($"Z 0x{zframeId:x}", GetZframeHtmlFilename((uint)zframeId, vcsFile)[0..^5]);
             }
@@ -67,20 +75,94 @@ namespace MyShaderAnalysis {
 
             PrintConfigurationState(shaderFile, zframeId);
             // PrintDataBlocks1(shaderFile, zframeFile);
-
+            PrintFrameLeadingArgs(zframeFile);
 
             SortedDictionary<int, int> writeSequences = GetWriteSequences(zframeFile);
             PrintWriteSequences(shaderFile, zframeFile, writeSequences);
+
+
             PrintDataBlocks2(shaderFile, zframeFile, writeSequences);
+            PrintLeadSummary(zframeFile);
+            PrintTailSummary(zframeFile);
 
 
+            PrintSourceSummary(zframeFile);
+            ShowEndBlocks(shaderFile, zframeFile);
+
+        }
+
+        static Dictionary<int, GlslSource> GetBlockIdToSource(ZFrameFile zframeFile) {
+            Dictionary<int, GlslSource> blockIdToSource = new();
+            if (zframeFile.vcsFiletype == FILETYPE.vs_file) {
+                foreach (VsEndBlock vsEndBlock in zframeFile.vsEndBlocks) {
+                    blockIdToSource.Add(vsEndBlock.blockIdRef, zframeFile.glslSources[vsEndBlock.sourceRef]);
+                }
+            } else {
+                foreach (PsEndBlock psEndBlock in zframeFile.psEndBlocks) {
+                    blockIdToSource.Add(psEndBlock.blockIdRef, zframeFile.glslSources[psEndBlock.sourceRef]);
+                }
+            }
+            return blockIdToSource;
         }
 
 
 
+        static void PrintSourceSummary(ZFrameFile zframeFile) {
+            string headerText = "source summary";
+            OutputWriteLine(headerText);
+            OutputWriteLine(new string('-', headerText.Length));
+            int b0 = zframeFile.flags0[0];
+            int b1 = zframeFile.flags0[1];
+            int b2 = zframeFile.flags0[2];
+            int b3 = zframeFile.flags0[3];
+            OutputWrite($"{b0:X02} {b1:X02} {b2:X02} {b3:X02}");
+            OutputWriteLine($"    // possible flags {ByteToBinary(b0)} {ByteToBinary(b1)}");
+            OutputWriteLine($"{zframeFile.flagbyte0}              // values seen 0,1");
+            OutputWriteLine($"{zframeFile.glslSourceCount,-11}    // nr of source files");
+            OutputWriteLine($"{zframeFile.flagbyte1}              // values seen 0,1");
+            OutputWriteLine("");
+            OutputWriteLine("");
+
+        }
+
+        static string ByteToBinary(int b0) {
+            string byteString = "";
+            byteString += $"{Convert.ToString(b0 >> 4, 2).PadLeft(4, '0')}";
+            byteString += " ";
+            byteString += $"{Convert.ToString(b0 & 0xf, 2).PadLeft(4, '0')}";
+            return byteString;
+        }
+
+
+
+        static void PrintLeadSummary(ZFrameFile zframeFile) {
+            if (zframeFile.vcsFiletype != FILETYPE.vs_file) {
+                return;
+            }
+            OutputWriteLine(zframeFile.GetLeadSummary());
+            OutputWriteLine("");
+        }
+
+        static void PrintTailSummary(ZFrameFile zframeFile) {
+            OutputWriteLine(zframeFile.GetTailSummary());
+            OutputWriteLine("");
+        }
+
+
+        static void PrintFrameLeadingArgs(ZFrameFile zframeFile) {
+            string headerText = "Frame Header";
+            OutputWriteLine(headerText);
+            OutputWriteLine(new string('-', headerText.Length));
+            OutputWriteLine(zframeFile.GetZFrameHeaderStringDescription());
+            OutputWriteLine("");
+        }
+
+
         static void PrintDataBlocks2(ShaderFile shaderFile, ZFrameFile zframeFile, SortedDictionary<int, int> writeSequences) {
 
-            string configHeader = "D-PARAM CONFIGURATIONS (XXX)";
+            Dictionary<int, GlslSource> blockIdToSource = GetBlockIdToSource(zframeFile);
+
+            string configHeader = $"D-Param configurations ({blockIdToSource.Count})";
             OutputWriteLine(configHeader);
             OutputWriteLine(new string('-', configHeader.Length));
             PrintAbbreviations(shaderFile);
@@ -104,48 +186,48 @@ namespace MyShaderAnalysis {
                 dBlockCount++;
                 int[] dBlockConfig = shaderFile.GetDBlockConfig(blockId);
                 string configStr = CombineIntsSpaceSep(dBlockConfig, 6);
-                OutputWriteLine($"[{blockId:X02}] {configStr}          WRITESEQ[{writeSequences[blockId]}]");
+                string writeSeqText = $"WRITESEQ[{writeSequences[blockId]}]";
+                OutputWrite($"[{blockId:X02}] {configStr}    {writeSeqText, 14}");
+                GlslSource blockSource = blockIdToSource[blockId];
+                // OutputWriteLine($"         source[{blockSource.GetStringId()}]");
+                OutputWriteLine($"    {getSourceLink(shaderFile.filenamepath, blockSource)} {blockSource.offset1,12}  (bytes)");
                 // OutputWriteLine(DataReader.BytesToString(zBlock.dataload));
                 // OutputWriteLine("");
-
             }
 
+            OutputWriteLine("");
+        }
 
-            static void PrintAbbreviations(ShaderFile shaderFile) {
-                List<string> abbreviations = new();
-                foreach (var dBlock in shaderFile.dBlocks) {
-                    string abbreviation = $"{dBlock.name0}({ShortenShaderParam(dBlock.name0).ToLower()})";
-                    abbreviations.Add(abbreviation);
-                }
-                string[] breakabbreviations = CombineValuesBreakString(abbreviations.ToArray(), 120);
-                foreach (string abbr in breakabbreviations) {
-                    OutputWriteLine(abbr.Replace("(", "<span style='color: blue'>(").Replace(")", "</span>)"));
-                }
+
+        static string getSourceLink(string filenamepath, GlslSource blockSource) {
+            string glslId = blockSource.GetStringId();
+            string token = GetCoreOrDotaString(filenamepath);
+            string fileName = @$"/vcs-all/{token}/zsource/glsl-{glslId}.html";
+            string urlText = $"source[{glslId}]";
+            return $"<a href='{fileName}'>{urlText}</a>";
+        }
+
+
+        static void PrintAbbreviations(ShaderFile shaderFile) {
+            List<string> abbreviations = new();
+            foreach (var dBlock in shaderFile.dBlocks) {
+                string abbreviation = $"{dBlock.name0}({ShortenShaderParam(dBlock.name0).ToLower()})";
+                abbreviations.Add(abbreviation);
             }
-
-
-
-
-
-
-            //foreach (var item in shaderFile.zframesLookup) {
-            //    if (zframeCount % 100 == 0) {
-            //        OutputWriteLine($"{configHeader}");
-            //    }
-            //    int[] configState = configGen.GetConfigState(item.Key);
-            //    string zframeLink = $"{GetZframeHtmlLinkCheckExists((uint)item.Key, targetFile, SERVER_BASEDIR, zFrameBaseDir)}";
-            //    OutputWriteLine($"{zframeLink} {CombineIntsSpaceSep(configState, 6)}");
-            //    zframeCount++;
-            //}
-
-
-
+            string[] breakabbreviations = CombineValuesBreakString(abbreviations.ToArray(), 120);
+            foreach (string abbr in breakabbreviations) {
+                OutputWriteLine(abbr.Replace("(", "<span style='color: blue'>(").Replace(")", "</span>)"));
+            }
         }
 
 
 
-
         static void PrintWriteSequences(ShaderFile shaderFile, ZFrameFile zframeFile, SortedDictionary<int, int> writeSequences) {
+            string headerText = "Parameter glsl mapping";
+            OutputWriteLine(headerText);
+            OutputWriteLine(new string('-', headerText.Length));
+            OutputWriteLine("");
+
             int lastseq = writeSequences[-1];
             string seqName = $"WRITESEQ[{lastseq}] (default)";
             ZDataBlock leadData = zframeFile.leadingData;
@@ -160,6 +242,7 @@ namespace MyShaderAnalysis {
                     OutputWriteLine("");
                 }
             }
+            OutputWriteLine("");
         }
 
 
@@ -303,6 +386,11 @@ namespace MyShaderAnalysis {
 
 
         static void PrintConfigurationState(ShaderFile shaderFile, long zframeId) {
+            // FIXME - needs rethink
+            PrintReferingFileLink(shaderFile.filenamepath);
+            PrintZframeByteCodeLink(shaderFile.filenamepath, zframeId);
+
+            OutputWriteLine("");
             string configHeader = "Configuration";
             OutputWriteLine(configHeader);
             OutputWriteLine(new string('-', configHeader.Length));
@@ -314,39 +402,72 @@ namespace MyShaderAnalysis {
                 }
             }
             OutputWriteLine("");
+            OutputWriteLine("");
+        }
+
+
+        static void PrintZframeByteCodeLink(string filenamepath, long zframeId) {
+            string token = GetCoreOrDotaString(filenamepath);
+            string htmlFileName = $"{Path.GetFileName(filenamepath[0..^4])}-ZFRAME{zframeId:x08}.html";
+            string htmlLink = $"<a href='/vcs-all/{token}/zsource/{htmlFileName}'>{htmlFileName[0..^5]} databytes</a>";
+            OutputWrite(htmlLink);
+            OutputWriteLine("");
+        }
+
+
+        static void PrintReferingFileLink(string filenamepath) {
+            string token = GetCoreOrDotaString(filenamepath);
+            string htmlFileName = $"{Path.GetFileName(filenamepath[0..^4])}-summary.html";
+            string htmlLink = $"<a href='/GEN-output/sf-summaries/{token}/{htmlFileName}'>{ShortHandName(filenamepath)}</a>";
+            OutputWrite(htmlLink);
+            OutputWriteLine("");
         }
 
 
 
+        static void ShowEndBlocks(ShaderFile shaderFile, ZFrameFile zframeFile) {
+            string headerText = "End blocks";
+            OutputWriteLine($"{headerText}");
+            OutputWriteLine(new string('-', headerText.Length));
 
-
-
-        static List<string> GetFileSelectionWithLimitedZframes() {
-            List<string> vcsFiles = new();
-            // List<string> selectedFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, 30);
-            List<string> selectedFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.vs_file, 30);
-
-
-            foreach (string checkVcsFile in selectedFiles) {
-                ShaderFile shaderFile = new ShaderFile(checkVcsFile);
-                if (shaderFile.GetZFrameCount() < 4000 && shaderFile.GetZFrameCount() > 0) {
-                    vcsFiles.Add(checkVcsFile);
+            FILETYPE vcsFiletype = shaderFile.vcsFiletype;
+            if (vcsFiletype == FILETYPE.vs_file || vcsFiletype == FILETYPE.gs_file) {
+                OutputWriteLine($"{zframeFile.vsEndBlocks.Count:X02} 00 00 00   // end blocks ({zframeFile.vsEndBlocks.Count})");
+                OutputWriteLine("");
+                foreach (VsEndBlock vsEndBlock in zframeFile.vsEndBlocks) {
+                    OutputWriteLine($"block-ref         {vsEndBlock.blockIdRef}");
+                    OutputWriteLine($"arg0              {vsEndBlock.arg0}");
+                    OutputWriteLine($"source-ref        {vsEndBlock.sourceRef}");
+                    OutputWriteLine($"source-pointer    {vsEndBlock.sourcePointer}");
+                    OutputWriteLine($"{DataReader.BytesToString(vsEndBlock.databytes)}");
+                    OutputWriteLine("");
+                }
+            } else {
+                OutputWriteLine($"{zframeFile.psEndBlocks.Count:X02} 00 00 00   // end blocks ({zframeFile.psEndBlocks.Count})");
+                OutputWriteLine("");
+                foreach (PsEndBlock psEndBlock in zframeFile.psEndBlocks) {
+                    OutputWriteLine($"block-ref         {psEndBlock.blockIdRef}");
+                    OutputWriteLine($"arg0              {psEndBlock.arg0}");
+                    OutputWriteLine($"source-ref        {psEndBlock.sourceRef}");
+                    OutputWriteLine($"source-pointer    {psEndBlock.sourcePointer}");
+                    OutputWriteLine($"has data ({psEndBlock.hasData0},{psEndBlock.hasData1},{psEndBlock.hasData2})");
+                    if (psEndBlock.hasData0) {
+                        OutputWriteLine("// data-section 0");
+                        OutputWriteLine($"{DataReader.BytesToString(psEndBlock.data0)}");
+                    }
+                    if (psEndBlock.hasData1) {
+                        OutputWriteLine("// data-section 1");
+                        OutputWriteLine($"{DataReader.BytesToString(psEndBlock.data1)}");
+                    }
+                    if (psEndBlock.hasData2) {
+                        OutputWriteLine("// data-section 2");
+                        OutputWriteLine($"{DataReader.BytesToString(psEndBlock.data2[0..3])}");
+                        OutputWriteLine($"{DataReader.BytesToString(psEndBlock.data2[3..11])}");
+                        OutputWriteLine($"{DataReader.BytesToString(psEndBlock.data2[11..75])}");
+                    }
+                    OutputWriteLine("");
                 }
             }
-
-            return vcsFiles;
-        }
-
-        // needs work! currently returning null. perhaps add interesting test cases as I go along
-        static List<string> GetManualFileSelection() {
-            // don't do this one yet!
-            // string filenamepath = $@"{PCGL_DIR_NOT_CORE}\hero_pcgl_30_ps.vcs";
-            List<string> vcsFiles = new();
-            vcsFiles.Add($@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_ps.vcs");
-            vcsFiles.Add($@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_vs.vcs");
-            vcsFiles.Add($@"{PCGL_DIR_NOT_CORE}\grasstile_pcgl_41_ps.vcs");
-            vcsFiles.Add($@"{PCGL_DIR_NOT_CORE}\grasstile_pcgl_41_vs.vcs");
-            return null;
         }
 
 
@@ -372,7 +493,7 @@ namespace MyShaderAnalysis {
 
         private static void ConfigureOutputFile(string filepathname, bool disableOutput = false) {
             DisableOutput = disableOutput;
-            Debug.WriteLine($"writing to {filepathname}");
+            OutputWriteLine($"writing to {filepathname}");
             sw = new StreamWriter(filepathname);
         }
 

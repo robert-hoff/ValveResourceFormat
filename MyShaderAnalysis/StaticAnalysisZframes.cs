@@ -27,7 +27,7 @@ namespace MyShaderAnalysis {
             // Trial1();
 
 
-            SurverH0LeadingData();
+            // SurverH0LeadingData();
             // SurverH1H2ValuesInDatablocks();
             // StateSummariesValuesSeen();
             // DifferencesInSuccessiveH0H2();
@@ -36,7 +36,7 @@ namespace MyShaderAnalysis {
             // CheckB0ValueAgainstParameterCount();
             // CheckB0ValuesUniqeness();
             // ShowB0ValuesSelectedFile();
-            // SurveryEndBlockAndGlslSourceCounts();
+            SurveryEndBlockAndGlslSourceCounts();
             // DataBlockCountSurvey();
             // DataBlockCountSelectedfile();
             // SurveryH1ValuesInDatablocks();
@@ -352,7 +352,15 @@ namespace MyShaderAnalysis {
                 ShaderFile shaderFile = new(vcsFilenamepath);
                 for (int i = 0; i < shaderFile.GetZFrameCount(); i++) {
                     ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(i);
+
+
                     // CollectStringValue($"{zframeFile.glslSourceCount}  {zframeFile.nrEndBlocks}");
+                    if (zframeFile.nrEndBlocks != zframeFile.glslSourceCount) {
+                        Debug.WriteLine($"{RemoveBaseDir(vcsFilenamepath)} {zframeFile.zframeId:x}");
+                        break;
+                    }
+
+
                     // CollectStringValue($"{zframeFile.nonZeroDataBlockCount}  {zframeFile.nrEndBlocks}");
 
                     //if (zframeFile.nonZeroDataBlockCount == 0) {
@@ -360,9 +368,9 @@ namespace MyShaderAnalysis {
                     //    Debug.WriteLine($"{zframeFile.zframeId}");
                     //}
 
-                    if (zframeFile.zframeId != 0) {
-                        CollectStringValue($"{zframeFile.nonZeroDataBlockCount}  {zframeFile.nrEndBlocks}");
-                    }
+                    //if (zframeFile.zframeId != 0) {
+                    //    CollectStringValue($"{zframeFile.nonZeroDataBlockCount}  {zframeFile.nrEndBlocks}");
+                    //}
 
 
                 }

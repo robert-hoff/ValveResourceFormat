@@ -20,7 +20,7 @@ namespace MyShaderAnalysis.vcsparsing {
         public int[] leadSummary = null;
         public List<ZDataBlock> dataBlocks = new();
         public int[] tailSummary = null;
-        public int flags0;
+        public byte[] flags0;
         public int flagbyte0;
         public int glslSourceCount;
         public int flagbyte1;
@@ -71,7 +71,7 @@ namespace MyShaderAnalysis.vcsparsing {
                 tailSummary[i] = datareader.ReadInt16();
             }
 
-            flags0 = datareader.ReadInt();
+            flags0 = datareader.ReadBytes(4);
             flagbyte0 = datareader.ReadByte();
             glslSourceCount = datareader.ReadInt();
             flagbyte1 = datareader.ReadByte();
@@ -123,19 +123,26 @@ namespace MyShaderAnalysis.vcsparsing {
 
 
         public void ShowLeadSummary() {
-            if (vcsFiletype != FILETYPE.vs_file) {
-                Debug.WriteLine("only vs files have this section");
-                return;
-            }
-            Debug.WriteLine($"{leadSummary.Length:X02} 00   // nr of datablocks ({leadSummary.Length})");
-            for (int i = 0; i < leadSummary.Length; i++) {
-                if (i > 0 && i % 16 == 0) {
-                    Debug.WriteLine("");
-                }
-                Debug.Write(leadSummary[i] > -1 ? $"{leadSummary[i],-3}" : "_  ");
-            }
+            Debug.WriteLine(GetLeadSummary());
             Debug.WriteLine($"");
         }
+
+
+        public string GetLeadSummary() {
+            if (vcsFiletype != FILETYPE.vs_file) {
+                return "only vs files have this section";
+            }
+            string leadSummaryDesc = $"{leadSummary.Length:X02} 00   // configuration states ({leadSummary.Length}), lead summary\n";
+            for (int i = 0; i < leadSummary.Length; i++) {
+                if (i > 0 && i % 16 == 0) {
+                    leadSummaryDesc += "\n";
+                }
+                leadSummaryDesc += leadSummary[i] > -1 ? $"{leadSummary[i],-3}" : "_  ";
+            }
+            return leadSummaryDesc.Trim();
+        }
+
+
 
         public void ShowDatablocks() {
             foreach (ZDataBlock dataBlock in dataBlocks) {
@@ -149,14 +156,19 @@ namespace MyShaderAnalysis.vcsparsing {
         }
 
         public void ShowTailSummary() {
-            Debug.WriteLine($"{tailSummary.Length:X02} 00   // nr of datablocks ({tailSummary.Length})");
+            Debug.WriteLine(GetTailSummary());
+            Debug.WriteLine($"");
+        }
+
+        public string GetTailSummary() {
+            string tailSummaryDesc = $"{tailSummary.Length:X02} 00   // configuration states ({tailSummary.Length}), tail summary\n";
             for (int i = 0; i < tailSummary.Length; i++) {
                 if (i > 0 && i % 16 == 0) {
-                    Debug.WriteLine("");
+                    tailSummaryDesc += "\n";
                 }
-                Debug.Write(tailSummary[i] > -1 ? $"{tailSummary[i],-3}" : "_  ");
+                tailSummaryDesc += tailSummary[i] > -1 ? $"{tailSummary[i],-3}" : "_  ";
             }
-            Debug.WriteLine($"");
+            return tailSummaryDesc.Trim();
         }
 
         public void ShowGlslSources() {
@@ -214,7 +226,7 @@ namespace MyShaderAnalysis.vcsparsing {
             public int dynExpLen = -1;
             public byte[] dynExpression = null;
             public string dynExpEvaluated = null;
-            public int operatorVal = -1;
+            public int operatorVal = -999999;
 
             public ZFrameParam(DataReader datareader) {
                 name0 = datareader.ReadNullTermString();
@@ -248,9 +260,9 @@ namespace MyShaderAnalysis.vcsparsing {
 
             public override string ToString() {
                 if (dynExpLen > 0) {
-                    return $"{name0,-40} {murmur32:x08}   {DataReader.BytesToString(code)}   {dynExpEvaluated}";
+                    return $"{name0,-40} 0x{murmur32:x08}     {DataReader.BytesToString(code)}   {dynExpEvaluated}";
                 } else {
-                    return $"{name0,-40} {murmur32:x08}   {DataReader.BytesToString(code)}   {operatorVal}";
+                    return $"{name0,-40} 0x{murmur32:x08}     {DataReader.BytesToString(code)}   {(operatorVal != -999999 ? $"{operatorVal}" : "")}";
                 }
 
             }
@@ -274,13 +286,21 @@ namespace MyShaderAnalysis.vcsparsing {
 
 
         /*
-         * FIXME - needs a bit more work
          *
          */
         public class VsEndBlock {
             public byte[] databytes;
+            public int blockIdRef;
+            public int arg0;
+            public int sourceRef;
+            public int sourcePointer;
+
             public VsEndBlock(DataReader datareader) {
-                databytes = datareader.ReadBytes(16);
+                databytes = datareader.ReadBytesAtPosition(0, 16);
+                blockIdRef = datareader.ReadInt();
+                arg0 = datareader.ReadInt();
+                sourceRef = datareader.ReadInt();
+                sourcePointer = datareader.ReadInt();
             }
         }
 

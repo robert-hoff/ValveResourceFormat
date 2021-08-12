@@ -54,6 +54,13 @@ namespace MyShaderAnalysis.vcsparsing {
             fileId = datareader.ReadBytes(16);
         }
 
+        public string GetStringId() {
+            string stringId = DataReader.BytesToString(fileId);
+            stringId = stringId.Replace(" ", "").ToLower();
+
+            return stringId;
+        }
+
         public override void PrintByteSummary() {
             throw new NotImplementedException();
         }
