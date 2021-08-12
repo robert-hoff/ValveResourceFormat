@@ -48,6 +48,7 @@ namespace MyShaderAnalysis {
             // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
             // string filenamepath = PCGL_DIR_NOT_CORE + @"\blur_pcgl_30_ps.vcs";
             // string filenamepath = PCGL_DIR_CORE + @"\apply_fog_pcgl_40_ps.vcs";
+            string filenamepath = PCGL_DIR_CORE + @"\spritecard_pcgl_30_ps.vcs";
 
 
 
@@ -56,6 +57,7 @@ namespace MyShaderAnalysis {
             // WriteFirst200ZFramesEveryFile();
             // WriteAZFrameToFile();
             // WriteZFrameToFile(filenamepath, 0);
+            WriteAZFrameAsHtmlByZframeId(filenamepath, 0x500);
             // ParseABunchOfZframes();
             // WriteFirstZFrameEveryFile();
 
@@ -178,14 +180,26 @@ namespace MyShaderAnalysis {
         }
 
 
-
-        //static void WriteAZFrameToFile() {
-        //    string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
-        //    string outputdir = null;
-        //    // string outputdir = @"Z:\dev\www\vcs.codecreation.dev\vcs-all\dota\zsource";
-        //    ShaderFile shaderFile = new(filenamepath);
-        //    WriteZframeAsHtml(shaderFile, 0, outputdir);
-        //}
+        static void WriteAZFrameAsHtmlByZframeId(string filenamepath, long zframeId, string outputdir = null) {
+            if (outputdir == null) {
+                outputdir = OUTPUT_DIR;
+            }
+            ShaderFile shaderFile = new(filenamepath);
+            byte[] zframeDatabytes = shaderFile.GetDecompressedZFrame(zframeId);
+            string outputFilename = GetZframeHtmlFilename((uint) zframeId, shaderFile.filenamepath);
+            string outputFilenamepath = @$"{outputdir}\{outputFilename}";
+            DataReaderZFrameByteAnalysis zFrameParser = new DataReaderZFrameByteAnalysis(zframeDatabytes, shaderFile.vcsFiletype);
+            Debug.WriteLine($"writing to {outputFilenamepath}");
+            StreamWriter sw = new(outputFilenamepath);
+            zFrameParser.ConfigureWriteToFile(sw, true);
+            zFrameParser.SetWriteAsHtml(true);
+            zFrameParser.RequestGlslFileSave(outputdir);
+            string htmlHeader = GetHtmlHeader(outputFilename, outputFilename[0..^5]);
+            sw.WriteLine($"{htmlHeader}");
+            zFrameParser.PrintByteAnalysis();
+            sw.WriteLine($"{GetHtmlFooter()}");
+            sw.Close();
+        }
 
 
 
@@ -248,6 +262,21 @@ namespace MyShaderAnalysis {
             }
         }
 
+
+        //static void WriteZFrameToFileByZframeId(string filenamepath, long zframeId) {
+        //    ShaderFile shaderFile = new(filenamepath);
+        //    byte[] zframeDatabytes = shaderFile.GetDecompressedZFrame(zframeId);
+        //    string outputFilenamepath = @$"{OUTPUT_DIR}\{GetZframeTxtFilename((uint) zframeId, filenamepath)}";
+        //    StreamWriter sw = new(outputFilenamepath);
+        //    Debug.WriteLine($"parsing {filenamepath}");
+        //    Debug.WriteLine($"writing to {outputFilenamepath}");
+        //    PrintZFrame(zframeDatabytes, GetVcsFileType(filenamepath), true, sw);
+        //    sw.Close();
+        //}
+
+
+
+        // THIS OUTPUTS FUCKING txt
         static void WriteZFrameToFile(string filenamepath, int zframeIndex) {
             ShaderFile shaderFile = new(filenamepath);
             byte[] zframeDatabytes = GetZFrameByIndex(shaderFile, zframeIndex);

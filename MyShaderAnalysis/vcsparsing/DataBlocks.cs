@@ -446,30 +446,30 @@ namespace MyShaderAnalysis.vcsparsing {
 
 
     public class ParamBlock : DataBlock {
-        string name0;
-        string name1;
-        string name2;
-        int lead0;
-        float lead1;
-        int paramType;
-        byte[] dynExp = null;
-        int arg0;
-        int arg1;
-        int arg2;
-        int arg3;
-        int arg4;
-        int arg5;
-        string fileref;
-        int[] ranges0 = new int[4];
-        int[] ranges1 = new int[4];
-        int[] ranges2 = new int[4];
-        float[] ranges3 = new float[4];
-        float[] ranges4 = new float[4];
-        float[] ranges5 = new float[4];
-        int[] ranges6 = new int[4];
-        int[] ranges7 = new int[4];
-        string command0;
-        string command1;
+        public string name0;
+        public string name1;
+        public string name2;
+        public int lead0;
+        public float lead1;
+        public int paramType;
+        public byte[] dynExp = null;
+        public int arg0;
+        public int arg1;
+        public int arg2;
+        public int arg3;
+        public int arg4;
+        public int arg5;
+        public string fileref;
+        public int[] ranges0 = new int[4];
+        public int[] ranges1 = new int[4];
+        public int[] ranges2 = new int[4];
+        public float[] ranges3 = new float[4];
+        public float[] ranges4 = new float[4];
+        public float[] ranges5 = new float[4];
+        public int[] ranges6 = new int[4];
+        public int[] ranges7 = new int[4];
+        public string command0;
+        public string command1;
 
         public ParamBlock(DataReader datareader, int start) : base(datareader, start) {
             name0 = datareader.ReadNullTermStringAtPosition();

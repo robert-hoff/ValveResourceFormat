@@ -99,6 +99,13 @@ namespace MyShaderAnalysis.vcsparsing {
         }
 
 
+        public ZDataBlock GetDataBlock(int blockId) {
+            return blockId == -1 ? leadingData : dataBlocks[blockId];
+        }
+
+
+
+
 
         public void ShowZFrameHeader() {
             foreach (ZFrameParam zParam in zframeParams) {

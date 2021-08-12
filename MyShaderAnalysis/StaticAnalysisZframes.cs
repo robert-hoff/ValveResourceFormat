@@ -27,9 +27,9 @@ namespace MyShaderAnalysis {
             // Trial1();
 
 
-
-
-            StateSummariesValuesSeen();
+            SurverH0LeadingData();
+            // SurverH1H2ValuesInDatablocks();
+            // StateSummariesValuesSeen();
             // DifferencesInSuccessiveH0H2();
             // ZFrameHeaderComparisonGivenFile();
             // CheckB0ToB3Uniqeness();
@@ -401,6 +401,65 @@ namespace MyShaderAnalysis {
 
 
         /*
+         * If leadingData.h0 is 0 then all the datablocks data are also 0
+         *
+         *
+         *
+         */
+        static void SurverH0LeadingData() {
+            List<string> vcsFiles = GetFileSelectionWithLimitedZframes();
+            foreach (string vcsFilenamepath in vcsFiles) {
+                ShaderFile shaderFile = new(vcsFilenamepath);
+                for (int zframeId = 0; zframeId < shaderFile.GetZFrameCount(); zframeId++) {
+                    ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(zframeId);
+                    CollectIntValue(zframeFile.leadingData.h0);
+                    if (zframeFile.leadingData.h0 == 0) {
+                        Debug.WriteLine($"{ShortHandName(vcsFilenamepath),-70} {zframeFile.zframeId:x}");
+                        //foreach (ZDataBlock zBlock in zframeFile.dataBlocks) {
+                        //    Debug.WriteLine($"{zBlock.h0}");
+                        //}
+                    }
+                }
+            }
+        }
+
+
+        /*
+         * The value of the h1 argument for all non-leading datablocks is 0
+         *
+         */
+        static void SurverH1H2ValuesInDatablocks() {
+            List<string> vcsFiles = GetFileSelectionWithLimitedZframes();
+            foreach (string vcsFilenamepath in vcsFiles) {
+                ShaderFile shaderFile = new(vcsFilenamepath);
+                for (int zframeId = 0; zframeId < shaderFile.GetZFrameCount(); zframeId++) {
+                    ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(zframeId);
+
+                    if (zframeFile.leadingData.h1 != 0) {
+                        CollectIntValue(zframeFile.leadingData.h2 - zframeFile.leadingData.h1);
+                        // Debug.WriteLine($"{RemoveBaseDir(vcsFilenamepath)} {zframeFile.zframeId:x}");
+                    }
+
+
+
+
+                    // remember zBlock.h1 is ALWAYS 0 !!!
+
+
+                    //foreach (ZDataBlock zBlock in zframeFile.dataBlocks) {
+                    //    if (zBlock.dataload == null) {
+                    //        continue;
+                    //    }
+                    //    if (zBlock.h1 != 0) {
+                    //        CollectIntValue(zBlock.h2 - zBlock.h1);
+                    //    }
+                    //}
+                }
+            }
+        }
+
+
+        /*
          * The value of the h1 argument for all non-leading datablocks is 0
          *
          */
@@ -536,8 +595,8 @@ namespace MyShaderAnalysis {
 
         static List<string> GetFileSelectionWithLimitedZframes() {
             List<string> vcsFiles = new();
-            // List<string> selectedFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, 30);
-            List<string> selectedFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.vs_file, 30);
+            List<string> selectedFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, 30);
+            // List<string> selectedFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.vs_file, 30);
 
 
             foreach (string checkVcsFile in selectedFiles) {

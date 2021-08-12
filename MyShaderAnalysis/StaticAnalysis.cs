@@ -59,7 +59,7 @@ namespace MyShaderAnalysis {
 
 
 
-            // FileSummarySingleFile();
+            FileSummarySingleFile();
             // ZFramePrintout();
 
 
@@ -79,7 +79,7 @@ namespace MyShaderAnalysis {
 
             // -- setting up comprehensive summary for particular file (NEEDS UPDATE)
             // FileSummaryPsFile(@$"{PCGL_DIR_NOT_CORE}\water_dota_pcgl_30_features.vcs", "water", $@"{SERVER_OUTPUT_DIR}\summary-water.html", writeFile: true);
-            FileSummaryMultiblendPs(@$"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_features.vcs", $@"{SERVER_OUTPUT_DIR}\sf-summaries\dota\multiblend_pcgl_30_ps-summary.html", writeFile: true);
+            // FileSummaryMultiblendPs(@$"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_features.vcs", $@"{SERVER_OUTPUT_DIR}\sf-summaries\dota\multiblend_pcgl_30_ps-summary.html", writeFile: true);
             // FileSummaryPsFile(@$"{PCGL_DIR_NOT_CORE}\spritecard_pcgl_30_features.vcs", "sprite", $@"{SERVER_OUTPUT_DIR}\summary-sprite.html", writeFile: true);
             // FileSummaryPsFile(@$"{PCGL_DIR_NOT_CORE}\hero_pcgl_30_features.vcs", "hero", $@"{SERVER_OUTPUT_DIR}\summary-hero.html", writeFile: true);
 
@@ -307,10 +307,11 @@ namespace MyShaderAnalysis {
             // triples.Add(GetTriple(@$"{PCGL_DIR_CORE}\apply_fog_pcgl_40_features.vcs"));
             // triples.Add(GetTriple(@$"{PCGL_DIR_CORE}\blur_pcgl_30_features.vcs"));
             // triples.Add(GetTriple(@$"{PCGL_DIR_NOT_CORE}\water_dota_pcgl_30_features.vcs"));
-            triples.Add(GetTriple(@$"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_features.vcs"));
+            // triples.Add(GetTriple(@$"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_features.vcs"));
+            triples.Add(GetTriple(@$"{PCGL_DIR_CORE}\spritecard_pcgl_30_features.vcs"));
 
 
-            WriteVsPsFileSummary(triples[0], FILETYPE.vs_file);
+            WriteVsPsFileSummary(triples[0], FILETYPE.ps_file);
         }
 
 
