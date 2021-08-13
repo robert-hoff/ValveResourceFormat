@@ -253,12 +253,12 @@ namespace MyShaderAnalysis.vcsparsing {
         }
 
         public static string GetZframeHtmlLinkCheckExists(uint zframeId, string vcsFilenamepath, string serverdir, string basedir = "") {
-            string zframeName = $"zframe[0x{zframeId:x08}]";
+            string zframeName = $"Z[0x{zframeId:x08}]";
             string zframeHtmlFilename = GetZframeHtmlFilename(zframeId, Path.GetFileName(vcsFilenamepath));
             if (File.Exists($"{serverdir}/{basedir}/{zframeHtmlFilename}")) {
-                return $"<a href='{basedir}{GetZframeHtmlFilename(zframeId, Path.GetFileName(vcsFilenamepath))}'>{zframeName}</a>";
+                return $"  <a href='{basedir}{GetZframeHtmlFilename(zframeId, Path.GetFileName(vcsFilenamepath))}'>{zframeName}</a>";
             } else {
-                return $"{zframeName}";
+                return $"  {zframeName}";
             }
         }
 

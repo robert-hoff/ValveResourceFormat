@@ -34,10 +34,6 @@ namespace MyShaderAnalysis {
         }
 
 
-
-
-
-
         static void Trial1() {
 
             // ZFileSummary(ARCHIVE.dotacore_pcgl, "bilateral_blur_pcgl_30_vs.vcs", 0x0, writeFile: true);
@@ -54,14 +50,12 @@ namespace MyShaderAnalysis {
 
             // WriteBunchOfZframes();
             PrintZframeFileDirectory(SERVER_OUTPUT_DIR, writeFile: true);
-
-
         }
 
 
 
         static void WriteBunchOfZframes() {
-            int NUM_TO_PRINT = 30;
+            int NUM_TO_PRINT = 100;
             List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, 30);
 
             foreach (var triple in triples) {
@@ -612,10 +606,17 @@ namespace MyShaderAnalysis {
                 List<long> zframeIds = item.Value;
 
                 string htmlName = $"[{vcsFile.RemoveBaseDir()}]".PadRight(60);
-                htmlName = htmlName.Replace("[", $"<a href='{vcsFile.GetBestPath()}'>");
-                htmlName = htmlName.Replace("]", "</a>");
+                string htmlLink = vcsFile.GetBestPath();
+                if (htmlLink.Length > 0) {
+                    htmlName = htmlName.Replace("[", $"<a href='{htmlLink}'>");
+                    htmlName = htmlName.Replace("]", "</a>");
+                } else {
+                    htmlName = htmlName.Replace("[", "");
+                    htmlName = htmlName.Replace("]", "");
+                }
                 OutputWrite($"{htmlName}");
 
+                int listCount = 0;
                 string zFrameListing = "";
                 foreach (long zframeId in zframeIds) {
                     string zframeName = $" [{zframeId:x}]";
@@ -624,6 +625,10 @@ namespace MyShaderAnalysis {
 
                     // OutputWrite(vcsFile.GetZFrameLink(zframeId));
                     OutputWrite(zframeLink);
+                    listCount++;
+                    if (listCount == 40) {
+                        break;
+                    }
                 }
                 OutputWriteLine("");
             }

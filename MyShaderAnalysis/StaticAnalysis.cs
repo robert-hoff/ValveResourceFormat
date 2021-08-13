@@ -80,10 +80,8 @@ namespace MyShaderAnalysis {
 
 
             // -- setting up comprehensive summary for particular file (NEEDS UPDATE)
-            // FileSummaryPsFile(@$"{PCGL_DIR_NOT_CORE}\water_dota_pcgl_30_features.vcs", "water", $@"{SERVER_OUTPUT_DIR}\summary-water.html", writeFile: true);
-            // FileSummaryMultiblendPs(@$"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_features.vcs", $@"{SERVER_OUTPUT_DIR}\sf-summaries\dota\multiblend_pcgl_30_ps-summary.html", writeFile: true);
-            // FileSummaryPsFile(@$"{PCGL_DIR_NOT_CORE}\spritecard_pcgl_30_features.vcs", "sprite", $@"{SERVER_OUTPUT_DIR}\summary-sprite.html", writeFile: true);
-            // FileSummaryPsFile(@$"{PCGL_DIR_NOT_CORE}\hero_pcgl_30_features.vcs", "hero", $@"{SERVER_OUTPUT_DIR}\summary-hero.html", writeFile: true);
+            // FileSummaryMultiblendPs();
+
 
 
 
@@ -276,29 +274,24 @@ namespace MyShaderAnalysis {
 
 
 
-
         static string GetSFSummaryLink(string filenamepath) {
-            // string linkName = "(det.)";
+            // FileTripe fileTriple = FileTriple.GetTripleIfExists()
             FILETYPE vcsFiletype = GetVcsFileType(filenamepath);
             if (vcsFiletype == FILETYPE.vs_file || vcsFiletype == FILETYPE.ps_file) {
-                string ftNamepath = $"{filenamepath[0..^6]}features.vcs";
-                var triple = GetTriple(ftNamepath);
-                if (triple.Item1 == null) {
-                    // return new string(' ', linkName.Length); ;
+                ARCHIVE archive = DetermineArchiveType(filenamepath);
+                FileTriple fileTriple = FileTriple.GetTripleIfExists(archive, $"{filenamepath[0..^6]}features.vcs");
+                if (fileTriple == null) {
                     return "";
                 }
-                string token = GetCoreOrDotaString(filenamepath);
-                string htmlFilename = $"{Path.GetFileName(filenamepath)[0..^4]}-summary.html";
-                string targetHtmlPath = $@"{OUTPUT_SUB_DIR}\sf-summaries\{token}\{htmlFilename}";
-                string htmlUrl = $"<a href='{targetHtmlPath}'>det.</a>";
-                return htmlUrl;
-
+                if (vcsFiletype == FILETYPE.vs_file) {
+                    return $"<a href='{fileTriple.vsFile.GetSummariesPath()}'>det.</a>";
+                }
+                if (vcsFiletype == FILETYPE.ps_file) {
+                    return $"<a href='{fileTriple.psFile.GetSummariesPath()}'>det.</a>";
+                }
             }
             return "";
         }
-
-
-
 
 
 
@@ -311,38 +304,31 @@ namespace MyShaderAnalysis {
             // FileTriple triple = new(ARCHIVE.dotacore_pcgl, "convolve_environment_map_pcgl_41_features.vcs");
             // FileTriple triple = new(ARCHIVE.dotacore_pcgl, "apply_fog_pcgl_40_features.vcs");
             // FileTriple triple = new(ARCHIVE.dotacore_pcgl, "blur_pcgl_30_features.vcs");
-            FileTriple triple = new(ARCHIVE.dotagame_pcgl, "water_dota_pcgl_30_features.vcs");
-            // FileTriple triple = new(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_features.vcs");
+            // FileTriple triple = new(ARCHIVE.dotagame_pcgl, "water_dota_pcgl_30_features.vcs");
+            FileTriple triple = new(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_features.vcs");
             // FileTriple triple = new(ARCHIVE.dotacore_pcgl, "spritecard_pcgl_30_features.vcs");
             // FileTriple triple = new(ARCHIVE.dotagame_pcgl, "spritecard_pcgl_30_features.vcs");
-            WriteVsPsFileSummary(triple, FILETYPE.ps_file);
+            WriteVsPsFileSummary(triple, FILETYPE.vs_file);
         }
 
 
 
         /*
-         * recommend disable output, need to do it in the function call for FileSummaryVsPSFile()
          *
-         *
-         * FIXME TODO
          */
-        /*
         static void FileSummaryAllFiles() {
-            List<(string, string, string)> triples = GetFeaturesVsPsFileTriples();
-
+            List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, -1);
             foreach (var triple in triples) {
-                if (triple.Item3.Equals(@$"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_ps.vcs")) {
+                if (triple.psFile.filename.Equals("multiblend_pcgl_30_ps.vcs")) {
                     continue;
                 }
-                WriteVsPsFileSummary(triple, FILETYPE.vs_file);
+                WriteVsPsFileSummary(triple, FILETYPE.vs_file, disableOutput: true);
                 CloseStreamWriter();
-                WriteVsPsFileSummary(triple, FILETYPE.ps_file);
+                WriteVsPsFileSummary(triple, FILETYPE.ps_file, disableOutput: true);
                 CloseStreamWriter();
             }
-
             swWriterAlreadyClosed = true;
         }
-        */
 
 
         /*
@@ -350,30 +336,15 @@ namespace MyShaderAnalysis {
          *
          */
         // static void WriteVsPsFileSummary((string, string, string) triple, FILETYPE targetFileType) {
-        static void WriteVsPsFileSummary(FileTriple fileTriple, FILETYPE targetFileType) {
-
+        static void WriteVsPsFileSummary(FileTriple fileTriple, FILETYPE targetFileType, bool disableOutput = false) {
             if (targetFileType != FILETYPE.vs_file && targetFileType != FILETYPE.ps_file) {
                 throw new ShaderParserException("need to target either vs or ps file");
             }
-
-            // string targetFilenamepath = targetFileType == FILETYPE.vs_file ? triple.Item2 : triple.Item3;
             FileTokens targetFile = targetFileType == FILETYPE.vs_file ? fileTriple.vsFile : fileTriple.psFile;
-
-            // string token = GetCoreOrDotaString(targetFile);
-            // string htmlTitle = GetShortName(targetFile);
-            // string outputFilename = $"{Path.GetFileName(targetFile)[0..^4]}-summary.html";
-            // string outputNamepath = $@"{SERVER_OUTPUT_DIR}\sf-summaries\{token}\{outputFilename}";
-
-
-
             string htmlTitle = $"{targetFile.namelabel}({targetFile.vcstoken})";
             string outputNamepath = targetFile.GetServerFilePath("summary", createDirs: true);
-
-
-
-            FileSummaryVsPSFile(fileTriple, targetFileType, htmlTitle, outputNamepath, writeFile: true);
+            FileSummaryVsPSFile(fileTriple, targetFileType, htmlTitle, outputNamepath, writeFile: true, disableOutput);
         }
-
 
 
 
@@ -755,7 +726,7 @@ namespace MyShaderAnalysis {
         //        string outputFilenamepath = null, bool writeFile = false) {
 
         static void FileSummaryVsPSFile(FileTriple triple, FILETYPE targetFileType, string title = "summary",
-                string outputFilenamepath = null, bool writeFile = false) {
+                string outputFilenamepath = null, bool writeFile = false, bool disableOutput = false) {
             if (targetFileType != FILETYPE.vs_file && targetFileType != FILETYPE.ps_file) {
                 throw new ShaderParserException("need to target either vs or ps file");
             }
@@ -763,28 +734,22 @@ namespace MyShaderAnalysis {
             FileTokens ftFile = triple.ftFile;
             FileTokens targetFile = targetFileType == FILETYPE.vs_file ? triple.vsFile : triple.psFile;
             if (outputFilenamepath != null && writeFile) {
-                ConfigureOutputFile(outputFilenamepath, disableOutput: false);
+                ConfigureOutputFile(outputFilenamepath, disableOutput);
                 WriteHtmlFile(title, $"SF SUMMARY for {targetFile.GetShortHandName()})");
             }
             List<(string, string, string)> triples = new();
 
 
-            // FIXME - clusterfuck
-            // triples.Add(triple);
-            triples.Add(GetTriple(triple.ftFile.filenamepath));
-            SfSummaryOfFileTriple(triples);
 
-
+            SfSummaryOfFileTriple(triple);
             ShowSfArgumentList(targetFile.filenamepath);
             CompatBlockDetailsConcise2(targetFile.filenamepath, showLink: false);
             ShowDBlockArgumentList(targetFile.filenamepath, showHtmlLink: false);
             UnknownBlockConcise(targetFile.filenamepath, showLink: false);
 
 
-            // R: it's better to print all, I'm checking if the file exists for purposes of linking
-            // break after 100 zframes (that's all I've compiled)
+            // print the config headers every 100 frames
             int zframeCount = 0;
-
 
             // print the zframes
             string zFrameBaseDir = $"/vcs-all/{GetCoreOrDotaString(targetFile.filenamepath)}/zsource/";
@@ -817,7 +782,14 @@ namespace MyShaderAnalysis {
                     OutputWriteLine($"{configHeader}");
                 }
                 int[] configState = configGen.GetConfigState(item.Key);
-                string zframeLink = $"{GetZframeHtmlLinkCheckExists((uint)item.Key, targetFile.filenamepath, SERVER_BASEDIR, zFrameBaseDir)}";
+
+
+                // string zframeLink = $"{GetZframeHtmlLinkCheckExists((uint)item.Key, targetFile.filenamepath, SERVER_BASEDIR, zFrameBaseDir)}";
+
+                string zframeLink = targetFile.GetBestZframesLink(item.Key);
+
+
+
                 OutputWriteLine($"{zframeLink} {CombineIntsSpaceSep(configState, 6)}");
                 zframeCount++;
 
@@ -833,9 +805,15 @@ namespace MyShaderAnalysis {
          *
          *
          */
-        static void FileSummaryMultiblendPs(string featuresfile, string outputFilenamepath = null, bool writeFile = false) {
-            List<(string, string, string)> triples = new();
-            triples.Add(GetTriple(featuresfile));
+        // static void FileSummaryMultiblendPs(string featuresfile, string outputFilenamepath = null, bool writeFile = false) {
+
+        static void FileSummaryMultiblendPs() {
+            string featuresfile = @$"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_features.vcs";
+            string outputFilenamepath = $@"{SERVER_BASEDIR}\dota-game\pcgl\multiblend_pcgl_30\multiblend_pcgl_30_ps-summary.html";
+            bool writeFile = true;
+            FileTriple triple = FileTriple.GetTripleIfExists(ARCHIVE.dotagame_pcgl, featuresfile);
+
+
             string multiBlendPsFile = featuresfile[0..^12] + "ps.vcs";
             string htmlTitle = GetShortName(multiBlendPsFile);
 
@@ -843,7 +821,7 @@ namespace MyShaderAnalysis {
                 ConfigureOutputFile(outputFilenamepath);
                 WriteHtmlFile(htmlTitle, $"SF SUMMARY for {Path.GetFileName(multiBlendPsFile)} ({GetCoreOrDotaString(multiBlendPsFile)})");
             }
-            SfSummaryOfFileTriple(triples);
+            SfSummaryOfFileTriple(triple);
             ShowSfArgumentList(multiBlendPsFile);
             CompatBlockDetailsConcise2(multiBlendPsFile, showLink: false);
             ShowDBlockArgumentList(multiBlendPsFile, showHtmlLink: false);
@@ -891,6 +869,11 @@ namespace MyShaderAnalysis {
                 }
                 int[] configState = configGen.GetConfigState(item.Key);
                 string zframeLink = $"{GetZframeHtmlLinkCheckExists((uint)item.Key, multiBlendPsFile, SERVER_BASEDIR, zFrameBaseDir)}";
+
+                if(File.Exists(triple.psFile.GetZFrameHtmlFilenamepath(item.Key))) {
+                    zframeLink = $"* <a href='{triple.psFile.GetZFrameLink(item.Key)}'>Z[0x{item.Key:x08}]</a>";
+                }
+
                 OutputWriteLine($"{zframeLink} {CombineIntsSpaceSep(configState, 6)}");
                 zframeCount++;
 
@@ -899,6 +882,7 @@ namespace MyShaderAnalysis {
 
 
         }
+
 
 
         /*
@@ -1404,16 +1388,23 @@ namespace MyShaderAnalysis {
             // List<(string, string, string)> triples = new();
             // triples.Add(GetTriple(@$"{PCGL_DIR_CORE}\depth_only_pcgl_30_features.vcs"));
             // triples.Add(GetTriple(@$"{PCGL_DIR_CORE}\visualize_cloth_pcgl_40_features.vcs"));
-            SfSummaryOfFileTriple(triples);
+            // SfSummaryOfFileTriple(triples);
+        }
+
+
+        static void SfSummaryOfFileTriple(FileTriple triple) {
+            List<FileTriple> triples = new();
+            triples.Add(triple);
+            SfSummaryOfFileTriples(triples);
         }
 
 
 
-
-        static void SfSummaryOfFileTriple(List<(string, string, string)> triples) {
+        // static void SfSummaryOfFileTriple(List<(string, string, string)> triples) {
+        static void SfSummaryOfFileTriples(List<FileTriple> triples) {
             foreach (var triple in triples) {
 
-                string title = $"{RemoveBaseDir(triple.Item1)} + vs, ps files";
+                string title = $"{triple.ftFile.RemoveBaseDir()} + vs, ps files";
                 OutputWriteLine($"{title}");
                 // new String('-', 5);
                 OutputWriteLine(new string('-', title.Length));
@@ -1422,9 +1413,9 @@ namespace MyShaderAnalysis {
                     p.Add(i, new string[] { "", "", "" });
                 }
                 Dictionary<string, int> n = new();
-                ShaderFile ftFile = new(triple.Item1);
-                ShaderFile vsFile = new(triple.Item2);
-                ShaderFile psFile = new(triple.Item3);
+                ShaderFile ftFile = new(triple.ftFile.filenamepath);
+                ShaderFile vsFile = new(triple.vsFile.filenamepath);
+                ShaderFile psFile = new(triple.psFile.filenamepath);
                 List<string> vs_items = new();
                 List<string> ps_items = new();
 
@@ -1457,7 +1448,7 @@ namespace MyShaderAnalysis {
 
                 // features-header
                 int ftHeaderNrArguments = ftFile.featuresHeader.mainParams.Count;
-                OutputWriteLine($"<span style='color: #3783ed'>Arguments in {Path.GetFileName(triple.Item1)} header ({ftHeaderNrArguments})</span>");
+                OutputWriteLine($"<span style='color: #3783ed'>Arguments in {triple.ftFile.filename} header ({ftHeaderNrArguments})</span>");
                 // print the features main args
                 int max_len = 0;
                 foreach (var mp in ftFile.featuresHeader.mainParams) {
@@ -1469,7 +1460,12 @@ namespace MyShaderAnalysis {
                 OutputWriteLine("");
 
 
-                OutputWriteLine($"{"FEATURES-FILE".PadRight(50)} {"VS_FILE".PadRight(50)} {"PS-FILE".PadRight(50)}");
+                string headerText = $"{"[FEATURES-FILE]".PadRight(52)} ";
+                OutputWrite(headerText.Replace("[", $"<a href='{triple.ftFile.GetBytePath()}'>").Replace("]", "</a>"));
+                headerText = $"{"[VS-FILE]".PadRight(52)} ";
+                OutputWrite(headerText.Replace("[", $"<a href='{triple.vsFile.GetSummariesPath()}'>").Replace("]", "</a>"));
+                headerText = $"{"[PS-FILE]".PadRight(52)}\n";
+                OutputWrite(headerText.Replace("[", $"<a href='{triple.psFile.GetSummariesPath()}'>").Replace("]", "</a>"));
                 OutputWriteLine($"{"-------------".PadRight(50)} {"-------".PadRight(50)} {"-------".PadRight(50)}");
 
 

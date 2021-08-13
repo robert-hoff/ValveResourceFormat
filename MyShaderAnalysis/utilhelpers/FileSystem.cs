@@ -116,6 +116,18 @@ namespace MyShaderAnalysis.utilhelpers {
         }
 
 
+
+        public static ARCHIVE DetermineArchiveType(string vcsFileName) {
+            if (Path.GetDirectoryName(vcsFileName).EndsWith("shaders\\vfx")) {
+                return ARCHIVE.dotagame_pcgl;
+            }
+            if (Path.GetDirectoryName(vcsFileName).EndsWith("shaders-core\\vfx")) {
+                return ARCHIVE.dotacore_pcgl;
+            }
+            throw new ShaderParserException("don't know where this file belongs");
+        }
+
+
     }
 
 

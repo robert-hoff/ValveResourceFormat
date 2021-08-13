@@ -102,27 +102,30 @@ namespace MyShaderAnalysis.utilhelpers {
         }
 
         public string GetZFrameHtmlFilenamepath(long zframeId) {
-            return $"{GetZFramesServerDir()}/{GetZFrameHtmlFilename(zframeId)}";
+            return $"{GetZFramesServerDir()}/{name}-ZFRAME{zframeId:x08}.html";
         }
+
+        public string GetZFrameHtmlBytesFilenamepath(long zframeId) {
+            return $"{serverdir}/vcs-all/{archivelabel}/zsource/{name}-ZFRAME{zframeId:x08}.html";
+        }
+
+        public string GetZFrameHtmlBytesLink(long zframeId) {
+            return $"/vcs-all/{archivelabel}/zsource/{name}-ZFRAME{zframeId:x08}.html";
+        }
+
 
         public string GetZFrameHtmlFilename(long zframeId) {
             return $"{name}-ZFRAME{zframeId:x08}.html";
         }
 
         public string GetZFrameLink(long zframeId) {
-            return $"{GetZFramesServerPath()}/{GetZFrameHtmlFilename(zframeId)}";
+            return $"{GetZFramesServerPath()}/{name}-ZFRAME{zframeId:x08}.html";
         }
 
 
 
         public List<string> GetZFrameListing() {
             List<string> zframeFiles = new();
-
-
-
-            // Debug.WriteLine($"{GetZFramesServerDir()}");
-
-
             if (!Directory.Exists(GetZFramesServerDir())) {
                 return zframeFiles;
             } else {
@@ -147,16 +150,28 @@ namespace MyShaderAnalysis.utilhelpers {
             return $"/vcs-all/{archivelabel}/{name}-analysis.html";
         }
         public string GetSummariesPath() {
-            return $"/GEN-output/sf-summaries/{archivelabel}/{name}-summary.html";
+            // return $"/GEN-output/sf-summaries/{archivelabel}/{name}-summary.html";
+            return $"{GetServerFilePath()}/{name}-summary.html";
         }
 
         public string GetBestPath() {
-            string summariesPath = GetSummariesPath();
-            if (File.Exists($"{serverdir}{summariesPath}")) {
-                return summariesPath;
+            if (vcsFiletype == FILETYPE.ps_file || vcsFiletype == FILETYPE.vs_file) {
+                string summariesPath = GetSummariesPath();
+                return File.Exists($"{serverdir}{summariesPath}") ? summariesPath : "";
             } else {
                 return GetBytePath();
             }
+        }
+
+
+        public string GetBestZframesLink(long zframeId) {
+            if (File.Exists(GetZFrameHtmlFilenamepath(zframeId))) {
+                return $"* <a href='{GetZFrameLink(zframeId)}'>Z[{zframeId:x08}]</a>";
+            }
+            if (File.Exists(GetZFrameHtmlBytesFilenamepath(zframeId))) {
+                return $"  <a href='{GetZFrameHtmlBytesLink(zframeId)}'>Z[{zframeId:x08}]</a>";
+            }
+            return $"  Z[{zframeId:x08}]";
         }
 
 

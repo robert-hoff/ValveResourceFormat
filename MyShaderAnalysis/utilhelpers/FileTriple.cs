@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,8 +38,8 @@ namespace MyShaderAnalysis.utilhelpers {
 
         public FileTriple(ARCHIVE archive, string ftFileName, string psFileName, string vsFileName) {
             ftFile = new FileTokens(archive, ftFileName);
-            ftFile = new FileTokens(archive, psFileName);
-            ftFile = new FileTokens(archive, vsFileName);
+            vsFile = new FileTokens(archive, vsFileName);
+            psFile = new FileTokens(archive, psFileName);
         }
 
 
