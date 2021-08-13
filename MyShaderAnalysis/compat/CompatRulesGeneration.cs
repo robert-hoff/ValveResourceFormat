@@ -51,8 +51,8 @@ namespace MyShaderAnalysis.compat {
         private void GenerateOffsetAndLayers(ShaderFile shaderFile) {
 
             if (shaderFile.sfBlocks.Count == 0) {
-                offsets = new int[] { 1 };
-                layers = new int[] { 0 };
+                offsets = Array.Empty<int>();
+                layers = Array.Empty<int>();
                 return;
             }
 

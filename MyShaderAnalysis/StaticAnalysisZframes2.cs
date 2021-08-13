@@ -46,19 +46,21 @@ namespace MyShaderAnalysis {
             // ZFileSummary(ARCHIVE.dotacore_pcgl, "visualize_cloth_pcgl_40_ps.vcs", 0x10, writeFile: true);
             // ZFileSummary(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_vs.vcs", 0xab, writeFile: true);
             // ZFileSummary(ARCHIVE.dotacore_pcgl, "panorama_fancyquad_pcgl_30_ps.vcs", 0x0, writeFile: true);
-            ZFileSummary(ARCHIVE.dotacore_pcgl, "blur_pcgl_30_ps.vcs", 0x1, writeFile: true);
+            // ZFileSummary(ARCHIVE.dotacore_pcgl, "blur_pcgl_30_ps.vcs", 0x1, writeFile: true);
+            // ZFileSummary(ARCHIVE.dotacore_pcgl, "copytexture_pcgl_30_vs.vcs", 0x1, writeFile: true);
+            // ZFileSummary(ARCHIVE.dotacore_pcgl, "copytexture_pcgl_30_vs.vcs", 0x0, writeFile: true);
 
 
 
-            // WriteBunchOfZframes();
+            WriteBunchOfZframes();
             // PrintZframeFileDirectory(SERVER_OUTPUT_DIR, writeFile: true);
         }
 
 
 
         static void WriteBunchOfZframes() {
-            int NUM_TO_PRINT = 100;
-            List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, 30);
+            int NUM_TO_PRINT = 30;
+            List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, -1);
 
             foreach (var triple in triples) {
                 int zframeCount = 0;
@@ -95,9 +97,8 @@ namespace MyShaderAnalysis {
 
 
         static void ZFileSummary(FileTokens vcsFile, long zframeId, bool writeFile = false, bool disableOutput = false) {
-
-            writeFile = false;
-            DisableOutput = true;
+            // writeFile = false;
+            // DisableOutput = true;
 
             ShaderFile shaderFile = new(vcsFile.filenamepath);
             ZFrameFile zframeFile = shaderFile.GetZFrameFile(zframeId);
@@ -227,7 +228,7 @@ namespace MyShaderAnalysis {
                 string configStr = CombineIntsSpaceSep(dBlockConfig, 6);
                 string writeSeqText = $"WRITESEQ[{writeSequences[blockId]}]";
                 if (writeSequences[blockId] == -1) {
-                    writeSeqText = "[empty writeseq]";
+                    writeSeqText = "[empty]";
                 }
                 OutputWrite($"[{blockId:X02}] {configStr}        {writeSeqText,-12}");
                 GlslSource blockSource = blockIdToSource[blockId];
@@ -493,18 +494,11 @@ namespace MyShaderAnalysis {
             CompatRulesGeneration configGen = new(shaderFile);
             int[] configState = configGen.GetConfigState(zframeId);
             for (int i = 0; i < configState.Length; i++) {
-                if (configState[i] > 0) {
-                    OutputWriteLine($"{shaderFile.sfBlocks[i].name0,-30} {configState[i]}");
-                }
+                // if (configState[i] > 0) {
+                OutputWriteLine($"{shaderFile.sfBlocks[i].name0,-30} {configState[i]}");
+                // }
             }
-
-
-
-
-
-            if (zframeId == 0) {
-                OutputWriteLine("[all static params 0]");
-            } else if (configState.Length == 1) {
+            if (configState.Length == 0) {
                 OutputWriteLine("[no static params]");
             }
             OutputWriteLine("");
@@ -629,7 +623,7 @@ namespace MyShaderAnalysis {
                 string zFrameListing = "";
                 foreach (long zframeId in zframeIds) {
                     string zframeName = $" [{zframeId:x}]";
-                    string zframeLink  = zframeName.Replace("[", $"<a href='{vcsFile.GetZFrameLink(zframeId)}'>");
+                    string zframeLink = zframeName.Replace("[", $"<a href='{vcsFile.GetZFrameLink(zframeId)}'>");
                     zframeLink = zframeLink.Replace("]", "</a>");
 
                     // OutputWrite(vcsFile.GetZFrameLink(zframeId));
