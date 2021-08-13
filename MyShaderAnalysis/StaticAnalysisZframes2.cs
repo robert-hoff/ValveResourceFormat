@@ -20,7 +20,7 @@ namespace MyShaderAnalysis {
         //const string PC_DIR_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pc\shaders-core\vfx";
         //const string PC_DIR_NOT_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pc\shaders\vfx";
         //const string OUTPUT_DIR = @"Z:\active\projects\dota2-sourcesdk-modding\shader-analysis-vcs-format\OUTPUT_DUMP";
-        //const string SERVER_OUTPUT_DIR = @"Z:\dev\www\vcs.codecreation.dev\GEN-output";
+        const string SERVER_OUTPUT_DIR = @"Z:\dev\www\vcs.codecreation.dev\GEN-output";
         //const string SERVER_BASEDIR = @"Z:\dev\www\vcs.codecreation.dev";
         //const string OUTPUT_SUB_DIR = @"\GEN-output";
 
@@ -52,8 +52,8 @@ namespace MyShaderAnalysis {
 
 
 
-            WriteBunchOfZframes();
-            // PrintZframeFileDirectory(@$"{SERVER_OUTPUT_DIR}\zframes");
+            // WriteBunchOfZframes();
+            PrintZframeFileDirectory(SERVER_OUTPUT_DIR, writeFile: true);
 
 
         }
@@ -61,15 +61,13 @@ namespace MyShaderAnalysis {
 
 
         static void WriteBunchOfZframes() {
-            int NUM_TO_PRINT = 20;
-            // List<(string, string, string)> triples = GetFeaturesVsPsFileTriple(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, 30);
+            int NUM_TO_PRINT = 30;
             List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, 30);
 
             foreach (var triple in triples) {
                 int zframeCount = 0;
                 ShaderFile shaderFile = new(triple.vsFile.filenamepath);
                 foreach (var item in shaderFile.zframesLookup) {
-                    // ZFileSummary(triple.Item2, item.Key, $@"{SERVER_OUTPUT_DIR}\zframes\", writeFile: true, disableOutput: true);
                     ZFileSummary(triple.vsFile, item.Key, writeFile: true, disableOutput: true);
                     CloseStreamWriter();
                     zframeCount++;
@@ -579,72 +577,59 @@ namespace MyShaderAnalysis {
 
 
 
-        static void PrintZframeFileDirectory(string outputDir, bool writeFile = false, bool disableOutput = false) {
+        static void PrintZframeFileDirectory(string outputDir = null, bool writeFile = false, bool disableOutput = false) {
+            string outputFilenamepath = $"{outputDir}/zframelisting.html";
+            if (outputDir != null && writeFile) {
+                ConfigureOutputFile(outputFilenamepath, disableOutput);
+                WriteHtmlFile("Zframes", "Zframes");
+            }
 
-
-            return;
-
-
-
-            //string outputFilenamepath = @$"{outputDir}\{Path.GetFileName(vcsFile)[0..^4]}-zframe{zframeId:x08}.html";
-            //Debug.WriteLine($"{outputDir}");
-            //Debug.WriteLine($"{outputFilenamepath}");
-            //return;
-            // ShaderFile shaderFile = new(vcsFile);
-            // ZFrameFile zframeFile = shaderFile.GetZFrameFile(zframeId);
-            //if (outputDir != null && writeFile) {
-            //    ConfigureOutputFile(outputFilenamepath, disableOutput);
-            //    WriteHtmlFile($"Z 0x{zframeId:x}", GetZframeHtmlFilename((uint)zframeId, vcsFile)[0..^5]);
-            //}
-
-
-            Debug.WriteLine($"{outputDir}");
-
-
-            string[] zframeFilesCore = Directory.GetFiles($"{outputDir}/core");
-
-
-
-            // Debug.WriteLine($"{Path.GetFileName(zframeFilesCore[0])[0..^13]}");
-
-            Dictionary<string, List<uint>> zframesFound = new();
-
-
-
-            foreach (string zframeNamepath in zframeFilesCore) {
-                string zframeFilename = Path.GetFileName(zframeNamepath);
-                string vcsFileDesc = zframeFilename[0..^20];
-                uint zframeId = Convert.ToUInt32(zframeFilename[^13..^5], 16);
-
-                if (zframeFilename[0..^13].EndsWith("zframe")) {
-
-                    zframesFound.TryGetValue(vcsFileDesc, out List<uint> zframeIdsSingleFile);
-
-                    if (zframeIdsSingleFile == null) {
-                        zframeIdsSingleFile = new();
-                        zframeIdsSingleFile.Add(zframeId);
-                        zframesFound.Add(vcsFileDesc, zframeIdsSingleFile);
-                    } else {
-                        zframeIdsSingleFile.Add(zframeId);
-                    }
+            Dictionary<FileTokens, List<long>> zframesFound = new();
+            List<string> coreFiles = GetVcsFiles(PCGL_DIR_CORE, null, FILETYPE.any, 30);
+            foreach (var filenamepath in coreFiles) {
+                FileTokens vcsFile = new(ARCHIVE.dotacore_pcgl, filenamepath);
+                List<long> zframeIds = new();
+                zframesFound.Add(vcsFile, zframeIds);
+                foreach (var item in vcsFile.GetZFrameListing()) {
+                    long zframeId = Convert.ToInt64(item[^13..^5], 16);
+                    zframeIds.Add(zframeId);
                 }
             }
 
-
-
-        }
-
-
-        private static void PrintZFrameListing(Dictionary<string, List<uint>> zframesLookup, string token) {
-            foreach (var item in zframesLookup) {
-
-
-                string baseUrl = $"/GEN-output/zframes/{token}/";
-
-
+            List<string> gameFiles = GetVcsFiles(PCGL_DIR_NOT_CORE, null, FILETYPE.any, 30);
+            foreach (var filenamepath in gameFiles) {
+                FileTokens vcsFile = new(ARCHIVE.dotagame_pcgl, filenamepath);
+                List<long> zframeIds = new();
+                zframesFound.Add(vcsFile, zframeIds);
+                foreach (var item in vcsFile.GetZFrameListing()) {
+                    long zframeId = Convert.ToInt64(item[^13..^5], 16);
+                    zframeIds.Add(zframeId);
+                }
             }
 
+            foreach (var item in zframesFound) {
+                FileTokens vcsFile = item.Key;
+                List<long> zframeIds = item.Value;
+
+                string htmlName = $"[{vcsFile.RemoveBaseDir()}]".PadRight(60);
+                htmlName = htmlName.Replace("[", $"<a href='{vcsFile.GetBestPath()}'>");
+                htmlName = htmlName.Replace("]", "</a>");
+                OutputWrite($"{htmlName}");
+
+                string zFrameListing = "";
+                foreach (long zframeId in zframeIds) {
+                    string zframeName = $" [{zframeId:x}]";
+                    string zframeLink  = zframeName.Replace("[", $"<a href='{vcsFile.GetZFrameLink(zframeId)}'>");
+                    zframeLink = zframeLink.Replace("]", "</a>");
+
+                    // OutputWrite(vcsFile.GetZFrameLink(zframeId));
+                    OutputWrite(zframeLink);
+                }
+                OutputWriteLine("");
+            }
         }
+
+
 
 
 

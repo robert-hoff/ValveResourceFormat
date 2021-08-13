@@ -109,16 +109,27 @@ namespace MyShaderAnalysis.utilhelpers {
             return $"{name}-ZFRAME{zframeId:x08}.html";
         }
 
+        public string GetZFrameLink(long zframeId) {
+            return $"{GetZFramesServerPath()}/{GetZFrameHtmlFilename(zframeId)}";
+        }
 
 
 
         public List<string> GetZFrameListing() {
             List<string> zframeFiles = new();
+
+
+
+            // Debug.WriteLine($"{GetZFramesServerDir()}");
+
+
             if (!Directory.Exists(GetZFramesServerDir())) {
                 return zframeFiles;
             } else {
                 foreach (var zframeFile in Directory.GetFiles(GetZFramesServerDir())) {
-                    zframeFiles.Add(zframeFile);
+                    if (Path.GetFileName(zframeFile).StartsWith(name)) {
+                        zframeFiles.Add(zframeFile);
+                    }
                 }
                 return zframeFiles;
             }
@@ -126,6 +137,26 @@ namespace MyShaderAnalysis.utilhelpers {
 
         public string GetShortHandName() {
             return $"{name} ({archivelabel})";
+        }
+
+        public string RemoveBaseDir() {
+            return $"{archivelabel}/{name}";
+        }
+
+        public string GetBytePath() {
+            return $"/vcs-all/{archivelabel}/{name}-analysis.html";
+        }
+        public string GetSummariesPath() {
+            return $"/GEN-output/sf-summaries/{archivelabel}/{name}-summary.html";
+        }
+
+        public string GetBestPath() {
+            string summariesPath = GetSummariesPath();
+            if (File.Exists($"{serverdir}{summariesPath}")) {
+                return summariesPath;
+            } else {
+                return GetBytePath();
+            }
         }
 
 
