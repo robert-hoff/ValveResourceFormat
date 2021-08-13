@@ -2,6 +2,7 @@
 
 
 using MyShaderAnalysis.compat;
+using MyShaderAnalysis.utilhelpers;
 using System.Diagnostics;
 
 namespace MyShaderAnalysis {
@@ -11,8 +12,11 @@ namespace MyShaderAnalysis {
 
         static void Main() {
 
+
+            TestFileSystem.RunTrials();
+
             // StaticAnalysisZframes2.RunTrials();
-            StaticAnalysisZframes.RunTrials();
+            // StaticAnalysisZframes.RunTrials();
             // StaticAnalysis.RunTrials();
 
             // ShaderAnalysis.RunTrials();

@@ -54,9 +54,9 @@ namespace MyShaderAnalysis {
 
 
             // WriteBunchOfZframes();
-            // PrintZframeFileDirectory(@$"{SERVER_OUTPUT_DIR}\zframes");
+            PrintZframeFileDirectory(@$"{SERVER_OUTPUT_DIR}\zframes");
 
-            TestSomeStuff();
+
         }
 
 
@@ -585,27 +585,13 @@ namespace MyShaderAnalysis {
         }
 
 
-        static void TestSomeStuff() {
-
-
-            // writing i 45000 times like takes about 55 seconds
-            //for (int i = 0; i < 45000; i++) {
-            //    Debug.WriteLine($"{i}");
-            //}
-
-            // writing i with lengthy zero-padding takes about the same amount of time (or just slightly longer)
-            //for (int i = 0; i < 45000; i++) {
-            //    Debug.WriteLine($"{i:x099} {i:x099}");
-            //}
-        }
-
 
 
 
         static void PrintZframeFileDirectory(string outputDir, bool writeFile = false, bool disableOutput = false) {
 
 
-
+            return;
 
 
 
