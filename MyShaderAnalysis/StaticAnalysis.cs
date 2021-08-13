@@ -6,7 +6,9 @@ using MyShaderAnalysis.vcsparsing;
 using System;
 using MyShaderAnalysis.compat;
 using static MyShaderAnalysis.vcsparsing.UtilHelpers;
-
+using MyShaderAnalysis.utilhelpers;
+using static MyShaderAnalysis.utilhelpers.FileSystem;
+#pragma warning disable IDE1006 // Naming Styles
 
 
 
@@ -59,7 +61,7 @@ namespace MyShaderAnalysis {
 
 
 
-            FileSummarySingleFile();
+            // FileSummarySingleFile();
             // ZFramePrintout();
 
 
@@ -298,20 +300,22 @@ namespace MyShaderAnalysis {
 
 
 
+
+
+
         static void FileSummarySingleFile() {
-            List<(string, string, string)> triples = new();
-            // triples.Add(GetTriple(@$"{PCGL_DIR_NOT_CORE}\hero_pcgl_30_features.vcs"));
-            // triples.Add(GetTriple(@$"{PCGL_DIR_CORE}\visualize_cloth_pcgl_40_features.vcs"));
-            // triples.Add(GetTriple(@$"{PCGL_DIR_CORE}\depth_only_pcgl_40_features.vcs"));
-            // triples.Add(GetTriple(@$"{PCGL_DIR_CORE}\convolve_environment_map_pcgl_41_features.vcs"));
-            // triples.Add(GetTriple(@$"{PCGL_DIR_CORE}\apply_fog_pcgl_40_features.vcs"));
-            // triples.Add(GetTriple(@$"{PCGL_DIR_CORE}\blur_pcgl_30_features.vcs"));
-            // triples.Add(GetTriple(@$"{PCGL_DIR_NOT_CORE}\water_dota_pcgl_30_features.vcs"));
-            // triples.Add(GetTriple(@$"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_features.vcs"));
-            triples.Add(GetTriple(@$"{PCGL_DIR_CORE}\spritecard_pcgl_30_features.vcs"));
-
-
-            WriteVsPsFileSummary(triples[0], FILETYPE.ps_file);
+            // List<(string, string, string)> triples = new();
+            // FileTriple triple = new(ARCHIVE.dotagame_pcgl, "hero_pcgl_30_features.vcs");
+            // FileTriple triple = new(ARCHIVE.dotacore_pcgl, "visualize_cloth_pcgl_40_features.vcs");
+            // FileTriple triple = new(ARCHIVE.dotacore_pcgl, "depth_only_pcgl_40_features.vcs");
+            // FileTriple triple = new(ARCHIVE.dotacore_pcgl, "convolve_environment_map_pcgl_41_features.vcs");
+            // FileTriple triple = new(ARCHIVE.dotacore_pcgl, "apply_fog_pcgl_40_features.vcs");
+            // FileTriple triple = new(ARCHIVE.dotacore_pcgl, "blur_pcgl_30_features.vcs");
+            FileTriple triple = new(ARCHIVE.dotagame_pcgl, "water_dota_pcgl_30_features.vcs");
+            // FileTriple triple = new(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_features.vcs");
+            // FileTriple triple = new(ARCHIVE.dotacore_pcgl, "spritecard_pcgl_30_features.vcs");
+            // FileTriple triple = new(ARCHIVE.dotagame_pcgl, "spritecard_pcgl_30_features.vcs");
+            WriteVsPsFileSummary(triple, FILETYPE.ps_file);
         }
 
 
@@ -319,7 +323,10 @@ namespace MyShaderAnalysis {
         /*
          * recommend disable output, need to do it in the function call for FileSummaryVsPSFile()
          *
+         *
+         * FIXME TODO
          */
+        /*
         static void FileSummaryAllFiles() {
             List<(string, string, string)> triples = GetFeaturesVsPsFileTriples();
 
@@ -335,22 +342,36 @@ namespace MyShaderAnalysis {
 
             swWriterAlreadyClosed = true;
         }
+        */
 
 
         /*
          * FIXME LATER - output directories are completely tied up in the current server layout
          *
          */
-        static void WriteVsPsFileSummary((string, string, string) triple, FILETYPE targetFileType) {
+        // static void WriteVsPsFileSummary((string, string, string) triple, FILETYPE targetFileType) {
+        static void WriteVsPsFileSummary(FileTriple fileTriple, FILETYPE targetFileType) {
+
             if (targetFileType != FILETYPE.vs_file && targetFileType != FILETYPE.ps_file) {
                 throw new ShaderParserException("need to target either vs or ps file");
             }
-            string targetFile = targetFileType == FILETYPE.vs_file ? triple.Item2 : triple.Item3;
-            string token = GetCoreOrDotaString(targetFile);
-            string htmlTitle = GetShortName(targetFile);
-            string outputFilename = $"{Path.GetFileName(targetFile)[0..^4]}-summary.html";
-            string outputNamepath = $@"{SERVER_OUTPUT_DIR}\sf-summaries\{token}\{outputFilename}";
-            FileSummaryVsPSFile(triple, targetFileType, htmlTitle, outputNamepath, writeFile: true);
+
+            // string targetFilenamepath = targetFileType == FILETYPE.vs_file ? triple.Item2 : triple.Item3;
+            FileTokens targetFile = targetFileType == FILETYPE.vs_file ? fileTriple.vsFile : fileTriple.psFile;
+
+            // string token = GetCoreOrDotaString(targetFile);
+            // string htmlTitle = GetShortName(targetFile);
+            // string outputFilename = $"{Path.GetFileName(targetFile)[0..^4]}-summary.html";
+            // string outputNamepath = $@"{SERVER_OUTPUT_DIR}\sf-summaries\{token}\{outputFilename}";
+
+
+
+            string htmlTitle = $"{targetFile.namelabel}({targetFile.vcstoken})";
+            string outputNamepath = targetFile.GetServerFilePath("summary", createDirs: true);
+
+
+
+            FileSummaryVsPSFile(fileTriple, targetFileType, htmlTitle, outputNamepath, writeFile: true);
         }
 
 
@@ -730,27 +751,34 @@ namespace MyShaderAnalysis {
 
 
 
-        static void FileSummaryVsPSFile((string, string, string) triple, FILETYPE targetFileType, string title = "summary",
+        //static void FileSummaryVsPSFile((string, string, string) triple, FILETYPE targetFileType, string title = "summary",
+        //        string outputFilenamepath = null, bool writeFile = false) {
+
+        static void FileSummaryVsPSFile(FileTriple triple, FILETYPE targetFileType, string title = "summary",
                 string outputFilenamepath = null, bool writeFile = false) {
             if (targetFileType != FILETYPE.vs_file && targetFileType != FILETYPE.ps_file) {
                 throw new ShaderParserException("need to target either vs or ps file");
             }
-            string ftFile = triple.Item1;
-            string targetFile = targetFileType == FILETYPE.vs_file ? triple.Item2 : triple.Item3;
+
+            FileTokens ftFile = triple.ftFile;
+            FileTokens targetFile = targetFileType == FILETYPE.vs_file ? triple.vsFile : triple.psFile;
             if (outputFilenamepath != null && writeFile) {
                 ConfigureOutputFile(outputFilenamepath, disableOutput: false);
-                WriteHtmlFile(title, $"SF SUMMARY for {Path.GetFileName(targetFile)} ({GetCoreOrDotaString(targetFile)})");
+                WriteHtmlFile(title, $"SF SUMMARY for {targetFile.GetShortHandName()})");
             }
             List<(string, string, string)> triples = new();
-            triples.Add(triple);
+
+
+            // FIXME - clusterfuck
+            // triples.Add(triple);
+            triples.Add(GetTriple(triple.ftFile.filenamepath));
             SfSummaryOfFileTriple(triples);
-            ShowSfArgumentList(targetFile);
-            CompatBlockDetailsConcise2(targetFile, showLink: false);
-            ShowDBlockArgumentList(targetFile, showHtmlLink: false);
-            UnknownBlockConcise(targetFile, showLink: false);
 
 
-
+            ShowSfArgumentList(targetFile.filenamepath);
+            CompatBlockDetailsConcise2(targetFile.filenamepath, showLink: false);
+            ShowDBlockArgumentList(targetFile.filenamepath, showHtmlLink: false);
+            UnknownBlockConcise(targetFile.filenamepath, showLink: false);
 
 
             // R: it's better to print all, I'm checking if the file exists for purposes of linking
@@ -759,8 +787,8 @@ namespace MyShaderAnalysis {
 
 
             // print the zframes
-            string zFrameBaseDir = $"/vcs-all/{GetCoreOrDotaString(targetFile)}/zsource/";
-            ShaderFile shaderFile = new(targetFile);
+            string zFrameBaseDir = $"/vcs-all/{GetCoreOrDotaString(targetFile.filenamepath)}/zsource/";
+            ShaderFile shaderFile = new(targetFile.filenamepath);
 
             // prepare the lookup to determine configuration state
             CompatRulesGeneration configGen = new(shaderFile);
@@ -789,7 +817,7 @@ namespace MyShaderAnalysis {
                     OutputWriteLine($"{configHeader}");
                 }
                 int[] configState = configGen.GetConfigState(item.Key);
-                string zframeLink = $"{GetZframeHtmlLinkCheckExists((uint)item.Key, targetFile, SERVER_BASEDIR, zFrameBaseDir)}";
+                string zframeLink = $"{GetZframeHtmlLinkCheckExists((uint)item.Key, targetFile.filenamepath, SERVER_BASEDIR, zFrameBaseDir)}";
                 OutputWriteLine($"{zframeLink} {CombineIntsSpaceSep(configState, 6)}");
                 zframeCount++;
 
@@ -842,7 +870,7 @@ namespace MyShaderAnalysis {
 
 
             string zFrameBaseDir = $"/multiblend_pcgl_30/";
-            ShaderFile shaderFile = new ShaderFile(multiBlendPsFile);
+            ShaderFile shaderFile = new(multiBlendPsFile);
             CompatRulesGeneration configGen = new(shaderFile);
             int zframeCount = 0;
 
@@ -1536,6 +1564,7 @@ namespace MyShaderAnalysis {
         }
 
 
+
         public static int nd(int i) {
             if (i == 0) {
                 return 1;
@@ -1764,7 +1793,7 @@ namespace MyShaderAnalysis {
 
 
 }
-
+#pragma warning restore IDE1006 // Naming Styles
 
 
 

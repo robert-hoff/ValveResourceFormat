@@ -23,7 +23,7 @@ namespace MyShaderAnalysis.utilhelpers {
 
 
         static void Trial1() {
-            FileTokens spritecard = new FileTokens(ARCHIVE.dotacore_pcgl, "spritecard_pcgl_30_ps.vcs");
+            FileTokens spritecard = new(ARCHIVE.dotacore_pcgl, "spritecard_pcgl_30_ps.vcs");
 
 
             // Debug.WriteLine($"{spritecard.GetZFrameServerDir()}");

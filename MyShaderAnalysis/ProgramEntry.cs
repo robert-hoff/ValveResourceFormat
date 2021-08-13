@@ -4,6 +4,7 @@
 using MyShaderAnalysis.compat;
 using MyShaderAnalysis.utilhelpers;
 using System.Diagnostics;
+using System.IO;
 
 namespace MyShaderAnalysis {
 
@@ -13,9 +14,16 @@ namespace MyShaderAnalysis {
         static void Main() {
 
 
-            TestFileSystem.RunTrials();
 
-            // StaticAnalysisZframes2.RunTrials();
+            // string filepath = "Z:/dev/www/vcs.codecreation.dev/dota-core/pcgl/spritecard_pcgl_30";
+            // Directory.CreateDirectory(filepath);
+
+
+
+
+            // TestFileSystem.RunTrials();
+
+            StaticAnalysisZframes2.RunTrials();
             // StaticAnalysisZframes.RunTrials();
             // StaticAnalysis.RunTrials();
 

@@ -77,7 +77,7 @@ namespace MyShaderAnalysis.vcsparsing {
             flagbyte1 = datareader.ReadByte();
 
             for (int sourceId = 0; sourceId < glslSourceCount; sourceId++) {
-                GlslSource glslSource = new GlslSource(datareader, datareader.offset, sourceId);
+                GlslSource glslSource = new(datareader, datareader.offset, sourceId);
                 glslSources.Add(glslSource);
             }
 

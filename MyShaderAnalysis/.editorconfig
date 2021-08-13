@@ -67,6 +67,8 @@ dotnet_diagnostic.CA2225.severity = none
 dotnet_diagnostic.CA1309.severity = none
 dotnet_diagnostic.CA1307.severity = none
 dotnet_diagnostic.CA1820.severity = none
+dotnet_diagnostic.IDE0071.severity = none
+
 
 
 
@@ -97,7 +99,7 @@ dotnet_diagnostic.CA1062.severity = none
 dotnet_diagnostic.CA1303.severity = none
 
 # CA1304: Specify CultureInfo
-# dotnet_diagnostic.CA1304.severity = suggestion
+# dotnet_diagnostic.CA1304.severity = none
 
 # CA1305: Specify IFormatProvider
 # dotnet_diagnostic.CA1305.severity = suggestion

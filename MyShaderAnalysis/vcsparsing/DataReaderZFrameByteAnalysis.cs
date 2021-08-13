@@ -383,13 +383,13 @@ namespace MyShaderAnalysis.vcsparsing {
 
         private void ShowDynamicExpression(int dynExpLen) {
             byte[] dynExpDatabytes = ReadBytesAtPosition(0, dynExpLen);
-            string dynExp = getDynamicExpression(dynExpDatabytes);
+            string dynExp = GetDynamicExpression(dynExpDatabytes);
             OutputWriteLine($"// {dynExp}");
             ShowBytes(dynExpLen);
         }
 
-        private ParseDynamicExpressionShader myDynParser = new ParseDynamicExpressionShader();
-        private string getDynamicExpression(byte[] dynExpDatabytes) {
+        private ParseDynamicExpressionShader myDynParser = new();
+        private string GetDynamicExpression(byte[] dynExpDatabytes) {
             if (myDynParser == null) {
                 myDynParser = new ParseDynamicExpressionShader();
             }

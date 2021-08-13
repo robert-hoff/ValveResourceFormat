@@ -96,7 +96,7 @@ namespace MyShaderAnalysis {
             foreach (var filenamepath in filenames) {
                 // string filenamepath = @$"{directoryToUse}\{filename}";
                 WriteVcsByteAnalysisToHtml(filenamepath, writeHtmlLinks: true);
-                ShaderFile shaderFile = new ShaderFile(filenamepath);
+                ShaderFile shaderFile = new(filenamepath);
                 int zFrameCount = shaderFile.GetZFrameCount();
                 for (int i = 0; i < zFrameCount; i++) {
                     WriteZframeAsHtml(shaderFile, i);
@@ -188,7 +188,7 @@ namespace MyShaderAnalysis {
             byte[] zframeDatabytes = shaderFile.GetDecompressedZFrame(zframeId);
             string outputFilename = GetZframeHtmlFilename((uint) zframeId, shaderFile.filenamepath);
             string outputFilenamepath = @$"{outputdir}\{outputFilename}";
-            DataReaderZFrameByteAnalysis zFrameParser = new DataReaderZFrameByteAnalysis(zframeDatabytes, shaderFile.vcsFiletype);
+            DataReaderZFrameByteAnalysis zFrameParser = new(zframeDatabytes, shaderFile.vcsFiletype);
             Debug.WriteLine($"writing to {outputFilenamepath}");
             StreamWriter sw = new(outputFilenamepath);
             zFrameParser.ConfigureWriteToFile(sw, true);
@@ -213,7 +213,7 @@ namespace MyShaderAnalysis {
             uint zframeId = (uint)shaderFile.GetZFrameIdByIndex(zframeIndex);
             string outputFilename = GetZframeHtmlFilename(zframeId, shaderFile.filenamepath);
             string outputFilenamepath = @$"{outputdir}\{outputFilename}";
-            DataReaderZFrameByteAnalysis zFrameParser = new DataReaderZFrameByteAnalysis(zframeDatabytes, shaderFile.vcsFiletype);
+            DataReaderZFrameByteAnalysis zFrameParser = new(zframeDatabytes, shaderFile.vcsFiletype);
             Debug.WriteLine($"writing to {outputFilenamepath}");
             StreamWriter sw = new(outputFilenamepath);
             zFrameParser.ConfigureWriteToFile(sw, true);
@@ -296,7 +296,7 @@ namespace MyShaderAnalysis {
         }
 
         static void PrintZFrame(byte[] databytes, FILETYPE vcsFiletype, bool disableOutput = false, StreamWriter sw = null) {
-            DataReaderZFrameByteAnalysis zFrameParser = new DataReaderZFrameByteAnalysis(databytes, vcsFiletype);
+            DataReaderZFrameByteAnalysis zFrameParser = new(databytes, vcsFiletype);
             zFrameParser.SetDisableOutput(disableOutput);
             if (sw != null) {
                 zFrameParser.ConfigureWriteToFile(sw, disableOutput);

@@ -7,6 +7,8 @@ using System;
 using MyShaderAnalysis.compat;
 using static MyShaderAnalysis.vcsparsing.UtilHelpers;
 using static MyShaderAnalysis.vcsparsing.ZFrameFile;
+using static MyShaderAnalysis.utilhelpers.FileSystem;
+using MyShaderAnalysis.utilhelpers;
 
 namespace MyShaderAnalysis {
 
@@ -15,12 +17,12 @@ namespace MyShaderAnalysis {
 
         const string PCGL_DIR_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders-core\vfx";
         const string PCGL_DIR_NOT_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders\vfx";
-        const string PC_DIR_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pc\shaders-core\vfx";
-        const string PC_DIR_NOT_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pc\shaders\vfx";
-        const string OUTPUT_DIR = @"Z:\active\projects\dota2-sourcesdk-modding\shader-analysis-vcs-format\OUTPUT_DUMP";
-        const string SERVER_OUTPUT_DIR = @"Z:\dev\www\vcs.codecreation.dev\GEN-output";
-        const string SERVER_BASEDIR = @"Z:\dev\www\vcs.codecreation.dev";
-        const string OUTPUT_SUB_DIR = @"\GEN-output";
+        //const string PC_DIR_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pc\shaders-core\vfx";
+        //const string PC_DIR_NOT_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pc\shaders\vfx";
+        //const string OUTPUT_DIR = @"Z:\active\projects\dota2-sourcesdk-modding\shader-analysis-vcs-format\OUTPUT_DUMP";
+        //const string SERVER_OUTPUT_DIR = @"Z:\dev\www\vcs.codecreation.dev\GEN-output";
+        //const string SERVER_BASEDIR = @"Z:\dev\www\vcs.codecreation.dev";
+        //const string OUTPUT_SUB_DIR = @"\GEN-output";
 
 
         public static void RunTrials() {
@@ -38,23 +40,20 @@ namespace MyShaderAnalysis {
 
         static void Trial1() {
 
-            // string filenamepath = $@"{PCGL_DIR_CORE}\bilateral_blur_pcgl_30_vs.vcs"; int useZFrame = 0;
-            // string filenamepath = $@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_vs.vcs"; int useZFrame = 0xab;
-            // string filenamepath = $@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_ps.vcs"; int useZFrame = 0xc9;
-            string filenamepath = $@"{PCGL_DIR_NOT_CORE}\hero_pcgl_30_ps.vcs"; int useZFrame = 0x00;
-            // string filenamepath = $@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_ps.vcs"; int useZFrame = 0xa9;
-            // string filenamepath = $@"{PCGL_DIR_CORE}\depth_only_pcgl_30_vs.vcs"; int useZFrame = 0x68;
-            // string filenamepath = $@"{PCGL_DIR_NOT_CORE}\refract_pcgl_30_ps.vcs";
-            // string filenamepath = $@"{PCGL_DIR_CORE}\visualize_cloth_pcgl_40_ps.vcs";
+            // ZFileSummary(ARCHIVE.dotacore_pcgl, "bilateral_blur_pcgl_30_vs.vcs", 0x0, writeFile: true);
+            // ZFileSummary(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_ps.vcs", 0x2, writeFile: true);
+            // ZFileSummary(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_ps.vcs", 0xa9, writeFile: true);
+            // ZFileSummary(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_ps.vcs", 0xc9, writeFile: true);
+            // ZFileSummary(ARCHIVE.dotagame_pcgl, "hero_pcgl_30_ps.vcs", 0x0, writeFile: true);
+            // ZFileSummary(ARCHIVE.dotacore_pcgl, "depth_only_pcgl_30_vs.vcs", 0x68, writeFile: true);
+            // ZFileSummary(ARCHIVE.dotagame_pcgl, "refract_pcgl_30_ps.vcs", 0x0, writeFile: true);
+            // ZFileSummary(ARCHIVE.dotacore_pcgl, "visualize_cloth_pcgl_40_ps.vcs", 0x10, writeFile: true);
+            // ZFileSummary(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_vs.vcs", 0xab, writeFile: true);
 
 
 
-            // ZFileSummary(filenamepath, useZFrame, $@"{SERVER_OUTPUT_DIR}\zframes", writeFile: true);
-
-
-
-            // WriteBunchOfZframes();
-            PrintZframeFileDirectory(@$"{SERVER_OUTPUT_DIR}\zframes");
+            WriteBunchOfZframes();
+            // PrintZframeFileDirectory(@$"{SERVER_OUTPUT_DIR}\zframes");
 
 
         }
@@ -63,77 +62,69 @@ namespace MyShaderAnalysis {
 
         static void WriteBunchOfZframes() {
             int NUM_TO_PRINT = 20;
-            List<(string, string, string)> triples = GetFeaturesVsPsFileTriple(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, 30);
-
+            // List<(string, string, string)> triples = GetFeaturesVsPsFileTriple(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, 30);
+            List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, 30);
 
             foreach (var triple in triples) {
                 int zframeCount = 0;
-                ShaderFile shaderFile = new(triple.Item2);
-
+                ShaderFile shaderFile = new(triple.vsFile.filenamepath);
                 foreach (var item in shaderFile.zframesLookup) {
-                    ZFileSummary(triple.Item2, item.Key, $@"{SERVER_OUTPUT_DIR}\zframes\", writeFile: true, disableOutput: true);
+                    // ZFileSummary(triple.Item2, item.Key, $@"{SERVER_OUTPUT_DIR}\zframes\", writeFile: true, disableOutput: true);
+                    ZFileSummary(triple.vsFile, item.Key, writeFile: true, disableOutput: true);
                     CloseStreamWriter();
                     zframeCount++;
                     if (zframeCount == NUM_TO_PRINT) {
                         break;
                     }
                 }
-
                 zframeCount = 0;
-                shaderFile = new(triple.Item3);
+                shaderFile = new(triple.psFile.filenamepath);
                 foreach (var item in shaderFile.zframesLookup) {
-                    ZFileSummary(triple.Item3, item.Key, $@"{SERVER_OUTPUT_DIR}\zframes\", writeFile: true, disableOutput: true);
+                    ZFileSummary(triple.psFile, item.Key, writeFile: true, disableOutput: true);
                     CloseStreamWriter();
                     zframeCount++;
                     if (zframeCount == NUM_TO_PRINT) {
                         break;
                     }
                 }
-
             }
-
             swWriterAlreadyClosed = true;
 
         }
 
 
+        static void ZFileSummary(ARCHIVE archive, string filename, long zframeId, bool writeFile = false, bool disableOutput = false) {
+            FileTokens vcsFile = new(archive, filename);
+            ZFileSummary(vcsFile, zframeId, writeFile, disableOutput);
+        }
 
-        static void ZFileSummary(string vcsFile, long zframeId, string outputDir = null, bool writeFile = false, bool disableOutput = false) {
-            // writeFile = false;
 
-            string token = GetCoreOrDotaString(vcsFile);
-            string outputFilenamepath = @$"{outputDir}\{token}\{Path.GetFileName(vcsFile)[0..^4]}-zframe{zframeId:x08}.html";
 
-            //Debug.WriteLine($"{outputDir}");
-            //Debug.WriteLine($"{outputFilenamepath}");
-            //return;
+        static void ZFileSummary(FileTokens vcsFile, long zframeId, bool writeFile = false, bool disableOutput = false) {
+            ShaderFile shaderFile = new(vcsFile.filenamepath);
 
-            ShaderFile shaderFile = new(vcsFile);
             ZFrameFile zframeFile = shaderFile.GetZFrameFile(zframeId);
-            if (outputDir != null && writeFile) {
+            if (writeFile) {
+                vcsFile.CreateZFramesDirectory();
+                string outputFilenamepath = vcsFile.GetZFrameHtmlFilenamepath(zframeId);
                 ConfigureOutputFile(outputFilenamepath, disableOutput);
-                WriteHtmlFile($"Z 0x{zframeId:x}", GetZframeHtmlFilename((uint)zframeId, vcsFile)[0..^5]);
+                WriteHtmlFile($"Z 0x{zframeId:x}", vcsFile.GetZFrameHtmlFilename(zframeId)[0..^5]);
             }
-
-
             PrintConfigurationState(shaderFile, zframeId);
             // PrintDataBlocks1(shaderFile, zframeFile);
             PrintFrameLeadingArgs(zframeFile);
-
             SortedDictionary<int, int> writeSequences = GetWriteSequences(zframeFile);
             PrintWriteSequences(shaderFile, zframeFile, writeSequences);
-
-
             // PrintDataBlocks2(shaderFile, zframeFile, writeSequences);
             PrintDataBlocks3(shaderFile, zframeFile, writeSequences);
             PrintLeadSummary(zframeFile);
             PrintTailSummary(zframeFile);
-
-
             PrintSourceSummary(zframeFile);
             ShowEndBlocks(shaderFile, zframeFile);
 
         }
+
+
 
         static Dictionary<int, GlslSource> GetBlockIdToSource(ZFrameFile zframeFile) {
             Dictionary<int, GlslSource> blockIdToSource = new();
@@ -243,7 +234,7 @@ namespace MyShaderAnalysis {
                 }
                 OutputWrite($"[{blockId:X02}] {configStr}        {writeSeqText,-12}");
                 GlslSource blockSource = blockIdToSource[blockId];
-                OutputWriteLine($"    {getSourceLink(shaderFile.filenamepath, blockSource)} {blockSource.offset1,12}  (bytes)");
+                OutputWriteLine($"    {GetSourceLink(shaderFile.filenamepath, blockSource)} {blockSource.offset1,12}  (bytes)");
             }
             OutputWriteLine("");
             OutputWriteLine("");
@@ -294,13 +285,13 @@ namespace MyShaderAnalysis {
                 string writeSeqText = $"WRITESEQ[{writeSequences[blockId]}]";
                 OutputWrite($"[{blockId:X02}] {configStr}    {writeSeqText,14}");
                 GlslSource blockSource = blockIdToSource[blockId];
-                OutputWriteLine($"    {getSourceLink(shaderFile.filenamepath, blockSource)} {blockSource.offset1,12}  (bytes)");
+                OutputWriteLine($"    {GetSourceLink(shaderFile.filenamepath, blockSource)} {blockSource.offset1,12}  (bytes)");
             }
             OutputWriteLine("");
         }
 
 
-        static string getSourceLink(string filenamepath, GlslSource blockSource) {
+        static string GetSourceLink(string filenamepath, GlslSource blockSource) {
             string glslId = blockSource.GetStringId();
             string token = GetCoreOrDotaString(filenamepath);
             string fileName = @$"/vcs-all/{token}/zsource/glsl-{glslId}.html";

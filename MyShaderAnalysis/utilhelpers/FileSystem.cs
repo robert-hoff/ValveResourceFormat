@@ -72,7 +72,7 @@ namespace MyShaderAnalysis.utilhelpers {
             return $"{GetSourceDir(archive)}/{filename}";
         }
 
-        public static string GetServerDir() {
+        public static string GetServerBaseDir() {
             return SERVER_BASEDIR;
         }
 
@@ -105,6 +105,14 @@ namespace MyShaderAnalysis.utilhelpers {
             if (archive == ARCHIVE.dotacore_pcgl) return "glsl";
             if (archive == ARCHIVE.dotagame_pcgl) return "glsl";
             throw new ShaderParserException("unknown archive");
+        }
+
+        public static string GetVcsToken(FILETYPE vcsFiletype) {
+            if (vcsFiletype == FILETYPE.features_file) {
+                return "ft";
+            } else {
+                return vcsFiletype.ToString()[0..^5];
+            }
         }
 
 
