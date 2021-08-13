@@ -27,6 +27,7 @@ namespace MyShaderAnalysis {
             // Trial1();
 
 
+            CountZframeAndSourceFilesSingleFile1();
             // SurverH0LeadingData();
             // SurverH1H2ValuesInDatablocks();
             // StateSummariesValuesSeen();
@@ -36,7 +37,7 @@ namespace MyShaderAnalysis {
             // CheckB0ValueAgainstParameterCount();
             // CheckB0ValuesUniqeness();
             // ShowB0ValuesSelectedFile();
-            SurveryEndBlockAndGlslSourceCounts();
+            // SurveryEndBlockAndGlslSourceCounts();
             // DataBlockCountSurvey();
             // DataBlockCountSelectedfile();
             // SurveryH1ValuesInDatablocks();
@@ -85,6 +86,93 @@ namespace MyShaderAnalysis {
 
         }
 
+
+
+
+
+
+
+
+        /*
+         *
+         * global_lit_simple_pcgl_30.vs.vcs
+         * has 10360 source reference and 3960 unique sources. The reference distribution is quite interesting
+         *
+         *                       multiple-reference
+         *          800 files    1
+         *         1860 files    2
+         *         1140 files    3
+         *          160 files    4
+         *
+         *
+         * multiblend_pcgl_30_ps.vcs
+         * has 84218 source references and 39610 unique sources. Some sources are references upto 18 times
+         *
+         *                  referenced (number of times)
+         *     10440        1
+         *     18099        2
+         *      9690        3
+         *       897        4
+         *       149        6
+         *         2        7
+         *         1        8
+         *       327       12
+         *         2       14
+         *         3       18      (3 files are referenced 18 times)
+         *
+         *
+         * hero_pcgl_30_ps.vcs (takes about 1:40 to process)
+         *
+         * 852120 source references and 571944 unique source - so most sources are not shared!
+         * Actually the bulk of these have only one reference.
+         *
+         * The source distribution count goes from
+         * (1,508712) to (40,182). i.e.182 files are shared 40 times, which is the max
+         *
+         *
+         *
+         * NB - remember to set a breakpoint!
+         *
+         */
+        static void CountZframeAndSourceFilesSingleFile1() {
+            // string filenamepath = $@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_vs.vcs";
+            // string filenamepath = $@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_ps.vcs";
+            // string filenamepath = $@"{PCGL_DIR_NOT_CORE}\hero_pcgl_30_ps.vcs";
+            string filenamepath = $@"{PCGL_DIR_NOT_CORE}\global_lit_simple_pcgl_30_vs.vcs";
+
+            ShaderFile shaderFile = new(filenamepath);
+            // Debug.WriteLine($"{shaderFile.zframesLookup.Count}");
+
+            int sourceReferencesCount = 0;
+            Dictionary<string, int> sourceLookup = new();
+            int zframecount = 0;
+
+            for (int zframeIndex = 0; zframeIndex < shaderFile.GetZFrameCount(); zframeIndex++) {
+                zframecount++;
+                if(zframecount%1000 == 0) {
+                    Debug.WriteLine($"{zframecount}");
+                }
+
+                ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(zframeIndex);
+                sourceReferencesCount += zframeFile.glslSourceCount;
+                foreach (var item in zframeFile.glslSources) {
+                    string glslSourceId = item.GetStringId();
+                    sourceLookup.TryGetValue(item.GetStringId(), out int count);
+                    sourceLookup[glslSourceId] = count + 1;
+                }
+            }
+
+
+            Debug.WriteLine($"source references = {sourceReferencesCount}");
+            SortedDictionary<int, int> referenceDistribution = new();
+
+            foreach (var item in sourceLookup) {
+                referenceDistribution.TryGetValue(item.Value, out int count);
+                referenceDistribution[item.Value] = count + 1;
+            }
+
+
+        }
 
 
 

@@ -40,7 +40,8 @@ namespace MyShaderAnalysis {
 
             // string filenamepath = $@"{PCGL_DIR_CORE}\bilateral_blur_pcgl_30_vs.vcs"; int useZFrame = 0;
             // string filenamepath = $@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_vs.vcs"; int useZFrame = 0xab;
-            string filenamepath = $@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_ps.vcs"; int useZFrame = 0xc9;
+            // string filenamepath = $@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_ps.vcs"; int useZFrame = 0xc9;
+            string filenamepath = $@"{PCGL_DIR_NOT_CORE}\hero_pcgl_30_ps.vcs"; int useZFrame = 0x00;
             // string filenamepath = $@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_ps.vcs"; int useZFrame = 0xa9;
             // string filenamepath = $@"{PCGL_DIR_CORE}\depth_only_pcgl_30_vs.vcs"; int useZFrame = 0x68;
             // string filenamepath = $@"{PCGL_DIR_NOT_CORE}\refract_pcgl_30_ps.vcs";
@@ -48,18 +49,60 @@ namespace MyShaderAnalysis {
 
 
 
-            ZFileSummary(filenamepath, useZFrame, $@"{SERVER_OUTPUT_DIR}\zframes", writeFile: true);
+            // ZFileSummary(filenamepath, useZFrame, $@"{SERVER_OUTPUT_DIR}\zframes", writeFile: true);
 
+
+
+            // WriteBunchOfZframes();
+            // PrintZframeFileDirectory(@$"{SERVER_OUTPUT_DIR}\zframes");
+
+            TestSomeStuff();
+        }
+
+
+
+        static void WriteBunchOfZframes() {
+            int NUM_TO_PRINT = 20;
+            List<(string, string, string)> triples = GetFeaturesVsPsFileTriple(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, 30);
+
+
+            foreach (var triple in triples) {
+                int zframeCount = 0;
+                ShaderFile shaderFile = new(triple.Item2);
+
+                foreach (var item in shaderFile.zframesLookup) {
+                    ZFileSummary(triple.Item2, item.Key, $@"{SERVER_OUTPUT_DIR}\zframes\", writeFile: true, disableOutput: true);
+                    CloseStreamWriter();
+                    zframeCount++;
+                    if (zframeCount == NUM_TO_PRINT) {
+                        break;
+                    }
+                }
+
+                zframeCount = 0;
+                shaderFile = new(triple.Item3);
+                foreach (var item in shaderFile.zframesLookup) {
+                    ZFileSummary(triple.Item3, item.Key, $@"{SERVER_OUTPUT_DIR}\zframes\", writeFile: true, disableOutput: true);
+                    CloseStreamWriter();
+                    zframeCount++;
+                    if (zframeCount == NUM_TO_PRINT) {
+                        break;
+                    }
+                }
+
+            }
+
+            swWriterAlreadyClosed = true;
 
         }
 
 
 
-        static void ZFileSummary(string vcsFile, long zframeId, string outputDir = null, bool writeFile = false) {
+        static void ZFileSummary(string vcsFile, long zframeId, string outputDir = null, bool writeFile = false, bool disableOutput = false) {
             // writeFile = false;
 
-
-            string outputFilenamepath = @$"{outputDir}\{Path.GetFileName(vcsFile)[0..^4]}-zframe{zframeId:x08}.html";
+            string token = GetCoreOrDotaString(vcsFile);
+            string outputFilenamepath = @$"{outputDir}\{token}\{Path.GetFileName(vcsFile)[0..^4]}-zframe{zframeId:x08}.html";
 
             //Debug.WriteLine($"{outputDir}");
             //Debug.WriteLine($"{outputFilenamepath}");
@@ -68,7 +111,7 @@ namespace MyShaderAnalysis {
             ShaderFile shaderFile = new(vcsFile);
             ZFrameFile zframeFile = shaderFile.GetZFrameFile(zframeId);
             if (outputDir != null && writeFile) {
-                ConfigureOutputFile(outputFilenamepath);
+                ConfigureOutputFile(outputFilenamepath, disableOutput);
                 WriteHtmlFile($"Z 0x{zframeId:x}", GetZframeHtmlFilename((uint)zframeId, vcsFile)[0..^5]);
             }
 
@@ -81,7 +124,8 @@ namespace MyShaderAnalysis {
             PrintWriteSequences(shaderFile, zframeFile, writeSequences);
 
 
-            PrintDataBlocks2(shaderFile, zframeFile, writeSequences);
+            // PrintDataBlocks2(shaderFile, zframeFile, writeSequences);
+            PrintDataBlocks3(shaderFile, zframeFile, writeSequences);
             PrintLeadSummary(zframeFile);
             PrintTailSummary(zframeFile);
 
@@ -153,19 +197,25 @@ namespace MyShaderAnalysis {
             string headerText = "Frame Header";
             OutputWriteLine(headerText);
             OutputWriteLine(new string('-', headerText.Length));
-            OutputWriteLine(zframeFile.GetZFrameHeaderStringDescription());
+            OutputWrite(zframeFile.GetZFrameHeaderStringDescription());
+            if (zframeFile.zframeParams.Count == 0) {
+                OutputWriteLine("[empty frameheader]");
+            }
+            OutputWriteLine("");
             OutputWriteLine("");
         }
 
 
-        static void PrintDataBlocks2(ShaderFile shaderFile, ZFrameFile zframeFile, SortedDictionary<int, int> writeSequences) {
 
+
+
+        static void PrintDataBlocks3(ShaderFile shaderFile, ZFrameFile zframeFile, SortedDictionary<int, int> writeSequences) {
             Dictionary<int, GlslSource> blockIdToSource = GetBlockIdToSource(zframeFile);
-
             string configHeader = $"D-Param configurations ({blockIdToSource.Count})";
             OutputWriteLine(configHeader);
             OutputWriteLine(new string('-', configHeader.Length));
             PrintAbbreviations(shaderFile);
+            List<int> activeBlockIds = GetActiveBlockIds(zframeFile);
             OutputWriteLine("");
 
             List<string> dParamNames = new();
@@ -174,7 +224,62 @@ namespace MyShaderAnalysis {
             }
             string configNames = CombineStringsSpaceSep(dParamNames.ToArray(), 6);
             configNames = $"{new string(' ', 5)}{configNames}";
+            int dBlockCount = 0;
 
+
+            foreach (int blockId in activeBlockIds) {
+                //if (zframeFile.dataBlocks[blockId].h0 == 0) {
+                //    continue;
+                //}
+                if (dBlockCount % 100 == 0) {
+                    OutputWriteLine($"{configNames}");
+                }
+                dBlockCount++;
+                int[] dBlockConfig = shaderFile.GetDBlockConfig(blockId);
+                string configStr = CombineIntsSpaceSep(dBlockConfig, 6);
+                string writeSeqText = $"WRITESEQ[{writeSequences[blockId]}]";
+                if (writeSequences[blockId] == -1) {
+                    writeSeqText = "[empty writeseq]";
+                }
+                OutputWrite($"[{blockId:X02}] {configStr}        {writeSeqText,-12}");
+                GlslSource blockSource = blockIdToSource[blockId];
+                OutputWriteLine($"    {getSourceLink(shaderFile.filenamepath, blockSource)} {blockSource.offset1,12}  (bytes)");
+            }
+            OutputWriteLine("");
+            OutputWriteLine("");
+        }
+
+
+        static List<int> GetActiveBlockIds(ZFrameFile zframeFile) {
+            List<int> blockIds = new();
+            if (zframeFile.vcsFiletype == FILETYPE.vs_file) {
+                foreach (VsEndBlock vsEndBlock in zframeFile.vsEndBlocks) {
+                    blockIds.Add(vsEndBlock.blockIdRef);
+                }
+            } else {
+                foreach (PsEndBlock psEndBlock in zframeFile.psEndBlocks) {
+                    blockIds.Add(psEndBlock.blockIdRef);
+                }
+            }
+            return blockIds;
+        }
+
+
+
+
+        static void PrintDataBlocks2(ShaderFile shaderFile, ZFrameFile zframeFile, SortedDictionary<int, int> writeSequences) {
+            Dictionary<int, GlslSource> blockIdToSource = GetBlockIdToSource(zframeFile);
+            string configHeader = $"D-Param configurations ({blockIdToSource.Count})";
+            OutputWriteLine(configHeader);
+            OutputWriteLine(new string('-', configHeader.Length));
+            PrintAbbreviations(shaderFile);
+            OutputWriteLine("");
+            List<string> dParamNames = new();
+            foreach (DBlock dBlock in shaderFile.dBlocks) {
+                dParamNames.Add(ShortenShaderParam(dBlock.name0).ToLower());
+            }
+            string configNames = CombineStringsSpaceSep(dParamNames.ToArray(), 6);
+            configNames = $"{new string(' ', 5)}{configNames}";
             int dBlockCount = 0;
             for (int blockId = 0; blockId < zframeFile.dataBlocks.Count; blockId++) {
                 if (zframeFile.dataBlocks[blockId].h0 == 0) {
@@ -187,14 +292,10 @@ namespace MyShaderAnalysis {
                 int[] dBlockConfig = shaderFile.GetDBlockConfig(blockId);
                 string configStr = CombineIntsSpaceSep(dBlockConfig, 6);
                 string writeSeqText = $"WRITESEQ[{writeSequences[blockId]}]";
-                OutputWrite($"[{blockId:X02}] {configStr}    {writeSeqText, 14}");
+                OutputWrite($"[{blockId:X02}] {configStr}    {writeSeqText,14}");
                 GlslSource blockSource = blockIdToSource[blockId];
-                // OutputWriteLine($"         source[{blockSource.GetStringId()}]");
                 OutputWriteLine($"    {getSourceLink(shaderFile.filenamepath, blockSource)} {blockSource.offset1,12}  (bytes)");
-                // OutputWriteLine(DataReader.BytesToString(zBlock.dataload));
-                // OutputWriteLine("");
             }
-
             OutputWriteLine("");
         }
 
@@ -215,6 +316,9 @@ namespace MyShaderAnalysis {
                 abbreviations.Add(abbreviation);
             }
             string[] breakabbreviations = CombineValuesBreakString(abbreviations.ToArray(), 120);
+            if (breakabbreviations.Length == 1 && breakabbreviations[0] == "") {
+                return;
+            }
             foreach (string abbr in breakabbreviations) {
                 OutputWriteLine(abbr.Replace("(", "<span style='color: blue'>(").Replace(")", "</span>)"));
             }
@@ -226,9 +330,13 @@ namespace MyShaderAnalysis {
             string headerText = "Parameter glsl mapping";
             OutputWriteLine(headerText);
             OutputWriteLine(new string('-', headerText.Length));
-            OutputWriteLine("");
 
             int lastseq = writeSequences[-1];
+            if (zframeFile.leadingData.h0 > 0) {
+                OutputWriteLine("");
+            }
+
+
             string seqName = $"WRITESEQ[{lastseq}] (default)";
             ZDataBlock leadData = zframeFile.leadingData;
             PrintParamWriteSequence(shaderFile, leadData.dataload, leadData.h0, leadData.h1, leadData.h2, seqName: seqName);
@@ -309,7 +417,7 @@ namespace MyShaderAnalysis {
                     b3Text = $"  _ ({b2:X02})";
                 }
                 OutputWrite($"[{paramId,3}] {shaderFile.paramBlocks[paramId].name0,-30} {b2Text,-14} {b3Text}");
-                if (i + 1 == h0) {
+                if (i + 1 == h0 && h0 != h2) {
                     OutputWrite($"   // {h0}");
                 }
                 if (i + 1 == h1) {
@@ -401,6 +509,12 @@ namespace MyShaderAnalysis {
                     OutputWriteLine($"{shaderFile.sfBlocks[i].name0,-30} {configState[i]}");
                 }
             }
+
+            if (zframeId == 0) {
+                OutputWriteLine("[all static params 0]");
+            } else if (configState.Length == 1) {
+                OutputWriteLine("[no static params defined]");
+            }
             OutputWriteLine("");
             OutputWriteLine("");
         }
@@ -471,6 +585,90 @@ namespace MyShaderAnalysis {
         }
 
 
+        static void TestSomeStuff() {
+
+
+            // writing i 45000 times like takes about 55 seconds
+            //for (int i = 0; i < 45000; i++) {
+            //    Debug.WriteLine($"{i}");
+            //}
+
+            // writing i with lengthy zero-padding takes about the same amount of time (or just slightly longer)
+            //for (int i = 0; i < 45000; i++) {
+            //    Debug.WriteLine($"{i:x099} {i:x099}");
+            //}
+        }
+
+
+
+
+        static void PrintZframeFileDirectory(string outputDir, bool writeFile = false, bool disableOutput = false) {
+
+
+
+
+
+
+            //string outputFilenamepath = @$"{outputDir}\{Path.GetFileName(vcsFile)[0..^4]}-zframe{zframeId:x08}.html";
+            //Debug.WriteLine($"{outputDir}");
+            //Debug.WriteLine($"{outputFilenamepath}");
+            //return;
+            // ShaderFile shaderFile = new(vcsFile);
+            // ZFrameFile zframeFile = shaderFile.GetZFrameFile(zframeId);
+            //if (outputDir != null && writeFile) {
+            //    ConfigureOutputFile(outputFilenamepath, disableOutput);
+            //    WriteHtmlFile($"Z 0x{zframeId:x}", GetZframeHtmlFilename((uint)zframeId, vcsFile)[0..^5]);
+            //}
+
+
+            Debug.WriteLine($"{outputDir}");
+
+
+            string[] zframeFilesCore = Directory.GetFiles($"{outputDir}/core");
+
+
+
+            // Debug.WriteLine($"{Path.GetFileName(zframeFilesCore[0])[0..^13]}");
+
+            Dictionary<string, List<uint>> zframesFound = new();
+
+
+
+            foreach (string zframeNamepath in zframeFilesCore) {
+                string zframeFilename = Path.GetFileName(zframeNamepath);
+                string vcsFileDesc = zframeFilename[0..^20];
+                uint zframeId = Convert.ToUInt32(zframeFilename[^13..^5], 16);
+
+                if (zframeFilename[0..^13].EndsWith("zframe")) {
+
+                    zframesFound.TryGetValue(vcsFileDesc, out List<uint> zframeIdsSingleFile);
+
+                    if (zframeIdsSingleFile == null) {
+                        zframeIdsSingleFile = new();
+                        zframeIdsSingleFile.Add(zframeId);
+                        zframesFound.Add(vcsFileDesc, zframeIdsSingleFile);
+                    } else {
+                        zframeIdsSingleFile.Add(zframeId);
+                    }
+                }
+            }
+
+
+
+        }
+
+
+        private static void PrintZFrameListing(Dictionary<string, List<uint>> zframesLookup, string token) {
+            foreach (var item in zframesLookup) {
+
+
+                string baseUrl = $"/GEN-output/zframes/{token}/";
+
+
+            }
+
+        }
+
 
 
 
@@ -493,7 +691,7 @@ namespace MyShaderAnalysis {
 
         private static void ConfigureOutputFile(string filepathname, bool disableOutput = false) {
             DisableOutput = disableOutput;
-            OutputWriteLine($"writing to {filepathname}");
+            Debug.WriteLine($"writing to {filepathname}");
             sw = new StreamWriter(filepathname);
         }
 

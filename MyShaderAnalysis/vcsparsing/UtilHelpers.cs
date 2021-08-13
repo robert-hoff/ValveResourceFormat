@@ -103,9 +103,9 @@ namespace MyShaderAnalysis.vcsparsing {
         }
 
 
-        public static List<(string, string, string)> GetFeaturesVsPsFileTriple(string dir1, string dir2) {
+        public static List<(string, string, string)> GetFeaturesVsPsFileTriple(string dir1, string dir2, int vcsFileVer = -1) {
             List<(string, string, string)> fileTriplets = new();
-            List<string> featuresFiles = GetVcsFiles(dir1, dir2, FILETYPE.features_file, -1);
+            List<string> featuresFiles = GetVcsFiles(dir1, dir2, FILETYPE.features_file, vcsFileVer);
             foreach (string featFile in featuresFiles) {
                 string vsFile = $"{featFile[0..^12]}vs.vcs";
                 string psFile = $"{featFile[0..^12]}ps.vcs";
