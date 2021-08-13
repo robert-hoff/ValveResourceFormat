@@ -36,7 +36,7 @@ namespace MyShaderAnalysis.utilhelpers {
         }
 
 
-        public FileTriple(ARCHIVE archive, string ftFileName, string psFileName, string vsFileName) {
+        public FileTriple(ARCHIVE archive, string ftFileName, string vsFileName, string psFileName) {
             ftFile = new FileTokens(archive, ftFileName);
             vsFile = new FileTokens(archive, vsFileName);
             psFile = new FileTokens(archive, psFileName);

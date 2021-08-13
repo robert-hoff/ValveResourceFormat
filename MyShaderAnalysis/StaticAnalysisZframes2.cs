@@ -45,11 +45,13 @@ namespace MyShaderAnalysis {
             // ZFileSummary(ARCHIVE.dotagame_pcgl, "refract_pcgl_30_ps.vcs", 0x0, writeFile: true);
             // ZFileSummary(ARCHIVE.dotacore_pcgl, "visualize_cloth_pcgl_40_ps.vcs", 0x10, writeFile: true);
             // ZFileSummary(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_vs.vcs", 0xab, writeFile: true);
+            // ZFileSummary(ARCHIVE.dotacore_pcgl, "panorama_fancyquad_pcgl_30_ps.vcs", 0x0, writeFile: true);
+            ZFileSummary(ARCHIVE.dotacore_pcgl, "blur_pcgl_30_ps.vcs", 0x1, writeFile: true);
 
 
 
             // WriteBunchOfZframes();
-            PrintZframeFileDirectory(SERVER_OUTPUT_DIR, writeFile: true);
+            // PrintZframeFileDirectory(SERVER_OUTPUT_DIR, writeFile: true);
         }
 
 
@@ -93,8 +95,11 @@ namespace MyShaderAnalysis {
 
 
         static void ZFileSummary(FileTokens vcsFile, long zframeId, bool writeFile = false, bool disableOutput = false) {
-            ShaderFile shaderFile = new(vcsFile.filenamepath);
 
+            writeFile = false;
+            DisableOutput = true;
+
+            ShaderFile shaderFile = new(vcsFile.filenamepath);
             ZFrameFile zframeFile = shaderFile.GetZFrameFile(zframeId);
             if (writeFile) {
                 vcsFile.CreateZFramesDirectory();
@@ -493,10 +498,14 @@ namespace MyShaderAnalysis {
                 }
             }
 
+
+
+
+
             if (zframeId == 0) {
                 OutputWriteLine("[all static params 0]");
             } else if (configState.Length == 1) {
-                OutputWriteLine("[no static params defined]");
+                OutputWriteLine("[no static params]");
             }
             OutputWriteLine("");
             OutputWriteLine("");

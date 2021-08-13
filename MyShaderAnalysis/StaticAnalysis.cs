@@ -303,12 +303,14 @@ namespace MyShaderAnalysis {
             // FileTriple triple = new(ARCHIVE.dotacore_pcgl, "depth_only_pcgl_40_features.vcs");
             // FileTriple triple = new(ARCHIVE.dotacore_pcgl, "convolve_environment_map_pcgl_41_features.vcs");
             // FileTriple triple = new(ARCHIVE.dotacore_pcgl, "apply_fog_pcgl_40_features.vcs");
-            // FileTriple triple = new(ARCHIVE.dotacore_pcgl, "blur_pcgl_30_features.vcs");
+            FileTriple triple = new(ARCHIVE.dotacore_pcgl, "blur_pcgl_30_features.vcs");
             // FileTriple triple = new(ARCHIVE.dotagame_pcgl, "water_dota_pcgl_30_features.vcs");
-            FileTriple triple = new(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_features.vcs");
+            // FileTriple triple = new(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_features.vcs");
             // FileTriple triple = new(ARCHIVE.dotacore_pcgl, "spritecard_pcgl_30_features.vcs");
             // FileTriple triple = new(ARCHIVE.dotagame_pcgl, "spritecard_pcgl_30_features.vcs");
-            WriteVsPsFileSummary(triple, FILETYPE.vs_file);
+
+
+            WriteVsPsFileSummary(triple, FILETYPE.ps_file);
         }
 
 
@@ -735,7 +737,7 @@ namespace MyShaderAnalysis {
             FileTokens targetFile = targetFileType == FILETYPE.vs_file ? triple.vsFile : triple.psFile;
             if (outputFilenamepath != null && writeFile) {
                 ConfigureOutputFile(outputFilenamepath, disableOutput);
-                WriteHtmlFile(title, $"SF SUMMARY for {targetFile.GetShortHandName()})");
+                WriteHtmlFile(title, $"SF SUMMARY for {targetFile.GetShortHandName()}");
             }
             List<(string, string, string)> triples = new();
 
@@ -774,7 +776,7 @@ namespace MyShaderAnalysis {
 
 
             string configHeader = CombineStringsSpaceSep(sfNames.ToArray(), 6);
-            configHeader = $"{new string(' ', 19)}{configHeader}";
+            configHeader = $"{new string(' ', 14)}{configHeader}";
             // OutputWriteLine(configHeader);
 
             foreach (var item in shaderFile.zframesLookup) {
@@ -783,13 +785,9 @@ namespace MyShaderAnalysis {
                 }
                 int[] configState = configGen.GetConfigState(item.Key);
 
-
                 // string zframeLink = $"{GetZframeHtmlLinkCheckExists((uint)item.Key, targetFile.filenamepath, SERVER_BASEDIR, zFrameBaseDir)}";
 
                 string zframeLink = targetFile.GetBestZframesLink(item.Key);
-
-
-
                 OutputWriteLine($"{zframeLink} {CombineIntsSpaceSep(configState, 6)}");
                 zframeCount++;
 
@@ -860,7 +858,7 @@ namespace MyShaderAnalysis {
 
 
             string configHeader = CombineStringsSpaceSep(sfNames.ToArray(), 6);
-            configHeader = $"{new string(' ', 19)}{configHeader}";
+            configHeader = $"{new string(' ', 14)}{configHeader}";
             // OutputWriteLine(configHeader);
 
             foreach (var item in shaderFile.zframesLookup) {
