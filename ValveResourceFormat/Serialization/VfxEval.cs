@@ -13,11 +13,6 @@ namespace ValveResourceFormat.Serialization.VfxEval
         // parse the input one line at a time
         private readonly List<string> DynamicExpressionList = new();
 
-        // check externally if we have problems parsing
-        public bool ErrorWhileParsing { get; private set; }
-        public string ErrorMessage { get; private set; }
-
-
         // function reference, name and number of arguments
         private readonly (string Name, int ArgumentCount)[] FUNCTION_REF = {
             ("sin",        1),     // 00
@@ -61,10 +56,6 @@ namespace ValveResourceFormat.Serialization.VfxEval
             ("rotate2d",   2),     // 26
             ("sincos",     1),     // 27
         };
-
-        private static readonly string[] OperatorSymbols = {
-            "","","","","","","","","","","","","",
-            "==","!=",">",">=","<","<=","+","-","*","/","%"};
 
         private enum OPCODE
         {
@@ -143,9 +134,6 @@ namespace ValveResourceFormat.Serialization.VfxEval
         {
             uint MURMUR2SEED = 0x31415926; // pi!
 
-        private void ParseExpression(byte[] binaryBlob, string[] renderAttributesUsed)
-        {
-            uint MURMUR2SEED = 0x31415926; // pi!
             foreach (var externalVarName in renderAttributesUsed)
             {
                 var murmur32 = MurmurHash2.Hash(externalVarName.ToLower(), MURMUR2SEED);
@@ -163,8 +151,6 @@ namespace ValveResourceFormat.Serialization.VfxEval
 
             while (dataReader.BaseStream.Position < binaryBlob.Length)
             {
-                try
-                {
                 ProcessOps((OPCODE)dataReader.ReadByte(), dataReader);
             }
 
@@ -175,11 +161,6 @@ namespace ValveResourceFormat.Serialization.VfxEval
 
             DynamicExpressionResult = DynamicExpressionResult.Trim();
         }
-
-
-        private const uint IFELSE_BRANCH = 0;     //    <cond> : <e1> ? <e2>
-        private const uint AND_BRANCH = 1;        //    <e1> && <e2>            (these expressions are encoded as branches on the bytestream!)
-        private const uint OR_BRANCH = 2;         //    <e1> || <e2>
 
         private void ProcessOps(OPCODE op, BinaryReader dataReader)
         {
@@ -422,7 +403,6 @@ namespace ValveResourceFormat.Serialization.VfxEval
                 // Trimming the brackets here because it's always safe to remove these from functions
                 // (as they always carry their own brackets)
                 Expressions.Push($"{funcName}({Trimb(exp3)},{Trimb(exp2)},{Trimb(exp1)})");
-                // expressions.Push($"{funcName}({exp3},{exp2},{exp1})");
                 return;
             }
             var exp4 = Expressions.Pop();
@@ -456,10 +436,6 @@ namespace ValveResourceFormat.Serialization.VfxEval
         {
             return exp[0] == '(' && exp[^1] == ')' ? exp[1..^1] : exp;
         }
-
-
-        private readonly Dictionary<uint, string> ExternalVariablesPlaceholderNames = new();
-        private readonly Dictionary<uint, string> LocalVariableNames = new();
 
         // naming external variables UNKNOWN, UNKNOWN2, UNKNOWN3,.. where not found
         private string GetExternalVarName(uint varId)
@@ -496,6 +472,5 @@ namespace ValveResourceFormat.Serialization.VfxEval
             }
             return varName;
         }
-
     }
 }
