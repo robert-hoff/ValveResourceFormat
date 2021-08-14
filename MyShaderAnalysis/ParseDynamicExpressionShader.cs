@@ -110,7 +110,7 @@ namespace MyShaderAnalysis {
         }
 
 
-        public void ParseExpression(byte[] binary_blob)
+        public string ParseExpression(byte[] binary_blob)
         {
 
 
@@ -135,7 +135,7 @@ namespace MyShaderAnalysis {
                 }
                 if (errorWhileParsing)
                 {
-                    return;
+                    return "";
                 }
             }
 
@@ -144,6 +144,7 @@ namespace MyShaderAnalysis {
                 dynamicExpressionResult += $"{s}\n";
             }
             dynamicExpressionResult = dynamicExpressionResult.Trim();
+            return dynamicExpressionResult;
         }
 
 

@@ -56,8 +56,9 @@ namespace MyShaderAnalysis {
             // FileSummaryAllFiles();
 
             // - prints a single page summary and links to all the files produced with FileSummaryAllFiles()
-            BlockCountSurvery($@"{SERVER_OUTPUT_DIR}\file-overview.html", writeFile: true);
+            // BlockCountSurvery($@"{SERVER_OUTPUT_DIR}\file-overview.html", writeFile: true);
             // FileBlockCount(filenamepath);
+            // WriteSfArgumentsAllFiles($"{SERVER_OUTPUT_DIR}/testrun.html", writeFile: true);
 
 
 
@@ -80,7 +81,7 @@ namespace MyShaderAnalysis {
 
 
             // -- setting up comprehensive summary for particular file (NEEDS UPDATE)
-            // FileSummaryMultiblendPs();
+            FileSummaryMultiblendPs();
 
 
 
@@ -333,11 +334,6 @@ namespace MyShaderAnalysis {
         }
 
 
-        /*
-         * FIXME LATER - output directories are completely tied up in the current server layout
-         *
-         */
-        // static void WriteVsPsFileSummary((string, string, string) triple, FILETYPE targetFileType) {
         static void WriteVsPsFileSummary(FileTriple fileTriple, FILETYPE targetFileType, bool disableOutput = false) {
             if (targetFileType != FILETYPE.vs_file && targetFileType != FILETYPE.ps_file) {
                 throw new ShaderParserException("need to target either vs or ps file");
@@ -347,7 +343,6 @@ namespace MyShaderAnalysis {
             string outputNamepath = targetFile.GetServerFilePath("summary", createDirs: true);
             FileSummaryVsPSFile(fileTriple, targetFileType, htmlTitle, outputNamepath, writeFile: true, disableOutput);
         }
-
 
 
 
@@ -397,7 +392,7 @@ namespace MyShaderAnalysis {
 
 
 
-        static void BlockCountSurvery(string outputFilenamepath = null, bool writeFile = true) {
+        static void BlockCountSurvery(string outputFilenamepath = null, bool writeFile = false) {
             if (outputFilenamepath != null && writeFile) {
                 ConfigureOutputFile(outputFilenamepath);
                 WriteHtmlFile("File", "File summary");
@@ -1377,16 +1372,14 @@ namespace MyShaderAnalysis {
 
 
 
-        static void CompareTriplesMainParams(string outputFilenamepath = null, bool writeFile = false) {
+        static void WriteSfArgumentsAllFiles(string outputFilenamepath = null, bool writeFile = false) {
             if (outputFilenamepath != null && writeFile) {
                 ConfigureOutputFile(outputFilenamepath);
                 WriteHtmlFile("SF names", "SF names for vcs, vs, ps triples");
             }
-            List<(string, string, string)> triples = GetFeaturesVsPsFileTriples();
-            // List<(string, string, string)> triples = new();
-            // triples.Add(GetTriple(@$"{PCGL_DIR_CORE}\depth_only_pcgl_30_features.vcs"));
-            // triples.Add(GetTriple(@$"{PCGL_DIR_CORE}\visualize_cloth_pcgl_40_features.vcs"));
-            // SfSummaryOfFileTriple(triples);
+            List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, -1);
+            SfSummaryOfFileTriples(triples);
+
         }
 
 
@@ -1404,14 +1397,14 @@ namespace MyShaderAnalysis {
 
                 string title = $"{triple.ftFile.RemoveBaseDir()} + vs, ps files";
                 OutputWriteLine($"{title}");
-                // new String('-', 5);
                 OutputWriteLine(new string('-', title.Length));
+                ShaderFile ftFile = new(triple.ftFile.filenamepath);
+                OutputWriteLine($"{ftFile.featuresHeader.file_description}");
                 Dictionary<int, string[]> p = new();
                 for (int i = 0; i < 30; i++) {
                     p.Add(i, new string[] { "", "", "" });
                 }
                 Dictionary<string, int> n = new();
-                ShaderFile ftFile = new(triple.ftFile.filenamepath);
                 ShaderFile vsFile = new(triple.vsFile.filenamepath);
                 ShaderFile psFile = new(triple.psFile.filenamepath);
                 List<string> vs_items = new();
@@ -1604,22 +1597,6 @@ namespace MyShaderAnalysis {
         }
 
 
-        static void Trial1() {
-            string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_features.vcs";
-            // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_vs.vcs";
-            // Debug.WriteLine($"parsing {RemoveBaseDir(filenamepath)}\n");
-            // DataReaderVcsByteAnalysis shaderByteAnalysis = new(filenamepath);
-            // shaderByteAnalysis.SetShortenOutput(false);
-            // shaderByteAnalysis.PrintByteAnalysis();
-
-
-            ShaderFile shaderFile = new(filenamepath);
-            DataBlockFeaturesHeader featuresHeader = shaderFile.featuresHeader;
-            // ShowMainParams()
-        }
-
-
-
 
 
 
@@ -1646,24 +1623,32 @@ namespace MyShaderAnalysis {
         }
 
 
+        /*
+         * Some arguments are specific only to only vs/ps files, while others are shared.
+         *
+         * E.g S_TRANSFORM_CONSTANT_BUFFER is only seen in vs files
+         *
+         *
+         *
+         */
         static void SfBlockInspections() {
-            List<string> featuresFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.features_file, 30);
-
-            //List<string> featuresFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.vs_file, -1);
-            //featuresFiles.AddRange(GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.ps_file, -1));
-            //featuresFiles.AddRange(GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.psrs_file, -1));
-            //featuresFiles.AddRange(GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.gs_file, -1));
-
-            // List<string> featuresFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
+            List<string> featuresFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
             foreach (string filenamepath in featuresFiles) {
                 ShaderFile shaderFile = new(filenamepath);
-                // Debug.WriteLine($"{RemoveBaseDir(shaderFile.filenamepath)}");
+
+                string filetype = "";
+                if (shaderFile.vcsFiletype == FILETYPE.features_file) {
+                    filetype = "           FEAT";
+                }
+                if (shaderFile.vcsFiletype == FILETYPE.vs_file) {
+                    filetype = "VS             ";
+                }
+                if (shaderFile.vcsFiletype == FILETYPE.ps_file) {
+                    filetype = "      PS       ";
+                }
+
                 foreach (var sfBlock in shaderFile.sfBlocks) {
-                    // Debug.WriteLine($"            {sfBlock.name0.PadRight(35)} {sfBlock.name1.PadRight(35)}");
-                    // CollectStringValue($"{sfBlock.name0.Substring(2)}({sfBlock.name0.Substring(0,1)})");
-
-
-                    CollectStringValue($"{sfBlock.name0.PadRight(35)} {sfBlock.name1.PadRight(35)}");
+                    CollectStringValue($"{sfBlock.name0.PadRight(35)[2..]} {filetype}    {sfBlock.name1.PadRight(35)}");
                 }
 
 

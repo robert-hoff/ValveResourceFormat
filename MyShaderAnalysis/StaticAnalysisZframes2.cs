@@ -48,19 +48,19 @@ namespace MyShaderAnalysis {
             // ZFileSummary(ARCHIVE.dotacore_pcgl, "panorama_fancyquad_pcgl_30_ps.vcs", 0x0, writeFile: true);
             // ZFileSummary(ARCHIVE.dotacore_pcgl, "blur_pcgl_30_ps.vcs", 0x1, writeFile: true);
             // ZFileSummary(ARCHIVE.dotacore_pcgl, "copytexture_pcgl_30_vs.vcs", 0x1, writeFile: true);
-            // ZFileSummary(ARCHIVE.dotacore_pcgl, "copytexture_pcgl_30_vs.vcs", 0x0, writeFile: true);
+            ZFileSummary(ARCHIVE.dotacore_pcgl, "copytexture_pcgl_30_vs.vcs", 0x0, writeFile: true);
 
 
 
-            WriteBunchOfZframes();
+            // WriteBunchOfZframes();
             // PrintZframeFileDirectory(SERVER_OUTPUT_DIR, writeFile: true);
         }
 
 
 
         static void WriteBunchOfZframes() {
-            int NUM_TO_PRINT = 30;
-            List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, -1);
+            int NUM_TO_PRINT = 35;
+            List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, 40);
 
             foreach (var triple in triples) {
                 int zframeCount = 0;
@@ -108,6 +108,12 @@ namespace MyShaderAnalysis {
                 ConfigureOutputFile(outputFilenamepath, disableOutput);
                 WriteHtmlFile($"Z 0x{zframeId:x}", vcsFile.GetZFrameHtmlFilename(zframeId)[0..^5]);
             }
+            // print referring files
+            OutputWriteLine($"<a href='{vcsFile.GetBestPath()}'>{vcsFile.RemoveBaseDir()}</a>");
+            PrintZframeByteCodeLink(shaderFile.filenamepath, zframeId);
+            OutputWriteLine("");
+
+
             PrintConfigurationState(shaderFile, zframeId);
             // PrintDataBlocks1(shaderFile, zframeFile);
             PrintFrameLeadingArgs(zframeFile);
@@ -483,11 +489,6 @@ namespace MyShaderAnalysis {
 
 
         static void PrintConfigurationState(ShaderFile shaderFile, long zframeId) {
-            // FIXME - needs rethink
-            PrintReferingFileLink(shaderFile.filenamepath);
-            PrintZframeByteCodeLink(shaderFile.filenamepath, zframeId);
-
-            OutputWriteLine("");
             string configHeader = "Configuration";
             OutputWriteLine(configHeader);
             OutputWriteLine(new string('-', configHeader.Length));
@@ -514,14 +515,6 @@ namespace MyShaderAnalysis {
             OutputWriteLine("");
         }
 
-
-        static void PrintReferingFileLink(string filenamepath) {
-            string token = GetCoreOrDotaString(filenamepath);
-            string htmlFileName = $"{Path.GetFileName(filenamepath[0..^4])}-summary.html";
-            string htmlLink = $"<a href='/GEN-output/sf-summaries/{token}/{htmlFileName}'>{ShortHandName(filenamepath)}</a>";
-            OutputWrite(htmlLink);
-            OutputWriteLine("");
-        }
 
 
 

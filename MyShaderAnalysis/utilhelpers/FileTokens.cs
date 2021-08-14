@@ -38,6 +38,13 @@ namespace MyShaderAnalysis.utilhelpers {
         public FILETYPE vcsFiletype;
 
 
+
+
+        public FileTokens(string filenamepath) : this(DetermineArchiveType(filenamepath), filenamepath) {}
+
+
+
+
         /*
          * this will work passing either the filename or the full filenamepath
          *

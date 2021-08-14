@@ -179,6 +179,7 @@ namespace MyShaderAnalysis.vcsparsing {
         public int arg2; // layers
         public int arg3;
         public int arg4;
+        public int arg5;
         public List<string> additionalParams = new();
 
         public DataBlockSfBlock(DataReader datareader, int start, int blockId) : base(datareader, start) {
@@ -192,6 +193,7 @@ namespace MyShaderAnalysis.vcsparsing {
             arg2 = datareader.ReadInt();
             arg3 = datareader.ReadInt();
             arg4 = datareader.ReadInt();
+            arg5 = datareader.ReadIntAtPosition();
             int additionalStringsCount = datareader.ReadInt();
             for (int i = 0; i < additionalStringsCount; i++) {
                 additionalParams.Add(datareader.ReadNullTermString());
@@ -316,7 +318,6 @@ namespace MyShaderAnalysis.vcsparsing {
             arg5 = datareader.ReadInt();
         }
 
-
         public override void PrintByteSummary() {
             throw new NotImplementedException();
         }
@@ -356,7 +357,7 @@ namespace MyShaderAnalysis.vcsparsing {
             // range1 at (152)
             range2 = ReadIntRange();
             datareader.offset += 64 - range2.Length * 4;
-            // there seems to be a provision here for a description, but for the dota2 set it is always null
+            // there seems to be a provision here for a description, for the dota2 archive it is always null
             description = datareader.ReadNullTermStringAtPosition();
             datareader.offset += 256;
         }
@@ -449,10 +450,10 @@ namespace MyShaderAnalysis.vcsparsing {
         public string name0;
         public string name1;
         public string name2;
-        public int lead0;
-        public float lead1;
-        public int paramType;
-        public byte[] dynExp = null;
+        public int pt0;
+        public float res0;
+        public int main0;
+        public byte[] dynExp = Array.Empty<byte>();
         public int arg0;
         public int arg1;
         public int arg2;
@@ -476,12 +477,12 @@ namespace MyShaderAnalysis.vcsparsing {
             datareader.offset += 64;
             name1 = datareader.ReadNullTermStringAtPosition();
             datareader.offset += 64;
-            lead0 = datareader.ReadInt();
-            lead1 = datareader.ReadFloat();
+            pt0 = datareader.ReadInt();
+            res0 = datareader.ReadFloat();
             name2 = datareader.ReadNullTermStringAtPosition();
             datareader.offset += 64;
-            paramType = datareader.ReadInt();
-            if (paramType == 6 || paramType == 7) {
+            main0 = datareader.ReadInt();
+            if (main0 == 6 || main0 == 7) {
                 int dynExpLen = datareader.ReadInt();
                 dynExp = datareader.ReadBytes(dynExpLen);
             }
@@ -522,6 +523,36 @@ namespace MyShaderAnalysis.vcsparsing {
             command1 = datareader.ReadNullTermStringAtPosition();
             datareader.offset += 32;
         }
+
+
+        public void ShowBlock() {
+
+            Debug.WriteLine($"name0 {s(20)} {name0}");
+            Debug.WriteLine($"name1 {s(20)} {name1}");
+            Debug.WriteLine($"lead0,lead1 {s(14)} ({pt0},{res0})");
+            Debug.WriteLine($"name2 {s(20)} {name2}");
+            Debug.WriteLine($"paramType {s(16)} {main0}");
+            Debug.WriteLine($"dynExp {s(19)} {DataReader.BytesToString(dynExp)}");
+            Debug.WriteLine($"arg0 {s(21)} {arg0,9}");
+            Debug.WriteLine($"arg1 {s(21)} {arg1,9}");
+            Debug.WriteLine($"arg2 {s(21)} {arg2,9}");
+            Debug.WriteLine($"arg3 {s(21)} {arg3,9}");
+            Debug.WriteLine($"arg4 {s(21)} {arg4,9}");
+            Debug.WriteLine($"arg5 {s(21)} {arg5,9}");
+            Debug.WriteLine($"fileref {s(17)} {fileref}");
+            Debug.WriteLine($"ranges0 {s(17)} {CombineIntArray(ranges0)}");
+            Debug.WriteLine($"ranges1 {s(17)} {CombineIntArray(ranges1)}");
+            Debug.WriteLine($"ranges2 {s(17)} {CombineIntArray(ranges2)}");
+            Debug.WriteLine($"ranges3 {s(17)} {ranges3[0]},{ranges3[1]},{ranges3[2]},{ranges3[3]}");
+            Debug.WriteLine($"ranges4 {s(17)} {ranges4[0]},{ranges4[1]},{ranges4[2]},{ranges4[3]}");
+            Debug.WriteLine($"ranges5 {s(17)} {ranges5[0]},{ranges5[1]},{ranges5[2]},{ranges5[3]}");
+            Debug.WriteLine($"ranges6 {s(17)} {CombineIntArray(ranges6)}");
+            Debug.WriteLine($"ranges7 {s(17)} {CombineIntArray(ranges7)}");
+            Debug.WriteLine($"command0 {s(16)} {command0}");
+            Debug.WriteLine($"command1 {s(16)} {command1}");
+        }
+
+
 
         public override void PrintByteSummary() {
             throw new NotImplementedException();

@@ -39,6 +39,7 @@ namespace MyShaderAnalysis.vcsparsing {
             return GetVcsFiles(dir1, null, fileType, -1);
         }
 
+
         public static List<string> GetVcsFiles(string dir1, string dir2, FILETYPE fileType, int numEnding, bool sortFiles = true) {
             List<string> filesFound = new();
             if (fileType == FILETYPE.features_file || fileType == FILETYPE.any) {
@@ -316,8 +317,8 @@ namespace MyShaderAnalysis.vcsparsing {
 
 
 
-        private static Dictionary<int, int> collectValuesInt = new();
-        private static Dictionary<string, int> collectValuesString = new();
+        public static SortedDictionary<int, int> collectValuesInt = new();
+        public static SortedDictionary<string, int> collectValuesString = new();
 
         public static void CollectIntValue(int val) {
             int currIterator = collectValuesInt.GetValueOrDefault(val, 0);
@@ -392,7 +393,7 @@ namespace MyShaderAnalysis.vcsparsing {
             }
 
             if (splitName.Length == 1) {
-                return splitName[0].Length > 4 ? splitName[0].Substring(0,4) : splitName[0];
+                return splitName[0].Length > 4 ? splitName[0].Substring(0, 4) : splitName[0];
             }
 
             newName = splitName[0].Length > 3 ? splitName[0][0..3] : splitName[0];
@@ -415,7 +416,7 @@ namespace MyShaderAnalysis.vcsparsing {
             if (ints0.Length == 0) return $"_".PadLeft(padding);
             string valueString = "";
             foreach (int v in ints0) {
-                string intPadded = $"{(v!=0 ? v:"_")}".PadLeft(padding);
+                string intPadded = $"{(v != 0 ? v : "_")}".PadLeft(padding);
                 valueString += $"{intPadded}";
             }
             // return $"{valueString[0..^padding]}";
@@ -446,7 +447,7 @@ namespace MyShaderAnalysis.vcsparsing {
             string intsString = "";
             foreach (int v in ints0) {
                 string val = hex ? $"{v:x}" : $"{v}";
-                intsString += $"{(v!=0 ? val:"_")}".PadLeft(padding);
+                intsString += $"{(v != 0 ? val : "_")}".PadLeft(padding);
             }
             string labelstr = (label != null && hex) ? $"{label}(0x)" : $"{label}";
             labelstr = label != null ? $"{labelstr,12} = " : "";
@@ -473,6 +474,12 @@ namespace MyShaderAnalysis.vcsparsing {
                 stringCollection.Add(line[0..^2]);
             }
             return stringCollection.ToArray(); ;
+        }
+
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "I like it like this")]
+        public static string s(int len) {
+            return new string(' ', len);
         }
 
 
