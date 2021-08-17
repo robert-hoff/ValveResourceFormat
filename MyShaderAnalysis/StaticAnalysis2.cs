@@ -39,19 +39,24 @@ namespace MyShaderAnalysis {
             // ShowFeaturesDetails();
             // SurveyParamBlocks(TestFilenamepath("param-printout.html"), false);
             // PrintingAndSortingParams(TestFilenamepath("TESTFILE.html"), true);
-            PrintingParamsWithDynamicExpressions(TestFilenamepath("TESTFILE.html"), true);
+            // PrintingParamsWithDynamicExpressions(TestFilenamepath("TESTFILE.html"), true);
 
 
-            // string sortOn = $"{1:d07}";
-            // Debug.WriteLine($"{sortOn,8}");
 
 
-            // Debug.WriteLine($"{(int) (0.001*1000000):d08}");
-
-
-            // Debug.WriteLine(Pow2Rep(128));
+            DoSomething();
 
         }
+
+
+        static void DoSomething() {
+
+            Debug.WriteLine($"do do it");
+        }
+
+
+
+
 
 
         static string Pow2Rep(int val) {

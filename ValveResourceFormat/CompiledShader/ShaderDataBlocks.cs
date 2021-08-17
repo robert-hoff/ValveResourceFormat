@@ -26,7 +26,7 @@ namespace ValveResourceFormat.ShaderParser
         public FeaturesHeaderBlock(ShaderDataReader datareader, long start) : base(datareader, start)
         {
             int magic = datareader.ReadInt();
-            if (magic != 0x32736376)
+            if (magic != CompiledShader.MAGIC)
             {
                 throw new ShaderParserException($"wrong file id {magic:x}");
             }
@@ -171,7 +171,7 @@ namespace ValveResourceFormat.ShaderParser
         public VsPsHeaderBlock(ShaderDataReader datareader, long start) : base(datareader, start)
         {
             int magic = datareader.ReadInt();
-            if (magic != 0x32736376)
+            if (magic != CompiledShader.MAGIC)
             {
                 throw new ShaderParserException($"wrong file id {magic:x}");
             }
@@ -402,9 +402,9 @@ namespace ValveResourceFormat.ShaderParser
     public class DConstraintsBlock : ShaderDataBlock
     {
         public int blockIndex;
-        public int relRule;  // 2 = dependency (other files), 3 = exclusion (1 not present, as in the compat-blocks)
-        public int arg0; // ALWAYS 3 (for compat-blocks, this value is 1 for features files and 2 for all other files)
-        public int arg1; // arg1 at (88) sometimes has a value > -1 (in compat-blocks this value is always seen to be -1)
+        public int relRule;  // 2 = dependency (other files), 3 = exclusion (1 not present, as in the sf-constraints-blocks)
+        public int arg0; // ALWAYS 3 (for sf-constraints-blocks, this value is 1 for features files and 2 for all other files)
+        public int arg1; // arg1 at (88) sometimes has a value > -1 (in sf-constraints-blocks this value is always seen to be -1)
         public int[] flags;
         public int[] range0;
         public int[] range1;

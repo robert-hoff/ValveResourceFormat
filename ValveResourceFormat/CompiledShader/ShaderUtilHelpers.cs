@@ -19,21 +19,21 @@ namespace ValveResourceFormat.ShaderParser
             return zstdDictionary;
         }
 
-        public static FILETYPE GetVcsFileType(string filenamepath) {
+        public static VcsFiletype GetVcsFileType(string filenamepath) {
             if (filenamepath.EndsWith("features.vcs")) {
-                return FILETYPE.features_file;
+                return VcsFiletype.Features;
             }
             if (filenamepath.EndsWith("vs.vcs")) {
-                return FILETYPE.vs_file;
+                return VcsFiletype.VertexShader;
             }
             if (filenamepath.EndsWith("ps.vcs")) {
-                return FILETYPE.ps_file;
+                return VcsFiletype.PixelShader;
             }
             if (filenamepath.EndsWith("psrs.vcs")) {
-                return FILETYPE.psrs_file;
+                return VcsFiletype.PotentialShadowReciever;
             }
             if (filenamepath.EndsWith("gs.vcs")) {
-                return FILETYPE.gs_file;
+                return VcsFiletype.GeometryShader;
             }
             throw new ShaderParserException($"don't know what this file is {filenamepath}");
         }

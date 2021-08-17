@@ -22,24 +22,19 @@ namespace MyShaderAnalysis.utilhelpers {
         static void ZframeLabel() {
             // zframes ids range from 0 to large numbers, the largest known id is
             // 0x018cbfb1 or 26001329
-            // the best way to print them then is using a full 8-length hex representation
+            // a standardised way to print them then is using a 8-length hex representation
             // Debug.WriteLine(0x018cbfb1);
-
-
             Debug.WriteLine($"{60:x08}");
-
         }
-
 
 
 
         /*
          *
-         * To keep track of zframes, it seems reasonable to use a sorted dictionary.
-         * I can either look up zframes based on the index they appear in the file,
-         * or based on their ID
+         * To keep track of zframes use a sorted dictionary.
+         * Can either look up zframes based on the index they appear in the file, or based on their ID
          *
-         * I'm not sure I need the order they appear in the file though (probably not - but it doesn't matter)
+         * I'm not sure I need the order they appear in the file though (possibly not - but it doesn't matter)
          *
          */
         static void TestDictionaryLookups() {

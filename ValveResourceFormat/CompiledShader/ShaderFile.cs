@@ -15,13 +15,13 @@ namespace ValveResourceFormat.ShaderParser
     {
         private ShaderDataReader datareader;
         public string filenamepath;
-        public FILETYPE vcsFiletype = FILETYPE.unknown;
+        public VcsFiletype vcsFiletype = VcsFiletype.Undetermined;
         public FeaturesHeaderBlock featuresHeader;
         public VsPsHeaderBlock vspsHeader;
         public List<SfBlock> sfBlocks = new();
-        public List<SfConstraintsBlock> compatibilityBlocks = new();
+        public List<SfConstraintsBlock> sfRuleBlocks = new();
         public List<DBlock> dBlocks = new();
-        public List<DConstraintsBlock> unknownBlocks = new();
+        public List<DConstraintsBlock> dRuleBlocks = new();
         public List<ParamBlock> paramBlocks = new();
         public List<MipmapBlock> mipmapBlocks = new();
         public List<BufferBlock> bufferBlocks = new();
@@ -34,22 +34,22 @@ namespace ValveResourceFormat.ShaderParser
             vcsFiletype = GetVcsFileType(filenamepath);
             this.datareader = datareader;
 
-            if (vcsFiletype == FILETYPE.features_file)
+            if (vcsFiletype == VcsFiletype.Features)
             {
                 featuresHeader = new FeaturesHeaderBlock(datareader, datareader.GetOffset());
-            } else if (vcsFiletype == FILETYPE.vs_file || vcsFiletype == FILETYPE.ps_file
-                   || vcsFiletype == FILETYPE.gs_file || vcsFiletype == FILETYPE.psrs_file)
+            } else if (vcsFiletype == VcsFiletype.VertexShader || vcsFiletype == VcsFiletype.PixelShader
+                   || vcsFiletype == VcsFiletype.GeometryShader || vcsFiletype == VcsFiletype.PotentialShadowReciever)
             {
                 vspsHeader = new VsPsHeaderBlock(datareader, datareader.GetOffset());
 
             } else
             {
-                throw new ShaderParserException($"can't parse this filetype: {vcsFiletype}");
+                throw new ShaderParserException($"Can't parse this filetype: {vcsFiletype}");
             }
             int block_delim = datareader.ReadInt();
             if (block_delim != 17)
             {
-                throw new ShaderParserException($"unexpected value for block_delom = {block_delim}, expecting 17");
+                throw new ShaderParserException($"Unexpected value for block_delim = {block_delim}, expecting 17");
             }
             int sfBlockCount = datareader.ReadInt();
             for (int i = 0; i < sfBlockCount; i++)
@@ -58,11 +58,11 @@ namespace ValveResourceFormat.ShaderParser
                 sfBlocks.Add(nextSfBlock);
             }
             // always 472 bytes
-            int compatBlockCount = datareader.ReadInt();
-            for (int i = 0; i < compatBlockCount; i++)
+            int sfRuleBlockCount = datareader.ReadInt();
+            for (int i = 0; i < sfRuleBlockCount; i++)
             {
                 SfConstraintsBlock nextCompatibilityBlock = new(datareader, datareader.GetOffset(), i);
-                compatibilityBlocks.Add(nextCompatibilityBlock);
+                sfRuleBlocks.Add(nextCompatibilityBlock);
             }
             // always 152 bytes
             int dBlockCount = datareader.ReadInt();
@@ -72,11 +72,11 @@ namespace ValveResourceFormat.ShaderParser
                 dBlocks.Add(nextDBlock);
             }
             // always 472 bytes
-            int unknownBlockCount = datareader.ReadInt();
-            for (int i = 0; i < unknownBlockCount; i++)
+            int dRuleBlockCount = datareader.ReadInt();
+            for (int i = 0; i < dRuleBlockCount; i++)
             {
-                DConstraintsBlock nextUnknownBlock = new(datareader, datareader.GetOffset(), i);
-                unknownBlocks.Add(nextUnknownBlock);
+                DConstraintsBlock nextDRuleBlock = new(datareader, datareader.GetOffset(), i);
+                dRuleBlocks.Add(nextDRuleBlock);
             }
             int paramBlockCount = datareader.ReadInt();
             for (int i = 0; i < paramBlockCount; i++)
@@ -98,7 +98,7 @@ namespace ValveResourceFormat.ShaderParser
                 bufferBlocks.Add(nextBufferBlock);
             }
             // only features and vs files observe symbol blocks
-            if (vcsFiletype == FILETYPE.features_file || vcsFiletype == FILETYPE.vs_file)
+            if (vcsFiletype == VcsFiletype.Features || vcsFiletype == VcsFiletype.VertexShader)
             {
                 int sybmolsBlockCount = datareader.ReadInt();
                 for (int i = 0; i < sybmolsBlockCount; i++)
@@ -177,11 +177,11 @@ namespace ValveResourceFormat.ShaderParser
         public void PrintByteAnalysis()
         {
             datareader.SetPosition(0);
-            if (vcsFiletype == FILETYPE.features_file)
+            if (vcsFiletype == VcsFiletype.Features)
             {
                 featuresHeader.PrintAnnotatedBytestream();
-            } else if (vcsFiletype == FILETYPE.vs_file || vcsFiletype == FILETYPE.ps_file
-                  || vcsFiletype == FILETYPE.gs_file || vcsFiletype == FILETYPE.psrs_file)
+            } else if (vcsFiletype == VcsFiletype.VertexShader || vcsFiletype == VcsFiletype.PixelShader
+                  || vcsFiletype == VcsFiletype.GeometryShader || vcsFiletype == VcsFiletype.PotentialShadowReciever)
             {
                 vspsHeader.PrintAnnotatedBytestream();
             }
@@ -205,7 +205,7 @@ namespace ValveResourceFormat.ShaderParser
             uint combatibilityBlockCount = datareader.ReadUIntAtPosition();
             datareader.ShowBytes(4, $"{combatibilityBlockCount} compatibility blocks (472 bytes each)");
             datareader.BreakLine();
-            foreach (var compatBlock in compatibilityBlocks)
+            foreach (var compatBlock in sfRuleBlocks)
             {
                 compatBlock.PrintAnnotatedBytestream();
             }
@@ -221,7 +221,7 @@ namespace ValveResourceFormat.ShaderParser
             uint unknownBlockCount = datareader.ReadUIntAtPosition();
             datareader.ShowBytes(4, $"{unknownBlockCount} unknown blocks (472 bytes each)");
             datareader.BreakLine();
-            foreach (var dRuleBlock in unknownBlocks)
+            foreach (var dRuleBlock in dRuleBlocks)
             {
                 dRuleBlock.PrintAnnotatedBytestream();
             }
@@ -250,7 +250,7 @@ namespace ValveResourceFormat.ShaderParser
                 bufferBlock.PrintAnnotatedBytestream();
             }
             datareader.ShowByteCount();
-            if (vcsFiletype == FILETYPE.features_file || vcsFiletype == FILETYPE.vs_file)
+            if (vcsFiletype == VcsFiletype.Features || vcsFiletype == VcsFiletype.VertexShader)
             {
                 uint symbolBlockCount = datareader.ReadUIntAtPosition();
                 datareader.ShowBytes(4, $"{symbolBlockCount} symbol/names blocks");
