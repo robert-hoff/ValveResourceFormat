@@ -73,7 +73,11 @@ namespace MyShaderAnalysis.utilhelpers {
             }
             validFeaturesFiles.Sort();
             foreach (string ftFilenamepath in validFeaturesFiles) {
-                ARCHIVE archive = GetCoreOrDotaString(ftFilenamepath).Equals("core") ? ARCHIVE.dotacore_pcgl : ARCHIVE.dotagame_pcgl;
+
+                // ARCHIVE archive = GetCoreOrDotaString(ftFilenamepath).Equals("core") ? ARCHIVE.dotacore_pcgl : ARCHIVE.dotagame_pcgl;
+                ARCHIVE archive = DetermineArchiveType(ftFilenamepath);
+
+
                 fileTriples.Add(new FileTriple(archive, ftFilenamepath));
             }
 

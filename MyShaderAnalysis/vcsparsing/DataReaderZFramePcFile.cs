@@ -4,18 +4,22 @@ using System.Diagnostics;
 using System.IO;
 using static MyShaderAnalysis.vcsparsing.UtilHelpers;
 
+
 namespace MyShaderAnalysis.vcsparsing {
 
-    public class DataReaderZFrameByteAnalysis : DataReader {
+
+    class DataReaderZFramePcFile : DataReader {
+
 
         FILETYPE filetype;
 
-        public DataReaderZFrameByteAnalysis(byte[] data, FILETYPE filetype) : base(data) {
+        public DataReaderZFramePcFile(byte[] data, FILETYPE filetype) : base(data) {
             if (filetype == FILETYPE.features_file) {
                 throw new ShaderParserException("file type cannot be features, as they don't contain any zframes");
             }
             this.filetype = filetype;
         }
+
 
 
         bool writeAsHtml = false;
@@ -37,11 +41,7 @@ namespace MyShaderAnalysis.vcsparsing {
 
             ShowZDataSection(-1);
             ShowZFrameHeader();
-
-            // this applies only to vs files (ps, gs and psrs files don't have this section)
             if (filetype == FILETYPE.vs_file) {
-                // values seen
-                // 1,2,4,5,8,10,12,16,20,40,48,80,120,160
                 int blockCountInput = ReadInt16AtPosition();
                 ShowByteCount("Some kind of state summary (uniforms/variables input?)");
                 ShowBytes(2, breakLine: false);
@@ -61,12 +61,19 @@ namespace MyShaderAnalysis.vcsparsing {
             BreakLine();
 
             ShowByteCount("Some kind of state summary (uniforms/variables output?)");
-            int blockCountOutput = ReadInt16AtPosition();
-            ShowBytes(2, breakLine: false);
-            TabComment($"nr of data-blocks ({blockCountOutput})", 1);
+
+
+            //int blockCountOutput = ReadInt16AtPosition();
+            //ShowBytes(2, breakLine: false);
+            //TabComment($"nr of data-blocks ({blockCountOutput})", 1);
+
+
+
+
+
+            /*
             ShowBytes(blockCountOutput * 2);
             BreakLine();
-
             ShowByteCount();
             ShowBytes(4, breakLine: false);
             int bin0 = databytes[offset - 4];
@@ -74,26 +81,21 @@ namespace MyShaderAnalysis.vcsparsing {
             TabComment($"possible flags {Convert.ToString(bin0, 2).PadLeft(8, '0')} {Convert.ToString(bin1, 2).PadLeft(8, '0')}", 7);
             ShowBytes(1, breakLine: false);
             TabComment("values seen 0,1", 16);
-
             uint glslSourceCount = ReadUIntAtPosition();
             ShowBytes(4, breakLine: false);
             TabComment($"glsl source files ({glslSourceCount})", 7);
             ShowBytes(1, breakLine: false);
             TabComment("values seen 0,1", 16);
             BreakLine();
-
-
             for (int i = 0; i < glslSourceCount; i++) {
                 var glslSourceItem = ShowZSourceSection(i);
                 glslSources.Add(glslSourceItem);
             }
-
             //  End blocks for vs and gs files
             if (filetype == FILETYPE.vs_file || filetype == FILETYPE.gs_file) {
                 ShowZAllEndBlocksTypeVs();
                 BreakLine();
             }
-
             //  End blocks for ps and psrs files
             if (filetype == FILETYPE.ps_file || filetype == FILETYPE.psrs_file) {
                 ShowByteCount();
@@ -101,7 +103,6 @@ namespace MyShaderAnalysis.vcsparsing {
                 ShowBytes(4, breakLine: false);
                 TabComment($"nr of end blocks ({nrEndBlocks})");
                 OutputWriteLine("");
-
                 for (int i = 0; i < nrEndBlocks; i++) {
                     ShowByteCount($"End-block[{i}]");
                     int blockId = ReadInt16AtPosition();
@@ -112,17 +113,14 @@ namespace MyShaderAnalysis.vcsparsing {
                     int sourceReference = ReadInt16AtPosition();
                     ShowBytes(4, breakLine: false);
                     TabComment($"source ref ({sourceReference})");
-
                     uint glslPointer = ReadUIntAtPosition();
                     ShowBytes(4, breakLine: false);
                     TabComment($"glsl source pointer ({glslPointer})");
-
                     ShowBytes(3, breakLine: false);
                     bool hasData0 = databytes[offset - 3] == 0;
                     bool hasData1 = databytes[offset - 2] == 0;
                     bool hasData2 = databytes[offset - 1] == 0;
                     TabComment($"(data0={hasData0}, data1={hasData1}, data2={hasData2})", 7);
-
                     if (hasData0) {
                         OutputWriteLine("// data-section 0");
                         ShowBytes(16);
@@ -141,15 +139,11 @@ namespace MyShaderAnalysis.vcsparsing {
                 }
             }
             EndOfFile();
+            */
 
 
-            // write the gsls source, if indicated
-            if (saveGlslSources && !writeAsHtml) {
-                SaveGlslSourcestoTxt(glslSources);
-            }
-            if (saveGlslSources && writeAsHtml) {
-                SaveGlslSourcestoHtml(glslSources);
-            }
+
+
 
         }
 
@@ -389,14 +383,17 @@ namespace MyShaderAnalysis.vcsparsing {
             return myDynParser.dynamicExpressionResult;
         }
 
+
+
+
+
+
+
+
+
     }
+
 }
-
-
-
-
-
-
 
 
 

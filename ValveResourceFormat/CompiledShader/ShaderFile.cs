@@ -61,8 +61,8 @@ namespace ValveResourceFormat.ShaderParser
             int sfRuleBlockCount = datareader.ReadInt();
             for (int i = 0; i < sfRuleBlockCount; i++)
             {
-                SfConstraintsBlock nextCompatibilityBlock = new(datareader, datareader.GetOffset(), i);
-                sfRuleBlocks.Add(nextCompatibilityBlock);
+                SfConstraintsBlock nextSfRuleBlock = new(datareader, datareader.GetOffset(), i);
+                sfRuleBlocks.Add(nextSfRuleBlock);
             }
             // always 152 bytes
             int dBlockCount = datareader.ReadInt();
@@ -202,12 +202,12 @@ namespace ValveResourceFormat.ShaderParser
                 sfBlock.PrintAnnotatedBytestream();
             }
             datareader.ShowByteCount();
-            uint combatibilityBlockCount = datareader.ReadUIntAtPosition();
-            datareader.ShowBytes(4, $"{combatibilityBlockCount} compatibility blocks (472 bytes each)");
+            uint sfRuleBlockCount = datareader.ReadUIntAtPosition();
+            datareader.ShowBytes(4, $"{sfRuleBlockCount} S-configuration constraint blocks (472 bytes each)");
             datareader.BreakLine();
-            foreach (var compatBlock in sfRuleBlocks)
+            foreach (var sfRuleBlock in sfRuleBlocks)
             {
-                compatBlock.PrintAnnotatedBytestream();
+                sfRuleBlock.PrintAnnotatedBytestream();
             }
             datareader.ShowByteCount();
             uint dBlockCount = datareader.ReadUIntAtPosition();
@@ -218,8 +218,8 @@ namespace ValveResourceFormat.ShaderParser
                 dBlock.PrintAnnotatedBytestream();
             }
             datareader.ShowByteCount();
-            uint unknownBlockCount = datareader.ReadUIntAtPosition();
-            datareader.ShowBytes(4, $"{unknownBlockCount} unknown blocks (472 bytes each)");
+            uint dRuleBlockCount = datareader.ReadUIntAtPosition();
+            datareader.ShowBytes(4, $"{dRuleBlockCount} D-configuration constraint blocks (472 bytes each)");
             datareader.BreakLine();
             foreach (var dRuleBlock in dRuleBlocks)
             {

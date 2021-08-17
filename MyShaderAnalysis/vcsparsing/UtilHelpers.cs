@@ -195,6 +195,12 @@ namespace MyShaderAnalysis.vcsparsing {
             if (Path.GetDirectoryName(vcsFileName).EndsWith("shaders-core\\vfx")) {
                 return "core";
             }
+            if (Path.GetDirectoryName(vcsFileName).EndsWith("artifact-shaders-pc-core")) {
+                return "artifact-core";
+            }
+            if (Path.GetDirectoryName(vcsFileName).EndsWith("artifact-shaders-pc-dcg")) {
+                return "artifact-dcg";
+            }
             throw new ShaderParserException("don't know where this file belongs");
         }
 

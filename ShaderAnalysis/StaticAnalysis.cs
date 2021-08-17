@@ -22,11 +22,15 @@ namespace ShaderAnalysis
 
         static void Trial2()
         {
-            // string filenamepath = $"{FileSystem.DOTA_CORE_PCGL_SOURCE}/";
+            // string filenamepath = $"{FileSystem.DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs";
 
 
+            string filenamepath = $"{FileSystem.ARTIFACT_CLASSIC_DCG_PC_SOURCE}/bloom_dota_pc_30_vs.vcs";
+            ShaderFile shaderFile = new ReadShaderFile(filenamepath).GetShaderFile();
 
-            Debug.WriteLine($"hello?");
+            // Debug.WriteLine($"{shaderFile.GetZFrameCount()}");
+            shaderFile.PrintByteAnalysis();
+
 
         }
 

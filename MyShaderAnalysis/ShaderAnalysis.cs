@@ -13,8 +13,12 @@ namespace MyShaderAnalysis {
         const string PCGL_DIR_NOT_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders\vfx"; // i.e. Dota2 specific
         const string PC_DIR_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pc\shaders-core\vfx";
         const string PC_DIR_NOT_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pc\shaders\vfx";
+        const string ARTIFACT_CLASSIC_CORE_PC_SOURCE = "X:/artifact-classic-exports/artifact-shaders-pc-core";
+        const string ARTIFACT_CLASSIC_DCG_PC_SOURCE = "X:/artifact-classic-exports/artifact-shaders-pc-dcg";
+
         // const string OUTPUT_DIR = @"..\..\..\GEN-OUTPUT";
         const string OUTPUT_DIR = @"Z:\active\projects\dota2-sourcesdk-modding\shader-analysis-vcs-format\OUTPUT_DUMP";
+
 
 
 
@@ -57,13 +61,15 @@ namespace MyShaderAnalysis {
             // WriteFirst200ZFramesEveryFile();
             // WriteAZFrameToFile();
             // WriteZFrameToFile(filenamepath, 0);
-            WriteAZFrameAsHtmlByZframeId(filenamepath, 0x500);
+            // WriteAZFrameAsHtmlByZframeId(filenamepath, 0x500);
             // ParseABunchOfZframes();
             // WriteFirstZFrameEveryFile();
 
 
 
             // R: currently writes the blur_pcgl_30_features.vcs + vs, ps collection into my OUTPUT dir (not the server)
+            // --> There must be an updated method for this somewhere that uses the new FileTokens class
+            // NO, remember the byte-analysis goes to the directory "vcs-all"
             // WriteVcsCollectionAsHtml();
 
 
@@ -72,7 +78,7 @@ namespace MyShaderAnalysis {
             // WriteVcsByteAnalysisToTxt(filenamepath);
 
             // R: I wrote the core and dota files separately and copied them onto the server
-            // WriteAllVcsFilesToHtml();
+            WriteAllVcsFilesToHtml();
             // WriteVcsByteAnalysisToHtml(filenamepath, writeHtmlLinks: true);
             // ParseAllVcsFilesDisableOutput();
         }
@@ -357,8 +363,15 @@ namespace MyShaderAnalysis {
 
         static void WriteAllVcsFilesToHtml() {
             // List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
-            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_NOT_CORE, null, FILETYPE.any, -1);
-            // List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, null, FILETYPE.any, -1);
+            // List<string> vcsFiles = GetVcsFiles(PCGL_DIR_NOT_CORE, null, FILETYPE.any, -1);
+            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, null, FILETYPE.any, -1);
+
+            //List<string> vcsFiles = new();
+            //vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_DCG_PC_SOURCE, null, FILETYPE.features_file, -1));
+            //vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_DCG_PC_SOURCE, null, FILETYPE.vs_file, -1));
+            //vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_DCG_PC_SOURCE, null, FILETYPE.ps_file, -1));
+            //vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_DCG_PC_SOURCE, null, FILETYPE.psrs_file, -1));
+
             foreach (string vcsFile in vcsFiles) {
                 WriteVcsByteAnalysisToHtml(vcsFile, writeHtmlLinks: true);
             }

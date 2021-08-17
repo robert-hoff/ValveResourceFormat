@@ -164,6 +164,21 @@ namespace MyShaderAnalysis.vcsparsing {
             return str;
         }
 
+        public void PrintIntWithValue() {
+            int intval = ReadIntAtPosition();
+            ShowBytes(4, breakLine: false);
+            TabComment($"{intval}");
+        }
+
+        public void EndOfFile() {
+            if (offset != databytes.Length) {
+                throw new ShaderParserException("End of file not reached!");
+            }
+            ShowByteCount();
+            OutputWriteLine("EOF");
+            BreakLine();
+        }
+
         public void ShowByteCount(string message = null) {
             OutputWrite($"[{offset}]{(message != null ? " "+message : "")}\n");
         }

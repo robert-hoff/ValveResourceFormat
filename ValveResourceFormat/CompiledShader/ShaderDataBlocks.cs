@@ -28,17 +28,17 @@ namespace ValveResourceFormat.ShaderParser
             int magic = datareader.ReadInt();
             if (magic != CompiledShader.MAGIC)
             {
-                throw new ShaderParserException($"wrong file id {magic:x}");
+                throw new ShaderParserException($"Wrong file id {magic:x}");
             }
             fileversion = datareader.ReadInt();
             if (fileversion != 64)
             {
-                throw new ShaderParserException($"wrong version {fileversion}, expecting 64");
+                throw new ShaderParserException($"Wrong version {fileversion}, only version 64 supported");
             }
             int psrs_arg = datareader.ReadInt();
             if (psrs_arg != 0 && psrs_arg != 1)
             {
-                throw new ShaderParserException($"unexpected value psrs_arg = {psrs_arg}");
+                throw new ShaderParserException($"Unexpected value psrs_arg = {psrs_arg}");
             }
             hasPsrsFile = psrs_arg > 0;
             unknown_val = datareader.ReadInt();
@@ -178,7 +178,7 @@ namespace ValveResourceFormat.ShaderParser
             fileversion = datareader.ReadInt();
             if (fileversion != 64)
             {
-                throw new ShaderParserException($"wrong version {fileversion}, expecting 64");
+                throw new ShaderParserException($"Wrong version {fileversion}, only version 64 supported");
             }
             int psrs_arg = datareader.ReadInt();
             if (psrs_arg != 0 && psrs_arg != 1)
@@ -352,7 +352,7 @@ namespace ValveResourceFormat.ShaderParser
         public void PrintAnnotatedBytestream()
         {
             datareader.SetPosition(start);
-            datareader.ShowByteCount($"COMPAT-BLOCK[{blockIndex}]");
+            datareader.ShowByteCount($"SF-CONTRAINTS-BLOCK[{blockIndex}]");
             datareader.ShowBytes(216);
             string name1 = datareader.ReadNullTermStringAtPosition();
             datareader.OutputWriteLine($"[{datareader.GetOffset()}] {name1}");
@@ -390,7 +390,7 @@ namespace ValveResourceFormat.ShaderParser
         {
             datareader.SetPosition(start);
             string dBlockName = datareader.ReadNullTermStringAtPosition();
-            datareader.ShowByteCount($"DBLOCK[{blockIndex}]");
+            datareader.ShowByteCount($"D-BLOCK[{blockIndex}]");
             datareader.Comment(dBlockName);
             datareader.ShowBytes(128);
             datareader.ShowBytes(12, 4);
@@ -511,7 +511,7 @@ namespace ValveResourceFormat.ShaderParser
         public void PrintAnnotatedBytestream()
         {
             datareader.SetPosition(start);
-            datareader.ShowByteCount($"D-RULE-BLOCK[{blockIndex}]");
+            datareader.ShowByteCount($"D-CONSTRAINTS-BLOCK[{blockIndex}]");
             datareader.ShowBytes(472);
             datareader.BreakLine();
         }

@@ -4,6 +4,9 @@ using System.IO;
 using System.Text;
 using ValveResourceFormat.ShaderParser;
 
+using Decoder = SevenZip.Compression.LZMA.Decoder;
+
+
 #pragma warning disable CA1051 // Do not declare visible instance fields
 namespace ValveResourceFormat
 {

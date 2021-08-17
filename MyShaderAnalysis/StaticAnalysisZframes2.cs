@@ -19,6 +19,8 @@ namespace MyShaderAnalysis {
         const string PCGL_DIR_NOT_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders\vfx";
         //const string PC_DIR_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pc\shaders-core\vfx";
         //const string PC_DIR_NOT_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pc\shaders\vfx";
+        const string ARTIFACT_CLASSIC_CORE_PC_SOURCE = "X:/artifact-classic-exports/artifact-shaders-pc-core";
+        const string ARTIFACT_CLASSIC_DCG_PC_SOURCE = "X:/artifact-classic-exports/artifact-shaders-pc-dcg";
         //const string OUTPUT_DIR = @"Z:\active\projects\dota2-sourcesdk-modding\shader-analysis-vcs-format\OUTPUT_DUMP";
         const string SERVER_OUTPUT_DIR = @"Z:\dev\www\vcs.codecreation.dev\GEN-output";
         //const string SERVER_BASEDIR = @"Z:\dev\www\vcs.codecreation.dev";
@@ -48,19 +50,22 @@ namespace MyShaderAnalysis {
             // ZFileSummary(ARCHIVE.dotacore_pcgl, "panorama_fancyquad_pcgl_30_ps.vcs", 0x0, writeFile: true);
             // ZFileSummary(ARCHIVE.dotacore_pcgl, "blur_pcgl_30_ps.vcs", 0x1, writeFile: true);
             // ZFileSummary(ARCHIVE.dotacore_pcgl, "copytexture_pcgl_30_vs.vcs", 0x1, writeFile: true);
-            ZFileSummary(ARCHIVE.dotacore_pcgl, "copytexture_pcgl_30_vs.vcs", 0x0, writeFile: true);
+            // ZFileSummary(ARCHIVE.dotacore_pcgl, "copytexture_pcgl_30_vs.vcs", 0x0, writeFile: true);
 
 
 
-            // WriteBunchOfZframes();
+            WriteBunchOfZframes();
             // PrintZframeFileDirectory(SERVER_OUTPUT_DIR, writeFile: true);
         }
 
 
 
         static void WriteBunchOfZframes() {
-            int NUM_TO_PRINT = 35;
-            List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, 40);
+            int NUM_TO_PRINT = 10;
+            // List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, 40);
+            List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, 40);
+
+
 
             foreach (var triple in triples) {
                 int zframeCount = 0;

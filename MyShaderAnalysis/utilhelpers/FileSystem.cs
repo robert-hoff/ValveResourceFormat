@@ -58,13 +58,15 @@ namespace MyShaderAnalysis.utilhelpers {
         private const string SERVER_BASEDIR = "Z:/dev/www/vcs.codecreation.dev";
         private const string SERVER_TESTPATH = "/GEN-output";
         private const string SERVER_BYTEPATH = "/vcs-all";
-        private const string DOTA_CORE_PCGL_SOURCE = "X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders-core/vfx";
-        private const string DOTA_GAME_PCGL_SOURCE = "X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders/vfx";
-        private const string DOTA_CORE_PC_SOURCE = "X:/dota-2-VRF-exports/dota2-export-shaders-pc/shaders-core/vfx";
-        private const string DOTA_GAME_PC_SOURCE = "X:/dota-2-VRF-exports/dota2-export-shaders-pc/shaders/vfx";
+        public const string DOTA_CORE_PCGL_SOURCE = "X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders-core/vfx";
+        public const string DOTA_GAME_PCGL_SOURCE = "X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders/vfx";
+        public const string DOTA_CORE_PC_SOURCE = "X:/dota-2-VRF-exports/dota2-export-shaders-pc/shaders-core/vfx";
+        public const string DOTA_GAME_PC_SOURCE = "X:/dota-2-VRF-exports/dota2-export-shaders-pc/shaders/vfx";
+        public const string ARTIFACT_CLASSIC_CORE_PC_SOURCE = "X:/artifact-classic-exports/artifact-shaders-pc-core";
+        public const string ARTIFACT_CLASSIC_DCG_PC_SOURCE = "X:/artifact-classic-exports/artifact-shaders-pc-dcg";
 
 
-        public enum ARCHIVE { dotacore_pcgl, dotagame_pcgl };
+        public enum ARCHIVE { dotacore_pcgl, dotagame_pcgl, artifact_classiccore_pc, artifact_classicdcg_pc };
 
 
 
@@ -80,30 +82,40 @@ namespace MyShaderAnalysis.utilhelpers {
         public static string GetSourceDir(ARCHIVE archive) {
             if (archive == ARCHIVE.dotacore_pcgl) return DOTA_CORE_PCGL_SOURCE;
             if (archive == ARCHIVE.dotagame_pcgl) return DOTA_GAME_PCGL_SOURCE;
+            if (archive == ARCHIVE.artifact_classiccore_pc) return ARTIFACT_CLASSIC_CORE_PC_SOURCE;
+            if (archive == ARCHIVE.artifact_classicdcg_pc) return ARTIFACT_CLASSIC_DCG_PC_SOURCE;
             throw new ShaderParserException("unknown archive");
         }
 
         public static string GetArchiveName(ARCHIVE archive) {
             if (archive == ARCHIVE.dotacore_pcgl) return "dota-core";
             if (archive == ARCHIVE.dotagame_pcgl) return "dota-game";
+            if (archive == ARCHIVE.artifact_classiccore_pc) return "aclassic-core";
+            if (archive == ARCHIVE.artifact_classicdcg_pc) return "aclassic-dcg";
             throw new ShaderParserException("unknown archive");
         }
 
         public static string GetArchiveLabel(ARCHIVE archive) {
             if (archive == ARCHIVE.dotacore_pcgl) return "core";
             if (archive == ARCHIVE.dotagame_pcgl) return "dota";
+            if (archive == ARCHIVE.artifact_classiccore_pc) return "ac-core";
+            if (archive == ARCHIVE.artifact_classicdcg_pc) return "ac-dcg";
             throw new ShaderParserException("unknown archive");
         }
 
         public static string GetGpuType(ARCHIVE archive) {
             if (archive == ARCHIVE.dotacore_pcgl) return "pcgl";
             if (archive == ARCHIVE.dotagame_pcgl) return "pcgl";
+            if (archive == ARCHIVE.artifact_classiccore_pc) return "pc";
+            if (archive == ARCHIVE.artifact_classicdcg_pc) return "pc";
             throw new ShaderParserException("unknown archive");
         }
 
         public static string GetSourceType(ARCHIVE archive) {
             if (archive == ARCHIVE.dotacore_pcgl) return "glsl";
             if (archive == ARCHIVE.dotagame_pcgl) return "glsl";
+            if (archive == ARCHIVE.artifact_classiccore_pc) return "pc";
+            if (archive == ARCHIVE.artifact_classicdcg_pc) return "pc";
             throw new ShaderParserException("unknown archive");
         }
 
@@ -123,6 +135,12 @@ namespace MyShaderAnalysis.utilhelpers {
             }
             if (Path.GetDirectoryName(vcsFileName).EndsWith("shaders-core\\vfx")) {
                 return ARCHIVE.dotacore_pcgl;
+            }
+            if (Path.GetDirectoryName(vcsFileName).EndsWith("artifact-shaders-pc-core")) {
+                return ARCHIVE.artifact_classiccore_pc;
+            }
+            if (Path.GetDirectoryName(vcsFileName).EndsWith("artifact-shaders-pc-dcg")) {
+                return ARCHIVE.artifact_classicdcg_pc;
             }
             throw new ShaderParserException("don't know where this file belongs");
         }

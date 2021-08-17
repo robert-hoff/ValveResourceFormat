@@ -39,7 +39,7 @@ namespace MyShaderAnalysis.vcsparsing {
             }
             int version = datareader.ReadInt();
             if (version != 64) {
-                throw new ShaderParserException($"wrong version {version}, expecting 64");
+                throw new ShaderParserException($"wrong version {version}, expecting 64. {filenamepath}");
             }
 
             if (vcsFiletype == FILETYPE.features_file) {
@@ -56,7 +56,7 @@ namespace MyShaderAnalysis.vcsparsing {
 
             int block_delim = datareader.ReadInt();
             if (block_delim != 17) {
-                throw new ShaderParserException($"unexpected value for block_delom = {block_delim}, expecting 17");
+                throw new ShaderParserException($"unexpected value for block_delim = {block_delim}, expecting 17");
             }
             int sfBlockCount = datareader.ReadInt();
             for (int i = 0; i < sfBlockCount; i++) {

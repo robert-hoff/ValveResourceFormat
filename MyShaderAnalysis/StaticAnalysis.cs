@@ -36,6 +36,9 @@ namespace MyShaderAnalysis {
         const string SERVER_OUTPUT_DIR = @"Z:\dev\www\vcs.codecreation.dev\GEN-output";
         const string SERVER_BASEDIR = @"Z:\dev\www\vcs.codecreation.dev";
         const string OUTPUT_SUB_DIR = @"\GEN-output";
+        const string ARTIFACT_CLASSIC_CORE_PC_SOURCE = "X:/artifact-classic-exports/artifact-shaders-pc-core";
+        const string ARTIFACT_CLASSIC_DCG_PC_SOURCE = "X:/artifact-classic-exports/artifact-shaders-pc-dcg";
+
 
 
         // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
@@ -57,12 +60,18 @@ namespace MyShaderAnalysis {
 
             // - prints a single page summary and links to all the files produced with FileSummaryAllFiles()
             // BlockCountSurvery($@"{SERVER_OUTPUT_DIR}\file-overview.html", writeFile: true);
+
+
+            // NOTE - currently points to Artifact classic
+            // BlockCountSurvery($@"{SERVER_OUTPUT_DIR}\testfile.html", writeFile: true);
+
+
             // FileBlockCount(filenamepath);
             // WriteSfArgumentsAllFiles($"{SERVER_OUTPUT_DIR}/testrun.html", writeFile: true);
 
 
 
-            // FileSummarySingleFile();
+            FileSummarySingleFile();
             // ZFramePrintout();
 
 
@@ -81,7 +90,7 @@ namespace MyShaderAnalysis {
 
 
             // -- setting up comprehensive summary for particular file (NEEDS UPDATE)
-            FileSummaryMultiblendPs();
+            // FileSummaryMultiblendPs();
 
 
 
@@ -304,12 +313,14 @@ namespace MyShaderAnalysis {
             // FileTriple triple = new(ARCHIVE.dotacore_pcgl, "depth_only_pcgl_40_features.vcs");
             // FileTriple triple = new(ARCHIVE.dotacore_pcgl, "convolve_environment_map_pcgl_41_features.vcs");
             // FileTriple triple = new(ARCHIVE.dotacore_pcgl, "apply_fog_pcgl_40_features.vcs");
-            FileTriple triple = new(ARCHIVE.dotacore_pcgl, "blur_pcgl_30_features.vcs");
+            // FileTriple triple = new(ARCHIVE.dotacore_pcgl, "blur_pcgl_30_features.vcs");
             // FileTriple triple = new(ARCHIVE.dotagame_pcgl, "water_dota_pcgl_30_features.vcs");
             // FileTriple triple = new(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_features.vcs");
             // FileTriple triple = new(ARCHIVE.dotacore_pcgl, "spritecard_pcgl_30_features.vcs");
             // FileTriple triple = new(ARCHIVE.dotagame_pcgl, "spritecard_pcgl_30_features.vcs");
 
+
+            FileTriple triple = new(ARCHIVE.artifact_classiccore_pc, "aerial_perspective_pc_30_features.vcs");
 
             WriteVsPsFileSummary(triple, FILETYPE.ps_file);
         }
@@ -395,12 +406,12 @@ namespace MyShaderAnalysis {
         static void BlockCountSurvery(string outputFilenamepath = null, bool writeFile = false) {
             if (outputFilenamepath != null && writeFile) {
                 ConfigureOutputFile(outputFilenamepath);
-                WriteHtmlFile("File", "File summary");
+                WriteHtmlFile("File", "Vcs files / Artifact classic");
             }
             string fH = "File";
             string sfH = "SF blocks";
             string link = "";
-            string cH = "compat";
+            string cH = "SfRules";
             string dH = "Dblocks";
             string uH = "DRules";
             string pH = "params";
@@ -411,7 +422,21 @@ namespace MyShaderAnalysis {
             const int pad = 8;
             string header = $"{fH,-55}{link,3}{sfH,pad}{cH,pad}{dH,pad}{uH,pad}{pH,pad}{mH,pad}{bH,pad}{sH,pad}{zH,pad}";
             OutputWriteLine($"{header}");
-            List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
+
+
+            // List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
+            // List<string> allVcsFiles = GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, FILETYPE.any, -1);
+
+
+            List<string> allVcsFiles = new();
+            allVcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, FILETYPE.features_file, -1));
+            allVcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, FILETYPE.ps_file, -1));
+            allVcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, FILETYPE.vs_file, -1));
+            allVcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, FILETYPE.psrs_file, -1));
+            allVcsFiles.Sort();
+
+
+
             foreach (string filenamepath in allVcsFiles) {
                 FileBlockCount(filenamepath);
             }

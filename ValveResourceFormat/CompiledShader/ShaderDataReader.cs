@@ -9,8 +9,10 @@ namespace ValveResourceFormat.ShaderParser {
 
         private BinaryReader BinReader;
 
-        public ShaderDataReader(BinaryReader binReader)
+        public ShaderDataReader(BinaryReader binReader, bool writeToConsole = true, bool writeToDebug = false)
         {
+            WriteToConsole = writeToConsole;
+            WriteToDebug = writeToDebug;
             BinReader = binReader;
         }
         public long GetOffset()
@@ -218,6 +220,9 @@ namespace ValveResourceFormat.ShaderParser {
         }
 
         private bool disableOutput;
+        private bool WriteToConsole;
+        private bool WriteToDebug;
+
         public void SetDisableOutput(bool disableOutput) {
             this.disableOutput = disableOutput;
         }
@@ -228,8 +233,14 @@ namespace ValveResourceFormat.ShaderParser {
         }
         public void OutputWrite(string text) {
             if (!disableOutput) {
-                Console.Write(text);
-                // Debug.Write(text);
+                if (WriteToConsole)
+                {
+                    Console.Write(text);
+                }
+                if (WriteToDebug)
+                {
+                    Debug.Write(text);
+                }
             }
             if (sw != null) {
                 sw.Write(text);
