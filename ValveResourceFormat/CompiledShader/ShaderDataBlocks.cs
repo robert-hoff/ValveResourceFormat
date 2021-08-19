@@ -337,11 +337,12 @@ namespace ValveResourceFormat.ShaderParser
                 count++;
             }
             int[] byteFlags = new int[count];
+            datareader.RestorePosition();
             for (int i = 0; i < count; i++)
             {
                 byteFlags[i] = datareader.ReadByte();
             }
-            datareader.Restore();
+            datareader.RestorePosition();
             datareader.moveOffset(16);
             return byteFlags;
         }
@@ -454,11 +455,12 @@ namespace ValveResourceFormat.ShaderParser
                 count++;
             }
             int[] byteFlags = new int[count];
+            datareader.RestorePosition();
             for (int i = 0; i < count; i++)
             {
                 byteFlags[i] = datareader.ReadByte();
             }
-            datareader.Restore();
+            datareader.RestorePosition();
             datareader.moveOffset(16);
             return byteFlags;
         }

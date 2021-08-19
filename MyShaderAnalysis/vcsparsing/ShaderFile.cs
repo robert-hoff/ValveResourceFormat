@@ -16,12 +16,12 @@ namespace MyShaderAnalysis.vcsparsing {
         public string filenamepath { get; }
         public VcsFileType vcsFileType { get; }
         public VcsSourceType vcsSourceType { get; }
-        public DataBlockFeaturesHeader featuresHeader { get; } = null;
-        public DataBlockVsPsHeader vspsHeader { get; } = null;
-        public List<DataBlockSfBlock> sfBlocks { get; } = new();
-        public List<CompatibilityBlock> compatibilityBlocks { get; } = new();
+        public FeaturesHeaderBlock  featuresHeader { get; } = null;
+        public VsPsHeaderBlock  vspsHeader { get; } = null;
+        public List<SfBlock> sfBlocks { get; } = new();
+        public List<SfConstraintsBlock > compatibilityBlocks { get; } = new();
         public List<DBlock> dBlocks { get; } = new();
-        public List<UnknownBlock> unknownBlocks { get; } = new();
+        public List<DConstraintsBlock> unknownBlocks { get; } = new();
         public List<ParamBlock> paramBlocks { get; } = new();
         public List<MipmapBlock> mipmapBlocks { get; } = new();
         public List<BufferBlock> bufferBlocks { get; } = new();
@@ -56,10 +56,10 @@ namespace MyShaderAnalysis.vcsparsing {
             }
 
             if (vcsFileType == VcsFileType.Features) {
-                featuresHeader = new DataBlockFeaturesHeader(datareader, datareader.GetOffset());
+                featuresHeader = new FeaturesHeaderBlock (datareader, datareader.GetOffset());
             } else if (vcsFileType == VcsFileType.VertexShader || vcsFileType == VcsFileType.PixelShader
                    || vcsFileType == VcsFileType.GeometryShader || vcsFileType == VcsFileType.PotentialShadowReciever) {
-                vspsHeader = new DataBlockVsPsHeader(datareader, datareader.GetOffset());
+                vspsHeader = new VsPsHeaderBlock (datareader, datareader.GetOffset());
 
             } else {
                 throw new ShaderParserException($"can't parse this filetype: {vcsFileType}");
@@ -73,13 +73,13 @@ namespace MyShaderAnalysis.vcsparsing {
             }
             int sfBlockCount = datareader.ReadInt();
             for (int i = 0; i < sfBlockCount; i++) {
-                DataBlockSfBlock nextSfBlock = new(datareader, datareader.GetOffset(), i);
+                SfBlock nextSfBlock = new(datareader, datareader.GetOffset(), i);
                 sfBlocks.Add(nextSfBlock);
             }
             // always 472 bytes
             int compatBlockCount = datareader.ReadInt();
             for (int i = 0; i < compatBlockCount; i++) {
-                CompatibilityBlock nextCompatibilityBlock = new(datareader, datareader.GetOffset(), i);
+                SfConstraintsBlock  nextCompatibilityBlock = new(datareader, datareader.GetOffset(), i);
                 compatibilityBlocks.Add(nextCompatibilityBlock);
             }
 
@@ -93,7 +93,7 @@ namespace MyShaderAnalysis.vcsparsing {
             // always 472 bytes
             int druleBlockCount = datareader.ReadInt();
             for (int i = 0; i < druleBlockCount; i++) {
-                UnknownBlock nextUnknownBlock = new(datareader, datareader.GetOffset(), i);
+                DConstraintsBlock nextUnknownBlock = new(datareader, datareader.GetOffset(), i);
                 unknownBlocks.Add(nextUnknownBlock);
             }
 

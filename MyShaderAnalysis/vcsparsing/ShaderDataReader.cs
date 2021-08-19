@@ -280,38 +280,40 @@ namespace MyShaderAnalysis.vcsparsing
             return bytestring.Trim();
         }
 
-        private bool disableOutput;
         private bool WriteToConsole;
         private bool WriteToDebug;
-
-        public void SetDisableOutput(bool disableOutput)
+        public void DisableOutput()
         {
-            this.disableOutput = disableOutput;
+            WriteToConsole = false;
+            WriteToDebug = false;
         }
+
         private StreamWriter sw;
-        public void ConfigureWriteToFile(StreamWriter sw, bool disableOutput)
+        public void ConfigureWriteToFile(StreamWriter sw, bool disableOutput = false)
         {
             this.sw = sw;
-            this.disableOutput = disableOutput;
+            if (disableOutput)
+            {
+                DisableOutput();
+            }
         }
+
         public void OutputWrite(string text)
         {
-            if (!disableOutput)
+            if (WriteToConsole)
             {
-                if (WriteToConsole)
-                {
-                    Console.Write(text);
-                }
-                if (WriteToDebug)
-                {
-                    Debug.Write(text);
-                }
+                Console.Write(text);
+            }
+            if (WriteToDebug)
+            {
+                Debug.Write(text);
             }
             if (sw != null)
             {
                 sw.Write(text);
             }
         }
+
         public void OutputWriteLine(string text)
         {
             OutputWrite(text + "\n");

@@ -31,7 +31,7 @@ namespace ValveResourceFormat.ShaderParser
             savedPosition = BinReader.BaseStream.Position;
         }
 
-        public void Restore()
+        public void RestorePosition()
         {
             BinReader.BaseStream.Position = savedPosition;
         }
@@ -59,7 +59,7 @@ namespace ValveResourceFormat.ShaderParser
             long fromInd = rel ? GetOffset() + ind : ind;
             SetPosition(fromInd);
             byte b0 = BinReader.ReadByte();
-            Restore();
+            RestorePosition();
             return b0;
         }
 
@@ -74,7 +74,7 @@ namespace ValveResourceFormat.ShaderParser
             long fromInd = rel ? GetOffset() + ind : ind;
             SetPosition(fromInd);
             uint uint0 = BinReader.ReadUInt16();
-            Restore();
+            RestorePosition();
             return uint0;
         }
 
@@ -89,7 +89,7 @@ namespace ValveResourceFormat.ShaderParser
             long fromInd = rel ? GetOffset() + ind : ind;
             SetPosition(fromInd);
             short s0 = BinReader.ReadInt16();
-            Restore();
+            RestorePosition();
             return s0;
         }
 
@@ -104,7 +104,7 @@ namespace ValveResourceFormat.ShaderParser
             long fromInd = rel ? GetOffset() + ind : ind;
             SetPosition(fromInd);
             uint uint0 = BinReader.ReadUInt32();
-            Restore();
+            RestorePosition();
             return uint0;
         }
 
@@ -119,7 +119,7 @@ namespace ValveResourceFormat.ShaderParser
             long fromInd = rel ? GetOffset() + ind : ind;
             SetPosition(fromInd);
             int int0 = BinReader.ReadInt32();
-            Restore();
+            RestorePosition();
             return int0;
         }
 
@@ -140,7 +140,7 @@ namespace ValveResourceFormat.ShaderParser
             SetPosition(fromInd);
             BinReader.BaseStream.Position = fromInd;
             float float0 = BinReader.ReadSingle();
-            Restore();
+            RestorePosition();
             return float0;
         }
 
@@ -161,7 +161,7 @@ namespace ValveResourceFormat.ShaderParser
             long fromInd = rel ? GetOffset() + ind : ind;
             SetPosition(fromInd);
             byte[] bytes0 = BinReader.ReadBytes(len);
-            Restore();
+            RestorePosition();
             return bytes0;
         }
 
@@ -183,7 +183,7 @@ namespace ValveResourceFormat.ShaderParser
             long fromInd = rel ? GetOffset() + ind : ind;
             SetPosition(fromInd);
             String str = ReadNullTermString();
-            Restore();
+            RestorePosition();
             return str;
         }
         public void ShowByteCount(string message = null)
