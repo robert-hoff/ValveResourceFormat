@@ -12,20 +12,20 @@ using LzmaDecoder = SevenZip.Compression.LZMA.Decoder;
 namespace MyShaderAnalysis.vcsparsing {
 
     public class ShaderFile {
-        private ShaderDataReader datareader;
-        public string filenamepath;
-        public VcsFileType vcsFileType = VcsFileType.Undetermined;
-        public VcsSourceType vcsSourceType;
-        public DataBlockFeaturesHeader featuresHeader = null;
-        public DataBlockVsPsHeader vspsHeader = null;
-        public List<DataBlockSfBlock> sfBlocks = new();
-        public List<CompatibilityBlock> compatibilityBlocks = new();
-        public List<DBlock> dBlocks = new();
-        public List<UnknownBlock> unknownBlocks = new();
-        public List<ParamBlock> paramBlocks = new();
-        public List<MipmapBlock> mipmapBlocks = new();
-        public List<BufferBlock> bufferBlocks = new();
-        public List<SymbolsBlock> symbolBlocks = new();
+        private ShaderDataReader datareader { get; }
+        public string filenamepath { get; }
+        public VcsFileType vcsFileType { get; }
+        public VcsSourceType vcsSourceType { get; }
+        public DataBlockFeaturesHeader featuresHeader { get; } = null;
+        public DataBlockVsPsHeader vspsHeader { get; } = null;
+        public List<DataBlockSfBlock> sfBlocks { get; } = new();
+        public List<CompatibilityBlock> compatibilityBlocks { get; } = new();
+        public List<DBlock> dBlocks { get; } = new();
+        public List<UnknownBlock> unknownBlocks { get; } = new();
+        public List<ParamBlock> paramBlocks { get; } = new();
+        public List<MipmapBlock> mipmapBlocks { get; } = new();
+        public List<BufferBlock> bufferBlocks { get; } = new();
+        public List<SymbolsBlock> symbolBlocks { get; } = new();
 
 
         public const int ZSTD_COMPRESSION = 1;
@@ -36,7 +36,7 @@ namespace MyShaderAnalysis.vcsparsing {
         // zframe data is sorted by the order they appear in the file
         // their Id (which is different and describes the configuration they are intended for) is the dictionary key
         // both their index and Id are used in different contexts
-        public SortedDictionary<long, ZFrameDataDescription> zframesLookup = new();
+        public SortedDictionary<long, ZFrameDataDescription> zframesLookup { get; } = new();
         private DBlockConfigurationMap dBlockConfigGen;
 
 
@@ -83,8 +83,6 @@ namespace MyShaderAnalysis.vcsparsing {
                 compatibilityBlocks.Add(nextCompatibilityBlock);
             }
 
-
-
             // always 152 bytes
             int dBlockCount = datareader.ReadInt();
             for (int i = 0; i < dBlockCount; i++) {
@@ -115,7 +113,6 @@ namespace MyShaderAnalysis.vcsparsing {
             for (int i = 0; i < mipmapBlockCount; i++) {
                 MipmapBlock nextMipmapBlock = new(datareader, datareader.offset);
                 mipmapBlocks.Add(nextMipmapBlock);
-                datareader.offset += 280;
             }
 
             int bufferBlockCount = datareader.ReadInt();
@@ -225,12 +222,12 @@ namespace MyShaderAnalysis.vcsparsing {
     // Lzma also comes with 'chunk-size', but doesn't seem to be needed
     // (possibly the idea with the chunk size is an an aid for navigating the data)
     public class ZFrameDataDescription {
-        public long zframeId;
-        public int offsetToZFrameHeader;
-        public int compressionType;
-        public int compressedLength;
-        public int uncompressedLength;
-        ShaderDataReader datareader;
+        public long zframeId { get; }
+        public int offsetToZFrameHeader { get; }
+        public int compressionType { get; }
+        public int compressedLength { get; }
+        public int uncompressedLength { get; }
+        private ShaderDataReader datareader { get; }
         public ZFrameDataDescription(long zframeId, int offsetToZFrameHeader, int compressionType,
             int uncompressedLength, int compressedLength, ShaderDataReader datareader) {
             this.zframeId = zframeId;

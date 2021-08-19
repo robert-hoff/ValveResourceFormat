@@ -15,9 +15,9 @@ namespace MyShaderAnalysis.utilhelpers {
     public class FileTriple {
 
 
-        public FileTokens ftFile;
-        public FileTokens vsFile;
-        public FileTokens psFile;
+        public FileTokens ftFile { get; }
+        public FileTokens vsFile { get; }
+        public FileTokens psFile { get; }
 
 
         public FileTriple(ARCHIVE archive, string ftFileName) {

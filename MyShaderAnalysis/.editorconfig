@@ -28,8 +28,7 @@ dotnet_diagnostic.IDE0044.severity = none
 # unecessary assignment
 dotnet_diagnostic.IDE0059.severity = none
 
-# do not declare visible instance fields
-dotnet_diagnostic.CA1051.severity = none
+
 
 # unused member
 dotnet_diagnostic.IDE0051.severity = none
@@ -70,6 +69,14 @@ dotnet_diagnostic.CA1820.severity = none
 dotnet_diagnostic.IDE0071.severity = none
 dotnet_diagnostic.CA1055.severity = none
 dotnet_diagnostic.CA5350.severity = none
+
+
+# CA1051 - do not declare visible instance fields
+# do not declare visible instance fields
+# dotnet_diagnostic.CA1051.severity = error
+dotnet_diagnostic.CA1051.severity = none
+
+
 
 
 

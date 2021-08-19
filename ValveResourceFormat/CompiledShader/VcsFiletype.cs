@@ -8,7 +8,8 @@ namespace ValveResourceFormat.ShaderParser
         VertexShader,               // vs.vcs
         PixelShader,                // ps.vcs
         GeometryShader,             // gs.vcs
-        ComputeShader,              // cs.vcs (needs implementation)
+        // TODO - ComputeShader needs implementation
+        ComputeShader,              // cs.vcs
         PotentialShadowReciever,    // psrs.vcs
     };
 }

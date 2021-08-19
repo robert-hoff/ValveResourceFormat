@@ -19,28 +19,23 @@ using static MyShaderAnalysis.utilhelpers.FileSystem;
  */
 namespace MyShaderAnalysis.utilhelpers {
 
-
     public class FileTokens {
+        public string name { get; }          // name without the file extension, e.g. spritecard_pcgl_30_ps
+        public string filename { get; }
+        public string filenamepath { get; }
+        public string foldername { get; }    // name without the type extension, e.g. spritecard_pcgl_30
+        public string namelabel { get; }     // the name upto the first '_' e.g. spritecard (good for html titles)
+        public string vcstoken { get; }      // ft, vs, ps, psrs or gs
+        public string sourcedir { get; }     // full directory path of the source files
+        public string archivename { get; }   // dota-game or dota-core
+        public string archivelabel { get; }  // dota or core (possibly s&box later). Used for generating names
+        public string gputype { get; }       // pcgl, pc, vulkan
+        public string sourcetype { get; }    // glsl, dx11, etc.
+        public string serverdir { get; }     // full directory path of the server files
+        public VcsFileType vcsFiletype { get; }
 
 
-        public string name;          // name without the file extension, e.g. spritecard_pcgl_30_ps
-        public string filename;
-        public string filenamepath;
-        public string foldername;    // name without the type extension, e.g. spritecard_pcgl_30
-        public string namelabel;     // the name upto the first '_' e.g. spritecard (good for html titles)
-        public string vcstoken;      // ft, vs, ps, psrs or gs
-        public string sourcedir;     // full directory path of the source files
-        public string archivename;   // dota-game or dota-core
-        public string archivelabel;  // dota or core (possibly s&box later). Used for generating names
-        public string gputype;       // pcgl, pc, vulkan
-        public string sourcetype;    // glsl, dx11, etc.
-        public string serverdir;     // full directory path of the server files
-        public VcsFileType vcsFiletype;
-
-
-
-
-        public FileTokens(string filenamepath) : this(DetermineArchiveType(filenamepath), filenamepath) {}
+        public FileTokens(string filenamepath) : this(DetermineArchiveType(filenamepath), filenamepath) { }
 
 
 

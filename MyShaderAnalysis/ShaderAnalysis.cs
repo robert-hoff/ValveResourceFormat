@@ -80,7 +80,7 @@ namespace MyShaderAnalysis {
             // WriteVcsByteAnalysisToTxt(filenamepath);
 
             // R: I wrote the core and dota files separately and copied them onto the server
-            WriteAllVcsFilesToHtml();
+            // WriteAllVcsFilesToHtml();
             // WriteVcsByteAnalysisToHtml(filenamepath, writeHtmlLinks: true);
             // ParseAllVcsFilesDisableOutput();
 
@@ -91,7 +91,7 @@ namespace MyShaderAnalysis {
 
             // -- test or write single files
             // RunWriteZframeAsTxt();
-            // ShaderFileTestSinglefiles();
+            ShaderFileTestSinglefiles();
             // VcsParsingTestSinglefiles();
 
         }
@@ -437,12 +437,12 @@ namespace MyShaderAnalysis {
 
 
         static void ShaderFileTestSinglefiles() {
-            // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_vs.vcs";
+            string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_vs.vcs";
             // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
             // string filenamepath = ARTIFACT_CLASSIC_CORE_PC_SOURCE + @"\aerial_perspective_pc_30_ps.vcs";
-            string filenamepath = PCGL_DIR_CORE + @"\apply_fog_pcgl_40_features.vcs";
+            // string filenamepath = PCGL_DIR_CORE + @"\apply_fog_pcgl_40_features.vcs";
             ShaderFile shaderfile = new(filenamepath);
-            // shaderfile.ShowZFrames();
+            shaderfile.ShowZFrames();
 
         }
 

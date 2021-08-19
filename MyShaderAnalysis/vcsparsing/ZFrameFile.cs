@@ -8,27 +8,27 @@ namespace MyShaderAnalysis.vcsparsing {
 
     public class ZFrameFile {
         private ShaderDataReader datareader;
-        public string filenamepath;
-        public VcsFileType vcsFileType;
-        public VcsSourceType vcsSourceType;
-        public long zframeId;
+        public string filenamepath { get; }
+        public VcsFileType vcsFileType { get; }
+        public VcsSourceType vcsSourceType { get; }
+        public long zframeId { get; }
 
-        public ZDataBlock leadingData;
-        public List<ZFrameParam> zframeParams;
-        public int[] leadSummary = null;
-        public List<ZDataBlock> dataBlocks = new();
-        public int[] tailSummary = null;
-        public byte[] flags0;
-        public int flagbyte0;
-        public int gpuSourceCount;
-        public int flagbyte1;
+        public ZDataBlock leadingData { get; }
+        public List<ZFrameParam> zframeParams { get; }
+        public int[] leadSummary { get; } = null;
+        public List<ZDataBlock> dataBlocks { get; } = new();
+        public int[] tailSummary { get; } = null;
+        public byte[] flags0 { get; }
+        public int flagbyte0 { get; }
+        public int gpuSourceCount { get; }
+        public int flagbyte1 { get; }
         // which of these are filled depends on vcsSourceType
-        public List<GpuSource> gpuSources = new();
+        public List<GpuSource> gpuSources { get; } = new();
 
-        public List<VsEndBlock> vsEndBlocks = new();
-        public List<PsEndBlock> psEndBlocks = new();
-        public int nrEndBlocks;
-        public int nonZeroDataBlockCount = 0;
+        public List<VsEndBlock> vsEndBlocks { get; } = new();
+        public List<PsEndBlock> psEndBlocks { get; } = new();
+        public int nrEndBlocks { get; }
+        public int nonZeroDataBlockCount { get; } = 0;
 
 
 
@@ -237,14 +237,14 @@ namespace MyShaderAnalysis.vcsparsing {
 
 
         public class ZFrameParam {
-            public string name0;
-            public uint murmur32;
-            public byte[] code;
-            public byte headerOperator;
-            public int dynExpLen = -1;
-            public byte[] dynExpression = null;
-            public string dynExpEvaluated = null;
-            public int operatorVal = int.MinValue;
+            public string name0 { get; }
+            public uint murmur32 { get; }
+            public byte[] code { get; }
+            public byte headerOperator { get; }
+            public int dynExpLen { get; } = -1;
+            public byte[] dynExpression { get; } = null;
+            public string dynExpEvaluated { get; } = null;
+            public int operatorVal { get; } = int.MinValue;
 
             public ZFrameParam(ShaderDataReader datareader) {
                 name0 = datareader.ReadNullTermString();
@@ -301,11 +301,11 @@ namespace MyShaderAnalysis.vcsparsing {
 
 
         public class VsEndBlock {
-            public byte[] databytes;
-            public int blockIdRef;
-            public int arg0;
-            public int sourceRef;
-            public int sourcePointer;
+            public byte[] databytes { get; }
+            public int blockIdRef { get; }
+            public int arg0 { get; }
+            public int sourceRef { get; }
+            public int sourcePointer { get; }
 
             public VsEndBlock(ShaderDataReader datareader) {
                 databytes = datareader.ReadBytesAtPosition(0, 16);
@@ -317,20 +317,17 @@ namespace MyShaderAnalysis.vcsparsing {
         }
 
 
-        /*
-         * TODO - needs a bit more work, data2 can be broken down
-         */
         public class PsEndBlock {
-            public int blockIdRef;
-            public int arg0;
-            public int sourceRef;
-            public int sourcePointer;
-            public bool hasData0;
-            public bool hasData1;
-            public bool hasData2;
-            public byte[] data0 = null;
-            public byte[] data1 = null;
-            public byte[] data2 = null;
+            public int blockIdRef { get; }
+            public int arg0 { get; }
+            public int sourceRef { get; }
+            public int sourcePointer { get; }
+            public bool hasData0 { get; }
+            public bool hasData1 { get; }
+            public bool hasData2 { get; }
+            public byte[] data0 { get; } = null;
+            public byte[] data1 { get; } = null;
+            public byte[] data2 { get; } = null;
 
             public PsEndBlock(ShaderDataReader datareader) {
                 blockIdRef = datareader.ReadInt();

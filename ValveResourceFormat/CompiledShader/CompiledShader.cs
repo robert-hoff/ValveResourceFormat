@@ -37,11 +37,11 @@ namespace ValveResourceFormat
         /// Opens and reads the given filename.
         /// The file is held open until the object is disposed.
         /// </summary>
-        /// <param name="filename">The file to open and read.</param>
-        public void Read(string filename)
+        /// <param name="filenamepath">The file to open and read.</param>
+        public void Read(string filenamepath)
         {
-            var fs = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
-            Read(filename, fs);
+            var fs = new FileStream(filenamepath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            Read(filenamepath, fs);
         }
 
         /// <summary>

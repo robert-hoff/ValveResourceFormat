@@ -15,7 +15,7 @@ namespace MyShaderAnalysis.utilhelpers.snippetcode {
         public static void RunTrials() {
             // PrintByteCounter();
             // TestDictionaryLookups();
-            ZframeLabel();
+            // ZframeLabel();
         }
 
 

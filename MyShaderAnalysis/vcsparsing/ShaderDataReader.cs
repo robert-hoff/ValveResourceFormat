@@ -6,8 +6,8 @@ namespace MyShaderAnalysis.vcsparsing {
 
     public class ShaderDataReader {
 
-        public int offset; // public
-        public byte[] databytes;
+        public int offset { get; set; }
+        public byte[] databytes { get; }
         public ShaderDataReader(byte[] data) {
             this.databytes = data;
             this.offset = 0;

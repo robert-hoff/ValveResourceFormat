@@ -99,9 +99,9 @@ namespace MyShaderAnalysis {
                     string name0 = paramBlock.name0;
                     string name1 = paramBlock.name1;
                     string name2 = paramBlock.name2;
-                    int tp = paramBlock.pt0;
+                    int tp = paramBlock.type;
                     float res0 = paramBlock.res0;
-                    int main0 = paramBlock.main0;
+                    int main0 = paramBlock.lead0;
                     int arg0 = paramBlock.arg0;
                     int arg1 = paramBlock.arg1;
                     int arg2 = paramBlock.arg2;
@@ -173,9 +173,9 @@ namespace MyShaderAnalysis {
                     string name0 = paramBlock.name0;
                     string name1 = paramBlock.name1;
                     string name2 = paramBlock.name2;
-                    int tp = paramBlock.pt0;
+                    int tp = paramBlock.type;
                     float res0 = paramBlock.res0;
-                    int main0 = paramBlock.main0;
+                    int main0 = paramBlock.lead0;
                     int arg0 = paramBlock.arg0;
                     int arg1 = paramBlock.arg1;
                     int arg2 = paramBlock.arg2;
