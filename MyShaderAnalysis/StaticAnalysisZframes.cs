@@ -154,10 +154,10 @@ namespace MyShaderAnalysis {
                 }
 
                 ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(zframeIndex);
-                sourceReferencesCount += zframeFile.glslSourceCount;
-                foreach (var item in zframeFile.glslSources) {
-                    string glslSourceId = item.GetStringId();
-                    sourceLookup.TryGetValue(item.GetStringId(), out int count);
+                sourceReferencesCount += zframeFile.gpuSourceCount;
+                foreach (var item in zframeFile.gpuSources) {
+                    string glslSourceId = item.GetEditorRefIdAsString();
+                    sourceLookup.TryGetValue(item.GetEditorRefIdAsString(), out int count);
                     sourceLookup[glslSourceId] = count + 1;
                 }
             }
@@ -443,7 +443,7 @@ namespace MyShaderAnalysis {
 
 
                     // CollectStringValue($"{zframeFile.glslSourceCount}  {zframeFile.nrEndBlocks}");
-                    if (zframeFile.nrEndBlocks != zframeFile.glslSourceCount) {
+                    if (zframeFile.nrEndBlocks != zframeFile.gpuSourceCount) {
                         Debug.WriteLine($"{RemoveBaseDir(vcsFilenamepath)} {zframeFile.zframeId:x}");
                         break;
                     }

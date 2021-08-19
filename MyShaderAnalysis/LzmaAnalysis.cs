@@ -19,21 +19,17 @@ namespace MyShaderAnalysis {
             // Trial1();
             // Trial2();
             // Trial3();
-            Trial6();
+            // Trial6();
             // Trial8();
             // Trial10();
-            // Trial11();
+            Trial11();
         }
 
 
         static void Trial11() {
             string filenamepath = $"{ARTIFACT_CLASSIC_CORE_PC_SOURCE}/aerial_perspective_pc_30_vs.vcs"; long zId = 0;
             ShaderFile shaderFile = new(filenamepath);
-            // ZFrameFile zframeFile = shaderFile.GetZFrameFile(zId);
-
-
-            Debug.WriteLine($"{shaderFile.GetZFrameCount()}");
-
+            ZFrameFile zframeFile = shaderFile.GetZFrameFile(zId);
 
         }
 
@@ -66,7 +62,7 @@ namespace MyShaderAnalysis {
             string filenamepath = $"{DOTA_GAME_PC_SOURCE}/multiblend_pc_30_ps.vcs";
             ShaderFile shaderFile = new(filenamepath);
             byte[] zframeDatabytes = shaderFile.GetDecompressedZFrame(0x1a1);
-            DataReaderZFrameByteAnalysis datareader = new(zframeDatabytes, shaderFile.vcsFiletype, shaderFile.vcsSourceType);
+            DataReaderZFrameByteAnalysis datareader = new(zframeDatabytes, shaderFile.vcsFileType, shaderFile.vcsSourceType);
             datareader.PrintByteAnalysis();
         }
 

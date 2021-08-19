@@ -14,7 +14,7 @@ namespace MyShaderAnalysis.vcsparsing {
     public class ShaderFile {
         private ShaderDataReader datareader;
         public string filenamepath;
-        public VcsFileType vcsFiletype = VcsFileType.Undetermined;
+        public VcsFileType vcsFileType = VcsFileType.Undetermined;
         public VcsSourceType vcsSourceType;
         public DataBlockFeaturesHeader featuresHeader = null;
         public DataBlockVsPsHeader vspsHeader = null;
@@ -42,7 +42,7 @@ namespace MyShaderAnalysis.vcsparsing {
 
         public ShaderFile(string filenamepath) {
             this.filenamepath = filenamepath;
-            vcsFiletype = GetVcsFileType(filenamepath);
+            vcsFileType = GetVcsFileType(filenamepath);
             vcsSourceType = GetVcsSourceType(filenamepath);
             datareader = new ShaderDataReader(File.ReadAllBytes(filenamepath));
 
@@ -55,14 +55,14 @@ namespace MyShaderAnalysis.vcsparsing {
                 throw new ShaderParserException($"wrong version {version}, expecting 64. {filenamepath}");
             }
 
-            if (vcsFiletype == VcsFileType.Features) {
+            if (vcsFileType == VcsFileType.Features) {
                 featuresHeader = new DataBlockFeaturesHeader(datareader, datareader.offset);
-            } else if (vcsFiletype == VcsFileType.VertexShader || vcsFiletype == VcsFileType.PixelShader
-                   || vcsFiletype == VcsFileType.GeometryShader || vcsFiletype == VcsFileType.PotentialShadowReciever) {
+            } else if (vcsFileType == VcsFileType.VertexShader || vcsFileType == VcsFileType.PixelShader
+                   || vcsFileType == VcsFileType.GeometryShader || vcsFileType == VcsFileType.PotentialShadowReciever) {
                 vspsHeader = new DataBlockVsPsHeader(datareader, datareader.offset);
 
             } else {
-                throw new ShaderParserException($"can't parse this filetype: {vcsFiletype}");
+                throw new ShaderParserException($"can't parse this filetype: {vcsFileType}");
             }
 
 
@@ -124,7 +124,7 @@ namespace MyShaderAnalysis.vcsparsing {
                 bufferBlocks.Add(nextBufferBlock);
             }
 
-            if (vcsFiletype == VcsFileType.Features || vcsFiletype == VcsFileType.VertexShader) {
+            if (vcsFileType == VcsFileType.Features || vcsFileType == VcsFileType.VertexShader) {
                 int sybmolsBlockCount = datareader.ReadInt();
                 for (int i = 0; i < sybmolsBlockCount; i++) {
                     SymbolsBlock nextSymbolsBlock = new(datareader, datareader.offset);
@@ -198,7 +198,7 @@ namespace MyShaderAnalysis.vcsparsing {
         }
 
         public ZFrameFile GetZFrameFile(long zframeId) {
-            return new ZFrameFile(GetDecompressedZFrame(zframeId), filenamepath, zframeId);
+            return new ZFrameFile(GetDecompressedZFrame(zframeId), filenamepath, zframeId, vcsFileType, vcsSourceType);
         }
 
         public ZFrameFile GetZFrameFileByIndex(int zframeIndex) {

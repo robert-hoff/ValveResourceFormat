@@ -51,19 +51,20 @@ namespace MyShaderAnalysis {
             // ZFileSummary(ARCHIVE.dotacore_pcgl, "blur_pcgl_30_ps.vcs", 0x1, writeFile: true);
             // ZFileSummary(ARCHIVE.dotacore_pcgl, "copytexture_pcgl_30_vs.vcs", 0x1, writeFile: true);
             // ZFileSummary(ARCHIVE.dotacore_pcgl, "copytexture_pcgl_30_vs.vcs", 0x0, writeFile: true);
+            // ZFileSummary(ARCHIVE.artifact_classiccore_pc, "generic_pc_30_ps.vcs", 0x10, writeFile: true);
 
 
 
-            WriteBunchOfZframes();
+            // WriteBunchOfZframes();
             // PrintZframeFileDirectory(SERVER_OUTPUT_DIR, writeFile: true);
         }
 
 
 
         static void WriteBunchOfZframes() {
-            int NUM_TO_PRINT = 1;
+            int NUM_TO_PRINT = 10;
             // List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, 40);
-            List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, 40);
+            List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, -1);
 
 
 
@@ -104,7 +105,6 @@ namespace MyShaderAnalysis {
         static void ZFileSummary(FileTokens vcsFile, long zframeId, bool writeFile = false, bool disableOutput = false) {
             // writeFile = false;
             // DisableOutput = true;
-
             ShaderFile shaderFile = new(vcsFile.filenamepath);
             ZFrameFile zframeFile = shaderFile.GetZFrameFile(zframeId);
             if (writeFile) {
@@ -113,6 +113,9 @@ namespace MyShaderAnalysis {
                 ConfigureOutputFile(outputFilenamepath, disableOutput);
                 WriteHtmlFile($"Z 0x{zframeId:x}", vcsFile.GetZFrameHtmlFilename(zframeId)[0..^5]);
             }
+
+
+
             // print referring files
             OutputWriteLine($"<a href='{vcsFile.GetBestPath()}'>{vcsFile.RemoveBaseDir()}</a>");
             PrintZframeByteCodeLink(shaderFile.filenamepath, zframeId);
@@ -135,15 +138,15 @@ namespace MyShaderAnalysis {
 
 
 
-        static Dictionary<int, GlslSource> GetBlockIdToSource(ZFrameFile zframeFile) {
-            Dictionary<int, GlslSource> blockIdToSource = new();
-            if (zframeFile.vcsFiletype == VcsFileType.VertexShader) {
+        static Dictionary<int, GpuSource> GetBlockIdToSource(ZFrameFile zframeFile) {
+            Dictionary<int, GpuSource> blockIdToSource = new();
+            if (zframeFile.vcsFileType == VcsFileType.VertexShader) {
                 foreach (VsEndBlock vsEndBlock in zframeFile.vsEndBlocks) {
-                    blockIdToSource.Add(vsEndBlock.blockIdRef, zframeFile.glslSources[vsEndBlock.sourceRef]);
+                    blockIdToSource.Add(vsEndBlock.blockIdRef, zframeFile.gpuSources[vsEndBlock.sourceRef]);
                 }
             } else {
                 foreach (PsEndBlock psEndBlock in zframeFile.psEndBlocks) {
-                    blockIdToSource.Add(psEndBlock.blockIdRef, zframeFile.glslSources[psEndBlock.sourceRef]);
+                    blockIdToSource.Add(psEndBlock.blockIdRef, zframeFile.gpuSources[psEndBlock.sourceRef]);
                 }
             }
             return blockIdToSource;
@@ -162,7 +165,7 @@ namespace MyShaderAnalysis {
             OutputWrite($"{b0:X02} {b1:X02} {b2:X02} {b3:X02}");
             OutputWriteLine($"    // possible flags {ByteToBinary(b0)} {ByteToBinary(b1)}");
             OutputWriteLine($"{zframeFile.flagbyte0}              // values seen 0,1");
-            OutputWriteLine($"{zframeFile.glslSourceCount,-11}    // nr of source files");
+            OutputWriteLine($"{zframeFile.gpuSourceCount,-11}    // nr of source files");
             OutputWriteLine($"{zframeFile.flagbyte1}              // values seen 0,1");
             OutputWriteLine("");
             OutputWriteLine("");
@@ -180,7 +183,7 @@ namespace MyShaderAnalysis {
 
 
         static void PrintLeadSummary(ZFrameFile zframeFile) {
-            if (zframeFile.vcsFiletype != VcsFileType.VertexShader) {
+            if (zframeFile.vcsFileType != VcsFileType.VertexShader) {
                 return;
             }
             OutputWriteLine(zframeFile.GetLeadSummary());
@@ -210,7 +213,7 @@ namespace MyShaderAnalysis {
 
 
         static void PrintDataBlocks3(ShaderFile shaderFile, ZFrameFile zframeFile, SortedDictionary<int, int> writeSequences) {
-            Dictionary<int, GlslSource> blockIdToSource = GetBlockIdToSource(zframeFile);
+            Dictionary<int, GpuSource> blockIdToSource = GetBlockIdToSource(zframeFile);
             string configHeader = $"D-Param configurations ({blockIdToSource.Count})";
             OutputWriteLine(configHeader);
             OutputWriteLine(new string('-', configHeader.Length));
@@ -242,8 +245,14 @@ namespace MyShaderAnalysis {
                     writeSeqText = "[empty]";
                 }
                 OutputWrite($"[{blockId:X02}] {configStr}        {writeSeqText,-12}");
-                GlslSource blockSource = blockIdToSource[blockId];
-                OutputWriteLine($"    {GetSourceLink(shaderFile.filenamepath, blockSource)} {blockSource.offset1,12}  (bytes)");
+                GpuSource blockSource = blockIdToSource[blockId];
+
+                if (blockSource is GlslSource source) {
+                    OutputWriteLine($"    {GetSourceLink(shaderFile.filenamepath, source)} {blockSource.sourcebytes.Length,12}  (bytes)");
+                } else {
+                    OutputWriteLine($"  {blockSource.GetBlockName().PadRight(20)} {blockSource.sourcebytes.Length,12} (byte)");
+                }
+
             }
             OutputWriteLine("");
             OutputWriteLine("");
@@ -252,7 +261,7 @@ namespace MyShaderAnalysis {
 
         static List<int> GetActiveBlockIds(ZFrameFile zframeFile) {
             List<int> blockIds = new();
-            if (zframeFile.vcsFiletype == VcsFileType.VertexShader) {
+            if (zframeFile.vcsFileType == VcsFileType.VertexShader) {
                 foreach (VsEndBlock vsEndBlock in zframeFile.vsEndBlocks) {
                     blockIds.Add(vsEndBlock.blockIdRef);
                 }
@@ -268,7 +277,7 @@ namespace MyShaderAnalysis {
 
 
         static void PrintDataBlocks2(ShaderFile shaderFile, ZFrameFile zframeFile, SortedDictionary<int, int> writeSequences) {
-            Dictionary<int, GlslSource> blockIdToSource = GetBlockIdToSource(zframeFile);
+            Dictionary<int, GpuSource> blockIdToSource = GetBlockIdToSource(zframeFile);
             string configHeader = $"D-Param configurations ({blockIdToSource.Count})";
             OutputWriteLine(configHeader);
             OutputWriteLine(new string('-', configHeader.Length));
@@ -293,15 +302,17 @@ namespace MyShaderAnalysis {
                 string configStr = CombineIntsSpaceSep(dBlockConfig, 6);
                 string writeSeqText = $"WRITESEQ[{writeSequences[blockId]}]";
                 OutputWrite($"[{blockId:X02}] {configStr}    {writeSeqText,14}");
-                GlslSource blockSource = blockIdToSource[blockId];
-                OutputWriteLine($"    {GetSourceLink(shaderFile.filenamepath, blockSource)} {blockSource.offset1,12}  (bytes)");
+                GpuSource blockSource = blockIdToSource[blockId];
+                if (blockSource is GlslSource) {
+                    OutputWriteLine($"    {GetSourceLink(shaderFile.filenamepath, (GlslSource) blockSource)} {blockSource.sourcebytes.Length,12}  (bytes)");
+                }
             }
             OutputWriteLine("");
         }
 
 
         static string GetSourceLink(string filenamepath, GlslSource blockSource) {
-            string glslId = blockSource.GetStringId();
+            string glslId = blockSource.GetEditorRefIdAsString();
             string token = GetCoreOrDotaString(filenamepath);
             string fileName = @$"/vcs-all/{token}/zsource/glsl-{glslId}.html";
             string urlText = $"source[{glslId}]";
@@ -528,7 +539,7 @@ namespace MyShaderAnalysis {
             OutputWriteLine($"{headerText}");
             OutputWriteLine(new string('-', headerText.Length));
 
-            VcsFileType vcsFiletype = shaderFile.vcsFiletype;
+            VcsFileType vcsFiletype = shaderFile.vcsFileType;
             if (vcsFiletype == VcsFileType.VertexShader || vcsFiletype == VcsFileType.GeometryShader) {
                 OutputWriteLine($"{zframeFile.vsEndBlocks.Count:X02} 00 00 00   // end blocks ({zframeFile.vsEndBlocks.Count})");
                 OutputWriteLine("");

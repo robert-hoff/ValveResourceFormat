@@ -33,11 +33,13 @@ namespace MyShaderAnalysis.utilhelpers.snippetcode {
                 foreach (var item in shaderfile.zframesLookup) {
                     ZFrameDataDescription zframeData = item.Value;
                     if (zframeData.uncompressedLength < 100000) {
-                        ZFrameFile zframeFile = new(zframeData.GetDecompressedZFrame(), filenamepath, zframeData.zframeId);
-                        foreach (var source in zframeFile.glslSources) {
+                        ZFrameFile zframeFile = new(zframeData.GetDecompressedZFrame(), filenamepath, zframeData.zframeId,
+                            shaderfile.vcsFileType, shaderfile.vcsSourceType);
+                        foreach (var source in zframeFile.gpuSources) {
                             // if ((source.offset1-1)%64==0 && source.offset1<500) {
-                            if (source.offset1<5000) {
-                                Debug.WriteLine($"{RemoveBaseDir(filenamepath)}   {zframeData.zframeId:x08}  {source.offset1}  {source.GetStringId()}");
+                            if (source.sourcebytes.Length < 5000) {
+                                Debug.WriteLine($"{RemoveBaseDir(filenamepath)}   {zframeData.zframeId:x08}  " +
+                                    $"{source.sourcebytes.Length}  {source.GetEditorRefIdAsString()}");
                             }
                         }
                     }

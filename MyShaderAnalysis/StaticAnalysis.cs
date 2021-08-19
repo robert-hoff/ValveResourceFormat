@@ -1012,7 +1012,7 @@ namespace MyShaderAnalysis {
                         Debug.WriteLine($"ERROR!");
                     }
 
-                    if (cBlock.arg0 == 1 && shaderFile.vcsFiletype != VcsFileType.Features) {
+                    if (cBlock.arg0 == 1 && shaderFile.vcsFileType != VcsFileType.Features) {
                         Debug.WriteLine($"error!");
                     }
 
@@ -1661,13 +1661,13 @@ namespace MyShaderAnalysis {
                 ShaderFile shaderFile = new(filenamepath);
 
                 string filetype = "";
-                if (shaderFile.vcsFiletype == VcsFileType.Features) {
+                if (shaderFile.vcsFileType == VcsFileType.Features) {
                     filetype = "           FEAT";
                 }
-                if (shaderFile.vcsFiletype == VcsFileType.VertexShader) {
+                if (shaderFile.vcsFileType == VcsFileType.VertexShader) {
                     filetype = "VS             ";
                 }
-                if (shaderFile.vcsFiletype == VcsFileType.PixelShader) {
+                if (shaderFile.vcsFileType == VcsFileType.PixelShader) {
                     filetype = "      PS       ";
                 }
 

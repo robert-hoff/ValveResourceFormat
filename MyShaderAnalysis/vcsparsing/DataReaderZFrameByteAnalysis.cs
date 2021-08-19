@@ -48,7 +48,7 @@ namespace MyShaderAnalysis.vcsparsing {
                 // values seen
                 // 1,2,4,5,8,10,12,16,20,40,48,80,120,160
                 int blockCountInput = ReadInt16AtPosition();
-                ShowByteCount("Unknown additional parameters that point to specific configurations (block IDs)");
+                ShowByteCount("Unknown additional parameters, non 'FF FF' entries point to specific configurations (block IDs)");
                 ShowBytes(2, breakLine: false);
                 TabComment($"nr of data-blocks ({blockCountInput})");
                 ShowBytes(blockCountInput * 2);

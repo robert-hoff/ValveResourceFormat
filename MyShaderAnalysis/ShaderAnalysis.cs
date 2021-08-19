@@ -237,7 +237,7 @@ namespace MyShaderAnalysis {
             byte[] zframeDatabytes = shaderFile.GetDecompressedZFrame(zframeId);
             string outputFilename = GetZframeHtmlFilename((uint) zframeId, shaderFile.filenamepath);
             string outputFilenamepath = @$"{outputdir}\{outputFilename}";
-            DataReaderZFrameByteAnalysis zFrameParser = new(zframeDatabytes, shaderFile.vcsFiletype, shaderFile.vcsSourceType);
+            DataReaderZFrameByteAnalysis zFrameParser = new(zframeDatabytes, shaderFile.vcsFileType, shaderFile.vcsSourceType);
             Debug.WriteLine($"writing to {outputFilenamepath}");
             StreamWriter sw = new(outputFilenamepath);
             zFrameParser.ConfigureWriteToFile(sw, true);
@@ -265,7 +265,7 @@ namespace MyShaderAnalysis {
             uint zframeId = (uint)shaderFile.GetZFrameIdByIndex(zframeIndex);
             string outputFilename = GetZframeHtmlFilename(zframeId, shaderFile.filenamepath);
             string outputFilenamepath = @$"{outputdir}\{outputFilename}";
-            DataReaderZFrameByteAnalysis zFrameParser = new(zframeDatabytes, shaderFile.vcsFiletype, shaderFile.vcsSourceType);
+            DataReaderZFrameByteAnalysis zFrameParser = new(zframeDatabytes, shaderFile.vcsFileType, shaderFile.vcsSourceType);
             Debug.WriteLine($"writing to {outputFilenamepath}");
             StreamWriter sw = new(outputFilenamepath);
             zFrameParser.ConfigureWriteToFile(sw, true);
@@ -309,7 +309,7 @@ namespace MyShaderAnalysis {
             uint zframeId = (uint)shaderFile.GetZFrameIdByIndex(zframeIndex);
             string outputFilename = GetZframeTxtFilename(zframeId, shaderFile.filenamepath);
             string outputFilenamepath = @$"{outputdir}\{outputFilename}";
-            DataReaderZFrameByteAnalysis zFrameParser = new(zframeDatabytes, shaderFile.vcsFiletype, shaderFile.vcsSourceType);
+            DataReaderZFrameByteAnalysis zFrameParser = new(zframeDatabytes, shaderFile.vcsFileType, shaderFile.vcsSourceType);
             Debug.WriteLine($"writing to {outputFilenamepath}");
             StreamWriter sw = new(outputFilenamepath);
             zFrameParser.ConfigureWriteToFile(sw, true);
@@ -338,7 +338,7 @@ namespace MyShaderAnalysis {
                 StreamWriter sw = new(outputFilenamepath);
                 Debug.WriteLine($"parsing {vcsFile}");
                 Debug.WriteLine($"writing to {outputFilenamepath}");
-                PrintZFrame(zframeDatabytes, shaderFile.vcsFiletype, shaderFile.vcsSourceType, true, sw);
+                PrintZFrame(zframeDatabytes, shaderFile.vcsFileType, shaderFile.vcsSourceType, true, sw);
                 sw.Close();
 
                 break;
@@ -358,7 +358,7 @@ namespace MyShaderAnalysis {
                 Debug.WriteLine($"parsing {RemoveBaseDir(shaderFile.filenamepath)} frames [{0},{nrToParse})");
                 for (int i = 0; i < nrToParse; i++) {
                     byte[] zframeDatabytes = shaderFile.GetDecompressedZFrameByIndex(i);
-                    PrintZFrame(zframeDatabytes, shaderFile.vcsFiletype, shaderFile.vcsSourceType, true);
+                    PrintZFrame(zframeDatabytes, shaderFile.vcsFileType, shaderFile.vcsSourceType, true);
                 }
             }
         }
@@ -371,7 +371,7 @@ namespace MyShaderAnalysis {
             StreamWriter sw = new(outputFilenamepath);
             Debug.WriteLine($"parsing {filenamepath}");
             Debug.WriteLine($"writing to {outputFilenamepath}");
-            PrintZFrame(zframeDatabytes, shaderFile.vcsFiletype, shaderFile.vcsSourceType, true, sw);
+            PrintZFrame(zframeDatabytes, shaderFile.vcsFileType, shaderFile.vcsSourceType, true, sw);
             sw.Close();
         }
 
@@ -385,7 +385,7 @@ namespace MyShaderAnalysis {
             StreamWriter sw = new(outputFilenamepath);
             Debug.WriteLine($"parsing {filenamepath}");
             Debug.WriteLine($"writing to {outputFilenamepath}");
-            PrintZFrame(zframeDatabytes, shaderFile.vcsFiletype, shaderFile.vcsSourceType, true, sw);
+            PrintZFrame(zframeDatabytes, shaderFile.vcsFileType, shaderFile.vcsSourceType, true, sw);
             sw.Close();
         }
 
@@ -408,7 +408,7 @@ namespace MyShaderAnalysis {
         static void PrintZFrame(string filenamepath, int zframeIndex, bool disableOutput = false) {
             ShaderFile shaderFile = new(filenamepath);
             byte[] zframeDatabytes = shaderFile.GetDecompressedZFrameByIndex(zframeIndex);
-            PrintZFrame(zframeDatabytes, shaderFile.vcsFiletype, shaderFile.vcsSourceType, disableOutput);
+            PrintZFrame(zframeDatabytes, shaderFile.vcsFileType, shaderFile.vcsSourceType, disableOutput);
         }
 
         static void PrintZFrame(byte[] databytes, VcsFileType vcsFiletype, VcsSourceType sourceType,
@@ -505,16 +505,17 @@ namespace MyShaderAnalysis {
             // List<string> vcsFiles = GetVcsFiles(PCGL_DIR_NOT_CORE, null, FILETYPE.any, -1);
             // List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, null, FILETYPE.any, -1);
 
-            List<string> vcsFiles = new();
-            vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, null, VcsFileType.Features, -1));
-            vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, null, VcsFileType.VertexShader, -1));
-            vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, null, VcsFileType.PixelShader, -1));
-            vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, null, VcsFileType.PotentialShadowReciever, -1));
             //List<string> vcsFiles = new();
-            //vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_DCG_PC_SOURCE, null, FILETYPE.features_file, -1));
-            //vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_DCG_PC_SOURCE, null, FILETYPE.vs_file, -1));
-            //vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_DCG_PC_SOURCE, null, FILETYPE.ps_file, -1));
-            //vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_DCG_PC_SOURCE, null, FILETYPE.psrs_file, -1));
+            //vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, null, VcsFileType.Features, -1));
+            //vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, null, VcsFileType.VertexShader, -1));
+            //vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, null, VcsFileType.PixelShader, -1));
+            //vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, null, VcsFileType.PotentialShadowReciever, -1));
+            List<string> vcsFiles = new();
+            vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_DCG_PC_SOURCE, null, VcsFileType.Features, -1));
+            vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_DCG_PC_SOURCE, null, VcsFileType.VertexShader, -1));
+            vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_DCG_PC_SOURCE, null, VcsFileType.PixelShader, -1));
+            vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_DCG_PC_SOURCE, null, VcsFileType.PotentialShadowReciever, -1));
+
 
             foreach (string vcsFile in vcsFiles) {
                 WriteVcsByteAnalysisToHtml(vcsFile, writeHtmlLinks: true);

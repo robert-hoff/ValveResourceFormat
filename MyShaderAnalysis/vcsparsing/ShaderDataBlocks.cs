@@ -69,7 +69,7 @@ namespace MyShaderAnalysis.vcsparsing {
         }
 
 
-        public override void PrintByteSummary() {
+        public void PrintByteSummary() {
             datareader.offset = start;
             datareader.ShowByteCount("features header");
             int has_psrs_file = datareader.ReadIntAtPosition();
@@ -163,10 +163,6 @@ namespace MyShaderAnalysis.vcsparsing {
         public DataBlockVsPsHeader(ShaderDataReader datareader, int start) : base(datareader, start) {
             datareader.offset += 36;
         }
-
-        public override void PrintByteSummary() {
-            throw new NotImplementedException();
-        }
     }
 
 
@@ -200,9 +196,6 @@ namespace MyShaderAnalysis.vcsparsing {
             }
         }
 
-        public override void PrintByteSummary() {
-            throw new NotImplementedException();
-        }
     }
 
 
@@ -269,10 +262,6 @@ namespace MyShaderAnalysis.vcsparsing {
             return relRule == 3 ? "EXC(3)" : $"INC({relRule})";
         }
 
-        public override void PrintByteSummary() {
-            throw new NotImplementedException();
-        }
-
 
 
         // 1 to 5 byte flags occur at position 8 (it looks like there is provision for a maximum of 16 byte-flags)
@@ -318,9 +307,6 @@ namespace MyShaderAnalysis.vcsparsing {
             arg5 = datareader.ReadInt();
         }
 
-        public override void PrintByteSummary() {
-            throw new NotImplementedException();
-        }
     }
 
 
@@ -440,9 +426,6 @@ namespace MyShaderAnalysis.vcsparsing {
             return relRule == 3 ? "EXC(3)" : $"INC({relRule})";
         }
 
-        public override void PrintByteSummary() {
-            throw new NotImplementedException();
-        }
     }
 
 
@@ -557,10 +540,6 @@ namespace MyShaderAnalysis.vcsparsing {
         }
 
 
-
-        public override void PrintByteSummary() {
-            throw new NotImplementedException();
-        }
     }
 
 
@@ -568,10 +547,6 @@ namespace MyShaderAnalysis.vcsparsing {
     public class MipmapBlock : ShaderDataBlock {
         public MipmapBlock(ShaderDataReader datareader, int start) : base(datareader, start) {
 
-        }
-
-        public override void PrintByteSummary() {
-            throw new NotImplementedException();
         }
     }
 
@@ -600,9 +575,6 @@ namespace MyShaderAnalysis.vcsparsing {
             blockId = datareader.ReadUInt();
         }
 
-        public override void PrintByteSummary() {
-            throw new NotImplementedException();
-        }
     }
 
 
@@ -620,9 +592,6 @@ namespace MyShaderAnalysis.vcsparsing {
             }
         }
 
-        public override void PrintByteSummary() {
-            throw new NotImplementedException();
-        }
     }
 
 
