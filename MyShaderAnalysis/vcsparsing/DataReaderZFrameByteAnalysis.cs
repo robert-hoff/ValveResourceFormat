@@ -327,7 +327,7 @@ namespace MyShaderAnalysis.vcsparsing {
         }
 
 
-        const int GLSL_BYTES_TO_SHOW = 2500;
+        const int GLSL_BYTES_TO_SHOW = 100;
 
         // FIXME - can't I pass the source size here?
         public void ShowZGlslSourceSummary(int sourceId) {

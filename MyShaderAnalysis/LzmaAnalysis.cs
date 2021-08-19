@@ -22,12 +22,22 @@ namespace MyShaderAnalysis {
             // Trial4();
             // Trial5();
             // Trial6();
-            Trial7();
+            // Trial7();
+            Trial8();
         }
 
 
+        static void Trial8() {
+            string filenamepath = $"{DOTA_GAME_PC_SOURCE}/multiblend_pc_30_vs.vcs";
+            DataReaderVcsByteAnalysis shaderByteAnalysis = new(filenamepath);
+            shaderByteAnalysis.SetShortenOutput(false);
+            shaderByteAnalysis.PrintByteAnalysis();
+        }
+
+
+
         static void Trial7() {
-            string filenamepath = $"{DOTA_GAME_PC_SOURCE}/multiblend_pc_30_ps.vcs";
+            string filenamepath = $"{DOTA_GAME_PC_SOURCE}/multiblend_pc_30_vs.vcs";
             ShaderFile shaderFile = new(filenamepath);
             byte[] zframeDatabytes = shaderFile.GetDecompressedZFrame(0x1a1);
 
@@ -67,8 +77,7 @@ namespace MyShaderAnalysis {
                 datareader.ShowBytes(4);
                 uint unknown_prog_uint16 = datareader.ReadUInt16AtPosition(2);
                 uint unknown_prog_byte = datareader.ReadByteAtPosition(2);
-                datareader.ShowBytes(4, $"({unknown_prog_uint16}) this progression might mean the start of the source is actually a parameter mapping");
-                datareader.BreakLine();
+                datareader.ShowBytes(4, $"({unknown_prog_uint16}) the first ({unknown_prog_uint16} * 4) bytes look like header data that may need to be processed");
                 datareader.ShowByteCount($"DXIL-SOURCE[{i}]");
                 int sourceSize = sourceOffset - 8;
                 // datareader.ShowBytesAtPosition(0, (int) (unknown_prog_uint16-unknown_prog_byte));

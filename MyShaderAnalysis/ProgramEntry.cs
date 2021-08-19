@@ -22,8 +22,7 @@ namespace MyShaderAnalysis {
 
 
 
-
-            // LzmaAnalysis.RunTrials();
+            LzmaAnalysis.RunTrials();
 
             // TestFileSystem.RunTrials();
 
@@ -33,7 +32,7 @@ namespace MyShaderAnalysis {
             // StaticAnalysis2.RunTrials();
             // StaticAnalysis.RunTrials();
 
-            ShaderAnalysis.RunTrials();
+            // ShaderAnalysis.RunTrials();
             // ShaderAnalysis03.RunTrials();
             // ShaderAnalysis02.RunTrials(); // filewriting here still works (set to write to file)
             // ShaderAnalysis01.RunTrials();
@@ -43,7 +42,7 @@ namespace MyShaderAnalysis {
 
 
 
-            CrcTrialsSha1.RunTrials();
+            // CrcTrialsSha1.RunTrials();
             // CrcTrialsMurmur32.RunTrials();
 
             // CompatRulesGenerationTestRuns.RunTrials();

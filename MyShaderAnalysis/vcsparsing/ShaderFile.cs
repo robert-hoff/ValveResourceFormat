@@ -190,24 +190,7 @@ namespace MyShaderAnalysis.vcsparsing {
         }
 
         public byte[] GetDecompressedZFrame(long zframeId) {
-
             return zframesLookup[zframeId].GetDecompressedZFrame();
-
-            // datareader.offset = zframesLookup[zframeId];
-            //uint delim = datareader.ReadUInt();
-            //if (delim != 0xfffffffd) {
-            //    throw new ShaderParserException("unexpected zframe delimiter");
-            //}
-            //int uncompressed_length = datareader.ReadInt();
-            //int compressed_length = datareader.ReadInt();
-            //byte[] compressedZframe = datareader.ReadBytes(compressed_length);
-            //using var decompressor = new Decompressor();
-            //decompressor.LoadDictionary(GetZFrameDictionary());
-            //Span<byte> zframeUncompressed = decompressor.Unwrap(compressedZframe);
-            //if (zframeUncompressed.Length != uncompressed_length) {
-            //    throw new ShaderParserException("zframe length mismatch!");
-            //}
-            //return zframeUncompressed.ToArray();
         }
 
         public ZFrameFile GetZFrameFile(long zframeId) {

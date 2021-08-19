@@ -90,9 +90,9 @@ namespace MyShaderAnalysis {
             // TestZFrameSingleFile();
 
             // -- test or write single files
-            RunWriteZframeAsTxt();
+            // RunWriteZframeAsTxt();
             // ShaderFileTestSinglefiles();
-            // VcsParsingTestSinglefiles();
+            VcsParsingTestSinglefiles();
 
         }
 

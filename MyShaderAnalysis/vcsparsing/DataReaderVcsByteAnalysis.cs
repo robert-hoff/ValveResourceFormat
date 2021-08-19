@@ -511,8 +511,8 @@ namespace MyShaderAnalysis.vcsparsing {
         }
 
 
-        // int LIMIT_ZFRAME_DATA_SHOWN = 96;
-        int LIMIT_ZFRAME_DATA_SHOWN = 4000;
+        int LIMIT_ZFRAME_DATA_SHOWN = 96;
+        // int LIMIT_ZFRAME_DATA_SHOWN = 4000;
 
 
         public void PrintCompressedZFrame(uint zframeId) {
@@ -532,12 +532,11 @@ namespace MyShaderAnalysis.vcsparsing {
             }
             int uncompressed_length = ReadIntAtPosition();
             ShowBytes(4, $"{uncompressed_length,-8} uncompressed length");
-            // TabPrintComment(uncompressed_length.ToString().PadRight(8));
             int compressed_length = ReadIntAtPosition();
             ShowBytes(4, $"{compressed_length,-8} compressed length");
 
             if (isLzma) {
-                ShowBytes(5, "Decompressor configuration");
+                ShowBytes(5, "Decoder properties");
             }
             ShowBytesAtPosition(0, compressed_length > LIMIT_ZFRAME_DATA_SHOWN ? LIMIT_ZFRAME_DATA_SHOWN : compressed_length);
             if (compressed_length > LIMIT_ZFRAME_DATA_SHOWN) {
