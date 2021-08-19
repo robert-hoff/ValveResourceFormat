@@ -36,7 +36,7 @@ namespace MyShaderAnalysis.vcsparsing
         public const uint LZMA_DELIM = 0x414D5A4C;
 
         // zframe data is sorted by the order they appear in the file
-        // their Id (which is different and describes the configuration they are intended for) is the dictionary key
+        // their Id (which is different) is the dictionary key
         // both their index and Id are used in different contexts
         public SortedDictionary<long, ZFrameDataDescription> zframesLookup { get; } = new();
         private DBlockConfigurationMap dBlockConfigGen;
@@ -48,17 +48,6 @@ namespace MyShaderAnalysis.vcsparsing
             vcsFileType = GetVcsFileType(filenamepath);
             vcsSourceType = GetVcsSourceType(filenamepath);
             this.datareader = datareader;
-
-            int magic = datareader.ReadInt();
-            if (magic != 0x32736376)
-            {
-                throw new ShaderParserException($"wrong file id {magic:x}");
-            }
-            int version = datareader.ReadInt();
-            if (version != 64)
-            {
-                throw new ShaderParserException($"wrong version {version}, expecting 64. {filenamepath}");
-            }
 
             if (vcsFileType == VcsFileType.Features)
             {
@@ -72,7 +61,6 @@ namespace MyShaderAnalysis.vcsparsing
             {
                 throw new ShaderParserException($"can't parse this filetype: {vcsFileType}");
             }
-
 
 
             int block_delim = datareader.ReadInt();
@@ -118,7 +106,7 @@ namespace MyShaderAnalysis.vcsparsing
             int paramBlockCount = datareader.ReadInt();
             for (int i = 0; i < paramBlockCount; i++)
             {
-                ParamBlock nextParamBlock = new(datareader, datareader.GetOffset());
+                ParamBlock nextParamBlock = new(datareader, datareader.GetOffset(), i);
                 paramBlocks.Add(nextParamBlock);
             }
 
@@ -126,23 +114,23 @@ namespace MyShaderAnalysis.vcsparsing
             int mipmapBlockCount = datareader.ReadInt();
             for (int i = 0; i < mipmapBlockCount; i++)
             {
-                MipmapBlock nextMipmapBlock = new(datareader, datareader.GetOffset());
+                MipmapBlock nextMipmapBlock = new(datareader, datareader.GetOffset(), i);
                 mipmapBlocks.Add(nextMipmapBlock);
             }
 
             int bufferBlockCount = datareader.ReadInt();
             for (int i = 0; i < bufferBlockCount; i++)
             {
-                BufferBlock nextBufferBlock = new(datareader, datareader.GetOffset());
+                BufferBlock nextBufferBlock = new(datareader, datareader.GetOffset(), i);
                 bufferBlocks.Add(nextBufferBlock);
             }
 
             if (vcsFileType == VcsFileType.Features || vcsFileType == VcsFileType.VertexShader)
             {
                 int sybmolsBlockCount = datareader.ReadInt();
-                for (int blockId = 0; blockId < sybmolsBlockCount; blockId++)
+                for (int i = 0; i < sybmolsBlockCount; i++)
                 {
-                    SymbolsBlock nextSymbolsBlock = new(datareader, datareader.GetOffset(), blockId);
+                    SymbolsBlock nextSymbolsBlock = new(datareader, datareader.GetOffset(), i);
                     symbolBlocks.Add(nextSymbolsBlock);
                 }
             }

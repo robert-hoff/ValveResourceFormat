@@ -45,11 +45,11 @@ namespace ValveResourceFormat.ShaderParser
         public static VcsSourceType GetVcsSourceType(string filenamepath) {
             string[] nameTokens = filenamepath.Split("_");
 
-            if (nameTokens.Length >= 3 && nameTokens[^3].ToLower().Equals("pcgl")) {
+            if (nameTokens.Length >= 3 && nameTokens[^3].ToLower().EndsWith("pcgl")) {
                 return VcsSourceType.Glsl;
             }
-            if (nameTokens.Length >= 3 && nameTokens[^3].ToLower().Equals("pc")) {
-                if (nameTokens[^2].Equals("30")) {
+            if (nameTokens.Length >= 3 && nameTokens[^3].ToLower().EndsWith("pc")) {
+                if (nameTokens[^2].EndsWith("30")) {
                     return VcsSourceType.DXIL;
                 } else {
                     return VcsSourceType.DXBC;

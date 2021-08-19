@@ -9,8 +9,7 @@ namespace ValveResourceFormat.ShaderParser
 {
     public class FeaturesHeaderBlock : ShaderDataBlock
     {
-        public int fileversion;
-        public bool hasPsrsFile;
+        public bool has_psrs_file;
         public int unknown_val;
         public string file_description;
         public int arg0;
@@ -26,11 +25,11 @@ namespace ValveResourceFormat.ShaderParser
         public FeaturesHeaderBlock(ShaderDataReader datareader, int start) : base(datareader, start)
         {
             int magic = datareader.ReadInt();
-            if (magic != CompiledShader.MAGIC)
+            if (magic != CompiledShader.MAGIC_VCS2)
             {
                 throw new ShaderParserException($"Wrong file id {magic:x}");
             }
-            fileversion = datareader.ReadInt();
+            int fileversion = datareader.ReadInt();
             if (fileversion != 64)
             {
                 throw new ShaderParserException($"Wrong version {fileversion}, only version 64 supported");
@@ -40,7 +39,7 @@ namespace ValveResourceFormat.ShaderParser
             {
                 throw new ShaderParserException($"Unexpected value psrs_arg = {psrs_arg}");
             }
-            hasPsrsFile = psrs_arg > 0;
+            has_psrs_file = psrs_arg > 0;
             unknown_val = datareader.ReadInt();
             datareader.ReadInt(); // length of name, but not needed because it's always null-term
             file_description = datareader.ReadNullTermString();
@@ -53,7 +52,7 @@ namespace ValveResourceFormat.ShaderParser
             arg6 = datareader.ReadInt();
             arg7 = datareader.ReadInt();
             int nr_of_arguments = datareader.ReadInt();
-            if (hasPsrsFile)
+            if (has_psrs_file)
             {
                 // nr_of_arguments is overwritten
                 nr_of_arguments = datareader.ReadInt();
@@ -74,7 +73,7 @@ namespace ValveResourceFormat.ShaderParser
             {
                 fileIDs.Add(datareader.ReadBytesAsString(16).Replace(" ", "").ToLower());
             }
-            if (hasPsrsFile)
+            if (has_psrs_file)
             {
                 fileIDs.Add(datareader.ReadBytesAsString(16).Replace(" ", "").ToLower());
             }
@@ -171,7 +170,7 @@ namespace ValveResourceFormat.ShaderParser
         public VsPsHeaderBlock(ShaderDataReader datareader, int start) : base(datareader, start)
         {
             int magic = datareader.ReadInt();
-            if (magic != CompiledShader.MAGIC)
+            if (magic != CompiledShader.MAGIC_VCS2)
             {
                 throw new ShaderParserException($"wrong file id {magic:x}");
             }

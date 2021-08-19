@@ -283,7 +283,7 @@ namespace Decompiler
             switch (magic)
             {
                 case Package.MAGIC: ParseVPK(path, fs); return;
-                case CompiledShader.MAGIC: ParseVCS(path, fs); return;
+                case CompiledShader.MAGIC_VCS2: ParseVCS(path, fs); return;
                 case ToolsAssetInfo.MAGIC2:
                 case ToolsAssetInfo.MAGIC: ParseToolsAssetInfo(path, fs); return;
                 case BinaryKV3.MAGIC3:

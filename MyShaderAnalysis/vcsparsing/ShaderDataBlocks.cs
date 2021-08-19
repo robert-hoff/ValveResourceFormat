@@ -6,11 +6,8 @@ using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
 
 namespace MyShaderAnalysis.vcsparsing
 {
-
-
     public class FeaturesHeaderBlock : ShaderDataBlock
     {
-
         public bool has_psrs_file { get; }
         public int unknown_val { get; }
         public string file_description { get; }
@@ -25,9 +22,18 @@ namespace MyShaderAnalysis.vcsparsing
         public List<(string, string)> mainParams { get; } = new();
         public List<string> fileIDs { get; } = new();
 
-
         public FeaturesHeaderBlock(ShaderDataReader datareader, int start) : base(datareader, start)
         {
+            int vcsMagicId = datareader.ReadInt();
+            if (vcsMagicId != CompiledShader.MAGIC_VCS2)
+            {
+                throw new ShaderParserException($"Wrong file id {vcsMagicId:x}");
+            }
+            int vcsFileversion = datareader.ReadInt();
+            if (vcsFileversion != 64)
+            {
+                throw new ShaderParserException($"Wrong version {vcsFileversion}, only version 64 supported");
+            }
             int psrs_arg = datareader.ReadInt();
             if (psrs_arg != 0 && psrs_arg != 1)
             {
@@ -75,7 +81,6 @@ namespace MyShaderAnalysis.vcsparsing
                 fileIDs.Add(datareader.ReadBytesAsString(16).Replace(" ", "").ToLower());
             }
         }
-
 
         public void PrintByteSummary()
         {
@@ -155,30 +160,43 @@ namespace MyShaderAnalysis.vcsparsing
             datareader.BreakLine();
         }
 
-
         public void ShowMainParams()
         {
-
             foreach (var parampair in mainParams)
             {
                 Debug.WriteLine($"       {parampair.Item1.PadRight(50)} {parampair.Item2}");
             }
-
         }
-
     }
 
-
-
-    // needs implemenation
     public class VsPsHeaderBlock : ShaderDataBlock
     {
+        public int fileversion;
+        public bool hasPsrsFile;
+        public string fileID0;
+        public string fileID1;
         public VsPsHeaderBlock(ShaderDataReader datareader, int start) : base(datareader, start)
         {
-            datareader.MoveOffset(36);
+            int magic = datareader.ReadInt();
+            if (magic != CompiledShader.MAGIC_VCS2)
+            {
+                throw new ShaderParserException($"wrong file id {magic:x}");
+            }
+            fileversion = datareader.ReadInt();
+            if (fileversion != 64)
+            {
+                throw new ShaderParserException($"Wrong version {fileversion}, only version 64 supported");
+            }
+            int psrs_arg = datareader.ReadInt();
+            if (psrs_arg != 0 && psrs_arg != 1)
+            {
+                throw new ShaderParserException($"unexpected value psrs_arg = {psrs_arg}");
+            }
+            hasPsrsFile = psrs_arg > 0;
+            fileID0 = datareader.ReadBytesAsString(16).Replace(" ", "").ToLower();
+            fileID1 = datareader.ReadBytesAsString(16).Replace(" ", "").ToLower();
         }
     }
-
 
     public class SfBlock : ShaderDataBlock
     {
@@ -193,9 +211,9 @@ namespace MyShaderAnalysis.vcsparsing
         public int arg5 { get; }
         public List<string> additionalParams { get; } = new();
 
-        public SfBlock(ShaderDataReader datareader, int start, int blockId) : base(datareader, start)
+        public SfBlock(ShaderDataReader datareader, int start, int blockIndex) : base(datareader, start)
         {
-            this.blockId = blockId;
+            this.blockId = blockIndex;
             name0 = datareader.ReadNullTermStringAtPosition();
             datareader.MoveOffset(64);
             name1 = datareader.ReadNullTermStringAtPosition();
@@ -212,13 +230,10 @@ namespace MyShaderAnalysis.vcsparsing
                 additionalParams.Add(datareader.ReadNullTermString());
             }
         }
-
     }
-
 
     public class SfConstraintsBlock : ShaderDataBlock
     {
-
         public int blockIndex { get; }
         public int relRule { get; }  // 1 = dependency-rule (feature file), 2 = dependency-rule (other files), 3 = exclusion
         public int arg0 { get; } // this is just 1 for features files and 2 for all other files
@@ -244,11 +259,9 @@ namespace MyShaderAnalysis.vcsparsing
             // range 2 at (152)
             range2 = ReadIntRange();
             datareader.MoveOffset(64 - range2.Length * 4);
-
             description = datareader.ReadNullTermStringAtPosition();
             datareader.MoveOffset(256);
         }
-
         private int[] ReadIntRange()
         {
             List<int> ints0 = new();
@@ -258,7 +271,6 @@ namespace MyShaderAnalysis.vcsparsing
             }
             return ints0.ToArray();
         }
-
         private int[] ReadByteFlags()
         {
             int count = 0;
@@ -277,24 +289,18 @@ namespace MyShaderAnalysis.vcsparsing
             datareader.MoveOffset(16);
             return byteFlags;
         }
-
-
         public string RelRuleDescribe()
         {
             return relRule == 3 ? "EXC(3)" : $"INC({relRule})";
         }
-
         public string GetByteFlagsAsString()
         {
             return CombineIntArray(flags);
         }
     }
 
-
-
     public class DBlock : ShaderDataBlock
     {
-
         public int blockIndex { get; }
         public string name0 { get; }
         public string name1 { get; } // it looks like d-blocks might have the provision for 2 strings (but not seen in use)
@@ -304,7 +310,6 @@ namespace MyShaderAnalysis.vcsparsing
         public int arg3 { get; }
         public int arg4 { get; }
         public int arg5 { get; }
-
 
         public DBlock(ShaderDataReader datareader, int start, int blockIndex) : base(datareader, start)
         {
@@ -320,14 +325,10 @@ namespace MyShaderAnalysis.vcsparsing
             arg4 = datareader.ReadInt();
             arg5 = datareader.ReadInt();
         }
-
     }
-
-
 
     public class DConstraintsBlock : ShaderDataBlock
     {
-
         public int blockIndex { get; }
         public int relRule { get; }  // 2 = dependency-rule (other files), 3 = exclusion (1 not present, as in the compat-blocks)
         public int arg0 { get; } // ALWAYS 3 (for sf-constraint-blocks, this value is 1 for features files and 2 for all other files)
@@ -448,12 +449,11 @@ namespace MyShaderAnalysis.vcsparsing
         {
             return relRule == 3 ? "EXC(3)" : $"INC({relRule})";
         }
-
     }
-
 
     public class ParamBlock : ShaderDataBlock
     {
+        public int blockIndex { get; }
         public string name0 { get; }
         public string name1 { get; }
         public string name2 { get; }
@@ -478,9 +478,9 @@ namespace MyShaderAnalysis.vcsparsing
         public int[] ranges7 { get; } = new int[4];
         public string command0 { get; }
         public string command1 { get; }
-
-        public ParamBlock(ShaderDataReader datareader, int start) : base(datareader, start)
+        public ParamBlock(ShaderDataReader datareader, int start, int blockIndex) : base(datareader, start)
         {
+            this.blockIndex = blockIndex;
             name0 = datareader.ReadNullTermStringAtPosition();
             datareader.MoveOffset(64);
             name1 = datareader.ReadNullTermStringAtPosition();
@@ -542,10 +542,8 @@ namespace MyShaderAnalysis.vcsparsing
             int myint = 10;
         }
 
-
         public void ShowBlock()
         {
-
             Debug.WriteLine($"name0 {s(20)} {name0}");
             Debug.WriteLine($"name1 {s(20)} {name1}");
             Debug.WriteLine($"lead0,lead1 {s(14)} ({type},{res0})");
@@ -570,30 +568,27 @@ namespace MyShaderAnalysis.vcsparsing
             Debug.WriteLine($"command0 {s(16)} {command0}");
             Debug.WriteLine($"command1 {s(16)} {command1}");
         }
-
-
     }
-
 
     public class MipmapBlock : ShaderDataBlock
     {
-        public MipmapBlock(ShaderDataReader datareader, int start) : base(datareader, start)
+        // todo - needs implementation
+        public MipmapBlock(ShaderDataReader datareader, int start, int blockIndex) : base(datareader, start)
         {
-            // TODO - needs implementation
             datareader.MoveOffset(280);
         }
     }
 
-
     public class BufferBlock : ShaderDataBlock
     {
+        public int blockIndex;
         public string name { get; }
         public int bufferSize { get; }
         public List<(string, int, int, int, int)> bufferParams { get; } = new();
-        public uint blockId { get; }
-
-        public BufferBlock(ShaderDataReader datareader, int start) : base(datareader, start)
+        public uint blockCrc { get; }
+        public BufferBlock(ShaderDataReader datareader, int start, int blockIndex) : base(datareader, start)
         {
+            this.blockIndex = blockIndex;
             name = datareader.ReadNullTermStringAtPosition();
             datareader.MoveOffset(64);
             bufferSize = datareader.ReadInt();
@@ -609,20 +604,20 @@ namespace MyShaderAnalysis.vcsparsing
                 int arg2 = datareader.ReadInt();
                 bufferParams.Add((paramName, bufferIndex, arg0, arg1, arg2));
             }
-            blockId = datareader.ReadUInt();
+            blockCrc = datareader.ReadUInt();
         }
     }
 
-
     public class SymbolsBlock : ShaderDataBlock
     {
+        public int blockIndex { get; }
         public string name { get; }
         public string type { get; }
         public string option { get; }
         public int semanticIndex { get; }
-
         public SymbolsBlock(ShaderDataReader datareader, int start, int blockIndex) : base(datareader, start)
         {
+            this.blockIndex = blockIndex;
             int namesCount = datareader.ReadInt();
             for (int i = 0; i < namesCount; i++)
             {
@@ -634,13 +629,5 @@ namespace MyShaderAnalysis.vcsparsing
         }
 
 
-
-
     }
 }
-
-
-
-
-
-

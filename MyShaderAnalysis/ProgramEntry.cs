@@ -18,9 +18,9 @@ namespace MyShaderAnalysis
             // StaticAnalysisZframes2.RunTrials();
             // StaticAnalysisZframes.RunTrials();
 
-            // StaticAnalysis.RunTrials();
+            StaticAnalysis.RunTrials();
             // StaticAnalysis2.RunTrials();
-            ShaderAnalysis.RunTrials();
+            // ShaderAnalysis.RunTrials();
 
             // Snippetcode.RunTrials();
             // LzmaAnalysis.RunTrials();
