@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -9,7 +10,7 @@ using static ValveResourceFormat.ShaderParser.ShaderUtilHelpers;
 #pragma warning disable CA1024 // Use properties where appropriate
 namespace ValveResourceFormat.ShaderParser
 {
-    public class ZFrameFile
+    public class ZFrameFile : IDisposable
     {
         private ShaderDataReader datareader;
         public string filenamepath;
@@ -32,10 +33,9 @@ namespace ValveResourceFormat.ShaderParser
 
         public ZFrameFile(byte[] databytes, string filenamepath, long zframeId)
         {
-            MemoryStream stream = new MemoryStream(databytes);
             this.filenamepath = filenamepath;
             vcsFiletype = GetVcsFileType(filenamepath);
-            datareader = new ShaderDataReader(new BinaryReader(stream));
+            datareader = new ShaderDataReader(databytes);
             this.zframeId = zframeId;
             leadingData = new ZDataBlock(datareader, datareader.GetOffset(), -1);
             zframeParams = new();
@@ -96,8 +96,11 @@ namespace ValveResourceFormat.ShaderParser
                     psEndBlocks.Add(psEndBlock);
                 }
             }
-            // throws ShaderParserException() if not at end of file
-            datareader.ThrowIfNotAtEOF();
+
+            if (!datareader.CheckPositionIsAtEOF())
+            {
+                throw new ShaderParserException($"Reader contains more data, but EOF expected");
+            }
         }
 
         public ZDataBlock GetDataBlock(int blockId)
@@ -233,6 +236,22 @@ namespace ValveResourceFormat.ShaderParser
             }
         }
 
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                datareader.Dispose();
+                datareader = null;
+            }
+        }
+
+
         public class ZFrameParam
         {
             public string name0;
@@ -242,7 +261,7 @@ namespace ValveResourceFormat.ShaderParser
             public int dynExpLen = -1;
             public byte[] dynExpression;
             public string dynExpEvaluated;
-            public int operatorVal = -999999;
+            public int operatorVal = int.MinValue;
             public ZFrameParam(ShaderDataReader datareader)
             {
                 name0 = datareader.ReadNullTermString();
@@ -285,7 +304,7 @@ namespace ValveResourceFormat.ShaderParser
                     return $"{name0,-40} 0x{murmur32:x08}     {ShaderDataReader.BytesToString(code)}   {dynExpEvaluated}";
                 } else
                 {
-                    return $"{name0,-40} 0x{murmur32:x08}     {ShaderDataReader.BytesToString(code)}   {(operatorVal != -999999 ? $"{operatorVal}" : "")}";
+                    return $"{name0,-40} 0x{murmur32:x08}     {ShaderDataReader.BytesToString(code)}   {(operatorVal != int.MinValue ? $"{operatorVal}" : "")}";
                 }
 
             }

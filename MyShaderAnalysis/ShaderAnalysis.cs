@@ -412,7 +412,7 @@ namespace MyShaderAnalysis {
         static void PrintZFrame(byte[] databytes, VcsFileType vcsFiletype, VcsSourceType sourceType,
             bool disableOutput = false, StreamWriter sw = null) {
             DataReaderZFrameByteAnalysis zFrameParser = new(databytes, vcsFiletype, sourceType);
-            zFrameParser.SetDisableOutput(disableOutput);
+            zFrameParser.DisableOutput();
             if (sw != null) {
                 zFrameParser.ConfigureWriteToFile(sw, disableOutput);
             }
@@ -549,7 +549,7 @@ namespace MyShaderAnalysis {
                 Debug.Write($"parsing {RemoveBaseDir(filenamepath)}");
                 DataReaderVcsByteAnalysis shaderByteAnalysis = new(filenamepath);
                 shaderByteAnalysis.SetShortenOutput(false);
-                shaderByteAnalysis.SetDisableOutput(true);
+                shaderByteAnalysis.DisableOutput();
                 shaderByteAnalysis.PrintByteAnalysis();
                 Debug.WriteLine($" [SUCCESS]");
                 typesParsed[(int)GetVcsFileType(filenamepath)]++;

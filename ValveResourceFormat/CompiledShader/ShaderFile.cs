@@ -117,10 +117,16 @@ namespace ValveResourceFormat.ShaderParser
             if (zframesCount > 0)
             {
                 int offsetToEndOfFile = datareader.ReadInt();
-                datareader.SetPosition(offsetToEndOfFile);
+                datareader.SetOffset(offsetToEndOfFile);
             }
-             datareader.ThrowIfNotAtEOF();
+
+            if (!datareader.CheckPositionIsAtEOF())
+            {
+                throw new ShaderParserException($"Reader contains more data, but EOF expected");
+            }
         }
+
+
 
         public int GetZFrameCount()
         {
@@ -140,7 +146,7 @@ namespace ValveResourceFormat.ShaderParser
 
         public byte[] GetDecompressedZFrame(long zframeId)
         {
-            datareader.SetPosition(zframesLookup[zframeId]);
+            datareader.SetOffset(zframesLookup[zframeId]);
             uint delim = datareader.ReadUInt();
             if (delim != 0xfffffffd)
             {
@@ -173,7 +179,7 @@ namespace ValveResourceFormat.ShaderParser
 
         public void PrintByteAnalysis()
         {
-            datareader.SetPosition(0);
+            datareader.SetOffset(0);
             if (vcsFiletype == VcsFileType.Features)
             {
                 featuresHeader.PrintAnnotatedBytestream();
@@ -264,7 +270,7 @@ namespace ValveResourceFormat.ShaderParser
             if (!DONT_SHOW_COMPRESSED_ZFRAMES)
             {
 #pragma warning disable CS0162 // Unreachable code detected
-                datareader.ThrowIfNotAtEOF();
+                datareader.ShowEndOfFile();
 #pragma warning restore CS0162 // Unreachable code detected
             }
 
@@ -328,7 +334,7 @@ namespace ValveResourceFormat.ShaderParser
             {
                 datareader.Comment($"... ({compressed_length - 96} bytes not shown)");
             }
-            datareader.moveOffset(compressed_length);
+            datareader.MoveOffset(compressed_length);
             datareader.BreakLine();
         }
 

@@ -2,15 +2,11 @@ using System;
 using System.IO;
 using ValveResourceFormat.ShaderParser;
 
-
-#pragma warning disable CA1051 // Do not declare visible instance fields
 namespace ValveResourceFormat
 {
     public class CompiledShader : IDisposable
     {
         public const int MAGIC = 0x32736376; // "vcs2"
-
-        private BinaryReader Reader;
         private ShaderDataReader datareader;
 
         /// <summary>
@@ -22,14 +18,12 @@ namespace ValveResourceFormat
             GC.SuppressFinalize(this);
         }
 
-
-
         protected virtual void Dispose(bool disposing)
         {
-            if (disposing && Reader != null)
+            if (disposing && datareader != null)
             {
-                Reader.Dispose();
-                Reader = null;
+                datareader.Dispose();
+                datareader = null;
             }
         }
 
@@ -51,8 +45,7 @@ namespace ValveResourceFormat
         /// <param name="input">The input <see cref="Stream"/> to read from.</param>
         public void Read(string filenamepath, Stream input)
         {
-            Reader = new BinaryReader(input);
-            datareader = new ShaderDataReader(Reader);
+            datareader = new ShaderDataReader(input);
             ShaderFile shaderFile = new ShaderFile(filenamepath, datareader);
             shaderFile.PrintByteAnalysis();
 

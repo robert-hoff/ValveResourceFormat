@@ -7,14 +7,12 @@ namespace ShaderAnalysis.utilhelpers
     public class ReadShaderFile : IDisposable
     {
         private string filenamepath;
-        private BinaryReader Reader;
         private ShaderDataReader datareader;
 
         public ReadShaderFile(string filenamepath)
         {
             this.filenamepath = filenamepath;
-            BinaryReader binReader = new BinaryReader(File.OpenRead(filenamepath));
-            datareader = new ShaderDataReader(binReader, writeToConsole: false, writeToDebug: true);
+            datareader = new ShaderDataReader(File.OpenRead(filenamepath), writeToConsole: false, writeToDebug: true);
         }
 
 
@@ -32,10 +30,10 @@ namespace ShaderAnalysis.utilhelpers
 
         protected virtual void Dispose(bool disposing)
         {
-            if (disposing && Reader != null)
+            if (disposing && datareader != null)
             {
-                Reader.Dispose();
-                Reader = null;
+                datareader.Dispose();
+                datareader = null;
             }
         }
 

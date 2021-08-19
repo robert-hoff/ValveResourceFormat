@@ -23,6 +23,7 @@ namespace MyShaderAnalysis.vcsparsing
             WriteToDebug = writeToDebug;
         }
 
+        #pragma warning disable CA1024 // Use properties where appropriate
         public int GetOffset()
         {
             return (int)BinReader.BaseStream.Position;
@@ -32,6 +33,12 @@ namespace MyShaderAnalysis.vcsparsing
         {
             BinReader.BaseStream.Position = offset;
         }
+
+        public int GetFileSize()
+        {
+            return (int)BinReader.BaseStream.Length;
+        }
+        #pragma warning restore CA1024
 
         private long savedPosition;
         public void SavePosition()
@@ -54,10 +61,6 @@ namespace MyShaderAnalysis.vcsparsing
             return BinReader.BaseStream.Position == BinReader.BaseStream.Length;
         }
 
-        public int GetFileSize()
-        {
-            return (int)BinReader.BaseStream.Length;
-        }
         public byte ReadByte()
         {
             return BinReader.ReadByte();
@@ -159,12 +162,6 @@ namespace MyShaderAnalysis.vcsparsing
             return BinReader.ReadBytes(len);
         }
 
-        public string ReadBytesAsString(int len)
-        {
-            byte[] bytes0 = BinReader.ReadBytes(len);
-            return BytesToString(bytes0);
-        }
-
         public byte[] ReadBytesAtPosition(long ind, int len, bool rel = true)
         {
             SavePosition();
@@ -173,6 +170,12 @@ namespace MyShaderAnalysis.vcsparsing
             byte[] bytes0 = BinReader.ReadBytes(len);
             RestorePosition();
             return bytes0;
+        }
+
+        public string ReadBytesAsString(int len)
+        {
+            byte[] bytes0 = BinReader.ReadBytes(len);
+            return BytesToString(bytes0);
         }
 
         public string ReadNullTermString()
@@ -187,11 +190,21 @@ namespace MyShaderAnalysis.vcsparsing
             return str;
         }
 
-        public void EndOfFile()
+        public string ReadNullTermStringAtPosition(long ind = 0, bool rel = true)
         {
-            if (GetOffset() != GetFileSize())
+            SavePosition();
+            long fromInd = rel ? GetOffset() + ind : ind;
+            SetOffset(fromInd);
+            String str = ReadNullTermString();
+            RestorePosition();
+            return str;
+        }
+
+        public void ShowEndOfFile()
+        {
+            if (!CheckPositionIsAtEOF())
             {
-                throw new ShaderParserException("End of file not reached!");
+                throw new ShaderParserException("End of file not reached");
             }
             ShowByteCount();
             OutputWriteLine("EOF");
@@ -205,15 +218,6 @@ namespace MyShaderAnalysis.vcsparsing
             TabComment($"{intval}");
         }
 
-        public string ReadNullTermStringAtPosition(long ind = 0, bool rel = true)
-        {
-            SavePosition();
-            long fromInd = rel ? GetOffset() + ind : ind;
-            SetOffset(fromInd);
-            String str = ReadNullTermString();
-            RestorePosition();
-            return str;
-        }
         public void ShowByteCount(string message = null)
         {
             OutputWrite($"[{GetOffset()}]{(message != null ? " " + message : "")}\n");
@@ -265,7 +269,7 @@ namespace MyShaderAnalysis.vcsparsing
         {
             if (breakLen == -1)
             {
-                breakLen = 999999;
+                breakLen = int.MaxValue;
             }
             int count = 0;
             string bytestring = "";

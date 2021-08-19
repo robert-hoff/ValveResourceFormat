@@ -4,26 +4,40 @@ using System.Diagnostics;
 
 namespace ValveResourceFormat.ShaderParser
 {
-    public class ShaderDataReader
+    public class ShaderDataReader : IDisposable
     {
         private BinaryReader BinReader;
 
-        public ShaderDataReader(BinaryReader binReader, bool writeToConsole = true, bool writeToDebug = false)
+        public ShaderDataReader(Stream input, bool writeToConsole = false, bool writeToDebug = true)
         {
+            BinReader = new BinaryReader(input);
             WriteToConsole = writeToConsole;
             WriteToDebug = writeToDebug;
-            BinReader = binReader;
         }
 
-        public long GetOffset()
+        public ShaderDataReader(byte[] databytes, bool writeToConsole = false, bool writeToDebug = true)
         {
-            return BinReader.BaseStream.Position;
+            BinReader = new BinaryReader(new MemoryStream(databytes));
+            WriteToConsole = writeToConsole;
+            WriteToDebug = writeToDebug;
         }
 
-        public void SetPosition(long offset)
+        #pragma warning disable CA1024 // Use properties where appropriate
+        public int GetOffset()
+        {
+            return (int)BinReader.BaseStream.Position;
+        }
+
+        public void SetOffset(long offset)
         {
             BinReader.BaseStream.Position = offset;
         }
+
+        public int GetFileSize()
+        {
+            return (int)BinReader.BaseStream.Length;
+        }
+        #pragma warning restore CA1024
 
         private long savedPosition;
         public void SavePosition()
@@ -36,28 +50,26 @@ namespace ValveResourceFormat.ShaderParser
             BinReader.BaseStream.Position = savedPosition;
         }
 
-        public byte ReadByte()
-        {
-            return BinReader.ReadByte();
-        }
-
-        public void moveOffset(int delta)
+        public void MoveOffset(int delta)
         {
             BinReader.BaseStream.Position += delta;
         }
-        public void ThrowIfNotAtEOF()
+
+        public bool CheckPositionIsAtEOF()
         {
-            if (BinReader.BaseStream.Position != BinReader.BaseStream.Length)
-            {
-                throw new ShaderParserException("not at end of file");
-            }
+            return BinReader.BaseStream.Position == BinReader.BaseStream.Length;
+        }
+
+        public byte ReadByte()
+        {
+            return BinReader.ReadByte();
         }
 
         public byte ReadByteAtPosition(long ind = 0, bool rel = true)
         {
             SavePosition();
             long fromInd = rel ? GetOffset() + ind : ind;
-            SetPosition(fromInd);
+            SetOffset(fromInd);
             byte b0 = BinReader.ReadByte();
             RestorePosition();
             return b0;
@@ -72,7 +84,7 @@ namespace ValveResourceFormat.ShaderParser
         {
             SavePosition();
             long fromInd = rel ? GetOffset() + ind : ind;
-            SetPosition(fromInd);
+            SetOffset(fromInd);
             uint uint0 = BinReader.ReadUInt16();
             RestorePosition();
             return uint0;
@@ -87,7 +99,7 @@ namespace ValveResourceFormat.ShaderParser
         {
             SavePosition();
             long fromInd = rel ? GetOffset() + ind : ind;
-            SetPosition(fromInd);
+            SetOffset(fromInd);
             short s0 = BinReader.ReadInt16();
             RestorePosition();
             return s0;
@@ -102,7 +114,7 @@ namespace ValveResourceFormat.ShaderParser
         {
             SavePosition();
             long fromInd = rel ? GetOffset() + ind : ind;
-            SetPosition(fromInd);
+            SetOffset(fromInd);
             uint uint0 = BinReader.ReadUInt32();
             RestorePosition();
             return uint0;
@@ -117,7 +129,7 @@ namespace ValveResourceFormat.ShaderParser
         {
             SavePosition();
             long fromInd = rel ? GetOffset() + ind : ind;
-            SetPosition(fromInd);
+            SetOffset(fromInd);
             int int0 = BinReader.ReadInt32();
             RestorePosition();
             return int0;
@@ -137,7 +149,7 @@ namespace ValveResourceFormat.ShaderParser
         {
             SavePosition();
             long fromInd = rel ? GetOffset() + ind : ind;
-            SetPosition(fromInd);
+            SetOffset(fromInd);
             BinReader.BaseStream.Position = fromInd;
             float float0 = BinReader.ReadSingle();
             RestorePosition();
@@ -149,20 +161,19 @@ namespace ValveResourceFormat.ShaderParser
             return BinReader.ReadBytes(len);
         }
 
-        public string ReadBytesAsString(int len)
-        {
-            byte[] bytes0 = BinReader.ReadBytes(len);
-            return BytesToString(bytes0);
-        }
-
         public byte[] ReadBytesAtPosition(long ind, int len, bool rel = true)
         {
             SavePosition();
             long fromInd = rel ? GetOffset() + ind : ind;
-            SetPosition(fromInd);
+            SetOffset(fromInd);
             byte[] bytes0 = BinReader.ReadBytes(len);
             RestorePosition();
             return bytes0;
+        }
+        public string ReadBytesAsString(int len)
+        {
+            byte[] bytes0 = BinReader.ReadBytes(len);
+            return BytesToString(bytes0);
         }
 
         public string ReadNullTermString()
@@ -181,11 +192,30 @@ namespace ValveResourceFormat.ShaderParser
         {
             SavePosition();
             long fromInd = rel ? GetOffset() + ind : ind;
-            SetPosition(fromInd);
+            SetOffset(fromInd);
             String str = ReadNullTermString();
             RestorePosition();
             return str;
         }
+
+        public void ShowEndOfFile()
+        {
+            if (!CheckPositionIsAtEOF())
+            {
+                throw new ShaderParserException("End of file not reached");
+            }
+            ShowByteCount();
+            OutputWriteLine("EOF");
+            BreakLine();
+        }
+
+        public void ShowBytesWithIntValue()
+        {
+            int intval = ReadIntAtPosition();
+            ShowBytes(4, breakLine: false);
+            TabComment($"{intval}");
+        }
+
         public void ShowByteCount(string message = null)
         {
             OutputWrite($"[{GetOffset()}]{(message != null ? " " + message : "")}\n");
@@ -237,7 +267,7 @@ namespace ValveResourceFormat.ShaderParser
         {
             if (breakLen == -1)
             {
-                breakLen = 999999;
+                breakLen = int.MaxValue;
             }
             int count = 0;
             string bytestring = "";
@@ -252,42 +282,63 @@ namespace ValveResourceFormat.ShaderParser
             return bytestring.Trim();
         }
 
-        private bool disableOutput;
+
         private bool WriteToConsole;
         private bool WriteToDebug;
-
-        public void SetDisableOutput(bool disableOutput)
+        public void DisableOutput()
         {
-            this.disableOutput = disableOutput;
+            WriteToConsole = false;
+            WriteToDebug = false;
         }
+
         private StreamWriter sw;
-        public void ConfigureWriteToFile(StreamWriter sw, bool disableOutput)
+        public void ConfigureWriteToFile(StreamWriter sw, bool disableOutput = false)
         {
             this.sw = sw;
-            this.disableOutput = disableOutput;
+            if (disableOutput)
+            {
+                DisableOutput();
+            }
         }
+
         public void OutputWrite(string text)
         {
-            if (!disableOutput)
+            if (WriteToConsole)
             {
-                if (WriteToConsole)
-                {
-                    Console.Write(text);
-                }
-                if (WriteToDebug)
-                {
-                    Debug.Write(text);
-                }
+                Console.Write(text);
+            }
+            if (WriteToDebug)
+            {
+                Debug.Write(text);
             }
             if (sw != null)
             {
                 sw.Write(text);
             }
         }
+
         public void OutputWriteLine(string text)
         {
             OutputWrite(text + "\n");
         }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing && BinReader != null)
+            {
+                BinReader.Dispose();
+                BinReader = null;
+            }
+        }
+
+
+
     }
 }
 

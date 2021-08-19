@@ -157,7 +157,7 @@ namespace MyShaderAnalysis.vcsparsing {
                     OutputWriteLine("");
                 }
             }
-            EndOfFile();
+            ShowEndOfFile();
 
 
             // write the gsls source, if indicated

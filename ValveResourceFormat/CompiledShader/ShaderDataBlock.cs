@@ -8,11 +8,11 @@ namespace ValveResourceFormat.ShaderParser
     {
 
         protected ShaderDataReader datareader;
-        protected long start;
+        protected int start;
 
-        protected ShaderDataBlock(ShaderDataReader datareader, long offset)
+        protected ShaderDataBlock(ShaderDataReader datareader, int offsetAtStartOfBlock)
         {
-            this.start = offset;
+            this.start = offsetAtStartOfBlock;
             this.datareader = datareader;
         }
         public int ReadIntegerAtPosition(int relOffset)

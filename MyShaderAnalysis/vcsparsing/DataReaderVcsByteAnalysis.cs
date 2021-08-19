@@ -64,7 +64,7 @@ namespace MyShaderAnalysis.vcsparsing {
             if (shortenOutput && zFrameCount > LIMIT_ZFRAMES) {
                 return;
             }
-            EndOfFile();
+            ShowEndOfFile();
         }
 
         private void PrintVcsFeaturesHeader() {

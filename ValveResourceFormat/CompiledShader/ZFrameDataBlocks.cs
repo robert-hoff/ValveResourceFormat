@@ -9,7 +9,7 @@ namespace ValveResourceFormat.ShaderParser
         public int h1;
         public int h2;
         public byte[] dataload;
-        public ZDataBlock(ShaderDataReader datareader, long start, int blockId) : base(datareader, start)
+        public ZDataBlock(ShaderDataReader datareader, int start, int blockId) : base(datareader, start)
         {
             this.blockId = blockId;
             h0 = datareader.ReadInt();
@@ -32,7 +32,7 @@ namespace ValveResourceFormat.ShaderParser
         public byte[] sourcebytes;
         public byte[] fileId;
 
-        public GlslSource(ShaderDataReader datareader, long start, int sourceId) : base(datareader, start)
+        public GlslSource(ShaderDataReader datareader, int start, int sourceId) : base(datareader, start)
         {
             this.sourceId = sourceId;
             offset0 = datareader.ReadInt();
