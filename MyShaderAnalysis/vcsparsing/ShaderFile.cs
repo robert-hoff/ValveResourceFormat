@@ -18,28 +18,22 @@ namespace MyShaderAnalysis.vcsparsing
         public string filenamepath { get; }
         public VcsFileType vcsFileType { get; }
         public VcsSourceType vcsSourceType { get; }
-        public FeaturesHeaderBlock featuresHeader { get; } = null;
-        public VsPsHeaderBlock vspsHeader { get; } = null;
+        public FeaturesHeaderBlock featuresHeader { get; }
+        public VsPsHeaderBlock vspsHeader { get; }
         public List<SfBlock> sfBlocks { get; } = new();
-        public List<SfConstraintsBlock> compatibilityBlocks { get; } = new();
+        public List<SfConstraintsBlock> sfRuleBlocks { get; } = new();
         public List<DBlock> dBlocks { get; } = new();
-        public List<DConstraintsBlock> unknownBlocks { get; } = new();
+        public List<DConstraintsBlock> dRuleBlocks { get; } = new();
         public List<ParamBlock> paramBlocks { get; } = new();
         public List<MipmapBlock> mipmapBlocks { get; } = new();
         public List<BufferBlock> bufferBlocks { get; } = new();
         public List<SymbolsBlock> symbolBlocks { get; } = new();
 
-
-        public const int ZSTD_COMPRESSION = 1;
-        public const int LZMA_COMPRESSION = 2;
-        public const uint ZSTD_DELIM = 0xFFFFFFFD;
-        public const uint LZMA_DELIM = 0x414D5A4C;
-
         // zframe data is sorted by the order they appear in the file
         // their Id (which is different) is the dictionary key
         // both their index and Id are used in different contexts
         public SortedDictionary<long, ZFrameDataDescription> zframesLookup { get; } = new();
-        private DBlockConfigurationMap dBlockConfigGen;
+        private DBlockConfigurationMapping dBlockConfigGen;
 
 
         public ShaderFile(string filenamepath, ShaderDataReader datareader)
@@ -59,14 +53,13 @@ namespace MyShaderAnalysis.vcsparsing
 
             } else
             {
-                throw new ShaderParserException($"can't parse this filetype: {vcsFileType}");
+                throw new ShaderParserException($"Can't parse this filetype: {vcsFileType}");
             }
-
 
             int block_delim = datareader.ReadInt();
             if (block_delim != 17)
             {
-                throw new ShaderParserException($"unexpected value for block_delim = {block_delim}, expecting 17");
+                throw new ShaderParserException($"Unexpected value for block_delim = {block_delim}, expecting 17");
             }
             int sfBlockCount = datareader.ReadInt();
             for (int i = 0; i < sfBlockCount; i++)
@@ -75,11 +68,11 @@ namespace MyShaderAnalysis.vcsparsing
                 sfBlocks.Add(nextSfBlock);
             }
             // always 472 bytes
-            int compatBlockCount = datareader.ReadInt();
-            for (int i = 0; i < compatBlockCount; i++)
+            int sfRuleBlockCount = datareader.ReadInt();
+            for (int i = 0; i < sfRuleBlockCount; i++)
             {
-                SfConstraintsBlock nextCompatibilityBlock = new(datareader, datareader.GetOffset(), i);
-                compatibilityBlocks.Add(nextCompatibilityBlock);
+                SfConstraintsBlock nextSfRuleBlock = new(datareader, datareader.GetOffset(), i);
+                sfRuleBlocks.Add(nextSfRuleBlock);
             }
 
             // always 152 bytes
@@ -91,17 +84,16 @@ namespace MyShaderAnalysis.vcsparsing
             }
 
             // always 472 bytes
-            int druleBlockCount = datareader.ReadInt();
-            for (int i = 0; i < druleBlockCount; i++)
+            int dRuleBlockCount = datareader.ReadInt();
+            for (int i = 0; i < dRuleBlockCount; i++)
             {
-                DConstraintsBlock nextUnknownBlock = new(datareader, datareader.GetOffset(), i);
-                unknownBlocks.Add(nextUnknownBlock);
+                DConstraintsBlock nextDRuleBlock = new(datareader, datareader.GetOffset(), i);
+                dRuleBlocks.Add(nextDRuleBlock);
             }
 
-            // This is needed for the zframes to generate their configuratio mapping
-            // and must be instantiated after the D-blocks have been read.
-            dBlockConfigGen = new DBlockConfigurationMap(this);
-
+            // This is needed for the zframes to generate their configuration to source mapping
+            // it must be instantiated after the D-blocks have been read
+            dBlockConfigGen = new DBlockConfigurationMapping(this);
 
             int paramBlockCount = datareader.ReadInt();
             for (int i = 0; i < paramBlockCount; i++)
@@ -135,30 +127,25 @@ namespace MyShaderAnalysis.vcsparsing
                 }
             }
 
-
             List<long> zframeIds = new();
             int zframesCount = datareader.ReadInt();
             if (zframesCount == 0)
             {
-                // if zframes = 0 here there's nothing more to do
+                // if zframes = 0 there's nothing more to do
                 if (!datareader.CheckPositionIsAtEOF())
                 {
                     throw new ShaderParserException($"Reader contains more data, but EOF expected");
                 }
                 return;
             }
-
-
             for (int i = 0; i < zframesCount; i++)
             {
                 zframeIds.Add(datareader.ReadLong());
             }
 
-
             List<(long, int)> zframeIdsAndOffsets = new();
             foreach (long zframeId in zframeIds)
             {
-                // zframesLookup.Add(zframeID, datareader.ReadInt());
                 zframeIdsAndOffsets.Add((zframeId, datareader.ReadInt()));
             }
 
@@ -174,10 +161,11 @@ namespace MyShaderAnalysis.vcsparsing
                 int offsetToZframeHeader = item.Item2;
                 datareader.SetOffset(offsetToZframeHeader);
                 uint chunkSizeOrZframeDelim = datareader.ReadUInt();
-                int compressionType = chunkSizeOrZframeDelim == ZSTD_DELIM ? ZSTD_COMPRESSION : LZMA_COMPRESSION;
-                if (chunkSizeOrZframeDelim != ZSTD_DELIM)
+                int compressionType = chunkSizeOrZframeDelim == CompiledShader.ZSTD_DELIM ?
+                    CompiledShader.ZSTD_COMPRESSION : CompiledShader.LZMA_COMPRESSION;
+                if (chunkSizeOrZframeDelim != CompiledShader.ZSTD_DELIM)
                 {
-                    if (datareader.ReadUInt() != LZMA_DELIM)
+                    if (datareader.ReadUInt() != CompiledShader.LZMA_DELIM)
                     {
                         throw new ShaderParserException("Unknown compression, neither ZStd nor Lzma found");
                     }
@@ -242,8 +230,7 @@ namespace MyShaderAnalysis.vcsparsing
 
 
 
-    // Lzma also comes with 'chunk-size', but doesn't seem to be needed
-    // (possibly the idea with the chunk size is an an aid for navigating the data)
+    // Lzma also comes with 'chunk-size' field, which is not needed
     public class ZFrameDataDescription
     {
         public long zframeId { get; }
@@ -265,7 +252,7 @@ namespace MyShaderAnalysis.vcsparsing
         public byte[] GetDecompressedZFrame()
         {
             datareader.SetOffset(offsetToZFrameHeader);
-            if (compressionType == ShaderFile.ZSTD_COMPRESSION)
+            if (compressionType == CompiledShader.ZSTD_COMPRESSION)
             {
                 datareader.MoveOffset(12);
                 byte[] compressedZframe = datareader.ReadBytes(compressedLength);
@@ -280,7 +267,7 @@ namespace MyShaderAnalysis.vcsparsing
                 return zframeUncompressed.ToArray();
             }
 
-            if (compressionType == ShaderFile.LZMA_COMPRESSION)
+            if (compressionType == CompiledShader.LZMA_COMPRESSION)
             {
                 var lzmaDecoder = new LzmaDecoder();
                 datareader.MoveOffset(16);
@@ -297,21 +284,16 @@ namespace MyShaderAnalysis.vcsparsing
             throw new ShaderParserException("This point cannot be reached, compressionType should be either ZSTD or LZMA");
         }
 
-
-
         public override string ToString()
         {
-            string comprDesc = compressionType == ShaderFile.ZSTD_COMPRESSION ? "ZSTD" : "LZMA";
+            string comprDesc = compressionType == CompiledShader.ZSTD_COMPRESSION ? "ZSTD" : "LZMA";
             return $"zframeId[0x{zframeId:x08}] {comprDesc} offset={offsetToZFrameHeader,8} " +
                 $"compressedLength={compressedLength,7} uncompressedLength={uncompressedLength,9}";
         }
-
-
-
-
-
-
     }
+
+
+
 }
 
 

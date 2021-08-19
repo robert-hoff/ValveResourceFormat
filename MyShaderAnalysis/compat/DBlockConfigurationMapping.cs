@@ -12,13 +12,13 @@ namespace MyShaderAnalysis.compat
 {
 
 
-    public class DBlockConfigurationMap
+    public class DBlockConfigurationMapping
     {
 
 
         ShaderFile shaderfile;
 
-        public DBlockConfigurationMap(ShaderFile shaderfile)
+        public DBlockConfigurationMapping(ShaderFile shaderfile)
         {
             this.shaderfile = shaderfile;
             GenerateOffsetAndLayers(shaderfile);

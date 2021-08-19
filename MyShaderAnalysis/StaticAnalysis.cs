@@ -157,7 +157,7 @@ namespace MyShaderAnalysis
             foreach (string vcsFilenamepath in allVcsFiles)
             {
                 ShaderFile shaderFile = new ReadShaderFile(vcsFilenamepath).GetShaderFile();
-                foreach (DConstraintsBlock uknBlock in shaderFile.unknownBlocks)
+                foreach (DConstraintsBlock uknBlock in shaderFile.dRuleBlocks)
                 {
 
                     // check on the rules that have range2 = (0,1)
@@ -215,7 +215,7 @@ namespace MyShaderAnalysis
             foreach (string vcsFilenamepath in allVcsFiles)
             {
                 ShaderFile shaderFile = InstantiateShaderFile(vcsFilenamepath);
-                foreach (DConstraintsBlock unkBlock in shaderFile.unknownBlocks)
+                foreach (DConstraintsBlock unkBlock in shaderFile.dRuleBlocks)
                 {
                     string relRuleKeyDesciption = $"{unkBlock.RelRuleDescribe(),-10} {CombineValues2(unkBlock.range1),-8} " +
                         $"{CombineValues2(unkBlock.flags, includeParenth: true),-15} {CombineValues2(unkBlock.range2)}";
@@ -232,7 +232,7 @@ namespace MyShaderAnalysis
             foreach (string vcsFilenamepath in allVcsFiles)
             {
                 ShaderFile shaderFile = InstantiateShaderFile(vcsFilenamepath);
-                foreach (SfConstraintsBlock cBlock in shaderFile.compatibilityBlocks)
+                foreach (SfConstraintsBlock cBlock in shaderFile.sfRuleBlocks)
                 {
                     if (cBlock.range2[0] == 0)
                     {
@@ -250,7 +250,7 @@ namespace MyShaderAnalysis
             foreach (string vcsFilenamepath in allVcsFiles)
             {
                 ShaderFile shaderFile = InstantiateShaderFile(vcsFilenamepath);
-                foreach (SfConstraintsBlock cBlock in shaderFile.compatibilityBlocks)
+                foreach (SfConstraintsBlock cBlock in shaderFile.sfRuleBlocks)
                 {
                     string relRuleKeyDesciption = $"{cBlock.RelRuleDescribe(),-10} {CombineValues2(cBlock.range1),-7} {CombineValues2(cBlock.range2)}";
                     CollectStringValue(relRuleKeyDesciption);
@@ -487,9 +487,9 @@ namespace MyShaderAnalysis
         {
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             int sfCount = shaderFile.sfBlocks.Count;
-            int cCount = shaderFile.compatibilityBlocks.Count;
+            int cCount = shaderFile.sfRuleBlocks.Count;
             int dCount = shaderFile.dBlocks.Count;
-            int uCount = shaderFile.unknownBlocks.Count;
+            int uCount = shaderFile.dRuleBlocks.Count;
             int pCount = shaderFile.paramBlocks.Count;
             int mCount = shaderFile.mipmapBlocks.Count;
             int bCount = shaderFile.bufferBlocks.Count;
@@ -530,7 +530,7 @@ namespace MyShaderAnalysis
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             bool newFile = true;
 
-            foreach (DConstraintsBlock uBlock in shaderFile.unknownBlocks)
+            foreach (DConstraintsBlock uBlock in shaderFile.dRuleBlocks)
             {
 
                 if (newFile)
@@ -613,7 +613,7 @@ namespace MyShaderAnalysis
             foreach (string filenamepath in allVcsFiles)
             {
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
-                foreach (DConstraintsBlock uBlock in shaderFile.unknownBlocks)
+                foreach (DConstraintsBlock uBlock in shaderFile.dRuleBlocks)
                 {
                     for (int i = 0; i < 8; i += 4)
                     {
@@ -663,7 +663,7 @@ namespace MyShaderAnalysis
             ShaderFile shaderFile = InstantiateShaderFile(PCGL_DIR_CORE + @"\depth_only_pcgl_40_vs.vcs");
             Debug.WriteLine($"{RemoveBaseDir(shaderFile.filenamepath)}");
 
-            foreach (DConstraintsBlock uBlock in shaderFile.unknownBlocks)
+            foreach (DConstraintsBlock uBlock in shaderFile.dRuleBlocks)
             {
                 OutputWriteLine($"COMPAT-BLOCK[{uBlock.blockIndex}]");
                 OutputWriteLine($"rule = {uBlock.relRule}");
@@ -799,7 +799,7 @@ namespace MyShaderAnalysis
             OutputWriteLine(blockHeader);
             foreach (var sfBlock in shaderFile.sfBlocks)
             {
-                string v0 = $"[{sfBlock.blockId,2}]";
+                string v0 = $"[{sfBlock.blockIndex,2}]";
                 string v1 = sfBlock.name0;
 
                 // R: the abbreviations are only used later if printing the zframes (instantited to new() at start of method)
@@ -1056,7 +1056,7 @@ namespace MyShaderAnalysis
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             bool newFile = true;
 
-            foreach (SfConstraintsBlock cBlock in shaderFile.compatibilityBlocks)
+            foreach (SfConstraintsBlock cBlock in shaderFile.sfRuleBlocks)
             {
 
                 if (newFile && showLink)
@@ -1112,7 +1112,7 @@ namespace MyShaderAnalysis
             foreach (string filenamepath in allVcsFiles)
             {
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
-                foreach (var cBlock in shaderFile.compatibilityBlocks)
+                foreach (var cBlock in shaderFile.sfRuleBlocks)
                 {
                     if (cBlock.range2[1] != cBlock.range0.Length)
                     {
@@ -1194,7 +1194,7 @@ namespace MyShaderAnalysis
             bool newFile = true;
 
 
-            foreach (SfConstraintsBlock cBlock in shaderFile.compatibilityBlocks)
+            foreach (SfConstraintsBlock cBlock in shaderFile.sfRuleBlocks)
             {
                 string s0 = $"[{cBlock.blockIndex,2}]";
                 string s1 = $"{cBlock.relRule}";
@@ -1266,7 +1266,7 @@ namespace MyShaderAnalysis
             OutputWriteLine("");
             OutputWriteLine($"<a href='../vcs-all/{Path.GetFileName(filenamepath)[0..^4]}-analysis.html'>{RemoveBaseDir(filenamepath)}</a>");
             OutputWriteLine(new string('-', 100));
-            foreach (SfConstraintsBlock cBlock in shaderFile.compatibilityBlocks)
+            foreach (SfConstraintsBlock cBlock in shaderFile.sfRuleBlocks)
             {
 
                 OutputWriteLine($"COMPAT-BLOCK[{cBlock.blockIndex}]");
@@ -1309,7 +1309,7 @@ namespace MyShaderAnalysis
             foreach (string filenamepath in allVcsFiles)
             {
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
-                foreach (SfConstraintsBlock cBlock in shaderFile.compatibilityBlocks)
+                foreach (SfConstraintsBlock cBlock in shaderFile.sfRuleBlocks)
                 {
                     int[] ints0 = new int[count];
                     for (int i = 0; i < count; i++)
@@ -1350,7 +1350,7 @@ namespace MyShaderAnalysis
             foreach (string filenamepath in allVcsFiles)
             {
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
-                foreach (SfConstraintsBlock cBlock in shaderFile.compatibilityBlocks)
+                foreach (SfConstraintsBlock cBlock in shaderFile.sfRuleBlocks)
                 {
                     for (int i = 0; i < 8; i += 4)
                     {
@@ -1405,7 +1405,7 @@ namespace MyShaderAnalysis
             foreach (string filenamepath in allVcsFiles)
             {
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
-                foreach (SfConstraintsBlock cBlock in shaderFile.compatibilityBlocks)
+                foreach (SfConstraintsBlock cBlock in shaderFile.sfRuleBlocks)
                 {
                     int val = cBlock.ReadIntegerAtPosition(offset);
                     int curVal = values.GetValueOrDefault(val, offset);
@@ -1429,7 +1429,7 @@ namespace MyShaderAnalysis
             foreach (string filenamepath in allVcsFiles)
             {
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
-                foreach (SfConstraintsBlock cBlock in shaderFile.compatibilityBlocks)
+                foreach (SfConstraintsBlock cBlock in shaderFile.sfRuleBlocks)
                 {
                     int val = cBlock.ReadIntegerAtPosition(0);
                     int curVal = values.GetValueOrDefault(val, 0);
@@ -1522,7 +1522,7 @@ namespace MyShaderAnalysis
             string filenamepath = $@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_ps.vcs";
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
 
-            SfConstraintsBlock block0 = shaderFile.compatibilityBlocks[0];
+            SfConstraintsBlock block0 = shaderFile.sfRuleBlocks[0];
             Debug.WriteLine($"{block0.ReadIntegerAtPosition(0)}");
             Debug.WriteLine($"{block0.ReadIntegerAtPosition(4)}");
             Debug.WriteLine($"{block0.GetByteFlagsAsString()}");
@@ -1551,7 +1551,7 @@ namespace MyShaderAnalysis
             {
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
                 OutputWriteLine($"{RemoveBaseDir(filenamepath).PadRight(80)} " +
-                    $"nr of compat blocks = {shaderFile.compatibilityBlocks.Count}");
+                    $"nr of compat blocks = {shaderFile.sfRuleBlocks.Count}");
             }
         }
 

@@ -29,10 +29,10 @@ namespace MyShaderAnalysis.vcsparsing
             {
                 throw new ShaderParserException($"Wrong file id {vcsMagicId:x}");
             }
-            int vcsFileversion = datareader.ReadInt();
-            if (vcsFileversion != 64)
+            int vcsFileVersion = datareader.ReadInt();
+            if (vcsFileVersion != 64)
             {
-                throw new ShaderParserException($"Wrong version {vcsFileversion}, only version 64 supported");
+                throw new ShaderParserException($"Wrong version {vcsFileVersion}, only version 64 supported");
             }
             int psrs_arg = datareader.ReadInt();
             if (psrs_arg != 0 && psrs_arg != 1)
@@ -51,14 +51,12 @@ namespace MyShaderAnalysis.vcsparsing
             arg5 = datareader.ReadInt();
             arg6 = datareader.ReadInt();
             arg7 = datareader.ReadInt();
-
             int nr_of_arguments = datareader.ReadInt();
-            // NOTE nr_of_arguments is overwritten
             if (has_psrs_file)
             {
+                // nr_of_arguments is overwritten
                 nr_of_arguments = datareader.ReadInt();
             }
-
             for (int i = 0; i < nr_of_arguments; i++)
             {
                 string string_arg0 = datareader.ReadNullTermStringAtPosition();
@@ -71,7 +69,6 @@ namespace MyShaderAnalysis.vcsparsing
                 }
                 mainParams.Add((string_arg0, string_arg1));
             }
-
             for (int i = 0; i < 8; i++)
             {
                 fileIDs.Add(datareader.ReadBytesAsString(16).Replace(" ", "").ToLower());
@@ -171,10 +168,9 @@ namespace MyShaderAnalysis.vcsparsing
 
     public class VsPsHeaderBlock : ShaderDataBlock
     {
-        public int fileversion;
-        public bool hasPsrsFile;
-        public string fileID0;
-        public string fileID1;
+        public bool hasPsrsFile { get; }
+        public string fileID0 { get; }
+        public string fileID1 { get; }
         public VsPsHeaderBlock(ShaderDataReader datareader, int start) : base(datareader, start)
         {
             int magic = datareader.ReadInt();
@@ -182,15 +178,15 @@ namespace MyShaderAnalysis.vcsparsing
             {
                 throw new ShaderParserException($"wrong file id {magic:x}");
             }
-            fileversion = datareader.ReadInt();
-            if (fileversion != 64)
+            int vcsFileVersion = datareader.ReadInt();
+            if (vcsFileVersion != 64)
             {
-                throw new ShaderParserException($"Wrong version {fileversion}, only version 64 supported");
+                throw new ShaderParserException($"Wrong version {vcsFileVersion}, only version 64 supported");
             }
             int psrs_arg = datareader.ReadInt();
             if (psrs_arg != 0 && psrs_arg != 1)
             {
-                throw new ShaderParserException($"unexpected value psrs_arg = {psrs_arg}");
+                throw new ShaderParserException($"Unexpected value psrs_arg = {psrs_arg}");
             }
             hasPsrsFile = psrs_arg > 0;
             fileID0 = datareader.ReadBytesAsString(16).Replace(" ", "").ToLower();
@@ -200,7 +196,7 @@ namespace MyShaderAnalysis.vcsparsing
 
     public class SfBlock : ShaderDataBlock
     {
-        public int blockId { get; }
+        public int blockIndex { get; }
         public string name0 { get; }
         public string name1 { get; }
         public int arg0 { get; }
@@ -210,10 +206,9 @@ namespace MyShaderAnalysis.vcsparsing
         public int arg4 { get; }
         public int arg5 { get; }
         public List<string> additionalParams { get; } = new();
-
         public SfBlock(ShaderDataReader datareader, int start, int blockIndex) : base(datareader, start)
         {
-            this.blockId = blockIndex;
+            this.blockIndex = blockIndex;
             name0 = datareader.ReadNullTermStringAtPosition();
             datareader.MoveOffset(64);
             name1 = datareader.ReadNullTermStringAtPosition();
@@ -310,7 +305,6 @@ namespace MyShaderAnalysis.vcsparsing
         public int arg3 { get; }
         public int arg4 { get; }
         public int arg5 { get; }
-
         public DBlock(ShaderDataReader datareader, int start, int blockIndex) : base(datareader, start)
         {
             this.blockIndex = blockIndex;
@@ -349,7 +343,7 @@ namespace MyShaderAnalysis.vcsparsing
                 throw new ShaderParserException("unexpected value!");
             }
             // flags at (8)
-            flags = ReadByteFlagsUpdated();
+            flags = ReadByteFlags();
             // range0 at (24)
             range0 = ReadIntRange();
             datareader.MoveOffset(64 - range0.Length * 4);
@@ -361,7 +355,7 @@ namespace MyShaderAnalysis.vcsparsing
             // range1 at (152)
             range2 = ReadIntRange();
             datareader.MoveOffset(64 - range2.Length * 4);
-            // there seems to be a provision here for a description, for the dota2 archive it is always null
+            // there is a provision here for a description, but for the dota2 archive this is always null
             description = datareader.ReadNullTermStringAtPosition();
             datareader.MoveOffset(256);
         }
@@ -376,7 +370,7 @@ namespace MyShaderAnalysis.vcsparsing
             return ints0.ToArray();
         }
 
-        private int[] ReadByteFlagsUpdated()
+        private int[] ReadByteFlags()
         {
             int count = 0;
             datareader.SavePosition();
@@ -539,7 +533,6 @@ namespace MyShaderAnalysis.vcsparsing
             datareader.MoveOffset(32);
             command1 = datareader.ReadNullTermStringAtPosition();
             datareader.MoveOffset(32);
-            int myint = 10;
         }
 
         public void ShowBlock()
@@ -581,7 +574,7 @@ namespace MyShaderAnalysis.vcsparsing
 
     public class BufferBlock : ShaderDataBlock
     {
-        public int blockIndex;
+        public int blockIndex { get; }
         public string name { get; }
         public int bufferSize { get; }
         public List<(string, int, int, int, int)> bufferParams { get; } = new();
@@ -592,7 +585,7 @@ namespace MyShaderAnalysis.vcsparsing
             name = datareader.ReadNullTermStringAtPosition();
             datareader.MoveOffset(64);
             bufferSize = datareader.ReadInt();
-            datareader.MoveOffset(4); // next 4 bytes are always 0
+            datareader.MoveOffset(4); // these 4 bytes are always 0
             int paramCount = datareader.ReadInt();
             for (int i = 0; i < paramCount; i++)
             {
