@@ -25,8 +25,22 @@ namespace MyShaderAnalysis {
             // Trial7();
             // Trial8();
             // Trial9();
-            Trial10();
+            // Trial10();
+            Trial11();
         }
+
+
+        static void Trial11() {
+            string filenamepath = $"{ARTIFACT_CLASSIC_CORE_PC_SOURCE}/aerial_perspective_pc_30_vs.vcs"; long zId = 0;
+            ShaderFile shaderFile = new(filenamepath);
+            // ZFrameFile zframeFile = shaderFile.GetZFrameFile(zId);
+
+
+            Debug.WriteLine($"{shaderFile.GetZFrameCount()}");
+
+
+        }
+
 
 
         static void Trial10() {
