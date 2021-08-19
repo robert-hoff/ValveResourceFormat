@@ -9,14 +9,17 @@ using MyValveResourceFormat.ThirdParty;
 using System;
 using MyShaderAnalysis.utilhelpers;
 
-namespace MyShaderAnalysis {
+namespace MyShaderAnalysis
+{
 
 
-    public class LzmaAnalysis {
+    public class LzmaAnalysis
+    {
 
 
 
-        public static void RunTrials() {
+        public static void RunTrials()
+        {
             // Trial1();
             // Trial2();
             // Trial3();
@@ -27,7 +30,8 @@ namespace MyShaderAnalysis {
         }
 
 
-        static void Trial11() {
+        static void Trial11()
+        {
             string filenamepath = $"{ARTIFACT_CLASSIC_CORE_PC_SOURCE}/aerial_perspective_pc_30_vs.vcs"; long zId = 0;
             ShaderFile shaderFile = new ReadShaderFile(filenamepath).GetShaderFile();
             ZFrameFile zframeFile = shaderFile.GetZFrameFile(zId);
@@ -36,7 +40,8 @@ namespace MyShaderAnalysis {
 
 
 
-        static void Trial10() {
+        static void Trial10()
+        {
             // string filenamepath = $"{DOTA_GAME_PC_SOURCE}/multiblend_pc_30_ps.vcs"; long zId = 0x1a1;
             // string filenamepath = $"{ARTIFACT_CLASSIC_CORE_PC_SOURCE}/aerial_perspective_pc_30_ps.vcs"; long zId = 0;
             string filenamepath = $"{ARTIFACT_CLASSIC_CORE_PC_SOURCE}/aerial_perspective_pc_30_vs.vcs"; long zId = 0;
@@ -51,7 +56,8 @@ namespace MyShaderAnalysis {
 
 
 
-        static void Trial8() {
+        static void Trial8()
+        {
             string filenamepath = $"{DOTA_GAME_PC_SOURCE}/multiblend_pc_30_vs.vcs";
             DataReaderVcsByteAnalysis shaderByteAnalysis = new(filenamepath);
             shaderByteAnalysis.SetShortenOutput(false);
@@ -59,7 +65,8 @@ namespace MyShaderAnalysis {
         }
 
 
-        static void Trial6() {
+        static void Trial6()
+        {
             string filenamepath = $"{DOTA_GAME_PC_SOURCE}/multiblend_pc_30_ps.vcs";
             ShaderFile shaderFile = new ReadShaderFile(filenamepath).GetShaderFile();
             byte[] zframeDatabytes = shaderFile.GetDecompressedZFrame(0x1a1);
@@ -79,7 +86,8 @@ namespace MyShaderAnalysis {
          *
          *
          */
-        static void Trial3() {
+        static void Trial3()
+        {
             string filenamepath = $"{ARTIFACT_CLASSIC_CORE_PC_SOURCE}/aerial_perspective_pc_30_ps.vcs";
             DataReaderVcsByteAnalysis reader = new(filenamepath);
 
@@ -97,7 +105,8 @@ namespace MyShaderAnalysis {
          *
          *
          */
-        static void Trial2() {
+        static void Trial2()
+        {
             string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/apply_fog_pcgl_40_ps.vcs";
             DataReaderVcsByteAnalysis reader = new(filenamepath);
             reader.SetOffset(2032);
@@ -112,7 +121,8 @@ namespace MyShaderAnalysis {
          * file ending with lzma compression
          *
          */
-        static void Trial1() {
+        static void Trial1()
+        {
 
 
             string filenamepath = $"{ARTIFACT_CLASSIC_CORE_PC_SOURCE}/aerial_perspective_pc_30_ps.vcs";
@@ -161,7 +171,8 @@ namespace MyShaderAnalysis {
 
             reader.SetOffset(chunkOffset2 + chunkSize2 + 4);
 
-            if (!reader.CheckPositionIsAtEOF()) {
+            if (!reader.CheckPositionIsAtEOF())
+            {
                 throw new ShaderParserException("End of file not reached!");
             }
             reader.ShowByteCount();

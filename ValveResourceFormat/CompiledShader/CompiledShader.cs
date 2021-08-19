@@ -6,6 +6,7 @@ namespace ValveResourceFormat
 {
     public class CompiledShader : IDisposable
     {
+        // todo - transfer other constants here
         public const int MAGIC = 0x32736376; // "vcs2"
         private ShaderDataReader datareader;
 

@@ -26,19 +26,23 @@ using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
  *
  *
  */
-namespace MyShaderAnalysis.compat {
-    public class CompatRulesGenericStaticClass {
+namespace MyShaderAnalysis.compat
+{
+    public class CompatRulesGenericStaticClass
+    {
 
         const string PCGL_DIR_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders-core\vfx";
         const string PCGL_DIR_NOT_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders\vfx";
 
-        public static void RunTrials() {
+        public static void RunTrials()
+        {
             Trial1();
         }
 
 
 
-        static void Trial1() {
+        static void Trial1()
+        {
             string vcsFilenamepath = @$"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_ps.vcs";
             // string vcsFilenamepath = @$"{PCGL_DIR_CORE}\blur_pcgl_30_ps.vcs";
             // string vcsFilenamepath = @$"{PCGL_DIR_NOT_CORE}\water_dota_pcgl_30_ps.vcs";
@@ -49,7 +53,8 @@ namespace MyShaderAnalysis.compat {
 
 
 
-        static void GenerateZFrames(ShaderFile shaderFile) {
+        static void GenerateZFrames(ShaderFile shaderFile)
+        {
             GenerateOffsetAndLayers(shaderFile);
             // ShowIntArray(offsets);
             // ShowIntArray(layers);
@@ -82,8 +87,10 @@ namespace MyShaderAnalysis.compat {
             AddInclusion(11, 10);          // compat[25]
 
 
-            for (int zframeId = 0; zframeId < MaxEnumeration(); zframeId++) {
-                if (CheckZFrame(zframeId)) {
+            for (int zframeId = 0; zframeId < MaxEnumeration(); zframeId++)
+            {
+                if (CheckZFrame(zframeId))
+                {
                     int[] thisState = GetBitPattern(zframeId);
                     ShowIntArray(thisState, 5);
                 }
@@ -99,48 +106,61 @@ namespace MyShaderAnalysis.compat {
 
         static bool[,] exclusions = new bool[100, 100];
         static bool[,] inclusions = new bool[100, 100];
-        static void AddExclusion(int s1, int s2, int s3) {
+        static void AddExclusion(int s1, int s2, int s3)
+        {
             AddExclusion(s1, s2);
             AddExclusion(s1, s3);
             AddExclusion(s2, s3);
         }
 
-        static void AddExclusion(int s1, int s2) {
+        static void AddExclusion(int s1, int s2)
+        {
             exclusions[s1, s2] = true;
             exclusions[s2, s1] = true;
         }
-        static void AddInclusion(int s1, int s2) {
+        static void AddInclusion(int s1, int s2)
+        {
             inclusions[s1, s2] = true;
         }
 
-        static int MaxEnumeration() {
-            return 2*offsets[^1];
+        static int MaxEnumeration()
+        {
+            return 2 * offsets[^1];
         }
 
 
-        static bool CheckZFrame(int zframe) {
+        static bool CheckZFrame(int zframe)
+        {
             int[] state = GetBitPattern(zframe);
-            for (int j = 2; j < offsets.Length; j++) {
-                for (int i = 1; i < j; i++) {
+            for (int j = 2; j < offsets.Length; j++)
+            {
+                for (int i = 1; i < j; i++)
+                {
                     int s1 = state[i];
                     int s2 = state[j];
-                    if (s1 == 0 || s2 == 0) {
+                    if (s1 == 0 || s2 == 0)
+                    {
                         continue;
                     }
-                    if (exclusions[i, j] == true) {
+                    if (exclusions[i, j] == true)
+                    {
                         return false;
                     }
-                    if (inclusions[i, j] == true) {
+                    if (inclusions[i, j] == true)
+                    {
                         return false;
                     }
                 }
             }
 
-            for (int i = 1; i < offsets.Length; i++) {
+            for (int i = 1; i < offsets.Length; i++)
+            {
                 int s1 = state[i];
                 if (s1 == 0) continue;
-                for (int j = 1; j < offsets.Length; j++) {
-                    if (inclusions[i, j] && state[j] == 0) {
+                for (int j = 1; j < offsets.Length; j++)
+                {
+                    if (inclusions[i, j] && state[j] == 0)
+                    {
                         return false;
                     }
                 }
@@ -148,9 +168,11 @@ namespace MyShaderAnalysis.compat {
             return true;
         }
 
-        static int[] GetBitPattern(int testNum) {
+        static int[] GetBitPattern(int testNum)
+        {
             int[] state = new int[layers.Length];
-            for (int i = 0; i < layers.Length; i++) {
+            for (int i = 0; i < layers.Length; i++)
+            {
                 int res = (testNum / offsets[i]) % (layers[i] + 1);
                 state[i] = res;
             }
@@ -176,7 +198,8 @@ namespace MyShaderAnalysis.compat {
          *
          *
          */
-        static void GenerateOffsetAndLayers(ShaderFile shaderFile) {
+        static void GenerateOffsetAndLayers(ShaderFile shaderFile)
+        {
 
             offsets = new int[shaderFile.sfBlocks.Count];
             layers = new int[shaderFile.sfBlocks.Count];
@@ -184,7 +207,8 @@ namespace MyShaderAnalysis.compat {
             offsets[0] = 1;
             layers[0] = shaderFile.sfBlocks[0].arg2;
 
-            for (int i = 1; i < shaderFile.sfBlocks.Count; i++) {
+            for (int i = 1; i < shaderFile.sfBlocks.Count; i++)
+            {
                 int curLayer = shaderFile.sfBlocks[i].arg2;
                 layers[i] = curLayer;
                 offsets[i] = offsets[i - 1] * (layers[i - 1] + 1);

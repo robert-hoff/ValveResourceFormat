@@ -7,12 +7,15 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace MyShaderAnalysis.utilhelpers.snippetcode {
+namespace MyShaderAnalysis.utilhelpers.snippetcode
+{
 
-    class Snippetcode {
+    class Snippetcode
+    {
 
 
-        public static void RunTrials() {
+        public static void RunTrials()
+        {
             // PrintByteCounter();
             // TestDictionaryLookups();
             // ZframeLabel();
@@ -20,7 +23,8 @@ namespace MyShaderAnalysis.utilhelpers.snippetcode {
 
 
 
-        static void ZframeLabel() {
+        static void ZframeLabel()
+        {
             // zframes ids range from 0 to large numbers, the largest known id is
             // 0x018cbfb1 or 26001329
             // a standardised way to print them then is using a 8-length hex representation
@@ -38,7 +42,8 @@ namespace MyShaderAnalysis.utilhelpers.snippetcode {
          * I'm not sure I need the order they appear in the file though (possibly not - but it doesn't matter)
          *
          */
-        static void TestDictionaryLookups() {
+        static void TestDictionaryLookups()
+        {
             SortedDictionary<int, int> myDict = new();
             myDict.Add(0, 0);
             myDict.Add(1, 1);
@@ -51,9 +56,11 @@ namespace MyShaderAnalysis.utilhelpers.snippetcode {
 
 
 
-        static void PrintByteCounter() {
+        static void PrintByteCounter()
+        {
 
-            for (int i = 0; i < 8; i++) {
+            for (int i = 0; i < 8; i++)
+            {
                 Debug.WriteLine($"({i * 32 + 216}) 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
             }
 

@@ -5,10 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyShaderAnalysis {
-    public class CompatRules2 {
+namespace MyShaderAnalysis
+{
+    public class CompatRules2
+    {
 
-        public static void RunTrials() {
+        public static void RunTrials()
+        {
 
             Trial1MultiblendPcgl30Ps();
             // Trial1GlobalLitSimpleVs();
@@ -20,18 +23,21 @@ namespace MyShaderAnalysis {
         static List<(int, int)> exclusions = new();
         static List<(int, int)> inclusions = new();
         static List<(int, int, int)> inclusionsTriples = new();
-        static void AddExlusion(int b0, int b1) {
+        static void AddExlusion(int b0, int b1)
+        {
             int num0 = 1 << (b0 - 1);
             int num1 = 1 << (b1 - 1);
             exclusions.Add((num0, num1));
         }
-        static void AddInclusion(int b0, int b1) {
+        static void AddInclusion(int b0, int b1)
+        {
             int num0 = 1 << (b0 - 1);
             int num1 = 1 << (b1 - 1);
             inclusions.Add((num0, num1));
         }
 
-        static void AddInclusionTriples(int b0, int b1, int b2) {
+        static void AddInclusionTriples(int b0, int b1, int b2)
+        {
             int num0 = 1 << (b0 - 1);
             int num1 = 1 << (b1 - 1);
             int num2 = 1 << (b2 - 1);
@@ -39,7 +45,8 @@ namespace MyShaderAnalysis {
         }
 
 
-        static void Trial1GenericLightPcgl30Ps() {
+        static void Trial1GenericLightPcgl30Ps()
+        {
 
             AddExlusion(1, 2);
             AddExlusion(1, 3);
@@ -51,24 +58,30 @@ namespace MyShaderAnalysis {
 
 
 
-            for (int i = 0; i < 64; i++) {
+            for (int i = 0; i < 64; i++)
+            {
                 Boolean exclude = false;
-                foreach (var exclRule in exclusions) {
+                foreach (var exclRule in exclusions)
+                {
                     int b0 = exclRule.Item1;
                     int b1 = exclRule.Item2;
-                    if ((i & b0) > 0 && (i & b1) > 0) {
+                    if ((i & b0) > 0 && (i & b1) > 0)
+                    {
                         exclude = true;
                     }
                 }
-                foreach (var incRule in inclusions) {
+                foreach (var incRule in inclusions)
+                {
                     int b0 = incRule.Item1;
                     int b1 = incRule.Item2;
-                    if ((i & b0) > 0 && (i & b1) == 0) {
+                    if ((i & b0) > 0 && (i & b1) == 0)
+                    {
                         exclude = true;
                     }
                 }
 
-                if (!exclude) {
+                if (!exclude)
+                {
                     Debug.WriteLine($"{i,3}               {Convert.ToString(i, 2).PadLeft(9, '0')}");
                 }
             }
@@ -89,7 +102,8 @@ namespace MyShaderAnalysis {
          *
          *
          */
-        static void Trial1GlobalLitSimpleVs() {
+        static void Trial1GlobalLitSimpleVs()
+        {
             AddExlusion(2, 3);
             AddExlusion(2, 4);
             AddExlusion(2, 6);
@@ -102,24 +116,30 @@ namespace MyShaderAnalysis {
             // don't know what to do with this one
             // (2,1)        compat[3]
 
-            for (int i = 0; i < 1024; i++) {
+            for (int i = 0; i < 1024; i++)
+            {
                 Boolean exclude = false;
-                foreach (var exclRule in exclusions) {
+                foreach (var exclRule in exclusions)
+                {
                     int b0 = exclRule.Item1;
                     int b1 = exclRule.Item2;
-                    if ((i & b0) > 0 && (i & b1) > 0) {
+                    if ((i & b0) > 0 && (i & b1) > 0)
+                    {
                         exclude = true;
                     }
                 }
-                foreach (var incRule in inclusions) {
+                foreach (var incRule in inclusions)
+                {
                     int b0 = incRule.Item1;
                     int b1 = incRule.Item2;
-                    if ((i & b0) > 0 && (i & b1) == 0) {
+                    if ((i & b0) > 0 && (i & b1) == 0)
+                    {
                         exclude = true;
                     }
                 }
 
-                if (!exclude) {
+                if (!exclude)
+                {
                     Debug.WriteLine($"{i,3}               {Convert.ToString(i, 2).PadLeft(9, '0')}");
                 }
             }
@@ -157,7 +177,8 @@ namespace MyShaderAnalysis {
          *
          *
          */
-        static void Trial1MultiblendPcgl30Ps() {
+        static void Trial1MultiblendPcgl30Ps()
+        {
 
             AddExlusion(1, 2);             // compat[0]
             AddExlusion(1, 3);             // compat[0]
@@ -211,19 +232,24 @@ namespace MyShaderAnalysis {
 
 
             // for (int i = 0; i < 262144; i++) {
-            for (int i = 0; i < 10000; i++) {
+            for (int i = 0; i < 10000; i++)
+            {
                 Boolean exclude = false;
-                foreach (var exclRule in exclusions) {
+                foreach (var exclRule in exclusions)
+                {
                     int b0 = exclRule.Item1;
                     int b1 = exclRule.Item2;
-                    if ((i & b0) > 0 && (i & b1) > 0) {
+                    if ((i & b0) > 0 && (i & b1) > 0)
+                    {
                         exclude = true;
                     }
                 }
-                foreach (var incRule in inclusions) {
+                foreach (var incRule in inclusions)
+                {
                     int b0 = incRule.Item1;
                     int b1 = incRule.Item2;
-                    if ((i & b0) > 0 && (i & b1) == 0) {
+                    if ((i & b0) > 0 && (i & b1) == 0)
+                    {
                         exclude = true;
                     }
                 }
@@ -238,7 +264,8 @@ namespace MyShaderAnalysis {
                 //    }
                 //}
 
-                if (!exclude) {
+                if (!exclude)
+                {
                     Debug.WriteLine($"{i,3}               {Convert.ToString(i, 2).PadLeft(9, '0')}");
                 }
             }

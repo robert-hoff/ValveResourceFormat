@@ -15,17 +15,20 @@ using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
 //  17      16      15    14     13   12     11   10   9     8   7   6   5  4  3  2  1  0
 // 98304  49152  24576  12288  6144  2048  1024  512  256  128  64  32  16  8  4  2  1  1
 
-namespace MyShaderAnalysis.compat {
+namespace MyShaderAnalysis.compat
+{
 
 
-    public class CompatRulesMultiframe {
+    public class CompatRulesMultiframe
+    {
 
 
         const string PCGL_DIR_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders-core\vfx";
         const string PCGL_DIR_NOT_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders\vfx";
 
 
-        public static void RunTrials() {
+        public static void RunTrials()
+        {
 
             Trial1();
             // TestShadernameShorten();
@@ -35,17 +38,21 @@ namespace MyShaderAnalysis.compat {
 
 
 
-        static void TestShadernameShorten() {
+        static void TestShadernameShorten()
+        {
             SortedDictionary<string, int> map = new();
 
             List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Any, -1);
-            foreach (string filenamepath in allVcsFiles) {
+            foreach (string filenamepath in allVcsFiles)
+            {
                 ShaderFile shaderFile = new ReadShaderFile(filenamepath).GetShaderFile();
-                foreach (var item in shaderFile.sfBlocks) {
+                foreach (var item in shaderFile.sfBlocks)
+                {
                     map[item.name0] = 1;
                 }
             }
-            foreach (var item in map) {
+            foreach (var item in map)
+            {
                 Debug.WriteLine($"{item.Key,-60} {ShortenShaderParam(item.Key)}");
             }
         }
@@ -59,7 +66,8 @@ namespace MyShaderAnalysis.compat {
         static int[] layers;
 
 
-        public static void Trial1() {
+        public static void Trial1()
+        {
 
             string vcsFilenamepath = @$"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_ps.vcs";
             ShaderFile shaderFile = new ReadShaderFile(vcsFilenamepath).GetShaderFile();
@@ -70,7 +78,8 @@ namespace MyShaderAnalysis.compat {
             offset[0] = 1;
             layers[0] = shaderFile.sfBlocks[0].arg2;
 
-            for (int i = 1; i < shaderFile.sfBlocks.Count; i++) {
+            for (int i = 1; i < shaderFile.sfBlocks.Count; i++)
+            {
                 int curLayer = shaderFile.sfBlocks[i].arg2;
                 layers[i] = curLayer;
                 offset[i] = offset[i - 1] * (layers[i - 1] + 1);
@@ -108,9 +117,11 @@ namespace MyShaderAnalysis.compat {
 
 
             string htmlBasedir = "/multiblend_pcgl_30/";
-            for (int zframeId = 0; zframeId < offset[17] * 2; zframeId++) {
+            for (int zframeId = 0; zframeId < offset[17] * 2; zframeId++)
+            {
                 // for (int i = 0; i <100; i++) {
-                if (CheckZFrame(zframeId)) {
+                if (CheckZFrame(zframeId))
+                {
                     int[] thisState = GetBitPattern(zframeId);
                     string sfNameList = getSfNameList(shaderFile, thisState);
                     // string stateList = GetStateString(thisState);
@@ -123,17 +134,21 @@ namespace MyShaderAnalysis.compat {
         }
 
 
-        static string getSfNameList(ShaderFile shaderFile, int[] thisState) {
+        static string getSfNameList(ShaderFile shaderFile, int[] thisState)
+        {
             string nameList = "";
-            for (int i = 0; i < thisState.Length; i++) {
+            for (int i = 0; i < thisState.Length; i++)
+            {
                 int val = thisState[i];
-                if (val == 0) {
+                if (val == 0)
+                {
                     // nameList += "".PadRight(7);
                     // Debug.WriteLine($"{i}");
                     continue;
                 }
                 string paramLayer = "";
-                if (layers[i] > 1) {
+                if (layers[i] > 1)
+                {
                     paramLayer = $"({val})";
                 }
 
@@ -150,29 +165,38 @@ namespace MyShaderAnalysis.compat {
 
         // WARN - get these array lengths sorted out
 
-        static bool CheckZFrame(int zframe) {
+        static bool CheckZFrame(int zframe)
+        {
             int[] state = GetBitPattern(zframe);
-            for (int j = 2; j < offset.Length; j++) {
-                for (int i = 1; i < j; i++) {
+            for (int j = 2; j < offset.Length; j++)
+            {
+                for (int i = 1; i < j; i++)
+                {
                     int s1 = state[i];
                     int s2 = state[j];
-                    if (s1 == 0 || s2 == 0) {
+                    if (s1 == 0 || s2 == 0)
+                    {
                         continue;
                     }
-                    if (exclusions[i, j] == true) {
+                    if (exclusions[i, j] == true)
+                    {
                         return false;
                     }
-                    if (inclusions[i, j] == true) {
+                    if (inclusions[i, j] == true)
+                    {
                         return false;
                     }
                 }
             }
 
-            for (int i = 1; i < offset.Length; i++) {
+            for (int i = 1; i < offset.Length; i++)
+            {
                 int s1 = state[i];
                 if (s1 == 0) continue;
-                for (int j = 1; j < offset.Length; j++) {
-                    if (inclusions[i, j] && state[j] == 0) {
+                for (int j = 1; j < offset.Length; j++)
+                {
+                    if (inclusions[i, j] && state[j] == 0)
+                    {
                         return false;
                     }
                 }
@@ -180,9 +204,11 @@ namespace MyShaderAnalysis.compat {
             return true;
         }
 
-        static int[] GetBitPattern(int testNum) {
+        static int[] GetBitPattern(int testNum)
+        {
             int[] state = new int[layers.Length];
-            for (int i = 1; i < layers.Length; i++) {
+            for (int i = 1; i < layers.Length; i++)
+            {
                 int res = (testNum / offset[i]) % (layers[i] + 1);
                 state[i] = res;
             }
@@ -195,30 +221,36 @@ namespace MyShaderAnalysis.compat {
 
 
 
-        static void AddExclusion(int s1, int s2, int s3) {
+        static void AddExclusion(int s1, int s2, int s3)
+        {
             AddExclusion(s1, s2);
             AddExclusion(s1, s3);
             AddExclusion(s2, s3);
         }
 
-        static void AddExclusion(int s1, int s2) {
+        static void AddExclusion(int s1, int s2)
+        {
             exclusions[s1, s2] = true;
             exclusions[s2, s1] = true;
         }
-        static void AddInclusion(int s1, int s2) {
+        static void AddInclusion(int s1, int s2)
+        {
             inclusions[s1, s2] = true;
         }
 
 
 
-        static void ShowStateForZframe(int num) {
+        static void ShowStateForZframe(int num)
+        {
             int[] state = GetBitPattern(num);
             ShowIntArray(state);
         }
 
-        static string GetStateString(int[] state) {
+        static string GetStateString(int[] state)
+        {
             string stateStr = "";
-            for (int i = 1; i < state.Length; i++) {
+            for (int i = 1; i < state.Length; i++)
+            {
                 stateStr = $"{state[i]}{stateStr}";
             }
             // return $"{stateStr[0..^1]}";
@@ -227,9 +259,11 @@ namespace MyShaderAnalysis.compat {
 
 
 
-        static void ShowIntArray(int[] state, string space = "") {
+        static void ShowIntArray(int[] state, string space = "")
+        {
             string stateStr = "";
-            for (int i = 0; i < state.Length; i++) {
+            for (int i = 0; i < state.Length; i++)
+            {
                 stateStr = $"{state[i]}{space}{stateStr}";
             }
             Debug.WriteLine($"{stateStr[0..^1]}");

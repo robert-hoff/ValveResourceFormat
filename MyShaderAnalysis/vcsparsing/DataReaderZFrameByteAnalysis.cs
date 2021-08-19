@@ -5,15 +5,19 @@ using System.IO;
 using MyShaderAnalysis.utilhelpers;
 using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
 
-namespace MyShaderAnalysis.vcsparsing {
+namespace MyShaderAnalysis.vcsparsing
+{
 
-    public class DataReaderZFrameByteAnalysis : ShaderDataReader {
+    public class DataReaderZFrameByteAnalysis : ShaderDataReader
+    {
 
         private VcsFileType filetype;
         private VcsSourceType sourceType;
 
-        public DataReaderZFrameByteAnalysis(byte[] data, VcsFileType filetype, VcsSourceType vcsSourceType) : base(data) {
-            if (filetype == VcsFileType.Features) {
+        public DataReaderZFrameByteAnalysis(byte[] data, VcsFileType filetype, VcsSourceType vcsSourceType) : base(data)
+        {
+            if (filetype == VcsFileType.Features)
+            {
                 throw new ShaderParserException("file type cannot be features, as they don't contain any zframes");
             }
             this.filetype = filetype;
@@ -22,14 +26,16 @@ namespace MyShaderAnalysis.vcsparsing {
 
 
         bool writeAsHtml = false;
-        public void SetWriteAsHtml(bool writeAsHtml) {
+        public void SetWriteAsHtml(bool writeAsHtml)
+        {
             this.writeAsHtml = writeAsHtml;
         }
 
         bool saveGlslSources = false;
         string outputDir = null;
 
-        public void RequestGlslFileSave(string outputDir) {
+        public void RequestGlslFileSave(string outputDir)
+        {
             saveGlslSources = true;
             this.outputDir = outputDir;
         }
@@ -37,14 +43,16 @@ namespace MyShaderAnalysis.vcsparsing {
         // these are recorded in case save is indicated
         private List<(int, int, string)> glslSources = new();
 
-        public void PrintByteAnalysis() {
+        public void PrintByteAnalysis()
+        {
 
             ShowZDataSection(-1);
             ShowZFrameHeader();
 
 
             // this applies only to vs files (ps, gs and psrs files don't have this section)
-            if (filetype == VcsFileType.VertexShader) {
+            if (filetype == VcsFileType.VertexShader)
+            {
                 // values seen
                 // 1,2,4,5,8,10,12,16,20,40,48,80,120,160
                 int blockCountInput = ReadInt16AtPosition();
@@ -61,7 +69,8 @@ namespace MyShaderAnalysis.vcsparsing {
             ShowBytes(2, breakLine: false);
             TabComment($"nr of data-blocks ({blockCount})");
             OutputWriteLine("");
-            for (int i = 0; i < blockCount; i++) {
+            for (int i = 0; i < blockCount; i++)
+            {
                 ShowZDataSection(i);
             }
             BreakLine();
@@ -90,15 +99,18 @@ namespace MyShaderAnalysis.vcsparsing {
             BreakLine();
 
 
-            if (sourceType == VcsSourceType.Glsl) {
+            if (sourceType == VcsSourceType.Glsl)
+            {
                 ShowGlslSources(gpuSourceCount);
             }
 
-            if (sourceType == VcsSourceType.DXIL) {
+            if (sourceType == VcsSourceType.DXIL)
+            {
                 ShowDxilSources(gpuSourceCount);
             }
 
-            if (sourceType == VcsSourceType.DXBC) {
+            if (sourceType == VcsSourceType.DXBC)
+            {
                 ShowDxbcSources(gpuSourceCount);
             }
 
@@ -106,20 +118,23 @@ namespace MyShaderAnalysis.vcsparsing {
 
 
             //  End blocks for vs and gs files
-            if (filetype == VcsFileType.VertexShader || filetype == VcsFileType.GeometryShader) {
+            if (filetype == VcsFileType.VertexShader || filetype == VcsFileType.GeometryShader)
+            {
                 ShowZAllEndBlocksTypeVs();
                 BreakLine();
             }
 
             //  End blocks for ps and psrs files
-            if (filetype == VcsFileType.PixelShader || filetype == VcsFileType.PotentialShadowReciever) {
+            if (filetype == VcsFileType.PixelShader || filetype == VcsFileType.PotentialShadowReciever)
+            {
                 ShowByteCount();
                 int nrEndBlocks = ReadIntAtPosition();
                 ShowBytes(4, breakLine: false);
                 TabComment($"nr of end blocks ({nrEndBlocks})");
                 OutputWriteLine("");
 
-                for (int i = 0; i < nrEndBlocks; i++) {
+                for (int i = 0; i < nrEndBlocks; i++)
+                {
                     ShowByteCount($"End-block[{i}]");
                     int blockId = ReadInt16AtPosition();
                     ShowBytes(4, breakLine: false);
@@ -140,15 +155,18 @@ namespace MyShaderAnalysis.vcsparsing {
                     ShowBytes(3, breakLine: false);
                     TabComment($"(data0={hasData0}, data1={hasData1}, data2={hasData2})", 7);
 
-                    if (hasData0) {
+                    if (hasData0)
+                    {
                         OutputWriteLine("// data-section 0");
                         ShowBytes(16);
                     }
-                    if (hasData1) {
+                    if (hasData1)
+                    {
                         OutputWriteLine("// data-section 1");
                         ShowBytes(20);
                     }
-                    if (hasData2) {
+                    if (hasData2)
+                    {
                         OutputWriteLine("// data-section 2");
                         ShowBytes(3);
                         ShowBytes(8);
@@ -161,13 +179,16 @@ namespace MyShaderAnalysis.vcsparsing {
 
 
             // write the gsls source, if indicated
-            if (sourceType == VcsSourceType.DXIL && saveGlslSources && !writeAsHtml) {
+            if (sourceType == VcsSourceType.DXIL && saveGlslSources && !writeAsHtml)
+            {
                 SaveGlslSourcestoTxt(glslSources);
             }
-            if (sourceType == VcsSourceType.DXIL && saveGlslSources && writeAsHtml) {
+            if (sourceType == VcsSourceType.DXIL && saveGlslSources && writeAsHtml)
+            {
                 SaveGlslSourcestoHtml(glslSources);
             }
-            if (sourceType != VcsSourceType.DXIL && saveGlslSources) {
+            if (sourceType != VcsSourceType.DXIL && saveGlslSources)
+            {
                 Debug.WriteLine($"glsl save indicated but source is not glsl");
             }
         }
@@ -175,48 +196,58 @@ namespace MyShaderAnalysis.vcsparsing {
 
 
         private bool prevBlockWasZero = false;
-        public void ShowZDataSection(int blockId) {
+        public void ShowZDataSection(int blockId)
+        {
             int blockSize = ShowZBlockDataHeader(blockId);
             ShowZBlockDataBody(blockSize);
 
         }
 
-        public int ShowZBlockDataHeader(int blockId) {
+        public int ShowZBlockDataHeader(int blockId)
+        {
             int arg0 = ReadIntAtPosition();
             int arg1 = ReadIntAtPosition(4);
             int arg2 = ReadIntAtPosition(8);
 
-            if (blockId != -1 && arg0 == 0 && arg1 == 0 && arg2 == 0) {
+            if (blockId != -1 && arg0 == 0 && arg1 == 0 && arg2 == 0)
+            {
                 ShowBytes(12, breakLine: false);
                 TabComment($"data-block[{blockId}]");
                 return 0;
             }
             string comment = "";
-            if (blockId == -1) {
+            if (blockId == -1)
+            {
                 comment = $"leading data";
             }
-            if (blockId >= 0) {
+            if (blockId >= 0)
+            {
                 comment = $"data-block[{blockId}]";
             }
             int blockSize = ReadIntAtPosition();
-            if (prevBlockWasZero) {
+            if (prevBlockWasZero)
+            {
                 OutputWriteLine("");
             }
             ShowByteCount(comment);
             ShowBytesWithIntValue();
             ShowBytesWithIntValue();
             ShowBytesWithIntValue();
-            if (blockId == -1 && arg0 == 0 && arg1 == 0 && arg2 == 0) {
+            if (blockId == -1 && arg0 == 0 && arg1 == 0 && arg2 == 0)
+            {
                 BreakLine();
             }
             return blockSize * 4;
         }
 
-        public void ShowZBlockDataBody(int byteSize) {
-            if (byteSize == 0) {
+        public void ShowZBlockDataBody(int byteSize)
+        {
+            if (byteSize == 0)
+            {
                 prevBlockWasZero = true;
                 return;
-            } else {
+            } else
+            {
                 prevBlockWasZero = false;
             }
             Comment($"{byteSize / 4}*4 bytes");
@@ -224,91 +255,113 @@ namespace MyShaderAnalysis.vcsparsing {
             BreakLine();
         }
 
-        public void ShowZFrameHeader() {
+        public void ShowZFrameHeader()
+        {
             ShowByteCount("Frame header");
             uint nrArgs = ReadUInt16AtPosition();
             ShowBytes(2, breakLine: false);
             TabComment($"nr of arguments ({nrArgs})");
             OutputWriteLine("");
 
-            for (int i = 0; i < nrArgs; i++) {
+            for (int i = 0; i < nrArgs; i++)
+            {
                 ShowMurmurString();
                 // int headerOperator = databytes[offset];
                 int headerOperator = ReadByteAtPosition();
-                if (headerOperator == 0x0e) {
+                if (headerOperator == 0x0e)
+                {
                     ShowBytes(3);
                     continue;
                 }
-                if (headerOperator == 1) {
+                if (headerOperator == 1)
+                {
                     int dynExpLen = ReadIntAtPosition(3);
-                    if (dynExpLen == 0) {
+                    if (dynExpLen == 0)
+                    {
                         ShowBytes(8);
                         continue;
-                    } else {
+                    } else
+                    {
                         ShowBytes(7);
                         ShowDynamicExpression(dynExpLen);
                         continue;
                     }
                 }
-                if (headerOperator == 9) {
+                if (headerOperator == 9)
+                {
                     int dynExpLen = ReadIntAtPosition(3);
-                    if (dynExpLen == 0) {
+                    if (dynExpLen == 0)
+                    {
                         ShowBytes(8);
                         continue;
-                    } else {
+                    } else
+                    {
                         ShowBytes(7);
                         ShowDynamicExpression(dynExpLen);
                         continue;
                     }
                 }
-                if (headerOperator == 5) {
+                if (headerOperator == 5)
+                {
                     int dynExpLen = ReadIntAtPosition(3);
-                    if (dynExpLen == 0) {
+                    if (dynExpLen == 0)
+                    {
                         ShowBytes(11);
                         continue;
-                    } else {
+                    } else
+                    {
                         ShowBytes(7);
                         ShowDynamicExpression(dynExpLen);
                         continue;
                     }
                 }
             }
-            if (nrArgs > 0) {
+            if (nrArgs > 0)
+            {
                 BreakLine();
             }
         }
 
-        private void ShowDxilSources(int dxilSourceCount) {
-            for (int i = 0; i < dxilSourceCount; i++) {
+        private void ShowDxilSources(int dxilSourceCount)
+        {
+            for (int i = 0; i < dxilSourceCount; i++)
+            {
                 int sourceOffset = ReadIntAtPosition();
                 ShowByteCount();
                 ShowBytes(4, $"offset to end of source {sourceOffset} (taken from {GetOffset() + 4})");
                 int additionalSourceBytes = 0;
-                if (sourceOffset > 0) {
+                if (sourceOffset > 0)
+                {
                     ShowBytes(4);
                     int unknown_prog_uint16 = (int)ReadUInt16AtPosition(2);
                     ShowBytes(4, $"({unknown_prog_uint16}) the first ({unknown_prog_uint16} * 4) bytes look like header data that may need to be processed");
                     BreakLine();
                     ShowByteCount($"DXIL-SOURCE[{i}]");
                     int sourceSize = sourceOffset - 8;
-                    if (unknown_prog_uint16 > 0) {
+                    if (unknown_prog_uint16 > 0)
+                    {
                         ShowBytes(unknown_prog_uint16 * 4);
                     }
                     additionalSourceBytes = sourceSize - unknown_prog_uint16 * 4;
                 }
                 int endOfSource = GetOffset() + additionalSourceBytes;
-                if (additionalSourceBytes > SOURCE_BYTES_TO_SHOW) {
+                if (additionalSourceBytes > SOURCE_BYTES_TO_SHOW)
+                {
                     ShowBytes(SOURCE_BYTES_TO_SHOW, breakLine: false);
                     OutputWrite(" ");
                     int remainingBytes = endOfSource - GetOffset();
-                    if (remainingBytes < 50) {
+                    if (remainingBytes < 50)
+                    {
                         ShowBytes(remainingBytes);
-                    } else {
+                    } else
+                    {
                         Comment($"... ({endOfSource - GetOffset()} bytes of data not shown)");
                     }
-                } else if (additionalSourceBytes <= SOURCE_BYTES_TO_SHOW && additionalSourceBytes > 0) {
+                } else if (additionalSourceBytes <= SOURCE_BYTES_TO_SHOW && additionalSourceBytes > 0)
+                {
                     ShowBytes(additionalSourceBytes);
-                } else {
+                } else
+                {
                     OutputWriteLine("// no source present");
                 }
                 SetOffset(endOfSource);
@@ -319,22 +372,27 @@ namespace MyShaderAnalysis.vcsparsing {
             }
         }
 
-        private void ShowDxbcSources(int dxbcSourceCount) {
-            for (int sourceId = 0; sourceId < dxbcSourceCount; sourceId++) {
+        private void ShowDxbcSources(int dxbcSourceCount)
+        {
+            for (int sourceId = 0; sourceId < dxbcSourceCount; sourceId++)
+            {
                 int sourceSize = ReadIntAtPosition();
                 ShowByteCount();
                 ShowBytes(4, $"Source size, {sourceSize} bytes");
                 BreakLine();
                 int endOfSource = GetOffset() + sourceSize;
                 ShowByteCount($"DXBC-SOURCE[{sourceId}]");
-                if (sourceSize == 0) {
+                if (sourceSize == 0)
+                {
                     OutputWriteLine("// no source present");
                 }
-                if (sourceSize > SOURCE_BYTES_TO_SHOW) {
+                if (sourceSize > SOURCE_BYTES_TO_SHOW)
+                {
                     ShowBytes(SOURCE_BYTES_TO_SHOW, breakLine: false);
                     OutputWrite(" ");
                     Comment($"... ({endOfSource - GetOffset()} bytes of data not shown)");
-                } else if (sourceSize <= SOURCE_BYTES_TO_SHOW && sourceSize > 0) {
+                } else if (sourceSize <= SOURCE_BYTES_TO_SHOW && sourceSize > 0)
+                {
                     ShowBytes(sourceSize);
                 }
                 SetOffset(endOfSource);
@@ -347,17 +405,21 @@ namespace MyShaderAnalysis.vcsparsing {
         }
 
 
-        private void ShowGlslSources(int glslSourceCount) {
-            for (int sourceId = 0; sourceId < glslSourceCount; sourceId++) {
+        private void ShowGlslSources(int glslSourceCount)
+        {
+            for (int sourceId = 0; sourceId < glslSourceCount; sourceId++)
+            {
                 int sourceSize = ShowGlslSourceOffsets();
                 int sourceOffset = GetOffset();
                 ShowZGlslSourceSummary(sourceId);
                 ShowByteCount();
                 byte[] fileIdBytes = ReadBytes(16);
                 string fileIdStr = BytesToString(fileIdBytes);
-                if (writeAsHtml) {
+                if (writeAsHtml)
+                {
                     OutputWrite(GetGlslHtmlLink(fileIdStr));
-                } else {
+                } else
+                {
                     OutputWrite(fileIdStr);
                 }
                 TabComment($" Editor ref.");
@@ -367,11 +429,13 @@ namespace MyShaderAnalysis.vcsparsing {
         }
 
 
-        public int ShowGlslSourceOffsets() {
+        public int ShowGlslSourceOffsets()
+        {
             ShowByteCount("glsl source offsets");
             uint offset1 = ReadUIntAtPosition();
             ShowBytesWithIntValue();
-            if (offset1 == 0) {
+            if (offset1 == 0)
+            {
                 return 0;
             }
             ShowBytes(4, breakLine: false);
@@ -386,47 +450,56 @@ namespace MyShaderAnalysis.vcsparsing {
         const int SOURCE_BYTES_TO_SHOW = 100;
 
         // FIXME - can't I pass the source size here?
-        public void ShowZGlslSourceSummary(int sourceId) {
+        public void ShowZGlslSourceSummary(int sourceId)
+        {
             int bytesToRead = ReadIntAtPosition(-4);
             int endOfSource = GetOffset() + bytesToRead;
             ShowByteCount($"GLSL-SOURCE[{sourceId}]");
-            if (bytesToRead == 0) {
+            if (bytesToRead == 0)
+            {
                 OutputWriteLine("// no source present");
             }
-            if (bytesToRead > SOURCE_BYTES_TO_SHOW) {
+            if (bytesToRead > SOURCE_BYTES_TO_SHOW)
+            {
                 ShowBytes(SOURCE_BYTES_TO_SHOW);
                 Comment($"... ({endOfSource - GetOffset()} bytes of data not shown)");
-            } else if (bytesToRead <= SOURCE_BYTES_TO_SHOW && bytesToRead > 0) {
+            } else if (bytesToRead <= SOURCE_BYTES_TO_SHOW && bytesToRead > 0)
+            {
                 ShowBytes(bytesToRead);
             }
             SetOffset(endOfSource);
             BreakLine();
         }
 
-        public void ShowZAllEndBlocksTypeVs() {
+        public void ShowZAllEndBlocksTypeVs()
+        {
             ShowByteCount();
             int nr_end_blocks = ReadIntAtPosition();
             ShowBytes(4, breakLine: false);
             TabComment($"nr end blocks ({nr_end_blocks})");
             BreakLine();
-            for (int i = 0; i < nr_end_blocks; i++) {
+            for (int i = 0; i < nr_end_blocks; i++)
+            {
                 ShowBytes(16);
             }
         }
 
 
-        private void ShowMurmurString() {
+        private void ShowMurmurString()
+        {
             string nulltermstr = ReadNullTermStringAtPosition();
             uint murmur32 = ReadUIntAtPosition(nulltermstr.Length + 1);
             uint murmurCheck = MurmurHashPiSeed(nulltermstr.ToLower());
-            if (murmur32 != murmurCheck) {
+            if (murmur32 != murmurCheck)
+            {
                 throw new ShaderParserException("not a murmur string!");
             }
             Comment($"{nulltermstr} | 0x{murmur32:x08}");
             ShowBytes(nulltermstr.Length + 1 + 4);
         }
 
-        private void ShowDynamicExpression(int dynExpLen) {
+        private void ShowDynamicExpression(int dynExpLen)
+        {
             byte[] dynExpDatabytes = ReadBytesAtPosition(0, dynExpLen);
             string dynExp = GetDynamicExpression(dynExpDatabytes);
             OutputWriteLine($"// {dynExp}");
@@ -434,12 +507,15 @@ namespace MyShaderAnalysis.vcsparsing {
         }
 
         private VfxEval myDynParser = new();
-        private string GetDynamicExpression(byte[] dynExpDatabytes) {
-            if (myDynParser == null) {
+        private string GetDynamicExpression(byte[] dynExpDatabytes)
+        {
+            if (myDynParser == null)
+            {
                 myDynParser = new VfxEval();
             }
             myDynParser.ParseExpression(dynExpDatabytes);
-            if (myDynParser.errorWhileParsing) {
+            if (myDynParser.errorWhileParsing)
+            {
                 string errorMessage = $"problem occured parsing dynamic expression {myDynParser.errorMessage}";
                 Debug.WriteLine(errorMessage);
                 return errorMessage;
@@ -450,11 +526,14 @@ namespace MyShaderAnalysis.vcsparsing {
 
 
 
-        private void SaveGlslSourcestoHtml(List<(int, int, string)> glslSources) {
-            foreach (var glslSourceItem in glslSources) {
+        private void SaveGlslSourcestoHtml(List<(int, int, string)> glslSources)
+        {
+            foreach (var glslSourceItem in glslSources)
+            {
                 string htmlFilename = GetGlslHtmlFilename(glslSourceItem.Item3);
                 string glslFilenamepath = @$"{outputDir}\{htmlFilename}";
-                if (File.Exists(glslFilenamepath)) {
+                if (File.Exists(glslFilenamepath))
+                {
                     continue;
                 }
                 int glslOffset = glslSourceItem.Item1;
@@ -473,10 +552,13 @@ namespace MyShaderAnalysis.vcsparsing {
             }
         }
 
-        private void SaveGlslSourcestoTxt(List<(int, int, string)> glslSources) {
-            foreach (var glslSourceItem in glslSources) {
+        private void SaveGlslSourcestoTxt(List<(int, int, string)> glslSources)
+        {
+            foreach (var glslSourceItem in glslSources)
+            {
                 string glslFilenamepath = @$"{outputDir}\{GetGlslTxtFilename(glslSourceItem.Item3)}";
-                if (File.Exists(glslFilenamepath)) {
+                if (File.Exists(glslFilenamepath))
+                {
                     continue;
                 }
                 int glslOffset = glslSourceItem.Item1;

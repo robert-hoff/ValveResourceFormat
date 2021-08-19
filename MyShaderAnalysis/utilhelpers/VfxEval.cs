@@ -4,7 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyShaderAnalysis.utilhelpers {
+namespace MyShaderAnalysis.utilhelpers
+{
     class VfxEval
     {
         // if successful the parsed data assigned here
@@ -249,7 +250,8 @@ namespace MyShaderAnalysis.utilhelpers {
 
                 // for <e1>||<e2> expressions we are looking for the pattern
                 // 04 17 00 1F 00     07 00 00 80 3F
-                if (pointer2 - pointer1 == 8 && b[p] == 7 && b[p + 1] == 0 && b[p + 2] == 0 && b[p + 3] == 0x80 && b[p + 4] == 0x3F) {
+                if (pointer2 - pointer1 == 8 && b[p] == 7 && b[p + 1] == 0 && b[p + 2] == 0 && b[p + 3] == 0x80 && b[p + 4] == 0x3F)
+                {
                     offsetAtBranchExits.Push(OR_BRANCH);
                     datareader.offset += 5;
                     return;
@@ -414,7 +416,7 @@ namespace MyShaderAnalysis.utilhelpers {
                 // NOTE - there are examples where this will fail!
                 //while (final_exp.Length > 2 && final_exp[0] == '(' && final_exp[final_exp.Length - 1] == ')')
                 //{
-                    final_exp = trimb(final_exp);
+                final_exp = trimb(final_exp);
                 //}
                 // dynamicExpressionList.Add($"return {final_exp};");
                 dynamicExpressionList.Add($"{final_exp}");

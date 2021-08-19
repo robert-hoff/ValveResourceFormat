@@ -6,11 +6,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyShaderAnalysis.utilhelpers.snippetcode {
+namespace MyShaderAnalysis.utilhelpers.snippetcode
+{
 
-    class CrcTrialsMurmur32 {
+    class CrcTrialsMurmur32
+    {
 
-        public static void RunTrials() {
+        public static void RunTrials()
+        {
 
             Trial1();
             // Trial2();
@@ -21,7 +24,8 @@ namespace MyShaderAnalysis.utilhelpers.snippetcode {
 
 
 
-        static void Trial1() {
+        static void Trial1()
+        {
             string databytes = "53 68 61 64 6F 77 73 4F 6E 6C 79"; // ShadowsOnly
             string theword = ByteStringtoString(databytes);
 
@@ -37,7 +41,8 @@ namespace MyShaderAnalysis.utilhelpers.snippetcode {
          * Testing some predictable string for comparison with Java
          *
          */
-        static void Trial2() {
+        static void Trial2()
+        {
             uint MURMUR2SEED = 0x31415926; // It's pi!
             // uint murmur32 = MurmurHash2.Hash("r", MURMUR2SEED);
             uint murmur32 = MurmurHash2.Hash("representativetexture", MURMUR2SEED);
@@ -50,7 +55,8 @@ namespace MyShaderAnalysis.utilhelpers.snippetcode {
          * It looks Java produces the same results for this operation when using signed ints
          *
          */
-        static void Trial3() {
+        static void Trial3()
+        {
             uint seed = 0x31415926;
             // uint seed = 0xF1415926;
             uint M = 0x5bd1e995;
@@ -63,7 +69,8 @@ namespace MyShaderAnalysis.utilhelpers.snippetcode {
         }
 
 
-        static void Trial4() {
+        static void Trial4()
+        {
             uint MURMUR2SEED = 0x31415926;
             byte[] databytes = getDatabytesExample1();
             uint murmur32 = MurmurHash2.Hash(databytes, MURMUR2SEED);
@@ -72,9 +79,11 @@ namespace MyShaderAnalysis.utilhelpers.snippetcode {
         }
 
 
-        static string ByteStringtoString(string databytes) {
+        static string ByteStringtoString(string databytes)
+        {
             string mystr = "";
-            foreach (byte b in ParseString(databytes)) {
+            foreach (byte b in ParseString(databytes))
+            {
                 mystr += (char)b;
             }
 
@@ -82,10 +91,12 @@ namespace MyShaderAnalysis.utilhelpers.snippetcode {
         }
 
 
-        static byte[] ParseString(String bytestring) {
+        static byte[] ParseString(String bytestring)
+        {
             string[] tokens = bytestring.Split(" ");
             byte[] databytes = new byte[tokens.Length];
-            for (int i = 0; i < tokens.Length; i++) {
+            for (int i = 0; i < tokens.Length; i++)
+            {
                 databytes[i] = Convert.ToByte(tokens[i], 16);
             }
             return databytes;
@@ -99,7 +110,8 @@ namespace MyShaderAnalysis.utilhelpers.snippetcode {
          * Tried to reproduce the buffer block crc, but couldn't get it (also tried crc32)
          *
          */
-        static byte[] getDatabytesExample1() {
+        static byte[] getDatabytesExample1()
+        {
             string bytestring = "" +
                 "49 72 72 61 64 54 65 78 74 75 72 65 41 63 74 69 76 65 52 65 63 74 43 42 00 00 00 00 00 00 00 00 " +
                 "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 " +

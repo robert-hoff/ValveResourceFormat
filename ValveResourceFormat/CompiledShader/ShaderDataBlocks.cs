@@ -525,9 +525,9 @@ namespace ValveResourceFormat.ShaderParser
         public string name0;
         public string name1;
         public string name2;
-        public int pt0;
+        public int type;
         public float res0;
-        public int main0;
+        public int lead0;
         public byte[] dynExp = Array.Empty<byte>();
         public int arg0;
         public int arg1;
@@ -554,12 +554,12 @@ namespace ValveResourceFormat.ShaderParser
             datareader.MoveOffset(64);
             name1 = datareader.ReadNullTermStringAtPosition();
             datareader.MoveOffset(64);
-            pt0 = datareader.ReadInt();
+            type = datareader.ReadInt();
             res0 = datareader.ReadFloat();
             name2 = datareader.ReadNullTermStringAtPosition();
             datareader.MoveOffset(64);
-            main0 = datareader.ReadInt();
-            if (main0 == 6 || main0 == 7)
+            lead0 = datareader.ReadInt();
+            if (lead0 == 6 || lead0 == 7)
             {
                 int dynExpLen = datareader.ReadInt();
                 dynExp = datareader.ReadBytes(dynExpLen);
@@ -614,9 +614,9 @@ namespace ValveResourceFormat.ShaderParser
         {
             Debug.WriteLine($"name0 {new string(' ', 20)} {name0}");
             Debug.WriteLine($"name1 {new string(' ', 20)} {name1}");
-            Debug.WriteLine($"lead0,lead1 {new string(' ', 24)} ({pt0},{res0})");
+            Debug.WriteLine($"lead0,lead1 {new string(' ', 24)} ({type},{res0})");
             Debug.WriteLine($"name2 {new string(' ', 20)} {name2}");
-            Debug.WriteLine($"paramType {new string(' ', 16)} {main0}");
+            Debug.WriteLine($"paramType {new string(' ', 16)} {lead0}");
             Debug.WriteLine($"dynExp {new string(' ', 1)} {ShaderDataReader.BytesToString(dynExp)}");
             Debug.WriteLine($"arg0 {new string(' ', 21)} {arg0,9}");
             Debug.WriteLine($"arg1 {new string(' ', 21)} {arg1,9}");

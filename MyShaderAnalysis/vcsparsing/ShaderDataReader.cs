@@ -23,7 +23,7 @@ namespace MyShaderAnalysis.vcsparsing
             WriteToDebug = writeToDebug;
         }
 
-        #pragma warning disable CA1024 // Use properties where appropriate
+#pragma warning disable CA1024 // Use properties where appropriate
         public int GetOffset()
         {
             return (int)BinReader.BaseStream.Position;
@@ -38,7 +38,7 @@ namespace MyShaderAnalysis.vcsparsing
         {
             return (int)BinReader.BaseStream.Length;
         }
-        #pragma warning restore CA1024
+#pragma warning restore CA1024
 
         private long savedPosition;
         public void SavePosition()

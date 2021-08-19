@@ -8,7 +8,8 @@ using MyShaderAnalysis.vcsparsing;
 using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
 
 
-namespace MyShaderAnalysis.compat {
+namespace MyShaderAnalysis.compat
+{
 
 
     /*
@@ -21,11 +22,13 @@ namespace MyShaderAnalysis.compat {
      *
      *
      */
-    public class CompatRulesGeneration {
+    public class CompatRulesGeneration
+    {
 
         ShaderFile shaderfile;
 
-        public CompatRulesGeneration(ShaderFile shaderfile) {
+        public CompatRulesGeneration(ShaderFile shaderfile)
+        {
             this.shaderfile = shaderfile;
             GenerateOffsetAndLayers(shaderfile);
         }
@@ -48,9 +51,11 @@ namespace MyShaderAnalysis.compat {
          *
          *
          */
-        private void GenerateOffsetAndLayers(ShaderFile shaderFile) {
+        private void GenerateOffsetAndLayers(ShaderFile shaderFile)
+        {
 
-            if (shaderFile.sfBlocks.Count == 0) {
+            if (shaderFile.sfBlocks.Count == 0)
+            {
                 offsets = Array.Empty<int>();
                 layers = Array.Empty<int>();
                 return;
@@ -62,7 +67,8 @@ namespace MyShaderAnalysis.compat {
             offsets[0] = 1;
             layers[0] = shaderFile.sfBlocks[0].arg2;
 
-            for (int i = 1; i < shaderFile.sfBlocks.Count; i++) {
+            for (int i = 1; i < shaderFile.sfBlocks.Count; i++)
+            {
                 int curLayer = shaderFile.sfBlocks[i].arg2;
                 layers[i] = curLayer;
                 offsets[i] = offsets[i - 1] * (layers[i - 1] + 1);
@@ -79,9 +85,11 @@ namespace MyShaderAnalysis.compat {
          *
          *
          */
-        public int[] GetConfigState(long zframeId) {
+        public int[] GetConfigState(long zframeId)
+        {
             int[] state = new int[layers.Length];
-            for (int i = 0; i < layers.Length; i++) {
+            for (int i = 0; i < layers.Length; i++)
+            {
                 long res = (zframeId / offsets[i]) % (layers[i] + 1);
                 state[i] = (int)res;
             }
@@ -97,17 +105,20 @@ namespace MyShaderAnalysis.compat {
 
         static bool[,] exclusions = new bool[100, 100];
         static bool[,] inclusions = new bool[100, 100];
-        void AddExclusion(int s1, int s2, int s3) {
+        void AddExclusion(int s1, int s2, int s3)
+        {
             AddExclusion(s1, s2);
             AddExclusion(s1, s3);
             AddExclusion(s2, s3);
         }
 
-        void AddExclusion(int s1, int s2) {
+        void AddExclusion(int s1, int s2)
+        {
             exclusions[s1, s2] = true;
             exclusions[s2, s1] = true;
         }
-        void AddInclusion(int s1, int s2) {
+        void AddInclusion(int s1, int s2)
+        {
             inclusions[s1, s2] = true;
         }
 
@@ -116,35 +127,45 @@ namespace MyShaderAnalysis.compat {
          * but not equal or exceeding
          *
          */
-        int MaxEnumeration() {
+        int MaxEnumeration()
+        {
             return 2 * offsets[^1];
         }
 
 
-        bool CheckZFrame(int zframe) {
+        bool CheckZFrame(int zframe)
+        {
             int[] state = GetConfigState(zframe);
             // checking exclusion rules
-            for (int j = 2; j < offsets.Length; j++) {
-                for (int i = 1; i < j; i++) {
+            for (int j = 2; j < offsets.Length; j++)
+            {
+                for (int i = 1; i < j; i++)
+                {
                     int s1 = state[i];
                     int s2 = state[j];
-                    if (s1 == 0 || s2 == 0) {
+                    if (s1 == 0 || s2 == 0)
+                    {
                         continue;
                     }
-                    if (exclusions[i, j] == true) {
+                    if (exclusions[i, j] == true)
+                    {
                         return false;
                     }
-                    if (inclusions[i, j] == true) {
+                    if (inclusions[i, j] == true)
+                    {
                         return false;
                     }
                 }
             }
             // checking inclusion rules
-            for (int i = 1; i < offsets.Length; i++) {
+            for (int i = 1; i < offsets.Length; i++)
+            {
                 int s1 = state[i];
                 if (s1 == 0) continue;
-                for (int j = 1; j < offsets.Length; j++) {
-                    if (inclusions[i, j] && state[j] == 0) {
+                for (int j = 1; j < offsets.Length; j++)
+                {
+                    if (inclusions[i, j] && state[j] == 0)
+                    {
                         return false;
                     }
                 }
@@ -154,7 +175,8 @@ namespace MyShaderAnalysis.compat {
 
 
 
-        public void ShowOffsetAndLayersArrays() {
+        public void ShowOffsetAndLayersArrays()
+        {
             ShowIntArray(offsets, 8, "offsets", hex: true);
             ShowIntArray(layers, 8, "layers");
 

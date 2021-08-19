@@ -17,9 +17,11 @@ using static MyShaderAnalysis.utilhelpers.FileSystem;
  *
  *
  */
-namespace MyShaderAnalysis.utilhelpers {
+namespace MyShaderAnalysis.utilhelpers
+{
 
-    public class FileTokens {
+    public class FileTokens
+    {
         public string name { get; }          // name without the file extension, e.g. spritecard_pcgl_30_ps
         public string filename { get; }
         public string filenamepath { get; }
@@ -44,7 +46,8 @@ namespace MyShaderAnalysis.utilhelpers {
          * this will work passing either the filename or the full filenamepath
          *
          */
-        public FileTokens(ARCHIVE archive, string filename) {
+        public FileTokens(ARCHIVE archive, string filename)
+        {
             filename = Path.GetFileName(filename);
             this.filename = filename;
             this.name = filename[0..^4];
@@ -60,7 +63,8 @@ namespace MyShaderAnalysis.utilhelpers {
             this.namelabel = filename.Split('_')[0];
             this.vcstoken = GetVcsToken(vcsFiletype);
 
-            if (!File.Exists(filenamepath)) {
+            if (!File.Exists(filenamepath))
+            {
                 throw new ShaderParserException("file doesn't exist");
             }
         }
@@ -70,69 +74,87 @@ namespace MyShaderAnalysis.utilhelpers {
          * e.g. Z:/dev/www/vcs.codecreation.dev/dota-game/pcgl/spritecard_pcgl_30_ps
          *
          */
-        public string GetServerFileDir(bool createDir = false) {
+        public string GetServerFileDir(bool createDir = false)
+        {
             string serverFileDir = $"{serverdir}/{archivename}/{gputype}/{foldername}";
-            if (createDir) {
+            if (createDir)
+            {
                 Directory.CreateDirectory(serverFileDir);
             }
             return serverFileDir;
         }
 
-        public string GetServerFilePath(string label, bool createDirs = false) {
+        public string GetServerFilePath(string label, bool createDirs = false)
+        {
             return $"{GetServerFileDir(createDirs)}/{name}-{label}.html";
         }
 
 
-        public string GetServerFilePath() {
+        public string GetServerFilePath()
+        {
             return $"/{archivename}/{gputype}/{foldername}";
         }
 
-        public string GetZFramesServerDir(bool createDir = false) {
+        public string GetZFramesServerDir(bool createDir = false)
+        {
             string serverZframesDir = $"{GetServerFileDir()}/zframes";
-            if (createDir) {
+            if (createDir)
+            {
                 Directory.CreateDirectory(serverZframesDir);
             }
             return serverZframesDir;
         }
 
-        public void CreateZFramesDirectory() {
+        public void CreateZFramesDirectory()
+        {
             GetZFramesServerDir(createDir: true);
         }
 
-        public string GetZFramesServerPath() {
+        public string GetZFramesServerPath()
+        {
             return $"{GetServerFilePath()}/zframes";
         }
 
-        public string GetZFrameHtmlFilenamepath(long zframeId) {
+        public string GetZFrameHtmlFilenamepath(long zframeId)
+        {
             return $"{GetZFramesServerDir()}/{name}-ZFRAME{zframeId:x08}.html";
         }
 
-        public string GetZFrameHtmlBytesFilenamepath(long zframeId) {
+        public string GetZFrameHtmlBytesFilenamepath(long zframeId)
+        {
             return $"{serverdir}/vcs-all/{archivelabel}/zsource/{name}-ZFRAME{zframeId:x08}.html";
         }
 
-        public string GetZFrameHtmlBytesLink(long zframeId) {
+        public string GetZFrameHtmlBytesLink(long zframeId)
+        {
             return $"/vcs-all/{archivelabel}/zsource/{name}-ZFRAME{zframeId:x08}.html";
         }
 
 
-        public string GetZFrameHtmlFilename(long zframeId) {
+        public string GetZFrameHtmlFilename(long zframeId)
+        {
             return $"{name}-ZFRAME{zframeId:x08}.html";
         }
 
-        public string GetZFrameLink(long zframeId) {
+        public string GetZFrameLink(long zframeId)
+        {
             return $"{GetZFramesServerPath()}/{name}-ZFRAME{zframeId:x08}.html";
         }
 
 
 
-        public List<string> GetZFrameListing() {
+        public List<string> GetZFrameListing()
+        {
             List<string> zframeFiles = new();
-            if (!Directory.Exists(GetZFramesServerDir())) {
+            if (!Directory.Exists(GetZFramesServerDir()))
+            {
                 return zframeFiles;
-            } else {
-                foreach (var zframeFile in Directory.GetFiles(GetZFramesServerDir())) {
-                    if (Path.GetFileName(zframeFile).StartsWith(name)) {
+            } else
+            {
+                foreach (var zframeFile in Directory.GetFiles(GetZFramesServerDir()))
+                {
+                    if (Path.GetFileName(zframeFile).StartsWith(name))
+                    {
                         zframeFiles.Add(zframeFile);
                     }
                 }
@@ -140,37 +162,47 @@ namespace MyShaderAnalysis.utilhelpers {
             }
         }
 
-        public string GetShortHandName() {
+        public string GetShortHandName()
+        {
             return $"{name} ({archivelabel})";
         }
 
-        public string RemoveBaseDir() {
+        public string RemoveBaseDir()
+        {
             return $"{archivelabel}/{name}";
         }
 
-        public string GetBytePath() {
+        public string GetBytePath()
+        {
             return $"/vcs-all/{archivelabel}/{name}-analysis.html";
         }
-        public string GetSummariesPath() {
+        public string GetSummariesPath()
+        {
             // return $"/GEN-output/sf-summaries/{archivelabel}/{name}-summary.html";
             return $"{GetServerFilePath()}/{name}-summary.html";
         }
 
-        public string GetBestPath() {
-            if (vcsFiletype == VcsFileType.PixelShader || vcsFiletype == VcsFileType.VertexShader) {
+        public string GetBestPath()
+        {
+            if (vcsFiletype == VcsFileType.PixelShader || vcsFiletype == VcsFileType.VertexShader)
+            {
                 string summariesPath = GetSummariesPath();
                 return File.Exists($"{serverdir}{summariesPath}") ? summariesPath : "";
-            } else {
+            } else
+            {
                 return GetBytePath();
             }
         }
 
 
-        public string GetBestZframesLink(long zframeId) {
-            if (File.Exists(GetZFrameHtmlFilenamepath(zframeId))) {
+        public string GetBestZframesLink(long zframeId)
+        {
+            if (File.Exists(GetZFrameHtmlFilenamepath(zframeId)))
+            {
                 return $"* <a href='{GetZFrameLink(zframeId)}'>Z[{zframeId:x08}]</a>";
             }
-            if (File.Exists(GetZFrameHtmlBytesFilenamepath(zframeId))) {
+            if (File.Exists(GetZFrameHtmlBytesFilenamepath(zframeId)))
+            {
                 return $"  <a href='{GetZFrameHtmlBytesLink(zframeId)}'>Z[{zframeId:x08}]</a>";
             }
             return $"  Z[{zframeId:x08}]";
@@ -178,7 +210,8 @@ namespace MyShaderAnalysis.utilhelpers {
 
 
 
-        public override string ToString() {
+        public override string ToString()
+        {
             string fileDetails = "";
             fileDetails += $"{name} ({archivelabel})\n";
             fileDetails += $"{archivename}\n";

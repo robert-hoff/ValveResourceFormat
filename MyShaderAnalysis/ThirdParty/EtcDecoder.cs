@@ -207,21 +207,20 @@ namespace Etc
             {
                 unchecked
                 {
-                    m_c[0,0] = (byte)(data[offset + 0] & 0xf8);
-                    m_c[0,1] = (byte)(data[offset + 1] & 0xf8);
-                    m_c[0,2] = (byte)(data[offset + 2] & 0xf8);
-                    m_c[1,0] = (byte)(m_c[0, 0] + (data[offset + 0] << 3 & 0x18) - (data[offset + 0] << 3 & 0x20));
-                    m_c[1,1] = (byte)(m_c[0, 1] + (data[offset + 1] << 3 & 0x18) - (data[offset + 1] << 3 & 0x20));
-                    m_c[1,2] = (byte)(m_c[0, 2] + (data[offset + 2] << 3 & 0x18) - (data[offset + 2] << 3 & 0x20));
-                    m_c[0,0] |= (byte)(m_c[0, 0] >> 5);
-                    m_c[0,1] |= (byte)(m_c[0, 1] >> 5);
-                    m_c[0,2] |= (byte)(m_c[0, 2] >> 5);
-                    m_c[1,0] |= (byte)(m_c[1, 0] >> 5);
-                    m_c[1,1] |= (byte)(m_c[1, 1] >> 5);
-                    m_c[1,2] |= (byte)(m_c[1, 2] >> 5);
+                    m_c[0, 0] = (byte)(data[offset + 0] & 0xf8);
+                    m_c[0, 1] = (byte)(data[offset + 1] & 0xf8);
+                    m_c[0, 2] = (byte)(data[offset + 2] & 0xf8);
+                    m_c[1, 0] = (byte)(m_c[0, 0] + (data[offset + 0] << 3 & 0x18) - (data[offset + 0] << 3 & 0x20));
+                    m_c[1, 1] = (byte)(m_c[0, 1] + (data[offset + 1] << 3 & 0x18) - (data[offset + 1] << 3 & 0x20));
+                    m_c[1, 2] = (byte)(m_c[0, 2] + (data[offset + 2] << 3 & 0x18) - (data[offset + 2] << 3 & 0x20));
+                    m_c[0, 0] |= (byte)(m_c[0, 0] >> 5);
+                    m_c[0, 1] |= (byte)(m_c[0, 1] >> 5);
+                    m_c[0, 2] |= (byte)(m_c[0, 2] >> 5);
+                    m_c[1, 0] |= (byte)(m_c[1, 0] >> 5);
+                    m_c[1, 1] |= (byte)(m_c[1, 1] >> 5);
+                    m_c[1, 2] |= (byte)(m_c[1, 2] >> 5);
                 }
-            }
-            else
+            } else
             {
                 unchecked
                 {
@@ -282,8 +281,7 @@ namespace Etc
                     {
                         m_buf[WriteOrderTable[i]] = color_set[k << 1 & 2 | j & 1];
                     }
-                }
-                else if (g + dg < 0 || g + dg > 255)
+                } else if (g + dg < 0 || g + dg > 255)
                 {
                     // H
                     unchecked
@@ -315,8 +313,7 @@ namespace Etc
                     {
                         m_buf[WriteOrderTable[i]] = color_set[k << 1 & 2 | j & 1];
                     }
-                }
-                else if (b + db < 0 || b + db > 255)
+                } else if (b + db < 0 || b + db > 255)
                 {
                     // planar
                     unchecked
@@ -343,8 +340,7 @@ namespace Etc
                             m_buf[i] = Color(ri, gi, bi, 255);
                         }
                     }
-                }
-                else
+                } else
                 {
                     // differential
                     byte[] code = { (byte)(data[offset + 3] >> 5), (byte)(data[offset + 3] >> 2 & 7) };
@@ -369,8 +365,7 @@ namespace Etc
                         m_buf[WriteOrderTable[i]] = ApplicateColor(m_c, s, m);
                     }
                 }
-            }
-            else
+            } else
             {
                 // individual
                 byte[] code = { (byte)(data[offset + 3] >> 5), (byte)(data[offset + 3] >> 2 & 7) };
@@ -401,8 +396,7 @@ namespace Etc
             {
                 // Opaque
                 DecodeEtc2Block(data, offset);
-            }
-            else
+            } else
             {
                 DecodeEtc2PunchThrowBlock(data, offset);
             }
@@ -445,8 +439,7 @@ namespace Etc
                     uint mask = PunchthroughMaskTable[index];
                     m_buf[WriteOrderTable[i]] = color_set[index] & mask;
                 }
-            }
-            else if (g + dg < 0 || g + dg > 255)
+            } else if (g + dg < 0 || g + dg > 255)
             {
                 // H (Etc2Block + mask for color)
                 unchecked
@@ -480,8 +473,7 @@ namespace Etc
                     uint mask = PunchthroughMaskTable[index];
                     m_buf[WriteOrderTable[i]] = color_set[index] & mask;
                 }
-            }
-            else if (b + db < 0 || b + db > 255)
+            } else if (b + db < 0 || b + db > 255)
             {
                 // planar (same as Etc2Block)
                 unchecked
@@ -508,8 +500,7 @@ namespace Etc
                         m_buf[i] = Color(ri, gi, bi, 255);
                     }
                 }
-            }
-            else
+            } else
             {
                 // differential (Etc1Block + mask + specific mod table)
 
@@ -557,8 +548,7 @@ namespace Etc
                     c |= unchecked((uint)(@base << 24));
                     m_buf[WriteOrderTableRev[i]] = c;
                 }
-            }
-            else
+            } else
             {
                 int table = data1 & 0xF;
                 ulong l = Get6SwapedBytes(data, offset);

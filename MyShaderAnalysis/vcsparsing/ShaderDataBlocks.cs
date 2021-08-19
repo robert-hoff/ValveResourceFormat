@@ -4,10 +4,12 @@ using System.Diagnostics;
 using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
 
 
-namespace MyShaderAnalysis.vcsparsing {
+namespace MyShaderAnalysis.vcsparsing
+{
 
 
-    public class FeaturesHeaderBlock  : ShaderDataBlock {
+    public class FeaturesHeaderBlock : ShaderDataBlock
+    {
 
         public bool has_psrs_file { get; }
         public int unknown_val { get; }
@@ -24,9 +26,11 @@ namespace MyShaderAnalysis.vcsparsing {
         public List<string> fileIDs { get; } = new();
 
 
-        public FeaturesHeaderBlock (ShaderDataReader datareader, int start) : base(datareader, start) {
+        public FeaturesHeaderBlock(ShaderDataReader datareader, int start) : base(datareader, start)
+        {
             int psrs_arg = datareader.ReadInt();
-            if (psrs_arg != 0 && psrs_arg != 1) {
+            if (psrs_arg != 0 && psrs_arg != 1)
+            {
                 throw new ShaderParserException($"unexpected value psrs_arg = {psrs_arg}");
             }
             has_psrs_file = psrs_arg > 0;
@@ -44,31 +48,37 @@ namespace MyShaderAnalysis.vcsparsing {
 
             int nr_of_arguments = datareader.ReadInt();
             // NOTE nr_of_arguments is overwritten
-            if (has_psrs_file) {
+            if (has_psrs_file)
+            {
                 nr_of_arguments = datareader.ReadInt();
             }
 
-            for (int i = 0; i < nr_of_arguments; i++) {
+            for (int i = 0; i < nr_of_arguments; i++)
+            {
                 string string_arg0 = datareader.ReadNullTermStringAtPosition();
                 string string_arg1 = "";
                 datareader.MoveOffset(128);
-                if (datareader.ReadInt() > 0) {
+                if (datareader.ReadInt() > 0)
+                {
                     string_arg1 = datareader.ReadNullTermStringAtPosition();
                     datareader.MoveOffset(68);
                 }
                 mainParams.Add((string_arg0, string_arg1));
             }
 
-            for (int i = 0; i < 8; i++) {
+            for (int i = 0; i < 8; i++)
+            {
                 fileIDs.Add(datareader.ReadBytesAsString(16).Replace(" ", "").ToLower());
             }
-            if (has_psrs_file) {
+            if (has_psrs_file)
+            {
                 fileIDs.Add(datareader.ReadBytesAsString(16).Replace(" ", "").ToLower());
             }
         }
 
 
-        public void PrintByteSummary() {
+        public void PrintByteSummary()
+        {
             datareader.SetOffset(start);
             datareader.ShowByteCount("features header");
             int has_psrs_file = datareader.ReadIntAtPosition();
@@ -99,20 +109,23 @@ namespace MyShaderAnalysis.vcsparsing {
             datareader.ShowByteCount();
             int nr_of_arguments = datareader.ReadIntAtPosition();
             datareader.ShowBytes(4, $"nr of arguments {nr_of_arguments}");
-            if (has_psrs_file == 1) {
+            if (has_psrs_file == 1)
+            {
                 // NOTE nr_of_arguments is overwritten
                 nr_of_arguments = datareader.ReadIntAtPosition();
                 datareader.ShowBytes(4, $"nr of arguments overriden ({nr_of_arguments})");
             }
             datareader.BreakLine();
             datareader.ShowByteCount();
-            for (int i = 0; i < nr_of_arguments; i++) {
+            for (int i = 0; i < nr_of_arguments; i++)
+            {
                 string default_name = datareader.ReadNullTermStringAtPosition();
                 datareader.Comment($"{default_name}");
                 datareader.ShowBytes(128);
                 uint has_s_argument = datareader.ReadUIntAtPosition();
                 datareader.ShowBytes(4);
-                if (has_s_argument > 0) {
+                if (has_s_argument > 0)
+                {
                     uint sSymbolArgValue = datareader.ReadUIntAtPosition(64);
                     string sSymbolName = datareader.ReadNullTermStringAtPosition();
                     datareader.Comment($"{sSymbolName}");
@@ -130,10 +143,12 @@ namespace MyShaderAnalysis.vcsparsing {
             datareader.ShowBytes(16, "file ID4");
             datareader.ShowBytes(16, "file ID5");
             datareader.ShowBytes(16, "file ID6");
-            if (has_psrs_file == 0) {
+            if (has_psrs_file == 0)
+            {
                 datareader.ShowBytes(16, "file ID7 - shared by all Dota2 vcs files");
             }
-            if (has_psrs_file == 1) {
+            if (has_psrs_file == 1)
+            {
                 datareader.ShowBytes(16, "file ID7 - reference to psrs file");
                 datareader.ShowBytes(16, "file ID8 - shared by all Dota2 vcs files");
             }
@@ -141,9 +156,11 @@ namespace MyShaderAnalysis.vcsparsing {
         }
 
 
-        public void ShowMainParams() {
+        public void ShowMainParams()
+        {
 
-            foreach (var parampair in mainParams) {
+            foreach (var parampair in mainParams)
+            {
                 Debug.WriteLine($"       {parampair.Item1.PadRight(50)} {parampair.Item2}");
             }
 
@@ -154,14 +171,17 @@ namespace MyShaderAnalysis.vcsparsing {
 
 
     // needs implemenation
-    public class VsPsHeaderBlock  : ShaderDataBlock {
-        public VsPsHeaderBlock (ShaderDataReader datareader, int start) : base(datareader, start) {
+    public class VsPsHeaderBlock : ShaderDataBlock
+    {
+        public VsPsHeaderBlock(ShaderDataReader datareader, int start) : base(datareader, start)
+        {
             datareader.MoveOffset(36);
         }
     }
 
 
-    public class SfBlock : ShaderDataBlock {
+    public class SfBlock : ShaderDataBlock
+    {
         public int blockId { get; }
         public string name0 { get; }
         public string name1 { get; }
@@ -173,7 +193,8 @@ namespace MyShaderAnalysis.vcsparsing {
         public int arg5 { get; }
         public List<string> additionalParams { get; } = new();
 
-        public SfBlock(ShaderDataReader datareader, int start, int blockId) : base(datareader, start) {
+        public SfBlock(ShaderDataReader datareader, int start, int blockId) : base(datareader, start)
+        {
             this.blockId = blockId;
             name0 = datareader.ReadNullTermStringAtPosition();
             datareader.MoveOffset(64);
@@ -186,7 +207,8 @@ namespace MyShaderAnalysis.vcsparsing {
             arg4 = datareader.ReadInt();
             arg5 = datareader.ReadIntAtPosition();
             int additionalStringsCount = datareader.ReadInt();
-            for (int i = 0; i < additionalStringsCount; i++) {
+            for (int i = 0; i < additionalStringsCount; i++)
+            {
                 additionalParams.Add(datareader.ReadNullTermString());
             }
         }
@@ -194,7 +216,8 @@ namespace MyShaderAnalysis.vcsparsing {
     }
 
 
-    public class SfConstraintsBlock  : ShaderDataBlock {
+    public class SfConstraintsBlock : ShaderDataBlock
+    {
 
         public int blockIndex { get; }
         public int relRule { get; }  // 1 = dependency-rule (feature file), 2 = dependency-rule (other files), 3 = exclusion
@@ -205,7 +228,8 @@ namespace MyShaderAnalysis.vcsparsing {
         public int[] range2 { get; }
         public string description { get; }
 
-        public SfConstraintsBlock (ShaderDataReader datareader, int start, int blockIndex) : base(datareader, start) {
+        public SfConstraintsBlock(ShaderDataReader datareader, int start, int blockIndex) : base(datareader, start)
+        {
             this.blockIndex = blockIndex;
             relRule = datareader.ReadInt();
             arg0 = datareader.ReadInt();
@@ -225,15 +249,18 @@ namespace MyShaderAnalysis.vcsparsing {
             datareader.MoveOffset(256);
         }
 
-        private int[] ReadIntRange() {
+        private int[] ReadIntRange()
+        {
             List<int> ints0 = new();
-            while (datareader.ReadIntAtPosition() >= 0) {
+            while (datareader.ReadIntAtPosition() >= 0)
+            {
                 ints0.Add(datareader.ReadInt());
             }
             return ints0.ToArray();
         }
 
-        private int[] ReadByteFlags() {
+        private int[] ReadByteFlags()
+        {
             int count = 0;
             datareader.SavePosition();
             while (datareader.ReadByte() > 0 && count < 16)
@@ -252,18 +279,21 @@ namespace MyShaderAnalysis.vcsparsing {
         }
 
 
-        public string RelRuleDescribe() {
+        public string RelRuleDescribe()
+        {
             return relRule == 3 ? "EXC(3)" : $"INC({relRule})";
         }
 
-        public string GetByteFlagsAsString() {
+        public string GetByteFlagsAsString()
+        {
             return CombineIntArray(flags);
         }
     }
 
 
 
-    public class DBlock : ShaderDataBlock {
+    public class DBlock : ShaderDataBlock
+    {
 
         public int blockIndex { get; }
         public string name0 { get; }
@@ -276,7 +306,8 @@ namespace MyShaderAnalysis.vcsparsing {
         public int arg5 { get; }
 
 
-        public DBlock(ShaderDataReader datareader, int start, int blockIndex) : base(datareader, start) {
+        public DBlock(ShaderDataReader datareader, int start, int blockIndex) : base(datareader, start)
+        {
             this.blockIndex = blockIndex;
             name0 = datareader.ReadNullTermStringAtPosition();
             datareader.MoveOffset(64);
@@ -294,7 +325,8 @@ namespace MyShaderAnalysis.vcsparsing {
 
 
 
-    public class DConstraintsBlock : ShaderDataBlock {
+    public class DConstraintsBlock : ShaderDataBlock
+    {
 
         public int blockIndex { get; }
         public int relRule { get; }  // 2 = dependency-rule (other files), 3 = exclusion (1 not present, as in the compat-blocks)
@@ -306,11 +338,13 @@ namespace MyShaderAnalysis.vcsparsing {
         public int[] range2 { get; }
         public string description { get; }
 
-        public DConstraintsBlock(ShaderDataReader datareader, int start, int blockIndex) : base(datareader, start) {
+        public DConstraintsBlock(ShaderDataReader datareader, int start, int blockIndex) : base(datareader, start)
+        {
             this.blockIndex = blockIndex;
             relRule = datareader.ReadInt();
             arg0 = datareader.ReadInt();
-            if (arg0 != 3) {
+            if (arg0 != 3)
+            {
                 throw new ShaderParserException("unexpected value!");
             }
             // flags at (8)
@@ -331,15 +365,18 @@ namespace MyShaderAnalysis.vcsparsing {
             datareader.MoveOffset(256);
         }
 
-        private int[] ReadIntRange() {
+        private int[] ReadIntRange()
+        {
             List<int> ints0 = new();
-            while (datareader.ReadIntAtPosition() >= 0) {
+            while (datareader.ReadIntAtPosition() >= 0)
+            {
                 ints0.Add(datareader.ReadInt());
             }
             return ints0.ToArray();
         }
 
-        private int[] ReadByteFlagsUpdated() {
+        private int[] ReadByteFlagsUpdated()
+        {
             int count = 0;
             datareader.SavePosition();
             while (datareader.ReadByte() > 0 && count < 16)
@@ -358,23 +395,29 @@ namespace MyShaderAnalysis.vcsparsing {
         }
 
         // todo - check formatting
-        public string ReadByteFlagsAsString() {
+        public string ReadByteFlagsAsString()
+        {
             return CombineIntArray(flags);
         }
 
-        public bool AllFlagsAre3() {
+        public bool AllFlagsAre3()
+        {
             bool flagsAre3 = true;
-            foreach (int flag in flags) {
-                if (flag != 3) {
+            foreach (int flag in flags)
+            {
+                if (flag != 3)
+                {
                     flagsAre3 = false;
                 }
             }
             return flagsAre3;
         }
 
-        public string GetConciseDescription(int[] usePadding = null) {
+        public string GetConciseDescription(int[] usePadding = null)
+        {
             int[] p = { 10, 8, 15, 5 };
-            if (usePadding != null) {
+            if (usePadding != null)
+            {
                 p = usePadding;
             }
             string relRuleKeyDesciption = $"{RelRuleDescribe().PadRight(p[0])}{CombineIntArray(range1).PadRight(p[1])}" +
@@ -382,14 +425,18 @@ namespace MyShaderAnalysis.vcsparsing {
             return relRuleKeyDesciption;
         }
 
-        public string GetResolvedNames(List<SfBlock> sfBlocks, List<DBlock> dBlocks) {
+        public string GetResolvedNames(List<SfBlock> sfBlocks, List<DBlock> dBlocks)
+        {
             List<string> names = new();
-            for (int i = 0; i < flags.Length; i++) {
-                if (flags[i] == 2) {
+            for (int i = 0; i < flags.Length; i++)
+            {
+                if (flags[i] == 2)
+                {
                     names.Add(sfBlocks[range0[i]].name0);
                     continue;
                 }
-                if (flags[i] == 3) {
+                if (flags[i] == 3)
+                {
                     names.Add(dBlocks[range0[i]].name0);
                     continue;
                 }
@@ -397,14 +444,16 @@ namespace MyShaderAnalysis.vcsparsing {
             }
             return CombineStringArray(names.ToArray());
         }
-        public string RelRuleDescribe() {
+        public string RelRuleDescribe()
+        {
             return relRule == 3 ? "EXC(3)" : $"INC({relRule})";
         }
 
     }
 
 
-    public class ParamBlock : ShaderDataBlock {
+    public class ParamBlock : ShaderDataBlock
+    {
         public string name0 { get; }
         public string name1 { get; }
         public string name2 { get; }
@@ -430,7 +479,8 @@ namespace MyShaderAnalysis.vcsparsing {
         public string command0 { get; }
         public string command1 { get; }
 
-        public ParamBlock(ShaderDataReader datareader, int start) : base(datareader, start) {
+        public ParamBlock(ShaderDataReader datareader, int start) : base(datareader, start)
+        {
             name0 = datareader.ReadNullTermStringAtPosition();
             datareader.MoveOffset(64);
             name1 = datareader.ReadNullTermStringAtPosition();
@@ -440,7 +490,8 @@ namespace MyShaderAnalysis.vcsparsing {
             name2 = datareader.ReadNullTermStringAtPosition();
             datareader.MoveOffset(64);
             lead0 = datareader.ReadInt();
-            if (lead0 == 6 || lead0 == 7) {
+            if (lead0 == 6 || lead0 == 7)
+            {
                 int dynExpLen = datareader.ReadInt();
                 dynExp = datareader.ReadBytes(dynExpLen);
             }
@@ -452,28 +503,36 @@ namespace MyShaderAnalysis.vcsparsing {
             arg5 = datareader.ReadInt();
             fileref = datareader.ReadNullTermStringAtPosition();
             datareader.MoveOffset(64);
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < 4; i++)
+            {
                 ranges0[i] = datareader.ReadInt();
             }
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < 4; i++)
+            {
                 ranges1[i] = datareader.ReadInt();
             }
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < 4; i++)
+            {
                 ranges2[i] = datareader.ReadInt();
             }
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < 4; i++)
+            {
                 ranges3[i] = datareader.ReadFloat();
             }
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < 4; i++)
+            {
                 ranges4[i] = datareader.ReadFloat();
             }
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < 4; i++)
+            {
                 ranges5[i] = datareader.ReadFloat();
             }
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < 4; i++)
+            {
                 ranges6[i] = datareader.ReadInt();
             }
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < 4; i++)
+            {
                 ranges7[i] = datareader.ReadInt();
             }
             command0 = datareader.ReadNullTermStringAtPosition();
@@ -484,7 +543,8 @@ namespace MyShaderAnalysis.vcsparsing {
         }
 
 
-        public void ShowBlock() {
+        public void ShowBlock()
+        {
 
             Debug.WriteLine($"name0 {s(20)} {name0}");
             Debug.WriteLine($"name1 {s(20)} {name1}");
@@ -515,27 +575,32 @@ namespace MyShaderAnalysis.vcsparsing {
     }
 
 
-    public class MipmapBlock : ShaderDataBlock {
-        public MipmapBlock(ShaderDataReader datareader, int start) : base(datareader, start) {
+    public class MipmapBlock : ShaderDataBlock
+    {
+        public MipmapBlock(ShaderDataReader datareader, int start) : base(datareader, start)
+        {
             // TODO - needs implementation
             datareader.MoveOffset(280);
         }
     }
 
 
-    public class BufferBlock : ShaderDataBlock {
+    public class BufferBlock : ShaderDataBlock
+    {
         public string name { get; }
         public int bufferSize { get; }
         public List<(string, int, int, int, int)> bufferParams { get; } = new();
         public uint blockId { get; }
 
-        public BufferBlock(ShaderDataReader datareader, int start) : base(datareader, start) {
+        public BufferBlock(ShaderDataReader datareader, int start) : base(datareader, start)
+        {
             name = datareader.ReadNullTermStringAtPosition();
             datareader.MoveOffset(64);
             bufferSize = datareader.ReadInt();
             datareader.MoveOffset(4); // next 4 bytes are always 0
             int paramCount = datareader.ReadInt();
-            for (int i = 0; i < paramCount; i++) {
+            for (int i = 0; i < paramCount; i++)
+            {
                 string paramName = datareader.ReadNullTermStringAtPosition();
                 datareader.MoveOffset(64);
                 int bufferIndex = datareader.ReadInt();
@@ -549,15 +614,18 @@ namespace MyShaderAnalysis.vcsparsing {
     }
 
 
-    public class SymbolsBlock : ShaderDataBlock {
+    public class SymbolsBlock : ShaderDataBlock
+    {
         public string name { get; }
         public string type { get; }
         public string option { get; }
         public int semanticIndex { get; }
 
-        public SymbolsBlock(ShaderDataReader datareader, int start) : base(datareader, start) {
+        public SymbolsBlock(ShaderDataReader datareader, int start, int blockIndex) : base(datareader, start)
+        {
             int namesCount = datareader.ReadInt();
-            for (int i = 0; i < namesCount; i++) {
+            for (int i = 0; i < namesCount; i++)
+            {
                 name = datareader.ReadNullTermString();
                 type = datareader.ReadNullTermString();
                 option = datareader.ReadNullTermString();

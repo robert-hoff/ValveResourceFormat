@@ -10,19 +10,23 @@ using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
 using static MyShaderAnalysis.utilhelpers.FileSystem;
 
 
-namespace MyShaderAnalysis.utilhelpers {
-    public class TestFileSystem {
+namespace MyShaderAnalysis.utilhelpers
+{
+    public class TestFileSystem
+    {
 
 
 
-        public static void RunTrials() {
+        public static void RunTrials()
+        {
             Trial1();
 
 
         }
 
 
-        static void Trial1() {
+        static void Trial1()
+        {
             FileTokens spritecard = new(ARCHIVE.dotacore_pcgl, "spritecard_pcgl_30_ps.vcs");
 
 

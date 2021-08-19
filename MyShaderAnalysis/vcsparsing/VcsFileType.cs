@@ -1,5 +1,7 @@
-namespace MyShaderAnalysis.vcsparsing {
-    public enum VcsFileType {
+namespace MyShaderAnalysis.vcsparsing
+{
+    public enum VcsFileType
+    {
         Undetermined,
         Any,
         Features,

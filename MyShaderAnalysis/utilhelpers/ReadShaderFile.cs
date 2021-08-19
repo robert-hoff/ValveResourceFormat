@@ -2,7 +2,8 @@ using System;
 using System.IO;
 using MyShaderAnalysis.vcsparsing;
 
-namespace MyShaderAnalysis.utilhelpers {
+namespace MyShaderAnalysis.utilhelpers
+{
     public class ReadShaderFile : IDisposable
     {
         private string filenamepath;

@@ -7,13 +7,16 @@ using System.Threading.Tasks;
 
 
 
-namespace MyShaderAnalysis {
-    public class CompatRulesWater {
+namespace MyShaderAnalysis
+{
+    public class CompatRulesWater
+    {
 
 
 
 
-        public static void RunTrials() {
+        public static void RunTrials()
+        {
             Trial1Water_30_Ps();
         }
 
@@ -42,7 +45,8 @@ namespace MyShaderAnalysis {
          *
          *
          */
-        static void Trial1Water_30_Ps() {
+        static void Trial1Water_30_Ps()
+        {
 
 
 
@@ -72,7 +76,7 @@ namespace MyShaderAnalysis {
             AddExlusion(3, 8);             // compat[]
             AddExlusion(2, 9);             // compat[]
             AddExlusion(3, 9);             // compat[]
-            AddExlusion(10,11);            // compat[]
+            AddExlusion(10, 11);            // compat[]
 
 
             //AddInclusionNoRemap(8, 5);
@@ -86,34 +90,42 @@ namespace MyShaderAnalysis {
 
 
 
-            for (int i = 0; i < 4096; i++) {
-            // for (int i = 0; i < 20; i++) {
+            for (int i = 0; i < 4096; i++)
+            {
+                // for (int i = 0; i < 20; i++) {
                 bool exclude = false;
-                foreach (var exclRule in exclusions) {
+                foreach (var exclRule in exclusions)
+                {
                     int b0 = exclRule.Item1;
                     int b1 = exclRule.Item2;
-                    if ((i & b0) > 0 && (i & b1) > 0) {
+                    if ((i & b0) > 0 && (i & b1) > 0)
+                    {
                         exclude = true;
                     }
                 }
-                foreach (var incRule in inclusions) {
+                foreach (var incRule in inclusions)
+                {
                     int b0 = incRule.Item1;
                     int b1 = incRule.Item2;
-                    if ((i & b0) > 0 && (i & b1) == 0) {
+                    if ((i & b0) > 0 && (i & b1) == 0)
+                    {
                         exclude = true;
                     }
                 }
 
-                foreach (var incRule in inclusionsTriple) {
+                foreach (var incRule in inclusionsTriple)
+                {
                     int b0 = incRule.Item1;
                     int b1 = incRule.Item2;
                     int b2 = incRule.Item3;
-                    if ((i & b0) > 0 && (i & b1) == 0 && (i & b2) == 0) {
+                    if ((i & b0) > 0 && (i & b1) == 0 && (i & b2) == 0)
+                    {
                         exclude = true;
                     }
                 }
 
-                if (!exclude) {
+                if (!exclude)
+                {
                     Debug.WriteLine($"{i,3}    {i:x04}           {Convert.ToString(i, 2).PadLeft(20, '0')}");
                 }
             }
@@ -130,41 +142,49 @@ namespace MyShaderAnalysis {
         static Dictionary<int, int> remappingTable = new();
 
 
-        static void AddExlusionNoRemap(int b0, int b1) {
+        static void AddExlusionNoRemap(int b0, int b1)
+        {
             int num0 = 1 << (b0);
             int num1 = 1 << (b1);
             exclusions.Add((num0, num1));
         }
-        static void AddExlusion(int b0, int b1) {
+        static void AddExlusion(int b0, int b1)
+        {
             b0 = remappingTable[b0];
             b1 = remappingTable[b1];
-            if (b0 == -1 || b1 == -1) {
+            if (b0 == -1 || b1 == -1)
+            {
                 return;
             }
             int num0 = 1 << (b0);
             int num1 = 1 << (b1);
             exclusions.Add((num0, num1));
         }
-        static void AddInclusion(int b0, int b1) {
+        static void AddInclusion(int b0, int b1)
+        {
             b0 = remappingTable[b0];
             b1 = remappingTable[b1];
-            if (b0 == -1 || b1 == -1) {
+            if (b0 == -1 || b1 == -1)
+            {
                 return;
             }
             int num0 = 1 << (b0);
             int num1 = 1 << (b1);
             inclusions.Add((num0, num1));
         }
-        static void AddInclusionNoRemap(int b0, int b1) {
+        static void AddInclusionNoRemap(int b0, int b1)
+        {
             int num0 = 1 << (b0);
             int num1 = 1 << (b1);
             inclusions.Add((num0, num1));
         }
-        static void AddInclusionTriple(int b0, int b1, int b2) {
+        static void AddInclusionTriple(int b0, int b1, int b2)
+        {
             b0 = remappingTable[b0];
             b1 = remappingTable[b1];
             b2 = remappingTable[b2];
-            if (b0 == -1 || b1 == -1 || b2 == -1) {
+            if (b0 == -1 || b1 == -1 || b2 == -1)
+            {
                 return;
             }
             int num0 = 1 << (b0);

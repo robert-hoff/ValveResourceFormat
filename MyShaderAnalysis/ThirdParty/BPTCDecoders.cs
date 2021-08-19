@@ -152,8 +152,7 @@ namespace BPTC
                         deltas[2, 0] = SignExtend(block64 >> 7 & 0x1F, 5);
                         deltas[2, 1] = SignExtend((block0 >> 51 & 0xF) | (Bit(40) << 4), 5);
                         deltas[2, 2] = SignExtend(Bit(50) | (Bit(60) << 1) | (Bit(70) << 2) | (Bit(76) << 3) | (Bit(4) << 4), 5);
-                    }
-                    else if (m == 1)
+                    } else if (m == 1)
                     {
                         epb = 7;
                         endpoints[0, 0] = (ushort)(block0 >> 5 & 0x7F);
@@ -168,8 +167,7 @@ namespace BPTC
                         deltas[2, 0] = SignExtend(block64 >> 7 & 0x3F, 6);
                         deltas[2, 1] = SignExtend((block0 >> 51 & 0xF) | ((block0 >> 3 & 0x3) << 4), 6);
                         deltas[2, 2] = SignExtend((block0 >> 12 & 0x3) | (Bit(23) << 2) | (Bit(32) << 3) | (Bit(34) << 4) | (Bit(33) << 5), 6);
-                    }
-                    else if (m == 2)
+                    } else if (m == 2)
                     {
                         epb = 11;
                         endpoints[0, 0] = (ushort)((block0 >> 5 & 0x3FF) | (Bit(40) << 10));
@@ -184,8 +182,7 @@ namespace BPTC
                         deltas[2, 0] = SignExtend(block64 >> 7 & 0x1F, 5);
                         deltas[2, 1] = SignExtend(block0 >> 51 & 0xF, 4);
                         deltas[2, 2] = SignExtend(Bit(50) | (Bit(60) << 1) | (Bit(70) << 2) | (Bit(76) << 3), 4);
-                    }
-                    else if (m == 6)
+                    } else if (m == 6)
                     {
                         epb = 11;
                         endpoints[0, 0] = (ushort)((block0 >> 5 & 0x3FF) | (Bit(39) << 10));
@@ -200,8 +197,7 @@ namespace BPTC
                         deltas[2, 0] = SignExtend(block64 >> 7 & 0xF, 4);
                         deltas[2, 1] = SignExtend((block0 >> 51 & 0xF) | (Bit(40) << 4), 5);
                         deltas[2, 2] = SignExtend(Bit(69) | (Bit(60) << 1) | (Bit(70) << 2) | (Bit(76) << 3), 4);
-                    }
-                    else if (m == 10)
+                    } else if (m == 10)
                     {
                         epb = 11;
                         endpoints[0, 0] = (ushort)((block0 >> 5 & 0x3FF) | (Bit(39) << 10));
@@ -216,8 +212,7 @@ namespace BPTC
                         deltas[2, 0] = SignExtend(block64 >> 7 & 0xF, 4);
                         deltas[2, 1] = SignExtend(block0 >> 51 & 0xF, 4);
                         deltas[2, 2] = SignExtend(Bit(50) | (Bit(69) << 1) | (Bit(70) << 2) | (Bit(76) << 3) | (Bit(75) << 3), 5);
-                    }
-                    else if (m == 14)
+                    } else if (m == 14)
                     {
                         epb = 9;
                         endpoints[0, 0] = (ushort)(block0 >> 5 & 0x1FF);
@@ -232,8 +227,7 @@ namespace BPTC
                         deltas[2, 0] = SignExtend(block64 >> 7 & 0x1F, 5);
                         deltas[2, 1] = SignExtend((block0 >> 51 & 0xF) | (Bit(40) << 4), 5);
                         deltas[2, 2] = SignExtend(Bit(50) | (Bit(60) << 1) | (Bit(70) << 2) | (Bit(76) << 3) | (Bit(34) << 4), 5);
-                    }
-                    else if (m == 18)
+                    } else if (m == 18)
                     {
                         epb = 8;
                         endpoints[0, 0] = (ushort)(block0 >> 5 & 0xFF);
@@ -248,8 +242,7 @@ namespace BPTC
                         deltas[2, 0] = SignExtend(block64 >> 7 & 0x3F, 6);
                         deltas[2, 1] = SignExtend((block0 >> 51 & 0xF) | (Bit(13) << 4), 5);
                         deltas[2, 2] = SignExtend(Bit(50) | (Bit(60) << 1) | (Bit(23) << 2) | (Bit(33) << 3) | (Bit(34) << 4), 5);
-                    }
-                    else if (m == 22)
+                    } else if (m == 22)
                     {
                         epb = 8;
                         endpoints[0, 0] = (ushort)(block0 >> 5 & 0xFF);
@@ -264,8 +257,7 @@ namespace BPTC
                         deltas[2, 0] = SignExtend(block64 >> 7 & 0x1F, 5);
                         deltas[2, 1] = SignExtend((block0 >> 51 & 0xF) | (Bit(40) << 4) | (Bit(33) << 5), 6);
                         deltas[2, 2] = SignExtend(Bit(13) | (Bit(60) << 1) | (Bit(70) << 2) | (Bit(76) << 3) | (Bit(34) << 4), 5);
-                    }
-                    else if (m == 26)
+                    } else if (m == 26)
                     {
                         epb = 8;
                         endpoints[0, 0] = (ushort)(block0 >> 5 & 0xFF);
@@ -280,8 +272,7 @@ namespace BPTC
                         deltas[2, 0] = SignExtend(block64 >> 7 & 0x1F, 5);
                         deltas[2, 1] = SignExtend((block0 >> 51 & 0xF) | (Bit(40) << 4), 5);
                         deltas[2, 2] = SignExtend(Bit(50) | (Bit(13) << 1) | (Bit(70) << 2) | (Bit(76) << 3) | (Bit(34) << 4) | (Bit(33) << 5), 6);
-                    }
-                    else if (m == 30)
+                    } else if (m == 30)
                     {
                         epb = 6;
                         endpoints[0, 0] = (ushort)(block0 >> 5 & 0x3F);
@@ -296,8 +287,7 @@ namespace BPTC
                         endpoints[3, 0] = (ushort)(block64 >> 7 & 0x3F);
                         endpoints[3, 1] = (ushort)((block0 >> 51 & 0xF) | (Bit(11) << 4) | (Bit(31) << 5));
                         endpoints[3, 2] = (ushort)((block0 >> 12 & 0x3) | (Bit(23) << 2) | (Bit(32) << 3) | (Bit(34) << 4) | (Bit(33) << 5));
-                    }
-                    else if (m == 3)
+                    } else if (m == 3)
                     {
                         epb = 10;
                         endpoints[0, 0] = (ushort)(block0 >> 5 & 0x3FF);
@@ -306,8 +296,7 @@ namespace BPTC
                         endpoints[1, 0] = (ushort)(block0 >> 35 & 0x3FF);
                         endpoints[1, 1] = (ushort)(block0 >> 45 & 0x3FF);
                         endpoints[1, 2] = (ushort)((block0 >> 55 & 0x1FF) | ((block64 & 0x1) << 9));
-                    }
-                    else if (m == 7)
+                    } else if (m == 7)
                     {
                         epb = 11;
                         endpoints[0, 0] = (ushort)((block0 >> 5 & 0x3FF) | (Bit(44) << 10));
@@ -316,8 +305,7 @@ namespace BPTC
                         deltas[0, 0] = SignExtend(block0 >> 35 & 0x1FF, 9);
                         deltas[0, 1] = SignExtend(block0 >> 45 & 0x1FF, 9);
                         deltas[0, 2] = SignExtend(block0 >> 55 & 0x1FF, 9);
-                    }
-                    else if (m == 11)
+                    } else if (m == 11)
                     {
                         epb = 12;
                         endpoints[0, 0] = (ushort)((block0 >> 5 & 0x3FF) | (Bit(44) << 10) | (Bit(43) << 11));
@@ -326,8 +314,7 @@ namespace BPTC
                         deltas[0, 0] = SignExtend((block0 >> 35) & 0xFF, 8);
                         deltas[0, 1] = SignExtend((block0 >> 45) & 0xFF, 8);
                         deltas[0, 2] = SignExtend((block0 >> 55) & 0xFF, 8);
-                    }
-                    else if (m == 15)
+                    } else if (m == 15)
                     {
                         epb = 16;
                         endpoints[0, 0] = (ushort)((block0 >> 5 & 0x3FF) | (Bit(44) << 10) | (Bit(43) << 11) | (Bit(42) << 12) | (Bit(41) << 13) | (Bit(40) << 14) | (Bit(39) << 15));
@@ -344,8 +331,7 @@ namespace BPTC
                     {
                         pb = (byte)(block64 >> 13 & 0x1F);
                         ib = block64 >> 18;
-                    }
-                    else
+                    } else
                     {
                         ib = block64 >> 1;
                     }
@@ -355,12 +341,10 @@ namespace BPTC
                         if (epb >= 15)
                         {
                             return e;
-                        }
-                        else if (e == 0)
+                        } else if (e == 0)
                         {
                             return 0;
-                        }
-                        else if (e == epm)
+                        } else if (e == epm)
                         {
                             return 0xFFFF;
                         }
@@ -402,8 +386,7 @@ namespace BPTC
                                 isAnchor = (io == 0) ? 1 : 0;
                                 cweight = BPTCWeights4[ib & 0xFu >> isAnchor];
                                 ib >>= 4 - isAnchor;
-                            }
-                            else
+                            } else
                             {
                                 subset = (byte)(BPTCPartitionTable2[pb, io] * 2);
                                 isAnchor = (io == 0 || io == BPTCAnchorIndices2[pb]) ? 1 : 0;
@@ -553,8 +536,7 @@ namespace BPTC
                     if (m == 0)
                     {
                         pb = (byte)(block0 >> 1 & 0xF); //4bit
-                    }
-                    else if (m == 1 || m == 2 || m == 3 || m == 7)
+                    } else if (m == 1 || m == 2 || m == 3 || m == 7)
                     {
                         pb = (byte)((block0 >> (m + 1)) & 0x3F); //6bit
                     }
@@ -571,8 +553,7 @@ namespace BPTC
                                 {
                                     res |= (byte)(block64 << (64 - p) & vm);
                                 }
-                            }
-                            else
+                            } else
                             {
                                 res = (byte)(block64 >> (p - 64) & vm);
                             }
@@ -590,12 +571,10 @@ namespace BPTC
                                 if (m == 1)
                                 {
                                     endpoints[s, c] = (byte)(endpoints[s, c] << 2 | ((spbits >> (s >> 1) & 1) << 1) | (endpoints[s, c] >> 5));
-                                }
-                                else if (m == 0 || m == 3 || m == 6 || m == 7)
+                                } else if (m == 0 || m == 3 || m == 6 || m == 7)
                                 {
                                     endpoints[s, c] = (byte)(endpoints[s, c] << (8 - cb) | ((epbits >> s & 1) << (7 - cb)) | (endpoints[s, c] >> ((cb * 2) - 7)));
-                                }
-                                else
+                                } else
                                 {
                                     endpoints[s, c] = (byte)(endpoints[s, c] << (8 - cb) | (endpoints[s, c] >> ((cb * 2) - 8)));
                                 }
@@ -612,8 +591,7 @@ namespace BPTC
                                 if (m == 6 || m == 7)
                                 {
                                     endpoints[s, 3] = (byte)((endpoints[s, 3] << (8 - ab)) | ((epbits >> s & 1) << (7 - ab)) | (endpoints[s, 3] >> ((ab * 2) - 7)));
-                                }
-                                else
+                                } else
                                 {
                                     endpoints[s, 3] = (byte)((endpoints[s, 3] << (8 - ab)) | (endpoints[s, 3] >> ((ab * 2) - 8)));
                                 }
@@ -626,46 +604,39 @@ namespace BPTC
                         epbits = (byte)(block64 >> 13 & 0x3F);
                         ReadEndpoints(5, 6, 4, 0, 0);
                         ib = block64 >> 19;
-                    }
-                    else if (m == 1)
+                    } else if (m == 1)
                     {
                         spbits = (byte)((block64 >> 16 & 1) | ((block64 >> 17 & 1) << 1));
                         ReadEndpoints(8, 4, 6, 0, 0);
                         ib = block64 >> 18;
-                    }
-                    else if (m == 2)
+                    } else if (m == 2)
                     {
                         ReadEndpoints(9, 6, 5, 0, 0);
                         ib = block64 >> 35;
-                    }
-                    else if (m == 3)
+                    } else if (m == 3)
                     {
                         epbits = (byte)(block64 >> 30 & 0xF);
                         ReadEndpoints(10, 4, 7, 0, 0);
                         ib = block64 >> 34;
-                    }
-                    else if (m == 4)
+                    } else if (m == 4)
                     {
                         rb = (byte)(block0 >> 5 & 0x3);
                         isb = (byte)(block0 >> 7 & 0x1);
                         ReadEndpoints(8, 2, 5, 38, 6);
                         ib = (block0 >> 50) | (block64 << 14);
                         ib2 = block64 >> 17;
-                    }
-                    else if (m == 5)
+                    } else if (m == 5)
                     {
                         rb = (byte)((block0 >> 6) & 0x3);
                         ReadEndpoints(8, 2, 7, 50, 8);
                         ib = block64 >> 2;
                         ib2 = block64 >> 33;
-                    }
-                    else if (m == 6)
+                    } else if (m == 6)
                     {
                         epbits = (byte)((block0 >> 63) | ((block64 & 1) << 1));
                         ReadEndpoints(7, 2, 7, 49, 7);
                         ib = block64 >> 1;
-                    }
-                    else if (m == 7)
+                    } else if (m == 7)
                     {
                         epbits = (byte)(block64 >> 30 & 0xF);
                         ReadEndpoints(14, 4, 5, 74, 5);
@@ -689,13 +660,11 @@ namespace BPTC
                             {//3 subsets
                                 isAnchor = (io == 0 || io == BC7AnchorIndices32[pb] || io == BC7AnchorIndices33[pb]) ? 1 : 0;
                                 subset = (byte)(BC7PartitionTable3[pb, io] * 2);
-                            }
-                            else if (m == 1 || m == 3 || m == 7)
+                            } else if (m == 1 || m == 3 || m == 7)
                             {//2 subsets
                                 subset = (byte)(BPTCPartitionTable2[pb, io] * 2);
                                 isAnchor = (io == 0 || io == BPTCAnchorIndices2[pb]) ? 1 : 0;
-                            }
-                            else if (m == 4 || m == 5 || m == 6)
+                            } else if (m == 4 || m == 5 || m == 6)
                             {//1 subset
                                 isAnchor = (io == 0) ? 1 : 0;
                             }
@@ -703,12 +672,10 @@ namespace BPTC
                             if (m == 0 || m == 1)
                             {//3 bit
                                 cweight = BPTCWeights3[ib & (0x7u >> isAnchor)];
-                            }
-                            else if (m == 6)
+                            } else if (m == 6)
                             {//4 bit
                                 cweight = BPTCWeights4[ib & (0xFu >> isAnchor)];
-                            }
-                            else
+                            } else
                             {//2 bit
                                 cweight = BPTCWeights2[ib & (0x3u >> isAnchor)];
                             }
@@ -726,13 +693,11 @@ namespace BPTC
                                     cweight = aweight;
                                     aweight = t;
                                 }
-                            }
-                            else if (m == 5)
+                            } else if (m == 5)
                             {
                                 aweight = BPTCWeights2[ib2 & (0x3u >> isAnchor)];
                                 ib2 >>= ib2l - isAnchor;
-                            }
-                            else if (m > 5)
+                            } else if (m > 5)
                             {
                                 aweight = cweight;
                             }
@@ -744,8 +709,7 @@ namespace BPTC
                             if (m < 4)
                             {
                                 data[pixelIndex + 3] = byte.MaxValue;
-                            }
-                            else
+                            } else
                             {
                                 data[pixelIndex + 3] = (byte)BPTCInterpolateFactor(aweight, endpoints[subset, 3], endpoints[subset + 1, 3]);
 

@@ -42,6 +42,24 @@ namespace ValveResourceFormat.ShaderParser
             throw new ShaderParserException($"don't know what this file is {filenamepath}");
         }
 
+        public static VcsSourceType GetVcsSourceType(string filenamepath) {
+            string[] nameTokens = filenamepath.Split("_");
+
+            if (nameTokens.Length >= 3 && nameTokens[^3].ToLower().Equals("pcgl")) {
+                return VcsSourceType.Glsl;
+            }
+            if (nameTokens.Length >= 3 && nameTokens[^3].ToLower().Equals("pc")) {
+                if (nameTokens[^2].Equals("30")) {
+                    return VcsSourceType.DXIL;
+                } else {
+                    return VcsSourceType.DXBC;
+                }
+            }
+
+            // todo - needs implementation: Vulkan (+ any other known types?)
+            throw new ShaderParserException($"Source type unknown or not supported {filenamepath}");
+        }
+
         public static string ShortenShaderParam(string shaderParam)
         {
             if (shaderParam.Length <= 4)

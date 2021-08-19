@@ -1,8 +1,10 @@
 using System;
 
-namespace MyShaderAnalysis.vcsparsing {
+namespace MyShaderAnalysis.vcsparsing
+{
 
-    public class ZDataBlock : ShaderDataBlock {
+    public class ZDataBlock : ShaderDataBlock
+    {
 
         public int blockId { get; }
         public int h0 { get; }
@@ -10,27 +12,32 @@ namespace MyShaderAnalysis.vcsparsing {
         public int h2 { get; }
         public byte[] dataload { get; } = null;
 
-        public ZDataBlock(ShaderDataReader datareader, int start, int blockId) : base(datareader, start) {
+        public ZDataBlock(ShaderDataReader datareader, int start, int blockId) : base(datareader, start)
+        {
             this.blockId = blockId;
             h0 = datareader.ReadInt();
             h1 = datareader.ReadInt();
             h2 = datareader.ReadInt();
-            if (h0 > 0) {
+            if (h0 > 0)
+            {
                 dataload = datareader.ReadBytes(h0 * 4);
             }
         }
     }
 
 
-    public abstract class GpuSource : ShaderDataBlock {
+    public abstract class GpuSource : ShaderDataBlock
+    {
         public int sourceId { get; }
         public int offset { get; protected set; }
         public byte[] sourcebytes { get; protected set; } = Array.Empty<byte>();
         public byte[] editorRefId { get; protected set; }
-        protected GpuSource(ShaderDataReader datareader, int start, int sourceId) : base(datareader, start) {
+        protected GpuSource(ShaderDataReader datareader, int start, int sourceId) : base(datareader, start)
+        {
             this.sourceId = sourceId;
         }
-        public string GetEditorRefIdAsString() {
+        public string GetEditorRefIdAsString()
+        {
             string stringId = ShaderDataReader.BytesToString(editorRefId);
             stringId = stringId.Replace(" ", "").ToLower();
             return stringId;
@@ -40,14 +47,17 @@ namespace MyShaderAnalysis.vcsparsing {
     }
 
 
-    public class GlslSource : GpuSource {
+    public class GlslSource : GpuSource
+    {
         public int arg0 { get; } // always 3
         // offset2, if present, always observes offset2 == offset + 8
         // offset2 can also be interpreted as the source-size
         public int offset2 { get; } = -1;
-        public GlslSource(ShaderDataReader datareader, int start, int sourceId) : base(datareader, start, sourceId) {
+        public GlslSource(ShaderDataReader datareader, int start, int sourceId) : base(datareader, start, sourceId)
+        {
             offset = datareader.ReadInt();
-            if (offset > 0) {
+            if (offset > 0)
+            {
                 arg0 = datareader.ReadInt();
                 //uint glslDelim = datareader.ReadUInt();
                 //if (glslDelim != 0x00000003) {
@@ -58,32 +68,38 @@ namespace MyShaderAnalysis.vcsparsing {
             }
             editorRefId = datareader.ReadBytes(16);
         }
-        public override string GetBlockName() {
+        public override string GetBlockName()
+        {
             return $"GLSL-SOURCE[{sourceId}]";
         }
     }
 
-    public class DxilSource : GpuSource {
+    public class DxilSource : GpuSource
+    {
         public int arg0 { get; } // always 3
         public int arg1 { get; } // always 0xFFFF or 0xFFFE
         public int headerBytes { get; }
 
-        public DxilSource(ShaderDataReader datareader, int start, int sourceId) : base(datareader, start, sourceId) {
+        public DxilSource(ShaderDataReader datareader, int start, int sourceId) : base(datareader, start, sourceId)
+        {
             offset = datareader.ReadInt();
-            if (offset > 0) {
+            if (offset > 0)
+            {
                 arg0 = datareader.ReadInt16();
                 arg1 = (int)datareader.ReadUInt16();
                 uint dxilDelim = datareader.ReadUInt16();
-                if (dxilDelim != 0xFFFE) {
+                if (dxilDelim != 0xFFFE)
+                {
                     throw new ShaderParserException($"Unexpected DXIL source id {dxilDelim:x08}");
                 }
 
-                headerBytes = (int) datareader.ReadUInt16() * 4; // size is given as a 4-byte count
-                sourcebytes = datareader.ReadBytes(offset-8); // size of source equals offset-8
+                headerBytes = (int)datareader.ReadUInt16() * 4; // size is given as a 4-byte count
+                sourcebytes = datareader.ReadBytes(offset - 8); // size of source equals offset-8
             }
             editorRefId = datareader.ReadBytes(16);
         }
-        public override string GetBlockName() {
+        public override string GetBlockName()
+        {
             return $"DXIL-SOURCE[{sourceId}]";
         }
     }
@@ -92,15 +108,19 @@ namespace MyShaderAnalysis.vcsparsing {
      * DXBC sources don't show the same kind of headers like Glsl or DXIL sources
      * It only has one header, the offset (which in this case happens to be equal to the source size)
      */
-    public class DxbcSource : GpuSource {
-        public DxbcSource(ShaderDataReader datareader, int start, int sourceId) : base(datareader, start, sourceId) {
+    public class DxbcSource : GpuSource
+    {
+        public DxbcSource(ShaderDataReader datareader, int start, int sourceId) : base(datareader, start, sourceId)
+        {
             this.offset = datareader.ReadInt();
-            if (offset>0) {
+            if (offset > 0)
+            {
                 sourcebytes = datareader.ReadBytes(offset);
             }
             editorRefId = datareader.ReadBytes(16);
         }
-        public override string GetBlockName() {
+        public override string GetBlockName()
+        {
             return $"DXBC-SOURCE[{sourceId}]";
         }
     }

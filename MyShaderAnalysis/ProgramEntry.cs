@@ -5,19 +5,22 @@ using MyShaderAnalysis.utilhelpers;
 using MyShaderAnalysis.utilhelpers.snippetcode;
 using static MyShaderAnalysis.utilhelpers.FileSystem;
 
-namespace MyShaderAnalysis {
+namespace MyShaderAnalysis
+{
 
 
-    class ProgramEntry {
+    class ProgramEntry
+    {
 
-        static void Main() {
+        static void Main()
+        {
 
             // StaticAnalysisZframes2.RunTrials();
             // StaticAnalysisZframes.RunTrials();
 
-            StaticAnalysis.RunTrials();
+            // StaticAnalysis.RunTrials();
             // StaticAnalysis2.RunTrials();
-            // ShaderAnalysis.RunTrials();
+            ShaderAnalysis.RunTrials();
 
             // Snippetcode.RunTrials();
             // LzmaAnalysis.RunTrials();
