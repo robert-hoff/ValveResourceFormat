@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using static MyShaderAnalysis.vcsparsing.UtilHelpers;
+using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
 
 
 namespace MyShaderAnalysis.utilhelpers.snippetcode {

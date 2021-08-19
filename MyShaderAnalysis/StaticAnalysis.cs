@@ -5,7 +5,7 @@ using System.Linq;
 using MyShaderAnalysis.vcsparsing;
 using System;
 using MyShaderAnalysis.compat;
-using static MyShaderAnalysis.vcsparsing.UtilHelpers;
+using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
 using MyShaderAnalysis.utilhelpers;
 using static MyShaderAnalysis.utilhelpers.FileSystem;
 #pragma warning disable IDE1006 // Naming Styles

@@ -5,7 +5,7 @@ using System.Linq;
 using MyShaderAnalysis.vcsparsing;
 using System;
 using MyShaderAnalysis.compat;
-using static MyShaderAnalysis.vcsparsing.UtilHelpers;
+using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
 using MyShaderAnalysis.utilhelpers;
 using static MyShaderAnalysis.utilhelpers.FileSystem;
 
@@ -121,7 +121,7 @@ namespace MyShaderAnalysis {
                     string c1 = paramBlock.command1;
 
                     byte[] dynExp = paramBlock.dynExp;
-                    string dynExpstring = new ParseDynamicExpressionShader().ParseExpression(dynExp);
+                    string dynExpstring = new VfxEval().ParseExpression(dynExp);
 
 
                     CUTLEN = 16;

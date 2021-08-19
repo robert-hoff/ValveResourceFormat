@@ -5,14 +5,14 @@ using System.IO;
 using ZstdSharp;
 using System.Diagnostics;
 using MyShaderAnalysis.compat;
-using static MyShaderAnalysis.vcsparsing.UtilHelpers;
+using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
 using LzmaDecoder = SevenZip.Compression.LZMA.Decoder;
 
 
 namespace MyShaderAnalysis.vcsparsing {
 
     public class ShaderFile {
-        private DataReader datareader;
+        private ShaderDataReader datareader;
         public string filenamepath;
         public VcsFileType vcsFiletype = VcsFileType.Undetermined;
         public VcsSourceType vcsSourceType;
@@ -44,7 +44,7 @@ namespace MyShaderAnalysis.vcsparsing {
             this.filenamepath = filenamepath;
             vcsFiletype = GetVcsFileType(filenamepath);
             vcsSourceType = GetVcsSourceType(filenamepath);
-            datareader = new DataReader(File.ReadAllBytes(filenamepath));
+            datareader = new ShaderDataReader(File.ReadAllBytes(filenamepath));
 
             int magic = datareader.ReadInt();
             if (magic != 0x32736376) {
@@ -230,9 +230,9 @@ namespace MyShaderAnalysis.vcsparsing {
         public int compressionType;
         public int compressedLength;
         public int uncompressedLength;
-        DataReader datareader;
+        ShaderDataReader datareader;
         public ZFrameDataDescription(long zframeId, int offsetToZFrameHeader, int compressionType,
-            int uncompressedLength, int compressedLength, DataReader datareader) {
+            int uncompressedLength, int compressedLength, ShaderDataReader datareader) {
             this.zframeId = zframeId;
             this.offsetToZFrameHeader = offsetToZFrameHeader;
             this.compressionType = compressionType;
@@ -277,29 +277,14 @@ namespace MyShaderAnalysis.vcsparsing {
             return $"zframeId[0x{zframeId:x08}] {comprDesc} offset={offsetToZFrameHeader,8} " +
                 $"compressedLength={compressedLength,7} uncompressedLength={uncompressedLength,9}";
         }
+
+
+
+
+
+
     }
-
-
-
-    public class ShaderParserException : Exception {
-        public ShaderParserException() { }
-        public ShaderParserException(string message) : base(message) { }
-        public ShaderParserException(string message, Exception innerException) : base(message, innerException) { }
-    }
-
-
-    public enum VcsSourceType2 {
-        Glsl,
-        DXIL,
-        DXBC,
-    }
-
-
-
 }
-
-
-
 
 
 

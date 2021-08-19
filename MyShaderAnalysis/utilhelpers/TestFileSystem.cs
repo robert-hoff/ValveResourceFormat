@@ -5,7 +5,7 @@ using System.Linq;
 using MyShaderAnalysis.vcsparsing;
 using System;
 using MyShaderAnalysis.compat;
-using static MyShaderAnalysis.vcsparsing.UtilHelpers;
+using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
 // using static MyShaderAnalysis.vcsparsing.ZFrameFile;
 using static MyShaderAnalysis.utilhelpers.FileSystem;
 

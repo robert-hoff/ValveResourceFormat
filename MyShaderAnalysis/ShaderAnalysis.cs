@@ -2,7 +2,7 @@ using System.IO;
 using System.Diagnostics;
 using MyShaderAnalysis.vcsparsing;
 using System.Collections.Generic;
-using static MyShaderAnalysis.vcsparsing.UtilHelpers;
+using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
 
 
 namespace MyShaderAnalysis {

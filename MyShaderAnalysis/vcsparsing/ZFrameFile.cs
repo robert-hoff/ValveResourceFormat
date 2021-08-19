@@ -1,12 +1,13 @@
 using System.Collections.Generic;
 using System.Diagnostics;
-using static MyShaderAnalysis.vcsparsing.UtilHelpers;
+using MyShaderAnalysis.utilhelpers;
+using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
 
 namespace MyShaderAnalysis.vcsparsing {
 
 
     public class ZFrameFile {
-        private DataReader datareader;
+        private ShaderDataReader datareader;
         public string filenamepath;
         public VcsFileType vcsFiletype = VcsFileType.Undetermined;
         public long zframeId;
@@ -33,7 +34,7 @@ namespace MyShaderAnalysis.vcsparsing {
         public ZFrameFile(byte[] databytes, string filenamepath, long zframeId) {
             this.filenamepath = filenamepath;
             vcsFiletype = GetVcsFileType(filenamepath);
-            datareader = new DataReader(databytes);
+            datareader = new ShaderDataReader(databytes);
             this.zframeId = zframeId;
             leadingData = new ZDataBlock(datareader, datareader.offset, -1);
 
@@ -145,7 +146,7 @@ namespace MyShaderAnalysis.vcsparsing {
                 Debug.WriteLine($"// data-block[{dataBlock.blockId}]");
                 Debug.WriteLine($"{dataBlock.h0},{dataBlock.h1},{dataBlock.h2}");
                 if (dataBlock.dataload != null) {
-                    Debug.WriteLine($"{DataReader.BytesToString(dataBlock.dataload)}");
+                    Debug.WriteLine($"{ShaderDataReader.BytesToString(dataBlock.dataload)}");
                     Debug.WriteLine("");
                 }
             }
@@ -176,7 +177,7 @@ namespace MyShaderAnalysis.vcsparsing {
                 } else {
                     Debug.WriteLine($"// empty source");
                 }
-                Debug.WriteLine($"{DataReader.BytesToString(glslSource.fileId)}  // File ID");
+                Debug.WriteLine($"{ShaderDataReader.BytesToString(glslSource.fileId)}  // File ID");
             }
         }
 
@@ -184,7 +185,7 @@ namespace MyShaderAnalysis.vcsparsing {
             if (vcsFiletype == VcsFileType.VertexShader || vcsFiletype == VcsFileType.GeometryShader) {
                 Debug.WriteLine($"{vsEndBlocks.Count:X02} 00 00 00   // nr of end blocks ({vsEndBlocks.Count})");
                 foreach (VsEndBlock vsEndBlock in vsEndBlocks) {
-                    Debug.WriteLine($"{DataReader.BytesToString(vsEndBlock.databytes)}");
+                    Debug.WriteLine($"{ShaderDataReader.BytesToString(vsEndBlock.databytes)}");
                 }
             } else {
                 Debug.WriteLine($"{psEndBlocks.Count:X02} 00 00 00   // nr of end blocks ({vsEndBlocks.Count})");
@@ -196,17 +197,17 @@ namespace MyShaderAnalysis.vcsparsing {
                     Debug.WriteLine($"has data ({psEndBlock.hasData0},{psEndBlock.hasData1},{psEndBlock.hasData2})");
                     if (psEndBlock.hasData0) {
                         Debug.WriteLine("// data-section 0");
-                        Debug.WriteLine($"{DataReader.BytesToString(psEndBlock.data0)}");
+                        Debug.WriteLine($"{ShaderDataReader.BytesToString(psEndBlock.data0)}");
                     }
                     if (psEndBlock.hasData1) {
                         Debug.WriteLine("// data-section 1");
-                        Debug.WriteLine($"{DataReader.BytesToString(psEndBlock.data1)}");
+                        Debug.WriteLine($"{ShaderDataReader.BytesToString(psEndBlock.data1)}");
                     }
                     if (psEndBlock.hasData2) {
                         Debug.WriteLine("// data-section 2");
-                        Debug.WriteLine($"{DataReader.BytesToString(psEndBlock.data2[0..3])}");
-                        Debug.WriteLine($"{DataReader.BytesToString(psEndBlock.data2[3..11])}");
-                        Debug.WriteLine($"{DataReader.BytesToString(psEndBlock.data2[11..75])}");
+                        Debug.WriteLine($"{ShaderDataReader.BytesToString(psEndBlock.data2[0..3])}");
+                        Debug.WriteLine($"{ShaderDataReader.BytesToString(psEndBlock.data2[3..11])}");
+                        Debug.WriteLine($"{ShaderDataReader.BytesToString(psEndBlock.data2[11..75])}");
                     }
                 }
             }
@@ -224,7 +225,7 @@ namespace MyShaderAnalysis.vcsparsing {
             public string dynExpEvaluated = null;
             public int operatorVal = -999999;
 
-            public ZFrameParam(DataReader datareader) {
+            public ZFrameParam(ShaderDataReader datareader) {
                 name0 = datareader.ReadNullTermString();
                 murmur32 = datareader.ReadUInt();
                 uint murmurCheck = MurmurHashPiSeed(name0.ToLower());
@@ -256,18 +257,18 @@ namespace MyShaderAnalysis.vcsparsing {
 
             public override string ToString() {
                 if (dynExpLen > 0) {
-                    return $"{name0,-40} 0x{murmur32:x08}     {DataReader.BytesToString(code)}   {dynExpEvaluated}";
+                    return $"{name0,-40} 0x{murmur32:x08}     {ShaderDataReader.BytesToString(code)}   {dynExpEvaluated}";
                 } else {
-                    return $"{name0,-40} 0x{murmur32:x08}     {DataReader.BytesToString(code)}   {(operatorVal != -999999 ? $"{operatorVal}" : "")}";
+                    return $"{name0,-40} 0x{murmur32:x08}     {ShaderDataReader.BytesToString(code)}   {(operatorVal != -999999 ? $"{operatorVal}" : "")}";
                 }
 
             }
 
 
-            private ParseDynamicExpressionShader myDynParser = new();
+            private VfxEval myDynParser = new();
             private string GetDynamicExpression(byte[] dynExpDatabytes) {
                 if (myDynParser == null) {
-                    myDynParser = new ParseDynamicExpressionShader();
+                    myDynParser = new VfxEval();
                 }
                 myDynParser.ParseExpression(dynExpDatabytes);
                 if (myDynParser.errorWhileParsing) {
@@ -291,7 +292,7 @@ namespace MyShaderAnalysis.vcsparsing {
             public int sourceRef;
             public int sourcePointer;
 
-            public VsEndBlock(DataReader datareader) {
+            public VsEndBlock(ShaderDataReader datareader) {
                 databytes = datareader.ReadBytesAtPosition(0, 16);
                 blockIdRef = datareader.ReadInt();
                 arg0 = datareader.ReadInt();
@@ -318,7 +319,7 @@ namespace MyShaderAnalysis.vcsparsing {
             public byte[] data1 = null;
             public byte[] data2 = null;
 
-            public PsEndBlock(DataReader datareader) {
+            public PsEndBlock(ShaderDataReader datareader) {
                 blockIdRef = datareader.ReadInt();
                 arg0 = datareader.ReadInt();
                 sourceRef = datareader.ReadInt();

@@ -6,7 +6,7 @@ using System.Text;
 
 namespace MyShaderAnalysis.vcsparsing {
 
-    public class UtilHelpers {
+    public static class ShaderUtilHelpers {
 
         private static byte[] zstdDictionary = null;
         public static byte[] GetZFrameDictionary() {

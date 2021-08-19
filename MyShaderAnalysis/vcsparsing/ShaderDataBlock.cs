@@ -3,10 +3,10 @@ namespace MyShaderAnalysis.vcsparsing {
 
     public abstract class ShaderDataBlock {
 
-        protected DataReader datareader;
+        protected ShaderDataReader datareader;
         protected int start;
 
-        protected ShaderDataBlock(DataReader datareader, int offset) {
+        protected ShaderDataBlock(ShaderDataReader datareader, int offset) {
             this.start = offset;
             this.datareader = datareader;
         }

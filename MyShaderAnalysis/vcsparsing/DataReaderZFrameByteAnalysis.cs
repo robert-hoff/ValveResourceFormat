@@ -2,11 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using static MyShaderAnalysis.vcsparsing.UtilHelpers;
+using MyShaderAnalysis.utilhelpers;
+using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
 
 namespace MyShaderAnalysis.vcsparsing {
 
-    public class DataReaderZFrameByteAnalysis : DataReader {
+    public class DataReaderZFrameByteAnalysis : ShaderDataReader {
 
         private VcsFileType filetype;
         private VcsSourceType sourceType;
@@ -431,10 +432,10 @@ namespace MyShaderAnalysis.vcsparsing {
             ShowBytes(dynExpLen);
         }
 
-        private ParseDynamicExpressionShader myDynParser = new();
+        private VfxEval myDynParser = new();
         private string GetDynamicExpression(byte[] dynExpDatabytes) {
             if (myDynParser == null) {
-                myDynParser = new ParseDynamicExpressionShader();
+                myDynParser = new VfxEval();
             }
             myDynParser.ParseExpression(dynExpDatabytes);
             if (myDynParser.errorWhileParsing) {

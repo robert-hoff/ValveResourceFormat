@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using static MyShaderAnalysis.vcsparsing.UtilHelpers;
+using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
 
 
 
 namespace MyShaderAnalysis.vcsparsing {
 
-    public class DataReaderVcsByteAnalysis : DataReader {
+    public class DataReaderVcsByteAnalysis : ShaderDataReader {
 
         const string SERVER_BASEDIR = @"Z:\dev\www\vcs.codecreation.dev";
 

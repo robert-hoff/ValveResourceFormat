@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using static MyShaderAnalysis.vcsparsing.UtilHelpers;
+using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
 
 
 
@@ -17,7 +17,7 @@ namespace MyShaderAnalysis.vcsparsing {
         public int h2;
         public byte[] dataload = null;
 
-        public ZDataBlock(DataReader datareader, int start, int blockId) : base(datareader, start) {
+        public ZDataBlock(ShaderDataReader datareader, int start, int blockId) : base(datareader, start) {
             this.blockId = blockId;
             h0 = datareader.ReadInt();
             h1 = datareader.ReadInt();
@@ -43,7 +43,7 @@ namespace MyShaderAnalysis.vcsparsing {
         public byte[] sourcebytes = null;
         public byte[] fileId;
 
-        public GlslSource(DataReader datareader, int start, int sourceId) : base(datareader, start) {
+        public GlslSource(ShaderDataReader datareader, int start, int sourceId) : base(datareader, start) {
             this.sourceId = sourceId;
             offset0 = datareader.ReadInt();
             if (offset0 > 0) {
@@ -55,7 +55,7 @@ namespace MyShaderAnalysis.vcsparsing {
         }
 
         public string GetStringId() {
-            string stringId = DataReader.BytesToString(fileId);
+            string stringId = ShaderDataReader.BytesToString(fileId);
             stringId = stringId.Replace(" ", "").ToLower();
             return stringId;
         }

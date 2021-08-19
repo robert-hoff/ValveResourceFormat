@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyShaderAnalysis {
-    class ParseDynamicExpressionShader
+namespace MyShaderAnalysis.utilhelpers {
+    class VfxEval
     {
         // if successful the parsed data assigned here
         public string dynamicExpressionResult = "";
@@ -101,7 +101,7 @@ namespace MyShaderAnalysis {
         // when we do we should combine expressions on the stack
         private Stack<uint> offsetAtBranchExits = new Stack<uint>();
 
-        public ParseDynamicExpressionShader()
+        public VfxEval()
         {
             if (externalVarsReference.Count == 0)
             {
