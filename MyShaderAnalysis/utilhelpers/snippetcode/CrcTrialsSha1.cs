@@ -7,7 +7,7 @@ using System.Linq;
 using static MyShaderAnalysis.vcsparsing.UtilHelpers;
 
 
-namespace MyShaderAnalysis {
+namespace MyShaderAnalysis.utilhelpers.snippetcode {
 
 
     public class CrcTrialsSha1 {

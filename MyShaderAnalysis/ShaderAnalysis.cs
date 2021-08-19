@@ -261,7 +261,7 @@ namespace MyShaderAnalysis {
                 outputdir = OUTPUT_DIR;
             }
 
-            byte[] zframeDatabytes = GetZFrameByIndex(shaderFile, zframeIndex);
+            byte[] zframeDatabytes = shaderFile.GetDecompressedZFrameByIndex(zframeIndex);
             uint zframeId = (uint)shaderFile.GetZFrameIdByIndex(zframeIndex);
             string outputFilename = GetZframeHtmlFilename(zframeId, shaderFile.filenamepath);
             string outputFilenamepath = @$"{outputdir}\{outputFilename}";
@@ -305,7 +305,7 @@ namespace MyShaderAnalysis {
                 outputdir = OUTPUT_DIR;
             }
 
-            byte[] zframeDatabytes = GetZFrameByIndex(shaderFile, zframeIndex);
+            byte[] zframeDatabytes = shaderFile.GetDecompressedZFrameByIndex(zframeIndex);
             uint zframeId = (uint)shaderFile.GetZFrameIdByIndex(zframeIndex);
             string outputFilename = GetZframeTxtFilename(zframeId, shaderFile.filenamepath);
             string outputFilenamepath = @$"{outputdir}\{outputFilename}";
@@ -333,7 +333,7 @@ namespace MyShaderAnalysis {
                 if (shaderFile.GetZFrameCount() == 0) {
                     continue;
                 }
-                byte[] zframeDatabytes = GetZFrameByIndex(shaderFile, 0);
+                byte[] zframeDatabytes = shaderFile.GetDecompressedZFrameByIndex(0);
                 string outputFilenamepath = @$"{OUTPUT_DIR}\{GetZframeTxtFilename((uint)shaderFile.GetZFrameIdByIndex(0), vcsFile)}";
                 StreamWriter sw = new(outputFilenamepath);
                 Debug.WriteLine($"parsing {vcsFile}");
@@ -357,30 +357,30 @@ namespace MyShaderAnalysis {
                 }
                 Debug.WriteLine($"parsing {RemoveBaseDir(shaderFile.filenamepath)} frames [{0},{nrToParse})");
                 for (int i = 0; i < nrToParse; i++) {
-                    byte[] zframeDatabytes = GetZFrameByIndex(shaderFile, i);
+                    byte[] zframeDatabytes = shaderFile.GetDecompressedZFrameByIndex(i);
                     PrintZFrame(zframeDatabytes, shaderFile.vcsFiletype, shaderFile.vcsSourceType, true);
                 }
             }
         }
 
 
-        //static void WriteZFrameToFileByZframeId(string filenamepath, long zframeId) {
-        //    ShaderFile shaderFile = new(filenamepath);
-        //    byte[] zframeDatabytes = shaderFile.GetDecompressedZFrame(zframeId);
-        //    string outputFilenamepath = @$"{OUTPUT_DIR}\{GetZframeTxtFilename((uint) zframeId, filenamepath)}";
-        //    StreamWriter sw = new(outputFilenamepath);
-        //    Debug.WriteLine($"parsing {filenamepath}");
-        //    Debug.WriteLine($"writing to {outputFilenamepath}");
-        //    PrintZFrame(zframeDatabytes, GetVcsFileType(filenamepath), true, sw);
-        //    sw.Close();
-        //}
+        static void WriteZFrameToFileByZframeId(string filenamepath, long zframeId) {
+            ShaderFile shaderFile = new(filenamepath);
+            byte[] zframeDatabytes = shaderFile.GetDecompressedZFrame(zframeId);
+            string outputFilenamepath = @$"{OUTPUT_DIR}\{GetZframeTxtFilename((uint)zframeId, filenamepath)}";
+            StreamWriter sw = new(outputFilenamepath);
+            Debug.WriteLine($"parsing {filenamepath}");
+            Debug.WriteLine($"writing to {outputFilenamepath}");
+            PrintZFrame(zframeDatabytes, shaderFile.vcsFiletype, shaderFile.vcsSourceType, true, sw);
+            sw.Close();
+        }
 
 
 
         // THIS OUTPUTS FUCKING txt (which can be good!)
         static void WriteZFrameToFile(string filenamepath, int zframeIndex) {
             ShaderFile shaderFile = new(filenamepath);
-            byte[] zframeDatabytes = GetZFrameByIndex(shaderFile, zframeIndex);
+            byte[] zframeDatabytes = shaderFile.GetDecompressedZFrameByIndex(zframeIndex);
             string outputFilenamepath = @$"{OUTPUT_DIR}\{GetZframeTxtFilename((uint)shaderFile.GetZFrameIdByIndex(zframeIndex), filenamepath)}";
             StreamWriter sw = new(outputFilenamepath);
             Debug.WriteLine($"parsing {filenamepath}");
@@ -407,7 +407,7 @@ namespace MyShaderAnalysis {
 
         static void PrintZFrame(string filenamepath, int zframeIndex, bool disableOutput = false) {
             ShaderFile shaderFile = new(filenamepath);
-            byte[] zframeDatabytes = GetZFrameByIndex(shaderFile, zframeIndex);
+            byte[] zframeDatabytes = shaderFile.GetDecompressedZFrameByIndex(zframeIndex);
             PrintZFrame(zframeDatabytes, shaderFile.vcsFiletype, shaderFile.vcsSourceType, disableOutput);
         }
 
@@ -420,17 +420,6 @@ namespace MyShaderAnalysis {
             }
             zFrameParser.PrintByteAnalysis();
         }
-
-        static byte[] GetZFrameByIndex(ShaderFile shaderFile, int zframeIndex) {
-            if (zframeIndex >= shaderFile.GetZFrameCount()) {
-                throw new ShaderParserException($"Can't get zframeIndex {zframeIndex} for " +
-                    $"{RemoveBaseDir(shaderFile.filenamepath)} zmax={shaderFile.GetZFrameCount() - 1}");
-            }
-            return shaderFile.GetDecompressedZFrameByIndex(zframeIndex);
-        }
-
-
-
 
 
         /*

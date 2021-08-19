@@ -7,7 +7,7 @@ using static MyShaderAnalysis.vcsparsing.UtilHelpers;
 namespace MyShaderAnalysis.vcsparsing {
 
 
-    public class DataBlockFeaturesHeader : DataBlock {
+    public class DataBlockFeaturesHeader : ShaderDataBlock {
 
         public bool has_psrs_file;
         public int unknown_val;
@@ -159,7 +159,7 @@ namespace MyShaderAnalysis.vcsparsing {
 
 
     // needs implemenation
-    public class DataBlockVsPsHeader : DataBlock {
+    public class DataBlockVsPsHeader : ShaderDataBlock {
         public DataBlockVsPsHeader(DataReader datareader, int start) : base(datareader, start) {
             datareader.offset += 36;
         }
@@ -170,7 +170,7 @@ namespace MyShaderAnalysis.vcsparsing {
     }
 
 
-    public class DataBlockSfBlock : DataBlock {
+    public class DataBlockSfBlock : ShaderDataBlock {
         public int blockId;
         public string name0;
         public string name1;
@@ -206,7 +206,7 @@ namespace MyShaderAnalysis.vcsparsing {
     }
 
 
-    public class CompatibilityBlock : DataBlock {
+    public class CompatibilityBlock : ShaderDataBlock {
 
         public int blockIndex;
         public int relRule;  // 1 = dependency (feature file), 2 = dependency (other files), 3 = exclusion
@@ -291,7 +291,7 @@ namespace MyShaderAnalysis.vcsparsing {
 
 
     // needs implemenation (parser works by moving the offset 152 bytes for each d-block)
-    public class DBlock : DataBlock {
+    public class DBlock : ShaderDataBlock {
 
         public int blockIndex;
         public string name0;
@@ -325,7 +325,7 @@ namespace MyShaderAnalysis.vcsparsing {
 
 
 
-    public class UnknownBlock : DataBlock {
+    public class UnknownBlock : ShaderDataBlock {
 
         public int blockIndex;
         public int relRule;  // 2 = dependency (other files), 3 = exclusion (1 not present, as in the compat-blocks)
@@ -446,7 +446,7 @@ namespace MyShaderAnalysis.vcsparsing {
     }
 
 
-    public class ParamBlock : DataBlock {
+    public class ParamBlock : ShaderDataBlock {
         public string name0;
         public string name1;
         public string name2;
@@ -565,7 +565,7 @@ namespace MyShaderAnalysis.vcsparsing {
 
 
     // needs implemenation (parser works by moving the offset 280 bytes for each mipmap-block)
-    public class MipmapBlock : DataBlock {
+    public class MipmapBlock : ShaderDataBlock {
         public MipmapBlock(DataReader datareader, int start) : base(datareader, start) {
 
         }
@@ -576,7 +576,7 @@ namespace MyShaderAnalysis.vcsparsing {
     }
 
 
-    public class BufferBlock : DataBlock {
+    public class BufferBlock : ShaderDataBlock {
         string name;
         int bufferSize;
         List<(string, int, int, int, int)> bufferParams = new();
@@ -606,7 +606,7 @@ namespace MyShaderAnalysis.vcsparsing {
     }
 
 
-    public class SymbolsBlock : DataBlock {
+    public class SymbolsBlock : ShaderDataBlock {
         List<(string, string, string, int)> symbolParams = new();
 
         public SymbolsBlock(DataReader datareader, int start) : base(datareader, start) {

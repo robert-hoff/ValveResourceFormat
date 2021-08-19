@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyShaderAnalysis {
-    class CrcTrialsMurmur32 {
+namespace MyShaderAnalysis.utilhelpers.snippetcode {
 
+    class CrcTrialsMurmur32 {
 
         public static void RunTrials() {
 

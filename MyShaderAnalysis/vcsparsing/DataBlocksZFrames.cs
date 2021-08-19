@@ -9,7 +9,7 @@ namespace MyShaderAnalysis.vcsparsing {
 
 
 
-    public class ZDataBlock : DataBlock {
+    public class ZDataBlock : ShaderDataBlock {
 
         public int blockId;
         public int h0;
@@ -34,7 +34,7 @@ namespace MyShaderAnalysis.vcsparsing {
 
 
 
-    public class GlslSource : DataBlock {
+    public class GlslSource : ShaderDataBlock {
 
         public int sourceId;
         public int offset0;

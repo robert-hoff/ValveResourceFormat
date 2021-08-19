@@ -7,7 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace MyShaderAnalysis.utilhelpers {
+namespace MyShaderAnalysis.utilhelpers.snippetcode {
+
     class Snippetcode {
 
 
