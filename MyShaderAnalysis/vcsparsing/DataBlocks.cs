@@ -522,6 +522,10 @@ namespace MyShaderAnalysis.vcsparsing {
             datareader.offset += 32;
             command1 = datareader.ReadNullTermStringAtPosition();
             datareader.offset += 32;
+
+
+
+            int myint = 10;
         }
 
 

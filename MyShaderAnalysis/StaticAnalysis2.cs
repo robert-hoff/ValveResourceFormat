@@ -51,7 +51,13 @@ namespace MyShaderAnalysis {
 
         static void DoSomething() {
 
-            Debug.WriteLine($"do do it");
+            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.features_file, -1);
+            foreach (string filenamepath in vcsFiles) {
+                ShaderFile shaderFile = new(filenamepath);
+
+            }
+
+
         }
 
 

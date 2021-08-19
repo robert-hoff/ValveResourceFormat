@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace MyShaderAnalysis {
-    class Murmur32 {
+    class CrcTrialsMurmur32 {
 
 
         public static void RunTrials() {

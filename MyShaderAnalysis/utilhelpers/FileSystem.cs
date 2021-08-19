@@ -44,7 +44,10 @@ using static MyShaderAnalysis.vcsparsing.UtilHelpers;
  * Now .. it seems natural to also retrieve the files from here. This is definitely an advantage
  * because there are some tokens I can determine immediately if I do that
  *
+ * ALSO - instead of DetermineArchiveType provide file retrievers
  *
+ * need to consolidate VRF files with my own files, while still retaining the features that I want.
+ * Before doing this need a comprehensive tidy, e.g. remove all dead code. Remove or enable code that is commented out
  *
  *
  *

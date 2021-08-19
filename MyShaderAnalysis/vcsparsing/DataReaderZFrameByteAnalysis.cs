@@ -326,6 +326,9 @@ namespace MyShaderAnalysis.vcsparsing {
             return sourceSize;
         }
 
+
+        const int GLSL_BYTES_TO_SHOW = 2500;
+
         // FIXME - can't I pass the source size here?
         public void ShowZGlslSourceSummary(int sourceId) {
             int bytesToRead = ReadIntAtPosition(-4);
@@ -334,11 +337,11 @@ namespace MyShaderAnalysis.vcsparsing {
             if (bytesToRead == 0) {
                 OutputWriteLine("// no source present");
             }
-            if (bytesToRead > 100) {
-                ShowBytes(100);
+            if (bytesToRead > GLSL_BYTES_TO_SHOW) {
+                ShowBytes(GLSL_BYTES_TO_SHOW);
                 ShowByteCount();
                 Comment($"... ({endOfSource - offset} bytes of data not shown)");
-            } else if (bytesToRead <= 100 && bytesToRead > 0) {
+            } else if (bytesToRead <= GLSL_BYTES_TO_SHOW && bytesToRead > 0) {
                 ShowBytes(bytesToRead);
             }
             offset = endOfSource;

@@ -30,8 +30,8 @@ namespace MyShaderAnalysis.vcsparsing {
 
 
         private uint zFrameCount = 0;
+        const int LIMIT_ZFRAMES = 4;
 
-        const int LIMIT_ZFRAMES = 0;
 
         public void PrintByteAnalysis() {
             if (filetype == FILETYPE.features_file) {
@@ -510,17 +510,38 @@ namespace MyShaderAnalysis.vcsparsing {
             }
         }
 
+
+        // int LIMIT_ZFRAME_DATA_SHOWN = 96;
+        int LIMIT_ZFRAME_DATA_SHOWN = 4000;
+
+
         public void PrintCompressedZFrame(uint zframeId) {
             OutputWriteLine($"[{offset}] {getZFrameIdString(zframeId)}");
-            ShowBytes(4, "DELIM (0xfffffffd)");
+            bool isLzma = false;
+            uint zstdDelimOrChunkSize = ReadUIntAtPosition();
+            if (zstdDelimOrChunkSize == ShaderFile.ZSTD_DELIM) {
+                ShowBytes(4, $"Zstd delim (0x{ShaderFile.ZSTD_DELIM:x08})");
+            } else {
+                ShowBytes(4, $"Lzma chunk size {zstdDelimOrChunkSize}");
+                uint lzmaDelim = ReadUIntAtPosition();
+                if (lzmaDelim != ShaderFile.LZMA_DELIM) {
+                    throw new ShaderParserException("Unknown compression, neither ZStd nor Lzma found");
+                }
+                isLzma = true;
+                ShowBytes(4, $"Lzma delim (0x{ShaderFile.LZMA_DELIM:x08})");
+            }
             int uncompressed_length = ReadIntAtPosition();
             ShowBytes(4, $"{uncompressed_length,-8} uncompressed length");
             // TabPrintComment(uncompressed_length.ToString().PadRight(8));
             int compressed_length = ReadIntAtPosition();
             ShowBytes(4, $"{compressed_length,-8} compressed length");
-            ShowBytesAtPosition(0, compressed_length > 96 ? 96 : compressed_length);
-            if (compressed_length > 96) {
-                Comment($"... ({compressed_length - 96} bytes not shown)");
+
+            if (isLzma) {
+                ShowBytes(5, "Decompressor configuration");
+            }
+            ShowBytesAtPosition(0, compressed_length > LIMIT_ZFRAME_DATA_SHOWN ? LIMIT_ZFRAME_DATA_SHOWN : compressed_length);
+            if (compressed_length > LIMIT_ZFRAME_DATA_SHOWN) {
+                Comment($"... ({compressed_length - LIMIT_ZFRAME_DATA_SHOWN} bytes not shown)");
             }
             offset += compressed_length;
             BreakLine();
@@ -538,22 +559,10 @@ namespace MyShaderAnalysis.vcsparsing {
             }
         }
 
-        private void EndOfFile() {
-            if (offset != databytes.Length) {
-                throw new ShaderParserException("End of file not reached!");
-            }
-            ShowByteCount();
-            OutputWriteLine("EOF");
-        }
+
+
     }
-
-
 }
-
-
-
-
-
 
 
 

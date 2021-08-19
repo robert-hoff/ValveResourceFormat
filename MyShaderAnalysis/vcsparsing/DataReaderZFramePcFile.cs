@@ -43,7 +43,7 @@ namespace MyShaderAnalysis.vcsparsing {
             ShowZFrameHeader();
             if (filetype == FILETYPE.vs_file) {
                 int blockCountInput = ReadInt16AtPosition();
-                ShowByteCount("Some kind of state summary (uniforms/variables input?)");
+                ShowByteCount("Some kind of state summary");
                 ShowBytes(2, breakLine: false);
                 TabComment($"nr of data-blocks ({blockCountInput})");
                 ShowBytes(blockCountInput * 2);
@@ -60,7 +60,7 @@ namespace MyShaderAnalysis.vcsparsing {
             }
             BreakLine();
 
-            ShowByteCount("Some kind of state summary (uniforms/variables output?)");
+            ShowByteCount("Some kind of state summary, non 'FF FF' entries point to active block IDs");
 
 
             //int blockCountOutput = ReadInt16AtPosition();

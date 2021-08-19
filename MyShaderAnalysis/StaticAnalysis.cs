@@ -275,11 +275,7 @@ namespace MyShaderAnalysis {
 
                 // Debug.WriteLine($"{Convert.ToString(item.Key, 2).PadLeft(12, '0')} {item.Key,5}      {item.Key:x04}       {spacedOutBinary}");
                 Debug.WriteLine($"{Convert.ToString(item.Key, 2).PadLeft(12, '0')}");
-
-
             }
-
-
         }
 
 

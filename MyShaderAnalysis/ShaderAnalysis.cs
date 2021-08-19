@@ -52,16 +52,18 @@ namespace MyShaderAnalysis {
             // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
             // string filenamepath = PCGL_DIR_NOT_CORE + @"\blur_pcgl_30_ps.vcs";
             // string filenamepath = PCGL_DIR_CORE + @"\apply_fog_pcgl_40_ps.vcs";
-            string filenamepath = PCGL_DIR_CORE + @"\spritecard_pcgl_30_ps.vcs";
+            // string filenamepath = PCGL_DIR_CORE + @"\spritecard_pcgl_30_ps.vcs";
+            string filenamepath = PCGL_DIR_CORE + @"\panorama_pcgl_50_ps.vcs";
 
 
 
             // WARN - even 3 every 100 is a lot of files
             // Write3ZFramesEveryHundedAfter300();
-            // WriteFirst200ZFramesEveryFile();
-            // WriteAZFrameToFile();
+            // WriteFirst50ZFramesEveryFile(OUTPUT_DIR, writeAsHtml: true, saveGlsl: false);
+            // WriteFirst50ZFramesEveryFile(useServerDefaultDir: true, writeAsHtml: true);
+
             // WriteZFrameToFile(filenamepath, 0);
-            // WriteAZFrameAsHtmlByZframeId(filenamepath, 0x500);
+            // WriteAZFrameAsHtmlByZframeId(filenamepath, 0x0);
             // ParseABunchOfZframes();
             // WriteFirstZFrameEveryFile();
 
@@ -78,9 +80,20 @@ namespace MyShaderAnalysis {
             // WriteVcsByteAnalysisToTxt(filenamepath);
 
             // R: I wrote the core and dota files separately and copied them onto the server
-            WriteAllVcsFilesToHtml();
+            // WriteAllVcsFilesToHtml();
             // WriteVcsByteAnalysisToHtml(filenamepath, writeHtmlLinks: true);
             // ParseAllVcsFilesDisableOutput();
+
+
+
+
+            // TestZFrameSingleFile();
+
+            // -- test or write single files
+            RunWriteZframeAsTxt();
+            // ShaderFileTestSinglefiles();
+            // VcsParsingTestSinglefiles();
+
         }
 
 
@@ -166,21 +179,38 @@ namespace MyShaderAnalysis {
 
 
 
-        static void WriteFirst200ZFramesEveryFile() {
+
+        static void WriteFirst50ZFramesEveryFile(string outputdir = null, bool useServerDefaultDir = false, bool writeAsHtml = true, bool saveGlsl = true) {
+            if (useServerDefaultDir && outputdir != null) {
+                throw new ShaderParserException("be more specific");
+            }
+            if (!useServerDefaultDir && outputdir == null) {
+                throw new ShaderParserException("no output dir specified");
+            }
+
+            int ZFRAME_FILES_TO_WRITE = 30;
+
+
             // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
             // string filenamepath = PCGL_DIR_CORE + @"\blur_pcgl_30_ps.vcs";
             List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
             foreach (string filenamepath in vcsFiles) {
                 string token = GetCoreOrDotaString(filenamepath);
-                string outputdir = @$"Z:\dev\www\vcs.codecreation.dev\vcs-all\{token}\zsource";
+                if (useServerDefaultDir) {
+                    outputdir = @$"Z:\dev\www\vcs.codecreation.dev\vcs-all\{token}\zsource";
+                }
 
                 ShaderFile shaderFile = new(filenamepath);
-                int zframesToWrite = 200;
+                int zframesToWrite = ZFRAME_FILES_TO_WRITE;
                 if (shaderFile.GetZFrameCount() < zframesToWrite) {
                     zframesToWrite = shaderFile.GetZFrameCount();
                 }
                 for (int i = 0; i < zframesToWrite; i++) {
-                    WriteZframeAsHtml(shaderFile, i, outputdir);
+                    if (writeAsHtml) {
+                        WriteZframeAsHtml(shaderFile, i, outputdir, saveGlsl: saveGlsl);
+                    } else {
+                        WriteZframeAsTxt(shaderFile, i, outputdir, saveGlsl: saveGlsl);
+                    }
                 }
             }
         }
@@ -210,7 +240,10 @@ namespace MyShaderAnalysis {
 
 
 
-        static void WriteZframeAsHtml(ShaderFile shaderFile, int zframeIndex, string outputdir = null) {
+
+
+
+        static void WriteZframeAsHtml(ShaderFile shaderFile, int zframeIndex, string outputdir = null, bool saveGlsl = true) {
             if (outputdir == null) {
                 outputdir = OUTPUT_DIR;
             }
@@ -224,7 +257,9 @@ namespace MyShaderAnalysis {
             StreamWriter sw = new(outputFilenamepath);
             zFrameParser.ConfigureWriteToFile(sw, true);
             zFrameParser.SetWriteAsHtml(true);
-            zFrameParser.RequestGlslFileSave(outputdir);
+            if (saveGlsl) {
+                zFrameParser.RequestGlslFileSave(outputdir);
+            }
             string htmlHeader = GetHtmlHeader(outputFilename, outputFilename[0..^5]);
             sw.WriteLine($"{htmlHeader}");
             zFrameParser.PrintByteAnalysis();
@@ -233,8 +268,53 @@ namespace MyShaderAnalysis {
         }
 
 
+
+        static void RunWriteZframeAsTxt() {
+
+
+            // string filenamepath = PCGL_DIR_CORE + @"\rendermicrobenchmark_pcgl_40_ps.vcs";
+            // string filenamepath = PCGL_DIR_CORE + @"\sky_pcgl_40_ps.vcs";
+            // ShaderFile shaderFile = new(filenamepath);
+            // WriteZframeAsTxt(shaderFile, 2, null, true);
+
+            int tabchar = '\t';
+
+            Debug.WriteLine($"{tabchar:x}");
+
+        }
+
+
+
+
+
+        static void WriteZframeAsTxt(ShaderFile shaderFile, int zframeIndex, string outputdir = null, bool saveGlsl = true) {
+            if (outputdir == null) {
+                outputdir = OUTPUT_DIR;
+            }
+
+            byte[] zframeDatabytes = GetZFrameByIndex(shaderFile, zframeIndex);
+            uint zframeId = (uint)shaderFile.GetZFrameIdByIndex(zframeIndex);
+            string outputFilename = GetZframeTxtFilename(zframeId, shaderFile.filenamepath);
+            string outputFilenamepath = @$"{outputdir}\{outputFilename}";
+            DataReaderZFrameByteAnalysis zFrameParser = new(zframeDatabytes, shaderFile.vcsFiletype);
+            Debug.WriteLine($"writing to {outputFilenamepath}");
+            StreamWriter sw = new(outputFilenamepath);
+            zFrameParser.ConfigureWriteToFile(sw, true);
+            zFrameParser.SetWriteAsHtml(false);
+            if (saveGlsl) {
+                zFrameParser.RequestGlslFileSave(outputdir);
+            }
+            zFrameParser.PrintByteAnalysis();
+            sw.Close();
+        }
+
+
+
+
+
         static void WriteFirstZFrameEveryFile() {
-            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
+            // List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
+            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.ps_file, 30);
             foreach (string vcsFile in vcsFiles) {
                 ShaderFile shaderFile = new(vcsFile);
                 if (shaderFile.GetZFrameCount() == 0) {
@@ -247,6 +327,8 @@ namespace MyShaderAnalysis {
                 Debug.WriteLine($"writing to {outputFilenamepath}");
                 PrintZFrame(zframeDatabytes, GetVcsFileType(vcsFile), true, sw);
                 sw.Close();
+
+                break;
             }
         }
 
@@ -282,7 +364,7 @@ namespace MyShaderAnalysis {
 
 
 
-        // THIS OUTPUTS FUCKING txt
+        // THIS OUTPUTS FUCKING txt (which can be good!)
         static void WriteZFrameToFile(string filenamepath, int zframeIndex) {
             ShaderFile shaderFile = new(filenamepath);
             byte[] zframeDatabytes = GetZFrameByIndex(shaderFile, zframeIndex);
@@ -293,6 +375,21 @@ namespace MyShaderAnalysis {
             PrintZFrame(zframeDatabytes, GetVcsFileType(filenamepath), true, sw);
             sw.Close();
         }
+
+
+
+        static void TestZFrameSingleFile() {
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_vs.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
+            // string filenamepath = ARTIFACT_CLASSIC_CORE_PC_SOURCE + @"\aerial_perspective_pc_30_ps.vcs";
+            // string filenamepath = PCGL_DIR_CORE + @"\convolve_environment_map_pcgl_41_vs.vcs";
+            // string filenamepath = PCGL_DIR_CORE + @"\panorama_pcgl_40_ps.vcs";
+            string filenamepath = PCGL_DIR_NOT_CORE + @"\dof2_pcgl_30_ps.vcs";
+            // ShaderFile shaderfile = new(filenamepath);
+
+            PrintZFrame(filenamepath, 0x0);
+        }
+
 
 
         static void PrintZFrame(string filenamepath, int zframeIndex, bool disableOutput = false) {
@@ -333,6 +430,45 @@ namespace MyShaderAnalysis {
                 Debug.WriteLine($"{shaderFile.GetZFrameCount()}");
             }
         }
+
+
+
+        static void ShaderFileTestSinglefiles() {
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_vs.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
+            // string filenamepath = ARTIFACT_CLASSIC_CORE_PC_SOURCE + @"\aerial_perspective_pc_30_ps.vcs";
+            string filenamepath = PCGL_DIR_CORE + @"\apply_fog_pcgl_40_features.vcs";
+            ShaderFile shaderfile = new(filenamepath);
+            // shaderfile.ShowZFrames();
+
+        }
+
+
+        static void VcsParsingTestSinglefiles() {
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_vs.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_features.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_vs.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_ps.vcs";
+            // string filenamepath = PCGL_DIR_CORE + @"\generic_light_pcgl_30_features.vcs";
+            // string filenamepath = PCGL_DIR_CORE + @"\generic_light_pcgl_30_vs.vcs";
+            // string filenamepath = PCGL_DIR_CORE + @"\generic_light_pcgl_30_ps.vcs";
+            // string filenamepath = PCGL_DIR_CORE + @"\apply_fog_pcgl_40_ps.vcs";
+            // string filenamepath = PCGL_DIR_CORE + @"\tools_wireframe_pcgl_40_gs.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"\spring_meteor_pcgl_30_vs.vcs";
+            // string filenamepath = PC_DIR_NOT_CORE + @"\spring_meteor_pc_30_vs.vcs";
+            // string filenamepath = PCGL_DIR_CORE + @"\apply_fog_pcgl_40_features.vcs";
+            // string filenamepath = PCGL_DIR_CORE + @"\tools_generic_pcgl_40_ps.vcs";
+            string filenamepath = PCGL_DIR_CORE + @"\visualize_cloth_pcgl_40_ps.vcs";
+
+            // string filenamepath = ARTIFACT_CLASSIC_CORE_PC_SOURCE + @"\aerial_perspective_pc_30_ps.vcs";
+
+
+            //   PC_DIR_CORE
+
+            ShowVcsByteAnalysis(filenamepath);
+        }
+
 
 
         static void ShowVcsByteAnalysis(string filenamepath) {

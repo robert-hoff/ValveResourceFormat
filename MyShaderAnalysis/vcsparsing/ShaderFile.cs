@@ -23,8 +23,17 @@ namespace MyShaderAnalysis.vcsparsing {
         public List<MipmapBlock> mipmapBlocks = new();
         public List<BufferBlock> bufferBlocks = new();
         public List<SymbolsBlock> symbolBlocks = new();
-        public SortedDictionary<long, int> zframesLookup = new(); // (frameID to offset)
 
+
+        public const int ZSTD_COMPRESSION = 1;
+        public const int LZMA_COMPRESSION = 2;
+        public const uint ZSTD_DELIM = 0xFFFFFFFD;
+        public const uint LZMA_DELIM = 0x414D5A4C;
+
+        // zframe data is sorted by the order they appear in the file
+        // their Id (which is different and describes the configuration they are intended for) is the dictionary key
+        // both their index and Id are used in different contexts
+        public SortedDictionary<long, ZFrameDataDescription> zframesLookup = new();
         private DBlockConfigurationMap dBlockConfigGen;
 
 
@@ -80,11 +89,16 @@ namespace MyShaderAnalysis.vcsparsing {
             }
 
             // always 472 bytes
-            int unknownBlockCount = datareader.ReadInt();
-            for (int i = 0; i < unknownBlockCount; i++) {
+            int druleBlockCount = datareader.ReadInt();
+            for (int i = 0; i < druleBlockCount; i++) {
                 UnknownBlock nextUnknownBlock = new(datareader, datareader.offset, i);
                 unknownBlocks.Add(nextUnknownBlock);
             }
+
+            // This is needed for the zframes to generate their configuratio mapping
+            // and must be instantiated after the D-blocks have been read.
+            dBlockConfigGen = new DBlockConfigurationMap(this);
+
 
             int paramBlockCount = datareader.ReadInt();
             for (int i = 0; i < paramBlockCount; i++) {
@@ -106,8 +120,6 @@ namespace MyShaderAnalysis.vcsparsing {
                 bufferBlocks.Add(nextBufferBlock);
             }
 
-
-
             if (vcsFiletype == FILETYPE.features_file || vcsFiletype == FILETYPE.vs_file) {
                 int sybmolsBlockCount = datareader.ReadInt();
                 for (int i = 0; i < sybmolsBlockCount; i++) {
@@ -116,31 +128,53 @@ namespace MyShaderAnalysis.vcsparsing {
                 }
             }
 
-            List<long> zframeIDs = new();
+
+            List<long> zframeIds = new();
             int zframesCount = datareader.ReadInt();
+            if (zframesCount == 0) {
+                // if zframes = 0 here there's nothing more to do
+                if (datareader.offset != datareader.databytes.Length) {
+                    throw new ShaderParserException($"Reader contains more data, but EOF expected");
+                }
+                return;
+            }
+
+
             for (int i = 0; i < zframesCount; i++) {
-                zframeIDs.Add(datareader.ReadLong());
-            }
-
-            foreach (long zframeID in zframeIDs) {
-                zframesLookup.Add(zframeID, datareader.ReadInt());
-            }
-
-            if (zframesCount > 0) {
-                datareader.offset = datareader.ReadInt();
-            }
-            if (datareader.offset != datareader.databytes.Length) {
-                throw new ShaderParserException("End of file not reached!");
+                zframeIds.Add(datareader.ReadLong());
             }
 
 
+            List<(long, int)> zframeIdsAndOffsets = new();
+            foreach (long zframeId in zframeIds) {
+                // zframesLookup.Add(zframeID, datareader.ReadInt());
+                zframeIdsAndOffsets.Add((zframeId, datareader.ReadInt()));
+            }
 
-            dBlockConfigGen = new DBlockConfigurationMap(this);
+            int offsetToEndOffile = datareader.ReadInt();
+            if (offsetToEndOffile != datareader.databytes.Length) {
+                throw new ShaderParserException($"Pointer to end of file expected, value read = {offsetToEndOffile}");
+            }
 
+            foreach (var item in zframeIdsAndOffsets) {
+                long zframeId = item.Item1;
+                int offsetToZframeHeader = item.Item2;
+                datareader.offset = offsetToZframeHeader;
+                uint chunkSizeOrZframeDelim = datareader.ReadUInt();
+                int compressionType = chunkSizeOrZframeDelim == ZSTD_DELIM ? ZSTD_COMPRESSION : LZMA_COMPRESSION;
+                if (chunkSizeOrZframeDelim != ZSTD_DELIM) {
+                    if (datareader.ReadUInt() != LZMA_DELIM) {
+                        throw new ShaderParserException("Unknown compression, neither ZStd nor Lzma found");
+                    }
+                }
+                int uncompressedLength = datareader.ReadInt();
+                int compressedLength = datareader.ReadInt();
 
+                ZFrameDataDescription zframeDataDesc = new ZFrameDataDescription(zframeId, offsetToZframeHeader,
+                    compressionType, uncompressedLength, compressedLength, datareader);
+                zframesLookup.Add(zframeId, zframeDataDesc);
+            }
         }
-
-
 
 
         public int GetZFrameCount() {
@@ -152,27 +186,28 @@ namespace MyShaderAnalysis.vcsparsing {
         }
 
         public byte[] GetDecompressedZFrameByIndex(int zframeIndex) {
-            var zframeBlock = zframesLookup.ElementAt(zframeIndex);
-            return GetDecompressedZFrame(zframeBlock.Key);
+            return zframesLookup.ElementAt(zframeIndex).Value.GetDecompressedZFrame();
         }
 
         public byte[] GetDecompressedZFrame(long zframeId) {
-            datareader.offset = zframesLookup[zframeId];
-            uint delim = datareader.ReadUInt();
-            if (delim != 0xfffffffd) {
-                throw new ShaderParserException("unexpected zframe delimiter");
-            }
-            int uncompressed_length = datareader.ReadInt();
-            int compressed_length = datareader.ReadInt();
-            byte[] compressedZframe = datareader.ReadBytes(compressed_length);
-            using var decompressor = new Decompressor();
-            decompressor.LoadDictionary(GetZFrameDictionary());
-            Span<byte> zframeUncompressed = decompressor.Unwrap(compressedZframe);
-            if (zframeUncompressed.Length != uncompressed_length) {
-                throw new ShaderParserException("zframe length mismatch!");
-            }
-            // decompressor.Dispose(); // dispose or not?
-            return zframeUncompressed.ToArray();
+
+            return zframesLookup[zframeId].GetDecompressedZFrame();
+
+            // datareader.offset = zframesLookup[zframeId];
+            //uint delim = datareader.ReadUInt();
+            //if (delim != 0xfffffffd) {
+            //    throw new ShaderParserException("unexpected zframe delimiter");
+            //}
+            //int uncompressed_length = datareader.ReadInt();
+            //int compressed_length = datareader.ReadInt();
+            //byte[] compressedZframe = datareader.ReadBytes(compressed_length);
+            //using var decompressor = new Decompressor();
+            //decompressor.LoadDictionary(GetZFrameDictionary());
+            //Span<byte> zframeUncompressed = decompressor.Unwrap(compressedZframe);
+            //if (zframeUncompressed.Length != uncompressed_length) {
+            //    throw new ShaderParserException("zframe length mismatch!");
+            //}
+            //return zframeUncompressed.ToArray();
         }
 
         public ZFrameFile GetZFrameFile(long zframeId) {
@@ -184,15 +219,67 @@ namespace MyShaderAnalysis.vcsparsing {
             return GetZFrameFile(zframeId);
         }
 
-
         public int[] GetDBlockConfig(int blockId) {
             return dBlockConfigGen.GetConfigState(blockId);
         }
 
-
+        public void ShowZFrames() {
+            foreach (var zframeData in zframesLookup) {
+                Debug.WriteLine($"{zframeData}");
+            }
+        }
 
     }
 
+
+
+
+
+    // Lzma also comes with 'chunk-size', but doesn't seem to be needed
+    // (possibly the idea with the chunk size is an an aid for navigating the data)
+    public class ZFrameDataDescription {
+        public long zframeId;
+        public int offsetToZFrameHeader;
+        public int compressionType;
+        public int compressedLength;
+        public int uncompressedLength;
+        DataReader datareader;
+        public ZFrameDataDescription(long zframeId, int offsetToZFrameHeader, int compressionType,
+            int uncompressedLength, int compressedLength, DataReader datareader) {
+            this.zframeId = zframeId;
+            this.offsetToZFrameHeader = offsetToZFrameHeader;
+            this.compressionType = compressionType;
+            this.uncompressedLength = uncompressedLength;
+            this.compressedLength = compressedLength;
+            this.datareader = datareader;
+        }
+        public byte[] GetDecompressedZFrame() {
+            datareader.offset = offsetToZFrameHeader;
+            if (compressionType == ShaderFile.ZSTD_COMPRESSION) {
+                datareader.offset += 12;
+                byte[] compressedZframe = datareader.ReadBytes(compressedLength);
+                using var decompressor = new Decompressor();
+                decompressor.LoadDictionary(GetZFrameDictionary());
+                Span<byte> zframeUncompressed = decompressor.Unwrap(compressedZframe);
+                if (zframeUncompressed.Length != uncompressedLength) {
+                    throw new ShaderParserException("Decompressed zframe doesn't match expected size");
+                }
+                // TODO - organising the decompressor needs a rethink
+                // dispose or not?
+                // decompressor.Dispose();
+                return zframeUncompressed.ToArray();
+            }
+
+            // TODO - lzma stuff
+            throw new NotImplementedException("lzma goes here");
+        }
+
+        public override string ToString() {
+            string comprDesc = compressionType == ShaderFile.ZSTD_COMPRESSION ? "ZSTD" : "LZMA";
+            return $"zframeId[0x{zframeId:x08}] {comprDesc} offset={offsetToZFrameHeader,8} " +
+                $"compressedLength={compressedLength,7} uncompressedLength={uncompressedLength,9}";
+        }
+    }
 
 
 
