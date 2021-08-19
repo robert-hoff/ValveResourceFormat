@@ -8,11 +8,11 @@ namespace MyShaderAnalysis.vcsparsing {
 
     public class DataReaderZFrameByteAnalysis : DataReader {
 
-        private FILETYPE filetype;
+        private VcsFileType filetype;
         private VcsSourceType sourceType;
 
-        public DataReaderZFrameByteAnalysis(byte[] data, FILETYPE filetype, VcsSourceType vcsSourceType) : base(data) {
-            if (filetype == FILETYPE.features_file) {
+        public DataReaderZFrameByteAnalysis(byte[] data, VcsFileType filetype, VcsSourceType vcsSourceType) : base(data) {
+            if (filetype == VcsFileType.Features) {
                 throw new ShaderParserException("file type cannot be features, as they don't contain any zframes");
             }
             this.filetype = filetype;
@@ -43,7 +43,7 @@ namespace MyShaderAnalysis.vcsparsing {
 
 
             // this applies only to vs files (ps, gs and psrs files don't have this section)
-            if (filetype == FILETYPE.vs_file) {
+            if (filetype == VcsFileType.VertexShader) {
                 // values seen
                 // 1,2,4,5,8,10,12,16,20,40,48,80,120,160
                 int blockCountInput = ReadInt16AtPosition();
@@ -105,13 +105,13 @@ namespace MyShaderAnalysis.vcsparsing {
 
 
             //  End blocks for vs and gs files
-            if (filetype == FILETYPE.vs_file || filetype == FILETYPE.gs_file) {
+            if (filetype == VcsFileType.VertexShader || filetype == VcsFileType.GeometryShader) {
                 ShowZAllEndBlocksTypeVs();
                 BreakLine();
             }
 
             //  End blocks for ps and psrs files
-            if (filetype == FILETYPE.ps_file || filetype == FILETYPE.psrs_file) {
+            if (filetype == VcsFileType.PixelShader || filetype == VcsFileType.PotentialShadowReciever) {
                 ShowByteCount();
                 int nrEndBlocks = ReadIntAtPosition();
                 ShowBytes(4, breakLine: false);

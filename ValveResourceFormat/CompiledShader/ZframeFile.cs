@@ -1,12 +1,9 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.IO;
-using ZstdSharp;
-using static ValveResourceFormat.ShaderParser.ShaderUtilHelpers;
 using System.Diagnostics;
-using ValveResourceFormat.ThirdParty;
+using System.IO;
 using ValveResourceFormat.Serialization.VfxEval;
+using ValveResourceFormat.ThirdParty;
+using static ValveResourceFormat.ShaderParser.ShaderUtilHelpers;
 
 #pragma warning disable CA1051 // Do not declare visible instance fields
 #pragma warning disable CA1024 // Use properties where appropriate
@@ -16,7 +13,7 @@ namespace ValveResourceFormat.ShaderParser
     {
         private ShaderDataReader datareader;
         public string filenamepath;
-        public VcsFiletype vcsFiletype = VcsFiletype.Undetermined;
+        public VcsFileType vcsFiletype = VcsFileType.Undetermined;
         public long zframeId;
         public ZDataBlock leadingData;
         public List<ZFrameParam> zframeParams;
@@ -48,7 +45,7 @@ namespace ValveResourceFormat.ShaderParser
                 ZFrameParam zParam = new(datareader);
                 zframeParams.Add(zParam);
             }
-            if (vcsFiletype == VcsFiletype.VertexShader)
+            if (vcsFiletype == VcsFileType.VertexShader)
             {
                 int summaryLength = datareader.ReadInt16();
                 leadSummary = new int[summaryLength];
@@ -89,7 +86,7 @@ namespace ValveResourceFormat.ShaderParser
             nrEndBlocks = datareader.ReadInt();
             for (int i = 0; i < nrEndBlocks; i++)
             {
-                if (vcsFiletype == VcsFiletype.VertexShader || vcsFiletype == VcsFiletype.GeometryShader)
+                if (vcsFiletype == VcsFileType.VertexShader || vcsFiletype == VcsFileType.GeometryShader)
                 {
                     VsEndBlock vsEndBlock = new(datareader);
                     vsEndBlocks.Add(vsEndBlock);
@@ -134,7 +131,7 @@ namespace ValveResourceFormat.ShaderParser
 
         public string GetLeadSummary()
         {
-            if (vcsFiletype != VcsFiletype.VertexShader)
+            if (vcsFiletype != VcsFileType.VertexShader)
             {
                 return "only vs files have this section";
             }
@@ -198,7 +195,7 @@ namespace ValveResourceFormat.ShaderParser
         }
         public void ShowEndBlocks()
         {
-            if (vcsFiletype == VcsFiletype.VertexShader || vcsFiletype == VcsFiletype.GeometryShader)
+            if (vcsFiletype == VcsFileType.VertexShader || vcsFiletype == VcsFileType.GeometryShader)
             {
                 Debug.WriteLine($"{vsEndBlocks.Count:X02} 00 00 00   // nr of end blocks ({vsEndBlocks.Count})");
                 foreach (VsEndBlock vsEndBlock in vsEndBlocks)

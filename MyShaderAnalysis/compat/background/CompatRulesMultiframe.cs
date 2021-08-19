@@ -37,7 +37,7 @@ namespace MyShaderAnalysis.compat {
         static void TestShadernameShorten() {
             SortedDictionary<string, int> map = new();
 
-            List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
+            List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Any, -1);
             foreach (string filenamepath in allVcsFiles) {
                 ShaderFile shaderFile = new(filenamepath);
                 foreach (var item in shaderFile.sfBlocks) {

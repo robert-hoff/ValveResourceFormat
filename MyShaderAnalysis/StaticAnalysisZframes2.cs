@@ -137,7 +137,7 @@ namespace MyShaderAnalysis {
 
         static Dictionary<int, GlslSource> GetBlockIdToSource(ZFrameFile zframeFile) {
             Dictionary<int, GlslSource> blockIdToSource = new();
-            if (zframeFile.vcsFiletype == FILETYPE.vs_file) {
+            if (zframeFile.vcsFiletype == VcsFileType.VertexShader) {
                 foreach (VsEndBlock vsEndBlock in zframeFile.vsEndBlocks) {
                     blockIdToSource.Add(vsEndBlock.blockIdRef, zframeFile.glslSources[vsEndBlock.sourceRef]);
                 }
@@ -180,7 +180,7 @@ namespace MyShaderAnalysis {
 
 
         static void PrintLeadSummary(ZFrameFile zframeFile) {
-            if (zframeFile.vcsFiletype != FILETYPE.vs_file) {
+            if (zframeFile.vcsFiletype != VcsFileType.VertexShader) {
                 return;
             }
             OutputWriteLine(zframeFile.GetLeadSummary());
@@ -252,7 +252,7 @@ namespace MyShaderAnalysis {
 
         static List<int> GetActiveBlockIds(ZFrameFile zframeFile) {
             List<int> blockIds = new();
-            if (zframeFile.vcsFiletype == FILETYPE.vs_file) {
+            if (zframeFile.vcsFiletype == VcsFileType.VertexShader) {
                 foreach (VsEndBlock vsEndBlock in zframeFile.vsEndBlocks) {
                     blockIds.Add(vsEndBlock.blockIdRef);
                 }
@@ -528,8 +528,8 @@ namespace MyShaderAnalysis {
             OutputWriteLine($"{headerText}");
             OutputWriteLine(new string('-', headerText.Length));
 
-            FILETYPE vcsFiletype = shaderFile.vcsFiletype;
-            if (vcsFiletype == FILETYPE.vs_file || vcsFiletype == FILETYPE.gs_file) {
+            VcsFileType vcsFiletype = shaderFile.vcsFiletype;
+            if (vcsFiletype == VcsFileType.VertexShader || vcsFiletype == VcsFileType.GeometryShader) {
                 OutputWriteLine($"{zframeFile.vsEndBlocks.Count:X02} 00 00 00   // end blocks ({zframeFile.vsEndBlocks.Count})");
                 OutputWriteLine("");
                 foreach (VsEndBlock vsEndBlock in zframeFile.vsEndBlocks) {
@@ -580,7 +580,7 @@ namespace MyShaderAnalysis {
             }
 
             Dictionary<FileTokens, List<long>> zframesFound = new();
-            List<string> coreFiles = GetVcsFiles(PCGL_DIR_CORE, null, FILETYPE.any, 30);
+            List<string> coreFiles = GetVcsFiles(PCGL_DIR_CORE, null, VcsFileType.Any, 30);
             foreach (var filenamepath in coreFiles) {
                 FileTokens vcsFile = new(ARCHIVE.dotacore_pcgl, filenamepath);
                 List<long> zframeIds = new();
@@ -591,7 +591,7 @@ namespace MyShaderAnalysis {
                 }
             }
 
-            List<string> gameFiles = GetVcsFiles(PCGL_DIR_NOT_CORE, null, FILETYPE.any, 30);
+            List<string> gameFiles = GetVcsFiles(PCGL_DIR_NOT_CORE, null, VcsFileType.Any, 30);
             foreach (var filenamepath in gameFiles) {
                 FileTokens vcsFile = new(ARCHIVE.dotagame_pcgl, filenamepath);
                 List<long> zframeIds = new();

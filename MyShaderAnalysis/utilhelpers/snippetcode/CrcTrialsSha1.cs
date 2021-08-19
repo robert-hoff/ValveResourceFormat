@@ -25,7 +25,7 @@ namespace MyShaderAnalysis.utilhelpers.snippetcode {
 
         // search for small glsl sources
         static void SearchForSmallGlsl() {
-            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, vcsparsing.FILETYPE.any, -1);
+            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, vcsparsing.VcsFileType.Any, -1);
             foreach (var filenamepath in vcsFiles) {
                 ShaderFile shaderfile = new(filenamepath);
 

@@ -16,21 +16,21 @@ namespace MyShaderAnalysis.vcsparsing {
             return zstdDictionary;
         }
 
-        public static FILETYPE GetVcsFileType(string filenamepath) {
+        public static VcsFileType GetVcsFileType(string filenamepath) {
             if (filenamepath.EndsWith("features.vcs")) {
-                return FILETYPE.features_file;
+                return VcsFileType.Features;
             }
             if (filenamepath.EndsWith("vs.vcs")) {
-                return FILETYPE.vs_file;
+                return VcsFileType.VertexShader;
             }
             if (filenamepath.EndsWith("ps.vcs")) {
-                return FILETYPE.ps_file;
+                return VcsFileType.PixelShader;
             }
             if (filenamepath.EndsWith("psrs.vcs")) {
-                return FILETYPE.psrs_file;
+                return VcsFileType.PotentialShadowReciever;
             }
             if (filenamepath.EndsWith("gs.vcs")) {
-                return FILETYPE.gs_file;
+                return VcsFileType.GeometryShader;
             }
             throw new ShaderParserException($"don't know what this file is {filenamepath}");
         }
@@ -57,34 +57,34 @@ namespace MyShaderAnalysis.vcsparsing {
 
 
 
-        public static List<string> GetVcsFiles(string dir1, FILETYPE fileType) {
+        public static List<string> GetVcsFiles(string dir1, VcsFileType fileType) {
             return GetVcsFiles(dir1, null, fileType, -1);
         }
 
 
-        public static List<string> GetVcsFiles(string dir1, string dir2, FILETYPE fileType, int numEnding, bool sortFiles = true) {
+        public static List<string> GetVcsFiles(string dir1, string dir2, VcsFileType fileType, int numEnding, bool sortFiles = true) {
             List<string> filesFound = new();
-            if (fileType == FILETYPE.features_file || fileType == FILETYPE.any) {
+            if (fileType == VcsFileType.Features || fileType == VcsFileType.Any) {
                 string endsWith = numEnding > -1 ? $"{numEnding}_features.vcs" : "features.vcs";
                 filesFound.AddRange(GetAllFilesWithEnding(dir1, endsWith));
                 filesFound.AddRange(GetAllFilesWithEnding(dir2, endsWith));
             }
-            if (fileType == FILETYPE.vs_file || fileType == FILETYPE.any) {
+            if (fileType == VcsFileType.VertexShader || fileType == VcsFileType.Any) {
                 string endsWith = numEnding > -1 ? $"{numEnding}_vs.vcs" : "vs.vcs";
                 filesFound.AddRange(GetAllFilesWithEnding(dir1, endsWith));
                 filesFound.AddRange(GetAllFilesWithEnding(dir2, endsWith));
             }
-            if (fileType == FILETYPE.ps_file || fileType == FILETYPE.any) {
+            if (fileType == VcsFileType.PixelShader || fileType == VcsFileType.Any) {
                 string endsWith = numEnding > -1 ? $"{numEnding}_ps.vcs" : "ps.vcs";
                 filesFound.AddRange(GetAllFilesWithEnding(dir1, endsWith));
                 filesFound.AddRange(GetAllFilesWithEnding(dir2, endsWith));
             }
-            if (fileType == FILETYPE.gs_file || fileType == FILETYPE.any) {
+            if (fileType == VcsFileType.GeometryShader || fileType == VcsFileType.Any) {
                 string endsWith = numEnding > -1 ? $"{numEnding}_gs.vcs" : "gs.vcs";
                 filesFound.AddRange(GetAllFilesWithEnding(dir1, endsWith));
                 filesFound.AddRange(GetAllFilesWithEnding(dir2, endsWith));
             }
-            if (fileType == FILETYPE.psrs_file || fileType == FILETYPE.any) {
+            if (fileType == VcsFileType.PotentialShadowReciever || fileType == VcsFileType.Any) {
                 string endsWith = numEnding > -1 ? $"{numEnding}_psrs.vcs" : "psrs.vcs";
                 filesFound.AddRange(GetAllFilesWithEnding(dir1, endsWith));
                 filesFound.AddRange(GetAllFilesWithEnding(dir2, endsWith));
@@ -128,7 +128,7 @@ namespace MyShaderAnalysis.vcsparsing {
 
         public static List<(string, string, string)> GetFeaturesVsPsFileTriple(string dir1, string dir2, int vcsFileVer = -1) {
             List<(string, string, string)> fileTriplets = new();
-            List<string> featuresFiles = GetVcsFiles(dir1, dir2, FILETYPE.features_file, vcsFileVer);
+            List<string> featuresFiles = GetVcsFiles(dir1, dir2, VcsFileType.Features, vcsFileVer);
             foreach (string featFile in featuresFiles) {
                 string vsFile = $"{featFile[0..^12]}vs.vcs";
                 string psFile = $"{featFile[0..^12]}ps.vcs";
@@ -230,11 +230,11 @@ namespace MyShaderAnalysis.vcsparsing {
             string shortName = "";
             string token = "";
             string filename = Path.GetFileName(vcsFileName);
-            FILETYPE vcsFiletype = GetVcsFileType(filename);
-            if (vcsFiletype == FILETYPE.features_file) {
+            VcsFileType vcsFiletype = GetVcsFileType(filename);
+            if (vcsFiletype == VcsFileType.Features) {
                 shortName = filename[0..^16];
                 token = "ft";
-            } else if (vcsFiletype == FILETYPE.psrs_file) {
+            } else if (vcsFiletype == VcsFileType.PotentialShadowReciever) {
                 shortName = filename[0..^12];
                 token = "psrs";
             } else {

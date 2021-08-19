@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using static ValveResourceFormat.ShaderParser.ShaderUtilHelpers;
-
 #pragma warning disable CA1051 // Do not declare visible instance fields
 namespace ValveResourceFormat.ShaderParser
 {

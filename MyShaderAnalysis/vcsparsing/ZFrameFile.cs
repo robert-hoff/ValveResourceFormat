@@ -1,10 +1,6 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.IO;
-using ZstdSharp;
-using static MyShaderAnalysis.vcsparsing.UtilHelpers;
 using System.Diagnostics;
+using static MyShaderAnalysis.vcsparsing.UtilHelpers;
 
 namespace MyShaderAnalysis.vcsparsing {
 
@@ -12,7 +8,7 @@ namespace MyShaderAnalysis.vcsparsing {
     public class ZFrameFile {
         private DataReader datareader;
         public string filenamepath;
-        public FILETYPE vcsFiletype = FILETYPE.unknown;
+        public VcsFileType vcsFiletype = VcsFileType.Undetermined;
         public long zframeId;
 
         public ZDataBlock leadingData;
@@ -48,7 +44,7 @@ namespace MyShaderAnalysis.vcsparsing {
                 zframeParams.Add(zParam);
             }
 
-            if (vcsFiletype == FILETYPE.vs_file) {
+            if (vcsFiletype == VcsFileType.VertexShader) {
                 int summaryLength = datareader.ReadInt16();
                 leadSummary = new int[summaryLength];
                 for (int i = 0; i < summaryLength; i++) {
@@ -83,7 +79,7 @@ namespace MyShaderAnalysis.vcsparsing {
 
             nrEndBlocks = datareader.ReadInt();
             for (int i = 0; i < nrEndBlocks; i++) {
-                if (vcsFiletype == FILETYPE.vs_file || vcsFiletype == FILETYPE.gs_file) {
+                if (vcsFiletype == VcsFileType.VertexShader || vcsFiletype == VcsFileType.GeometryShader) {
                     VsEndBlock vsEndBlock = new(datareader);
                     vsEndBlocks.Add(vsEndBlock);
                 } else {
@@ -129,7 +125,7 @@ namespace MyShaderAnalysis.vcsparsing {
 
 
         public string GetLeadSummary() {
-            if (vcsFiletype != FILETYPE.vs_file) {
+            if (vcsFiletype != VcsFileType.VertexShader) {
                 return "only vs files have this section";
             }
             string leadSummaryDesc = $"{leadSummary.Length:X02} 00   // configuration states ({leadSummary.Length}), lead summary\n";
@@ -185,7 +181,7 @@ namespace MyShaderAnalysis.vcsparsing {
         }
 
         public void ShowEndBlocks() {
-            if (vcsFiletype == FILETYPE.vs_file || vcsFiletype == FILETYPE.gs_file) {
+            if (vcsFiletype == VcsFileType.VertexShader || vcsFiletype == VcsFileType.GeometryShader) {
                 Debug.WriteLine($"{vsEndBlocks.Count:X02} 00 00 00   // nr of end blocks ({vsEndBlocks.Count})");
                 foreach (VsEndBlock vsEndBlock in vsEndBlocks) {
                     Debug.WriteLine($"{DataReader.BytesToString(vsEndBlock.databytes)}");

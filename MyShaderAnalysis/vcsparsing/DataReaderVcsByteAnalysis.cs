@@ -11,7 +11,7 @@ namespace MyShaderAnalysis.vcsparsing {
 
         const string SERVER_BASEDIR = @"Z:\dev\www\vcs.codecreation.dev";
 
-        private FILETYPE filetype;
+        private VcsFileType filetype;
         private string vcsFilename = null;
         public DataReaderVcsByteAnalysis(string filenamepath) : base(File.ReadAllBytes(filenamepath)) {
             this.filetype = GetVcsFileType(filenamepath);
@@ -34,10 +34,10 @@ namespace MyShaderAnalysis.vcsparsing {
 
 
         public void PrintByteAnalysis() {
-            if (filetype == FILETYPE.features_file) {
+            if (filetype == VcsFileType.Features) {
                 PrintVcsFeaturesHeader();
-            } else if (filetype == FILETYPE.vs_file || filetype == FILETYPE.ps_file
-                  || filetype == FILETYPE.gs_file || filetype == FILETYPE.psrs_file) {
+            } else if (filetype == VcsFileType.VertexShader || filetype == VcsFileType.PixelShader
+                  || filetype == VcsFileType.GeometryShader || filetype == VcsFileType.PotentialShadowReciever) {
                 PrintVsPsHeader();
             } else {
                 throw new ShaderParserException($"can't parse this filetype: {filetype}");
@@ -57,7 +57,7 @@ namespace MyShaderAnalysis.vcsparsing {
             PrintAllMipmapBlocks();
             PrintAllBufferBlocks();
             // for some reason only features and vs files observe symbol blocks
-            if (filetype == FILETYPE.features_file || filetype == FILETYPE.vs_file) {
+            if (filetype == VcsFileType.Features || filetype == VcsFileType.VertexShader) {
                 PrintAllSymbolNameBlocks();
             }
             PrintZframes();

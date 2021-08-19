@@ -1,9 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ZstdSharp;
 using static ValveResourceFormat.ShaderParser.ShaderUtilHelpers;
 
@@ -15,7 +12,7 @@ namespace ValveResourceFormat.ShaderParser
     {
         private ShaderDataReader datareader;
         public string filenamepath;
-        public VcsFiletype vcsFiletype = VcsFiletype.Undetermined;
+        public VcsFileType vcsFiletype = VcsFileType.Undetermined;
         public FeaturesHeaderBlock featuresHeader;
         public VsPsHeaderBlock vspsHeader;
         public List<SfBlock> sfBlocks = new();
@@ -34,11 +31,11 @@ namespace ValveResourceFormat.ShaderParser
             vcsFiletype = GetVcsFileType(filenamepath);
             this.datareader = datareader;
 
-            if (vcsFiletype == VcsFiletype.Features)
+            if (vcsFiletype == VcsFileType.Features)
             {
                 featuresHeader = new FeaturesHeaderBlock(datareader, datareader.GetOffset());
-            } else if (vcsFiletype == VcsFiletype.VertexShader || vcsFiletype == VcsFiletype.PixelShader
-                   || vcsFiletype == VcsFiletype.GeometryShader || vcsFiletype == VcsFiletype.PotentialShadowReciever)
+            } else if (vcsFiletype == VcsFileType.VertexShader || vcsFiletype == VcsFileType.PixelShader
+                   || vcsFiletype == VcsFileType.GeometryShader || vcsFiletype == VcsFileType.PotentialShadowReciever)
             {
                 vspsHeader = new VsPsHeaderBlock(datareader, datareader.GetOffset());
 
@@ -98,7 +95,7 @@ namespace ValveResourceFormat.ShaderParser
                 bufferBlocks.Add(nextBufferBlock);
             }
             // only features and vs files observe symbol blocks
-            if (vcsFiletype == VcsFiletype.Features || vcsFiletype == VcsFiletype.VertexShader)
+            if (vcsFiletype == VcsFileType.Features || vcsFiletype == VcsFileType.VertexShader)
             {
                 int sybmolsBlockCount = datareader.ReadInt();
                 for (int i = 0; i < sybmolsBlockCount; i++)
@@ -177,11 +174,11 @@ namespace ValveResourceFormat.ShaderParser
         public void PrintByteAnalysis()
         {
             datareader.SetPosition(0);
-            if (vcsFiletype == VcsFiletype.Features)
+            if (vcsFiletype == VcsFileType.Features)
             {
                 featuresHeader.PrintAnnotatedBytestream();
-            } else if (vcsFiletype == VcsFiletype.VertexShader || vcsFiletype == VcsFiletype.PixelShader
-                  || vcsFiletype == VcsFiletype.GeometryShader || vcsFiletype == VcsFiletype.PotentialShadowReciever)
+            } else if (vcsFiletype == VcsFileType.VertexShader || vcsFiletype == VcsFileType.PixelShader
+                  || vcsFiletype == VcsFileType.GeometryShader || vcsFiletype == VcsFileType.PotentialShadowReciever)
             {
                 vspsHeader.PrintAnnotatedBytestream();
             }
@@ -250,7 +247,7 @@ namespace ValveResourceFormat.ShaderParser
                 bufferBlock.PrintAnnotatedBytestream();
             }
             datareader.ShowByteCount();
-            if (vcsFiletype == VcsFiletype.Features || vcsFiletype == VcsFiletype.VertexShader)
+            if (vcsFiletype == VcsFileType.Features || vcsFiletype == VcsFileType.VertexShader)
             {
                 uint symbolBlockCount = datareader.ReadUIntAtPosition();
                 datareader.ShowBytes(4, $"{symbolBlockCount} symbol/names blocks");

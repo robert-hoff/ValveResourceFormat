@@ -22,7 +22,7 @@ namespace MyShaderAnalysis.utilhelpers {
 
         public FileTriple(ARCHIVE archive, string ftFileName) {
             ftFile = new FileTokens(archive, ftFileName);
-            if (ftFile.vcsFiletype != FILETYPE.features_file) {
+            if (ftFile.vcsFiletype != VcsFileType.Features) {
                 throw new System.Exception("not a features file");
             }
             string vsNamepath = $"{ftFile.filenamepath[0..^12]}vs.vcs";
@@ -62,7 +62,7 @@ namespace MyShaderAnalysis.utilhelpers {
 
         public static List<FileTriple> GetFeaturesVsPsFileTriple(string dir1, string dir2, int vcsFileVer = -1) {
             List<FileTriple> fileTriples = new();
-            List<string> featuresFiles = GetVcsFiles(dir1, dir2, FILETYPE.features_file, vcsFileVer);
+            List<string> featuresFiles = GetVcsFiles(dir1, dir2, VcsFileType.Features, vcsFileVer);
             List<string> validFeaturesFiles = new();
             foreach (string ftFilenamepath in featuresFiles) {
                 string vsFile = $"{ftFilenamepath[0..^12]}vs.vcs";

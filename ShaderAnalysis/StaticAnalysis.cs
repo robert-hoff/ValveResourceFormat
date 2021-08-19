@@ -38,7 +38,7 @@ namespace ShaderAnalysis
 
         static void Trial1()
         {
-            List<string> vcsFiles = GetVcsFiles(FileSystem.DOTA_CORE_PCGL_SOURCE, FileSystem.DOTA_GAME_PCGL_SOURCE, VcsFiletype.Features, -1);
+            List<string> vcsFiles = GetVcsFiles(FileSystem.DOTA_CORE_PCGL_SOURCE, FileSystem.DOTA_GAME_PCGL_SOURCE, VcsFileType.Features, -1);
 
             foreach (var item in vcsFiles)
             {

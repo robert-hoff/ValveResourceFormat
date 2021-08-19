@@ -144,7 +144,7 @@ namespace MyShaderAnalysis {
 
 
         static void DBlockRuleKeyValuesAnalysis() {
-            List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
+            List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Any, -1);
             // List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, null, FILETYPE.any, 30);
             foreach (string vcsFilenamepath in allVcsFiles) {
                 ShaderFile shaderFile = new(vcsFilenamepath);
@@ -199,7 +199,7 @@ namespace MyShaderAnalysis {
 
 
         static void DBlockRuleKeyDescriptionSurvey() {
-            List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
+            List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Any, -1);
             foreach (string vcsFilenamepath in allVcsFiles) {
                 ShaderFile shaderFile = new(vcsFilenamepath);
                 foreach (UnknownBlock unkBlock in shaderFile.unknownBlocks) {
@@ -212,7 +212,7 @@ namespace MyShaderAnalysis {
 
 
         static void CompatRuleKeyValuesAnalysis() {
-            List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
+            List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Any, -1);
             // List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, null, FILETYPE.any, 30);
             foreach (string vcsFilenamepath in allVcsFiles) {
                 ShaderFile shaderFile = new(vcsFilenamepath);
@@ -227,7 +227,7 @@ namespace MyShaderAnalysis {
 
 
         static void CompatRuleKeyDescriptionSurvey() {
-            List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
+            List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Any, -1);
             foreach (string vcsFilenamepath in allVcsFiles) {
                 ShaderFile shaderFile = new(vcsFilenamepath);
                 foreach (CompatibilityBlock cBlock in shaderFile.compatibilityBlocks) {
@@ -282,17 +282,17 @@ namespace MyShaderAnalysis {
 
         static string GetSFSummaryLink(string filenamepath) {
             // FileTripe fileTriple = FileTriple.GetTripleIfExists()
-            FILETYPE vcsFiletype = GetVcsFileType(filenamepath);
-            if (vcsFiletype == FILETYPE.vs_file || vcsFiletype == FILETYPE.ps_file) {
+            VcsFileType vcsFiletype = GetVcsFileType(filenamepath);
+            if (vcsFiletype == VcsFileType.VertexShader || vcsFiletype == VcsFileType.PixelShader) {
                 ARCHIVE archive = DetermineArchiveType(filenamepath);
                 FileTriple fileTriple = FileTriple.GetTripleIfExists(archive, $"{filenamepath[0..^6]}features.vcs");
                 if (fileTriple == null) {
                     return "";
                 }
-                if (vcsFiletype == FILETYPE.vs_file) {
+                if (vcsFiletype == VcsFileType.VertexShader) {
                     return $"<a href='{fileTriple.vsFile.GetSummariesPath()}'>det.</a>";
                 }
-                if (vcsFiletype == FILETYPE.ps_file) {
+                if (vcsFiletype == VcsFileType.PixelShader) {
                     return $"<a href='{fileTriple.psFile.GetSummariesPath()}'>det.</a>";
                 }
             }
@@ -318,7 +318,7 @@ namespace MyShaderAnalysis {
 
             FileTriple triple = new(ARCHIVE.artifact_classiccore_pc, "aerial_perspective_pc_30_features.vcs");
 
-            WriteVsPsFileSummary(triple, FILETYPE.ps_file);
+            WriteVsPsFileSummary(triple, VcsFileType.PixelShader);
         }
 
 
@@ -335,20 +335,20 @@ namespace MyShaderAnalysis {
                 if (triple.psFile.filename.Equals("multiblend_pcgl_30_ps.vcs")) {
                     continue;
                 }
-                WriteVsPsFileSummary(triple, FILETYPE.vs_file, disableOutput: true);
+                WriteVsPsFileSummary(triple, VcsFileType.VertexShader, disableOutput: true);
                 CloseStreamWriter();
-                WriteVsPsFileSummary(triple, FILETYPE.ps_file, disableOutput: true);
+                WriteVsPsFileSummary(triple, VcsFileType.PixelShader, disableOutput: true);
                 CloseStreamWriter();
             }
             swWriterAlreadyClosed = true;
         }
 
 
-        static void WriteVsPsFileSummary(FileTriple fileTriple, FILETYPE targetFileType, bool disableOutput = false) {
-            if (targetFileType != FILETYPE.vs_file && targetFileType != FILETYPE.ps_file) {
+        static void WriteVsPsFileSummary(FileTriple fileTriple, VcsFileType targetFileType, bool disableOutput = false) {
+            if (targetFileType != VcsFileType.VertexShader && targetFileType != VcsFileType.PixelShader) {
                 throw new ShaderParserException("need to target either vs or ps file");
             }
-            FileTokens targetFile = targetFileType == FILETYPE.vs_file ? fileTriple.vsFile : fileTriple.psFile;
+            FileTokens targetFile = targetFileType == VcsFileType.VertexShader ? fileTriple.vsFile : fileTriple.psFile;
             string htmlTitle = $"{targetFile.namelabel}({targetFile.vcstoken})";
             string outputNamepath = targetFile.GetServerFilePath("summary", createDirs: true);
             FileSummaryVsPSFile(fileTriple, targetFileType, htmlTitle, outputNamepath, writeFile: true, disableOutput);
@@ -361,7 +361,7 @@ namespace MyShaderAnalysis {
 
             List<string> result = new();
 
-            List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, 30);
+            List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Any, 30);
             foreach (string filenamepath in allVcsFiles) {
                 ShaderFile shaderFile = new(filenamepath);
                 foreach (var sfBlock in shaderFile.sfBlocks) {
@@ -428,10 +428,10 @@ namespace MyShaderAnalysis {
 
 
             List<string> allVcsFiles = new();
-            allVcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, FILETYPE.features_file, -1));
-            allVcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, FILETYPE.ps_file, -1));
-            allVcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, FILETYPE.vs_file, -1));
-            allVcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, FILETYPE.psrs_file, -1));
+            allVcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsFileType.Features, -1));
+            allVcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsFileType.PixelShader, -1));
+            allVcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsFileType.VertexShader, -1));
+            allVcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsFileType.PotentialShadowReciever, -1));
             allVcsFiles.Sort();
 
 
@@ -554,7 +554,7 @@ namespace MyShaderAnalysis {
                 values.Add(new SortedDictionary<int, int>());
             }
 
-            List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
+            List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Any, -1);
             foreach (string filenamepath in allVcsFiles) {
                 ShaderFile shaderFile = new(filenamepath);
                 foreach (UnknownBlock uBlock in shaderFile.unknownBlocks) {
@@ -632,7 +632,7 @@ namespace MyShaderAnalysis {
                 values.Add(new SortedDictionary<int, int>());
             }
 
-            List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
+            List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Any, -1);
             // List<string> allVcsFiles = new();
             // allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
 
@@ -746,14 +746,14 @@ namespace MyShaderAnalysis {
         //static void FileSummaryVsPSFile((string, string, string) triple, FILETYPE targetFileType, string title = "summary",
         //        string outputFilenamepath = null, bool writeFile = false) {
 
-        static void FileSummaryVsPSFile(FileTriple triple, FILETYPE targetFileType, string title = "summary",
+        static void FileSummaryVsPSFile(FileTriple triple, VcsFileType targetFileType, string title = "summary",
                 string outputFilenamepath = null, bool writeFile = false, bool disableOutput = false) {
-            if (targetFileType != FILETYPE.vs_file && targetFileType != FILETYPE.ps_file) {
+            if (targetFileType != VcsFileType.VertexShader && targetFileType != VcsFileType.PixelShader) {
                 throw new ShaderParserException("need to target either vs or ps file");
             }
 
             FileTokens ftFile = triple.ftFile;
-            FileTokens targetFile = targetFileType == FILETYPE.vs_file ? triple.vsFile : triple.psFile;
+            FileTokens targetFile = targetFileType == VcsFileType.VertexShader ? triple.vsFile : triple.psFile;
             if (outputFilenamepath != null && writeFile) {
                 ConfigureOutputFile(outputFilenamepath, disableOutput);
                 WriteHtmlFile(title, $"SF SUMMARY for {targetFile.GetShortHandName()}");
@@ -1004,7 +1004,7 @@ namespace MyShaderAnalysis {
 
 
         static void CompatBlockRelationships() {
-            List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
+            List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Any, -1);
             foreach (string filenamepath in allVcsFiles) {
                 ShaderFile shaderFile = new(filenamepath);
                 foreach (var cBlock in shaderFile.compatibilityBlocks) {
@@ -1012,7 +1012,7 @@ namespace MyShaderAnalysis {
                         Debug.WriteLine($"ERROR!");
                     }
 
-                    if (cBlock.arg0 == 1 && shaderFile.vcsFiletype != FILETYPE.features_file) {
+                    if (cBlock.arg0 == 1 && shaderFile.vcsFiletype != VcsFileType.Features) {
                         Debug.WriteLine($"error!");
                     }
 
@@ -1032,7 +1032,7 @@ namespace MyShaderAnalysis {
                 ConfigureOutputFile(outputFilenamepath);
                 WriteHtmlFile("Cblock details", "Compatibility blocks summary");
             }
-            List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
+            List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Any, -1);
             //List<string> allVcsFiles = new();
             //allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_features.vcs");
             //allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_vs.vcs");
@@ -1214,7 +1214,7 @@ namespace MyShaderAnalysis {
                 values.Add(new SortedDictionary<int, int>());
             }
 
-            List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
+            List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Any, -1);
             foreach (string filenamepath in allVcsFiles) {
                 ShaderFile shaderFile = new(filenamepath);
                 foreach (CompatibilityBlock cBlock in shaderFile.compatibilityBlocks) {
@@ -1259,7 +1259,7 @@ namespace MyShaderAnalysis {
                 ConfigureOutputFile(outputFilenamepath);
                 WriteHtmlFile("", "");
             }
-            List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
+            List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Any, -1);
             SortedDictionary<int, int> values = new();
             foreach (string filenamepath in allVcsFiles) {
                 ShaderFile shaderFile = new(filenamepath);
@@ -1279,7 +1279,7 @@ namespace MyShaderAnalysis {
                 ConfigureOutputFile(outputFilenamepath);
                 WriteHtmlFile("", "");
             }
-            List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
+            List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Any, -1);
             SortedDictionary<int, int> values = new();
             foreach (string filenamepath in allVcsFiles) {
                 ShaderFile shaderFile = new(filenamepath);
@@ -1382,7 +1382,7 @@ namespace MyShaderAnalysis {
                 ConfigureOutputFile(outputFilenamepath);
                 WriteHtmlFile("CBlock count", "Compatibility block count, all files");
             }
-            List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
+            List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Any, -1);
             foreach (string filenamepath in allVcsFiles) {
                 ShaderFile shaderFile = new(filenamepath);
                 OutputWriteLine($"{RemoveBaseDir(filenamepath).PadRight(80)} " +
@@ -1625,7 +1625,7 @@ namespace MyShaderAnalysis {
 
 
         static void AllFiles() {
-            List<string> allVcs = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
+            List<string> allVcs = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Any, -1);
             foreach (string filenamepath in allVcs) {
                 CollectStringValue(RemoveBaseDir(filenamepath));
             }
@@ -1634,7 +1634,7 @@ namespace MyShaderAnalysis {
 
 
         static void SfBlockInspections2() {
-            List<string> files = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
+            List<string> files = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Any, -1);
             foreach (string filenamepath in files) {
                 ShaderFile shaderFile = new(filenamepath);
                 foreach (var sfBlock in shaderFile.sfBlocks) {
@@ -1656,18 +1656,18 @@ namespace MyShaderAnalysis {
          *
          */
         static void SfBlockInspections() {
-            List<string> featuresFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
+            List<string> featuresFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Any, -1);
             foreach (string filenamepath in featuresFiles) {
                 ShaderFile shaderFile = new(filenamepath);
 
                 string filetype = "";
-                if (shaderFile.vcsFiletype == FILETYPE.features_file) {
+                if (shaderFile.vcsFiletype == VcsFileType.Features) {
                     filetype = "           FEAT";
                 }
-                if (shaderFile.vcsFiletype == FILETYPE.vs_file) {
+                if (shaderFile.vcsFiletype == VcsFileType.VertexShader) {
                     filetype = "VS             ";
                 }
-                if (shaderFile.vcsFiletype == FILETYPE.ps_file) {
+                if (shaderFile.vcsFiletype == VcsFileType.PixelShader) {
                     filetype = "      PS       ";
                 }
 
@@ -1684,7 +1684,7 @@ namespace MyShaderAnalysis {
 
 
         static void MainParamsInFeaturesFiles() {
-            List<string> featuresFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.features_file, -1);
+            List<string> featuresFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Features, -1);
             foreach (string filenamepath in featuresFiles) {
                 ShaderFile shaderFile = new(filenamepath);
                 DataBlockFeaturesHeader featuresHeader = shaderFile.featuresHeader;
@@ -1716,7 +1716,7 @@ namespace MyShaderAnalysis {
          *
          */
         static void FeaturesHeaderFirstFour() {
-            List<string> featuresFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.features_file, -1);
+            List<string> featuresFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Features, -1);
             foreach (string filenamepath in featuresFiles) {
                 ShaderFile shaderFile = new(filenamepath);
                 DataBlockFeaturesHeader featuresHeader = shaderFile.featuresHeader;

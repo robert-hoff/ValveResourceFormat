@@ -11,10 +11,10 @@ namespace MyShaderAnalysis.vcsparsing {
     class DataReaderZFramePcFile : DataReader {
 
 
-        FILETYPE filetype;
+        VcsFileType filetype;
 
-        public DataReaderZFramePcFile(byte[] data, FILETYPE filetype) : base(data) {
-            if (filetype == FILETYPE.features_file) {
+        public DataReaderZFramePcFile(byte[] data, VcsFileType filetype) : base(data) {
+            if (filetype == VcsFileType.Features) {
                 throw new ShaderParserException("file type cannot be features, as they don't contain any zframes");
             }
             this.filetype = filetype;
@@ -41,7 +41,7 @@ namespace MyShaderAnalysis.vcsparsing {
 
             ShowZDataSection(-1);
             ShowZFrameHeader();
-            if (filetype == FILETYPE.vs_file) {
+            if (filetype == VcsFileType.VertexShader) {
                 int blockCountInput = ReadInt16AtPosition();
                 ShowByteCount("Some kind of state summary");
                 ShowBytes(2, breakLine: false);

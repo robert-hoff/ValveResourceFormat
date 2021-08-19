@@ -82,7 +82,7 @@ namespace MyShaderAnalysis {
             byte[] zframeDatabytes = shaderFile.GetDecompressedZFrame(0x1a1);
 
 
-            DataReaderZFramePcFile datareader = new(zframeDatabytes, FILETYPE.ps_file);
+            DataReaderZFramePcFile datareader = new(zframeDatabytes, VcsFileType.PixelShader);
             datareader.PrintByteAnalysis();
 
 
@@ -188,7 +188,7 @@ namespace MyShaderAnalysis {
             byte[] zframeDatabytes = shaderFile.GetDecompressedZFrame(0x1a1);
 
 
-            DataReaderZFramePcFile datareader = new(zframeDatabytes, FILETYPE.ps_file);
+            DataReaderZFramePcFile datareader = new(zframeDatabytes, VcsFileType.PixelShader);
             datareader.PrintByteAnalysis();
 
 
@@ -264,7 +264,7 @@ namespace MyShaderAnalysis {
             byte[] zframeDatabytes = shaderFile.GetDecompressedZFrame(0x28);
 
 
-            DataReaderZFramePcFile datareader = new(zframeDatabytes, FILETYPE.ps_file);
+            DataReaderZFramePcFile datareader = new(zframeDatabytes, VcsFileType.PixelShader);
             datareader.PrintByteAnalysis();
 
 

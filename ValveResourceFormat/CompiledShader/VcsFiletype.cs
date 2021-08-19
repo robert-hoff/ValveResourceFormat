@@ -1,12 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace ValveResourceFormat.ShaderParser
 {
-    public enum VcsFiletype
+    public enum VcsFileType
     {
         Undetermined,
         Any,

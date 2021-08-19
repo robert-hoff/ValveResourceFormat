@@ -1,9 +1,10 @@
 using System;
-using System.Diagnostics;
 using System.IO;
+using System.Diagnostics;
 
 #pragma warning disable CA1024 // Use properties where appropriate
-namespace ValveResourceFormat.ShaderParser {
+namespace ValveResourceFormat.ShaderParser
+{
 
     public class ShaderDataReader {
 

@@ -134,7 +134,7 @@ namespace MyShaderAnalysis {
             // vcsFiles.Add(filenamespecific1);
             // vcsFiles.Add(filenamespecific2);
 
-            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
+            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Any, -1);
 
 
 
@@ -200,10 +200,10 @@ namespace MyShaderAnalysis {
             //vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_DCG_PC_SOURCE, null, FILETYPE.vs_file, -1));
             //vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_DCG_PC_SOURCE, null, FILETYPE.ps_file, -1));
             //vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_DCG_PC_SOURCE, null, FILETYPE.psrs_file, -1));
-            vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, null, FILETYPE.features_file, -1));
-            vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, null, FILETYPE.vs_file, -1));
-            vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, null, FILETYPE.ps_file, -1));
-            vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, null, FILETYPE.psrs_file, -1));
+            vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, null, VcsFileType.Features, -1));
+            vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, null, VcsFileType.VertexShader, -1));
+            vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, null, VcsFileType.PixelShader, -1));
+            vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, null, VcsFileType.PotentialShadowReciever, -1));
 
 
 
@@ -327,7 +327,7 @@ namespace MyShaderAnalysis {
 
         static void WriteFirstZFrameEveryFile() {
             // List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
-            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.ps_file, 30);
+            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.PixelShader, 30);
             foreach (string vcsFile in vcsFiles) {
                 ShaderFile shaderFile = new(vcsFile);
                 if (shaderFile.GetZFrameCount() == 0) {
@@ -346,7 +346,7 @@ namespace MyShaderAnalysis {
         }
 
         static void ParseABunchOfZframes() {
-            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
+            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Any, -1);
             foreach (string vcsFile in vcsFiles) {
                 ShaderFile shaderFile = new(vcsFile);
                 int zcount = shaderFile.GetZFrameCount();
@@ -411,7 +411,7 @@ namespace MyShaderAnalysis {
             PrintZFrame(zframeDatabytes, shaderFile.vcsFiletype, shaderFile.vcsSourceType, disableOutput);
         }
 
-        static void PrintZFrame(byte[] databytes, FILETYPE vcsFiletype, VcsSourceType sourceType,
+        static void PrintZFrame(byte[] databytes, VcsFileType vcsFiletype, VcsSourceType sourceType,
             bool disableOutput = false, StreamWriter sw = null) {
             DataReaderZFrameByteAnalysis zFrameParser = new(databytes, vcsFiletype, sourceType);
             zFrameParser.SetDisableOutput(disableOutput);
@@ -426,7 +426,7 @@ namespace MyShaderAnalysis {
          * parse all files with the ShaderFile class (only shows status output)
          */
         static void TestShaderFile() {
-            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
+            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Any, -1);
             foreach (string filenamepath in vcsFiles) {
                 Debug.Write($"parsing {RemoveBaseDir(filenamepath)}");
                 ShaderFile shaderFile = new(filenamepath);
@@ -482,7 +482,7 @@ namespace MyShaderAnalysis {
         }
 
         static void WriteAllVcsFilesToTxt() {
-            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
+            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Any, -1);
             foreach (string vcsFile in vcsFiles) {
                 WriteVcsByteAnalysisToTxt(vcsFile);
             }
@@ -506,10 +506,10 @@ namespace MyShaderAnalysis {
             // List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, null, FILETYPE.any, -1);
 
             List<string> vcsFiles = new();
-            vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, null, FILETYPE.features_file, -1));
-            vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, null, FILETYPE.vs_file, -1));
-            vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, null, FILETYPE.ps_file, -1));
-            vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, null, FILETYPE.psrs_file, -1));
+            vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, null, VcsFileType.Features, -1));
+            vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, null, VcsFileType.VertexShader, -1));
+            vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, null, VcsFileType.PixelShader, -1));
+            vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, null, VcsFileType.PotentialShadowReciever, -1));
             //List<string> vcsFiles = new();
             //vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_DCG_PC_SOURCE, null, FILETYPE.features_file, -1));
             //vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_DCG_PC_SOURCE, null, FILETYPE.vs_file, -1));
@@ -544,7 +544,7 @@ namespace MyShaderAnalysis {
          *
          */
         static void ParseAllVcsFilesDisableOutput() {
-            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
+            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Any, -1);
             int filesParsed = 0;
             int[] typesParsed = new int[10];
             foreach (string filenamepath in vcsFiles) {
@@ -558,11 +558,11 @@ namespace MyShaderAnalysis {
                 filesParsed++;
             }
             Debug.WriteLine($"{filesParsed} files were parsed. " +
-                $"features({typesParsed[(int)FILETYPE.features_file]}), " +
-                $"vs({typesParsed[(int)FILETYPE.vs_file]}), " +
-                $"ps({typesParsed[(int)FILETYPE.ps_file]}), " +
-                $"gs({typesParsed[(int)FILETYPE.gs_file]}), " +
-                $"psrs({typesParsed[(int)FILETYPE.psrs_file]})");
+                $"features({typesParsed[(int)VcsFileType.Features]}), " +
+                $"vs({typesParsed[(int)VcsFileType.VertexShader]}), " +
+                $"ps({typesParsed[(int)VcsFileType.PixelShader]}), " +
+                $"gs({typesParsed[(int)VcsFileType.GeometryShader]}), " +
+                $"psrs({typesParsed[(int)VcsFileType.PotentialShadowReciever]})");
         }
 
 

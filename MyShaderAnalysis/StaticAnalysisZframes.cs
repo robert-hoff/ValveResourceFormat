@@ -691,7 +691,7 @@ namespace MyShaderAnalysis {
 
         static List<string> GetFileSelectionWithLimitedZframes() {
             List<string> vcsFiles = new();
-            List<string> selectedFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, 30);
+            List<string> selectedFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Any, 30);
             // List<string> selectedFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.vs_file, 30);
 
 

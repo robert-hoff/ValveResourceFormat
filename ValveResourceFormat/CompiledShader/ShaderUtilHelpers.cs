@@ -1,9 +1,5 @@
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Text;
-
 
 namespace ValveResourceFormat.ShaderParser
 {
@@ -21,27 +17,27 @@ namespace ValveResourceFormat.ShaderParser
             return zstdDictionary;
         }
 
-        public static VcsFiletype GetVcsFileType(string filenamepath)
+        public static VcsFileType GetVcsFileType(string filenamepath)
         {
             if (filenamepath.EndsWith("features.vcs"))
             {
-                return VcsFiletype.Features;
+                return VcsFileType.Features;
             }
             if (filenamepath.EndsWith("vs.vcs"))
             {
-                return VcsFiletype.VertexShader;
+                return VcsFileType.VertexShader;
             }
             if (filenamepath.EndsWith("ps.vcs"))
             {
-                return VcsFiletype.PixelShader;
+                return VcsFileType.PixelShader;
             }
             if (filenamepath.EndsWith("psrs.vcs"))
             {
-                return VcsFiletype.PotentialShadowReciever;
+                return VcsFileType.PotentialShadowReciever;
             }
             if (filenamepath.EndsWith("gs.vcs"))
             {
-                return VcsFiletype.GeometryShader;
+                return VcsFileType.GeometryShader;
             }
             throw new ShaderParserException($"don't know what this file is {filenamepath}");
         }

@@ -76,9 +76,9 @@ namespace ShaderAnalysis.utilhelpers
             throw new ShaderParserException("unknown archive");
         }
 
-        public static string GetVcsToken(VcsFiletype vcsFiletype)
+        public static string GetVcsToken(VcsFileType vcsFiletype)
         {
-            if (vcsFiletype == VcsFiletype.Features)
+            if (vcsFiletype == VcsFileType.Features)
             {
                 return "ft";
             } else

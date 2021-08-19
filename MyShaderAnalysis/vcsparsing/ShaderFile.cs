@@ -14,7 +14,7 @@ namespace MyShaderAnalysis.vcsparsing {
     public class ShaderFile {
         private DataReader datareader;
         public string filenamepath;
-        public FILETYPE vcsFiletype = FILETYPE.unknown;
+        public VcsFileType vcsFiletype = VcsFileType.Undetermined;
         public VcsSourceType vcsSourceType;
         public DataBlockFeaturesHeader featuresHeader = null;
         public DataBlockVsPsHeader vspsHeader = null;
@@ -55,10 +55,10 @@ namespace MyShaderAnalysis.vcsparsing {
                 throw new ShaderParserException($"wrong version {version}, expecting 64. {filenamepath}");
             }
 
-            if (vcsFiletype == FILETYPE.features_file) {
+            if (vcsFiletype == VcsFileType.Features) {
                 featuresHeader = new DataBlockFeaturesHeader(datareader, datareader.offset);
-            } else if (vcsFiletype == FILETYPE.vs_file || vcsFiletype == FILETYPE.ps_file
-                   || vcsFiletype == FILETYPE.gs_file || vcsFiletype == FILETYPE.psrs_file) {
+            } else if (vcsFiletype == VcsFileType.VertexShader || vcsFiletype == VcsFileType.PixelShader
+                   || vcsFiletype == VcsFileType.GeometryShader || vcsFiletype == VcsFileType.PotentialShadowReciever) {
                 vspsHeader = new DataBlockVsPsHeader(datareader, datareader.offset);
 
             } else {
@@ -124,7 +124,7 @@ namespace MyShaderAnalysis.vcsparsing {
                 bufferBlocks.Add(nextBufferBlock);
             }
 
-            if (vcsFiletype == FILETYPE.features_file || vcsFiletype == FILETYPE.vs_file) {
+            if (vcsFiletype == VcsFileType.Features || vcsFiletype == VcsFileType.VertexShader) {
                 int sybmolsBlockCount = datareader.ReadInt();
                 for (int i = 0; i < sybmolsBlockCount; i++) {
                     SymbolsBlock nextSymbolsBlock = new(datareader, datareader.offset);
@@ -261,7 +261,7 @@ namespace MyShaderAnalysis.vcsparsing {
                 lzmaDecoder.SetDecoderProperties(datareader.ReadBytes(5));
                 var compressedBuffer = datareader.ReadBytes(compressedLength);
                 using (var inputStream = new MemoryStream(compressedBuffer))
-                using (var outStream = new MemoryStream((int) uncompressedLength)) {
+                using (var outStream = new MemoryStream((int)uncompressedLength)) {
                     lzmaDecoder.Code(inputStream, outStream, compressedBuffer.Length, uncompressedLength, null);
                     return outStream.ToArray();
                 }
@@ -287,11 +287,8 @@ namespace MyShaderAnalysis.vcsparsing {
         public ShaderParserException(string message, Exception innerException) : base(message, innerException) { }
     }
 
-    public enum FILETYPE {
-        unknown, any, features_file, vs_file, ps_file, gs_file, psrs_file
-    };
 
-    public enum VcsSourceType {
+    public enum VcsSourceType2 {
         Glsl,
         DXIL,
         DXBC,
