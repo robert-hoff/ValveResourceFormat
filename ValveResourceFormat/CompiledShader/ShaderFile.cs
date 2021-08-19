@@ -187,7 +187,7 @@ namespace ValveResourceFormat.ShaderParser
 
         public ZFrameFile GetZFrameFile(long zframeId)
         {
-            return new ZFrameFile(GetDecompressedZFrame(zframeId), filenamepath, zframeId);
+            return new ZFrameFile(GetDecompressedZFrame(zframeId), filenamepath, zframeId, vcsFileType, vcsSourceType);
         }
 
         public ZFrameFile GetZFrameFileByIndex(int zframeIndex)

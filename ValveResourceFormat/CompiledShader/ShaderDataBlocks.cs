@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using static ValveResourceFormat.ShaderParser.ShaderUtilHelpers;
 
-#pragma warning disable CA1024 // Use properties where appropriate
 namespace ValveResourceFormat.ShaderParser
 {
     public class FeaturesHeaderBlock : ShaderDataBlock
@@ -202,6 +201,7 @@ namespace ValveResourceFormat.ShaderParser
         }
     }
 
+    // SfBlocks are usually 152 bytes long, occasionally they have extra string parameters
     public class SfBlock : ShaderDataBlock
     {
         public int blockIndex { get; }

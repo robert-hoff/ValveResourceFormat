@@ -2,16 +2,13 @@ using System;
 
 namespace MyShaderAnalysis.vcsparsing
 {
-
     public class ZDataBlock : ShaderDataBlock
     {
-
         public int blockId { get; }
         public int h0 { get; }
         public int h1 { get; }
         public int h2 { get; }
         public byte[] dataload { get; } = null;
-
         public ZDataBlock(ShaderDataReader datareader, int start, int blockId) : base(datareader, start)
         {
             this.blockId = blockId;
@@ -24,7 +21,6 @@ namespace MyShaderAnalysis.vcsparsing
             }
         }
     }
-
 
     public abstract class GpuSource : ShaderDataBlock
     {
@@ -42,10 +38,8 @@ namespace MyShaderAnalysis.vcsparsing
             stringId = stringId.Replace(" ", "").ToLower();
             return stringId;
         }
-
         public abstract string GetBlockName();
     }
-
 
     public class GlslSource : GpuSource
     {
@@ -79,7 +73,6 @@ namespace MyShaderAnalysis.vcsparsing
         public int arg0 { get; } // always 3
         public int arg1 { get; } // always 0xFFFF or 0xFFFE
         public int headerBytes { get; }
-
         public DxilSource(ShaderDataReader datareader, int start, int sourceId) : base(datareader, start, sourceId)
         {
             offset = datareader.ReadInt();
@@ -123,14 +116,6 @@ namespace MyShaderAnalysis.vcsparsing
         {
             return $"DXBC-SOURCE[{sourceId}]";
         }
+
     }
 }
-
-
-
-
-
-
-
-
-

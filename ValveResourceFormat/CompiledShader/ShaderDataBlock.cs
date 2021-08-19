@@ -10,11 +10,6 @@ namespace ValveResourceFormat.ShaderParser
             this.start = offsetAtStartOfBlock;
             this.datareader = datareader;
         }
-        // todo -remove
-        public int ReadIntegerAtPosition(int relOffset)
-        {
-            return datareader.ReadIntAtPosition(start + relOffset, rel: false);
-        }
     }
 }
 

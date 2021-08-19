@@ -6,35 +6,36 @@ using ValveResourceFormat.Serialization.VfxEval;
 using ValveResourceFormat.ThirdParty;
 using static ValveResourceFormat.ShaderParser.ShaderUtilHelpers;
 
-#pragma warning disable CA1051 // Do not declare visible instance fields
-#pragma warning disable CA1024 // Use properties where appropriate
 namespace ValveResourceFormat.ShaderParser
 {
     public class ZFrameFile : IDisposable
     {
         private ShaderDataReader datareader;
-        public string filenamepath;
-        public VcsFileType vcsFiletype = VcsFileType.Undetermined;
-        public long zframeId;
-        public ZDataBlock leadingData;
-        public List<ZFrameParam> zframeParams;
-        public int[] leadSummary;
-        public List<ZDataBlock> dataBlocks = new();
-        public int[] tailSummary;
-        public byte[] flags0;
-        public int flagbyte0;
-        public int glslSourceCount;
-        public int flagbyte1;
-        public List<GlslSource> glslSources = new();
-        public List<VsEndBlock> vsEndBlocks = new();
-        public List<PsEndBlock> psEndBlocks = new();
-        public int nrEndBlocks;
-        public int nonZeroDataBlockCount;
+        public string filenamepath { get; }
+        public VcsFileType vcsFileType { get; }
+        public VcsSourceType vcsSourceType { get; }
+        public long zframeId { get; }
+        public ZDataBlock leadingData { get; }
+        public List<ZFrameParam> zframeParams { get; }
+        public int[] leadSummary { get; }
+        public List<ZDataBlock> dataBlocks { get; } = new();
+        public int[] tailSummary { get; }
+        public byte[] flags0 { get; }
+        public int flagbyte0 { get; }
+        public int gpuSourceCount { get; }
+        public int flagbyte1 { get; }
+        // which of these are filled depends on vcsSourceType
+        public List<GpuSource> gpuSources { get; } = new();
+        public List<VsEndBlock> vsEndBlocks { get; } = new();
+        public List<PsEndBlock> psEndBlocks { get; } = new();
+        public int nrEndBlocks { get; }
+        public int nonZeroDataBlockCount { get; }
 
-        public ZFrameFile(byte[] databytes, string filenamepath, long zframeId)
+        public ZFrameFile(byte[] databytes, string filenamepath, long zframeId, VcsFileType vcsFileType, VcsSourceType vcsSourceType)
         {
             this.filenamepath = filenamepath;
-            vcsFiletype = GetVcsFileType(filenamepath);
+            this.vcsFileType = vcsFileType;
+            this.vcsSourceType = vcsSourceType;
             datareader = new ShaderDataReader(databytes);
             this.zframeId = zframeId;
             leadingData = new ZDataBlock(datareader, datareader.GetOffset(), -1);
@@ -45,7 +46,7 @@ namespace ValveResourceFormat.ShaderParser
                 ZFrameParam zParam = new(datareader);
                 zframeParams.Add(zParam);
             }
-            if (vcsFiletype == VcsFileType.VertexShader)
+            if (this.vcsFileType == VcsFileType.VertexShader)
             {
                 int summaryLength = datareader.ReadInt16();
                 leadSummary = new int[summaryLength];
@@ -64,29 +65,32 @@ namespace ValveResourceFormat.ShaderParser
                 }
                 dataBlocks.Add(dataBlock);
             }
-
             int tailSummaryLength = datareader.ReadInt16();
             tailSummary = new int[tailSummaryLength];
             for (int i = 0; i < tailSummaryLength; i++)
             {
                 tailSummary[i] = datareader.ReadInt16();
             }
-
             flags0 = datareader.ReadBytes(4);
             flagbyte0 = datareader.ReadByte();
-            glslSourceCount = datareader.ReadInt();
+            gpuSourceCount = datareader.ReadInt();
             flagbyte1 = datareader.ReadByte();
-
-            for (int sourceId = 0; sourceId < glslSourceCount; sourceId++)
+            switch (vcsSourceType)
             {
-                GlslSource glslSource = new(datareader, datareader.GetOffset(), sourceId);
-                glslSources.Add(glslSource);
+                case VcsSourceType.Glsl:
+                    ReadGlslSources(gpuSourceCount);
+                    break;
+                case VcsSourceType.DXIL:
+                    ReadDxilSources(gpuSourceCount);
+                    break;
+                case VcsSourceType.DXBC:
+                    ReadDxbcSources(gpuSourceCount);
+                    break;
             }
-
             nrEndBlocks = datareader.ReadInt();
             for (int i = 0; i < nrEndBlocks; i++)
             {
-                if (vcsFiletype == VcsFileType.VertexShader || vcsFiletype == VcsFileType.GeometryShader)
+                if (this.vcsFileType == VcsFileType.VertexShader || this.vcsFileType == VcsFileType.GeometryShader)
                 {
                     VsEndBlock vsEndBlock = new(datareader);
                     vsEndBlocks.Add(vsEndBlock);
@@ -96,13 +100,36 @@ namespace ValveResourceFormat.ShaderParser
                     psEndBlocks.Add(psEndBlock);
                 }
             }
-
             if (!datareader.CheckPositionIsAtEOF())
             {
-                throw new ShaderParserException($"Reader contains more data, but EOF expected");
+                throw new ShaderParserException("End of file not reached!");
             }
         }
 
+        private void ReadGlslSources(int glslSourceCount)
+        {
+            for (int sourceId = 0; sourceId < glslSourceCount; sourceId++)
+            {
+                GlslSource glslSource = new(datareader, datareader.GetOffset(), sourceId);
+                gpuSources.Add(glslSource);
+            }
+        }
+        private void ReadDxilSources(int dxilSourceCount)
+        {
+            for (int sourceId = 0; sourceId < dxilSourceCount; sourceId++)
+            {
+                DxilSource dxilSource = new(datareader, datareader.GetOffset(), sourceId);
+                gpuSources.Add(dxilSource);
+            }
+        }
+        private void ReadDxbcSources(int dxbcSourceCount)
+        {
+            for (int sourceId = 0; sourceId < dxbcSourceCount; sourceId++)
+            {
+                DxbcSource dxbcSource = new(datareader, datareader.GetOffset(), sourceId);
+                gpuSources.Add(dxbcSource);
+            }
+        }
         public ZDataBlock GetDataBlock(int blockId)
         {
             return blockId == -1 ? leadingData : dataBlocks[blockId];
@@ -116,7 +143,7 @@ namespace ValveResourceFormat.ShaderParser
             }
         }
 
-        public string GetZFrameHeaderStringDescription()
+        public string ZFrameHeaderStringDescription()
         {
             string zframeHeaderString = "";
             foreach (ZFrameParam zParam in zframeParams)
@@ -134,7 +161,7 @@ namespace ValveResourceFormat.ShaderParser
 
         public string GetLeadSummary()
         {
-            if (vcsFiletype != VcsFileType.VertexShader)
+            if (vcsFileType != VcsFileType.VertexShader)
             {
                 return "only vs files have this section";
             }
@@ -149,6 +176,7 @@ namespace ValveResourceFormat.ShaderParser
             }
             return leadSummaryDesc.Trim();
         }
+
         public void ShowDatablocks()
         {
             foreach (ZDataBlock dataBlock in dataBlocks)
@@ -162,11 +190,13 @@ namespace ValveResourceFormat.ShaderParser
                 }
             }
         }
+
         public void ShowTailSummary()
         {
             Debug.WriteLine(GetTailSummary());
             Debug.WriteLine($"");
         }
+
         public string GetTailSummary()
         {
             string tailSummaryDesc = $"{tailSummary.Length:X02} 00   // configuration states ({tailSummary.Length}), tail summary\n";
@@ -176,29 +206,31 @@ namespace ValveResourceFormat.ShaderParser
                 {
                     tailSummaryDesc += "\n";
                 }
-                tailSummaryDesc += tailSummary[i] > -1 ? $"{tailSummary[i],-3}" : "_  ";
+                tailSummaryDesc += tailSummary[i] > -1 ? $"{tailSummary[i],-10}" : "_  ".PadRight(10);
             }
             return tailSummaryDesc.Trim();
         }
+
         public void ShowGlslSources()
         {
-            foreach (GlslSource glslSource in glslSources)
+            foreach (GpuSource gpuSource in gpuSources)
             {
-                Debug.WriteLine($"GLSL-SOURCE[{glslSource.sourceId}]");
-                if (glslSource.offset0 > 0)
+                Debug.WriteLine(gpuSource.GetBlockName());
+                if (gpuSource.sourcebytes.Length > 0)
                 {
-                    Debug.WriteLine($"{glslSource.offset1}");
+                    Debug.WriteLine($"{gpuSource.sourcebytes.Length}");
                     // Debug.WriteLine($"{DataReader.BytesToString(glslSource.sourcebytes)}");
                 } else
                 {
                     Debug.WriteLine($"// empty source");
                 }
-                Debug.WriteLine($"{ShaderDataReader.BytesToString(glslSource.fileId)}  // File ID");
+                Debug.WriteLine($"{ShaderDataReader.BytesToString(gpuSource.editorRefId)}  // File ID");
             }
         }
+
         public void ShowEndBlocks()
         {
-            if (vcsFiletype == VcsFileType.VertexShader || vcsFiletype == VcsFileType.GeometryShader)
+            if (vcsFileType == VcsFileType.VertexShader || vcsFileType == VcsFileType.GeometryShader)
             {
                 Debug.WriteLine($"{vsEndBlocks.Count:X02} 00 00 00   // nr of end blocks ({vsEndBlocks.Count})");
                 foreach (VsEndBlock vsEndBlock in vsEndBlocks)
@@ -241,7 +273,6 @@ namespace ValveResourceFormat.ShaderParser
             Dispose(true);
             GC.SuppressFinalize(this);
         }
-
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
@@ -251,22 +282,23 @@ namespace ValveResourceFormat.ShaderParser
             }
         }
 
-
         public class ZFrameParam
         {
-            public string name0;
-            public uint murmur32;
-            public byte[] code;
-            public byte headerOperator;
-            public int dynExpLen = -1;
-            public byte[] dynExpression;
-            public string dynExpEvaluated;
-            public int operatorVal = int.MinValue;
+            public string name0 { get; }
+            public uint murmur32 { get; }
+            public byte[] code { get; }
+            public byte headerOperator { get; }
+            public int dynExpLen { get; } = -1;
+            public byte[] dynExpression { get; }
+            public string dynExpEvaluated { get; }
+            public int operatorVal { get; } = int.MinValue;
+
             public ZFrameParam(ShaderDataReader datareader)
             {
                 name0 = datareader.ReadNullTermString();
                 murmur32 = datareader.ReadUInt();
-                uint murmurCheck = MurmurHash2.Hash(name0.ToLower(), PI_MURMUR_SEED);
+                uint PI_MURMURSEED = 0x31415926;
+                uint murmurCheck = MurmurHash2.Hash(name0.ToLower(), PI_MURMURSEED);
                 if (murmur32 != murmurCheck)
                 {
                     throw new ShaderParserException("not a murmur string!");
@@ -281,7 +313,7 @@ namespace ValveResourceFormat.ShaderParser
                 if (dynExpLen > 0)
                 {
                     dynExpression = datareader.ReadBytes(dynExpLen);
-                    dynExpEvaluated = new VfxEval(dynExpression).DynamicExpressionResult;
+                    dynExpEvaluated = ParseDynamicExpression(dynExpression);
                     return;
                 }
                 if (headerOperator == 1 || headerOperator == 9)
@@ -296,7 +328,6 @@ namespace ValveResourceFormat.ShaderParser
                 }
                 throw new ShaderParserException("unexpected data!");
             }
-
             public override string ToString()
             {
                 if (dynExpLen > 0)
@@ -308,16 +339,25 @@ namespace ValveResourceFormat.ShaderParser
                 }
 
             }
+            private static string ParseDynamicExpression(byte[] dynExpDatabytes)
+            {
+                try
+                {
+                    return new VfxEval(dynExpDatabytes).DynamicExpressionResult;
+                } catch (InvalidDataException)
+                {
+                    return "[error parsing dynamic-exp]";
+                }
+            }
         }
 
         public class VsEndBlock
         {
-            public byte[] databytes;
-            public int blockIdRef;
-            public int arg0;
-            public int sourceRef;
-            public int sourcePointer;
-
+            public byte[] databytes { get; }
+            public int blockIdRef { get; }
+            public int arg0 { get; }
+            public int sourceRef { get; }
+            public int sourcePointer { get; }
             public VsEndBlock(ShaderDataReader datareader)
             {
                 databytes = datareader.ReadBytesAtPosition(0, 16);
@@ -328,23 +368,18 @@ namespace ValveResourceFormat.ShaderParser
             }
         }
 
-        /*
-         * TODO - needs a bit more work, data2 section can be broken down
-         *
-         */
         public class PsEndBlock
         {
-            public int blockIdRef;
-            public int arg0;
-            public int sourceRef;
-            public int sourcePointer;
-            public bool hasData0;
-            public bool hasData1;
-            public bool hasData2;
-            public byte[] data0;
-            public byte[] data1;
-            public byte[] data2;
-
+            public int blockIdRef { get; }
+            public int arg0 { get; }
+            public int sourceRef { get; }
+            public int sourcePointer { get; }
+            public bool hasData0 { get; }
+            public bool hasData1 { get; }
+            public bool hasData2 { get; }
+            public byte[] data0 { get; }
+            public byte[] data1 { get; }
+            public byte[] data2 { get; }
             public PsEndBlock(ShaderDataReader datareader)
             {
                 blockIdRef = datareader.ReadInt();
@@ -375,7 +410,6 @@ namespace ValveResourceFormat.ShaderParser
                 {
                     data2 = datareader.ReadBytes(75);
                 }
-
             }
         }
 

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using MyShaderAnalysis.utilhelpers;
@@ -5,16 +6,13 @@ using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
 
 namespace MyShaderAnalysis.vcsparsing
 {
-
-
-    public class ZFrameFile
+    public class ZFrameFile : IDisposable
     {
         private ShaderDataReader datareader;
         public string filenamepath { get; }
         public VcsFileType vcsFileType { get; }
         public VcsSourceType vcsSourceType { get; }
         public long zframeId { get; }
-
         public ZDataBlock leadingData { get; }
         public List<ZFrameParam> zframeParams { get; }
         public int[] leadSummary { get; } = null;
@@ -26,14 +24,10 @@ namespace MyShaderAnalysis.vcsparsing
         public int flagbyte1 { get; }
         // which of these are filled depends on vcsSourceType
         public List<GpuSource> gpuSources { get; } = new();
-
         public List<VsEndBlock> vsEndBlocks { get; } = new();
         public List<PsEndBlock> psEndBlocks { get; } = new();
         public int nrEndBlocks { get; }
         public int nonZeroDataBlockCount { get; } = 0;
-
-
-
 
         public ZFrameFile(byte[] databytes, string filenamepath, long zframeId, VcsFileType vcsFileType, VcsSourceType vcsSourceType)
         {
@@ -43,7 +37,6 @@ namespace MyShaderAnalysis.vcsparsing
             datareader = new ShaderDataReader(databytes);
             this.zframeId = zframeId;
             leadingData = new ZDataBlock(datareader, datareader.GetOffset(), -1);
-
             zframeParams = new();
             int paramCount = datareader.ReadInt16();
             for (int i = 0; i < paramCount; i++)
@@ -51,7 +44,6 @@ namespace MyShaderAnalysis.vcsparsing
                 ZFrameParam zParam = new(datareader);
                 zframeParams.Add(zParam);
             }
-
             if (this.vcsFileType == VcsFileType.VertexShader)
             {
                 int summaryLength = datareader.ReadInt16();
@@ -61,7 +53,6 @@ namespace MyShaderAnalysis.vcsparsing
                     leadSummary[i] = datareader.ReadInt16();
                 }
             }
-
             int dataBlockCount = datareader.ReadInt16();
             for (int blockId = 0; blockId < dataBlockCount; blockId++)
             {
@@ -72,19 +63,16 @@ namespace MyShaderAnalysis.vcsparsing
                 }
                 dataBlocks.Add(dataBlock);
             }
-
             int tailSummaryLength = datareader.ReadInt16();
             tailSummary = new int[tailSummaryLength];
             for (int i = 0; i < tailSummaryLength; i++)
             {
                 tailSummary[i] = datareader.ReadInt16();
             }
-
             flags0 = datareader.ReadBytes(4);
             flagbyte0 = datareader.ReadByte();
             gpuSourceCount = datareader.ReadInt();
             flagbyte1 = datareader.ReadByte();
-
             switch (vcsSourceType)
             {
                 case VcsSourceType.Glsl:
@@ -97,7 +85,6 @@ namespace MyShaderAnalysis.vcsparsing
                     ReadDxbcSources(gpuSourceCount);
                     break;
             }
-
             nrEndBlocks = datareader.ReadInt();
             for (int i = 0; i < nrEndBlocks; i++)
             {
@@ -111,13 +98,11 @@ namespace MyShaderAnalysis.vcsparsing
                     psEndBlocks.Add(psEndBlock);
                 }
             }
-
             if (!datareader.CheckPositionIsAtEOF())
             {
                 throw new ShaderParserException("End of file not reached!");
             }
         }
-
 
         private void ReadGlslSources(int glslSourceCount)
         {
@@ -127,7 +112,6 @@ namespace MyShaderAnalysis.vcsparsing
                 gpuSources.Add(glslSource);
             }
         }
-
         private void ReadDxilSources(int dxilSourceCount)
         {
             for (int sourceId = 0; sourceId < dxilSourceCount; sourceId++)
@@ -136,7 +120,6 @@ namespace MyShaderAnalysis.vcsparsing
                 gpuSources.Add(dxilSource);
             }
         }
-
         private void ReadDxbcSources(int dxbcSourceCount)
         {
             for (int sourceId = 0; sourceId < dxbcSourceCount; sourceId++)
@@ -145,7 +128,6 @@ namespace MyShaderAnalysis.vcsparsing
                 gpuSources.Add(dxbcSource);
             }
         }
-
         public ZDataBlock GetDataBlock(int blockId)
         {
             return blockId == -1 ? leadingData : dataBlocks[blockId];
@@ -284,6 +266,20 @@ namespace MyShaderAnalysis.vcsparsing
             }
         }
 
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                datareader.Dispose();
+                datareader = null;
+            }
+        }
+
 
         public class ZFrameParam
         {
@@ -361,7 +357,6 @@ namespace MyShaderAnalysis.vcsparsing
             }
         }
 
-
         public class VsEndBlock
         {
             public byte[] databytes { get; }
@@ -379,7 +374,6 @@ namespace MyShaderAnalysis.vcsparsing
                 sourcePointer = datareader.ReadInt();
             }
         }
-
 
         public class PsEndBlock
         {
@@ -424,14 +418,8 @@ namespace MyShaderAnalysis.vcsparsing
                 {
                     data2 = datareader.ReadBytes(75);
                 }
-
             }
         }
 
-
     }
 }
-
-
-
-
