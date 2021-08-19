@@ -51,10 +51,10 @@ namespace MyShaderAnalysis.vcsparsing {
             for (int i = 0; i < nr_of_arguments; i++) {
                 string string_arg0 = datareader.ReadNullTermStringAtPosition();
                 string string_arg1 = "";
-                datareader.offset += 128;
+                datareader.MoveOffset(128);
                 if (datareader.ReadInt() > 0) {
                     string_arg1 = datareader.ReadNullTermStringAtPosition();
-                    datareader.offset += 68;
+                    datareader.MoveOffset(68);
                 }
                 mainParams.Add((string_arg0, string_arg1));
             }
@@ -69,7 +69,7 @@ namespace MyShaderAnalysis.vcsparsing {
 
 
         public void PrintByteSummary() {
-            datareader.offset = start;
+            datareader.SetOffset(start);
             datareader.ShowByteCount("features header");
             int has_psrs_file = datareader.ReadIntAtPosition();
             datareader.ShowBytes(4, "has_psrs_file = " + (has_psrs_file > 0 ? "True" : "False"));
@@ -160,7 +160,7 @@ namespace MyShaderAnalysis.vcsparsing {
     // needs implemenation
     public class DataBlockVsPsHeader : ShaderDataBlock {
         public DataBlockVsPsHeader(ShaderDataReader datareader, int start) : base(datareader, start) {
-            datareader.offset += 36;
+            datareader.MoveOffset(36);
         }
     }
 
@@ -180,9 +180,9 @@ namespace MyShaderAnalysis.vcsparsing {
         public DataBlockSfBlock(ShaderDataReader datareader, int start, int blockId) : base(datareader, start) {
             this.blockId = blockId;
             name0 = datareader.ReadNullTermStringAtPosition();
-            datareader.offset += 64;
+            datareader.MoveOffset(64);
             name1 = datareader.ReadNullTermStringAtPosition();
-            datareader.offset += 64;
+            datareader.MoveOffset(64);
             arg0 = datareader.ReadInt();
             arg1 = datareader.ReadInt();
             arg2 = datareader.ReadInt();
@@ -217,22 +217,18 @@ namespace MyShaderAnalysis.vcsparsing {
             flags = ReadByteFlagsUpdated();
             // range 0 at (24)
             range0 = ReadIntRange();
-            datareader.offset += 68 - range0.Length * 4;
+            datareader.MoveOffset(68 - range0.Length * 4);
             // range 1 at (92)
             range1 = ReadIntRange();
-            datareader.offset += 60 - range1.Length * 4;
+            datareader.MoveOffset(60 - range1.Length * 4);
             // range 2 at (152)
             range2 = ReadIntRange();
-            datareader.offset += 64 - range2.Length * 4;
-
-
-            // datareader.offset += 472;
+            datareader.MoveOffset(64 - range2.Length * 4);
 
             description = datareader.ReadNullTermStringAtPosition();
-            datareader.offset += 256;
-
-
+            datareader.MoveOffset(256);
         }
+
         private int[] ReadIntRange() {
             List<int> ints0 = new();
             while (datareader.ReadIntAtPosition() >= 0) {
@@ -241,18 +237,22 @@ namespace MyShaderAnalysis.vcsparsing {
             return ints0.ToArray();
         }
 
+        // todo - change this name
         private int[] ReadByteFlagsUpdated() {
             int count = 0;
-            int ind = datareader.offset;
-            while (datareader.databytes[ind] > 0 && count < 16) {
+            datareader.SavePosition();
+            while (datareader.ReadByte() > 0 && count < 16)
+            {
                 count++;
-                ind++;
             }
             int[] byteFlags = new int[count];
-            for (int i = 0; i < count; i++) {
-                byteFlags[i] = datareader.databytes[datareader.offset + i];
+            datareader.RestorePosition();
+            for (int i = 0; i < count; i++)
+            {
+                byteFlags[i] = datareader.ReadByte();
             }
-            datareader.offset += 16;
+            datareader.RestorePosition();
+            datareader.MoveOffset(16);
             return byteFlags;
         }
 
@@ -261,17 +261,8 @@ namespace MyShaderAnalysis.vcsparsing {
             return relRule == 3 ? "EXC(3)" : $"INC({relRule})";
         }
 
-
-
-        // 1 to 5 byte flags occur at position 8 (it looks like there is provision for a maximum of 16 byte-flags)
-        public string ReadByteFlags() {
-            // byte[] bflag = new byte[16];
-            string bflags = "";
-            int ind = 8;
-            while (datareader.databytes[start + ind] > 0 || ind >= 24) {
-                bflags += $"{datareader.databytes[start + ind++]}, ";
-            }
-            return $"({bflags[0..^2]})";
+        public string GetByteFlagsAsString() {
+            return CombineIntArray(flags);
         }
     }
 
@@ -295,9 +286,9 @@ namespace MyShaderAnalysis.vcsparsing {
         public DBlock(ShaderDataReader datareader, int start, int blockIndex) : base(datareader, start) {
             this.blockIndex = blockIndex;
             name0 = datareader.ReadNullTermStringAtPosition();
-            datareader.offset += 64;
+            datareader.MoveOffset(64);
             name1 = datareader.ReadNullTermStringAtPosition();
-            datareader.offset += 64;
+            datareader.MoveOffset(64);
             arg0 = datareader.ReadInt();
             arg1 = datareader.ReadInt();
             arg2 = datareader.ReadInt();
@@ -333,18 +324,18 @@ namespace MyShaderAnalysis.vcsparsing {
             flags = ReadByteFlagsUpdated();
             // range0 at (24)
             range0 = ReadIntRange();
-            datareader.offset += 64 - range0.Length * 4;
+            datareader.MoveOffset(64 - range0.Length * 4);
             // integer at (88)
             arg1 = datareader.ReadInt();
             // range1 at (92)
             range1 = ReadIntRange();
-            datareader.offset += 60 - range1.Length * 4;
+            datareader.MoveOffset(60 - range1.Length * 4);
             // range1 at (152)
             range2 = ReadIntRange();
-            datareader.offset += 64 - range2.Length * 4;
+            datareader.MoveOffset(64 - range2.Length * 4);
             // there seems to be a provision here for a description, for the dota2 archive it is always null
             description = datareader.ReadNullTermStringAtPosition();
-            datareader.offset += 256;
+            datareader.MoveOffset(256);
         }
 
         private int[] ReadIntRange() {
@@ -357,30 +348,27 @@ namespace MyShaderAnalysis.vcsparsing {
 
         private int[] ReadByteFlagsUpdated() {
             int count = 0;
-            int ind = datareader.offset;
-            while (datareader.databytes[ind] > 0 && count < 16) {
+            datareader.SavePosition();
+            while (datareader.ReadByte() > 0 && count < 16)
+            {
                 count++;
-                ind++;
             }
             int[] byteFlags = new int[count];
-            for (int i = 0; i < count; i++) {
-                byteFlags[i] = datareader.databytes[datareader.offset + i];
+            datareader.RestorePosition();
+            for (int i = 0; i < count; i++)
+            {
+                byteFlags[i] = datareader.ReadByte();
             }
-            datareader.offset += 16;
+            datareader.RestorePosition();
+            datareader.MoveOffset(16);
             return byteFlags;
         }
 
 
-        // FIXME - I shouldn't need this method
-        // 1 to 5 byte flags occur at position 8 (it looks like there is provision for a maximum of 16 byte-flags)
-        public string ReadByteFlags() {
-            // byte[] bflag = new byte[16];
-            string bflags = "";
-            int ind = 8;
-            while (datareader.databytes[start + ind] > 0 || ind >= 24) {
-                bflags += $"{datareader.databytes[start + ind++]},";
-            }
-            return $"({bflags[0..^1]})";
+
+        // todo - check formatting
+        public string ReadByteFlagsAsString() {
+            return CombineIntArray(flags);
         }
 
         public bool AllFlagsAre3() {
@@ -456,13 +444,13 @@ namespace MyShaderAnalysis.vcsparsing {
 
         public ParamBlock(ShaderDataReader datareader, int start) : base(datareader, start) {
             name0 = datareader.ReadNullTermStringAtPosition();
-            datareader.offset += 64;
+            datareader.MoveOffset(64);
             name1 = datareader.ReadNullTermStringAtPosition();
-            datareader.offset += 64;
+            datareader.MoveOffset(64);
             type = datareader.ReadInt();
             res0 = datareader.ReadFloat();
             name2 = datareader.ReadNullTermStringAtPosition();
-            datareader.offset += 64;
+            datareader.MoveOffset(64);
             lead0 = datareader.ReadInt();
             if (lead0 == 6 || lead0 == 7) {
                 int dynExpLen = datareader.ReadInt();
@@ -475,7 +463,7 @@ namespace MyShaderAnalysis.vcsparsing {
             arg4 = datareader.ReadInt();
             arg5 = datareader.ReadInt();
             fileref = datareader.ReadNullTermStringAtPosition();
-            datareader.offset += 64;
+            datareader.MoveOffset(64);
             for (int i = 0; i < 4; i++) {
                 ranges0[i] = datareader.ReadInt();
             }
@@ -501,9 +489,9 @@ namespace MyShaderAnalysis.vcsparsing {
                 ranges7[i] = datareader.ReadInt();
             }
             command0 = datareader.ReadNullTermStringAtPosition();
-            datareader.offset += 32;
+            datareader.MoveOffset(32);
             command1 = datareader.ReadNullTermStringAtPosition();
-            datareader.offset += 32;
+            datareader.MoveOffset(32);
             int myint = 10;
         }
 
@@ -542,7 +530,7 @@ namespace MyShaderAnalysis.vcsparsing {
     // TODO - needs implementation
     public class MipmapBlock : ShaderDataBlock {
         public MipmapBlock(ShaderDataReader datareader, int start) : base(datareader, start) {
-            datareader.offset += 280;
+            datareader.MoveOffset(280);
         }
     }
 
@@ -555,13 +543,13 @@ namespace MyShaderAnalysis.vcsparsing {
 
         public BufferBlock(ShaderDataReader datareader, int start) : base(datareader, start) {
             name = datareader.ReadNullTermStringAtPosition();
-            datareader.offset += 64;
+            datareader.MoveOffset(64);
             bufferSize = datareader.ReadInt();
-            datareader.offset += 4; // next 4 bytes are always 0
+            datareader.MoveOffset(4); // next 4 bytes are always 0
             int paramCount = datareader.ReadInt();
             for (int i = 0; i < paramCount; i++) {
                 string paramName = datareader.ReadNullTermStringAtPosition();
-                datareader.offset += 64;
+                datareader.MoveOffset(64);
                 int bufferIndex = datareader.ReadInt();
                 int arg0 = datareader.ReadInt();
                 int arg1 = datareader.ReadInt();

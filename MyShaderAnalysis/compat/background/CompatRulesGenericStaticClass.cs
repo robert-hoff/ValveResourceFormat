@@ -1,10 +1,11 @@
-using MyShaderAnalysis.vcsparsing;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MyShaderAnalysis.utilhelpers;
+using MyShaderAnalysis.vcsparsing;
 using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
 
 
@@ -41,7 +42,7 @@ namespace MyShaderAnalysis.compat {
             string vcsFilenamepath = @$"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_ps.vcs";
             // string vcsFilenamepath = @$"{PCGL_DIR_CORE}\blur_pcgl_30_ps.vcs";
             // string vcsFilenamepath = @$"{PCGL_DIR_NOT_CORE}\water_dota_pcgl_30_ps.vcs";
-            ShaderFile shaderFile = new(vcsFilenamepath);
+            ShaderFile shaderFile = new ReadShaderFile(vcsFilenamepath).GetShaderFile();
             GenerateZFrames(shaderFile);
         }
 

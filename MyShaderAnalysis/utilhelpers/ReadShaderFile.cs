@@ -1,9 +1,8 @@
 using System;
 using System.IO;
-using ValveResourceFormat.ShaderParser;
+using MyShaderAnalysis.vcsparsing;
 
-namespace ShaderAnalysis.utilhelpers
-{
+namespace MyShaderAnalysis.utilhelpers {
     public class ReadShaderFile : IDisposable
     {
         private string filenamepath;
@@ -40,6 +39,11 @@ namespace ShaderAnalysis.utilhelpers
         }
 
 
+        public static ShaderFile InstantiateShaderFile(string filenamepath)
+        {
+            ShaderFile shaderFile = new ReadShaderFile(filenamepath).GetShaderFile();
+            return shaderFile;
+        }
 
 
     }

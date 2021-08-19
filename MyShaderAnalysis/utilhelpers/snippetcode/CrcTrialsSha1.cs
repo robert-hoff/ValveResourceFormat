@@ -1,11 +1,11 @@
-using MyShaderAnalysis.vcsparsing;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
+using System.Diagnostics;
+using System.Collections.Generic;
 using System.Linq;
+using MyShaderAnalysis.vcsparsing;
 using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
-
+using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
 
 namespace MyShaderAnalysis.utilhelpers.snippetcode {
 
@@ -27,7 +27,7 @@ namespace MyShaderAnalysis.utilhelpers.snippetcode {
         static void SearchForSmallGlsl() {
             List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, vcsparsing.VcsFileType.Any, -1);
             foreach (var filenamepath in vcsFiles) {
-                ShaderFile shaderfile = new(filenamepath);
+                ShaderFile shaderfile = InstantiateShaderFile(filenamepath);
 
                 // Debug.WriteLine($"{filenamepath}");
                 foreach (var item in shaderfile.zframesLookup) {

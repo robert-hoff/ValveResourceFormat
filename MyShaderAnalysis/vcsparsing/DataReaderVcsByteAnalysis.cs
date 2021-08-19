@@ -192,7 +192,7 @@ namespace MyShaderAnalysis.vcsparsing {
             TabComment($"({arg0},{arg1},{arg2},{arg3})");
             ShowBytes(4, $"({arg4}) known values [-1,28]");
             ShowBytes(4, $"{arg5} additional string params");
-            int string_offset = offset;
+            int string_offset = GetOffset();
             List<string> names = new();
             for (int i = 0; i < arg5; i++) {
                 string paramname = ReadNullTermStringAtPosition(string_offset, rel: false);
@@ -201,7 +201,7 @@ namespace MyShaderAnalysis.vcsparsing {
             }
             if (names.Count > 0) {
                 PrintStringList(names);
-                ShowBytes(string_offset - offset);
+                ShowBytes(string_offset - GetOffset());
             }
             BreakLine();
         }
@@ -231,7 +231,7 @@ namespace MyShaderAnalysis.vcsparsing {
             ShowByteCount($"COMPAT-BLOCK[{compatBlockId}]");
             ShowBytes(216);
             string name1 = ReadNullTermStringAtPosition();
-            OutputWriteLine($"[{offset}] {name1}");
+            OutputWriteLine($"[{GetOffset()}] {name1}");
             ShowBytes(256);
             BreakLine();
         }
@@ -514,7 +514,7 @@ namespace MyShaderAnalysis.vcsparsing {
         int MAX_ZFRAME_BYTES_SHOWN = 96;
 
         public void PrintCompressedZFrame(uint zframeId) {
-            OutputWriteLine($"[{offset}] {getZFrameIdString(zframeId)}");
+            OutputWriteLine($"[{GetOffset()}] {getZFrameIdString(zframeId)}");
             bool isLzma = false;
             uint zstdDelimOrChunkSize = ReadUIntAtPosition();
             if (zstdDelimOrChunkSize == ShaderFile.ZSTD_DELIM) {
@@ -539,7 +539,7 @@ namespace MyShaderAnalysis.vcsparsing {
             if (compressed_length > MAX_ZFRAME_BYTES_SHOWN) {
                 Comment($"... ({compressed_length - MAX_ZFRAME_BYTES_SHOWN} bytes not shown)");
             }
-            offset += compressed_length;
+            MoveOffset(compressed_length);
             BreakLine();
         }
 

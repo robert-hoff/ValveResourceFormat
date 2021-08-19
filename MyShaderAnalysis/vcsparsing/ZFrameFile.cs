@@ -39,7 +39,7 @@ namespace MyShaderAnalysis.vcsparsing {
             this.vcsSourceType = vcsSourceType;
             datareader = new ShaderDataReader(databytes);
             this.zframeId = zframeId;
-            leadingData = new ZDataBlock(datareader, datareader.offset, -1);
+            leadingData = new ZDataBlock(datareader, datareader.GetOffset(), -1);
 
             zframeParams = new();
             int paramCount = datareader.ReadInt16();
@@ -58,7 +58,7 @@ namespace MyShaderAnalysis.vcsparsing {
 
             int dataBlockCount = datareader.ReadInt16();
             for (int blockId = 0; blockId < dataBlockCount; blockId++) {
-                ZDataBlock dataBlock = new(datareader, datareader.offset, blockId);
+                ZDataBlock dataBlock = new(datareader, datareader.GetOffset(), blockId);
                 if (dataBlock.h0 > 0) {
                     nonZeroDataBlockCount++;
                 }
@@ -99,7 +99,7 @@ namespace MyShaderAnalysis.vcsparsing {
                 }
             }
 
-            if (datareader.offset != datareader.databytes.Length) {
+            if (!datareader.CheckPositionIsAtEOF()) {
                 throw new ShaderParserException("End of file not reached!");
             }
         }
@@ -107,21 +107,21 @@ namespace MyShaderAnalysis.vcsparsing {
 
         private void ReadGlslSources(int glslSourceCount) {
             for (int sourceId = 0; sourceId < glslSourceCount; sourceId++) {
-                GlslSource glslSource = new(datareader, datareader.offset, sourceId);
+                GlslSource glslSource = new(datareader, datareader.GetOffset(), sourceId);
                 gpuSources.Add(glslSource);
             }
         }
 
         private void ReadDxilSources(int dxilSourceCount) {
             for (int sourceId = 0; sourceId < dxilSourceCount; sourceId++) {
-                DxilSource dxilSource = new(datareader, datareader.offset, sourceId);
+                DxilSource dxilSource = new(datareader, datareader.GetOffset(), sourceId);
                 gpuSources.Add(dxilSource);
             }
         }
 
         private void ReadDxbcSources(int dxbcSourceCount) {
             for (int sourceId = 0; sourceId < dxbcSourceCount; sourceId++) {
-                DxbcSource dxbcSource = new(datareader, datareader.offset, sourceId);
+                DxbcSource dxbcSource = new(datareader, datareader.GetOffset(), sourceId);
                 gpuSources.Add(dxbcSource);
             }
         }

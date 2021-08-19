@@ -1,14 +1,16 @@
+using System;
 using System.IO;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
-using MyShaderAnalysis.vcsparsing;
-using System;
 using MyShaderAnalysis.compat;
+using MyShaderAnalysis.vcsparsing;
+using MyShaderAnalysis.utilhelpers;
 using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
 using static MyShaderAnalysis.vcsparsing.ZFrameFile;
 using static MyShaderAnalysis.utilhelpers.FileSystem;
-using MyShaderAnalysis.utilhelpers;
+using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
+
 
 namespace MyShaderAnalysis {
 
@@ -53,8 +55,6 @@ namespace MyShaderAnalysis {
             // ZFileSummary(ARCHIVE.dotacore_pcgl, "copytexture_pcgl_30_vs.vcs", 0x0, writeFile: true);
             // ZFileSummary(ARCHIVE.artifact_classiccore_pc, "generic_pc_30_ps.vcs", 0x10, writeFile: true);
 
-
-
             // WriteBunchOfZframes();
             // PrintZframeFileDirectory(SERVER_OUTPUT_DIR, writeFile: true);
         }
@@ -62,7 +62,7 @@ namespace MyShaderAnalysis {
 
 
         static void WriteBunchOfZframes() {
-            int NUM_TO_PRINT = 10;
+            int NUM_TO_PRINT = 20;
             // List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, 40);
             List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, -1);
 
@@ -70,7 +70,7 @@ namespace MyShaderAnalysis {
 
             foreach (var triple in triples) {
                 int zframeCount = 0;
-                ShaderFile shaderFile = new(triple.vsFile.filenamepath);
+                ShaderFile shaderFile = InstantiateShaderFile(triple.vsFile.filenamepath);
                 foreach (var item in shaderFile.zframesLookup) {
                     ZFileSummary(triple.vsFile, item.Key, writeFile: true, disableOutput: true);
                     CloseStreamWriter();
@@ -80,7 +80,7 @@ namespace MyShaderAnalysis {
                     }
                 }
                 zframeCount = 0;
-                shaderFile = new(triple.psFile.filenamepath);
+                shaderFile = InstantiateShaderFile(triple.psFile.filenamepath);
                 foreach (var item in shaderFile.zframesLookup) {
                     ZFileSummary(triple.psFile, item.Key, writeFile: true, disableOutput: true);
                     CloseStreamWriter();
@@ -105,7 +105,7 @@ namespace MyShaderAnalysis {
         static void ZFileSummary(FileTokens vcsFile, long zframeId, bool writeFile = false, bool disableOutput = false) {
             // writeFile = false;
             // DisableOutput = true;
-            ShaderFile shaderFile = new(vcsFile.filenamepath);
+            ShaderFile shaderFile = InstantiateShaderFile(vcsFile.filenamepath);
             ZFrameFile zframeFile = shaderFile.GetZFrameFile(zframeId);
             if (writeFile) {
                 vcsFile.CreateZFramesDirectory();

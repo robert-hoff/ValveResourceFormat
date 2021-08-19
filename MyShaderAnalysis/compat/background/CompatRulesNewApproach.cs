@@ -1,13 +1,9 @@
-using MyShaderAnalysis.vcsparsing;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using MyShaderAnalysis.utilhelpers;
+using MyShaderAnalysis.vcsparsing;
 
-
-namespace MyShaderAnalysis.compat {
+namespace MyShaderAnalysis.compat
+{
 
 
     public class CompatRulesNewApproach {
@@ -23,7 +19,7 @@ namespace MyShaderAnalysis.compat {
         }
         static void Trials1() {
 
-            ShaderFile shaderFile = new(@$"{PCGL_DIR_NOT_CORE}\water_dota_pcgl_30_ps.vcs");
+            ShaderFile shaderFile = new ReadShaderFile(@$"{PCGL_DIR_NOT_CORE}\water_dota_pcgl_30_ps.vcs").GetShaderFile();
             foreach (var sfBlock in shaderFile.sfBlocks) {
 
                 Debug.WriteLine($"{sfBlock.name0}");
@@ -33,7 +29,7 @@ namespace MyShaderAnalysis.compat {
         }
 
 
-        
+
 
 
 

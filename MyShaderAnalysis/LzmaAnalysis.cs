@@ -7,6 +7,7 @@ using static MyShaderAnalysis.utilhelpers.FileSystem;
 using Decoder = SevenZip.Compression.LZMA.Decoder;
 using MyValveResourceFormat.ThirdParty;
 using System;
+using MyShaderAnalysis.utilhelpers;
 
 namespace MyShaderAnalysis {
 
@@ -28,7 +29,7 @@ namespace MyShaderAnalysis {
 
         static void Trial11() {
             string filenamepath = $"{ARTIFACT_CLASSIC_CORE_PC_SOURCE}/aerial_perspective_pc_30_vs.vcs"; long zId = 0;
-            ShaderFile shaderFile = new(filenamepath);
+            ShaderFile shaderFile = new ReadShaderFile(filenamepath).GetShaderFile();
             ZFrameFile zframeFile = shaderFile.GetZFrameFile(zId);
 
         }
@@ -41,7 +42,7 @@ namespace MyShaderAnalysis {
             string filenamepath = $"{ARTIFACT_CLASSIC_CORE_PC_SOURCE}/aerial_perspective_pc_30_vs.vcs"; long zId = 0;
             // string filenamepath = $"{ARTIFACT_CLASSIC_DCG_PC_SOURCE}/bloom_dota_pc_40_vs.vcs"; long zId = 0;
             // string filenamepath = $"{ARTIFACT_CLASSIC_DCG_PC_SOURCE}/visualize_physics_pc_30_ps.vcs"; long zId = 0x10;
-            ShaderFile shaderFile = new(filenamepath);
+            ShaderFile shaderFile = new ReadShaderFile(filenamepath).GetShaderFile();
             byte[] zframeDatabytes = shaderFile.GetDecompressedZFrame(zId);
             DataReaderZFrameByteAnalysis datareader = new(zframeDatabytes, GetVcsFileType(filenamepath), GetVcsSourceType(filenamepath));
             datareader.PrintByteAnalysis();
@@ -60,7 +61,7 @@ namespace MyShaderAnalysis {
 
         static void Trial6() {
             string filenamepath = $"{DOTA_GAME_PC_SOURCE}/multiblend_pc_30_ps.vcs";
-            ShaderFile shaderFile = new(filenamepath);
+            ShaderFile shaderFile = new ReadShaderFile(filenamepath).GetShaderFile();
             byte[] zframeDatabytes = shaderFile.GetDecompressedZFrame(0x1a1);
             DataReaderZFrameByteAnalysis datareader = new(zframeDatabytes, shaderFile.vcsFileType, shaderFile.vcsSourceType);
             datareader.PrintByteAnalysis();
@@ -82,8 +83,8 @@ namespace MyShaderAnalysis {
             string filenamepath = $"{ARTIFACT_CLASSIC_CORE_PC_SOURCE}/aerial_perspective_pc_30_ps.vcs";
             DataReaderVcsByteAnalysis reader = new(filenamepath);
 
-            // reader.offset = 9525;
-            reader.offset = 10340;
+            // reader.SetPosition(9525);
+            reader.SetOffset(10340);
 
             float num = reader.ReadFloatAtPosition();
             // int num = reader.ReadIntAtPosition();
@@ -99,7 +100,7 @@ namespace MyShaderAnalysis {
         static void Trial2() {
             string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/apply_fog_pcgl_40_ps.vcs";
             DataReaderVcsByteAnalysis reader = new(filenamepath);
-            reader.offset = 2032;
+            reader.SetOffset(2032);
             int num = reader.ReadIntAtPosition();
             Debug.WriteLine($"{num}");
             reader.ShowBytes(4);
@@ -136,33 +137,36 @@ namespace MyShaderAnalysis {
 
 
             reader.ShowByteCount();
-            int chunkOffset = reader.offset;
+            int chunkOffset = reader.GetOffset();
             int chunkSize = reader.ReadIntAtPosition();
             reader.ShowBytes(4, $"{chunkSize}");
             reader.ShowBytes(4);
-            reader.PrintIntWithValue();
-            reader.PrintIntWithValue();
+            reader.ShowBytesWithIntValue();
+            reader.ShowBytesWithIntValue();
             reader.ShowBytes(5, "decoder properties");
             reader.ShowBytesAtPosition(0, 100);
             reader.BreakLine();
 
-            reader.offset = chunkOffset + chunkSize + 4;
+            reader.SetOffset(chunkOffset + chunkSize + 4);
             reader.ShowByteCount();
-            int chunkOffset2 = reader.offset;
+            int chunkOffset2 = reader.GetOffset();
             int chunkSize2 = reader.ReadIntAtPosition();
             reader.ShowBytes(4, $"{chunkSize2}");
             reader.ShowBytes(4);
-            reader.PrintIntWithValue();
-            reader.PrintIntWithValue();
+            reader.ShowBytesWithIntValue();
+            reader.ShowBytesWithIntValue();
             reader.ShowBytes(5, "decoder properties");
             reader.ShowBytesAtPosition(0, 100);
             reader.BreakLine();
 
-            reader.offset = chunkOffset2 + chunkSize2 + 4;
+            reader.SetOffset(chunkOffset2 + chunkSize2 + 4);
 
-            reader.EndOfFile();
-            // reader.ShowByteCount();
-            // reader.ShowBytes(4);
+            if (!reader.CheckPositionIsAtEOF()) {
+                throw new ShaderParserException("End of file not reached!");
+            }
+            reader.ShowByteCount();
+            reader.OutputWriteLine("EOF");
+            reader.BreakLine();
 
         }
 

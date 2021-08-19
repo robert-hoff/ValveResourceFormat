@@ -83,7 +83,7 @@ namespace MyShaderAnalysis.vcsparsing {
             BreakLine();
 
 
-            ShowByteCount($"Start of source section, {offset} is the base offset for end-section source pointers");
+            ShowByteCount($"Start of source section, {GetOffset()} is the base offset for end-section source pointers");
             int gpuSourceCount = ReadIntAtPosition();
             ShowBytes(4, $"{sourceType} source files ({gpuSourceCount})");
             ShowBytes(1, "unknown boolean, values seen 0,1", tabLen: 13);
@@ -134,10 +134,10 @@ namespace MyShaderAnalysis.vcsparsing {
                     ShowBytes(4, breakLine: false);
                     TabComment($"glsl source pointer ({glslPointer})");
 
+                    bool hasData0 = ReadByteAtPosition(0) == 0;
+                    bool hasData1 = ReadByteAtPosition(1) == 0;
+                    bool hasData2 = ReadByteAtPosition(2) == 0;
                     ShowBytes(3, breakLine: false);
-                    bool hasData0 = databytes[offset - 3] == 0;
-                    bool hasData1 = databytes[offset - 2] == 0;
-                    bool hasData2 = databytes[offset - 1] == 0;
                     TabComment($"(data0={hasData0}, data1={hasData1}, data2={hasData2})", 7);
 
                     if (hasData0) {
@@ -203,9 +203,9 @@ namespace MyShaderAnalysis.vcsparsing {
                 OutputWriteLine("");
             }
             ShowByteCount(comment);
-            PrintIntWithValue();
-            PrintIntWithValue();
-            PrintIntWithValue();
+            ShowBytesWithIntValue();
+            ShowBytesWithIntValue();
+            ShowBytesWithIntValue();
             if (blockId == -1 && arg0 == 0 && arg1 == 0 && arg2 == 0) {
                 BreakLine();
             }
@@ -233,7 +233,8 @@ namespace MyShaderAnalysis.vcsparsing {
 
             for (int i = 0; i < nrArgs; i++) {
                 ShowMurmurString();
-                int headerOperator = databytes[offset];
+                // int headerOperator = databytes[offset];
+                int headerOperator = ReadByteAtPosition();
                 if (headerOperator == 0x0e) {
                     ShowBytes(3);
                     continue;
@@ -281,7 +282,7 @@ namespace MyShaderAnalysis.vcsparsing {
             for (int i = 0; i < dxilSourceCount; i++) {
                 int sourceOffset = ReadIntAtPosition();
                 ShowByteCount();
-                ShowBytes(4, $"offset to end of source {sourceOffset} (taken from {offset + 4})");
+                ShowBytes(4, $"offset to end of source {sourceOffset} (taken from {GetOffset() + 4})");
                 int additionalSourceBytes = 0;
                 if (sourceOffset > 0) {
                     ShowBytes(4);
@@ -295,22 +296,22 @@ namespace MyShaderAnalysis.vcsparsing {
                     }
                     additionalSourceBytes = sourceSize - unknown_prog_uint16 * 4;
                 }
-                int endOfSource = offset + additionalSourceBytes;
+                int endOfSource = GetOffset() + additionalSourceBytes;
                 if (additionalSourceBytes > SOURCE_BYTES_TO_SHOW) {
                     ShowBytes(SOURCE_BYTES_TO_SHOW, breakLine: false);
                     OutputWrite(" ");
-                    int remainingBytes = endOfSource - offset;
+                    int remainingBytes = endOfSource - GetOffset();
                     if (remainingBytes < 50) {
                         ShowBytes(remainingBytes);
                     } else {
-                        Comment($"... ({endOfSource - offset} bytes of data not shown)");
+                        Comment($"... ({endOfSource - GetOffset()} bytes of data not shown)");
                     }
                 } else if (additionalSourceBytes <= SOURCE_BYTES_TO_SHOW && additionalSourceBytes > 0) {
                     ShowBytes(additionalSourceBytes);
                 } else {
                     OutputWriteLine("// no source present");
                 }
-                offset = endOfSource;
+                SetOffset(endOfSource);
                 BreakLine();
                 ShowByteCount();
                 ShowBytes(16, "DXIL(hlsl) Editor ref.");
@@ -324,7 +325,7 @@ namespace MyShaderAnalysis.vcsparsing {
                 ShowByteCount();
                 ShowBytes(4, $"Source size, {sourceSize} bytes");
                 BreakLine();
-                int endOfSource = offset + sourceSize;
+                int endOfSource = GetOffset() + sourceSize;
                 ShowByteCount($"DXBC-SOURCE[{sourceId}]");
                 if (sourceSize == 0) {
                     OutputWriteLine("// no source present");
@@ -332,11 +333,11 @@ namespace MyShaderAnalysis.vcsparsing {
                 if (sourceSize > SOURCE_BYTES_TO_SHOW) {
                     ShowBytes(SOURCE_BYTES_TO_SHOW, breakLine: false);
                     OutputWrite(" ");
-                    Comment($"... ({endOfSource - offset} bytes of data not shown)");
+                    Comment($"... ({endOfSource - GetOffset()} bytes of data not shown)");
                 } else if (sourceSize <= SOURCE_BYTES_TO_SHOW && sourceSize > 0) {
                     ShowBytes(sourceSize);
                 }
-                offset = endOfSource;
+                SetOffset(endOfSource);
 
                 BreakLine();
                 ShowByteCount();
@@ -349,7 +350,7 @@ namespace MyShaderAnalysis.vcsparsing {
         private void ShowGlslSources(int glslSourceCount) {
             for (int sourceId = 0; sourceId < glslSourceCount; sourceId++) {
                 int sourceSize = ShowGlslSourceOffsets();
-                int sourceOffset = offset;
+                int sourceOffset = GetOffset();
                 ShowZGlslSourceSummary(sourceId);
                 ShowByteCount();
                 byte[] fileIdBytes = ReadBytes(16);
@@ -369,14 +370,14 @@ namespace MyShaderAnalysis.vcsparsing {
         public int ShowGlslSourceOffsets() {
             ShowByteCount("glsl source offsets");
             uint offset1 = ReadUIntAtPosition();
-            PrintIntWithValue();
+            ShowBytesWithIntValue();
             if (offset1 == 0) {
                 return 0;
             }
             ShowBytes(4, breakLine: false);
             TabComment("always 3");
             int sourceSize = ReadIntAtPosition() - 1; // one less because of null-term
-            PrintIntWithValue();
+            ShowBytesWithIntValue();
             BreakLine();
             return sourceSize;
         }
@@ -387,18 +388,18 @@ namespace MyShaderAnalysis.vcsparsing {
         // FIXME - can't I pass the source size here?
         public void ShowZGlslSourceSummary(int sourceId) {
             int bytesToRead = ReadIntAtPosition(-4);
-            int endOfSource = offset + bytesToRead;
+            int endOfSource = GetOffset() + bytesToRead;
             ShowByteCount($"GLSL-SOURCE[{sourceId}]");
             if (bytesToRead == 0) {
                 OutputWriteLine("// no source present");
             }
             if (bytesToRead > SOURCE_BYTES_TO_SHOW) {
                 ShowBytes(SOURCE_BYTES_TO_SHOW);
-                Comment($"... ({endOfSource - offset} bytes of data not shown)");
+                Comment($"... ({endOfSource - GetOffset()} bytes of data not shown)");
             } else if (bytesToRead <= SOURCE_BYTES_TO_SHOW && bytesToRead > 0) {
                 ShowBytes(bytesToRead);
             }
-            offset = endOfSource;
+            SetOffset(endOfSource);
             BreakLine();
         }
 
