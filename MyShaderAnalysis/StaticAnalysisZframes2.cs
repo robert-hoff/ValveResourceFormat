@@ -61,7 +61,7 @@ namespace MyShaderAnalysis {
 
 
         static void WriteBunchOfZframes() {
-            int NUM_TO_PRINT = 10;
+            int NUM_TO_PRINT = 1;
             // List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, 40);
             List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, 40);
 

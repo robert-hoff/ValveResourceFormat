@@ -22,11 +22,10 @@ namespace MyShaderAnalysis {
 
 
 
-            LzmaAnalysis.RunTrials();
-
+            // LzmaAnalysis.RunTrials();
             // TestFileSystem.RunTrials();
 
-            // StaticAnalysisZframes2.RunTrials();
+            StaticAnalysisZframes2.RunTrials();
             // StaticAnalysisZframes.RunTrials();
 
             // StaticAnalysis2.RunTrials();

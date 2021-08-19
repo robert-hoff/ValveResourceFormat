@@ -159,7 +159,7 @@ namespace MyShaderAnalysis.vcsparsing {
             int has_psrs_file = ReadIntAtPosition();
             ShowBytes(4, $"has_psrs_file = {(has_psrs_file > 0 ? "True" : "False")}");
             ShowBytes(16, "file ID0");
-            ShowBytes(16, "file ID1 - shared by all Dota2 vcs files");
+            ShowBytes(16, "file ID1 - shared by all Valve v64 vcs files");
             BreakLine();
         }
 

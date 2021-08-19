@@ -813,7 +813,8 @@ namespace ValveResourceFormat.ShaderParser
             datareader.ShowBytes(4);
             uint paramCount = datareader.ReadUIntAtPosition();
             datareader.ShowBytes(4, $"{paramCount} param-count");
-            for (int i = 0; i < paramCount; i++) {
+            for (int i = 0; i < paramCount; i++)
+            {
                 string paramname = datareader.ReadNullTermStringAtPosition();
                 datareader.OutputWriteLine($"// {paramname}");
                 datareader.ShowBytes(64);
@@ -856,8 +857,10 @@ namespace ValveResourceFormat.ShaderParser
             datareader.ShowByteCount($"SYMBOL-NAMES-BLOCK[{blockIndex}]");
             uint symbolGroupCount = datareader.ReadUIntAtPosition();
             datareader.ShowBytes(4, $"{symbolGroupCount} string groups in this block");
-            for (int i = 0; i < symbolGroupCount; i++) {
-                for (int j = 0; j < 3; j++) {
+            for (int i = 0; i < symbolGroupCount; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
                     string symbolname = datareader.ReadNullTermStringAtPosition();
                     datareader.OutputWriteLine($"// {symbolname}");
                     datareader.ShowBytes(symbolname.Length + 1);

@@ -56,7 +56,7 @@ namespace MyShaderAnalysis {
 
             // -- writes a useful summary for every file (pretty long process)
             // Don't overwrite multiblend! (the zframes are stored in a different directory)
-            // FileSummaryAllFiles();
+            FileSummaryAllFiles();
 
             // - prints a single page summary and links to all the files produced with FileSummaryAllFiles()
             // BlockCountSurvery($@"{SERVER_OUTPUT_DIR}\file-overview.html", writeFile: true);
@@ -71,7 +71,7 @@ namespace MyShaderAnalysis {
 
 
 
-            FileSummarySingleFile();
+            // FileSummarySingleFile();
             // ZFramePrintout();
 
 
@@ -327,7 +327,10 @@ namespace MyShaderAnalysis {
          *
          */
         static void FileSummaryAllFiles() {
-            List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, -1);
+            // List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, -1);
+            List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, -1);
+
+
             foreach (var triple in triples) {
                 if (triple.psFile.filename.Equals("multiblend_pcgl_30_ps.vcs")) {
                     continue;

@@ -101,8 +101,8 @@ namespace MyShaderAnalysis.utilhelpers {
         public static string GetArchiveLabel(ARCHIVE archive) {
             if (archive == ARCHIVE.dotacore_pcgl) return "core";
             if (archive == ARCHIVE.dotagame_pcgl) return "dota";
-            if (archive == ARCHIVE.artifact_classiccore_pc) return "ac-core";
-            if (archive == ARCHIVE.artifact_classicdcg_pc) return "ac-dcg";
+            if (archive == ARCHIVE.artifact_classiccore_pc) return "artifact-core";
+            if (archive == ARCHIVE.artifact_classicdcg_pc) return "artifact-dcg";
             throw new ShaderParserException("unknown archive");
         }
 

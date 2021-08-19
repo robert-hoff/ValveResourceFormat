@@ -8,13 +8,15 @@ namespace MyShaderAnalysis.vcsparsing {
 
     public class DataReaderZFrameByteAnalysis : DataReader {
 
-        FILETYPE filetype;
+        private FILETYPE filetype;
+        private VcsSourceType sourceType;
 
-        public DataReaderZFrameByteAnalysis(byte[] data, FILETYPE filetype) : base(data) {
+        public DataReaderZFrameByteAnalysis(byte[] data, FILETYPE filetype, VcsSourceType vcsSourceType) : base(data) {
             if (filetype == FILETYPE.features_file) {
                 throw new ShaderParserException("file type cannot be features, as they don't contain any zframes");
             }
             this.filetype = filetype;
+            this.sourceType = vcsSourceType;
         }
 
 
@@ -31,24 +33,27 @@ namespace MyShaderAnalysis.vcsparsing {
             this.outputDir = outputDir;
         }
 
+        // these are recorded in case save is indicated
+        private List<(int, int, string)> glslSources = new();
 
         public void PrintByteAnalysis() {
-            List<(int, int, string)> glslSources = new();
 
             ShowZDataSection(-1);
             ShowZFrameHeader();
+
 
             // this applies only to vs files (ps, gs and psrs files don't have this section)
             if (filetype == FILETYPE.vs_file) {
                 // values seen
                 // 1,2,4,5,8,10,12,16,20,40,48,80,120,160
                 int blockCountInput = ReadInt16AtPosition();
-                ShowByteCount("Some kind of state summary (uniforms/variables input?)");
+                ShowByteCount("Unknown additional parameters that point to specific configurations (block IDs)");
                 ShowBytes(2, breakLine: false);
                 TabComment($"nr of data-blocks ({blockCountInput})");
                 ShowBytes(blockCountInput * 2);
                 OutputWriteLine("");
             }
+
 
             int blockCount = ReadInt16AtPosition();
             ShowByteCount("Data blocks");
@@ -60,7 +65,7 @@ namespace MyShaderAnalysis.vcsparsing {
             }
             BreakLine();
 
-            ShowByteCount("Some kind of state summary (uniforms/variables output?)");
+            ShowByteCount("Unknown additional parameters, non 'FF FF' entries point to active block IDs");
             int blockCountOutput = ReadInt16AtPosition();
             ShowBytes(2, breakLine: false);
             TabComment($"nr of data-blocks ({blockCountOutput})", 1);
@@ -68,25 +73,36 @@ namespace MyShaderAnalysis.vcsparsing {
             BreakLine();
 
             ShowByteCount();
-            ShowBytes(4, breakLine: false);
-            int bin0 = databytes[offset - 4];
-            int bin1 = databytes[offset - 3];
-            TabComment($"possible flags {Convert.ToString(bin0, 2).PadLeft(8, '0')} {Convert.ToString(bin1, 2).PadLeft(8, '0')}", 7);
-            ShowBytes(1, breakLine: false);
-            TabComment("values seen 0,1", 16);
-
-            uint glslSourceCount = ReadUIntAtPosition();
-            ShowBytes(4, breakLine: false);
-            TabComment($"glsl source files ({glslSourceCount})", 7);
-            ShowBytes(1, breakLine: false);
-            TabComment("values seen 0,1", 16);
+            byte flagbyte = ReadByteAtPosition();
+            ShowBytes(1, $"possible control byte ({flagbyte}) or flags ({Convert.ToString(flagbyte, 2).PadLeft(8, '0')})");
+            ShowBytes(1, "values seen (0,1,2)");
+            ShowBytes(1, "always 0");
+            ShowBytes(1, "always 0");
+            ShowBytes(1, "values seen (0,1)");
             BreakLine();
 
 
-            for (int i = 0; i < glslSourceCount; i++) {
-                var glslSourceItem = ShowZSourceSection(i);
-                glslSources.Add(glslSourceItem);
+            ShowByteCount($"Start of source section, {offset} is the base offset for end-section source pointers");
+            int gpuSourceCount = ReadIntAtPosition();
+            ShowBytes(4, $"{sourceType} source files ({gpuSourceCount})");
+            ShowBytes(1, "unknown boolean, values seen 0,1", tabLen: 13);
+            BreakLine();
+
+
+            if (sourceType == VcsSourceType.Glsl) {
+                ShowGlslSources(gpuSourceCount);
             }
+
+            if (sourceType == VcsSourceType.DXIL) {
+                ShowDxilSources(gpuSourceCount);
+            }
+
+            if (sourceType == VcsSourceType.DXBC) {
+                ShowDxbcSources(gpuSourceCount);
+            }
+
+
+
 
             //  End blocks for vs and gs files
             if (filetype == FILETYPE.vs_file || filetype == FILETYPE.gs_file) {
@@ -144,54 +160,17 @@ namespace MyShaderAnalysis.vcsparsing {
 
 
             // write the gsls source, if indicated
-            if (saveGlslSources && !writeAsHtml) {
+            if (sourceType == VcsSourceType.DXIL && saveGlslSources && !writeAsHtml) {
                 SaveGlslSourcestoTxt(glslSources);
             }
-            if (saveGlslSources && writeAsHtml) {
+            if (sourceType == VcsSourceType.DXIL && saveGlslSources && writeAsHtml) {
                 SaveGlslSourcestoHtml(glslSources);
             }
-
-        }
-
-
-
-        private void SaveGlslSourcestoHtml(List<(int, int, string)> glslSources) {
-            foreach (var glslSourceItem in glslSources) {
-                string htmlFilename = GetGlslHtmlFilename(glslSourceItem.Item3);
-                string glslFilenamepath = @$"{outputDir}\{htmlFilename}";
-                if (File.Exists(glslFilenamepath)) {
-                    continue;
-                }
-                int glslOffset = glslSourceItem.Item1;
-                int glslSize = glslSourceItem.Item2;
-                byte[] glslSourceContent = ReadBytesAtPosition(glslOffset, glslSize, rel: false);
-                Debug.WriteLine($"writing {glslFilenamepath}");
-                StreamWriter glslFileWriter = new(glslFilenamepath);
-                string htmlHeader = GetHtmlHeader(htmlFilename[0..^5], htmlFilename[0..^5]);
-                glslFileWriter.WriteLine($"{htmlHeader}");
-                glslFileWriter.Flush();
-                glslFileWriter.BaseStream.Write(glslSourceContent, 0, glslSourceContent.Length);
-                glslFileWriter.Flush();
-                glslFileWriter.WriteLine($"{GetHtmlFooter()}");
-                glslFileWriter.Flush();
-                glslFileWriter.Close();
+            if (sourceType != VcsSourceType.DXIL && saveGlslSources) {
+                Debug.WriteLine($"glsl save indicated but source is not glsl");
             }
         }
 
-        private void SaveGlslSourcestoTxt(List<(int, int, string)> glslSources) {
-            foreach (var glslSourceItem in glslSources) {
-                string glslFilenamepath = @$"{outputDir}\{GetGlslTxtFilename(glslSourceItem.Item3)}";
-                if (File.Exists(glslFilenamepath)) {
-                    continue;
-                }
-                int glslOffset = glslSourceItem.Item1;
-                int glslSize = glslSourceItem.Item2;
-                byte[] glslSourceContent = ReadBytesAtPosition(glslOffset, glslSize, rel: false);
-
-                Debug.WriteLine($"writing {glslFilenamepath}");
-                File.WriteAllBytes(glslFilenamepath, glslSourceContent);
-            }
-        }
 
 
         private bool prevBlockWasZero = false;
@@ -206,7 +185,7 @@ namespace MyShaderAnalysis.vcsparsing {
             int arg1 = ReadIntAtPosition(4);
             int arg2 = ReadIntAtPosition(8);
 
-            if (arg0 == 0 && arg1 == 0 && arg2 == 0) {
+            if (blockId != -1 && arg0 == 0 && arg1 == 0 && arg2 == 0) {
                 ShowBytes(12, breakLine: false);
                 TabComment($"data-block[{blockId}]");
                 return 0;
@@ -226,6 +205,9 @@ namespace MyShaderAnalysis.vcsparsing {
             PrintIntWithValue();
             PrintIntWithValue();
             PrintIntWithValue();
+            if (blockId == -1 && arg0 == 0 && arg1 == 0 && arg2 == 0) {
+                BreakLine();
+            }
             return blockSize * 4;
         }
 
@@ -294,24 +276,96 @@ namespace MyShaderAnalysis.vcsparsing {
             }
         }
 
-        public (int, int, string) ShowZSourceSection(int blockId) {
-            int sourceSize = ShowZSourceOffsets();
-            int sourceOffset = offset;
-            ShowZGlslSourceSummary(blockId);
-            ShowByteCount();
-            byte[] fileIdBytes = ReadBytes(16);
-            string fileIdStr = BytesToString(fileIdBytes);
-            if (writeAsHtml) {
-                OutputWrite(GetGlslHtmlLink(fileIdStr));
-            } else {
-                OutputWrite(fileIdStr);
+        private void ShowDxilSources(int dxilSourceCount) {
+            for (int i = 0; i < dxilSourceCount; i++) {
+                int sourceOffset = ReadIntAtPosition();
+                ShowByteCount();
+                ShowBytes(4, $"offset to end of source {sourceOffset} (taken from {offset + 4})");
+                int additionalSourceBytes = 0;
+                if (sourceOffset > 0) {
+                    ShowBytes(4);
+                    int unknown_prog_uint16 = (int)ReadUInt16AtPosition(2);
+                    ShowBytes(4, $"({unknown_prog_uint16}) the first ({unknown_prog_uint16} * 4) bytes look like header data that may need to be processed");
+                    BreakLine();
+                    ShowByteCount($"DXIL-SOURCE[{i}]");
+                    int sourceSize = sourceOffset - 8;
+                    if (unknown_prog_uint16 > 0) {
+                        ShowBytes(unknown_prog_uint16 * 4);
+                    }
+                    additionalSourceBytes = sourceSize - unknown_prog_uint16 * 4;
+                }
+                int endOfSource = offset + additionalSourceBytes;
+                if (additionalSourceBytes > SOURCE_BYTES_TO_SHOW) {
+                    ShowBytes(SOURCE_BYTES_TO_SHOW, breakLine: false);
+                    OutputWrite(" ");
+                    int remainingBytes = endOfSource - offset;
+                    if (remainingBytes < 50) {
+                        ShowBytes(remainingBytes);
+                    } else {
+                        Comment($"... ({endOfSource - offset} bytes of data not shown)");
+                    }
+                } else if (additionalSourceBytes <= SOURCE_BYTES_TO_SHOW && additionalSourceBytes > 0) {
+                    ShowBytes(additionalSourceBytes);
+                } else {
+                    OutputWriteLine("// no source present");
+                }
+                offset = endOfSource;
+                BreakLine();
+                ShowByteCount();
+                ShowBytes(16, "DXIL(hlsl) Editor ref.");
+                BreakLine();
             }
-            TabComment($"File ID");
-            BreakLine();
-            return (sourceOffset, sourceSize, fileIdStr);
         }
 
-        public int ShowZSourceOffsets() {
+        private void ShowDxbcSources(int dxbcSourceCount) {
+            for (int sourceId = 0; sourceId < dxbcSourceCount; sourceId++) {
+                int sourceSize = ReadIntAtPosition();
+                ShowByteCount();
+                ShowBytes(4, $"Source size, {sourceSize} bytes");
+                BreakLine();
+                int endOfSource = offset + sourceSize;
+                ShowByteCount($"DXBC-SOURCE[{sourceId}]");
+                if (sourceSize == 0) {
+                    OutputWriteLine("// no source present");
+                }
+                if (sourceSize > SOURCE_BYTES_TO_SHOW) {
+                    ShowBytes(SOURCE_BYTES_TO_SHOW, breakLine: false);
+                    OutputWrite(" ");
+                    Comment($"... ({endOfSource - offset} bytes of data not shown)");
+                } else if (sourceSize <= SOURCE_BYTES_TO_SHOW && sourceSize > 0) {
+                    ShowBytes(sourceSize);
+                }
+                offset = endOfSource;
+
+                BreakLine();
+                ShowByteCount();
+                ShowBytes(16, "DXBC(hlsl) Editor ref.");
+                BreakLine();
+            }
+        }
+
+
+        private void ShowGlslSources(int glslSourceCount) {
+            for (int sourceId = 0; sourceId < glslSourceCount; sourceId++) {
+                int sourceSize = ShowGlslSourceOffsets();
+                int sourceOffset = offset;
+                ShowZGlslSourceSummary(sourceId);
+                ShowByteCount();
+                byte[] fileIdBytes = ReadBytes(16);
+                string fileIdStr = BytesToString(fileIdBytes);
+                if (writeAsHtml) {
+                    OutputWrite(GetGlslHtmlLink(fileIdStr));
+                } else {
+                    OutputWrite(fileIdStr);
+                }
+                TabComment($" Editor ref.");
+                BreakLine();
+                glslSources.Add((sourceOffset, sourceSize, fileIdStr));
+            }
+        }
+
+
+        public int ShowGlslSourceOffsets() {
             ShowByteCount("glsl source offsets");
             uint offset1 = ReadUIntAtPosition();
             PrintIntWithValue();
@@ -327,7 +381,7 @@ namespace MyShaderAnalysis.vcsparsing {
         }
 
 
-        const int GLSL_BYTES_TO_SHOW = 100;
+        const int SOURCE_BYTES_TO_SHOW = 100;
 
         // FIXME - can't I pass the source size here?
         public void ShowZGlslSourceSummary(int sourceId) {
@@ -337,11 +391,10 @@ namespace MyShaderAnalysis.vcsparsing {
             if (bytesToRead == 0) {
                 OutputWriteLine("// no source present");
             }
-            if (bytesToRead > GLSL_BYTES_TO_SHOW) {
-                ShowBytes(GLSL_BYTES_TO_SHOW);
-                ShowByteCount();
+            if (bytesToRead > SOURCE_BYTES_TO_SHOW) {
+                ShowBytes(SOURCE_BYTES_TO_SHOW);
                 Comment($"... ({endOfSource - offset} bytes of data not shown)");
-            } else if (bytesToRead <= GLSL_BYTES_TO_SHOW && bytesToRead > 0) {
+            } else if (bytesToRead <= SOURCE_BYTES_TO_SHOW && bytesToRead > 0) {
                 ShowBytes(bytesToRead);
             }
             offset = endOfSource;
@@ -391,6 +444,51 @@ namespace MyShaderAnalysis.vcsparsing {
             }
             return myDynParser.dynamicExpressionResult;
         }
+
+
+
+
+        private void SaveGlslSourcestoHtml(List<(int, int, string)> glslSources) {
+            foreach (var glslSourceItem in glslSources) {
+                string htmlFilename = GetGlslHtmlFilename(glslSourceItem.Item3);
+                string glslFilenamepath = @$"{outputDir}\{htmlFilename}";
+                if (File.Exists(glslFilenamepath)) {
+                    continue;
+                }
+                int glslOffset = glslSourceItem.Item1;
+                int glslSize = glslSourceItem.Item2;
+                byte[] glslSourceContent = ReadBytesAtPosition(glslOffset, glslSize, rel: false);
+                Debug.WriteLine($"writing {glslFilenamepath}");
+                StreamWriter glslFileWriter = new(glslFilenamepath);
+                string htmlHeader = GetHtmlHeader(htmlFilename[0..^5], htmlFilename[0..^5]);
+                glslFileWriter.WriteLine($"{htmlHeader}");
+                glslFileWriter.Flush();
+                glslFileWriter.BaseStream.Write(glslSourceContent, 0, glslSourceContent.Length);
+                glslFileWriter.Flush();
+                glslFileWriter.WriteLine($"{GetHtmlFooter()}");
+                glslFileWriter.Flush();
+                glslFileWriter.Close();
+            }
+        }
+
+        private void SaveGlslSourcestoTxt(List<(int, int, string)> glslSources) {
+            foreach (var glslSourceItem in glslSources) {
+                string glslFilenamepath = @$"{outputDir}\{GetGlslTxtFilename(glslSourceItem.Item3)}";
+                if (File.Exists(glslFilenamepath)) {
+                    continue;
+                }
+                int glslOffset = glslSourceItem.Item1;
+                int glslSize = glslSourceItem.Item2;
+                byte[] glslSourceContent = ReadBytesAtPosition(glslOffset, glslSize, rel: false);
+
+                Debug.WriteLine($"writing {glslFilenamepath}");
+                File.WriteAllBytes(glslFilenamepath, glslSourceContent);
+            }
+        }
+
+
+
+
 
     }
 }

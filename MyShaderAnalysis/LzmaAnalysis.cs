@@ -23,7 +23,33 @@ namespace MyShaderAnalysis {
             // Trial5();
             // Trial6();
             // Trial7();
-            Trial8();
+            // Trial8();
+            // Trial9();
+            Trial10();
+        }
+
+
+        static void Trial10() {
+            // string filenamepath = $"{DOTA_GAME_PC_SOURCE}/multiblend_pc_30_ps.vcs"; long zId = 0x1a1;
+            // string filenamepath = $"{ARTIFACT_CLASSIC_CORE_PC_SOURCE}/aerial_perspective_pc_30_ps.vcs"; long zId = 0;
+            string filenamepath = $"{ARTIFACT_CLASSIC_CORE_PC_SOURCE}/aerial_perspective_pc_30_vs.vcs"; long zId = 0;
+            // string filenamepath = $"{ARTIFACT_CLASSIC_DCG_PC_SOURCE}/bloom_dota_pc_40_vs.vcs"; long zId = 0;
+            // string filenamepath = $"{ARTIFACT_CLASSIC_DCG_PC_SOURCE}/visualize_physics_pc_30_ps.vcs"; long zId = 0x10;
+            ShaderFile shaderFile = new(filenamepath);
+            byte[] zframeDatabytes = shaderFile.GetDecompressedZFrame(zId);
+            DataReaderZFrameByteAnalysis datareader = new(zframeDatabytes, GetVcsFileType(filenamepath), GetVcsSourceType(filenamepath));
+            datareader.PrintByteAnalysis();
+
+        }
+
+
+
+
+        static void Trial9() {
+            string filenamepath = $"{DOTA_GAME_PC_SOURCE}/multiblend_pc_30_vs.vcs";
+            VcsSourceType vcsSourceType = GetVcsSourceType(filenamepath);
+            Debug.WriteLine($"{vcsSourceType}");
+
         }
 
 
@@ -37,7 +63,7 @@ namespace MyShaderAnalysis {
 
 
         static void Trial7() {
-            string filenamepath = $"{DOTA_GAME_PC_SOURCE}/multiblend_pc_30_vs.vcs";
+            string filenamepath = $"{DOTA_GAME_PC_SOURCE}/multiblend_pc_30_ps.vcs";
             ShaderFile shaderFile = new(filenamepath);
             byte[] zframeDatabytes = shaderFile.GetDecompressedZFrame(0x1a1);
 

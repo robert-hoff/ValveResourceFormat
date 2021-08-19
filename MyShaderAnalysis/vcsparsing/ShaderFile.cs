@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using ZstdSharp;
-using static MyShaderAnalysis.vcsparsing.UtilHelpers;
 using System.Diagnostics;
 using MyShaderAnalysis.compat;
+using static MyShaderAnalysis.vcsparsing.UtilHelpers;
+using LzmaDecoder = SevenZip.Compression.LZMA.Decoder;
+
 
 namespace MyShaderAnalysis.vcsparsing {
 
@@ -13,6 +15,7 @@ namespace MyShaderAnalysis.vcsparsing {
         private DataReader datareader;
         public string filenamepath;
         public FILETYPE vcsFiletype = FILETYPE.unknown;
+        public VcsSourceType vcsSourceType;
         public DataBlockFeaturesHeader featuresHeader = null;
         public DataBlockVsPsHeader vspsHeader = null;
         public List<DataBlockSfBlock> sfBlocks = new();
@@ -40,6 +43,7 @@ namespace MyShaderAnalysis.vcsparsing {
         public ShaderFile(string filenamepath) {
             this.filenamepath = filenamepath;
             vcsFiletype = GetVcsFileType(filenamepath);
+            vcsSourceType = GetVcsSourceType(filenamepath);
             datareader = new DataReader(File.ReadAllBytes(filenamepath));
 
             int magic = datareader.ReadInt();
@@ -241,21 +245,32 @@ namespace MyShaderAnalysis.vcsparsing {
             if (compressionType == ShaderFile.ZSTD_COMPRESSION) {
                 datareader.offset += 12;
                 byte[] compressedZframe = datareader.ReadBytes(compressedLength);
-                using var decompressor = new Decompressor();
-                decompressor.LoadDictionary(GetZFrameDictionary());
-                Span<byte> zframeUncompressed = decompressor.Unwrap(compressedZframe);
+                using var zstdDecoder = new Decompressor();
+                zstdDecoder.LoadDictionary(GetZFrameDictionary());
+                Span<byte> zframeUncompressed = zstdDecoder.Unwrap(compressedZframe);
                 if (zframeUncompressed.Length != uncompressedLength) {
                     throw new ShaderParserException("Decompressed zframe doesn't match expected size");
                 }
-                // TODO - organising the decompressor needs a rethink
-                // dispose or not?
-                // decompressor.Dispose();
+                zstdDecoder.Dispose();
                 return zframeUncompressed.ToArray();
             }
 
-            // TODO - lzma stuff
-            throw new NotImplementedException("lzma goes here");
+            if (compressionType == ShaderFile.LZMA_COMPRESSION) {
+                var lzmaDecoder = new LzmaDecoder();
+                datareader.offset += 16;
+                lzmaDecoder.SetDecoderProperties(datareader.ReadBytes(5));
+                var compressedBuffer = datareader.ReadBytes(compressedLength);
+                using (var inputStream = new MemoryStream(compressedBuffer))
+                using (var outStream = new MemoryStream((int) uncompressedLength)) {
+                    lzmaDecoder.Code(inputStream, outStream, compressedBuffer.Length, uncompressedLength, null);
+                    return outStream.ToArray();
+                }
+            }
+
+            throw new ShaderParserException("This point cannot be reached, compressionType should be either ZSTD or LZMA");
         }
+
+
 
         public override string ToString() {
             string comprDesc = compressionType == ShaderFile.ZSTD_COMPRESSION ? "ZSTD" : "LZMA";
@@ -275,6 +290,13 @@ namespace MyShaderAnalysis.vcsparsing {
     public enum FILETYPE {
         unknown, any, features_file, vs_file, ps_file, gs_file, psrs_file
     };
+
+    public enum VcsSourceType {
+        Glsl,
+        DXIL,
+        DXBC,
+    }
+
 
 
 }
