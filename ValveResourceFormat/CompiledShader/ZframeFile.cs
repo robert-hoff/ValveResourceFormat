@@ -30,7 +30,7 @@ namespace ValveResourceFormat.ShaderParser
         public int nonZeroDataBlockCount { get; }
 
         public ZFrameFile(byte[] databytes, string filenamepath, long zframeId, VcsFileType vcsFileType,
-            VcsSourceType vcsSourceType, Boolean omitParsing = false)
+            VcsSourceType vcsSourceType, bool omitParsing = false)
         {
             this.filenamepath = filenamepath;
             this.vcsFileType = vcsFileType;
@@ -494,7 +494,7 @@ namespace ValveResourceFormat.ShaderParser
                 datareader.BreakLine();
             }
             //  End blocks for ps and psrs files
-            if (vcsFileType == VcsFileType.PixelShader || vcsFileType == VcsFileType.PotentialShadowReciever)
+            if (vcsFileType == VcsFileType.PixelShader || vcsFileType == VcsFileType.PixelShaderRenderState)
             {
                 datareader.ShowByteCount();
                 int nrEndBlocks = datareader.ReadIntAtPosition();

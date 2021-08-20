@@ -19,27 +19,27 @@ namespace ShaderAnalysis.utilhelpers
 
         public static List<string> GetVcsFiles(string dir1, string dir2, VcsFileType fileType, int numEnding, bool sortFiles = true) {
             List<string> filesFound = new();
-            if (fileType == VcsFileType.Features || fileType == VcsFileType.Any) {
+            if (fileType == VcsFileType.Features || fileType == VcsFileType.VFX_PROGRAM_MAX) {
                 string endsWith = numEnding > -1 ? $"{numEnding}_features.vcs" : "features.vcs";
                 filesFound.AddRange(GetAllFilesWithEnding(dir1, endsWith));
                 filesFound.AddRange(GetAllFilesWithEnding(dir2, endsWith));
             }
-            if (fileType == VcsFileType.VertexShader || fileType == VcsFileType.Any) {
+            if (fileType == VcsFileType.VertexShader || fileType == VcsFileType.VFX_PROGRAM_MAX) {
                 string endsWith = numEnding > -1 ? $"{numEnding}_vs.vcs" : "vs.vcs";
                 filesFound.AddRange(GetAllFilesWithEnding(dir1, endsWith));
                 filesFound.AddRange(GetAllFilesWithEnding(dir2, endsWith));
             }
-            if (fileType == VcsFileType.PixelShader || fileType == VcsFileType.Any) {
+            if (fileType == VcsFileType.PixelShader || fileType == VcsFileType.VFX_PROGRAM_MAX) {
                 string endsWith = numEnding > -1 ? $"{numEnding}_ps.vcs" : "ps.vcs";
                 filesFound.AddRange(GetAllFilesWithEnding(dir1, endsWith));
                 filesFound.AddRange(GetAllFilesWithEnding(dir2, endsWith));
             }
-            if (fileType == VcsFileType.GeometryShader || fileType == VcsFileType.Any) {
+            if (fileType == VcsFileType.GeometryShader || fileType == VcsFileType.VFX_PROGRAM_MAX) {
                 string endsWith = numEnding > -1 ? $"{numEnding}_gs.vcs" : "gs.vcs";
                 filesFound.AddRange(GetAllFilesWithEnding(dir1, endsWith));
                 filesFound.AddRange(GetAllFilesWithEnding(dir2, endsWith));
             }
-            if (fileType == VcsFileType.PotentialShadowReciever || fileType == VcsFileType.Any) {
+            if (fileType == VcsFileType.PixelShaderRenderState || fileType == VcsFileType.VFX_PROGRAM_MAX) {
                 string endsWith = numEnding > -1 ? $"{numEnding}_psrs.vcs" : "psrs.vcs";
                 filesFound.AddRange(GetAllFilesWithEnding(dir1, endsWith));
                 filesFound.AddRange(GetAllFilesWithEnding(dir2, endsWith));
