@@ -72,6 +72,8 @@ dotnet_diagnostic.CA1055.severity = none
 dotnet_diagnostic.IDE0007.severity = none
 dotnet_diagnostic.CA1812.severity = none
 dotnet_diagnostic.CA1014.severity = none
+dotnet_diagnostic.CS0162.severity = none // unreachable code
+
 
 
 

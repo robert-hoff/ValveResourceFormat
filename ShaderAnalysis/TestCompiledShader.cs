@@ -13,11 +13,51 @@ namespace ShaderAnalysis
     public class TestCompiledShader
     {
 
+        static string TEST_SHADERS_DIR = $"X:/checkouts/ValveResourceFormat/Tests/Files/Shaders";
+
 
         public static void RunTrials()
         {
-            Trial2();
+            // Trial2();
+            // Trial3();
+            // Trial4();
+            Trial5();
         }
+
+
+        static void Trial5()
+        {
+            string filenamepath = $"{TEST_SHADERS_DIR}/error_vulkan_40_vs.vcs";
+            ShaderFile shaderFile = new ReadShaderFile(filenamepath).GetShaderFile();
+            ZFrameFile zframeFile = shaderFile.GetZFrameFile(0, omitParsing: true);
+            zframeFile.datareader.WriteToDebug = true;
+            zframeFile.datareader.WriteToConsole = false;
+
+            zframeFile.PrintByteAnalysis();
+        }
+
+
+        static void Trial4()
+        {
+            // string filenamepath = $"{TEST_SHADERS_DIR}/error_pc_40_features.vcs";
+            // string filenamepath = $"{TEST_SHADERS_DIR}/error_pc_40_ps.vcs";
+            // string filenamepath = $"{TEST_SHADERS_DIR}/error_pc_40_vs.vcs";
+            // string filenamepath = $"{TEST_SHADERS_DIR}/error_pcgl_40_features.vcs";
+            // string filenamepath = $"{TEST_SHADERS_DIR}/error_pcgl_40_ps.vcs";
+            // string filenamepath = $"{TEST_SHADERS_DIR}/error_pcgl_40_vs.vcs";
+            // string filenamepath = $"{TEST_SHADERS_DIR}/error_vulkan_40_features.vcs";
+            // string filenamepath = $"{TEST_SHADERS_DIR}/error_vulkan_40_ps.vcs";
+            string filenamepath = $"{TEST_SHADERS_DIR}/error_vulkan_40_vs.vcs";
+            ShaderFile shaderFile = new ReadShaderFile(filenamepath).GetShaderFile();
+            shaderFile.PrintByteAnalysis(shortenOutput: false);
+        }
+
+        static void Trial3()
+        {
+            string filenamepath = $"{TEST_SHADERS_DIR}/error_pc_40_features.vcs";
+            new DataReaderVcsTesting(filenamepath);
+        }
+
 
 
         static void Trial2()
