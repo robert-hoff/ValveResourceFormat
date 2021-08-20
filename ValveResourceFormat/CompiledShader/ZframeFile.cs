@@ -93,7 +93,7 @@ namespace ValveResourceFormat.ShaderParser
                     ReadDxbcSources(gpuSourceCount);
                     break;
                 case VcsSourceType.Vulkan:
-                    ReadDxbcSources(gpuSourceCount);
+                    ReadVulkanSources(gpuSourceCount);
                     break;
             }
 
@@ -145,8 +145,8 @@ namespace ValveResourceFormat.ShaderParser
         {
             for (int sourceId = 0; sourceId < vulkanSourceCount; sourceId++)
             {
-                DxbcSource dxbcSource = new(datareader, datareader.GetOffset(), sourceId);
-                gpuSources.Add(dxbcSource);
+                VulkanSource vulkanSource = new(datareader, datareader.GetOffset(), sourceId);
+                gpuSources.Add(vulkanSource);
             }
         }
 
