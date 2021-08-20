@@ -253,7 +253,7 @@ namespace ValveResourceFormat.ShaderParser
             }
             datareader.ShowByteCount();
             uint paramBlockCount = datareader.ReadUIntAtPosition();
-            datareader.ShowBytes(4, $"{paramBlockCount} Param-Blocks (may contain dynamic expressions)");
+            datareader.ShowBytes(4, $"{paramBlockCount} Param-Blocks");
             datareader.BreakLine();
             foreach (var paramBlock in paramBlocks)
             {
@@ -275,9 +275,9 @@ namespace ValveResourceFormat.ShaderParser
             {
                 bufferBlock.PrintAnnotatedBytestream();
             }
-            datareader.ShowByteCount();
             if (vcsFileType == VcsFileType.Features || vcsFileType == VcsFileType.VertexShader)
             {
+                datareader.ShowByteCount();
                 uint symbolBlockCount = datareader.ReadUIntAtPosition();
                 datareader.ShowBytes(4, $"{symbolBlockCount} symbol/names blocks");
                 foreach (var symbolBlock in symbolBlocks)
