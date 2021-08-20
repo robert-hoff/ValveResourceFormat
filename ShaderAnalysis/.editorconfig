@@ -72,8 +72,9 @@ dotnet_diagnostic.CA1055.severity = none
 dotnet_diagnostic.IDE0007.severity = none
 dotnet_diagnostic.CA1812.severity = none
 dotnet_diagnostic.CA1014.severity = none
-dotnet_diagnostic.CS0162.severity = none // unreachable code
-
+dotnet_diagnostic.CS0162.severity = none
+# function name stuff (all the shit drains time)
+dotnet_diagnostic.IDE1006.severity = none
 
 
 

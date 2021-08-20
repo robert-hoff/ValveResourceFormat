@@ -416,7 +416,7 @@ namespace ValveResourceFormat.ShaderParser
                 datareader.MoveOffset(12);
                 byte[] compressedZframe = datareader.ReadBytes(compressedLength);
                 using var zstdDecoder = new Decompressor();
-                zstdDecoder.LoadDictionary(GetZFrameDictionary());
+                zstdDecoder.LoadDictionary(ZstdDictionary.GetDictionary());
                 Span<byte> zframeUncompressed = zstdDecoder.Unwrap(compressedZframe);
                 if (zframeUncompressed.Length != uncompressedLength)
                 {

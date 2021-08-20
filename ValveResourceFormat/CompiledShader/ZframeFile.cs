@@ -92,8 +92,9 @@ namespace ValveResourceFormat.ShaderParser
                 case VcsSourceType.DXBC:
                     ReadDxbcSources(gpuSourceCount);
                     break;
-
-
+                case VcsSourceType.Vulkan:
+                    ReadDxbcSources(gpuSourceCount);
+                    break;
             }
 
             nrEndBlocks = datareader.ReadInt();
@@ -140,6 +141,15 @@ namespace ValveResourceFormat.ShaderParser
                 gpuSources.Add(dxbcSource);
             }
         }
+        private void ReadVulkanSources(int vulkanSourceCount)
+        {
+            for (int sourceId = 0; sourceId < vulkanSourceCount; sourceId++)
+            {
+                DxbcSource dxbcSource = new(datareader, datareader.GetOffset(), sourceId);
+                gpuSources.Add(dxbcSource);
+            }
+        }
+
         public ZDataBlock GetDataBlock(int blockId)
         {
             return blockId == -1 ? leadingData : dataBlocks[blockId];
