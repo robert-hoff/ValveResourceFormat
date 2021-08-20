@@ -23,7 +23,7 @@ namespace ValveResourceFormat.ShaderParser
         public List<ParamBlock> paramBlocks { get; } = new();
         public List<MipmapBlock> mipmapBlocks { get; } = new();
         public List<BufferBlock> bufferBlocks { get; } = new();
-        public List<SymbolsBlock> symbolBlocks { get; } = new();
+        public List<VertexSymbolsBlock> symbolBlocks { get; } = new();
 
         // zframe data is sorted by the order they appear in the file
         // their Id (which is different) is the dictionary key
@@ -106,7 +106,7 @@ namespace ValveResourceFormat.ShaderParser
                 int sybmolsBlockCount = datareader.ReadInt();
                 for (int i = 0; i < sybmolsBlockCount; i++)
                 {
-                    SymbolsBlock nextSymbolsBlock = new(datareader, datareader.GetOffset(), i);
+                    VertexSymbolsBlock nextSymbolsBlock = new(datareader, datareader.GetOffset(), i);
                     symbolBlocks.Add(nextSymbolsBlock);
                 }
             }
@@ -163,7 +163,6 @@ namespace ValveResourceFormat.ShaderParser
             }
         }
 
-
 #pragma warning disable CA1024 // Use properties where appropriate
         public int GetZFrameCount()
         {
@@ -197,7 +196,11 @@ namespace ValveResourceFormat.ShaderParser
         }
 #pragma warning restore CA1024
 
-        public void PrintByteAnalysis()
+
+        private uint zFrameCount;
+        const int SKIP_ZFRAMES_IFMORETHAN = 10;
+
+        public void PrintByteAnalysis(bool shortenOutput = true)
         {
             datareader.SetOffset(0);
             if (vcsFileType == VcsFileType.Features)
@@ -285,22 +288,21 @@ namespace ValveResourceFormat.ShaderParser
                 datareader.BreakLine();
             }
 
-            PrintZframes();
-
-            if (!DONT_SHOW_COMPRESSED_ZFRAMES)
+            PrintZframes(shortenOutput);
+            if (shortenOutput && zFrameCount > SKIP_ZFRAMES_IFMORETHAN)
             {
-#pragma warning disable CS0162 // Unreachable code detected
-                datareader.ShowEndOfFile();
-#pragma warning restore CS0162 // Unreachable code detected
+                datareader.Comment("rest of data contains compressed zframes");
+                datareader.BreakLine();
+                return;
             }
 
+            datareader.ShowEndOfFile();
         }
 
-        const bool DONT_SHOW_COMPRESSED_ZFRAMES = true;
-        private void PrintZframes()
+        private void PrintZframes(bool shortenOutput)
         {
             datareader.ShowByteCount();
-            uint zFrameCount = datareader.ReadUIntAtPosition();
+            zFrameCount = datareader.ReadUIntAtPosition();
             datareader.ShowBytes(4, $"{zFrameCount} zframes");
             datareader.BreakLine();
             if (zFrameCount == 0)
@@ -317,15 +319,11 @@ namespace ValveResourceFormat.ShaderParser
                 zFrameIndexes.Add(zframeId);
             }
             datareader.BreakLine();
-            if (DONT_SHOW_COMPRESSED_ZFRAMES)
+            if (shortenOutput && zFrameCount > SKIP_ZFRAMES_IFMORETHAN)
             {
-                datareader.Comment("rest of data contains compressed zframes");
-                datareader.BreakLine();
                 return;
             }
-#pragma warning disable CS0162 // Unreachable code detected
             datareader.ShowByteCount("zFrame file offsets");
-#pragma warning restore CS0162 // Unreachable code detected
             foreach (uint zframeId in zFrameIndexes)
             {
                 uint zframe_offset = datareader.ReadUIntAtPosition();
@@ -340,19 +338,38 @@ namespace ValveResourceFormat.ShaderParser
             }
         }
 
+        int MAX_ZFRAME_BYTES_TO_SHOW = 96;
         public void PrintCompressedZFrame(uint zframeId)
         {
             datareader.OutputWriteLine($"[{datareader.GetOffset()}] {getZFrameIdString(zframeId)}");
-            datareader.ShowBytes(4, "DELIM (0xfffffffd)");
+            bool isLzma = false;
+            uint zstdDelimOrChunkSize = datareader.ReadUIntAtPosition();
+            if (zstdDelimOrChunkSize == CompiledShader.ZSTD_DELIM)
+            {
+                datareader.ShowBytes(4, $"Zstd delim (0x{CompiledShader.ZSTD_DELIM:x08})");
+            } else
+            {
+                datareader.ShowBytes(4, $"Lzma chunk size {zstdDelimOrChunkSize}");
+                uint lzmaDelim = datareader.ReadUIntAtPosition();
+                if (lzmaDelim != CompiledShader.LZMA_DELIM)
+                {
+                    throw new ShaderParserException("Unknown compression, neither ZStd nor Lzma found");
+                }
+                isLzma = true;
+                datareader.ShowBytes(4, $"Lzma delim (0x{CompiledShader.LZMA_DELIM:x08})");
+            }
             int uncompressed_length = datareader.ReadIntAtPosition();
             datareader.ShowBytes(4, $"{uncompressed_length,-8} uncompressed length");
-            // TabPrintComment(uncompressed_length.ToString().PadRight(8));
             int compressed_length = datareader.ReadIntAtPosition();
             datareader.ShowBytes(4, $"{compressed_length,-8} compressed length");
-            datareader.ShowBytesAtPosition(0, compressed_length > 96 ? 96 : compressed_length);
-            if (compressed_length > 96)
+            if (isLzma)
             {
-                datareader.Comment($"... ({compressed_length - 96} bytes not shown)");
+                datareader.ShowBytes(5, "Decoder properties");
+            }
+            datareader.ShowBytesAtPosition(0, compressed_length > MAX_ZFRAME_BYTES_TO_SHOW ? MAX_ZFRAME_BYTES_TO_SHOW : compressed_length);
+            if (compressed_length > MAX_ZFRAME_BYTES_TO_SHOW)
+            {
+                datareader.Comment($"... ({compressed_length - MAX_ZFRAME_BYTES_TO_SHOW} bytes not shown)");
             }
             datareader.MoveOffset(compressed_length);
             datareader.BreakLine();
@@ -365,9 +382,7 @@ namespace ValveResourceFormat.ShaderParser
     }
 
 
-
-
-    // Lzma also comes with 'chunk-size' field, which is not needed
+    // Lzma also comes with a 'chunk-size' field, which is not needed
     public class ZFrameDataDescription
     {
         public long zframeId { get; }

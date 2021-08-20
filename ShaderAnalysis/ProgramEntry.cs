@@ -10,7 +10,7 @@ namespace ShaderAnalysis {
 
         static void Main() {
 
-            StaticAnalysis.RunTrials();
+            TestCompiledShader.RunTrials();
 
 
         }

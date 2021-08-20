@@ -8,14 +8,14 @@ namespace ValveResourceFormat.ShaderParser
     {
         private BinaryReader BinReader;
 
-        public ShaderDataReader(Stream input, bool writeToConsole = false, bool writeToDebug = true)
+        public ShaderDataReader(Stream input, bool writeToConsole = true, bool writeToDebug = false)
         {
             BinReader = new BinaryReader(input);
             WriteToConsole = writeToConsole;
             WriteToDebug = writeToDebug;
         }
 
-        public ShaderDataReader(byte[] databytes, bool writeToConsole = false, bool writeToDebug = true)
+        public ShaderDataReader(byte[] databytes, bool writeToConsole = true, bool writeToDebug = false)
         {
             BinReader = new BinaryReader(new MemoryStream(databytes));
             WriteToConsole = writeToConsole;

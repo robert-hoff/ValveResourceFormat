@@ -136,24 +136,24 @@ namespace ValveResourceFormat.ShaderParser
                 }
             }
             datareader.BreakLine();
-            datareader.ShowByteCount("File IDs");
-            datareader.ShowBytes(16, "file ID0");
+            datareader.ShowByteCount("Editor stack used for generating the file");
+            datareader.ShowBytes(16, "Editor ref. ID0");
             datareader.ShowBytes(16, breakLine: false);
-            datareader.TabComment("file ID1 - ref to vs file");
+            datareader.TabComment("Editor ref. ID1 - usually a ref to the vs file");
             datareader.ShowBytes(16, breakLine: false);
-            datareader.TabComment("file ID2 - ref to ps file");
-            datareader.ShowBytes(16, "file ID3");
-            datareader.ShowBytes(16, "file ID4");
-            datareader.ShowBytes(16, "file ID5");
-            datareader.ShowBytes(16, "file ID6");
+            datareader.TabComment("Editor ref. ID2 - usually a ref to the ps file");
+            datareader.ShowBytes(16, "Editor ref. ID3");
+            datareader.ShowBytes(16, "Editor ref. ID4");
+            datareader.ShowBytes(16, "Editor ref. ID5");
+            datareader.ShowBytes(16, "Editor ref. ID6");
             if (has_psrs_file == 0)
             {
-                datareader.ShowBytes(16, "file ID7 - shared by all Dota2 vcs files");
+                datareader.ShowBytes(16, "Editor ref. ID7 - shared by all Valve v64 vcs files");
             }
             if (has_psrs_file == 1)
             {
-                datareader.ShowBytes(16, "file ID7 - reference to psrs file");
-                datareader.ShowBytes(16, "file ID8 - shared by all Dota2 vcs files");
+                datareader.ShowBytes(16, "Editor ref. ID7 - reference to psrs file");
+                datareader.ShowBytes(16, "Editor ref. ID8 - shared by all Valve v64 vcs files");
             }
             datareader.BreakLine();
         }
@@ -195,8 +195,10 @@ namespace ValveResourceFormat.ShaderParser
             datareader.ShowByteCount("ps/vs header");
             int has_psrs_file = datareader.ReadIntAtPosition();
             datareader.ShowBytes(4, $"has_psrs_file = {(has_psrs_file > 0 ? "True" : "False")}");
-            datareader.ShowBytes(16, "file ID0");
-            datareader.ShowBytes(16, "file ID1 - shared by all Dota2 vcs files");
+            datareader.BreakLine();
+            datareader.ShowByteCount("Editor stack used for generating the file");
+            datareader.ShowBytes(16, "Editor ref. ID0");
+            datareader.ShowBytes(16, "Editor ref. ID1 - shared by all Valve v64 vcs files");
             datareader.BreakLine();
         }
     }
@@ -468,7 +470,6 @@ namespace ValveResourceFormat.ShaderParser
             datareader.MoveOffset(16);
             return byteFlags;
         }
-        // todo - check formatting
         public string ReadByteFlagsAsString()
         {
             return CombineIntArray(flags);
@@ -844,14 +845,14 @@ namespace ValveResourceFormat.ShaderParser
         }
     }
 
-    public class SymbolsBlock : ShaderDataBlock
+    public class VertexSymbolsBlock : ShaderDataBlock
     {
         public int blockIndex { get; }
         public string name { get; }
         public string type { get; }
         public string option { get; }
         public int semanticIndex { get; }
-        public SymbolsBlock(ShaderDataReader datareader, int start, int blockIndex) : base(datareader, start)
+        public VertexSymbolsBlock(ShaderDataReader datareader, int start, int blockIndex) : base(datareader, start)
         {
             this.blockIndex = blockIndex;
             int namesCount = datareader.ReadInt();

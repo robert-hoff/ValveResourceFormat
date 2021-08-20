@@ -53,10 +53,6 @@ namespace ValveResourceFormat.ShaderParser
             if (offset > 0)
             {
                 arg0 = datareader.ReadInt();
-                //uint glslDelim = datareader.ReadUInt();
-                //if (glslDelim != 0x00000003) {
-                //    throw new ShaderParserException($"Unexpected Glsl source id {glslDelim:x08}");
-                //}
                 offset2 = datareader.ReadInt();
                 sourcebytes = datareader.ReadBytes(offset2);
             }
@@ -98,8 +94,7 @@ namespace ValveResourceFormat.ShaderParser
     }
 
     /*
-     * DXBC sources don't show the same kind of headers like Glsl or DXIL sources
-     * It only has one header, the offset (which in this case happens to be equal to the source size)
+     * The DXBC sources only has one header, the offset (which happens to be equal to their source size)
      */
     public class DxbcSource : GpuSource
     {

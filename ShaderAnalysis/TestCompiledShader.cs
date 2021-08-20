@@ -10,7 +10,7 @@ using static ShaderAnalysis.utilhelpers.FileHelpers;
 
 namespace ShaderAnalysis
 {
-    public class StaticAnalysis
+    public class TestCompiledShader
     {
 
 
@@ -23,14 +23,20 @@ namespace ShaderAnalysis
         static void Trial2()
         {
             // string filenamepath = $"{FileSystem.DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs";
-
-
-            string filenamepath = $"{FileSystem.ARTIFACT_CLASSIC_DCG_PC_SOURCE}/bloom_dota_pc_30_vs.vcs";
+            // string filenamepath = $"{FileSystem.ARTIFACT_CLASSIC_DCG_PC_SOURCE}/bloom_dota_pc_30_vs.vcs";
+            // string filenamepath = $"{FileSystem.ARTIFACT_CLASSIC_CORE_PC_SOURCE}/generic_pc_30_ps.vcs";
+            // string filenamepath = $"{FileSystem.ARTIFACT_CLASSIC_CORE_PC_SOURCE}/generic_pc_30_vs.vcs";
+            // string filenamepath = $"{FileSystem.ARTIFACT_CLASSIC_CORE_PC_SOURCE}/occluder_vis_pc_40_ps.vcs";
+            // string filenamepath = $"{FileSystem.ARTIFACT_CLASSIC_CORE_PC_SOURCE}/refract_pc_30_ps.vcs";
+            // string filenamepath = $"{FileSystem.ARTIFACT_CLASSIC_CORE_PC_SOURCE}/refract_pc_30_features.vcs";
+            string filenamepath = $"{FileSystem.DOTA_CORE_PCGL_SOURCE}/generic_light_pcgl_40_ps.vcs";
             ShaderFile shaderFile = new ReadShaderFile(filenamepath).GetShaderFile();
 
             // Debug.WriteLine($"{shaderFile.GetZFrameCount()}");
-            shaderFile.PrintByteAnalysis();
+            shaderFile.PrintByteAnalysis(shortenOutput: false);
 
+            // Debug.WriteLine($"{shaderFile.GetZFrameCount()}");
+            shaderFile.GetZFrameFile(0).PrintByteAnalysis();
 
         }
 

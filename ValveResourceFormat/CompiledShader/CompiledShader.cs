@@ -11,6 +11,7 @@ namespace ValveResourceFormat
         public const uint LZMA_DELIM = 0x414D5A4C;
         public const int ZSTD_COMPRESSION = 1;
         public const int LZMA_COMPRESSION = 2;
+        public const uint PI_MURMURSEED = 0x31415926;
         private ShaderDataReader datareader;
 
         /// <summary>
@@ -54,7 +55,8 @@ namespace ValveResourceFormat
             shaderFile.PrintByteAnalysis();
 
 
-            // shaderFile.GetDecompressedZFrame(0); // retrieves a decompressed zframe
+            // shaderFile.GetDecompressedZFrame(0); // retrieve a decompressed zframe
+            // shaderFile.GetZFrameFile(0).PrintByteAnalysis();  // print a zframe
         }
 
     }
