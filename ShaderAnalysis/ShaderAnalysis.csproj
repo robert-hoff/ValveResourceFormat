@@ -11,4 +11,12 @@
     <ProjectReference Include="..\ValveResourceFormat\ValveResourceFormat.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EditorConfigFiles Remove="X:\checkouts\ValveResourceFormat\ShaderAnalysis\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="X:\checkouts\ValveResourceFormat\ShaderAnalysis\.editorconfig" />
+  </ItemGroup>
+
 </Project>

@@ -16,6 +16,9 @@ namespace ShaderAnalysis
         static string TEST_SHADERS_DIR = $"X:/checkouts/ValveResourceFormat/Tests/Files/Shaders";
         const string PCGL_DIR_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders-core\vfx";
         const string PCGL_DIR_NOT_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders\vfx"; // i.e. Dota2 specific
+        const string PC_DIR_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pc\shaders-core\vfx";
+        const string PC_DIR_NOT_CORE = @"";
+        const string ALYX_VULKAN_CORE = @"X:\hl2alyx-export\alyx-vulkan-core";
 
 
 
@@ -23,8 +26,8 @@ namespace ShaderAnalysis
         {
             // Trial2();
             // Trial3();
-            Trial4();
-            // Trial5();
+            // Trial4();
+            Trial5();
             // Trial6();
             // Trial7();
             // Trial8();
@@ -64,7 +67,9 @@ namespace ShaderAnalysis
             // string filenamepath = $"{TEST_SHADERS_DIR}/error_pcgl_40_vs.vcs";
             // string filenamepath = $"{TEST_SHADERS_DIR}/error_vulkan_40_features.vcs";
             // string filenamepath = $"{TEST_SHADERS_DIR}/error_vulkan_40_ps.vcs";
-            string filenamepath = $"{TEST_SHADERS_DIR}/error_vulkan_40_vs.vcs";
+            // string filenamepath = $"{TEST_SHADERS_DIR}/error_vulkan_40_vs.vcs";
+            // string filenamepath = $"{ALYX_VULKAN_CORE}/brushsplat_vulkan_40_ps.vcs";
+            string filenamepath = $"{PC_DIR_CORE}/debugoverlay_wireframe_pc_40_ps.vcs";
             ShaderFile shaderFile = new ReadShaderFile(filenamepath).GetShaderFile();
             shaderFile.PrintByteAnalysis(shortenOutput: false);
         }
