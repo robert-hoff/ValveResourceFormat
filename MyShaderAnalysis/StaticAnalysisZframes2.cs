@@ -224,7 +224,7 @@ namespace MyShaderAnalysis
             string headerText = "Frame Header";
             OutputWriteLine(headerText);
             OutputWriteLine(new string('-', headerText.Length));
-            OutputWrite(zframeFile.GetZFrameHeaderStringDescription());
+            OutputWrite(zframeFile.ZFrameHeaderStringDescription());
             if (zframeFile.zframeParams.Count == 0)
             {
                 OutputWriteLine("[empty frameheader]");

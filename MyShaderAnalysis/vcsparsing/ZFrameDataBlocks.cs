@@ -8,7 +8,7 @@ namespace MyShaderAnalysis.vcsparsing
         public int h0 { get; }
         public int h1 { get; }
         public int h2 { get; }
-        public byte[] dataload { get; } = null;
+        public byte[] dataload { get; }
         public ZDataBlock(ShaderDataReader datareader, int start, int blockId) : base(datareader, start)
         {
             this.blockId = blockId;
@@ -53,10 +53,6 @@ namespace MyShaderAnalysis.vcsparsing
             if (offset > 0)
             {
                 arg0 = datareader.ReadInt();
-                //uint glslDelim = datareader.ReadUInt();
-                //if (glslDelim != 0x00000003) {
-                //    throw new ShaderParserException($"Unexpected Glsl source id {glslDelim:x08}");
-                //}
                 offset2 = datareader.ReadInt();
                 sourcebytes = datareader.ReadBytes(offset2);
             }
@@ -98,8 +94,7 @@ namespace MyShaderAnalysis.vcsparsing
     }
 
     /*
-     * DXBC sources don't show the same kind of headers like Glsl or DXIL sources
-     * It only has one header, the offset (which in this case happens to be equal to the source size)
+     * The DXBC sources only have one header, the offset (which happens to be equal to their source size)
      */
     public class DxbcSource : GpuSource
     {
@@ -116,6 +111,28 @@ namespace MyShaderAnalysis.vcsparsing
         {
             return $"DXBC-SOURCE[{sourceId}]";
         }
-
     }
+
+    public class VulkanSource : GpuSource
+    {
+        public int arg0 { get; } = -1;
+        public int offset2 { get; } = -1;
+
+        public VulkanSource(ShaderDataReader datareader, int start, int sourceId) : base(datareader, start, sourceId)
+        {
+            this.offset = datareader.ReadInt();
+            if (offset > 0)
+            {
+                this.arg0 = datareader.ReadInt();
+                this.offset2 = datareader.ReadInt();
+                sourcebytes = datareader.ReadBytes(offset - 8);
+            }
+            editorRefId = datareader.ReadBytes(16);
+        }
+        public override string GetBlockName()
+        {
+            return $"VULKAN-SOURCE[{sourceId}]";
+        }
+    }
+
 }

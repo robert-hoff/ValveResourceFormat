@@ -36,7 +36,7 @@ namespace MyShaderAnalysis.vcsparsing
             }
             if (filenamepath.EndsWith("psrs.vcs"))
             {
-                return VcsFileType.PotentialShadowReciever;
+                return VcsFileType.PixelShaderRenderState;
             }
             if (filenamepath.EndsWith("gs.vcs"))
             {
@@ -103,7 +103,7 @@ namespace MyShaderAnalysis.vcsparsing
                 filesFound.AddRange(GetAllFilesWithEnding(dir1, endsWith));
                 filesFound.AddRange(GetAllFilesWithEnding(dir2, endsWith));
             }
-            if (fileType == VcsFileType.PotentialShadowReciever || fileType == VcsFileType.Any)
+            if (fileType == VcsFileType.PixelShaderRenderState || fileType == VcsFileType.Any)
             {
                 string endsWith = numEnding > -1 ? $"{numEnding}_psrs.vcs" : "psrs.vcs";
                 filesFound.AddRange(GetAllFilesWithEnding(dir1, endsWith));
@@ -289,7 +289,7 @@ namespace MyShaderAnalysis.vcsparsing
             {
                 shortName = filename[0..^16];
                 token = "ft";
-            } else if (vcsFiletype == VcsFileType.PotentialShadowReciever)
+            } else if (vcsFiletype == VcsFileType.PixelShaderRenderState)
             {
                 shortName = filename[0..^12];
                 token = "psrs";

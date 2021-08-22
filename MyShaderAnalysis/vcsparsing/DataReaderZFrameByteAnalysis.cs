@@ -108,7 +108,7 @@ namespace MyShaderAnalysis.vcsparsing
                 BreakLine();
             }
             //  End blocks for ps and psrs files
-            if (filetype == VcsFileType.PixelShader || filetype == VcsFileType.PotentialShadowReciever)
+            if (filetype == VcsFileType.PixelShader || filetype == VcsFileType.PixelShaderRenderState)
             {
                 ShowByteCount();
                 int nrEndBlocks = ReadIntAtPosition();

@@ -9,9 +9,9 @@ namespace MyShaderAnalysis.vcsparsing
     {
         private BinaryReader BinReader;
 
-        public ShaderDataReader(BinaryReader binReader, bool writeToConsole = false, bool writeToDebug = true)
+        public ShaderDataReader(Stream input, bool writeToConsole = false, bool writeToDebug = true)
         {
-            BinReader = binReader;
+            BinReader = new BinaryReader(input);
             WriteToConsole = writeToConsole;
             WriteToDebug = writeToDebug;
         }
@@ -171,7 +171,6 @@ namespace MyShaderAnalysis.vcsparsing
             RestorePosition();
             return bytes0;
         }
-
         public string ReadBytesAsString(int len)
         {
             byte[] bytes0 = BinReader.ReadBytes(len);
@@ -284,8 +283,9 @@ namespace MyShaderAnalysis.vcsparsing
             return bytestring.Trim();
         }
 
-        private bool WriteToConsole;
-        private bool WriteToDebug;
+
+        public bool WriteToConsole { get; set; }
+        public bool WriteToDebug { get; set; }
         public void DisableOutput()
         {
             WriteToConsole = false;
@@ -334,6 +334,7 @@ namespace MyShaderAnalysis.vcsparsing
             if (disposing && BinReader != null)
             {
                 BinReader.Dispose();
+                BinReader = null;
             }
         }
 

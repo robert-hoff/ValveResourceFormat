@@ -13,8 +13,7 @@ namespace MyShaderAnalysis.utilhelpers
         public ReadShaderFile(string filenamepath)
         {
             this.filenamepath = filenamepath;
-            BinaryReader binReader = new BinaryReader(File.OpenRead(filenamepath));
-            datareader = new ShaderDataReader(binReader, writeToConsole: false, writeToDebug: true);
+            datareader = new ShaderDataReader(File.OpenRead(filenamepath), writeToConsole: false, writeToDebug: true);
         }
 
 

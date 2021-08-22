@@ -84,7 +84,7 @@ namespace MyShaderAnalysis
             // WriteVcsByteAnalysisToTxt(filenamepath);
 
             // R: I wrote the core and dota files separately and copied them onto the server
-            // WriteAllVcsFilesToHtml();
+            WriteAllVcsFilesToHtml();
             // WriteVcsByteAnalysisToHtml(filenamepath, writeHtmlLinks: true);
             // ParseAllVcsFilesDisableOutput();
 
@@ -96,7 +96,7 @@ namespace MyShaderAnalysis
             // RunWriteZframeAsTxt();
             // TestZFrameSingleFile();
             // ShaderFileTestSinglefiles();
-            VcsParsingTestSinglefiles();
+            // VcsParsingTestSinglefiles();
 
         }
 
@@ -220,7 +220,7 @@ namespace MyShaderAnalysis
             vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, null, VcsFileType.Features, -1));
             vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, null, VcsFileType.VertexShader, -1));
             vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, null, VcsFileType.PixelShader, -1));
-            vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, null, VcsFileType.PotentialShadowReciever, -1));
+            vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, null, VcsFileType.PixelShaderRenderState, -1));
 
 
 
@@ -564,7 +564,7 @@ namespace MyShaderAnalysis
             vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_DCG_PC_SOURCE, null, VcsFileType.Features, -1));
             vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_DCG_PC_SOURCE, null, VcsFileType.VertexShader, -1));
             vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_DCG_PC_SOURCE, null, VcsFileType.PixelShader, -1));
-            vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_DCG_PC_SOURCE, null, VcsFileType.PotentialShadowReciever, -1));
+            vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_DCG_PC_SOURCE, null, VcsFileType.PixelShaderRenderState, -1));
 
 
             foreach (string vcsFile in vcsFiles)
@@ -617,7 +617,7 @@ namespace MyShaderAnalysis
                 $"vs({typesParsed[(int)VcsFileType.VertexShader]}), " +
                 $"ps({typesParsed[(int)VcsFileType.PixelShader]}), " +
                 $"gs({typesParsed[(int)VcsFileType.GeometryShader]}), " +
-                $"psrs({typesParsed[(int)VcsFileType.PotentialShadowReciever]})");
+                $"psrs({typesParsed[(int)VcsFileType.PixelShaderRenderState]})");
         }
 
 

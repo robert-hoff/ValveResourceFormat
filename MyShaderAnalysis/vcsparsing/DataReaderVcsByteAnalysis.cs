@@ -44,7 +44,7 @@ namespace MyShaderAnalysis.vcsparsing
             {
                 PrintVcsFeaturesHeader();
             } else if (filetype == VcsFileType.VertexShader || filetype == VcsFileType.PixelShader
-                  || filetype == VcsFileType.GeometryShader || filetype == VcsFileType.PotentialShadowReciever)
+                  || filetype == VcsFileType.GeometryShader || filetype == VcsFileType.PixelShaderRenderState)
             {
                 PrintVsPsHeader();
             } else
