@@ -177,6 +177,10 @@ namespace MyShaderAnalysis.utilhelpers
 
         public void printTabulatedValues()
         {
+            if (tabulatedValues.Count==1 && tabulatedValues[0].Count==0)
+            {
+                return;
+            }
             foreach (var row in tabulatedValues)
             {
                 for (int i = 0; i < row.Count; i++)

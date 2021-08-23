@@ -770,12 +770,26 @@ namespace MyShaderAnalysis.vcsparsing
     public class MipmapBlock : ShaderDataBlock
     {
         public int blockIndex { get; }
+        public string name;
+        public byte[] arg0;
+        public int arg1;
+        public int arg2;
+        public int arg3;
+        public int arg4;
+        public int arg5;
 
-        // TODO needs implementation
+
         public MipmapBlock(ShaderDataReader datareader, int start, int blockIndex) : base(datareader, start)
         {
             this.blockIndex = blockIndex;
-            datareader.MoveOffset(280);
+            arg0 = datareader.ReadBytes(4);
+            arg1 = datareader.ReadInt();
+            arg2 = datareader.ReadInt();
+            arg3 = datareader.ReadInt();
+            arg4 = datareader.ReadInt();
+            arg5 = datareader.ReadInt();
+            name = datareader.ReadNullTermStringAtPosition();
+            datareader.MoveOffset(256);
         }
         public void PrintAnnotatedBytestream()
         {
@@ -794,6 +808,8 @@ namespace MyShaderAnalysis.vcsparsing
         public int blockIndex { get; }
         public string name { get; }
         public int bufferSize { get; }
+        public int arg0;
+        public int paramCount;
         public List<(string, int, int, int, int)> bufferParams { get; } = new();
         public uint blockCrc { get; }
         public BufferBlock(ShaderDataReader datareader, int start, int blockIndex) : base(datareader, start)
@@ -802,8 +818,9 @@ namespace MyShaderAnalysis.vcsparsing
             name = datareader.ReadNullTermStringAtPosition();
             datareader.MoveOffset(64);
             bufferSize = datareader.ReadInt();
-            datareader.MoveOffset(4); // these 4 bytes are always 0
-            int paramCount = datareader.ReadInt();
+            // datareader.MoveOffset(4); // these 4 bytes are always 0
+            arg0 = datareader.ReadInt();
+            paramCount = datareader.ReadInt();
             for (int i = 0; i < paramCount; i++)
             {
                 string paramName = datareader.ReadNullTermStringAtPosition();
@@ -850,20 +867,20 @@ namespace MyShaderAnalysis.vcsparsing
     public class VertexSymbolsBlock : ShaderDataBlock
     {
         public int blockIndex { get; }
-        public string name { get; }
-        public string type { get; }
-        public string option { get; }
-        public int semanticIndex { get; }
+        public int symbolsCount { get; }
+        public List<(string, string, string, int)> symbolsDefinition { get; } = new();
+
         public VertexSymbolsBlock(ShaderDataReader datareader, int start, int blockIndex) : base(datareader, start)
         {
             this.blockIndex = blockIndex;
-            int namesCount = datareader.ReadInt();
-            for (int i = 0; i < namesCount; i++)
+            symbolsCount = datareader.ReadInt();
+            for (int i = 0; i < symbolsCount; i++)
             {
-                name = datareader.ReadNullTermString();
-                type = datareader.ReadNullTermString();
-                option = datareader.ReadNullTermString();
-                semanticIndex = datareader.ReadInt();
+                string name = datareader.ReadNullTermString();
+                string type = datareader.ReadNullTermString();
+                string option = datareader.ReadNullTermString();
+                int semanticIndex = datareader.ReadInt();
+                symbolsDefinition.Add((name, type, option, semanticIndex));
             }
         }
         public void PrintAnnotatedBytestream()
