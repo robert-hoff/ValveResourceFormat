@@ -35,17 +35,18 @@ namespace MyShaderAnalysis
             // TestWriteSystem($"{SERVER_OUTPUT_DIR}/testfile.html", writeFile: true);
         }
 
-
-
         static void PrintSingleFileMainParamsAndConstaints(string outputFilenamepath = null, bool writeFile = false)
         {
             // string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/cs_compress_dxt5_pcgl_30_features.vcs";
             // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/hero_pcgl_30_features.vcs";
+            // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/hero_pcgl_30_vs.vcs";
             // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/hero_pcgl_30_ps.vcs";
             // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_features.vcs";
-            string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs"; // doesn't have any mipmaps
-            // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_ps.vcs";
+            // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs"; // doesn't have any mipmaps
+            // // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_ps.vcs";
             // string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/generic_light_pcgl_30_features.vcs";
+            string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/generic_light_pcgl_30_vs.vcs";
+            // string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/generic_light_pcgl_30_ps.vcs";
             if (outputFilenamepath != null && writeFile)
             {
                 output.SetOutputFile(outputFilenamepath);
@@ -71,8 +72,6 @@ namespace MyShaderAnalysis
             PrintVertexSymbolBuffers(shaderFile);
             PrintZFrames(shaderFile);
         }
-
-
 
         static void PrintFeaturesHeader(ShaderFile shaderFile)
         {
@@ -169,7 +168,6 @@ namespace MyShaderAnalysis
             output.BreakLine();
         }
 
-
         static void PrintSBlocks(ShaderFile shaderFile)
         {
             output.WriteLine($"STATIC-CONFIGURATIONS({shaderFile.sfBlocks.Count})");
@@ -193,7 +191,12 @@ namespace MyShaderAnalysis
         static void PrintStaticConstraints(ShaderFile shaderFile)
         {
             output.WriteLine("STATIC-CONFIGS INCLUSION/EXCLUSION RULES");
-
+            if (shaderFile.sfConstraintsBlocks.Count == 0)
+            {
+                output.WriteLine("[none defined]");
+                output.BreakLine();
+                return;
+            }
             foreach (SfConstraintsBlock cBlock in shaderFile.sfConstraintsBlocks)
             {
                 string[] sfNames = new string[cBlock.range0.Length];
@@ -233,7 +236,6 @@ namespace MyShaderAnalysis
             return includeParenth ? $"({valueString})" : $"{valueString}";
         }
 
-
         // todo - bring these in-line with the other printouts
         static void PrintDynamicConfigurations(ShaderFile shaderFile)
         {
@@ -244,7 +246,6 @@ namespace MyShaderAnalysis
                 output.BreakLine();
                 return;
             }
-
             int[] pad = { 7, 40, 7, 7, 7 };
             string h0 = "index";
             string h1 = "name";
@@ -280,7 +281,6 @@ namespace MyShaderAnalysis
                 output.BreakLine();
                 return;
             }
-
             foreach (DConstraintsBlock uBlock in shaderFile.dConstraintsBlocks)
             {
                 string[] uknNames = new string[uBlock.flags.Length];
@@ -319,8 +319,6 @@ namespace MyShaderAnalysis
             output.BreakLine();
         }
 
-
-
         static void PrintParameters(ShaderFile shaderFile)
         {
             output.DefineHeaders(new string[] { "index", "name", "arg2", "arg3", "arg4" });
@@ -331,15 +329,12 @@ namespace MyShaderAnalysis
             }
             output.printTabulatedValues();
             output.BreakLine();
-
-
             int dynExpCount = 0;
             int indexPad = shaderFile.paramBlocks.Count > 100 ? 3 : 2;
-
             // parameters
-            output.WriteLine($"PARAMETERS({shaderFile.paramBlocks.Count})    *dyn-expressions shown below");
+            output.WriteLine($"PARAMETERS({shaderFile.paramBlocks.Count})    *dyn-expressions shown separately");
             output.DefineHeaders(new string[] { "index", "name0 | name1 | name2", "type0", "type1", "res", "arg0", "arg1", "arg2", "arg3", "arg4",
-                "arg5", "dyn-exp*", "command 0 | 1", "fileref"});
+                "arg5", "dyn-exp*", "command 0|1", "fileref"});
             foreach (var param in shaderFile.paramBlocks)
             {
                 string nameCondensed = param.name0;
@@ -351,13 +346,20 @@ namespace MyShaderAnalysis
                 {
                     nameCondensed += $" | {param.name2}(2)";
                 }
-
+                if (nameCondensed.Length > 65)
+                {
+                    string[] tokens = nameCondensed.Split("|");
+                    nameCondensed = tokens[0].Trim();
+                    for (int i = 1; i < tokens.Length; i++)
+                    {
+                        nameCondensed += $"\n{tokens[i].Trim()}";
+                    }
+                }
                 string dynExpExists = param.lead0 == 6 || param.lead0 == 7 ? "true" : "";
                 if (dynExpExists.Length > 0)
                 {
                     dynExpCount++;
                 }
-
                 string c0 = param.command0;
                 string c1 = param.command1;
                 if (c1.Length > 0)
@@ -372,14 +374,14 @@ namespace MyShaderAnalysis
             }
             output.printTabulatedValues();
             output.BreakLine();
-
-            output.WriteLine($"DYNAMIC EXPRESSIONS({dynExpCount})    (name,type0,type1 reprinted)");
             if (dynExpCount == 0)
             {
+                output.WriteLine($"DYNAMIC EXPRESSIONS({dynExpCount})");
                 output.WriteLine("[none defined]");
             } else
             {
-                output.DefineHeaders(new string[] { "parm-index", "name", "type0", "type1", "dyn-exp" });
+                output.WriteLine($"DYNAMIC EXPRESSIONS({dynExpCount})    (name0,type0,type1,arg0,arg1,arg2,arg4,arg5 reprinted)");
+                output.DefineHeaders(new string[] { "param-index", "name0", "t0,t1,a0,a1,a2,a4,a5  ", "dyn-exp" });
                 foreach (var param in shaderFile.paramBlocks)
                 {
                     if (param.lead0 != 6 && param.lead0 != 7)
@@ -388,16 +390,18 @@ namespace MyShaderAnalysis
                     }
                     string dynExpstring = new VfxEval().ParseExpression(param.dynExp);
                     output.AddTabulatedRow(new string[] { $"[{(""+param.blockIndex).PadLeft(indexPad)}]",
-                        $"{param.name0}", $"{param.type}", $"{param.lead0}", $"{dynExpstring}" });
+                        $"{param.name0}",
+                        $"{param.type,2},{param.lead0,2},{BlankMOne(param.arg0),2},{param.arg1,2},{param.arg2,2},{param.arg4,2},{BlankMOne(param.arg5),2}",
+                        $"{dynExpstring}" });
                 }
                 output.printTabulatedValues();
             }
             output.BreakLine();
-
-            output.WriteLine("PARAMETERS - Default values and limits    (command0 reprinted)");
+            output.WriteLine("PARAMETERS - Default values and limits    (type0,type1,arg0,arg1,arg2,arg4,arg5,command0 reprinted)");
             output.WriteLine("(- indicates -infinity, + indicates +infinity)");
-            output.DefineHeaders(new string[] { "index", "name", "ints-default", "ints-min", "ints-max", "floats-default", "floats-min", "floats-max",
-                "int-args0", "int-args1", "command0"});
+            output.DefineHeaders(new string[] { "index", "name0", "t0,t1,a0,a1,a2,a4,a5  ", "ints-def.", "ints-min", "ints-max",
+                "floats-def.", "floats-min", "floats-max", "int-args0", "int-args1", "command0", "fileref", "dyn-exp"});
+            // output.AddTabulatedRow(new string[] { "", "", "", "default", "", "", "default", "", "", "", "", "", "", "" });
             foreach (var param in shaderFile.paramBlocks)
             {
                 string fileref = param.fileref;
@@ -409,14 +413,16 @@ namespace MyShaderAnalysis
                 float[] r5 = param.ranges5;
                 int[] r6 = param.ranges6;
                 int[] r7 = param.ranges7;
-                output.AddTabulatedRow(new string[] { $"[{("" + param.blockIndex).PadLeft(indexPad)}]"
-                    ,$"{param.name0}", $"{comb(r0)}", $"{comb(r1)}", $"{comb(r2)}", $"{comb(r3)}", $"{comb(r4)}", $"{comb(r5)}",
-                    $"{comb(r6)}", $"{comb(r7)}", $"{param.command0}"});
+                string hasFileRef = param.fileref.Length > 0 ? "true" : "";
+                string hasDynExp = param.lead0 == 6 || param.lead0 == 7 ? "true" : "";
+                output.AddTabulatedRow(new string[] { $"[{("" + param.blockIndex).PadLeft(indexPad)}]", $"{param.name0}",
+                    $"{param.type,2},{param.lead0,2},{BlankMOne(param.arg0),2},{param.arg1,2},{param.arg2,2},{param.arg4,2},{BlankMOne(param.arg5),2}",
+                    $"{comb(r0)}", $"{comb(r1)}", $"{comb(r2)}", $"{comb(r3)}", $"{comb(r4)}",
+                    $"{comb(r5)}", $"{comb(r6)}", $"{comb(r7)}", $"{param.command0}", $"{hasFileRef}", $"{hasDynExp}"});
             }
-            output.printTabulatedValues();
+            output.printTabulatedValues(spacing: 1);
             output.BreakLine();
         }
-
 
         static void PrintMipmapBlocks(ShaderFile shaderFile)
         {
@@ -438,7 +444,6 @@ namespace MyShaderAnalysis
             output.printTabulatedValues();
             output.BreakLine();
         }
-
 
         static void PrintBufferBlocks(ShaderFile shaderFile)
         {
@@ -462,7 +467,6 @@ namespace MyShaderAnalysis
                 output.BreakLine();
             }
         }
-
 
         static void PrintVertexSymbolBuffers(ShaderFile shaderFile)
         {
@@ -513,7 +517,6 @@ namespace MyShaderAnalysis
             }
             output.BreakLine();
         }
-
 
         static void PrintZFrames(ShaderFile shaderFile)
         {
@@ -572,8 +575,6 @@ namespace MyShaderAnalysis
                 zframeCount++;
             }
         }
-
-
 
 
 
@@ -640,11 +641,6 @@ namespace MyShaderAnalysis
                 zframeCount++;
             }
         }
-
-
-
-
-
 
 
         static void PrintSingleFileAnalysisBufferViews(string outputFilenamepath = null, bool writeFile = false)

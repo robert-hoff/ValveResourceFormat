@@ -121,7 +121,6 @@ namespace MyShaderAnalysis.utilhelpers
             List<string> newRow = new();
             List<List<string>> additionalRows = new();
 
-
             for (int i = 0; i < rowMembers.Length; i++)
             {
                 string[] multipleLines = rowMembers[i].Split("\n");
@@ -135,7 +134,6 @@ namespace MyShaderAnalysis.utilhelpers
                 {
                     columnWidths[i] = multipleLines[0].Length;
                 }
-
             }
             tabulatedValues.Add(newRow);
             foreach (var additionalRow in additionalRows)
@@ -175,7 +173,7 @@ namespace MyShaderAnalysis.utilhelpers
 
 
 
-        public void printTabulatedValues()
+        public void printTabulatedValues(int spacing = 2)
         {
             if (tabulatedValues.Count==1 && tabulatedValues[0].Count==0)
             {
@@ -185,7 +183,7 @@ namespace MyShaderAnalysis.utilhelpers
             {
                 for (int i = 0; i < row.Count; i++)
                 {
-                    int pad = columnWidths[i] + 2;
+                    int pad = columnWidths[i] + spacing;
                     Write($"{row[i].PadRight(pad)}");
                 }
                 Write("\n");
