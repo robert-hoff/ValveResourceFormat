@@ -63,7 +63,7 @@ namespace MyShaderAnalysis
 
             // -- writes a useful summary for every file (pretty long process)
             // Don't overwrite multiblend! (the zframes are stored in a different directory)
-            FileSummaryAllFiles();
+            // FileSummaryAllFiles();
 
             // - prints a single page summary and links to all the files produced with FileSummaryAllFiles()
             // BlockCountSurvery($@"{SERVER_OUTPUT_DIR}\file-overview.html", writeFile: true);
@@ -78,7 +78,7 @@ namespace MyShaderAnalysis
 
 
 
-            // FileSummarySingleFile();
+            FileSummarySingleFile();
             // ZFramePrintout();
 
 

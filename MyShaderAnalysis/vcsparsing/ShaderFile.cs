@@ -228,7 +228,7 @@ namespace MyShaderAnalysis.vcsparsing
             datareader.ShowByteCount();
             int unknown_val = datareader.ReadIntAtPosition();
             datareader.ShowBytes(4, $"({unknown_val}) unknown significance, possibly a minor-version");
-            int lastEditorRef = vcsFileType == VcsFileType.Features ? featuresHeader.fileIDs.Count - 1 : 1;
+            int lastEditorRef = vcsFileType == VcsFileType.Features ? featuresHeader.editorIDs.Count - 1 : 1;
             datareader.TabComment($"the value appears to be linked to the last Editor reference (Editor ref. ID{lastEditorRef})", 15);
             datareader.ShowByteCount();
             uint sfBlockCount = datareader.ReadUIntAtPosition();

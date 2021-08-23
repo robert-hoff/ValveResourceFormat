@@ -8,6 +8,7 @@ namespace MyShaderAnalysis.vcsparsing
 {
     public class FeaturesHeaderBlock : ShaderDataBlock
     {
+        public int vcsFileVersion { get; }
         public bool has_psrs_file { get; }
         public int unknown_val { get; }
         public string file_description { get; }
@@ -20,7 +21,7 @@ namespace MyShaderAnalysis.vcsparsing
         public int arg6 { get; }
         public int arg7 { get; }
         public List<(string, string)> mainParams { get; } = new();
-        public List<string> fileIDs { get; } = new();
+        public List<(string, string)> editorIDs { get; } = new();
         public FeaturesHeaderBlock(ShaderDataReader datareader, int start) : base(datareader, start)
         {
             int vcsMagicId = datareader.ReadInt();
@@ -28,7 +29,7 @@ namespace MyShaderAnalysis.vcsparsing
             {
                 throw new ShaderParserException($"Wrong file id {vcsMagicId:x}");
             }
-            int vcsFileVersion = datareader.ReadInt();
+            vcsFileVersion = datareader.ReadInt();
             if (vcsFileVersion != 64)
             {
                 throw new ShaderParserException($"Wrong version {vcsFileVersion}, only version 64 supported");
@@ -68,15 +69,26 @@ namespace MyShaderAnalysis.vcsparsing
                 }
                 mainParams.Add((string_arg0, string_arg1));
             }
-            for (int i = 0; i < 8; i++)
-            {
-                fileIDs.Add(datareader.ReadBytesAsString(16).Replace(" ", "").ToLower());
-            }
+
+            editorIDs.Add(($"{datareader.ReadBytesAsString(16)}", "// Editor ref. ID0 (produces this file)"));
+            editorIDs.Add(($"{datareader.ReadBytesAsString(16)}", "// Editor ref. ID1 - usually a ref to the vs file"));
+            editorIDs.Add(($"{datareader.ReadBytesAsString(16)}", "// Editor ref. ID2 - usually a ref to the ps file"));
+            editorIDs.Add(($"{datareader.ReadBytesAsString(16)}", "// Editor ref. ID3"));
+            editorIDs.Add(($"{datareader.ReadBytesAsString(16)}", "// Editor ref. ID4"));
+            editorIDs.Add(($"{datareader.ReadBytesAsString(16)}", "// Editor ref. ID5"));
+            editorIDs.Add(($"{datareader.ReadBytesAsString(16)}", "// Editor ref. ID6"));
             if (has_psrs_file)
             {
-                fileIDs.Add(datareader.ReadBytesAsString(16).Replace(" ", "").ToLower());
+                editorIDs.Add(($"{datareader.ReadBytesAsString(16)}", "// Editor ref. ID7 - ref to psrs file"));
+                editorIDs.Add(($"{datareader.ReadBytesAsString(16)}", $"// Editor ref. ID8 - this ID is common to all vcs files from up-to-date archives"));
+            } else
+            {
+                editorIDs.Add(($"{datareader.ReadBytesAsString(16)}", "// Editor ref. ID7 - this ID is common to all vcs files from up-to-date archives"));
             }
         }
+
+
+
         public void PrintAnnotatedBytestream()
         {
             datareader.SetOffset(start);
@@ -163,6 +175,7 @@ namespace MyShaderAnalysis.vcsparsing
 
     public class VsPsHeaderBlock : ShaderDataBlock
     {
+        public int vcsFileVersion { get; }
         public bool hasPsrsFile { get; }
         public string fileID0 { get; }
         public string fileID1 { get; }
@@ -173,7 +186,7 @@ namespace MyShaderAnalysis.vcsparsing
             {
                 throw new ShaderParserException($"wrong file id {magic:x}");
             }
-            int vcsFileVersion = datareader.ReadInt();
+            vcsFileVersion = datareader.ReadInt();
             if (vcsFileVersion != 64)
             {
                 throw new ShaderParserException($"Wrong version {vcsFileVersion}, only version 64 supported");
@@ -184,8 +197,8 @@ namespace MyShaderAnalysis.vcsparsing
                 throw new ShaderParserException($"Unexpected value psrs_arg = {psrs_arg}");
             }
             hasPsrsFile = psrs_arg > 0;
-            fileID0 = datareader.ReadBytesAsString(16).Replace(" ", "").ToLower();
-            fileID1 = datareader.ReadBytesAsString(16).Replace(" ", "").ToLower();
+            fileID0 = datareader.ReadBytesAsString(16);
+            fileID1 = datareader.ReadBytesAsString(16);
         }
         public void PrintAnnotatedBytestream()
         {
@@ -201,7 +214,7 @@ namespace MyShaderAnalysis.vcsparsing
             datareader.ShowByteCount("Editor/Shader stack for generating the file");
             datareader.ShowBytes(16, "Editor ref. ID0 (produces this file)");
             datareader.ShowBytes(16, "Editor ref. ID1 - this ID is shared widely");
-                datareader.TabComment("all vcs files from up-to date archives seem to have the same value here", tabLen: 51);
+            datareader.TabComment("all vcs files from up-to date archives seem to have the same value here", tabLen: 51);
         }
     }
 

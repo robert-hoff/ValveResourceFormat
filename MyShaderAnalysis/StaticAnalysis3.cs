@@ -29,16 +29,236 @@ namespace MyShaderAnalysis
         static void Trial1()
         {
             // PrintSingleFileAnalysisParameterView($"{SERVER_OUTPUT_DIR}/testfile.html", writeFile: true);
-            PrintSingleFileAnalysisBufferViews($"{SERVER_OUTPUT_DIR}/testfile.html", writeFile: true);
+            // PrintSingleFileAnalysisBufferViews($"{SERVER_OUTPUT_DIR}/testfile.html", writeFile: true);
+            // PrintSingleFileAnalysisZFrames($"{SERVER_OUTPUT_DIR}/testfile.html", writeFile: true);
+            PrintSingleFileMainParamsAndConstaints($"{SERVER_OUTPUT_DIR}/testfile.html", writeFile: true);
             // TestWriteSystem($"{SERVER_OUTPUT_DIR}/testfile.html", writeFile: true);
+        }
+
+
+
+        static void PrintSingleFileMainParamsAndConstaints(string outputFilenamepath = null, bool writeFile = false)
+        {
+            string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_features.vcs";
+            // string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/cs_compress_dxt5_pcgl_30_features.vcs";
+            // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/hero_pcgl_30_features.vcs";
+            // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs"; // doesn't have any mipmaps
+            // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_ps.vcs";
+            if (outputFilenamepath != null && writeFile)
+            {
+                output.SetOutputFile(outputFilenamepath);
+                output.WriteAsHtml("title", $"{ShortHandName(filenamepath)}");
+            }
+            ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
+            if (shaderFile.vcsFileType == VcsFileType.Features)
+            {
+                PrintFeaturesHeader(shaderFile);
+                PrintFBlocks(shaderFile);
+            } else
+            {
+                PrintPsVsHeader(shaderFile);
+                PrintSBlocks(shaderFile);
+            }
+
+
+
+
+
+
+        }
+
+
+
+        static void PrintFeaturesHeader(ShaderFile shaderFile)
+        {
+            output.WriteLine($"Valve Compiled Shader 2 (vcs2), version {shaderFile.featuresHeader.vcsFileVersion}");
+            output.BreakLine();
+            output.WriteLine($"Features Detail ({Path.GetFileName(shaderFile.filenamepath)})");
+            output.WriteLine($"VFX File Desc: {shaderFile.featuresHeader.file_description}");
+            output.BreakLine();
+            output.WriteLine($"has_psrs_file = {shaderFile.featuresHeader.has_psrs_file}");
+            output.WriteLine($"unknown_val = {shaderFile.featuresHeader.unknown_val} values seen (0,1) (likely editor related)");
+            var ftHeader = shaderFile.featuresHeader;
+            output.WriteLine($"bool flags = ({ftHeader.arg0},{ftHeader.arg1},{ftHeader.arg2},{ftHeader.arg3}," +
+                $"{ftHeader.arg4},{ftHeader.arg5},{ftHeader.arg6},{ftHeader.arg7}) (related to editor dependencies)");
+            output.WriteLine($"probable minor version = {shaderFile.possibleMinorVersion}");
+            output.BreakLine();
+            output.WriteLine("Editor/Shader compiler stack");
+            for (int i = 0; i < ftHeader.editorIDs.Count - 1; i++)
+            {
+                output.WriteLine($"{ftHeader.editorIDs[i].Item1}    {ftHeader.editorIDs[i].Item2}");
+            }
+            output.WriteLine($"{ftHeader.editorIDs[^1].Item1}    // Editor ref. ID{ftHeader.editorIDs.Count - 1} " +
+                $"- this ID is seen across archives for vcs files sharing minor-version = {shaderFile.possibleMinorVersion}");
+            output.BreakLine();
+            if (ftHeader.mainParams.Count == 0)
+            {
+                output.WriteLine("Primary modes");
+                output.WriteLine("[default only]");
+                return;
+            }
+            if (ftHeader.mainParams.Count > 1)
+            {
+                output.WriteLine($"Primary static modes (one of these should be selected)");
+            } else
+            {
+                output.WriteLine($"Primary static modes (has only one default mode)");
+            }
+            output.DefineHeaders(new string[] { "name", "mode", "config-states" });
+            output.AddTabulatedRow(new string[] { "----", "----", "-------------" });
+            foreach (var mainParam in ftHeader.mainParams)
+            {
+                string arg2 = mainParam.Item2.Length == 0 ? "(default)" : mainParam.Item2;
+                string configs = mainParam.Item2.Length == 0 ? "(implicit)" : "0,1";
+                output.AddTabulatedRow(new string[] { $"{mainParam.Item1}", $"{arg2}", $"{configs}" });
+            }
+            output.printTabulatedValues();
+            output.BreakLine();
+        }
+
+        static void PrintPsVsHeader(ShaderFile shaderFile)
+        {
+            output.WriteLine($"Valve Compiled Shader 2 (vcs2), version {shaderFile.vspsHeader.vcsFileVersion}");
+            output.BreakLine();
+            output.WriteLine($"{shaderFile.vcsFileType} ({Path.GetFileName(shaderFile.filenamepath)})");
+            output.WriteLine($"probable minor version = {shaderFile.possibleMinorVersion}");
+            output.BreakLine();
+            output.WriteLine("Editor/Shader compiler stack");
+            output.WriteLine($"{shaderFile.vspsHeader.fileID0}    // Editor ref. ID0 (produces this file)");
+            output.WriteLine($"{shaderFile.vspsHeader.fileID1}    // Editor ref. ID1 " +
+                $"- this ID is seen across archives for vcs files sharing minor-version = {shaderFile.possibleMinorVersion}");
+            output.BreakLine();
+        }
+
+        static void PrintFBlocks(ShaderFile shaderFile)
+        {
+            output.WriteLine($"STATIC-CONFIGURATIONS({shaderFile.sfBlocks.Count})");
+            if (shaderFile.sfBlocks.Count == 0)
+            {
+                output.WriteLine("[none]");
+                output.BreakLine();
+                return;
+            }
+            output.DefineHeaders(new string[] { "index", "name", "nr-configs", "config-states", ""});
+            foreach (var item in shaderFile.sfBlocks)
+            {
+                string configStates = "_";
+                if (item.arg2>0)
+                {
+                    configStates = "0";
+                }
+                for (int i = 1; i <= item.arg2; i++)
+                {
+                    configStates += $",{i}";
+                }
+                string configStates2 = "";
+                if (item.arg2>1)
+                {
+                    configStates2 = $"{CombineStringArray(item.additionalParams.ToArray())}";
+                }
+
+                output.AddTabulatedRow(new string[] {$"[{item.blockIndex,2}]", $"{item.name0}", $"{item.arg2+1}",
+                    $"{configStates}", $"{configStates2}"});
+            }
+            output.printTabulatedValues();
+            output.BreakLine();
+        }
+
+
+        static void PrintSBlocks(ShaderFile shaderFile)
+        {
+            output.WriteLine($"STATIC-CONFIGURATIONS({shaderFile.sfBlocks.Count})");
+            if (shaderFile.sfBlocks.Count == 0)
+            {
+                output.WriteLine("[none]");
+                output.BreakLine();
+                return;
+            }
+            output.DefineHeaders(new string[] { "index", "name", "arg2", "arg3", "arg4" });
+            foreach (var item in shaderFile.sfBlocks)
+            {
+                output.AddTabulatedRow(new string[] {$"[{item.blockIndex,2}]", $"{item.name0}", $"{item.arg2}",
+                    $"{item.arg3}", $"{item.arg4,2}"});
+            }
+            output.printTabulatedValues();
+            output.BreakLine();
+        }
+
+
+
+
+
+        static void PrintSingleFileAnalysisZFrames(string outputFilenamepath = null, bool writeFile = false)
+        {
+            string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs"; // doesn't have any mipmaps
+            // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_ps.vcs";
+            if (outputFilenamepath != null && writeFile)
+            {
+                output.SetOutputFile(outputFilenamepath);
+                output.WriteAsHtml("title", $"{ShortHandName(filenamepath)}");
+            }
+            ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
+            output.DefineHeaders(new string[] { "index", "name", "arg2", "arg3", "arg4" });
+            foreach (var item in shaderFile.sfBlocks)
+            {
+                output.AddTabulatedRow(new string[] {$"[{item.blockIndex,2}]", $"{item.name0}", $"{item.arg2}",
+                    $"{item.arg3}", $"{item.arg4,2}"});
+            }
+            output.printTabulatedValues();
+            output.BreakLine();
+
+
+            FileTokens fileTokens = new FileTokens(shaderFile.filenamepath);
+            // print the config headers every 100 frames
+            int zframeCount = 0;
+            // print the zframes
+            string zFrameBaseDir = $"/vcs-all/{GetCoreOrDotaString(shaderFile.filenamepath)}/zsource/";
+            // prepare the lookup to determine configuration state
+            CompatRulesGeneration configGen = new(shaderFile);
+
+            string zframesHeader = $"ZFRAMES ({shaderFile.GetZFrameCount()})";
+            output.WriteLine(zframesHeader);
+            output.WriteLine(new string('-', zframesHeader.Length));
+
+            // collect names in the order they appear
+            List<string> sfNames = new();
+            List<string> abbreviations = new();
+
+            foreach (var sfBlock in shaderFile.sfBlocks)
+            {
+                string sfShortName = ShortenShaderParam(sfBlock.name0).ToLower();
+                abbreviations.Add($"{sfBlock.name0}({sfShortName})");
+                sfNames.Add(sfShortName);
+            }
+
+            string[] breakabbreviations = CombineValuesBreakString(abbreviations.ToArray(), 120);
+            foreach (string abbr in breakabbreviations)
+            {
+                output.WriteLine(abbr.Replace("(", "<span style='color: blue'>(").Replace(")", "</span>)"));
+            }
+            output.BreakLine();
+
+            string configHeader = CombineStringsSpaceSep(sfNames.ToArray(), 6);
+            configHeader = $"{new string(' ', 14)}{configHeader}";
+            foreach (var item in shaderFile.zframesLookup)
+            {
+                if (zframeCount % 100 == 0)
+                {
+                    output.WriteLine($"{configHeader}");
+                }
+                int[] configState = configGen.GetConfigState(item.Key);
+                string zframeLink = fileTokens.GetBestZframesLink(item.Key);
+                output.WriteLine($"{zframeLink} {CombineIntsSpaceSep(configState, 6)}");
+                zframeCount++;
+            }
         }
 
 
 
         static void PrintSingleFileAnalysisBufferViews(string outputFilenamepath = null, bool writeFile = false)
         {
-            string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs"; // doesn't have any mipmaps
-            // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_ps.vcs";
+            // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs"; // doesn't have any mipmaps
+            string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_ps.vcs";
             if (outputFilenamepath != null && writeFile)
             {
                 output.SetOutputFile(outputFilenamepath);
@@ -95,6 +315,12 @@ namespace MyShaderAnalysis
 
 
             output.WriteLine($"VERTEX-BUFFER-SYMBOLS({shaderFile.symbolBlocks.Count})");
+            if (shaderFile.symbolBlocks.Count == 0)
+            {
+                output.WriteLine("[none]");
+            }
+
+
             // find best passing
             int namePad = 0;
             int typePad = 0;
@@ -135,6 +361,7 @@ namespace MyShaderAnalysis
                 output.printTabulatedValues();
                 output.BreakLine();
             }
+            output.BreakLine();
 
 
         }
