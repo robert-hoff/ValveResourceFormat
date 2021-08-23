@@ -43,9 +43,9 @@ namespace MyShaderAnalysis
             // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/hero_pcgl_30_features.vcs";
             // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/hero_pcgl_30_ps.vcs";
             // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_features.vcs";
-            // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs"; // doesn't have any mipmaps
+            string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs"; // doesn't have any mipmaps
             // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_ps.vcs";
-            string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/generic_light_pcgl_30_features.vcs";
+            // string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/generic_light_pcgl_30_features.vcs";
             if (outputFilenamepath != null && writeFile)
             {
                 output.SetOutputFile(outputFilenamepath);
@@ -237,8 +237,8 @@ namespace MyShaderAnalysis
         // todo - bring these in-line with the other printouts
         static void PrintDynamicConfigurations(ShaderFile shaderFile)
         {
-            output.WriteLine($"DYNAMIC PARAMS");
-            if (shaderFile.dBlocks.Count==0)
+            output.WriteLine($"DYNAMIC-CONFIGURATIONS({shaderFile.dBlocks.Count})");
+            if (shaderFile.dBlocks.Count == 0)
             {
                 output.WriteLine("[none defined]");
                 output.BreakLine();
@@ -274,11 +274,12 @@ namespace MyShaderAnalysis
         static void PrintDynamicConstraints(ShaderFile shaderFile)
         {
             output.WriteLine("DYNAMIC-CONFIGS INCLUSION/EXCLUSION RULES");
-            if (shaderFile.dConstraintsBlocks.Count == 0) {
+            if (shaderFile.dConstraintsBlocks.Count == 0)
+            {
                 output.WriteLine("[none defined]");
                 output.BreakLine();
+                return;
             }
-
 
             foreach (DConstraintsBlock uBlock in shaderFile.dConstraintsBlocks)
             {
@@ -331,9 +332,14 @@ namespace MyShaderAnalysis
             output.printTabulatedValues();
             output.BreakLine();
 
+
+            int dynExpCount = 0;
+            int indexPad = shaderFile.paramBlocks.Count > 100 ? 3 : 2;
+
             // parameters
-            output.WriteLine("PARAMETERS");
-            output.DefineHeaders(new string[] { "index", "name", "type", "res", "ld0", "arg0", "arg1", "arg2", "arg3", "arg4", "arg5", "dyn-exp" });
+            output.WriteLine($"PARAMETERS({shaderFile.paramBlocks.Count})    *dyn-expressions shown below");
+            output.DefineHeaders(new string[] { "index", "name0 | name1 | name2", "type0", "type1", "res", "arg0", "arg1", "arg2", "arg3", "arg4",
+                "arg5", "dyn-exp*", "command 0 | 1", "fileref"});
             foreach (var param in shaderFile.paramBlocks)
             {
                 string nameCondensed = param.name0;
@@ -346,28 +352,54 @@ namespace MyShaderAnalysis
                     nameCondensed += $" | {param.name2}(2)";
                 }
 
-                int indexPad = shaderFile.paramBlocks.Count > 100 ? 3 : 2;
-                string dynExpstring = new VfxEval().ParseExpression(param.dynExp);
+                string dynExpExists = param.lead0 == 6 || param.lead0 == 7 ? "true" : "";
+                if (dynExpExists.Length > 0)
+                {
+                    dynExpCount++;
+                }
 
+                string c0 = param.command0;
+                string c1 = param.command1;
+                if (c1.Length > 0)
+                {
+                    c0 += $" | {c1}";
+                }
                 output.AddTabulatedRow(new string[] {$"[{(""+param.blockIndex).PadLeft(indexPad)}]", $"{nameCondensed}", $"{param.type}",
-                    $"{param.res0}", $"{param.lead0}", $"{BlankMOne(param.arg0),2}", $"{param.arg1,2}", $"{param.arg2}",
-                    $"{Pow2Rep(param.arg3),4}", $"{param.arg4,2}", $"{BlankMOne(param.arg5),2}", $"{dynExpstring}"});
+                    $"{param.lead0}", $"{param.res0}", $"{BlankMOne(param.arg0),2}", $"{param.arg1,2}", $"{param.arg2}",
+                    $"{Pow2Rep(param.arg3),4}", $"{param.arg4,2}", $"{BlankMOne(param.arg5),2}",
+                    $"{dynExpExists}", $"{c0}", $"{param.fileref}"});
 
             }
             output.printTabulatedValues();
             output.BreakLine();
 
+            output.WriteLine($"DYNAMIC EXPRESSIONS({dynExpCount})    (name,type0,type1 reprinted)");
+            if (dynExpCount == 0)
+            {
+                output.WriteLine("[none defined]");
+            } else
+            {
+                output.DefineHeaders(new string[] { "parm-index", "name", "type0", "type1", "dyn-exp" });
+                foreach (var param in shaderFile.paramBlocks)
+                {
+                    if (param.lead0 != 6 && param.lead0 != 7)
+                    {
+                        continue;
+                    }
+                    string dynExpstring = new VfxEval().ParseExpression(param.dynExp);
+                    output.AddTabulatedRow(new string[] { $"[{(""+param.blockIndex).PadLeft(indexPad)}]",
+                        $"{param.name0}", $"{param.type}", $"{param.lead0}", $"{dynExpstring}" });
+                }
+                output.printTabulatedValues();
+            }
+            output.BreakLine();
 
-
-
-
-            output.WriteLine("PARAMETERS - Default values and ranges (as well as command and fileref arguments if these exist)");
+            output.WriteLine("PARAMETERS - Default values and limits    (command0 reprinted)");
             output.WriteLine("(- indicates -infinity, + indicates +infinity)");
-            output.DefineHeaders(new string[] { "index", "name", "ints0", "ints1", "ints2", "floats0", "floats1", "floats2",
-                "ints3", "ints4", "command", "fileref"});
+            output.DefineHeaders(new string[] { "index", "name", "ints-default", "ints-min", "ints-max", "floats-default", "floats-min", "floats-max",
+                "int-args0", "int-args1", "command0"});
             foreach (var param in shaderFile.paramBlocks)
             {
-                int indexPad = shaderFile.paramBlocks.Count > 100 ? 3 : 2;
                 string fileref = param.fileref;
                 int[] r0 = param.ranges0;
                 int[] r1 = param.ranges1;
@@ -377,16 +409,9 @@ namespace MyShaderAnalysis
                 float[] r5 = param.ranges5;
                 int[] r6 = param.ranges6;
                 int[] r7 = param.ranges7;
-                string c0 = param.command0;
-                string c1 = param.command1;
-                if (c1.Length > 0)
-                {
-                    c0 += $" | {c1}";
-                }
-
                 output.AddTabulatedRow(new string[] { $"[{("" + param.blockIndex).PadLeft(indexPad)}]"
                     ,$"{param.name0}", $"{comb(r0)}", $"{comb(r1)}", $"{comb(r2)}", $"{comb(r3)}", $"{comb(r4)}", $"{comb(r5)}",
-                    $"{comb(r6)}", $"{comb(r7)}", $"{c0}", $"{param.fileref}"});
+                    $"{comb(r6)}", $"{comb(r7)}", $"{param.command0}"});
             }
             output.printTabulatedValues();
             output.BreakLine();
@@ -444,7 +469,7 @@ namespace MyShaderAnalysis
             output.WriteLine($"VERTEX-BUFFER-SYMBOLS({shaderFile.symbolBlocks.Count})");
             if (shaderFile.symbolBlocks.Count == 0)
             {
-                output.WriteLine("[none]");
+                output.WriteLine("[none defined]");
                 output.BreakLine();
                 return;
             }
@@ -494,7 +519,7 @@ namespace MyShaderAnalysis
         {
             string zframesHeader = $"ZFRAMES({shaderFile.GetZFrameCount()})";
             output.WriteLine(zframesHeader);
-            if (shaderFile.GetZFrameCount()==0)
+            if (shaderFile.GetZFrameCount() == 0)
             {
                 string infoText = "";
                 if (shaderFile.vcsFileType == VcsFileType.Features)
