@@ -196,6 +196,7 @@ namespace MyShaderAnalysis.vcsparsing
 
         public static string ShortHandName(string filenamepath)
         {
+            filenamepath = filenamepath.Replace("/", "\\");
             string dirname = Path.GetDirectoryName(filenamepath);
             string filename = Path.GetFileName(filenamepath);
             if (dirname.EndsWith(@"\shaders\vfx"))

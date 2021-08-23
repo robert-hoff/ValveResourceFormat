@@ -7,7 +7,6 @@ namespace MyShaderAnalysis.utilhelpers
     public class ReadShaderFile : IDisposable
     {
         private string filenamepath;
-        private BinaryReader Reader;
         private ShaderDataReader datareader;
 
         public ReadShaderFile(string filenamepath)
@@ -31,10 +30,10 @@ namespace MyShaderAnalysis.utilhelpers
 
         protected virtual void Dispose(bool disposing)
         {
-            if (disposing && Reader != null)
+            if (disposing && datareader != null)
             {
-                Reader.Dispose();
-                Reader = null;
+                datareader.Dispose();
+                datareader = null;
             }
         }
 
