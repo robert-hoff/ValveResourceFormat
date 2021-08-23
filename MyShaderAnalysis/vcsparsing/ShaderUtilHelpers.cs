@@ -524,7 +524,6 @@ namespace MyShaderAnalysis.vcsparsing
         }
 
 
-
         public static string CombineIntArray(int[] ints0, bool includeParenth = false)
         {
             if (ints0.Length == 0) return $"_";

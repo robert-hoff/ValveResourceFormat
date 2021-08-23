@@ -25,7 +25,7 @@ namespace MyShaderAnalysis
 
             // Snippetcode.RunTrials();
             // LzmaAnalysis.RunTrials();
-            // TestFileSystem.RunTrials();
+            // TestStuff.RunTrials();
             // CrcTrialsSha1.RunTrials();
             // CrcTrialsMurmur32.RunTrials();
 
