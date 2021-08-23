@@ -39,9 +39,10 @@ namespace MyShaderAnalysis
 
         static void PrintSingleFileMainParamsAndConstaints(string outputFilenamepath = null, bool writeFile = false)
         {
-            string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_features.vcs";
+            // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_features.vcs";
             // string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/cs_compress_dxt5_pcgl_30_features.vcs";
-            // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/hero_pcgl_30_features.vcs";
+            string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/hero_pcgl_30_features.vcs";
+            // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/hero_pcgl_30_ps.vcs";
             // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs"; // doesn't have any mipmaps
             // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_ps.vcs";
             if (outputFilenamepath != null && writeFile)
@@ -60,10 +61,9 @@ namespace MyShaderAnalysis
                 PrintSBlocks(shaderFile);
             }
 
-
-
-
-
+            PrintStaticConstraints(shaderFile);
+            PrintDynamicConfigurations(shaderFile);
+            PrintDynamicConstraints(shaderFile);
 
         }
 
@@ -139,11 +139,11 @@ namespace MyShaderAnalysis
                 output.BreakLine();
                 return;
             }
-            output.DefineHeaders(new string[] { "index", "name", "nr-configs", "config-states", ""});
+            output.DefineHeaders(new string[] { "index", "name", "nr-configs", "config-states", "" });
             foreach (var item in shaderFile.sfBlocks)
             {
                 string configStates = "_";
-                if (item.arg2>0)
+                if (item.arg2 > 0)
                 {
                     configStates = "0";
                 }
@@ -152,7 +152,7 @@ namespace MyShaderAnalysis
                     configStates += $",{i}";
                 }
                 string configStates2 = "";
-                if (item.arg2>1)
+                if (item.arg2 > 1)
                 {
                     configStates2 = $"{CombineStringArray(item.additionalParams.ToArray())}";
                 }
@@ -184,6 +184,135 @@ namespace MyShaderAnalysis
             output.BreakLine();
         }
 
+        // todo - bring these in-line with the other printouts
+        static void PrintStaticConstraints(ShaderFile shaderFile)
+        {
+            output.WriteLine("STATIC-CONFIGS INCLUSION/EXCLUSION RULES");
+
+            foreach (SfConstraintsBlock cBlock in shaderFile.sfConstraintsBlocks)
+            {
+                string[] sfNames = new string[cBlock.range0.Length];
+                for (int i = 0; i < sfNames.Length; i++)
+                {
+                    sfNames[i] = shaderFile.sfBlocks[cBlock.range0[i]].name0;
+                }
+                const int BL = 70;
+                string[] breakNames = CombineValuesBreakString(sfNames, BL);
+                string s0 = $"[{cBlock.blockIndex,2}]";
+                string s1 = (cBlock.relRule == 1 || cBlock.relRule == 2) ? $"INC({cBlock.relRule})" : $"EXC({cBlock.relRule})";
+                string s3 = $"{cBlock.GetByteFlagsAsString()}";
+                string s4 = $"{breakNames[0]}";
+                string s5 = $"{CombineValues2(cBlock.range0)}";
+                string s6 = $"{CombineValues2(cBlock.range1)}";
+                string s7 = $"{CombineValues2(cBlock.range2)}";
+                string blockSummary = $"{s0.PadRight(7)}{s1.PadRight(10)}{s5.PadRight(16)}{s4.PadRight(BL)}{s6.PadRight(8)}{s7.PadRight(8)}";
+                for (int i = 1; i < breakNames.Length; i++)
+                {
+                    blockSummary += $"\n{(""),7}{(""),10}{(""),16}{breakNames[i],-BL}";
+                }
+                output.Write(blockSummary);
+                output.BreakLine();
+            }
+            output.BreakLine();
+        }
+
+        static string CombineValues2(int[] ints0, bool includeParenth = false)
+        {
+            if (ints0.Length == 0) return $"_";
+            string valueString = "";
+            foreach (int i in ints0)
+            {
+                valueString += $"{i},";
+            }
+            valueString = valueString[0..^1];
+            return includeParenth ? $"({valueString})" : $"{valueString}";
+        }
+
+
+        // todo - bring these in-line with the other printouts
+        static void PrintDynamicConfigurations(ShaderFile shaderFile)
+        {
+            output.WriteLine($"DYNAMIC PARAMS");
+            if (shaderFile.dBlocks.Count==0)
+            {
+                output.WriteLine("[none defined]");
+                output.BreakLine();
+                return;
+            }
+
+            int[] pad = { 7, 40, 7, 7, 7 };
+            string h0 = "index";
+            string h1 = "name";
+            string h2 = "arg2";
+            string h3 = "arg3";
+            string h4 = "arg4";
+            string blockHeader = $"{h0.PadRight(pad[0])} {h1.PadRight(pad[1])} {h2.PadRight(pad[2])} {h3.PadRight(pad[3])} {h4.PadRight(pad[4])}";
+            output.WriteLine(blockHeader);
+            foreach (DBlock dBlock in shaderFile.dBlocks)
+            {
+                string v0 = $"[{dBlock.blockIndex,2}]";
+                string v1 = dBlock.name0;
+                string v2 = "" + dBlock.arg2;
+                string v3 = "" + dBlock.arg3;
+                string v4 = $"{dBlock.arg4,2}";
+                string blockSummary = $"{v0.PadRight(pad[0])} {v1.PadRight(pad[1])} {v2.PadRight(pad[2])} {v3.PadRight(pad[3])} {v4.PadRight(pad[4])}";
+                output.WriteLine(blockSummary);
+            }
+            if (shaderFile.dBlocks.Count == 0)
+            {
+                output.WriteLine("[empty list]");
+            }
+            output.BreakLine();
+        }
+
+        // todo - bring these in-line with the other printouts
+        static void PrintDynamicConstraints(ShaderFile shaderFile)
+        {
+            output.WriteLine("DYNAMIC-CONFIGS INCLUSION/EXCLUSION RULES");
+            if (shaderFile.dConstraintsBlocks.Count == 0) {
+                output.WriteLine("[none defined]");
+                output.BreakLine();
+            }
+
+
+            foreach (DConstraintsBlock uBlock in shaderFile.dConstraintsBlocks)
+            {
+                string[] uknNames = new string[uBlock.flags.Length];
+                for (int i = 0; i < uknNames.Length; i++)
+                {
+                    if (uBlock.flags[i] == 3)
+                    {
+                        uknNames[i] = shaderFile.dBlocks[uBlock.range0[i]].name0;
+                        continue;
+                    }
+                    if (uBlock.flags[i] == 2)
+                    {
+                        uknNames[i] = shaderFile.sfBlocks[uBlock.range0[i]].name0;
+                        continue;
+                    }
+                    throw new ShaderParserException($"unknown flag value {uBlock.flags[i]}");
+                }
+                const int BL = 70;
+                string[] breakNames = CombineValuesBreakString(uknNames, BL);
+                string s0 = $"[{uBlock.blockIndex,2}]";
+                string s1 = (uBlock.relRule == 1 || uBlock.relRule == 2) ? $"INC({uBlock.relRule})" : $"EXC({uBlock.relRule})";
+                string s3 = $"{uBlock.ReadByteFlagsAsString()}";
+                string s4 = $"{breakNames[0]}";
+                string s5 = $"{CombineValues2(uBlock.range0)}";
+                string s6 = $"{CombineValues2(uBlock.range1)}";
+                string s7 = $"{CombineValues2(uBlock.range2)}";
+                string blockSummary = $"{s0,-7}{s1,-10}{s3,-15}{s5,-16}{s4,-BL}{s6,-10}{s7,-8}";
+                for (int i = 1; i < breakNames.Length; i++)
+                {
+                    blockSummary += $"\n{(""),-7}{(""),-10}{(""),-15}{(""),-16}{breakNames[i],-BL}";
+                }
+                output.Write(blockSummary);
+                output.BreakLine();
+            }
+
+            output.BreakLine();
+        }
+
 
 
 
@@ -191,7 +320,7 @@ namespace MyShaderAnalysis
         static void PrintSingleFileAnalysisZFrames(string outputFilenamepath = null, bool writeFile = false)
         {
             string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs"; // doesn't have any mipmaps
-            // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_ps.vcs";
+                                                                                        // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_ps.vcs";
             if (outputFilenamepath != null && writeFile)
             {
                 output.SetOutputFile(outputFilenamepath);
