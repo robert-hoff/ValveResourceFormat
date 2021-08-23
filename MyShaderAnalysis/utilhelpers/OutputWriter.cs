@@ -119,21 +119,61 @@ namespace MyShaderAnalysis.utilhelpers
                 throw new ShaderParserException("wrong number of columns");
             }
             List<string> newRow = new();
-            //foreach (string s in rowMembers)
-            //{
-            //    newRow.Add(s);
-            //}
+            List<List<string>> additionalRows = new();
+
+
             for (int i = 0; i < rowMembers.Length; i++)
             {
-                newRow.Add(rowMembers[i]);
-                if (rowMembers[i].Length > columnWidths[i])
+                string[] multipleLines = rowMembers[i].Split("\n");
+                if (multipleLines.Length>1)
                 {
-                    columnWidths[i] = rowMembers[i].Length;
+                    addExtraLines(additionalRows, multipleLines, i);
+                }
+
+                newRow.Add(multipleLines[0]);
+                if (multipleLines[0].Length > columnWidths[i])
+                {
+                    columnWidths[i] = multipleLines[0].Length;
                 }
 
             }
             tabulatedValues.Add(newRow);
+            foreach (var additionalRow in additionalRows)
+            {
+                tabulatedValues.Add(additionalRow);
+            }
         }
+
+
+        private void addExtraLines(List<List<string>> additionalRows, string[] multipleLines, int ind)
+        {
+            for (int i = 1; i < multipleLines.Length; i++)
+            {
+                if (additionalRows.Count < i)
+                {
+                    additionalRows.Add(emptyRow());
+                }
+                additionalRows[i - 1][ind] = multipleLines[i];
+
+                if (multipleLines[i].Length > columnWidths[ind])
+                {
+                    columnWidths[ind] = multipleLines[i].Length;
+                }
+            }
+        }
+
+
+        private List<string> emptyRow()
+        {
+            List<string> newRow = new();
+            for (int i = 0; i < headerValues.Count; i++)
+            {
+                newRow.Add("");
+            }
+            return newRow;
+        }
+
+
 
         public void printTabulatedValues()
         {
