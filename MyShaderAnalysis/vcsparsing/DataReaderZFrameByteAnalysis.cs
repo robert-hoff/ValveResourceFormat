@@ -464,21 +464,15 @@ namespace MyShaderAnalysis.vcsparsing
             OutputWriteLine($"// {dynExp}");
             ShowBytes(dynExpLen);
         }
-        private VfxEval myDynParser = new();
         private string GetDynamicExpression(byte[] dynExpDatabytes)
         {
-            if (myDynParser == null)
+            try
             {
-                myDynParser = new VfxEval();
-            }
-            myDynParser.ParseExpression(dynExpDatabytes);
-            if (myDynParser.errorWhileParsing)
+                return new VfxEval(dynExpDatabytes).DynamicExpressionResult;
+            } catch (InvalidDataException)
             {
-                string errorMessage = $"problem occured parsing dynamic expression {myDynParser.errorMessage}";
-                Debug.WriteLine(errorMessage);
-                return errorMessage;
+                return "[error in dyn-exp]";
             }
-            return myDynParser.dynamicExpressionResult;
         }
 
 

@@ -10,16 +10,9 @@ using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
 
 namespace MyShaderAnalysis.compat
 {
-
-
     /*
-     *
      * STILL TO DO - complete the reverse verification of zframe generation
-     * Meanwhile, use this method to printout the presumed configuration for every zframe, for every source file
-     *
-     *
-     *
-     *
+     * Meanwhile, use this method to printout the presumed configuration
      *
      */
     public class CompatRulesGeneration
@@ -33,9 +26,7 @@ namespace MyShaderAnalysis.compat
             GenerateOffsetAndLayers(shaderfile);
         }
 
-
         /*
-         *
          *
          * for example for water_dota_pcgl_30_ps.vcs
          *
@@ -47,13 +38,9 @@ namespace MyShaderAnalysis.compat
          * offsets = [1    5]
          * layers =  [4    1]
          *
-         *
-         *
-         *
          */
         private void GenerateOffsetAndLayers(ShaderFile shaderFile)
         {
-
             if (shaderFile.sfBlocks.Count == 0)
             {
                 offsets = Array.Empty<int>();
@@ -75,15 +62,9 @@ namespace MyShaderAnalysis.compat
             }
         }
 
-
-
-
         /*
-         * getting the config state is not dependend on processing the rules
-         * As long as the system is verified it is much more efficient to move
-         * from a known zframeId to a configuration state
-         *
-         *
+         * getting the config state is not dependend on processing the configuration constraints (but is useful for verification)
+         * It is much more efficient to move from a known zframeId to a configuration state
          */
         public int[] GetConfigState(long zframeId)
         {
@@ -96,12 +77,8 @@ namespace MyShaderAnalysis.compat
             return state;
         }
 
-
-
-
         static int[] offsets;
         static int[] layers;
-
 
         static bool[,] exclusions = new bool[100, 100];
         static bool[,] inclusions = new bool[100, 100];
@@ -131,8 +108,6 @@ namespace MyShaderAnalysis.compat
         {
             return 2 * offsets[^1];
         }
-
-
         bool CheckZFrame(int zframe)
         {
             int[] state = GetConfigState(zframe);
@@ -173,17 +148,12 @@ namespace MyShaderAnalysis.compat
             return true;
         }
 
-
-
         public void ShowOffsetAndLayersArrays()
         {
             ShowIntArray(offsets, 8, "offsets", hex: true);
             ShowIntArray(layers, 8, "layers");
 
         }
-
-
-
 
 
     }

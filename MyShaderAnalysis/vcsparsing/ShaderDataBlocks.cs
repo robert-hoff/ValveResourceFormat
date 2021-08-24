@@ -691,8 +691,8 @@ namespace MyShaderAnalysis.vcsparsing
                 int dynLength = datareader.ReadIntAtPosition();
                 datareader.ShowBytes(4, breakLine: false);
                 datareader.TabComment("dyn-exp len", 1);
-                datareader.ShowBytes(dynLength, breakLine: false);
-                datareader.TabComment("dynamic expression", 1);
+                datareader.TabComment("dynamic expression");
+                datareader.ShowBytes(dynLength);
             }
             // 6 int parameters follow here
             datareader.ShowBytes(24, 4);

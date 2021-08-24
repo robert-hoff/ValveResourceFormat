@@ -613,10 +613,15 @@ namespace MyShaderAnalysis.vcsparsing
         }
 
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles", Justification = "I like it like this")]
-        public static string s(int len)
+        public static string ParseDynamicExpression(byte[] dynExpDatabytes)
         {
-            return new string(' ', len);
+            try
+            {
+                return new VfxEval(dynExpDatabytes).DynamicExpressionResult.Replace("UNKNOWN", "VAR"); ;
+            } catch (InvalidDataException)
+            {
+                return "[error in dyn-exp]";
+            }
         }
 
 

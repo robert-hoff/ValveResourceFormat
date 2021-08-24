@@ -484,7 +484,7 @@ namespace MyShaderAnalysis
                     {
                         continue;
                     }
-                    string dynExpstring = new VfxEval().ParseExpression(param.dynExp);
+                    string dynExpstring = ParseDynamicExpression(param.dynExp);
                     output.AddTabulatedRow(new string[] { $"[{(""+param.blockIndex).PadLeft(indexPad)}]",
                         $"{param.name0}",
                         $"{param.type,2},{param.lead0,2},{BlankNegOne(param.arg0),2},{param.arg1,2},{param.arg2,2},{param.arg4,2},{BlankNegOne(param.arg5),2}",
@@ -497,7 +497,6 @@ namespace MyShaderAnalysis
             output.WriteLine("(- indicates -infinity, + indicates +infinity, def. = default)");
             output.DefineHeaders(new string[] { "index", "name0", "t0,t1,a0,a1,a2,a4,a5  ", "ints-def.", "ints-min", "ints-max",
                 "floats-def.", "floats-min", "floats-max", "int-args0", "int-args1", "command0", "fileref", "dyn-exp"});
-            // output.AddTabulatedRow(new string[] { "", "", "", "default", "", "", "default", "", "", "", "", "", "", "" });
             foreach (var param in shaderFile.paramBlocks)
             {
                 string fileref = param.fileref;

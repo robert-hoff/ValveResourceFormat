@@ -354,7 +354,7 @@ namespace MyShaderAnalysis.vcsparsing
                 ShowBytes(4, breakLine: false);
                 TabComment("dyn-exp len", 1);
 
-                ShowBytes(dynLength, breakLine: false);
+                ShowBytes(dynLength);
                 TabComment("dynamic expression", 1);
             }
             // 6 int parameters follow the dynamic expression

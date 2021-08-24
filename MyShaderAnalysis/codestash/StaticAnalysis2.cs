@@ -135,7 +135,7 @@ namespace MyShaderAnalysis
                     string c1 = paramBlock.command1;
 
                     byte[] dynExp = paramBlock.dynExp;
-                    string dynExpstring = new VfxEval().ParseExpression(dynExp);
+                    string dynExpstring = new VfxEval(dynExp).DynamicExpressionResult;
 
 
                     CUTLEN = 16;

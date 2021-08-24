@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using MyShaderAnalysis.utilhelpers;
 using MyValveResourceFormat.ThirdParty;
 using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
@@ -278,23 +279,6 @@ namespace MyShaderAnalysis.vcsparsing
                     }
                 }
             }
-        }
-
-        private static VfxEval myDynParser = new();
-        private static string ParseDynamicExpression(byte[] dynExpDatabytes)
-        {
-            if (myDynParser == null)
-            {
-                myDynParser = new VfxEval();
-            }
-            myDynParser.ParseExpression(dynExpDatabytes);
-            if (myDynParser.errorWhileParsing)
-            {
-                string errorMessage = $"problem occured parsing dynamic expression {myDynParser.errorMessage}";
-                Debug.WriteLine(errorMessage);
-                return errorMessage;
-            }
-            return myDynParser.dynamicExpressionResult;
         }
 
         public void Dispose()
