@@ -12,7 +12,7 @@ using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
 
 namespace MyShaderAnalysis
 {
-    public class StaticAnalysis3
+    public class PrintoutsSingleFile
     {
         const string OUTPUT_DIR = @"Z:\active\projects\dota2-sourcesdk-modding\shader-analysis-vcs-format\OUTPUT_DUMP";
         const string SERVER_OUTPUT_DIR = @"Z:\dev\www\vcs.codecreation.dev\GEN-output";
@@ -21,44 +21,122 @@ namespace MyShaderAnalysis
 
         public static void RunTrials()
         {
-            Trial1();
+
+            // TestBatchPrinting();
+            PrintAllFiles();
+            // Trial1();
+            // Trial2();
+            // Trial3();
             output.CloseStreamWriter();
         }
 
 
-        static void Trial1()
+        static void Trial3()
         {
-            PrintSingleFileMainParamsAndConstaints($"{SERVER_OUTPUT_DIR}/testfile.html", writeFile: true);
+            string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/hero_pcgl_30_ps.vcs";
+            // string filenamepath = $"{DOTA_GAME_PC_SOURCE}/hero_pc_40_ps.vcs";
+            FileTokens fileTokens = new FileTokens(filenamepath);
+
+            Debug.WriteLine($"{fileTokens.GetAbbreviatedName()}");
         }
 
-        static void PrintSingleFileMainParamsAndConstaints(string outputFilenamepath = null, bool writeFile = false)
+
+        static void Trial2()
+        {
+            // string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/generic_light_pcgl_30_features.vcs";
+            // string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/generic_light_pcgl_30_ps.vcs";
+            // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/hero_pcgl_30_features.vcs";
+            string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/hero_pcgl_30_ps.vcs";
+            foreach (var f in GetRelatedFiles(filenamepath))
+            {
+                Debug.WriteLine($"{f}");
+            }
+        }
+
+        static void Trial1()
         {
             // string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/cs_compress_dxt5_pcgl_30_features.vcs";
             // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/hero_pcgl_30_features.vcs";
             // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/hero_pcgl_30_vs.vcs";
             // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/hero_pcgl_30_ps.vcs";
+            // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/hero_pcgl_30_psrs.vcs";
+            // string filenamepath = $"{DOTA_GAME_PC_SOURCE}/hero_pc_30_vs.vcs";
             // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_features.vcs";
-            // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs"; // doesn't have any mipmaps
+            // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs";
             // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_ps.vcs";
+            // string filenamepath = $"{DOTA_GAME_PC_SOURCE}/multiblend_pc_30_features.vcs";
+            // string filenamepath = $"{DOTA_GAME_PC_SOURCE}/multiblend_pc_30_vs.vcs";
+            // string filenamepath = $"{DOTA_GAME_PC_SOURCE}/multiblend_pc_30_ps.vcs";
             // string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/generic_light_pcgl_30_features.vcs";
-            // string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/generic_light_pcgl_30_vs.vcs";
+            string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/generic_light_pcgl_30_vs.vcs";
+            // string filenamepath = $"{DOTA_CORE_PC_SOURCE}/generic_light_pc_30_features.vcs";
+            // string filenamepath = $"{DOTA_CORE_PC_SOURCE}/generic_light_pc_30_vs.vcs";
             // string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/generic_light_pcgl_30_ps.vcs";
             // string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/spritecard_pcgl_30_features.vcs";
             // string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/spritecard_pcgl_30_ps.vcs";
-            string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/spritecard_pcgl_30_vs.vcs";
+            // string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/spritecard_pcgl_30_vs.vcs";
+            // string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/msaa_resolve_cs_pcgl_50_features.vcs"; // strange file that doesn't contain any data
+            PrintSingleFileFullSummary(filenamepath, $"{SERVER_OUTPUT_DIR}/testfile.html", writeFile: true);
+        }
+
+
+
+        static void PrintAllFiles()
+        {
+            // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PC_SOURCE, DOTA_GAME_PC_SOURCE, VcsFileType.Any, -1);
+            List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PCGL_SOURCE, DOTA_GAME_PCGL_SOURCE, VcsFileType.Any, -1);
+            foreach (var filenamepath in vcsFiles)
+            {
+                FileTokens fileTokens = new FileTokens(filenamepath);
+                if (fileTokens.vcsFiletype == VcsFileType.ComputeShader || fileTokens.vcsFiletype == VcsFileType.GeometryShader)
+                {
+                    continue;
+                }
+                string outputFilenamepath = $"{fileTokens.GetServerFileDir("summary2", createDirs: true)}";
+                PrintSingleFileFullSummary(filenamepath, outputFilenamepath, writeFile: true, disableOutput: true);
+                output.CloseStreamWriter();
+            }
+
+        }
+
+
+        static void TestBatchPrinting()
+        {
+
+            // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PC_SOURCE, DOTA_GAME_PC_SOURCE, VcsFileType.Any, -1);
+            List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PCGL_SOURCE, DOTA_GAME_PCGL_SOURCE, VcsFileType.Any, -1);
+            // List<string> vcsFiles = GetVcsFiles(DOTA_GAME_PCGL_SOURCE, null, VcsFileType.Any, -1);
+            // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PCGL_SOURCE, null, VcsFileType.Any, -1);
+
+            FileTokens fileTokens = new FileTokens(vcsFiles[0]);
+            string outputFilenamepath = $"{fileTokens.GetServerFileDir("summary2", createDirs: true)}";
+            PrintSingleFileFullSummary(fileTokens.filenamepath, outputFilenamepath, writeFile: true, disableOutput: true);
+        }
+
+
+
+
+        static void PrintSingleFileFullSummary(string filenamepath, string outputFilenamepath = null,
+            bool writeFile = false, bool disableOutput = false)
+        {
+            FileTokens fileTokens = new FileTokens(filenamepath);
             if (outputFilenamepath != null && writeFile)
             {
                 output.SetOutputFile(outputFilenamepath);
-                output.WriteAsHtml("title", $"{ShortHandName(filenamepath)}");
+                output.WriteAsHtml(fileTokens.GetAbbreviatedName(), $"{ShortHandName(filenamepath)}");
+                if (disableOutput)
+                {
+                    output.DisableOutput();
+                }
             }
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             if (shaderFile.vcsFileType == VcsFileType.Features)
             {
-                PrintFeaturesHeader(shaderFile);
+                PrintFeaturesHeader(shaderFile, fileTokens);
                 PrintFBlocks(shaderFile);
             } else
             {
-                PrintPsVsHeader(shaderFile);
+                PrintPsVsHeader(shaderFile, fileTokens);
                 PrintSBlocks(shaderFile);
             }
 
@@ -72,11 +150,26 @@ namespace MyShaderAnalysis
             PrintZFrames(shaderFile);
         }
 
-        private static void PrintFeaturesHeader(ShaderFile shaderFile)
+        private static void PrintFeaturesHeader(ShaderFile shaderFile, FileTokens fileTokens)
         {
             output.WriteLine($"Valve Compiled Shader 2 (vcs2), version {shaderFile.featuresHeader.vcsFileVersion}");
             output.BreakLine();
-            output.WriteLine($"Features Detail ({Path.GetFileName(shaderFile.filenamepath)})");
+            output.Write($"Features Detail ({Path.GetFileName(shaderFile.filenamepath)})");
+
+            output.WriteLine($" (byte version <a href='{fileTokens.GetBytePath()}'>{fileTokens.filename}</a>)");
+            string[] relatedFiles = GetRelatedFiles(fileTokens.filenamepath);
+            if (relatedFiles.Length > 0)
+            {
+                output.Write("Related files:");
+                foreach (var f in relatedFiles)
+                {
+                    FileTokens fT = new FileTokens(f);
+                    output.Write($" <a href='{fT.GetServerFileLink("summary2")}'>{fT.filename}</a>");
+                }
+                output.BreakLine();
+            }
+
+
             output.WriteLine($"VFX File Desc: {shaderFile.featuresHeader.file_description}");
             output.BreakLine();
             output.WriteLine($"has_psrs_file = {shaderFile.featuresHeader.has_psrs_file}");
@@ -105,7 +198,7 @@ namespace MyShaderAnalysis
                 output.WriteLine($"Primary static modes (one of these should be selected)");
             } else
             {
-                output.WriteLine($"Primary static modes (has only one default mode)");
+                output.WriteLine($"Primary static modes (this file has only one default mode)");
             }
             output.DefineHeaders(new string[] { "name", "mode", "config-states" });
             output.AddTabulatedRow(new string[] { "----", "----", "-------------" });
@@ -119,11 +212,24 @@ namespace MyShaderAnalysis
             output.BreakLine();
         }
 
-        private static void PrintPsVsHeader(ShaderFile shaderFile)
+        private static void PrintPsVsHeader(ShaderFile shaderFile, FileTokens fileTokens)
         {
             output.WriteLine($"Valve Compiled Shader 2 (vcs2), version {shaderFile.vspsHeader.vcsFileVersion}");
             output.BreakLine();
-            output.WriteLine($"{shaderFile.vcsFileType} ({Path.GetFileName(shaderFile.filenamepath)})");
+            output.Write($"{shaderFile.vcsFileType} ({Path.GetFileName(shaderFile.filenamepath)})");
+            output.WriteLine($" (byte version <a href='{fileTokens.GetBytePath()}'>{fileTokens.filename}</a>)");
+            string[] relatedFiles = GetRelatedFiles(fileTokens.filenamepath);
+            if (relatedFiles.Length > 0)
+            {
+                output.Write("Related files:");
+                foreach (var f in relatedFiles)
+                {
+                    FileTokens fT = new FileTokens(f);
+                    output.Write($" <a href='{fT.GetServerFileLink("summary2")}'>{fT.filename}</a>");
+                }
+                output.BreakLine();
+            }
+
             output.WriteLine($"probable minor version = {shaderFile.possibleMinorVersion}");
             output.BreakLine();
             output.WriteLine("Editor/Shader compiler stack");
@@ -135,10 +241,10 @@ namespace MyShaderAnalysis
 
         private static void PrintFBlocks(ShaderFile shaderFile)
         {
-            output.WriteLine($"STATIC-CONFIGURATIONS({shaderFile.sfBlocks.Count})");
+            output.WriteLine($"FEATURE/STATIC-CONFIGURATIONS({shaderFile.sfBlocks.Count})");
             if (shaderFile.sfBlocks.Count == 0)
             {
-                output.WriteLine("[none]");
+                output.WriteLine("[none defined]");
                 output.BreakLine();
                 return;
             }
@@ -172,7 +278,7 @@ namespace MyShaderAnalysis
             output.WriteLine($"STATIC-CONFIGURATIONS({shaderFile.sfBlocks.Count})");
             if (shaderFile.sfBlocks.Count == 0)
             {
-                output.WriteLine("[none]");
+                output.WriteLine("[none defined]");
                 output.BreakLine();
                 return;
             }
@@ -308,14 +414,14 @@ namespace MyShaderAnalysis
 
         private static void PrintParameters(ShaderFile shaderFile)
         {
-            output.DefineHeaders(new string[] { "index", "name", "arg2", "arg3", "arg4" });
-            foreach (var item in shaderFile.sfBlocks)
+            if (shaderFile.paramBlocks.Count == 0)
             {
-                output.AddTabulatedRow(new string[] {$"[{item.blockIndex,2}]", $"{item.name0}", $"{item.arg2}",
-                    $"{item.arg3}", $"{item.arg4,2}"});
+                output.WriteLine($"PARAMETERS(0)");
+                output.WriteLine("[none defined]");
+                output.BreakLine();
+                return;
             }
-            output.printTabulatedValues();
-            output.BreakLine();
+
             int dynExpCount = 0;
             int indexPad = shaderFile.paramBlocks.Count > 100 ? 3 : 2;
             // parameters
@@ -358,7 +464,7 @@ namespace MyShaderAnalysis
                     $"{Pow2Rep(param.arg3),4}", $"{param.arg4,2}", $"{BlankNegOne(param.arg5),2}",
                     $"{dynExpExists}", $"{c0}", $"{param.fileref}"});
             }
-            output.printTabulatedValues();
+            output.printTabulatedValues(spacing: 1);
             output.BreakLine();
             if (dynExpCount == 0)
             {
@@ -419,7 +525,7 @@ namespace MyShaderAnalysis
             } else
             {
                 output.DefineHeaders(Array.Empty<string>());
-                output.WriteLine("[none]");
+                output.WriteLine("[none defined]");
             }
             foreach (var mipmap in shaderFile.mipmapBlocks)
             {
@@ -433,6 +539,13 @@ namespace MyShaderAnalysis
 
         private static void PrintBufferBlocks(ShaderFile shaderFile)
         {
+            if (shaderFile.bufferBlocks.Count == 0)
+            {
+                output.WriteLine("BUFFER-BLOCKS(0)");
+                output.WriteLine("[none defined]");
+                output.BreakLine();
+                return;
+            }
             foreach (var bufferBlock in shaderFile.bufferBlocks)
             {
                 output.WriteLine($"BUFFER-BLOCK[{bufferBlock.blockIndex}]");
@@ -513,7 +626,7 @@ namespace MyShaderAnalysis
                 string infoText = "";
                 if (shaderFile.vcsFileType == VcsFileType.Features)
                 {
-                    infoText = "(features files in general don't contain zframes)";
+                    infoText = "(Features files in general don't contain zframes)";
                 }
                 output.WriteLine($"[none defined] {infoText}");
                 output.BreakLine();

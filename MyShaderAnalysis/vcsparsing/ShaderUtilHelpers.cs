@@ -1,3 +1,4 @@
+using MyShaderAnalysis.utilhelpers;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -41,6 +42,10 @@ namespace MyShaderAnalysis.vcsparsing
             if (filenamepath.EndsWith("gs.vcs"))
             {
                 return VcsFileType.GeometryShader;
+            }
+            if (filenamepath.EndsWith("cs.vcs"))
+            {
+                return VcsFileType.ComputeShader;
             }
             throw new ShaderParserException($"don't know what this file is {filenamepath}");
         }
@@ -256,7 +261,9 @@ namespace MyShaderAnalysis.vcsparsing
             {
                 urlText = Path.GetFileName(vcsFileName);
             }
-            return $"<a href='/vcs-all/{GetCoreOrDotaString(vcsFileName)}/{Path.GetFileName(vcsFileName)[0..^4]}-analysis.html'>{urlText}</a>";
+            // return $"<a href='/vcs-all/{GetCoreOrDotaString(vcsFileName)}/{Path.GetFileName(vcsFileName)[0..^4]}-analysis.html'>{urlText}</a>";
+            FileTokens filetokens = new FileTokens(vcsFileName);
+            return $"<a href='{filetokens.GetServerFileLink("")}'>{urlText}</a>";
         }
 
         public static string GetCoreOrDotaString(string vcsFileName)
@@ -361,6 +368,47 @@ namespace MyShaderAnalysis.vcsparsing
             }
         }
 
+        /*
+         * E.g.
+         * filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/hero_pcgl_30_ps.vcs"
+         *
+         * returns
+         * ..\shaders\vfx\hero_pcgl_30_features.vcs
+         * ..\shaders\vfx\hero_pcgl_30_vs.vcs
+         * ..\shaders\vfx\hero_pcgl_30_psrs.vcs
+         *
+         *
+         */
+        public static string[] GetRelatedFiles(string filenamepath)
+        {
+            string filename = Path.GetFileName(filenamepath);
+            string collectionName = filename.Substring(0, filename.LastIndexOf('_'));
+            List<string> relatedFiles = new();
+            string featuresFile = null;
+            foreach (var f in Directory.GetFiles(Path.GetDirectoryName(filenamepath)))
+            {
+                // if (Path.GetFileName(f).StartsWith(collectionName) && !Path.GetFileName(f).Equals(filename))
+                if (Path.GetFileName(f).StartsWith(collectionName))
+                {
+
+                    if (f.EndsWith("features.vcs"))
+                    {
+                        featuresFile = f;
+                    } else if (f.EndsWith("vs.vcs"))
+                    {
+                        relatedFiles.Insert(0, f);
+                    } else
+                    {
+                        relatedFiles.Add(f);
+                    }
+                }
+            }
+            if (featuresFile != null)
+            {
+                relatedFiles.Insert(0, featuresFile);
+            }
+            return relatedFiles.ToArray();
+        }
 
 
         public static uint MurmurHashPiSeed(byte[] data)
@@ -620,6 +668,8 @@ namespace MyShaderAnalysis.vcsparsing
         {
             return new string(' ', len);
         }
+
+
 
 
 

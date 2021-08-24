@@ -30,9 +30,12 @@ namespace MyShaderAnalysis.utilhelpers
         public string vcstoken { get; }      // ft, vs, ps, psrs or gs
         public string sourcedir { get; }     // full directory path of the source files
         public string archivename { get; }   // dota-game or dota-core
-        public string archivelabel { get; }  // dota or core (possibly s&box later). Used for generating names
+        // todo - fix the archivelabel bug for generating byte-dymp paths (need to update all the files)
+        public string archivelabel { get; }  // dota or core (possibly s&box later). Used for generating names AND
+                                             // used for generting paths to the byte-dumps. *WHICH IS A BUG* but I can't fix that yet
         public string gputype { get; }       // pcgl, pc, vulkan
         public string sourcetype { get; }    // glsl, dx11, etc.
+        public string sourceVersion { get; }    // 30,40,50,etc
         public string serverdir { get; }     // full directory path of the server files
         public VcsFileType vcsFiletype { get; }
 
@@ -59,6 +62,7 @@ namespace MyShaderAnalysis.utilhelpers
             this.archivelabel = GetArchiveLabel(archive);
             this.gputype = GetGpuType(archive);
             this.sourcetype = GetSourceType(archive);
+            this.sourceVersion = filename.Split('_')[^2];
             this.serverdir = GetServerBaseDir();
             this.namelabel = filename.Split('_')[0];
             this.vcstoken = GetVcsToken(vcsFiletype);
@@ -84,15 +88,18 @@ namespace MyShaderAnalysis.utilhelpers
             return serverFileDir;
         }
 
-        public string GetServerFilePath(string label, bool createDirs = false)
+        public string GetServerFileDir(string label, bool createDirs = false)
         {
             return $"{GetServerFileDir(createDirs)}/{name}-{label}.html";
         }
 
-
         public string GetServerFilePath()
         {
             return $"/{archivename}/{gputype}/{foldername}";
+        }
+        public string GetServerFileLink(string label)
+        {
+            return $"/{archivename}/{gputype}/{foldername}/{name}-{label}.html";
         }
 
         public string GetZFramesServerDir(bool createDir = false)
@@ -162,9 +169,21 @@ namespace MyShaderAnalysis.utilhelpers
             }
         }
 
+        // hero_pcgl_30_ps (dota)
         public string GetShortHandName()
         {
             return $"{name} ({archivelabel})";
+        }
+
+        // hero(pcgl-ps)
+        public string GetAbbreviatedName()
+        {
+            string source_type = gputype;
+            if (gputype.Equals("pc"))
+            {
+                source_type = sourceVersion.Equals("30") ? "dxil" : "dxbc";
+            }
+            return $"{namelabel}({source_type}-{vcstoken})";
         }
 
         public string RemoveBaseDir()

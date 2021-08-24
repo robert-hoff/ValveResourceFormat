@@ -31,12 +31,19 @@ namespace MyShaderAnalysis.utilhelpers
         {
             Debug.WriteLine($"writing to {filenamepath}");
             sw = new StreamWriter(filenamepath);
+            swWriterAlreadyClosed = false;
         }
 
         public void WriteAsHtml(string htmlTitle, string htmlHeader)
         {
             writeAsHtml = true;
             sw.WriteLine(GetHtmlHeader(htmlTitle, htmlHeader));
+        }
+
+        public void DisableOutput()
+        {
+            WriteToConsole = false;
+            WriteToDebug = false;
         }
 
 
@@ -75,6 +82,7 @@ namespace MyShaderAnalysis.utilhelpers
             if (sw != null && !swWriterAlreadyClosed)
             {
                 sw.Close();
+                swWriterAlreadyClosed = true;
             }
         }
 

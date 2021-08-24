@@ -70,15 +70,13 @@ namespace MyShaderAnalysis
 
 
             // NOTE - currently points to Artifact classic
-            // BlockCountSurvery($@"{SERVER_OUTPUT_DIR}\testfile.html", writeFile: true);
-
-
+            BlockCountSurvery($@"{SERVER_OUTPUT_DIR}\testfile.html", writeFile: true);
             // FileBlockCount(filenamepath);
             // WriteSfArgumentsAllFiles($"{SERVER_OUTPUT_DIR}/testrun.html", writeFile: true);
 
 
 
-            FileSummarySingleFile();
+            // FileSummarySingleFile();
             // ZFramePrintout();
 
 
@@ -384,7 +382,7 @@ namespace MyShaderAnalysis
             }
             FileTokens targetFile = targetFileType == VcsFileType.VertexShader ? fileTriple.vsFile : fileTriple.psFile;
             string htmlTitle = $"{targetFile.namelabel}({targetFile.vcstoken})";
-            string outputNamepath = targetFile.GetServerFilePath("summary", createDirs: true);
+            string outputNamepath = targetFile.GetServerFileDir("summary", createDirs: true);
             FileSummaryVsPSFile(fileTriple, targetFileType, htmlTitle, outputNamepath, writeFile: true, disableOutput);
         }
 
@@ -446,7 +444,8 @@ namespace MyShaderAnalysis
             if (outputFilenamepath != null && writeFile)
             {
                 ConfigureOutputFile(outputFilenamepath);
-                WriteHtmlFile("File", "Vcs files / Artifact classic");
+                // WriteHtmlFile("Files", "Vcs files / Artifact classic");
+                WriteHtmlFile("Files", "Vcs files Dota PCGL");
             }
             string fH = "File";
             string sfH = "SF blocks";
@@ -464,16 +463,16 @@ namespace MyShaderAnalysis
             OutputWriteLine($"{header}");
 
 
-            // List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
-            // List<string> allVcsFiles = GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, FILETYPE.any, -1);
+            List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Any, -1);
+            // List<string> allVcsFiles = GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsFileType.Any, -1);
 
 
-            List<string> allVcsFiles = new();
-            allVcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsFileType.Features, -1));
-            allVcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsFileType.PixelShader, -1));
-            allVcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsFileType.VertexShader, -1));
-            allVcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsFileType.PixelShaderRenderState, -1));
-            allVcsFiles.Sort();
+            //List<string> allVcsFiles = new();
+            //allVcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsFileType.Features, -1));
+            //allVcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsFileType.PixelShader, -1));
+            //allVcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsFileType.VertexShader, -1));
+            //allVcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsFileType.PixelShaderRenderState, -1));
+            //allVcsFiles.Sort();
 
 
 

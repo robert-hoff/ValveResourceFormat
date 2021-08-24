@@ -41,6 +41,21 @@ namespace MyShaderAnalysis.utilhelpers
         }
 
 
+        static void TestFileAndPathNamesNewArchive()
+        {
+            // string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/generic_light_pcgl_30_features.vcs";
+            string filenamepath = $"{DOTA_GAME_PC_SOURCE}/hero_pc_30_vs.vcs";
+            FileTokens fileTokens = new FileTokens(filenamepath);
+
+            Debug.WriteLine($"{fileTokens.GetBestPath().Length == 0}"); // empty string if no path found
+            Debug.WriteLine($"{fileTokens.GetServerFilePath()}"); // /dota-game/pc/hero_pc_30
+            Debug.WriteLine($"{fileTokens.GetServerFileDir()}"); // Z:/dev/www/vcs.codecreation.dev/dota-game/pc/hero_pc_30
+            Debug.WriteLine($"{fileTokens.GetBestZframesLink(0)}"); //   Z[00000000] (plaintext if no zframe found)
+
+        }
+
+
+
         static void TestFileSystem()
         {
             FileTokens spritecard = new(ARCHIVE.dotacore_pcgl, "spritecard_pcgl_30_ps.vcs");

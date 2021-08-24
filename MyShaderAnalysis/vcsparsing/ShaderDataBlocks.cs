@@ -71,19 +71,21 @@ namespace MyShaderAnalysis.vcsparsing
             }
 
             editorIDs.Add(($"{datareader.ReadBytesAsString(16)}", "// Editor ref. ID0 (produces this file)"));
-            editorIDs.Add(($"{datareader.ReadBytesAsString(16)}", "// Editor ref. ID1 - usually a ref to the vs file"));
-            editorIDs.Add(($"{datareader.ReadBytesAsString(16)}", "// Editor ref. ID2 - usually a ref to the ps file"));
+            editorIDs.Add(($"{datareader.ReadBytesAsString(16)}", "// Editor ref. ID1 - usually a ref to the vs file (VertexShader)"));
+            editorIDs.Add(($"{datareader.ReadBytesAsString(16)}", "// Editor ref. ID2 - usually a ref to the ps file (PixelShader)"));
             editorIDs.Add(($"{datareader.ReadBytesAsString(16)}", "// Editor ref. ID3"));
             editorIDs.Add(($"{datareader.ReadBytesAsString(16)}", "// Editor ref. ID4"));
             editorIDs.Add(($"{datareader.ReadBytesAsString(16)}", "// Editor ref. ID5"));
             editorIDs.Add(($"{datareader.ReadBytesAsString(16)}", "// Editor ref. ID6"));
             if (has_psrs_file)
             {
-                editorIDs.Add(($"{datareader.ReadBytesAsString(16)}", "// Editor ref. ID7 - ref to psrs file"));
-                editorIDs.Add(($"{datareader.ReadBytesAsString(16)}", $"// Editor ref. ID8 - this ID is common to all vcs files from up-to-date archives"));
+                editorIDs.Add(($"{datareader.ReadBytesAsString(16)}", "// Editor ref. ID7 - ref to psrs file (PixelShaderRenderState)"));
+                editorIDs.Add(($"{datareader.ReadBytesAsString(16)}",
+                    $"// Editor ref. ID8 - this ID is shared across archives for vcs files with the same minor-version"));
             } else
             {
-                editorIDs.Add(($"{datareader.ReadBytesAsString(16)}", "// Editor ref. ID7 - this ID is common to all vcs files from up-to-date archives"));
+                editorIDs.Add(($"{datareader.ReadBytesAsString(16)}",
+                    "// Editor ref. ID7 - this ID is shared across archives for vcs files with the same minor-version"));
             }
         }
 
@@ -152,23 +154,23 @@ namespace MyShaderAnalysis.vcsparsing
             datareader.ShowByteCount("Editor/Shader stack for generating the file");
             datareader.ShowBytes(16, "Editor ref. ID0 (produces this file)");
             datareader.ShowBytes(16, breakLine: false);
-            datareader.TabComment("Editor ref. ID1 - usually a ref to the vs file");
+            datareader.TabComment("Editor ref. ID1 - usually a ref to the vs file (VertexShader)");
             datareader.ShowBytes(16, breakLine: false);
-            datareader.TabComment("Editor ref. ID2 - usually a ref to the ps file");
+            datareader.TabComment("Editor ref. ID2 - usually a ref to the ps file (PixelShader)");
             datareader.ShowBytes(16, "Editor ref. ID3");
             datareader.ShowBytes(16, "Editor ref. ID4");
             datareader.ShowBytes(16, "Editor ref. ID5");
             datareader.ShowBytes(16, "Editor ref. ID6");
             if (has_psrs_file == 0)
             {
-                datareader.ShowBytes(16, "Editor ref. ID7 - this ID is shared widely");
-                datareader.TabComment("all vcs files from up-to date archives seem to have the same value here", tabLen: 51);
+                datareader.ShowBytes(16,
+                    "Editor ref. ID7 - this ID is shared across archives for vcs files with the same minor-version");
             }
             if (has_psrs_file == 1)
             {
-                datareader.ShowBytes(16, "Editor ref. ID7 - reference to psrs file");
-                datareader.ShowBytes(16, "Editor ref. ID8 - this ID is shared widely");
-                datareader.TabComment("all vcs files from up-to date archives seem to have the same value here", tabLen: 51);
+                datareader.ShowBytes(16, "Editor ref. ID7 - reference to psrs file (PixelShaderRenderState)");
+                datareader.ShowBytes(16,
+                    "Editor ref. ID7 - this ID is shared across archives for vcs files with the same minor-version");
             }
         }
     }
@@ -184,12 +186,12 @@ namespace MyShaderAnalysis.vcsparsing
             int magic = datareader.ReadInt();
             if (magic != CompiledShader.MAGIC)
             {
-                throw new ShaderParserException($"wrong file id {magic:x}");
+                throw new ShaderParserException($"Wrong file id {magic:x} (not a vcs2 file)");
             }
             vcsFileVersion = datareader.ReadInt();
             if (vcsFileVersion != 64)
             {
-                throw new ShaderParserException($"Wrong version {vcsFileVersion}, only version 64 supported");
+                throw new ShaderParserException($"Unsupported version {vcsFileVersion}, only version 64 is supported");
             }
             int psrs_arg = datareader.ReadInt();
             if (psrs_arg != 0 && psrs_arg != 1)
@@ -213,8 +215,8 @@ namespace MyShaderAnalysis.vcsparsing
             datareader.BreakLine();
             datareader.ShowByteCount("Editor/Shader stack for generating the file");
             datareader.ShowBytes(16, "Editor ref. ID0 (produces this file)");
-            datareader.ShowBytes(16, "Editor ref. ID1 - this ID is shared widely");
-            datareader.TabComment("all vcs files from up-to date archives seem to have the same value here", tabLen: 51);
+            datareader.ShowBytes(16,
+                    "Editor ref. ID1 - this ID is shared across archives for vcs files with the same minor-version");
         }
     }
 

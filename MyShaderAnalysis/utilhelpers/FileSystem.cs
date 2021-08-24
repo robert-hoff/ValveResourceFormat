@@ -71,7 +71,7 @@ namespace MyShaderAnalysis.utilhelpers
         public const string ARTIFACT_CLASSIC_DCG_PC_SOURCE = "X:/artifact-classic-exports/artifact-shaders-pc-dcg";
 
 
-        public enum ARCHIVE { dotacore_pcgl, dotagame_pcgl, artifact_classiccore_pc, artifact_classicdcg_pc };
+        public enum ARCHIVE { dotacore_pcgl, dotagame_pcgl, dotacore_pc, dotagame_pc, artifact_classiccore_pc, artifact_classicdcg_pc };
 
 
 
@@ -90,6 +90,8 @@ namespace MyShaderAnalysis.utilhelpers
         {
             if (archive == ARCHIVE.dotacore_pcgl) return DOTA_CORE_PCGL_SOURCE;
             if (archive == ARCHIVE.dotagame_pcgl) return DOTA_GAME_PCGL_SOURCE;
+            if (archive == ARCHIVE.dotacore_pc) return DOTA_CORE_PC_SOURCE;
+            if (archive == ARCHIVE.dotagame_pc) return DOTA_GAME_PC_SOURCE;
             if (archive == ARCHIVE.artifact_classiccore_pc) return ARTIFACT_CLASSIC_CORE_PC_SOURCE;
             if (archive == ARCHIVE.artifact_classicdcg_pc) return ARTIFACT_CLASSIC_DCG_PC_SOURCE;
             throw new ShaderParserException("unknown archive");
@@ -99,6 +101,8 @@ namespace MyShaderAnalysis.utilhelpers
         {
             if (archive == ARCHIVE.dotacore_pcgl) return "dota-core";
             if (archive == ARCHIVE.dotagame_pcgl) return "dota-game";
+            if (archive == ARCHIVE.dotacore_pc) return "dota-core"; // fine to use the same name here, but need to use platform type in path names
+            if (archive == ARCHIVE.dotagame_pc) return "dota-game";
             if (archive == ARCHIVE.artifact_classiccore_pc) return "aclassic-core";
             if (archive == ARCHIVE.artifact_classicdcg_pc) return "aclassic-dcg";
             throw new ShaderParserException("unknown archive");
@@ -108,24 +112,34 @@ namespace MyShaderAnalysis.utilhelpers
         {
             if (archive == ARCHIVE.dotacore_pcgl) return "core";
             if (archive == ARCHIVE.dotagame_pcgl) return "dota";
+            // todo - fix this, don't use archive-label as part of pathname
+            if (archive == ARCHIVE.dotacore_pc) return "core-pc"; // the archive-labels need to be distinct because I'm using them as part
+                                                                  // of the byte-dump paths
+            if (archive == ARCHIVE.dotagame_pc) return "dota-pc";
             if (archive == ARCHIVE.artifact_classiccore_pc) return "artifact-core";
             if (archive == ARCHIVE.artifact_classicdcg_pc) return "artifact-dcg";
             throw new ShaderParserException("unknown archive");
         }
 
+        // todo - may want to change this to 'platform'
         public static string GetGpuType(ARCHIVE archive)
         {
             if (archive == ARCHIVE.dotacore_pcgl) return "pcgl";
             if (archive == ARCHIVE.dotagame_pcgl) return "pcgl";
+            if (archive == ARCHIVE.dotacore_pc) return "pc";
+            if (archive == ARCHIVE.dotagame_pc) return "pc";
             if (archive == ARCHIVE.artifact_classiccore_pc) return "pc";
             if (archive == ARCHIVE.artifact_classicdcg_pc) return "pc";
             throw new ShaderParserException("unknown archive");
         }
 
+        // todo - start using defined enums
         public static string GetSourceType(ARCHIVE archive)
         {
             if (archive == ARCHIVE.dotacore_pcgl) return "glsl";
             if (archive == ARCHIVE.dotagame_pcgl) return "glsl";
+            if (archive == ARCHIVE.dotacore_pc) return "pc";
+            if (archive == ARCHIVE.dotagame_pc) return "pc";
             if (archive == ARCHIVE.artifact_classiccore_pc) return "pc";
             if (archive == ARCHIVE.artifact_classicdcg_pc) return "pc";
             throw new ShaderParserException("unknown archive");
@@ -133,26 +147,37 @@ namespace MyShaderAnalysis.utilhelpers
 
         public static string GetVcsToken(VcsFileType vcsFiletype)
         {
-            if (vcsFiletype == VcsFileType.Features)
-            {
-                return "ft";
-            } else
-            {
-                return vcsFiletype.ToString()[0..^5];
-            }
+            if (vcsFiletype == VcsFileType.Features) return "ft"; ;
+            if (vcsFiletype == VcsFileType.VertexShader) return "vs"; ;
+            if (vcsFiletype == VcsFileType.PixelShader) return "ps"; ;
+            if (vcsFiletype == VcsFileType.PixelShaderRenderState) return "psrs"; ;
+            if (vcsFiletype == VcsFileType.ComputeShader) return "cs"; ;
+            if (vcsFiletype == VcsFileType.HullShader) return "hs"; ;
+            if (vcsFiletype == VcsFileType.DomainShader) return "ds"; ;
+            if (vcsFiletype == VcsFileType.GeometryShader) return "gs"; ;
+            if (vcsFiletype == VcsFileType.RaytracingShader) return "rtx"; ;
+            throw new ShaderParserException($"Unknown vcsFileType {vcsFiletype}");
         }
 
 
 
         public static ARCHIVE DetermineArchiveType(string vcsFileName)
         {
-            if (Path.GetDirectoryName(vcsFileName).EndsWith("shaders\\vfx"))
+            if (Path.GetDirectoryName(vcsFileName).EndsWith("shaders\\vfx") && vcsFileName.Contains("_pcgl_"))
             {
                 return ARCHIVE.dotagame_pcgl;
             }
-            if (Path.GetDirectoryName(vcsFileName).EndsWith("shaders-core\\vfx"))
+            if (Path.GetDirectoryName(vcsFileName).EndsWith("shaders-core\\vfx") && vcsFileName.Contains("_pcgl_"))
             {
                 return ARCHIVE.dotacore_pcgl;
+            }
+            if (Path.GetDirectoryName(vcsFileName).EndsWith("shaders\\vfx") && vcsFileName.Contains("_pc_"))
+            {
+                return ARCHIVE.dotagame_pc;
+            }
+            if (Path.GetDirectoryName(vcsFileName).EndsWith("shaders-core\\vfx") && vcsFileName.Contains("_pc_"))
+            {
+                return ARCHIVE.dotacore_pc;
             }
             if (Path.GetDirectoryName(vcsFileName).EndsWith("artifact-shaders-pc-core"))
             {
