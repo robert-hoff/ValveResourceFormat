@@ -62,15 +62,14 @@ namespace MyShaderAnalysis
             // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
 
             // -- writes a useful summary for every file (pretty long process)
-            // Don't overwrite multiblend! (the zframes are stored in a different directory)
-            // FileSummaryAllFiles();
+            FileSummaryAllFiles();
 
             // - prints a single page summary and links to all the files produced with FileSummaryAllFiles()
             // BlockCountSurvery($@"{SERVER_OUTPUT_DIR}\file-overview.html", writeFile: true);
 
 
             // NOTE - currently points to Artifact classic
-            BlockCountSurvery($@"{SERVER_OUTPUT_DIR}\testfile.html", writeFile: true);
+            // BlockCountSurvery($@"{SERVER_OUTPUT_DIR}\testfile.html", writeFile: true);
             // FileBlockCount(filenamepath);
             // WriteSfArgumentsAllFiles($"{SERVER_OUTPUT_DIR}/testrun.html", writeFile: true);
 
@@ -340,12 +339,12 @@ namespace MyShaderAnalysis
             // FileTriple triple = new(ARCHIVE.dotacore_pcgl, "apply_fog_pcgl_40_features.vcs");
             // FileTriple triple = new(ARCHIVE.dotacore_pcgl, "blur_pcgl_30_features.vcs");
             // FileTriple triple = new(ARCHIVE.dotagame_pcgl, "water_dota_pcgl_30_features.vcs");
-            // FileTriple triple = new(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_features.vcs");
+            FileTriple triple = new(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_features.vcs");
             // FileTriple triple = new(ARCHIVE.dotacore_pcgl, "spritecard_pcgl_30_features.vcs");
             // FileTriple triple = new(ARCHIVE.dotagame_pcgl, "spritecard_pcgl_30_features.vcs");
 
 
-            FileTriple triple = new(ARCHIVE.artifact_classiccore_pc, "aerial_perspective_pc_30_features.vcs");
+            // FileTriple triple = new(ARCHIVE.artifact_classiccore_pc, "aerial_perspective_pc_30_features.vcs");
 
             WriteVsPsFileSummary(triple, VcsFileType.PixelShader);
         }
@@ -357,14 +356,10 @@ namespace MyShaderAnalysis
          */
         static void FileSummaryAllFiles()
         {
-            // List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, -1);
-            List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, -1);
+            List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, -1);
+            // List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, -1);
             foreach (var triple in triples)
             {
-                if (triple.psFile.filename.Equals("multiblend_pcgl_30_ps.vcs"))
-                {
-                    continue;
-                }
                 WriteVsPsFileSummary(triple, VcsFileType.VertexShader, disableOutput: true);
                 CloseStreamWriter();
                 WriteVsPsFileSummary(triple, VcsFileType.PixelShader, disableOutput: true);
@@ -981,7 +976,7 @@ namespace MyShaderAnalysis
 
                 if (File.Exists(triple.psFile.GetZFrameHtmlFilenamepath(item.Key, "summary")))
                 {
-                    zframeLink = $"* <a href='{triple.psFile.GetZFrameLink(item.Key)}'>Z[0x{item.Key:x08}]</a>";
+                    zframeLink = $"* <a href='{triple.psFile.GetZFrameLink(item.Key,"")}'>Z[0x{item.Key:x08}]</a>";
                 }
 
                 OutputWriteLine($"{zframeLink} {CombineIntsSpaceSep(configState, 6)}");

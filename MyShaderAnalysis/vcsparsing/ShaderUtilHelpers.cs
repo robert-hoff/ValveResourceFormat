@@ -265,7 +265,7 @@ namespace MyShaderAnalysis.vcsparsing
             }
             // return $"<a href='/vcs-all/{GetCoreOrDotaString(vcsFileName)}/{Path.GetFileName(vcsFileName)[0..^4]}-analysis.html'>{urlText}</a>";
             FileTokens filetokens = new FileTokens(vcsFileName);
-            return $"<a href='{filetokens.GetServerFileLink("")}'>{urlText}</a>";
+            return $"<a href='{filetokens.GetServerFileUrl("")}'>{urlText}</a>";
         }
 
         public static string GetCoreOrDotaString(string vcsFileName)

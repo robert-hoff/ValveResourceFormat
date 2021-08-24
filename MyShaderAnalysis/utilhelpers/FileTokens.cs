@@ -97,12 +97,10 @@ namespace MyShaderAnalysis.utilhelpers
         {
             return $"/{archivename}/{platformType}/{foldername}";
         }
-        public string GetServerFileLink(string label)
+        public string GetServerFileUrl(string label)
         {
             return $"/{archivename}/{platformType}/{foldername}/{name}-{label}.html";
         }
-
-
 
         public string GetGlslServerDir(bool createDirs = false)
         {
@@ -119,6 +117,10 @@ namespace MyShaderAnalysis.utilhelpers
             return $"glsl-{glslSource.GetEditorRefIdAsString()}.html";
         }
 
+        public string GetGlslHtmlUrl(GlslSource glslSource)
+        {
+            return $"{GetServerFilePath()}/glsl/{GetGlslHtmlFilename(glslSource)}";
+        }
 
 
 
@@ -146,7 +148,7 @@ namespace MyShaderAnalysis.utilhelpers
 
         public string GetZFrameHtmlFilenamepath(long zframeId, string label)
         {
-            return $"{GetZFramesServerDir()}/{name}-ZFRAME{zframeId:x08}={label}.html";
+            return $"{GetZFramesServerDir()}/{name}-ZFRAME{zframeId:x08}-{label}.html";
         }
 
         public string GetZFrameHtmlBytesFilenamepath(long zframeId)
@@ -162,12 +164,20 @@ namespace MyShaderAnalysis.utilhelpers
 
         public string GetZFrameHtmlFilename(long zframeId, string label)
         {
-            return $"{name}-ZFRAME{zframeId:x08}-{label}.html";
+            if (label.Length>0)
+            {
+                label = $"-{label}";
+            }
+            return $"{name}-ZFRAME{zframeId:x08}{label}.html";
         }
 
-        public string GetZFrameLink(long zframeId)
+        public string GetZFrameLink(long zframeId, string label)
         {
-            return $"{GetZFramesServerPath()}/{name}-ZFRAME{zframeId:x08}.html";
+            if (label.Length>0)
+            {
+                label = $"-{label}";
+            }
+            return $"{GetZFramesServerPath()}/{name}-ZFRAME{zframeId:x08}{label}.html";
         }
 
 
@@ -240,7 +250,7 @@ namespace MyShaderAnalysis.utilhelpers
         {
             if (File.Exists(GetZFrameHtmlFilenamepath(zframeId, "summary")))
             {
-                return $"* <a href='{GetZFrameLink(zframeId)}'>Z[{zframeId:x08}]</a>";
+                return $"* <a href='{GetZFrameLink(zframeId,"summary")}'>Z[{zframeId:x08}]</a>";
             }
             // NOTE - stop linking to the byte-printouts (they are useless)
             //if (File.Exists(GetZFrameHtmlBytesFilenamepath(zframeId)))

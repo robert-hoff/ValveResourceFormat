@@ -67,11 +67,13 @@ namespace MyShaderAnalysis
 
         static void WriteBunchOfZframes()
         {
-            int NUM_TO_PRINT = 1;
-            // List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, 40);
-            List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, -1);
+            int NUM_TO_PRINT = 5;
+            // List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, -1);
+            List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, 30);
+            // List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, -1);
 
 
+            int count = 0;
 
             foreach (var triple in triples)
             {
@@ -99,6 +101,11 @@ namespace MyShaderAnalysis
                         break;
                     }
                 }
+                //count++;
+                //if (count == 2)
+                //{
+                //    break;
+                //}
             }
             swWriterAlreadyClosed = true;
 
@@ -131,8 +138,10 @@ namespace MyShaderAnalysis
 
 
             // print referring files
-            OutputWriteLine($"<a href='{vcsFile.GetBestPath()}'>{vcsFile.RemoveBaseDir()}</a>");
-            PrintZframeByteCodeLink(shaderFile.filenamepath, zframeId);
+            // OutputWriteLine($"<a href='{vcsFile.GetBestPath()}'>{vcsFile.RemoveBaseDir()}</a>");
+            OutputWriteLine($"<a href='{vcsFile.GetServerFileUrl("summary2")}'>{vcsFile.RemoveBaseDir()}</a>");
+            // PrintZframeByteCodeLink(shaderFile.filenamepath, zframeId);
+            OutputWriteLine($"<a href='{vcsFile.GetZFrameLink(zframeId, "bytes")}'>{vcsFile.GetZFrameHtmlFilename(zframeId, "")[0..^5]}-databytes</a>");
             OutputWriteLine("");
 
 
@@ -240,6 +249,8 @@ namespace MyShaderAnalysis
 
         static void PrintDataBlocks3(ShaderFile shaderFile, ZFrameFile zframeFile, SortedDictionary<int, int> writeSequences)
         {
+            FileTokens fileTokens = new FileTokens(shaderFile.filenamepath);
+
             Dictionary<int, GpuSource> blockIdToSource = GetBlockIdToSource(zframeFile);
             string configHeader = $"D-Param configurations ({blockIdToSource.Count})";
             OutputWriteLine(configHeader);
@@ -280,10 +291,12 @@ namespace MyShaderAnalysis
 
                 if (blockSource is GlslSource source)
                 {
-                    OutputWriteLine($"    {GetSourceLink(shaderFile.filenamepath, source)} {blockSource.sourcebytes.Length,12}  (bytes)");
+                    string urlText = $"source[{blockSource.GetEditorRefIdAsString()}]";
+                    string sourceLink = $"<a href='{fileTokens.GetGlslHtmlUrl((GlslSource) blockSource)}'>{urlText}</a>";
+                    OutputWriteLine($"    {sourceLink} {blockSource.sourcebytes.Length,12}  (bytes)");
                 } else
                 {
-                    OutputWriteLine($"  {blockSource.GetBlockName().PadRight(20)} {blockSource.sourcebytes.Length,12} (byte)");
+                    OutputWriteLine($"  {blockSource.GetBlockName().PadRight(20)} {blockSource.sourcebytes.Length,12} (bytes)");
                 }
 
             }
@@ -727,7 +740,7 @@ namespace MyShaderAnalysis
                 foreach (long zframeId in zframeIds)
                 {
                     string zframeName = $" [{zframeId:x}]";
-                    string zframeLink = zframeName.Replace("[", $"<a href='{vcsFile.GetZFrameLink(zframeId)}'>");
+                    string zframeLink = zframeName.Replace("[", $"<a href='{vcsFile.GetZFrameLink(zframeId, "summary")}'>");
                     zframeLink = zframeLink.Replace("]", "</a>");
 
                     // OutputWrite(vcsFile.GetZFrameLink(zframeId));

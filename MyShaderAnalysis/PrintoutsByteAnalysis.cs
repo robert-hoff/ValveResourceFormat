@@ -29,7 +29,7 @@ namespace MyShaderAnalysis
 
             // PrintZFramesAllFiles();
             // PrintZFramesSingleFile();
-            // PrintGlslAllFiles();
+            PrintGlslAllFiles();
             // PrintGlslSingleFiles();
             output.CloseStreamWriter();
         }
@@ -131,7 +131,7 @@ namespace MyShaderAnalysis
 
 
 
-        const int LIMIT_ZFRAME_PRINTOUT = 10;
+        const int LIMIT_ZFRAME_PRINTOUT = 50;
 
 
         static void PrintZFramesAllFiles()
@@ -202,7 +202,9 @@ namespace MyShaderAnalysis
 
         static void PrintGlslAllFiles()
         {
-            List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PCGL_SOURCE, DOTA_GAME_PCGL_SOURCE, VcsFileType.Any, -1);
+            // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PCGL_SOURCE, DOTA_GAME_PCGL_SOURCE, VcsFileType.Any, -1);
+            List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PCGL_SOURCE, DOTA_GAME_PCGL_SOURCE, VcsFileType.Any, 30);
+
             foreach (var filenamepath in vcsFiles)
             {
                 FileTokens fileTokens = new FileTokens(filenamepath);

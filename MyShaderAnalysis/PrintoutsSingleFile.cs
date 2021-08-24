@@ -22,8 +22,8 @@ namespace MyShaderAnalysis
         public static void RunTrials()
         {
 
-            // TestBatchPrinting();
             PrintAllFiles();
+            // TestBatchPrinting();
             // Trial1();
             // Trial2();
             // Trial3();
@@ -108,7 +108,7 @@ namespace MyShaderAnalysis
             // List<string> vcsFiles = GetVcsFiles(DOTA_GAME_PCGL_SOURCE, null, VcsFileType.Any, -1);
             // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PCGL_SOURCE, null, VcsFileType.Any, -1);
 
-            FileTokens fileTokens = new FileTokens(vcsFiles[0]);
+            FileTokens fileTokens = new FileTokens(vcsFiles[1]);
             string outputFilenamepath = $"{fileTokens.GetServerFileDir("summary2", createDirs: true)}";
             PrintSingleFileFullSummary(fileTokens.filenamepath, outputFilenamepath, writeFile: true, disableOutput: true);
         }
@@ -164,7 +164,7 @@ namespace MyShaderAnalysis
                 foreach (var f in relatedFiles)
                 {
                     FileTokens fT = new FileTokens(f);
-                    output.Write($" <a href='{fT.GetServerFileLink("summary2")}'>{fT.filename}</a>");
+                    output.Write($" <a href='{fT.GetServerFileUrl("summary2")}'>{fT.filename}</a>");
                 }
                 output.BreakLine();
             }
@@ -225,7 +225,7 @@ namespace MyShaderAnalysis
                 foreach (var f in relatedFiles)
                 {
                     FileTokens fT = new FileTokens(f);
-                    output.Write($" <a href='{fT.GetServerFileLink("summary2")}'>{fT.filename}</a>");
+                    output.Write($" <a href='{fT.GetServerFileUrl("summary2")}'>{fT.filename}</a>");
                 }
                 output.BreakLine();
             }

@@ -15,15 +15,16 @@ namespace MyShaderAnalysis
         static void Main()
         {
 
-            // StaticAnalysisZframes2.RunTrials();
+            // PrintoutsZframes1.RunTrials();
             // StaticAnalysisZframes.RunTrials();
 
             // PrintoutsSingleFile.RunTrials();
             // StaticAnalysis2.RunTrials();
-            // StaticAnalysis.RunTrials();
+            StaticAnalysis.RunTrials();
 
 
-            PrintoutsByteAnalysis.RunTrials();
+
+            // PrintoutsByteAnalysis.RunTrials();
             // ShaderAnalysis.RunTrials();
 
             // Snippetcode.RunTrials();
