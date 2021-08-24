@@ -1,3 +1,4 @@
+using ShaderAnalysis.utilhelpers;
 using System;
 using System.Diagnostics;
 
@@ -10,7 +11,8 @@ namespace ShaderAnalysis {
 
         static void Main() {
 
-            TestCompiledShader.RunTrials();
+            TestVfxEvalShaderExpressions.RunTrials();
+            // TestCompiledShader.RunTrials();
 
 
         }

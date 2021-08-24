@@ -113,7 +113,7 @@ namespace MyShaderAnalysis.vcsparsing
             }
             if (!datareader.CheckPositionIsAtEOF())
             {
-                throw new ShaderParserException("End of file not reached!");
+                throw new ShaderParserException("End of file expected");
             }
         }
 

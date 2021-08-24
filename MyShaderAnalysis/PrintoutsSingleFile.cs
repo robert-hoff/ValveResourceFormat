@@ -22,8 +22,8 @@ namespace MyShaderAnalysis
         public static void RunTrials()
         {
 
-            PrintAllFiles();
-            // TestBatchPrinting();
+            // PrintAllFiles();
+            TestBatchPrinting();
             // Trial1();
             // Trial2();
             // Trial3();
@@ -104,11 +104,15 @@ namespace MyShaderAnalysis
         {
 
             // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PC_SOURCE, DOTA_GAME_PC_SOURCE, VcsFileType.Any, -1);
-            List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PCGL_SOURCE, DOTA_GAME_PCGL_SOURCE, VcsFileType.Any, -1);
+            // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PCGL_SOURCE, DOTA_GAME_PCGL_SOURCE, VcsFileType.Any, -1);
             // List<string> vcsFiles = GetVcsFiles(DOTA_GAME_PCGL_SOURCE, null, VcsFileType.Any, -1);
             // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PCGL_SOURCE, null, VcsFileType.Any, -1);
 
-            FileTokens fileTokens = new FileTokens(vcsFiles[1]);
+            List<string> vcsFiles = new();
+            vcsFiles.Add($"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_ps.vcs");
+
+
+            FileTokens fileTokens = new FileTokens(vcsFiles[0]);
             string outputFilenamepath = $"{fileTokens.GetServerFileDir("summary2", createDirs: true)}";
             PrintSingleFileFullSummary(fileTokens.filenamepath, outputFilenamepath, writeFile: true, disableOutput: true);
         }
@@ -156,7 +160,7 @@ namespace MyShaderAnalysis
             output.BreakLine();
             output.Write($"Features Detail ({Path.GetFileName(shaderFile.filenamepath)})");
 
-            output.WriteLine($" (byte version <a href='{fileTokens.GetBytePath()}'>{fileTokens.filename}</a>)");
+            output.WriteLine($" (byte version <a href='{fileTokens.GetServerFileUrl("bytes")}'>{fileTokens.filename}</a>)");
             string[] relatedFiles = GetRelatedFiles(fileTokens.filenamepath);
             if (relatedFiles.Length > 0)
             {
@@ -217,7 +221,7 @@ namespace MyShaderAnalysis
             output.WriteLine($"Valve Compiled Shader 2 (vcs2), version {shaderFile.vspsHeader.vcsFileVersion}");
             output.BreakLine();
             output.Write($"{shaderFile.vcsFileType} ({Path.GetFileName(shaderFile.filenamepath)})");
-            output.WriteLine($" (byte version <a href='{fileTokens.GetBytePath()}'>{fileTokens.filename}</a>)");
+            output.WriteLine($" (byte version <a href='{fileTokens.GetServerFileUrl("bytes")}'>{fileTokens.filename}</a>)");
             string[] relatedFiles = GetRelatedFiles(fileTokens.filenamepath);
             if (relatedFiles.Length > 0)
             {
