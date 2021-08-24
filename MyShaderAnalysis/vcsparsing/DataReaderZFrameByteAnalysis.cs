@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using ValveResourceFormat.ThirdParty;
 using MyShaderAnalysis.utilhelpers;
 using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
 
@@ -448,7 +449,7 @@ namespace MyShaderAnalysis.vcsparsing
         {
             string nulltermstr = ReadNullTermStringAtPosition();
             uint murmur32 = ReadUIntAtPosition(nulltermstr.Length + 1);
-            uint murmurCheck = MurmurHashPiSeed(nulltermstr.ToLower());
+            uint murmurCheck = MurmurHash2.Hash(nulltermstr.ToLower(), CompiledShader.PI_MURMURSEED);
             if (murmur32 != murmurCheck)
             {
                 throw new ShaderParserException("not a murmur string!");

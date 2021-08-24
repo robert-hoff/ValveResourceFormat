@@ -14,7 +14,7 @@ namespace MyShaderAnalysis.vcsparsing
 
     public class ShaderFile
     {
-        private ShaderDataReader datareader { get; }
+        public ShaderDataReader datareader { get; }
         public string filenamepath { get; }
         public VcsFileType vcsFileType { get; }
         public VcsSourceType vcsSourceType { get; }

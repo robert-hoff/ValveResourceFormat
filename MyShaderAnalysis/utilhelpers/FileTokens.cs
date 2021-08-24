@@ -33,7 +33,7 @@ namespace MyShaderAnalysis.utilhelpers
         // todo - fix the archivelabel bug for generating byte-dymp paths (need to update all the files)
         public string archivelabel { get; }  // dota or core (possibly s&box later). Used for generating names AND
                                              // used for generting paths to the byte-dumps. *WHICH IS A BUG* but I can't fix that yet
-        public string gputype { get; }       // pcgl, pc, vulkan
+        public string platformType { get; }       // pcgl, pc, vulkan
         public string sourcetype { get; }    // glsl, dx11, etc.
         public string sourceVersion { get; }    // 30,40,50,etc
         public string serverdir { get; }     // full directory path of the server files
@@ -60,7 +60,7 @@ namespace MyShaderAnalysis.utilhelpers
             this.sourcedir = GetSourceDir(archive);
             this.archivename = GetArchiveName(archive);
             this.archivelabel = GetArchiveLabel(archive);
-            this.gputype = GetGpuType(archive);
+            this.platformType = GetGpuType(archive);
             this.sourcetype = GetSourceType(archive);
             this.sourceVersion = filename.Split('_')[^2];
             this.serverdir = GetServerBaseDir();
@@ -78,10 +78,10 @@ namespace MyShaderAnalysis.utilhelpers
          * e.g. Z:/dev/www/vcs.codecreation.dev/dota-game/pcgl/spritecard_pcgl_30_ps
          *
          */
-        public string GetServerFileDir(bool createDir = false)
+        public string GetServerFileDir(bool createDirs = false)
         {
-            string serverFileDir = $"{serverdir}/{archivename}/{gputype}/{foldername}";
-            if (createDir)
+            string serverFileDir = $"{serverdir}/{archivename}/{platformType}/{foldername}";
+            if (createDirs)
             {
                 Directory.CreateDirectory(serverFileDir);
             }
@@ -95,17 +95,39 @@ namespace MyShaderAnalysis.utilhelpers
 
         public string GetServerFilePath()
         {
-            return $"/{archivename}/{gputype}/{foldername}";
+            return $"/{archivename}/{platformType}/{foldername}";
         }
         public string GetServerFileLink(string label)
         {
-            return $"/{archivename}/{gputype}/{foldername}/{name}-{label}.html";
+            return $"/{archivename}/{platformType}/{foldername}/{name}-{label}.html";
         }
 
-        public string GetZFramesServerDir(bool createDir = false)
+
+
+        public string GetGlslServerDir(bool createDirs = false)
+        {
+            string serverGlslDir = $"{GetServerFileDir()}/{sourcetype}";
+            if (createDirs)
+            {
+                Directory.CreateDirectory(serverGlslDir);
+            }
+            return serverGlslDir;
+        }
+
+        public string GetGlslHtmlFilename(GlslSource glslSource)
+        {
+            return $"glsl-{glslSource.GetEditorRefIdAsString()}.html";
+        }
+
+
+
+
+
+
+        public string GetZFramesServerDir(bool createDirs = false)
         {
             string serverZframesDir = $"{GetServerFileDir()}/zframes";
-            if (createDir)
+            if (createDirs)
             {
                 Directory.CreateDirectory(serverZframesDir);
             }
@@ -114,7 +136,7 @@ namespace MyShaderAnalysis.utilhelpers
 
         public void CreateZFramesDirectory()
         {
-            GetZFramesServerDir(createDir: true);
+            GetZFramesServerDir(createDirs: true);
         }
 
         public string GetZFramesServerPath()
@@ -122,9 +144,9 @@ namespace MyShaderAnalysis.utilhelpers
             return $"{GetServerFilePath()}/zframes";
         }
 
-        public string GetZFrameHtmlFilenamepath(long zframeId)
+        public string GetZFrameHtmlFilenamepath(long zframeId, string label)
         {
-            return $"{GetZFramesServerDir()}/{name}-ZFRAME{zframeId:x08}.html";
+            return $"{GetZFramesServerDir()}/{name}-ZFRAME{zframeId:x08}={label}.html";
         }
 
         public string GetZFrameHtmlBytesFilenamepath(long zframeId)
@@ -138,9 +160,9 @@ namespace MyShaderAnalysis.utilhelpers
         }
 
 
-        public string GetZFrameHtmlFilename(long zframeId)
+        public string GetZFrameHtmlFilename(long zframeId, string label)
         {
-            return $"{name}-ZFRAME{zframeId:x08}.html";
+            return $"{name}-ZFRAME{zframeId:x08}-{label}.html";
         }
 
         public string GetZFrameLink(long zframeId)
@@ -178,8 +200,8 @@ namespace MyShaderAnalysis.utilhelpers
         // hero(pcgl-ps)
         public string GetAbbreviatedName()
         {
-            string source_type = gputype;
-            if (gputype.Equals("pc"))
+            string source_type = platformType;
+            if (platformType.Equals("pc"))
             {
                 source_type = sourceVersion.Equals("30") ? "dxil" : "dxbc";
             }
@@ -216,14 +238,15 @@ namespace MyShaderAnalysis.utilhelpers
 
         public string GetBestZframesLink(long zframeId)
         {
-            if (File.Exists(GetZFrameHtmlFilenamepath(zframeId)))
+            if (File.Exists(GetZFrameHtmlFilenamepath(zframeId, "summary")))
             {
                 return $"* <a href='{GetZFrameLink(zframeId)}'>Z[{zframeId:x08}]</a>";
             }
-            if (File.Exists(GetZFrameHtmlBytesFilenamepath(zframeId)))
-            {
-                return $"  <a href='{GetZFrameHtmlBytesLink(zframeId)}'>Z[{zframeId:x08}]</a>";
-            }
+            // NOTE - stop linking to the byte-printouts (they are useless)
+            //if (File.Exists(GetZFrameHtmlBytesFilenamepath(zframeId)))
+            //{
+            //    return $"  <a href='{GetZFrameHtmlBytesLink(zframeId)}'>Z[{zframeId:x08}]</a>";
+            //}
             return $"  Z[{zframeId:x08}]";
         }
 
@@ -234,7 +257,7 @@ namespace MyShaderAnalysis.utilhelpers
             string fileDetails = "";
             fileDetails += $"{name} ({archivelabel})\n";
             fileDetails += $"{archivename}\n";
-            fileDetails += $"{gputype}\n";
+            fileDetails += $"{platformType}\n";
             fileDetails += $"{sourcetype}\n";
             return fileDetails;
         }

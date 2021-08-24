@@ -21,9 +21,9 @@ namespace MyShaderAnalysis.utilhelpers
         }
 
 
+        public StreamWriter sw;
         private bool WriteToConsole = false;
         private bool WriteToDebug = true;
-        private StreamWriter sw;
         private bool writeAsHtml = false;
         private bool swWriterAlreadyClosed = false;
 

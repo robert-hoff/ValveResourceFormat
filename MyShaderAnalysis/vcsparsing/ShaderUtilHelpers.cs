@@ -68,8 +68,10 @@ namespace MyShaderAnalysis.vcsparsing
                     return VcsSourceType.DXBC;
                 }
             }
+            if (nameTokens.Length >= 3 && nameTokens[^3].ToLower().EndsWith("vulkan")) {
+                return VcsSourceType.Vulkan;
+            }
 
-            // todo - needs implementation: Vulkan (+ any other known types?)
             throw new ShaderParserException($"Source type unknown or not supported {filenamepath}");
         }
 
@@ -340,28 +342,32 @@ namespace MyShaderAnalysis.vcsparsing
             return $"{Path.GetFileName(vcsFeaturesFilename)[0..^12]}ps-analysis.html";
         }
 
-        public static string GetZframeTxtFilename(uint zframeId, string vcsFilename)
+        public static string GetZframeTxtFilename(long zframeId, string vcsFilename)
         {
             return $"{Path.GetFileName(vcsFilename)[0..^4]}-ZFRAME{zframeId:x08}.txt";
         }
 
-        public static string GetZframeHtmlFilename(uint zframeId, string vcsFilename)
+        public static string GetZframeHtmlFilename(long zframeId, string label, string vcsFilename)
         {
-            return $"{Path.GetFileName(vcsFilename)[0..^4]}-ZFRAME{zframeId:x08}.html";
+            if (label.Length>0)
+            {
+                label = $"-{label}";
+            }
+            return $"{Path.GetFileName(vcsFilename)[0..^4]}-ZFRAME{zframeId:x08}{label}.html";
         }
 
-        public static string GetZframeHtmlLink(uint zframeId, string vcsFilenamepath, string basedir = "")
+        public static string GetZframeHtmlLink(long zframeId, string label, string vcsFilenamepath, string basepath = "")
         {
-            return $"<a href='{basedir}{GetZframeHtmlFilename(zframeId, Path.GetFileName(vcsFilenamepath))}'>zframe[0x{zframeId:x08}]</a>";
+            return $"<a href='{basepath}{GetZframeHtmlFilename(zframeId, label, Path.GetFileName(vcsFilenamepath))}'>zframe[0x{zframeId:x08}]</a>";
         }
 
-        public static string GetZframeHtmlLinkCheckExists(uint zframeId, string vcsFilenamepath, string serverdir, string basedir = "")
+        public static string GetZframeHtmlLinkCheckExists(long zframeId, string label, string vcsFilenamepath, string serverdir, string basedir = "")
         {
             string zframeName = $"Z[0x{zframeId:x08}]";
-            string zframeHtmlFilename = GetZframeHtmlFilename(zframeId, Path.GetFileName(vcsFilenamepath));
+            string zframeHtmlFilename = GetZframeHtmlFilename(zframeId, label, Path.GetFileName(vcsFilenamepath));
             if (File.Exists($"{serverdir}/{basedir}/{zframeHtmlFilename}"))
             {
-                return $"  <a href='{basedir}{GetZframeHtmlFilename(zframeId, Path.GetFileName(vcsFilenamepath))}'>{zframeName}</a>";
+                return $"  <a href='{basedir}{GetZframeHtmlFilename(zframeId, label, Path.GetFileName(vcsFilenamepath))}'>{zframeName}</a>";
             } else
             {
                 return $"  {zframeName}";
@@ -410,62 +416,6 @@ namespace MyShaderAnalysis.vcsparsing
             return relatedFiles.ToArray();
         }
 
-
-        public static uint MurmurHashPiSeed(byte[] data)
-        {
-            uint PI_SEED = 0x31415926;
-            return MurmurHash(data, PI_SEED);
-        }
-        public static uint MurmurHashPiSeed(string data)
-        {
-            uint PI_SEED = 0x31415926;
-            return MurmurHash(data, PI_SEED);
-        }
-        public static uint MurmurHash(string data, uint seed) => MurmurHash(Encoding.ASCII.GetBytes(data), seed);
-        public static uint MurmurHash(byte[] data, uint seed)
-        {
-            const uint M = 0x5bd1e995;
-            const int R = 24;
-            int length = data.Length;
-            if (length == 0)
-            {
-                return 0;
-            }
-            uint h = seed ^ (uint)length;
-            int ind = 0;
-            while (length >= 4)
-            {
-                uint k = (uint)(data[ind++] | data[ind++] << 8 | data[ind++] << 16 | data[ind++] << 24);
-                k *= M;
-                k ^= k >> R;
-                k *= M;
-                h *= M;
-                h ^= k;
-                length -= 4;
-            }
-            switch (length)
-            {
-                case 3:
-                    h ^= (ushort)(data[ind++] | data[ind++] << 8);
-                    h ^= (uint)(data[ind] << 16);
-                    h *= M;
-                    break;
-                case 2:
-                    h ^= (ushort)(data[ind++] | data[ind] << 8);
-                    h *= M;
-                    break;
-                case 1:
-                    h ^= data[ind];
-                    h *= M;
-                    break;
-                default:
-                    break;
-            }
-            h ^= h >> 13;
-            h *= M;
-            h ^= h >> 15;
-            return h;
-        }
 
 
 

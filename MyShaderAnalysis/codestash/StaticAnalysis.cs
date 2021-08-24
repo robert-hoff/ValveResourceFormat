@@ -979,7 +979,7 @@ namespace MyShaderAnalysis
                 int[] configState = configGen.GetConfigState(item.Key);
                 string zframeLink = $"{GetZframeHtmlLinkCheckExists((uint)item.Key, multiBlendPsFile, SERVER_BASEDIR, zFrameBaseDir)}";
 
-                if (File.Exists(triple.psFile.GetZFrameHtmlFilenamepath(item.Key)))
+                if (File.Exists(triple.psFile.GetZFrameHtmlFilenamepath(item.Key, "summary")))
                 {
                     zframeLink = $"* <a href='{triple.psFile.GetZFrameLink(item.Key)}'>Z[0x{item.Key:x08}]</a>";
                 }

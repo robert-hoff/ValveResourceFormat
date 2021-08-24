@@ -16,7 +16,7 @@ namespace MyShaderAnalysis
 {
 
 
-    public class StaticAnalysisZframes2
+    public class PrintoutsZframes1
     {
 
         const string PCGL_DIR_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders-core\vfx";
@@ -122,9 +122,10 @@ namespace MyShaderAnalysis
             if (writeFile)
             {
                 vcsFile.CreateZFramesDirectory();
-                string outputFilenamepath = vcsFile.GetZFrameHtmlFilenamepath(zframeId);
+                // todo - changes here, needs testing
+                string outputFilenamepath = vcsFile.GetZFrameHtmlFilenamepath(zframeId, "summary");
                 ConfigureOutputFile(outputFilenamepath, disableOutput);
-                WriteHtmlFile($"Z 0x{zframeId:x}", vcsFile.GetZFrameHtmlFilename(zframeId)[0..^5]);
+                WriteHtmlFile($"Z 0x{zframeId:x}", vcsFile.GetZFrameHtmlFilename(zframeId, "")[0..^5]);
             }
 
 
