@@ -81,6 +81,9 @@ dotnet_diagnostic.CA2211.severity = none
 dotnet_diagnostic.CA1051.severity = none
 
 
+# CA1014: Mark assemblies with CLSCompliant
+dotnet_diagnostic.CA1014.severity = none
+
 
 
 
@@ -275,6 +278,8 @@ csharp_preserve_single_line_statements = false:suggestion
 csharp_prefer_static_local_function = true:suggestion
 csharp_prefer_simple_using_statement = true:suggestion
 csharp_style_prefer_switch_expression = true:suggestion
+
+
 
 
 

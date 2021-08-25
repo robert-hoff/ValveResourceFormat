@@ -83,6 +83,7 @@ namespace MyShaderAnalysis.vcsparsing
             switch (vcsSourceType)
             {
                 case VcsSourceType.Glsl:
+                case VcsSourceType.MobileGles:
                     ReadGlslSources(gpuSourceCount);
                     break;
                 case VcsSourceType.DXIL:
@@ -459,7 +460,7 @@ namespace MyShaderAnalysis.vcsparsing
             datareader.ShowBytes(1, "unknown boolean, values seen 0,1", tabLen: 13);
             datareader.BreakLine();
 
-            if (vcsSourceType == VcsSourceType.Glsl)
+            if (vcsSourceType == VcsSourceType.Glsl || vcsSourceType == VcsSourceType.MobileGles)
             {
                 ShowGlslSources(gpuSourceCount);
             }

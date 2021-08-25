@@ -15,8 +15,8 @@ namespace MyShaderAnalysis.utilhelpers.snippetcode
         public static void RunTrials()
         {
 
-            Trial1();
-            // Trial2();
+            // Trial1();
+            Trial2();
             // Trial3();
             // Trial4();
         }
@@ -45,7 +45,8 @@ namespace MyShaderAnalysis.utilhelpers.snippetcode
         {
             uint MURMUR2SEED = 0x31415926; // It's pi!
             // uint murmur32 = MurmurHash2.Hash("r", MURMUR2SEED);
-            uint murmur32 = MurmurHash2.Hash("representativetexture", MURMUR2SEED);
+            // uint murmur32 = MurmurHash2.Hash("representativetexture", MURMUR2SEED);
+            uint murmur32 = MurmurHash2.Hash("g_flDetailBlendToFull".ToLower(), MURMUR2SEED);
             Debug.WriteLine($"{murmur32:X08}");
         }
 

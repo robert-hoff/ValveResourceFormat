@@ -74,7 +74,7 @@ namespace MyShaderAnalysis
                 {
                     continue;
                 }
-                string outputFilenamepath = $"{fileTokens.GetServerFileDir("bytes", createDirs: true)}";
+                string outputFilenamepath = $"{fileTokens.GetServerFilenamepath("bytes", createDirs: true)}";
                 PrintSingleFileByteAnalysis(filenamepath, outputFilenamepath, writeFile: true, disableOutput: true);
                 output.CloseStreamWriter();
             }
@@ -208,7 +208,7 @@ namespace MyShaderAnalysis
             foreach (var filenamepath in vcsFiles)
             {
                 FileTokens fileTokens = new FileTokens(filenamepath);
-                if (!fileTokens.sourcetype.Equals("glsl"))
+                if (!fileTokens.sourceType.Equals("glsl"))
                 {
                     throw new ShaderParserException("This only makes sense for glsl sources");
                 }
@@ -239,7 +239,7 @@ namespace MyShaderAnalysis
             string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/bilateral_blur_pcgl_30_ps.vcs";
             // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs";
             FileTokens fileTokens = new FileTokens(filenamepath);
-            if (!fileTokens.sourcetype.Equals("glsl"))
+            if (!fileTokens.sourceType.Equals("glsl"))
             {
                 throw new ShaderParserException("This only makes sense for glsl sources");
             }

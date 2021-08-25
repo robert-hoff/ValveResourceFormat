@@ -20,14 +20,14 @@ namespace TestMyVRF {
 
 
 
-        static string DOTA2_TEST_VPK = @"Z:\git\vcs-decompile\vrf-decompiler-bat\pak01.vpk";
-        static string HUSKAR_WEAPON = "models/items/huskar/armor_of_reckless_vigor_weapon/armor_of_reckless_vigor_weapon.vmdl_c";
+        public const string DOTA2_TEST_VPK = @"Z:\git\vcs-decompile\vrf-decompiler-bat\pak01.vpk";
+        public const string HUSKAR_WEAPON = "models/items/huskar/armor_of_reckless_vigor_weapon/armor_of_reckless_vigor_weapon.vmdl_c";
 
-        static string HLALYX_TEST_VPK = @"Z:\git\vcs-decompile\vrf-decompiler-bat\gen_vpk\hl_dir.vpk";
-        static string HLALYX_MAIN_VPK = @"X:\Steam\steamapps\common\Half-Life Alyx\game\hlvr\pak01_dir.vpk";
-        static string ZOMBIE_CLASSIC = "models/creatures/zombie_classic/zombie_classic.vmdl_c";
+        public const string HLALYX_TEST_VPK = @"Z:\git\vcs-decompile\vrf-decompiler-bat\gen_vpk\hl_dir.vpk";
+        public const string HLALYX_MAIN_VPK = @"X:\Steam\steamapps\common\Half-Life Alyx\game\hlvr\pak01_dir.vpk";
+        public const string ZOMBIE_CLASSIC = "models/creatures/zombie_classic/zombie_classic.vmdl_c";
 
-        static string EXPORT_DIR = @"C:\Users\R\Desktop\temttemp";
+        public const string EXPORT_DIR = @"C:\Users\R\Desktop\temttemp";
 
 
         public static void trial1() {

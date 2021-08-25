@@ -92,7 +92,7 @@ namespace MyShaderAnalysis
                 {
                     continue;
                 }
-                string outputFilenamepath = $"{fileTokens.GetServerFileDir("summary2", createDirs: true)}";
+                string outputFilenamepath = $"{fileTokens.GetServerFilenamepath("summary2", createDirs: true)}";
                 PrintSingleFileFullSummary(filenamepath, outputFilenamepath, writeFile: true, disableOutput: true);
                 output.CloseStreamWriter();
             }
@@ -116,7 +116,7 @@ namespace MyShaderAnalysis
 
 
             FileTokens fileTokens = new FileTokens(vcsFiles[0]);
-            string outputFilenamepath = $"{fileTokens.GetServerFileDir("summary2", createDirs: true)}";
+            string outputFilenamepath = $"{fileTokens.GetServerFilenamepath("summary2", createDirs: true)}";
             PrintSingleFileFullSummary(fileTokens.filenamepath, outputFilenamepath, writeFile: true, disableOutput: true);
         }
 

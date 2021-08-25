@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.IO;
 using System.Text;
@@ -8,7 +8,7 @@ namespace ValveTrials {
 
     public static class ConsoleTab {
 
-    public static System.Windows.Forms.ContextMenuStrip contextMenu;
+    // public static System.Windows.Forms.ContextMenuStrip contextMenu;
 
 
     private class MyLogger : TextWriter {

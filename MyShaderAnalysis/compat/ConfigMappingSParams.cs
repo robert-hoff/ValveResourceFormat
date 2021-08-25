@@ -9,7 +9,7 @@ namespace MyShaderAnalysis.compat
      * ----------------------------------------
      *
      * The basic idea for mapping zframe-indexes to static configurations is by
-     * enumerating all possible legal states and writing them (in that order) next to the zframes.
+     * enumerating all possible legal states and writing them (in order) next to the zframes.
      *
      * For example if there are 3 static-params (S1,S2,S2) that can each take two configurations (on or off)
      * they combine to give 8 possible configurations, the zframe mapping will be

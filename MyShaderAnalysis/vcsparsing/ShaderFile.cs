@@ -206,18 +206,14 @@ namespace MyShaderAnalysis.vcsparsing
 
         public void PrintByteAnalysis(bool shortenOutput = true)
         {
-            // todo - implement
-            if (vcsFileType == VcsFileType.ComputeShader)
-            {
-                return;
-            }
-
             datareader.SetOffset(0);
             if (vcsFileType == VcsFileType.Features)
             {
                 featuresHeader.PrintAnnotatedBytestream();
             } else if (vcsFileType == VcsFileType.VertexShader || vcsFileType == VcsFileType.PixelShader
-                  || vcsFileType == VcsFileType.GeometryShader || vcsFileType == VcsFileType.PixelShaderRenderState)
+                   || vcsFileType == VcsFileType.GeometryShader || vcsFileType == VcsFileType.PixelShaderRenderState
+                   || vcsFileType == VcsFileType.ComputeShader || vcsFileType == VcsFileType.HullShader
+                   || vcsFileType == VcsFileType.DomainShader || vcsFileType == VcsFileType.RaytracingShader)
             {
                 vspsHeader.PrintAnnotatedBytestream();
             }

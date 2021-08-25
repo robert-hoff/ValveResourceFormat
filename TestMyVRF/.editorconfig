@@ -8,6 +8,20 @@ trim_trailing_whitespace = true
 # insert_final_newline = true
 
 [*.cs]
+
+
+
+
+
+dotnet_diagnostic.IDE0044.severity = none
+
+
+
+
+
+
+
+
 # CA1002: Do not expose generic lists.
 dotnet_diagnostic.CA1002.severity = none
 

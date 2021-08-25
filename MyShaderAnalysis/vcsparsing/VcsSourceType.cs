@@ -22,6 +22,11 @@ namespace MyShaderAnalysis.vcsparsing
         Glsl,       // "PCGL"
         DXIL,       // "PC" is seen as two sub-types, DXIL and DXBC (all v.30 files are DXIL encoded, all v.40+ are DXBC)
         DXBC,
+        X360,
+        Mac,
         Vulkan,
+        MobileGles,
+        IosVulkan,
+        AndroidVulkan,
     }
 }

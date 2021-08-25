@@ -17,7 +17,7 @@ namespace TestMyVRF {
         }
 
 
-        static string EXPORT_DIR = @"C:\Users\R\Desktop\temptemp";
+        public const string EXPORT_DIR = @"C:\Users\R\Desktop\temptemp";
         const string DOTA2_VPK_ARCHIVE = @"X:\Steam\steamapps\common\dota 2 beta\game\dota\pak01_dir.vpk";
         const string HLALYX_VPK_ARCHIVE = @"X:\Steam\steamapps\common\Half-Life Alyx\game\hlvr\pak01_dir.vpk";
 

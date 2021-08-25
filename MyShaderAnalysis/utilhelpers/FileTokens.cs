@@ -1,25 +1,14 @@
+using System;
 using System.IO;
-using System.Diagnostics;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using MyShaderAnalysis.vcsparsing;
-using System;
-using MyShaderAnalysis.compat;
-using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
 using static MyShaderAnalysis.utilhelpers.FileSystem;
 
 
-/*
- *
- * Instantiate this on a per-file basis
- *
- *
- *
- *
- */
 namespace MyShaderAnalysis.utilhelpers
 {
-
     public class FileTokens
     {
         public string name { get; }          // name without the file extension, e.g. spritecard_pcgl_30_ps
@@ -30,11 +19,9 @@ namespace MyShaderAnalysis.utilhelpers
         public string vcstoken { get; }      // ft, vs, ps, psrs or gs
         public string sourcedir { get; }     // full directory path of the source files
         public string archivename { get; }   // dota-game or dota-core
-        // todo - fix the archivelabel bug for generating byte-dymp paths (need to update all the files)
-        public string archivelabel { get; }  // dota or core (possibly s&box later). Used for generating names AND
-                                             // used for generting paths to the byte-dumps. *WHICH IS A BUG* but I can't fix that yet
+        public string archivelabel { get; }  // dota or core (possibly s&box later). Used for generating names
         public string platformType { get; }       // pcgl, pc, vulkan
-        public string sourcetype { get; }    // glsl, dx11, etc.
+        public string sourceType { get; }    // glsl, dxil, dxbc, gles, vulkan, android_vulkan, ios_vulkan
         public string sourceVersion { get; }    // 30,40,50,etc
         public string serverdir { get; }     // full directory path of the server files
         public VcsFileType vcsFiletype { get; }
@@ -42,11 +29,8 @@ namespace MyShaderAnalysis.utilhelpers
 
         public FileTokens(string filenamepath) : this(DetermineArchiveType(filenamepath), filenamepath) { }
 
-
-
-
         /*
-         * this will work passing either the filename or the full filenamepath
+         * this will work passing either the filename or full filenamepath
          *
          */
         public FileTokens(ARCHIVE archive, string filename)
@@ -56,12 +40,12 @@ namespace MyShaderAnalysis.utilhelpers
             this.name = filename[0..^4];
             this.foldername = name.Substring(0, name.LastIndexOf('_'));
             this.filenamepath = GetFilenamepath(archive, filename);
-            this.vcsFiletype = GetVcsFileType(filename);
+            this.vcsFiletype = ShaderUtilHelpers.GetVcsFileType(filename);
             this.sourcedir = GetSourceDir(archive);
             this.archivename = GetArchiveName(archive);
             this.archivelabel = GetArchiveLabel(archive);
             this.platformType = GetGpuType(archive);
-            this.sourcetype = GetSourceType(archive);
+            this.sourceType = GetSourceType(archive);
             this.sourceVersion = filename.Split('_')[^2];
             this.serverdir = GetServerBaseDir();
             this.namelabel = filename.Split('_')[0];
@@ -88,7 +72,7 @@ namespace MyShaderAnalysis.utilhelpers
             return serverFileDir;
         }
 
-        public string GetServerFileDir(string label, bool createDirs = false)
+        public string GetServerFilenamepath(string label, bool createDirs = false)
         {
             return $"{GetServerFileDir(createDirs)}/{name}-{label}.html";
         }
@@ -102,9 +86,10 @@ namespace MyShaderAnalysis.utilhelpers
             return $"/{archivename}/{platformType}/{foldername}/{name}-{label}.html";
         }
 
+        // applicable to glsl and gles files
         public string GetGlslServerDir(bool createDirs = false)
         {
-            string serverGlslDir = $"{GetServerFileDir()}/{sourcetype}";
+            string serverGlslDir = $"{GetServerFileDir()}/{sourceType}";
             if (createDirs)
             {
                 Directory.CreateDirectory(serverGlslDir);
@@ -114,17 +99,14 @@ namespace MyShaderAnalysis.utilhelpers
 
         public string GetGlslHtmlFilename(GlslSource glslSource)
         {
-            return $"glsl-{glslSource.GetEditorRefIdAsString()}.html";
+            return $"{sourceType}-{glslSource.GetEditorRefIdAsString()}.html";
         }
 
         public string GetGlslHtmlUrl(GlslSource glslSource)
         {
-            return $"{GetServerFilePath()}/glsl/{GetGlslHtmlFilename(glslSource)}";
+            // sourceType may be either "glsl" or "gles" (which is considered as a GlslSource datablock)
+            return $"{GetServerFilePath()}/{sourceType}/{GetGlslHtmlFilename(glslSource)}";
         }
-
-
-
-
 
         public string GetZFramesServerDir(bool createDirs = false)
         {
@@ -151,17 +133,6 @@ namespace MyShaderAnalysis.utilhelpers
             return $"{GetZFramesServerDir()}/{name}-ZFRAME{zframeId:x08}-{label}.html";
         }
 
-        public string GetZFrameHtmlBytesFilenamepath(long zframeId)
-        {
-            return $"{serverdir}/vcs-all/{archivelabel}/zsource/{name}-ZFRAME{zframeId:x08}.html";
-        }
-
-        public string GetZFrameHtmlBytesLink(long zframeId)
-        {
-            return $"/vcs-all/{archivelabel}/zsource/{name}-ZFRAME{zframeId:x08}.html";
-        }
-
-
         public string GetZFrameHtmlFilename(long zframeId, string label)
         {
             if (label.Length>0)
@@ -179,8 +150,6 @@ namespace MyShaderAnalysis.utilhelpers
             }
             return $"{GetZFramesServerPath()}/{name}-ZFRAME{zframeId:x08}{label}.html";
         }
-
-
 
         public List<string> GetZFrameListing()
         {
@@ -218,21 +187,20 @@ namespace MyShaderAnalysis.utilhelpers
             return $"{namelabel}({source_type}-{vcstoken})";
         }
 
+        // todo - this one is a bit weird, clean up any calling references
         public string RemoveBaseDir()
         {
-            return $"{archivelabel}/{name}";
+            return ShaderUtilHelpers.RemoveBaseDir(filenamepath);
         }
 
-        public string GetBytePath()
-        {
-            return $"/vcs-all/{archivelabel}/{name}-analysis.html";
-        }
+        // todo - this can be replaced by getPath() and label
         public string GetSummariesPath()
         {
             // return $"/GEN-output/sf-summaries/{archivelabel}/{name}-summary.html";
             return $"{GetServerFilePath()}/{name}-summary.html";
         }
 
+        // todo - get rid of this shit
         public string GetBestPath()
         {
             if (vcsFiletype == VcsFileType.PixelShader || vcsFiletype == VcsFileType.VertexShader)
@@ -241,26 +209,19 @@ namespace MyShaderAnalysis.utilhelpers
                 return File.Exists($"{serverdir}{summariesPath}") ? summariesPath : "";
             } else
             {
-                return GetBytePath();
+                return "";
             }
         }
-
 
         public string GetBestZframesLink(long zframeId)
         {
             if (File.Exists(GetZFrameHtmlFilenamepath(zframeId, "summary")))
             {
-                return $"* <a href='{GetZFrameLink(zframeId,"summary")}'>Z[{zframeId:x08}]</a>";
+                return $"<a href='{GetZFrameLink(zframeId,"summary")}'>Z[{zframeId:x08}]</a>";
             }
-            // NOTE - stop linking to the byte-printouts (they are useless)
-            //if (File.Exists(GetZFrameHtmlBytesFilenamepath(zframeId)))
-            //{
-            //    return $"  <a href='{GetZFrameHtmlBytesLink(zframeId)}'>Z[{zframeId:x08}]</a>";
-            //}
-            return $"  Z[{zframeId:x08}]";
+            // no zframe exists return plaintext
+            return $"Z[{zframeId:x08}]";
         }
-
-
 
         public override string ToString()
         {
@@ -268,16 +229,13 @@ namespace MyShaderAnalysis.utilhelpers
             fileDetails += $"{name} ({archivelabel})\n";
             fileDetails += $"{archivename}\n";
             fileDetails += $"{platformType}\n";
-            fileDetails += $"{sourcetype}\n";
+            fileDetails += $"{sourceType}\n";
             return fileDetails;
         }
 
 
 
     }
-
-
-
 }
 
 

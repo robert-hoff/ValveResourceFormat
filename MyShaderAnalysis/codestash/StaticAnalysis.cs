@@ -377,7 +377,7 @@ namespace MyShaderAnalysis
             }
             FileTokens targetFile = targetFileType == VcsFileType.VertexShader ? fileTriple.vsFile : fileTriple.psFile;
             string htmlTitle = $"{targetFile.namelabel}({targetFile.vcstoken})";
-            string outputNamepath = targetFile.GetServerFileDir("summary", createDirs: true);
+            string outputNamepath = targetFile.GetServerFilenamepath("summary", createDirs: true);
             FileSummaryVsPSFile(fileTriple, targetFileType, htmlTitle, outputNamepath, writeFile: true, disableOutput);
         }
 
@@ -1172,7 +1172,7 @@ namespace MyShaderAnalysis
 
 
 
-        static int blockCount = 0;
+        // static int blockCount = 0;
 
         static void CompatBlockDetailsConcise(string filenamepath)
         {
@@ -1650,7 +1650,9 @@ namespace MyShaderAnalysis
 
 
                 string headerText = $"{"[FEATURES-FILE]".PadRight(52)} ";
-                OutputWrite(headerText.Replace("[", $"<a href='{triple.ftFile.GetBytePath()}'>").Replace("]", "</a>"));
+
+                // OutputWrite(headerText.Replace("[", $"<a href='{triple.ftFile.GetBytePath()}'>").Replace("]", "</a>"));
+                OutputWrite(headerText.Replace("[", "").Replace("]",""));
                 headerText = $"{"[VS-FILE]".PadRight(52)} ";
                 OutputWrite(headerText.Replace("[", $"<a href='{triple.vsFile.GetSummariesPath()}'>").Replace("]", "</a>"));
                 headerText = $"{"[PS-FILE]".PadRight(52)}\n";

@@ -18,6 +18,8 @@ namespace MyShaderAnalysis
         static void Main()
         {
 
+            // TestMobileShaderFiles.RunTrials();
+
             // PrintoutsZframes1.RunTrials();
             // StaticAnalysisZframes.RunTrials();
 
@@ -31,7 +33,7 @@ namespace MyShaderAnalysis
 
             // Snippetcode.RunTrials();
             // LzmaAnalysis.RunTrials();
-            // TestStuff.RunTrials();
+            TestStuff.RunTrials();
             // CrcTrialsSha1.RunTrials();
             // CrcTrialsMurmur32.RunTrials();
 
@@ -51,8 +53,10 @@ namespace MyShaderAnalysis
             // BitTestGeneration.RunTrials();
 
 
-            TestSingleFilePrintout();
+            // TestSingleFilePrintout();
         }
+
+
 
 
 
