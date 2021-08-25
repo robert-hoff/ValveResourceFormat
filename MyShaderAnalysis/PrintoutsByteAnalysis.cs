@@ -26,9 +26,9 @@ namespace MyShaderAnalysis
             // Trial3();
 
             // PrintAllByteAnalysis();
-            PrintZFramesAllFiles();
+            // PrintZFramesAllFiles();
             // PrintZFramesSingleFile();
-            // PrintGlslAllFiles();
+            PrintGlslAllFiles();
             // PrintGlslSingleFiles();
             output.CloseStreamWriter();
         }
@@ -132,7 +132,7 @@ namespace MyShaderAnalysis
 
 
 
-        const int LIMIT_ZFRAME_PRINTOUT = 5;
+        const int LIMIT_ZFRAME_PRINTOUT = 50;
 
 
         static void PrintZFramesAllFiles()
@@ -152,7 +152,7 @@ namespace MyShaderAnalysis
                 {
                     ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(i);
                     string zframeHtmlFilename = fileTokens.GetZFrameHtmlFilename(zframeFile.zframeId, "bytes");
-                    // Debug.WriteLine($"{zframeHtmlFilename}");
+                    // Console.WriteLine($"{zframeHtmlFilename}");
                     PrintZFrameByteAnalysis(zframeFile, $"{zframesServerDir}/{zframeHtmlFilename}", writeFile: true, disableOutput: true);
                     output.CloseStreamWriter();
                 }
@@ -174,7 +174,7 @@ namespace MyShaderAnalysis
             {
                 ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(i);
                 string zframeHtmlFilename = fileTokens.GetZFrameHtmlFilename(zframeFile.zframeId, "bytes");
-                // Debug.WriteLine($"{zframeHtmlFilename}");
+                // Console.WriteLine($"{zframeHtmlFilename}");
                 PrintZFrameByteAnalysis(zframeFile, $"{zframesServerDir}/{zframeHtmlFilename}", writeFile: true, disableOutput: true);
                 output.CloseStreamWriter();
             }
@@ -271,7 +271,7 @@ namespace MyShaderAnalysis
             {
                 return;
             }
-            Debug.WriteLine($"writing to {outputFilenamepath}");
+            Console.WriteLine($"writing to {outputFilenamepath}");
 
             if (writeAsHtml)
             {

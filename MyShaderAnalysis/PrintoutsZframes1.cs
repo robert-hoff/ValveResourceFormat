@@ -779,7 +779,7 @@ namespace MyShaderAnalysis
         private static void ConfigureOutputFile(string filepathname, bool disableOutput = false)
         {
             DisableOutput = disableOutput;
-            Debug.WriteLine($"writing to {filepathname}");
+            Console.WriteLine($"writing to {filepathname}");
             sw = new StreamWriter(filepathname);
         }
 
@@ -801,7 +801,7 @@ namespace MyShaderAnalysis
         {
             if (!DisableOutput)
             {
-                Debug.Write(text);
+                Console.Write(text);
             }
             if (sw != null)
             {

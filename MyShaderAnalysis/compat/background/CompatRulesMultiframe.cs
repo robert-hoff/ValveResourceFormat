@@ -53,7 +53,7 @@ namespace MyShaderAnalysis.compat
             }
             foreach (var item in map)
             {
-                Debug.WriteLine($"{item.Key,-60} {ShortenShaderParam(item.Key)}");
+                Console.WriteLine($"{item.Key,-60} {ShortenShaderParam(item.Key)}");
             }
         }
 
@@ -143,7 +143,7 @@ namespace MyShaderAnalysis.compat
                 if (val == 0)
                 {
                     // nameList += "".PadRight(7);
-                    // Debug.WriteLine($"{i}");
+                    // Console.WriteLine($"{i}");
                     continue;
                 }
                 string paramLayer = "";
@@ -152,7 +152,7 @@ namespace MyShaderAnalysis.compat
                     paramLayer = $"({val})";
                 }
 
-                // Debug.WriteLine($"{i}");
+                // Console.WriteLine($"{i}");
                 string parmDisplayName = $"{ShortenShaderParam(shaderFile.sfBlocks[i].name0)}{paramLayer}";
                 // nameList += parmDisplayName.PadRight(7);
                 nameList += parmDisplayName.ToLower() + ", ";
@@ -266,7 +266,7 @@ namespace MyShaderAnalysis.compat
             {
                 stateStr = $"{state[i]}{space}{stateStr}";
             }
-            Debug.WriteLine($"{stateStr[0..^1]}");
+            Console.WriteLine($"{stateStr[0..^1]}");
         }
 
 

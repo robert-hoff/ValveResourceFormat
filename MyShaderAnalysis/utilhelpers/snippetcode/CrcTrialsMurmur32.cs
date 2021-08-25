@@ -32,8 +32,8 @@ namespace MyShaderAnalysis.utilhelpers.snippetcode
             uint MURMUR2SEED = 0x31415926; // It's pi!
             uint murmur32 = MurmurHash2.Hash(theword.ToLower(), MURMUR2SEED);
 
-            Debug.WriteLine(theword);
-            Debug.WriteLine($"{murmur32:X08}");
+            Console.WriteLine(theword);
+            Console.WriteLine($"{murmur32:X08}");
         }
 
 
@@ -47,7 +47,7 @@ namespace MyShaderAnalysis.utilhelpers.snippetcode
             // uint murmur32 = MurmurHash2.Hash("r", MURMUR2SEED);
             // uint murmur32 = MurmurHash2.Hash("representativetexture", MURMUR2SEED);
             uint murmur32 = MurmurHash2.Hash("g_flDetailBlendToFull".ToLower(), MURMUR2SEED);
-            Debug.WriteLine($"{murmur32:X08}");
+            Console.WriteLine($"{murmur32:X08}");
         }
 
 
@@ -65,7 +65,7 @@ namespace MyShaderAnalysis.utilhelpers.snippetcode
             uint h = seed ^ (uint)length;
             h ^= 0xff;
             h *= M;
-            Debug.WriteLine("{0:X08}", h);
+            Console.WriteLine("{0:X08}", h);
 
         }
 
@@ -75,7 +75,7 @@ namespace MyShaderAnalysis.utilhelpers.snippetcode
             uint MURMUR2SEED = 0x31415926;
             byte[] databytes = getDatabytesExample1();
             uint murmur32 = MurmurHash2.Hash(databytes, MURMUR2SEED);
-            Debug.WriteLine($"{murmur32:X08}");
+            Console.WriteLine($"{murmur32:X08}");
 
         }
 

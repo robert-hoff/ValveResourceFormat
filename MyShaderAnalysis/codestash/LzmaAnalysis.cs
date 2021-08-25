@@ -96,7 +96,7 @@ namespace MyShaderAnalysis
 
             float num = reader.ReadFloatAtPosition();
             // int num = reader.ReadIntAtPosition();
-            Debug.WriteLine($"{num}");
+            Console.WriteLine($"{num}");
             reader.ShowBytes(4);
         }
 
@@ -111,7 +111,7 @@ namespace MyShaderAnalysis
             DataReaderVcsByteAnalysis reader = new(filenamepath);
             reader.SetOffset(2032);
             int num = reader.ReadIntAtPosition();
-            Debug.WriteLine($"{num}");
+            ConsoleConsole.WriteLine($"{num}");
             reader.ShowBytes(4);
 
         }
@@ -128,7 +128,7 @@ namespace MyShaderAnalysis
             string filenamepath = $"{ARTIFACT_CLASSIC_CORE_PC_SOURCE}/aerial_perspective_pc_30_ps.vcs";
             // string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/apply_fog_pcgl_40_ps.vcs";
 
-            // Debug.WriteLine($"{filenamepath}");
+            // ConsoleConsole.WriteLine($"{filenamepath}");
             // ShaderFile shaderfile = new ShaderFile(filenamepath);
 
             DataReaderVcsByteAnalysis reader = new DataReaderVcsByteAnalysis(filenamepath);

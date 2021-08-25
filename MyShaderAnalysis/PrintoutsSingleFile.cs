@@ -37,7 +37,7 @@ namespace MyShaderAnalysis
             // string filenamepath = $"{DOTA_GAME_PC_SOURCE}/hero_pc_40_ps.vcs";
             FileTokens fileTokens = new FileTokens(filenamepath);
 
-            Debug.WriteLine($"{fileTokens.GetAbbreviatedName()}");
+            Console.WriteLine($"{fileTokens.GetAbbreviatedName()}");
         }
 
 
@@ -49,7 +49,7 @@ namespace MyShaderAnalysis
             string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/hero_pcgl_30_ps.vcs";
             foreach (var f in GetRelatedFiles(filenamepath))
             {
-                Debug.WriteLine($"{f}");
+                Console.WriteLine($"{f}");
             }
         }
 

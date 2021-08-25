@@ -160,43 +160,43 @@ namespace MyShaderAnalysis
 
                     // check on the rules that have range2 = (0,1)
                     //if (uknBlock.range2[0] == 0) {
-                    //    Debug.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {uknBlock.GetConciseDescription(new int[] { 8, 4, 7, 5 })}" +
+                    //    Console.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {uknBlock.GetConciseDescription(new int[] { 8, 4, 7, 5 })}" +
                     //        $"{shaderFile.dBlocks[0].name0,-33}");
                     //}
 
                     //if (uknBlock.relRule == 2 && uknBlock.AllFlagsAre3()) {
-                    //    Debug.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {uknBlock.GetConciseDescription(new int[] {8, 4, 7, 5})}" +
+                    //    Console.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {uknBlock.GetConciseDescription(new int[] {8, 4, 7, 5})}" +
                     //        $"{shaderFile.dBlocks[0].name0,-33} {shaderFile.dBlocks[1].name0}");
                     //}
 
                     //if (uknBlock.relRule == 3 && uknBlock.AllFlagsAre3() && uknBlock.flags.Length>=2) {
-                    //    Debug.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-44} {uknBlock.GetConciseDescription(new int[] {8, 4, 12, 5})} " +
+                    //    Console.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-44} {uknBlock.GetConciseDescription(new int[] {8, 4, 12, 5})} " +
                     //        $"{uknBlock.GetResolvedNames(shaderFile.sfBlocks, shaderFile.dBlocks)}");
                     //}
 
                     //if (uknBlock.relRule == 2 && uknBlock.flags.Length==2 && uknBlock.flags[1]==2 && uknBlock.range1.Length==1) {
-                    //    Debug.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {uknBlock.GetConciseDescription(new int[] {8, 4, 12, 5})} " +
+                    //    Console.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {uknBlock.GetConciseDescription(new int[] {8, 4, 12, 5})} " +
                     //        $"{uknBlock.GetResolvedNames(shaderFile.sfBlocks, shaderFile.dBlocks)}");
                     //}
 
                     //if (uknBlock.range1.Length == 1 && uknBlock.range1[0] == 0) {
-                    //    Debug.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {uknBlock.GetConciseDescription(new int[] {8, 4, 12, 5})} " +
+                    //    Console.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {uknBlock.GetConciseDescription(new int[] {8, 4, 12, 5})} " +
                     //        $"{uknBlock.GetResolvedNames(shaderFile.sfBlocks, shaderFile.dBlocks)}");
                     //}
 
                     //if (uknBlock.range1.Length > 1) {
-                    //    Debug.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {uknBlock.GetConciseDescription(new int[] {8, 4, 12, 5})} " +
+                    //    Console.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {uknBlock.GetConciseDescription(new int[] {8, 4, 12, 5})} " +
                     //        $"{uknBlock.GetResolvedNames(shaderFile.sfBlocks, shaderFile.dBlocks)}");
                     //}
 
                     //if (uknBlock.relRule == 2 && uknBlock.range1.Length == 0 && uknBlock.flags.Length >= 3) {
-                    //    Debug.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {uknBlock.GetConciseDescription(new int[] {8, 4, 12, 5})} " +
+                    //    Console.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {uknBlock.GetConciseDescription(new int[] {8, 4, 12, 5})} " +
                     //        $"{uknBlock.GetResolvedNames(shaderFile.sfBlocks, shaderFile.dBlocks)}");
                     //}
 
                     if (uknBlock.arg1 > -1)
                     {
-                        Debug.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {uknBlock.GetConciseDescription(new int[] { 8, 4, 12, 5 })} " +
+                        Console.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {uknBlock.GetConciseDescription(new int[] { 8, 4, 12, 5 })} " +
                             $"{uknBlock.GetResolvedNames(shaderFile.sfBlocks, shaderFile.dBlocks)}");
                     }
 
@@ -234,8 +234,8 @@ namespace MyShaderAnalysis
                 {
                     if (cBlock.range2[0] == 0)
                     {
-                        Debug.Write($"{ShortHandName(vcsFilenamepath),-50}");
-                        Debug.WriteLine($"nr arguments {cBlock.range0.Length} {shaderFile.sfBlocks[cBlock.range0[0]].name0}");
+                        Console.Write($"{ShortHandName(vcsFilenamepath),-50}");
+                        Console.WriteLine($"nr arguments {cBlock.range0.Length} {shaderFile.sfBlocks[cBlock.range0[0]].name0}");
                     }
                 }
             }
@@ -283,10 +283,10 @@ namespace MyShaderAnalysis
 
             foreach (var item in shaderFile.zframesLookup)
             {
-                // Debug.WriteLine($"{item.Key:x04}");
+                // Console.WriteLine($"{item.Key:x04}");
 
                 string binaryString = Convert.ToString(item.Key, 2).PadLeft(12, '0');
-                // Debug.WriteLine($"{binaryString}");
+                // Console.WriteLine($"{binaryString}");
 
                 string spacedOutBinary = "";
                 foreach (var item2 in binaryString.ToCharArray())
@@ -296,8 +296,8 @@ namespace MyShaderAnalysis
                 spacedOutBinary = spacedOutBinary.Trim();
 
 
-                // Debug.WriteLine($"{Convert.ToString(item.Key, 2).PadLeft(12, '0')} {item.Key,5}      {item.Key:x04}       {spacedOutBinary}");
-                Debug.WriteLine($"{Convert.ToString(item.Key, 2).PadLeft(12, '0')}");
+                // Console.WriteLine($"{Convert.ToString(item.Key, 2).PadLeft(12, '0')} {item.Key,5}      {item.Key:x04}       {spacedOutBinary}");
+                Console.WriteLine($"{Convert.ToString(item.Key, 2).PadLeft(12, '0')}");
             }
         }
 
@@ -397,7 +397,7 @@ namespace MyShaderAnalysis
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
                 foreach (var sfBlock in shaderFile.sfBlocks)
                 {
-                    // Debug.WriteLine($"{sfBlock.arg3}");
+                    // Console.WriteLine($"{sfBlock.arg3}");
                     // if (sfBlock.arg2 != 1 && sfBlock.arg3 != 0) {
 
 
@@ -416,12 +416,12 @@ namespace MyShaderAnalysis
 
 
                     //if (sfBlock.arg0 == 1) {
-                    //    Debug.Write($"{sfBlock.arg0} {sfBlock.arg1} {sfBlock.arg2} {sfBlock.arg3}    ");
-                    //    Debug.WriteLine($"{sfBlock.name0,-25}    {RemoveBaseDir(filenamepath)}");
+                    //    Console.Write($"{sfBlock.arg0} {sfBlock.arg1} {sfBlock.arg2} {sfBlock.arg3}    ");
+                    //    Console.WriteLine($"{sfBlock.name0,-25}    {RemoveBaseDir(filenamepath)}");
                     //}
 
 
-                    // Debug.WriteLine($"{sfBlock.arg0,3} {sfBlock.arg2,3} {sfBlock.arg3,3} {sfBlock.arg4,3}        {sfBlock.name0}");
+                    // Console.WriteLine($"{sfBlock.arg0,3} {sfBlock.arg2,3} {sfBlock.arg3,3} {sfBlock.arg4,3}        {sfBlock.name0}");
 
                 }
             }
@@ -429,7 +429,7 @@ namespace MyShaderAnalysis
             // result.Sort();
             foreach (string item in result)
             {
-                Debug.WriteLine($"{item}");
+                Console.WriteLine($"{item}");
             }
 
         }
@@ -659,7 +659,7 @@ namespace MyShaderAnalysis
         {
             // ShaderFile shaderFile = new(PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_ps.vcs");
             ShaderFile shaderFile = InstantiateShaderFile(PCGL_DIR_CORE + @"/depth_only_pcgl_40_vs.vcs");
-            Debug.WriteLine($"{RemoveBaseDir(shaderFile.filenamepath)}");
+            Console.WriteLine($"{RemoveBaseDir(shaderFile.filenamepath)}");
 
             foreach (DConstraintsBlock uBlock in shaderFile.dConstraintsBlocks)
             {
@@ -1045,7 +1045,7 @@ namespace MyShaderAnalysis
             {
                 CompatBlockDetailsConcise2(filenamepath);
             }
-            // Debug.WriteLine($"{blockCount}");
+            // Console.WriteLine($"{blockCount}");
         }
 
         static void CompatBlockDetailsConcise2(string filenamepath, bool showLink = true)
@@ -1114,17 +1114,17 @@ namespace MyShaderAnalysis
                 {
                     if (cBlock.range2[1] != cBlock.range0.Length)
                     {
-                        Debug.WriteLine($"ERROR!");
+                        Console.WriteLine($"ERROR!");
                     }
 
                     if (cBlock.arg0 == 1 && shaderFile.vcsFileType != VcsFileType.Features)
                     {
-                        Debug.WriteLine($"error!");
+                        Console.WriteLine($"error!");
                     }
 
                     if (cBlock.arg0 == 2)
                     {
-                        Debug.WriteLine($"{filenamepath}");
+                        Console.WriteLine($"{filenamepath}");
                     }
 
 
@@ -1170,7 +1170,7 @@ namespace MyShaderAnalysis
             {
                 CompatBlockDetailsConcise(filenamepath);
             }
-            // Debug.WriteLine($"{blockCount}");
+            // Console.WriteLine($"{blockCount}");
         }
 
 
@@ -1322,7 +1322,7 @@ namespace MyShaderAnalysis
 
             foreach (var item in intrange)
             {
-                Debug.WriteLine($"{item.Key,5}                 {item.Value}");
+                Console.WriteLine($"{item.Key,5}                 {item.Value}");
             }
 
         }
@@ -1410,7 +1410,7 @@ namespace MyShaderAnalysis
                     values[val] = curVal + 1;
                 }
             }
-            Debug.WriteLine($"{CombineValues(values)}");
+            Console.WriteLine($"{CombineValues(values)}");
         }
 
 
@@ -1434,7 +1434,7 @@ namespace MyShaderAnalysis
                     values[val] = curVal + 1;
                 }
             }
-            Debug.WriteLine($"{CombineValues(values)}");
+            Console.WriteLine($"{CombineValues(values)}");
         }
 
 
@@ -1445,7 +1445,7 @@ namespace MyShaderAnalysis
             string[] result = CombineValuesBreakString(@string, 70);
             foreach (var str in result)
             {
-                Debug.WriteLine($"{str}");
+                Console.WriteLine($"{str}");
             }
         }
 
@@ -1521,13 +1521,13 @@ namespace MyShaderAnalysis
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
 
             SfConstraintsBlock block0 = shaderFile.sfConstraintsBlocks[0];
-            Debug.WriteLine($"{block0.datareader.ReadIntAtPosition(0)}");
-            Debug.WriteLine($"{block0.datareader.ReadIntAtPosition(4)}");
-            Debug.WriteLine($"{block0.GetByteFlagsAsString()}");
+            Console.WriteLine($"{block0.datareader.ReadIntAtPosition(0)}");
+            Console.WriteLine($"{block0.datareader.ReadIntAtPosition(4)}");
+            Console.WriteLine($"{block0.GetByteFlagsAsString()}");
 
             for (int i = 24; i <= 215; i += 4)
             {
-                Debug.WriteLine($"{block0.datareader.ReadIntAtPosition(i)}");
+                Console.WriteLine($"{block0.datareader.ReadIntAtPosition(i)}");
             }
 
             // if present, the bytes following contain a string decription of the block
@@ -1800,9 +1800,9 @@ namespace MyShaderAnalysis
         {
             foreach (var s in strList)
             {
-                Debug.Write($"{s.PadRight(20)}");
+                Console.Write($"{s.PadRight(20)}");
             }
-            Debug.WriteLine("");
+            Console.WriteLine("");
         }
 
 
@@ -1816,7 +1816,7 @@ namespace MyShaderAnalysis
                 string file1 = Path.GetFileName(sFiles.Item1);
                 string file2 = Path.GetFileName(sFiles.Item2);
                 string file3 = Path.GetFileName(sFiles.Item3);
-                Debug.WriteLine($"{directory.PadRight(25)} {file1.PadRight(60)} {file2.PadRight(60)} {file3}");
+                Console.WriteLine($"{directory.PadRight(25)} {file1.PadRight(60)} {file2.PadRight(60)} {file3}");
             }
 
 
@@ -1903,22 +1903,22 @@ namespace MyShaderAnalysis
             {
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
                 FeaturesHeaderBlock featuresHeader = shaderFile.featuresHeader;
-                Debug.WriteLine($"{RemoveBaseDir(filenamepath)}");
+                Console.WriteLine($"{RemoveBaseDir(filenamepath)}");
                 // featuresHeader.ShowMainParams();
                 foreach (var parampair in featuresHeader.mainParams)
                 {
 
-                    Debug.WriteLine($"         {parampair.Item1.PadRight(35)} {parampair.Item2.PadRight(35)}");
+                    Console.WriteLine($"         {parampair.Item1.PadRight(35)} {parampair.Item2.PadRight(35)}");
                     // CollectStringValue($"{parampair.Item1.PadRight(35)} {parampair.Item2.PadRight(35)}");
                     // CollectStringValue($"{parampair.Item2.PadRight(35)}");
                     // CollectStringValue($"{parampair.Item1.PadRight(35)}");
                 }
 
-                Debug.WriteLine($"");
+                Console.WriteLine($"");
             }
 
 
-            Debug.WriteLine($"{featuresFiles.Count}");
+            Console.WriteLine($"{featuresFiles.Count}");
 
 
         }
@@ -1978,7 +1978,7 @@ namespace MyShaderAnalysis
         private static void ConfigureOutputFile(string filepathname, bool disableOutput = false)
         {
             DisableOutput = disableOutput;
-            Debug.WriteLine($"writing to {filepathname}");
+            Console.WriteLine($"writing to {filepathname}");
             sw = new StreamWriter(filepathname);
         }
 
@@ -2003,7 +2003,7 @@ namespace MyShaderAnalysis
         {
             if (!DisableOutput)
             {
-                Debug.Write(text);
+                Console.Write(text);
             }
             if (sw != null)
             {

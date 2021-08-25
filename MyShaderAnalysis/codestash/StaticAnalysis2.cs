@@ -244,9 +244,9 @@ namespace MyShaderAnalysis
                     //
                     if (name1.Length > 0 && name2.Length > 0)
                     {
-                        //Debug.WriteLine($"{RemoveBaseDir(shaderFile.filenamepath)}");
+                        //Console.WriteLine($"{RemoveBaseDir(shaderFile.filenamepath)}");
                         //paramBlock.ShowBlock();
-                        //Debug.WriteLine($"");
+                        //Console.WriteLine($"");
                     }
 
                 }
@@ -365,26 +365,26 @@ namespace MyShaderAnalysis
             {
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
                 // - show all descriptions
-                // Debug.WriteLine($"{shaderFile.featuresHeader.file_description}");
-                // Debug.WriteLine($"{shader}");
+                // Console.WriteLine($"{shaderFile.featuresHeader.file_description}");
+                // Console.WriteLine($"{shader}");
 
                 int a0 = shaderFile.featuresHeader.arg0;
                 int a1 = shaderFile.featuresHeader.arg1;
                 int a2 = shaderFile.featuresHeader.arg2;
                 int a3 = shaderFile.featuresHeader.arg3;
                 //if (a2 == 0 && a3 == 0) {
-                //    Debug.WriteLine($"{GetShortName(shaderFile.filenamepath)}");
+                //    Console.WriteLine($"{GetShortName(shaderFile.filenamepath)}");
                 //}
 
                 //if (a0 == 0) {
                 //CollectStringValue($"{CombineIntArray(new int[] { a0, a1, a2, a3 })}");
-                //    Debug.WriteLine($"{RemoveBaseDir(shaderFile.filenamepath)}");
+                //    Console.WriteLine($"{RemoveBaseDir(shaderFile.filenamepath)}");
                 //}
 
                 if (a0 == 1 && a3 == 1)
                 {
                     CollectStringValue($"{CombineIntArray(new int[] { a0, a1, a2, a3 })}");
-                    Debug.WriteLine($"{RemoveBaseDir(shaderFile.filenamepath)}");
+                    Console.WriteLine($"{RemoveBaseDir(shaderFile.filenamepath)}");
                 }
             }
         }
@@ -418,7 +418,7 @@ namespace MyShaderAnalysis
         private static void ConfigureOutputFile(string filepathname, bool disableOutput = false)
         {
             DisableOutput = disableOutput;
-            Debug.WriteLine($"writing to {filepathname}");
+            Console.WriteLine($"writing to {filepathname}");
             sw = new StreamWriter(filepathname);
         }
 
@@ -443,7 +443,7 @@ namespace MyShaderAnalysis
         {
             if (!DisableOutput)
             {
-                Debug.Write(text);
+                Console.Write(text);
             }
             if (sw != null)
             {

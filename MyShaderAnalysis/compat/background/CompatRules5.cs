@@ -174,7 +174,7 @@ namespace MyShaderAnalysis
 
                 if (!exclude)
                 {
-                    Debug.WriteLine($"{i,3}    {i:x04}           {Convert.ToString(i, 2).PadLeft(20, '0')}");
+                    Console.WriteLine($"{i,3}    {i:x04}           {Convert.ToString(i, 2).PadLeft(20, '0')}");
                 }
 
 
@@ -390,7 +390,7 @@ namespace MyShaderAnalysis
 
                 if (!exclude)
                 {
-                    Debug.WriteLine($"{i,3}    {i:x04}           {Convert.ToString(i, 2).PadLeft(20, '0')}");
+                    Console.WriteLine($"{i,3}    {i:x04}           {Convert.ToString(i, 2).PadLeft(20, '0')}");
                 }
 
 

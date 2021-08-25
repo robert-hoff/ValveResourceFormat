@@ -43,7 +43,7 @@ namespace MyShaderAnalysis.compat
             int[] testnums = { 128, 256, 384, 512, 640, 768, 896, 1024, 1152, 1280, 1408, 1536, 1664, 1792, 1920, 2048, 2176 };
             for (int i = 0; i < 17; i++)
             {
-                Debug.WriteLine($"{GetBitPattern(testnums[i])}");
+                Console.WriteLine($"{GetBitPattern(testnums[i])}");
             }
 
 

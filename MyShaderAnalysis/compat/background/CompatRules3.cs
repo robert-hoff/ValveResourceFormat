@@ -24,7 +24,7 @@ namespace MyShaderAnalysis
 
             // Trial1MultiblendPcgl30PsAttempt4();
 
-            // Debug.WriteLine($"{1<<100}");
+            // Console.WriteLine($"{1<<100}");
 
         }
 
@@ -331,7 +331,7 @@ namespace MyShaderAnalysis
 
                 if (!exclude)
                 {
-                    Debug.WriteLine($"{i,3}    {i:x04}           {Convert.ToString(i, 2).PadLeft(20, '0')}");
+                    Console.WriteLine($"{i,3}    {i:x04}           {Convert.ToString(i, 2).PadLeft(20, '0')}");
                 }
 
 
@@ -493,7 +493,7 @@ namespace MyShaderAnalysis
 
                 if (!exclude)
                 {
-                    Debug.WriteLine($"{i,3}    {i:x04}           {Convert.ToString(i, 2).PadLeft(20, '0')}");
+                    Console.WriteLine($"{i,3}    {i:x04}           {Convert.ToString(i, 2).PadLeft(20, '0')}");
                 }
 
 
@@ -507,8 +507,8 @@ namespace MyShaderAnalysis
 
         static bool CheckExclusion(int num)
         {
-            Debug.WriteLine($"{num}");
-            Debug.WriteLine($"{Convert.ToString(num, 2).PadLeft(20, '0')}");
+            Console.WriteLine($"{num}");
+            Console.WriteLine($"{Convert.ToString(num, 2).PadLeft(20, '0')}");
             return true;
         }
 
@@ -717,7 +717,7 @@ namespace MyShaderAnalysis
 
                 if (!exclude)
                 {
-                    Debug.WriteLine($"{i,3}    {i:x04}           {Convert.ToString(i, 2).PadLeft(20, '0')}");
+                    Console.WriteLine($"{i,3}    {i:x04}           {Convert.ToString(i, 2).PadLeft(20, '0')}");
                 }
             }
 
@@ -774,7 +774,7 @@ namespace MyShaderAnalysis
                 }
                 if (!exclude)
                 {
-                    Debug.WriteLine($"{i:x04}               {Convert.ToString(i, 2).PadLeft(9, '0')}");
+                    Console.WriteLine($"{i:x04}               {Convert.ToString(i, 2).PadLeft(9, '0')}");
                 }
             }
 

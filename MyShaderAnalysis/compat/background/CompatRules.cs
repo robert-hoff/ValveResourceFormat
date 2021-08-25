@@ -54,7 +54,7 @@ namespace MyShaderAnalysis
                 }
                 if (!exclude)
                 {
-                    Debug.WriteLine($"{i:x04}               {Convert.ToString(i, 2).PadLeft(9, '0')}");
+                    Console.WriteLine($"{i:x04}               {Convert.ToString(i, 2).PadLeft(9, '0')}");
                 }
             }
 
@@ -195,7 +195,7 @@ namespace MyShaderAnalysis
 
                 if (!exclude)
                 {
-                    Debug.WriteLine($"{i,3}               {Convert.ToString(i, 2).PadLeft(9, '0')}");
+                    Console.WriteLine($"{i,3}               {Convert.ToString(i, 2).PadLeft(9, '0')}");
                 }
             }
 

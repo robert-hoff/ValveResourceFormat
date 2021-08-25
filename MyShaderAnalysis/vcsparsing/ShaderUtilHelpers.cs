@@ -159,7 +159,7 @@ namespace MyShaderAnalysis.vcsparsing
             {
                 if (filenamepath.EndsWith(endsWith))
                 {
-                    filesFound.Add(filenamepath.Replace("\\","/"));
+                    filesFound.Add(filenamepath.Replace("\\", "/"));
                 }
             }
             return filesFound;
@@ -211,8 +211,8 @@ namespace MyShaderAnalysis.vcsparsing
 
         public static string RemoveBaseDir(string filenamepath)
         {
-            string dirname = Path.GetDirectoryName(filenamepath).Replace("\\","/");
-            string filename = Path.GetFileName(filenamepath).Replace("\\","/");
+            string dirname = Path.GetDirectoryName(filenamepath).Replace("\\", "/");
+            string filename = Path.GetFileName(filenamepath).Replace("\\", "/");
             if (dirname.EndsWith(@"/shaders/vfx"))
             {
                 return @"/shaders/vfx/" + filename;
@@ -227,7 +227,7 @@ namespace MyShaderAnalysis.vcsparsing
 
         public static string ShortHandName(string filenamepath)
         {
-            filenamepath = filenamepath.Replace("\\","/");
+            filenamepath = filenamepath.Replace("\\", "/");
             string dirname = Path.GetDirectoryName(filenamepath);
             string filename = Path.GetFileName(filenamepath);
             if (dirname.EndsWith(@"/shaders/vfx"))
@@ -431,13 +431,13 @@ namespace MyShaderAnalysis.vcsparsing
 
                     if (f.EndsWith("features.vcs"))
                     {
-                        featuresFile = f.Replace("\\","/");
+                        featuresFile = f.Replace("\\", "/");
                     } else if (f.EndsWith("vs.vcs"))
                     {
-                        relatedFiles.Insert(0, f.Replace("\\","/"));
+                        relatedFiles.Insert(0, f.Replace("\\", "/"));
                     } else
                     {
-                        relatedFiles.Add(f.Replace("\\","/"));
+                        relatedFiles.Add(f.Replace("\\", "/"));
                     }
                 }
             }
@@ -479,10 +479,10 @@ namespace MyShaderAnalysis.vcsparsing
                 if (showCount)
                 {
                     collectValuesInt.TryGetValue(i, out int instanceCount);
-                    Debug.WriteLine($"{i,5}        {instanceCount,3}");
+                    Console.WriteLine($"{i,5}        {instanceCount,3}");
                 } else
                 {
-                    Debug.WriteLine($"{i}");
+                    Console.WriteLine($"{i}");
                 }
             }
 
@@ -497,10 +497,10 @@ namespace MyShaderAnalysis.vcsparsing
                 if (showCount)
                 {
                     collectValuesString.TryGetValue(s, out int instanceCount);
-                    Debug.WriteLine($"{s.PadRight(80)}        {instanceCount,3}");
+                    Console.WriteLine($"{s.PadRight(80)}        {instanceCount,3}");
                 } else
                 {
-                    Debug.WriteLine($"{s}");
+                    Console.WriteLine($"{s}");
                 }
             }
 
@@ -613,7 +613,7 @@ namespace MyShaderAnalysis.vcsparsing
             }
             string labelstr = (label != null && hex) ? $"{label}(0x)" : $"{label}";
             labelstr = label != null ? $"{labelstr,12} = " : "";
-            Debug.WriteLine($"{labelstr}{intsString.Trim()}");
+            Console.WriteLine($"{labelstr}{intsString.Trim()}");
         }
 
 
@@ -675,7 +675,7 @@ namespace MyShaderAnalysis.vcsparsing
                 }
                 if (WriteToDebug)
                 {
-                    Debug.Write(text);
+                    Console.Write(text);
                 }
             }
 
@@ -719,7 +719,7 @@ namespace MyShaderAnalysis.vcsparsing
                     string[] multipleLines = rowMembers[i].Split("\n");
                     if (multipleLines.Length > 1)
                     {
-                        addExtraLines(additionalRows, multipleLines, i);
+                        AddExtraLines(additionalRows, multipleLines, i);
                     }
 
                     newRow.Add(multipleLines[0]);
@@ -735,13 +735,13 @@ namespace MyShaderAnalysis.vcsparsing
                 }
             }
 
-            private void addExtraLines(List<List<string>> additionalRows, string[] multipleLines, int ind)
+            private void AddExtraLines(List<List<string>> additionalRows, string[] multipleLines, int ind)
             {
                 for (int i = 1; i < multipleLines.Length; i++)
                 {
                     if (additionalRows.Count < i)
                     {
-                        additionalRows.Add(emptyRow());
+                        additionalRows.Add(EmptyRow());
                     }
                     additionalRows[i - 1][ind] = multipleLines[i];
 
@@ -752,7 +752,7 @@ namespace MyShaderAnalysis.vcsparsing
                 }
             }
 
-            private List<string> emptyRow()
+            private List<string> EmptyRow()
             {
                 List<string> newRow = new();
                 for (int i = 0; i < headerValues.Count; i++)
@@ -762,7 +762,7 @@ namespace MyShaderAnalysis.vcsparsing
                 return newRow;
             }
 
-            public void printTabulatedValues(int spacing = 2)
+            public void PrintTabulatedValues(int spacing = 2)
             {
                 if (tabulatedValues.Count == 1 && tabulatedValues[0].Count == 0)
                 {
@@ -778,6 +778,18 @@ namespace MyShaderAnalysis.vcsparsing
                     Write("\n");
                 }
             }
+        }
+
+
+        public class ShaderBinaryReader : BinaryReader
+        {
+
+            public ShaderBinaryReader(Stream input) : base (input)
+            {
+
+            }
+
+
         }
 
 

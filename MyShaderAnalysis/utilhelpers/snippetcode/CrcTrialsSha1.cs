@@ -34,7 +34,7 @@ namespace MyShaderAnalysis.utilhelpers.snippetcode
             {
                 ShaderFile shaderfile = InstantiateShaderFile(filenamepath);
 
-                // Debug.WriteLine($"{filenamepath}");
+                // Console.WriteLine($"{filenamepath}");
                 foreach (var item in shaderfile.zframesLookup)
                 {
                     ZFrameDataDescription zframeData = item.Value;
@@ -47,7 +47,7 @@ namespace MyShaderAnalysis.utilhelpers.snippetcode
                             // if ((source.offset1-1)%64==0 && source.offset1<500) {
                             if (source.sourcebytes.Length < 5000)
                             {
-                                Debug.WriteLine($"{RemoveBaseDir(filenamepath)}   {zframeData.zframeId:x08}  " +
+                                Console.WriteLine($"{RemoveBaseDir(filenamepath)}   {zframeData.zframeId:x08}  " +
                                     $"{source.sourcebytes.Length}  {source.GetEditorRefIdAsString()}");
                             }
                         }
@@ -75,13 +75,13 @@ namespace MyShaderAnalysis.utilhelpers.snippetcode
 
             SpacePrintBits(bytes01);
             SpacePrintBits(bytes02);
-            Debug.WriteLine($"");
+            Console.WriteLine($"");
             SpacePrintBits(bytes11);
             SpacePrintBits(bytes12);
-            Debug.WriteLine($"");
+            Console.WriteLine($"");
             SpacePrintBits(bytes21);
             SpacePrintBits(bytes22);
-            Debug.WriteLine($"");
+            Console.WriteLine($"");
             SpacePrintBits(bytes31);
             SpacePrintBits(bytes32);
         }
@@ -99,15 +99,15 @@ namespace MyShaderAnalysis.utilhelpers.snippetcode
                 }
                 if (i > 0 && i % SPACELEN == 0)
                 {
-                    Debug.Write($" ");
+                    Console.Write($" ");
                     if (SPACELEN == 8)
                     {
-                        Debug.Write($"  ");
+                        Console.Write($"  ");
                     }
                 }
-                Debug.Write($"{BitAt(i, bytes0)}");
+                Console.Write($"{BitAt(i, bytes0)}");
             }
-            Debug.WriteLine($"");
+            Console.WriteLine($"");
         }
 
 
@@ -148,17 +148,17 @@ namespace MyShaderAnalysis.utilhelpers.snippetcode
                     bool[] result1 = Generator2(i, j, bytes01, bytes02);
                     if (result1.Length > 0)
                     {
-                        // Debug.WriteLine($"{i,3},{j,3} ok {BoolArrayToString(result)}");
+                        // Console.WriteLine($"{i,3},{j,3} ok {BoolArrayToString(result)}");
                         bool[] result2 = Generator2(i, j, bytes11, bytes12);
-                        // Debug.WriteLine($"{CompareBoolArrays(result1, result2)}");
+                        // Console.WriteLine($"{CompareBoolArrays(result1, result2)}");
                         // int match = CompareBoolArrays(result1, result2);
                         int match = TotalMatchCountTrue(result1, result2);
                         if (match > 115)
                         {
-                            Debug.WriteLine($"{i},{j} match {match}   {TotalMatchCountTrue(result1, result2)}");
-                            Debug.WriteLine($"{BoolArrayToString(result1)}");
-                            Debug.WriteLine($"{BoolArrayToString(result2)}");
-                            Debug.WriteLine($"");
+                            Console.WriteLine($"{i},{j} match {match}   {TotalMatchCountTrue(result1, result2)}");
+                            Console.WriteLine($"{BoolArrayToString(result1)}");
+                            Console.WriteLine($"{BoolArrayToString(result2)}");
+                            Console.WriteLine($"");
                         }
 
                     }
@@ -295,8 +295,8 @@ namespace MyShaderAnalysis.utilhelpers.snippetcode
                 int matchLen = CompareStrings(files[i - 1], files[i]);
                 if (matchLen > 21)
                 {
-                    Debug.WriteLine($"{files[i - 1]}");
-                    Debug.WriteLine($"{files[i]}");
+                    Console.WriteLine($"{files[i - 1]}");
+                    Console.WriteLine($"{files[i]}");
                 }
                 if (i == 10)
                 {

@@ -71,7 +71,7 @@ namespace MyShaderAnalysis
 
             foreach (var d in Directory.GetFiles(dir))
             {
-                Debug.WriteLine($"{d}");
+                Console.WriteLine($"{d}");
             }
 
         }

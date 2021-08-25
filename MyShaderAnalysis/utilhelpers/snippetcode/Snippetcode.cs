@@ -28,8 +28,8 @@ namespace MyShaderAnalysis.utilhelpers.snippetcode
             // zframes ids range from 0 to large numbers, the largest known id is
             // 0x018cbfb1 or 26001329
             // a standardised way to print them then is using a 8-length hex representation
-            // Debug.WriteLine(0x018cbfb1);
-            Debug.WriteLine($"{60:x08}");
+            // Console.WriteLine(0x018cbfb1);
+            Console.WriteLine($"{60:x08}");
         }
 
 
@@ -50,8 +50,8 @@ namespace MyShaderAnalysis.utilhelpers.snippetcode
             myDict.Add(2, 2);
             myDict.Add(4, 4);
             myDict.Add(8, 8);
-            Debug.WriteLine(myDict.ElementAt(3));
-            Debug.WriteLine(myDict[4]);
+            Console.WriteLine(myDict.ElementAt(3));
+            Console.WriteLine(myDict[4]);
         }
 
 
@@ -61,7 +61,7 @@ namespace MyShaderAnalysis.utilhelpers.snippetcode
 
             for (int i = 0; i < 8; i++)
             {
-                Debug.WriteLine($"({i * 32 + 216}) 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
+                Console.WriteLine($"({i * 32 + 216}) 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
             }
 
         }

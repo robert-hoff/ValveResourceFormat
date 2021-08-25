@@ -25,7 +25,7 @@ namespace MyShaderAnalysis.utilhelpers
 
         public void SetOutputFile(string filenamepath)
         {
-            Debug.WriteLine($"writing to {filenamepath}");
+            Console.WriteLine($"writing to {filenamepath}");
             sw = new StreamWriter(filenamepath);
             swWriterAlreadyClosed = false;
         }
@@ -51,7 +51,7 @@ namespace MyShaderAnalysis.utilhelpers
             }
             if (WriteToDebug)
             {
-                Debug.Write(text);
+                Console.Write(text);
             }
             if (sw != null)
             {

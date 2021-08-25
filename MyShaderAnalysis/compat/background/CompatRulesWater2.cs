@@ -60,7 +60,7 @@ namespace MyShaderAnalysis.compat
                 // for (int i = 0; i < 100; i++) {
                 if (CheckZFrame(i))
                 {
-                    Debug.WriteLine($"{i,3}    {i:x04}           {Convert.ToString(i, 2).PadLeft(20, '0')}");
+                    Console.WriteLine($"{i,3}    {i:x04}           {Convert.ToString(i, 2).PadLeft(20, '0')}");
                     // ShowState(i);
                 }
             }
@@ -88,7 +88,7 @@ namespace MyShaderAnalysis.compat
                         continue;
                     }
 
-                    // Debug.WriteLine($"{i}:{s1} {j}:{s2}");
+                    // Console.WriteLine($"{i}:{s1} {j}:{s2}");
 
                     if (exclusions[i, j] == true)
                     {
@@ -109,7 +109,7 @@ namespace MyShaderAnalysis.compat
                 {
 
 
-                    //Debug.WriteLine($"{i} {j}");
+                    //Console.WriteLine($"{i} {j}");
 
                     if (inclusions[i, j] && state[j] == 0)
                     {
@@ -147,7 +147,7 @@ namespace MyShaderAnalysis.compat
             {
                 stateStr = $"{state[i]} {stateStr}";
             }
-            Debug.WriteLine($"{stateStr[0..^1]}");
+            Console.WriteLine($"{stateStr[0..^1]}");
         }
 
 

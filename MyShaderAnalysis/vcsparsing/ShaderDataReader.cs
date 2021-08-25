@@ -9,18 +9,14 @@ namespace MyShaderAnalysis.vcsparsing
     {
         private BinaryReader BinReader;
 
-        public ShaderDataReader(Stream input, bool writeToConsole = false, bool writeToDebug = true)
+        public ShaderDataReader(Stream input)
         {
             BinReader = new BinaryReader(input);
-            WriteToConsole = writeToConsole;
-            WriteToDebug = writeToDebug;
         }
 
-        public ShaderDataReader(byte[] databytes, bool writeToConsole = false, bool writeToDebug = true)
+        public ShaderDataReader(byte[] databytes)
         {
             BinReader = new BinaryReader(new MemoryStream(databytes));
-            WriteToConsole = writeToConsole;
-            WriteToDebug = writeToDebug;
         }
 
 #pragma warning disable CA1024 // Use properties where appropriate
@@ -286,31 +282,20 @@ namespace MyShaderAnalysis.vcsparsing
 
         public bool WriteToConsole { get; set; }
         public bool WriteToDebug { get; set; }
-        public void DisableOutput()
-        {
-            WriteToConsole = false;
-            WriteToDebug = false;
-        }
+
+        public bool DisableOutput { get; set; } = false;
 
         private StreamWriter sw;
-        public void ConfigureWriteToFile(StreamWriter sw, bool disableOutput = false)
+        public void ConfigureWriteToFile(StreamWriter sw)
         {
             this.sw = sw;
-            if (disableOutput)
-            {
-                DisableOutput();
-            }
         }
 
         public void OutputWrite(string text)
         {
-            if (WriteToConsole)
+            if (!DisableOutput)
             {
                 Console.Write(text);
-            }
-            if (WriteToDebug)
-            {
-                Debug.Write(text);
             }
             if (sw != null)
             {

@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using System.IO;
 using MyShaderAnalysis.compat;
@@ -15,10 +16,23 @@ namespace MyShaderAnalysis
     class ProgramEntry
     {
 
+        public class ToDebugWriter : StringWriter
+        {
+            public override void WriteLine(string str0)
+            {
+                Console.WriteLine(str0);
+                base.WriteLine(str0);
+            }
+        }
         static void Main()
         {
+            Console.SetOut(new ToDebugWriter());
 
-            TestMobileShaderFiles.RunTrials();
+
+
+
+
+            // TestMobileShaderFiles.RunTrials();
 
             // PrintoutsZframes1.RunTrials();
             // StaticAnalysisZframes.RunTrials();
@@ -28,7 +42,7 @@ namespace MyShaderAnalysis
             // StaticAnalysis.RunTrials();
 
 
-            // PrintoutsByteAnalysis.RunTrials();
+            PrintoutsByteAnalysis.RunTrials();
             // ShaderAnalysis.RunTrials();
 
             // Snippetcode.RunTrials();

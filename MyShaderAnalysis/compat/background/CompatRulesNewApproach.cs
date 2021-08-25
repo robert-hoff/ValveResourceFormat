@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using MyShaderAnalysis.utilhelpers;
 using MyShaderAnalysis.vcsparsing;
@@ -26,7 +27,7 @@ namespace MyShaderAnalysis.compat
             foreach (var sfBlock in shaderFile.sfBlocks)
             {
 
-                Debug.WriteLine($"{sfBlock.name0}");
+                Console.WriteLine($"{sfBlock.name0}");
             }
 
 

@@ -168,7 +168,7 @@ namespace MyShaderAnalysis.vcsparsing
             }
             if (sourceType != VcsSourceType.DXIL && saveGlslSources)
             {
-                Debug.WriteLine($"glsl save indicated but source is not glsl");
+                Console.WriteLine($"glsl save indicated but source is not glsl");
             }
         }
 
@@ -489,7 +489,7 @@ namespace MyShaderAnalysis.vcsparsing
                 int glslOffset = glslSourceItem.Item1;
                 int glslSize = glslSourceItem.Item2;
                 byte[] glslSourceContent = ReadBytesAtPosition(glslOffset, glslSize, rel: false);
-                Debug.WriteLine($"writing {glslFilenamepath}");
+                Console.WriteLine($"writing {glslFilenamepath}");
                 StreamWriter glslFileWriter = new(glslFilenamepath);
                 string htmlHeader = GetHtmlHeader(htmlFilename[0..^5], htmlFilename[0..^5]);
                 glslFileWriter.WriteLine($"{htmlHeader}");
@@ -515,7 +515,7 @@ namespace MyShaderAnalysis.vcsparsing
                 int glslSize = glslSourceItem.Item2;
                 byte[] glslSourceContent = ReadBytesAtPosition(glslOffset, glslSize, rel: false);
 
-                Debug.WriteLine($"writing {glslFilenamepath}");
+                Console.WriteLine($"writing {glslFilenamepath}");
                 File.WriteAllBytes(glslFilenamepath, glslSourceContent);
             }
         }

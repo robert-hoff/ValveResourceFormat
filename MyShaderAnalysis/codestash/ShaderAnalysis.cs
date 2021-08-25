@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -263,7 +264,7 @@ namespace MyShaderAnalysis
         //    string outputFilename = GetZframeHtmlFilename((uint)zframeId, shaderFile.filenamepath);
         //    string outputFilenamepath = @$"{outputdir}/{outputFilename}";
         //    DataReaderZFrameByteAnalysis zFrameParser = new(zframeDatabytes, shaderFile.vcsFileType, shaderFile.vcsSourceType);
-        //    Debug.WriteLine($"writing to {outputFilenamepath}");
+        //    Console.WriteLine($"writing to {outputFilenamepath}");
         //    StreamWriter sw = new(outputFilenamepath);
         //    zFrameParser.ConfigureWriteToFile(sw, true);
         //    zFrameParser.SetWriteAsHtml(true);
@@ -283,29 +284,28 @@ namespace MyShaderAnalysis
 
         static void WriteZframeAsHtml(ShaderFile shaderFile, int zframeIndex, string outputdir = null, bool saveGlsl = true)
         {
-            if (outputdir == null)
-            {
-                outputdir = OUTPUT_DIR;
-            }
-
-            byte[] zframeDatabytes = shaderFile.GetDecompressedZFrameByIndex(zframeIndex);
-            uint zframeId = (uint)shaderFile.GetZFrameIdByIndex(zframeIndex);
-            string outputFilename = GetZframeHtmlFilename(zframeId, "", shaderFile.filenamepath);
-            string outputFilenamepath = @$"{outputdir}/{outputFilename}";
-            DataReaderZFrameByteAnalysis zFrameParser = new(zframeDatabytes, shaderFile.vcsFileType, shaderFile.vcsSourceType);
-            Debug.WriteLine($"writing to {outputFilenamepath}");
-            StreamWriter sw = new(outputFilenamepath);
-            zFrameParser.ConfigureWriteToFile(sw, true);
-            zFrameParser.SetWriteAsHtml(true);
-            if (saveGlsl)
-            {
-                zFrameParser.RequestGlslFileSave(outputdir);
-            }
-            string htmlHeader = GetHtmlHeader(outputFilename, outputFilename[0..^5]);
-            sw.WriteLine($"{htmlHeader}");
-            zFrameParser.PrintByteAnalysis();
-            sw.WriteLine($"{GetHtmlFooter()}");
-            sw.Close();
+            //if (outputdir == null)
+            //{
+            //    outputdir = OUTPUT_DIR;
+            //}
+            //byte[] zframeDatabytes = shaderFile.GetDecompressedZFrameByIndex(zframeIndex);
+            //uint zframeId = (uint)shaderFile.GetZFrameIdByIndex(zframeIndex);
+            //string outputFilename = GetZframeHtmlFilename(zframeId, "", shaderFile.filenamepath);
+            //string outputFilenamepath = @$"{outputdir}/{outputFilename}";
+            //DataReaderZFrameByteAnalysis zFrameParser = new(zframeDatabytes, shaderFile.vcsFileType, shaderFile.vcsSourceType);
+            //Console.WriteLine($"writing to {outputFilenamepath}");
+            //StreamWriter sw = new(outputFilenamepath);
+            //zFrameParser.ConfigureWriteToFile(sw, true);
+            //zFrameParser.SetWriteAsHtml(true);
+            //if (saveGlsl)
+            //{
+            //    zFrameParser.RequestGlslFileSave(outputdir);
+            //}
+            //string htmlHeader = GetHtmlHeader(outputFilename, outputFilename[0..^5]);
+            //sw.WriteLine($"{htmlHeader}");
+            //zFrameParser.PrintByteAnalysis();
+            //sw.WriteLine($"{GetHtmlFooter()}");
+            //sw.Close();
         }
 
 
@@ -328,26 +328,25 @@ namespace MyShaderAnalysis
 
         static void WriteZframeAsTxt(ShaderFile shaderFile, int zframeIndex, string outputdir = null, bool saveGlsl = true)
         {
-            if (outputdir == null)
-            {
-                outputdir = OUTPUT_DIR;
-            }
-
-            byte[] zframeDatabytes = shaderFile.GetDecompressedZFrameByIndex(zframeIndex);
-            uint zframeId = (uint)shaderFile.GetZFrameIdByIndex(zframeIndex);
-            string outputFilename = GetZframeTxtFilename(zframeId, shaderFile.filenamepath);
-            string outputFilenamepath = @$"{outputdir}/{outputFilename}";
-            DataReaderZFrameByteAnalysis zFrameParser = new(zframeDatabytes, shaderFile.vcsFileType, shaderFile.vcsSourceType);
-            Debug.WriteLine($"writing to {outputFilenamepath}");
-            StreamWriter sw = new(outputFilenamepath);
-            zFrameParser.ConfigureWriteToFile(sw, true);
-            zFrameParser.SetWriteAsHtml(false);
-            if (saveGlsl)
-            {
-                zFrameParser.RequestGlslFileSave(outputdir);
-            }
-            zFrameParser.PrintByteAnalysis();
-            sw.Close();
+            //if (outputdir == null)
+            //{
+            //    outputdir = OUTPUT_DIR;
+            //}
+            //byte[] zframeDatabytes = shaderFile.GetDecompressedZFrameByIndex(zframeIndex);
+            //uint zframeId = (uint)shaderFile.GetZFrameIdByIndex(zframeIndex);
+            //string outputFilename = GetZframeTxtFilename(zframeId, shaderFile.filenamepath);
+            //string outputFilenamepath = @$"{outputdir}/{outputFilename}";
+            //DataReaderZFrameByteAnalysis zFrameParser = new(zframeDatabytes, shaderFile.vcsFileType, shaderFile.vcsSourceType);
+            //Console.WriteLine($"writing to {outputFilenamepath}");
+            //StreamWriter sw = new(outputFilenamepath);
+            //zFrameParser.ConfigureWriteToFile(sw, true);
+            //zFrameParser.SetWriteAsHtml(false);
+            //if (saveGlsl)
+            //{
+            //    zFrameParser.RequestGlslFileSave(outputdir);
+            //}
+            //zFrameParser.PrintByteAnalysis();
+            //sw.Close();
         }
 
 
@@ -368,8 +367,8 @@ namespace MyShaderAnalysis
                 byte[] zframeDatabytes = shaderFile.GetDecompressedZFrameByIndex(0);
                 string outputFilenamepath = @$"{OUTPUT_DIR}/{GetZframeTxtFilename((uint)shaderFile.GetZFrameIdByIndex(0), vcsFile)}";
                 StreamWriter sw = new(outputFilenamepath);
-                Debug.WriteLine($"parsing {vcsFile}");
-                Debug.WriteLine($"writing to {outputFilenamepath}");
+                Console.WriteLine($"parsing {vcsFile}");
+                Console.WriteLine($"writing to {outputFilenamepath}");
                 PrintZFrame(zframeDatabytes, shaderFile.vcsFileType, shaderFile.vcsSourceType, true, sw);
                 sw.Close();
 
@@ -387,10 +386,10 @@ namespace MyShaderAnalysis
                 int nrToParse = zcount > 100 ? 100 : zcount;
                 if (nrToParse == 0)
                 {
-                    Debug.WriteLine($"no zframes to parse for {RemoveBaseDir(shaderFile.filenamepath)}");
+                    Console.WriteLine($"no zframes to parse for {RemoveBaseDir(shaderFile.filenamepath)}");
                     continue;
                 }
-                Debug.WriteLine($"parsing {RemoveBaseDir(shaderFile.filenamepath)} frames [{0},{nrToParse})");
+                Console.WriteLine($"parsing {RemoveBaseDir(shaderFile.filenamepath)} frames [{0},{nrToParse})");
                 for (int i = 0; i < nrToParse; i++)
                 {
                     byte[] zframeDatabytes = shaderFile.GetDecompressedZFrameByIndex(i);
@@ -406,8 +405,8 @@ namespace MyShaderAnalysis
             byte[] zframeDatabytes = shaderFile.GetDecompressedZFrame(zframeId);
             string outputFilenamepath = @$"{OUTPUT_DIR}/{GetZframeTxtFilename((uint)zframeId, filenamepath)}";
             StreamWriter sw = new(outputFilenamepath);
-            Debug.WriteLine($"parsing {filenamepath}");
-            Debug.WriteLine($"writing to {outputFilenamepath}");
+            Console.WriteLine($"parsing {filenamepath}");
+            Console.WriteLine($"writing to {outputFilenamepath}");
             PrintZFrame(zframeDatabytes, shaderFile.vcsFileType, shaderFile.vcsSourceType, true, sw);
             sw.Close();
         }
@@ -421,8 +420,8 @@ namespace MyShaderAnalysis
             byte[] zframeDatabytes = shaderFile.GetDecompressedZFrameByIndex(zframeIndex);
             string outputFilenamepath = @$"{OUTPUT_DIR}/{GetZframeTxtFilename((uint)shaderFile.GetZFrameIdByIndex(zframeIndex), filenamepath)}";
             StreamWriter sw = new(outputFilenamepath);
-            Debug.WriteLine($"parsing {filenamepath}");
-            Debug.WriteLine($"writing to {outputFilenamepath}");
+            Console.WriteLine($"parsing {filenamepath}");
+            Console.WriteLine($"writing to {outputFilenamepath}");
             PrintZFrame(zframeDatabytes, shaderFile.vcsFileType, shaderFile.vcsSourceType, true, sw);
             sw.Close();
         }
@@ -454,13 +453,13 @@ namespace MyShaderAnalysis
         static void PrintZFrame(byte[] databytes, VcsFileType vcsFiletype, VcsSourceType sourceType,
             bool disableOutput = false, StreamWriter sw = null)
         {
-            DataReaderZFrameByteAnalysis zFrameParser = new(databytes, vcsFiletype, sourceType);
-            zFrameParser.DisableOutput();
-            if (sw != null)
-            {
-                zFrameParser.ConfigureWriteToFile(sw, disableOutput);
-            }
-            zFrameParser.PrintByteAnalysis();
+            //DataReaderZFrameByteAnalysis zFrameParser = new(databytes, vcsFiletype, sourceType);
+            //zFrameParser.DisableOutput();
+            //if (sw != null)
+            //{
+            //    zFrameParser.ConfigureWriteToFile(sw, disableOutput);
+            //}
+            //zFrameParser.PrintByteAnalysis();
         }
 
 
@@ -472,9 +471,9 @@ namespace MyShaderAnalysis
             List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Any, -1);
             foreach (string filenamepath in vcsFiles)
             {
-                Debug.Write($"parsing {RemoveBaseDir(filenamepath)}");
+                Console.Write($"parsing {RemoveBaseDir(filenamepath)}");
                 ShaderFile shaderFile = new ReadShaderFile(filenamepath).GetShaderFile();
-                Debug.WriteLine($"{shaderFile.GetZFrameCount()}");
+                Console.WriteLine($"{shaderFile.GetZFrameCount()}");
             }
         }
 
@@ -521,7 +520,7 @@ namespace MyShaderAnalysis
 
         static void ShowVcsByteAnalysis(string filenamepath)
         {
-            Debug.WriteLine($"parsing {RemoveBaseDir(filenamepath)}\n");
+            Console.WriteLine($"parsing {RemoveBaseDir(filenamepath)}\n");
             DataReaderVcsByteAnalysis shaderByteAnalysis = new(filenamepath);
             shaderByteAnalysis.SetShortenOutput(false);
             shaderByteAnalysis.PrintByteAnalysis();
@@ -538,14 +537,14 @@ namespace MyShaderAnalysis
 
         static void WriteVcsByteAnalysisToTxt(string filenamepath)
         {
-            DataReaderVcsByteAnalysis shaderByteAnalysis = new(filenamepath);
-            string fileoutputNamepath = $"{OUTPUT_DIR}/{Path.GetFileName(filenamepath)[0..^4]}-analysis.txt";
-            Debug.WriteLine($"writing to {fileoutputNamepath}");
-            StreamWriter sw = new(fileoutputNamepath);
-            sw.WriteLine($"parsing {RemoveBaseDir(filenamepath)}\n");
-            shaderByteAnalysis.ConfigureWriteToFile(sw, true);
-            shaderByteAnalysis.PrintByteAnalysis();
-            sw.Close();
+            //DataReaderVcsByteAnalysis shaderByteAnalysis = new(filenamepath);
+            //string fileoutputNamepath = $"{OUTPUT_DIR}/{Path.GetFileName(filenamepath)[0..^4]}-analysis.txt";
+            //Console.WriteLine($"writing to {fileoutputNamepath}");
+            //StreamWriter sw = new(fileoutputNamepath);
+            //sw.WriteLine($"parsing {RemoveBaseDir(filenamepath)}\n");
+            //shaderByteAnalysis.ConfigureWriteToFile(sw, true);
+            //shaderByteAnalysis.PrintByteAnalysis();
+            //sw.Close();
         }
 
 
@@ -580,15 +579,15 @@ namespace MyShaderAnalysis
          */
         static void WriteVcsByteAnalysisToHtml(string filenamepath, bool writeHtmlLinks = false)
         {
-            DataReaderVcsByteAnalysis shaderByteAnalysis = new(filenamepath);
-            string fileoutputNamepath = $"{OUTPUT_DIR}/{Path.GetFileName(filenamepath)[0..^4]}-analysis.html";
-            Debug.WriteLine($"writing to {fileoutputNamepath}");
-            StreamWriter sw = new(fileoutputNamepath);
-            sw.WriteLine(GetHtmlHeader(Path.GetFileName(filenamepath), RemoveBaseDir(filenamepath)));
-            shaderByteAnalysis.SetWriteHtmlLinks(writeHtmlLinks);
-            shaderByteAnalysis.ConfigureWriteToFile(sw, true);
-            shaderByteAnalysis.PrintByteAnalysis();
-            sw.Close();
+            //DataReaderVcsByteAnalysis shaderByteAnalysis = new(filenamepath);
+            //string fileoutputNamepath = $"{OUTPUT_DIR}/{Path.GetFileName(filenamepath)[0..^4]}-analysis.html";
+            //Console.WriteLine($"writing to {fileoutputNamepath}");
+            //StreamWriter sw = new(fileoutputNamepath);
+            //sw.WriteLine(GetHtmlHeader(Path.GetFileName(filenamepath), RemoveBaseDir(filenamepath)));
+            //shaderByteAnalysis.SetWriteHtmlLinks(writeHtmlLinks);
+            //shaderByteAnalysis.ConfigureWriteToFile(sw, true);
+            //shaderByteAnalysis.PrintByteAnalysis();
+            //sw.Close();
         }
 
         /*
@@ -603,16 +602,16 @@ namespace MyShaderAnalysis
             int[] typesParsed = new int[10];
             foreach (string filenamepath in vcsFiles)
             {
-                Debug.Write($"parsing {RemoveBaseDir(filenamepath)}");
+                Console.Write($"parsing {RemoveBaseDir(filenamepath)}");
                 DataReaderVcsByteAnalysis shaderByteAnalysis = new(filenamepath);
                 shaderByteAnalysis.SetShortenOutput(false);
                 shaderByteAnalysis.DisableOutput();
                 shaderByteAnalysis.PrintByteAnalysis();
-                Debug.WriteLine($" [SUCCESS]");
+                Console.WriteLine($" [SUCCESS]");
                 typesParsed[(int)GetVcsFileType(filenamepath)]++;
                 filesParsed++;
             }
-            Debug.WriteLine($"{filesParsed} files were parsed. " +
+            Console.WriteLine($"{filesParsed} files were parsed. " +
                 $"features({typesParsed[(int)VcsFileType.Features]}), " +
                 $"vs({typesParsed[(int)VcsFileType.VertexShader]}), " +
                 $"ps({typesParsed[(int)VcsFileType.PixelShader]}), " +

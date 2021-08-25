@@ -41,7 +41,7 @@ namespace MyShaderAnalysis.utilhelpers
             // string filenamepath = $"{DOTA_GAME_PC_SOURCE}/multiblend_pc_40_vs.vcs";
             // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_40_vs.vcs";
             VcsSourceType vcsSourceType = GetVcsSourceType(filenamepath);
-            Debug.WriteLine($"{vcsSourceType}");
+            Console.WriteLine($"{vcsSourceType}");
         }
 
 
@@ -74,11 +74,11 @@ namespace MyShaderAnalysis.utilhelpers
             GpuSource gpuSource = zframeFile.gpuSources[0];
             if (gpuSource is not GlslSource)
             {
-                Debug.WriteLine($"this source is considered a GlslSource");
+                Console.WriteLine($"this source is considered a GlslSource");
             }
 
             FileTokens fileTokens = new FileTokens(filenamepath);
-            Debug.WriteLine($"{fileTokens.GetGlslHtmlUrl((GlslSource) gpuSource)}");
+            Console.WriteLine($"{fileTokens.GetGlslHtmlUrl((GlslSource) gpuSource)}");
 
 
         }
@@ -89,12 +89,12 @@ namespace MyShaderAnalysis.utilhelpers
         {
             string filenamepath = $"{DOTA_DAC_MOBILE_GLES_SOURCE}/spritecard_mobile_gles_30_vs.vcs";
             FileTokens fileTokens = new FileTokens(filenamepath);
-            // Debug.WriteLine($"{fileTokens}");
-            Debug.WriteLine($"{fileTokens.GetServerFilePath()}"); // /dota-game/gles/spritecard_mobile_gles_30
-            Debug.WriteLine($"{fileTokens.GetServerFileDir()}"); // Z:/dev/www/vcs.codecreation.dev/dota-game/gles/spritecard_mobile_gles_30
-            Debug.WriteLine($"{fileTokens.GetZFramesServerPath()}"); // /dota-game/gles/spritecard_mobile_gles_30/zframes
-            Debug.WriteLine($"{fileTokens.GetZFramesServerDir()}"); // Z:/dev/www/vcs.codecreation.dev/dota-game/gles/spritecard_mobile_gles_30/zframes
-            Debug.WriteLine($"{fileTokens.GetGlslServerDir()}"); //
+            // Console.WriteLine($"{fileTokens}");
+            Console.WriteLine($"{fileTokens.GetServerFilePath()}"); // /dota-game/gles/spritecard_mobile_gles_30
+            Console.WriteLine($"{fileTokens.GetServerFileDir()}"); // Z:/dev/www/vcs.codecreation.dev/dota-game/gles/spritecard_mobile_gles_30
+            Console.WriteLine($"{fileTokens.GetZFramesServerPath()}"); // /dota-game/gles/spritecard_mobile_gles_30/zframes
+            Console.WriteLine($"{fileTokens.GetZFramesServerDir()}"); // Z:/dev/www/vcs.codecreation.dev/dota-game/gles/spritecard_mobile_gles_30/zframes
+            Console.WriteLine($"{fileTokens.GetGlslServerDir()}"); //
         }
 
         static void TestFileAndPathNamesNewArchive()
@@ -103,10 +103,10 @@ namespace MyShaderAnalysis.utilhelpers
             string filenamepath = $"{DOTA_GAME_PC_SOURCE}/hero_pc_30_vs.vcs";
             FileTokens fileTokens = new FileTokens(filenamepath);
 
-            Debug.WriteLine($"{fileTokens.GetBestPath().Length == 0}"); // empty string if no path found
-            Debug.WriteLine($"{fileTokens.GetServerFilePath()}"); // /dota-game/pc/hero_pc_30
-            Debug.WriteLine($"{fileTokens.GetServerFileDir()}"); // Z:/dev/www/vcs.codecreation.dev/dota-game/pc/hero_pc_30
-            Debug.WriteLine($"{fileTokens.GetBestZframesLink(0)}"); //   Z[00000000] (plaintext if no zframe found)
+            Console.WriteLine($"{fileTokens.GetBestPath().Length == 0}"); // empty string if no path found
+            Console.WriteLine($"{fileTokens.GetServerFilePath()}"); // /dota-game/pc/hero_pc_30
+            Console.WriteLine($"{fileTokens.GetServerFileDir()}"); // Z:/dev/www/vcs.codecreation.dev/dota-game/pc/hero_pc_30
+            Console.WriteLine($"{fileTokens.GetBestZframesLink(0)}"); //   Z[00000000] (plaintext if no zframe found)
         }
 
 
