@@ -488,7 +488,7 @@ namespace MyShaderAnalysis
             // string filenamepath = ARTIFACT_CLASSIC_CORE_PC_SOURCE + @"/aerial_perspective_pc_30_ps.vcs";
             // string filenamepath = ARTIFACT_CLASSIC_CORE_PC_SOURCE + @"/bilateral_blur_pc_30_vs.vcs";
             ShaderFile shaderFile = new ReadShaderFile(filenamepath).GetShaderFile();
-            shaderFile.ShowZFrames();
+
 
         }
 

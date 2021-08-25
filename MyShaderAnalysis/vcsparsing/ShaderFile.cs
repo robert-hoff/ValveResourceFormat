@@ -1,9 +1,8 @@
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
-using System.IO;
 using ZstdSharp;
-using System.Diagnostics;
 using MyShaderAnalysis.compat;
 using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
 using LzmaDecoder = SevenZip.Compression.LZMA.Decoder;
@@ -42,7 +41,7 @@ namespace MyShaderAnalysis.vcsparsing
             vcsFileType = GetVcsFileType(filenamepath);
             vcsSourceType = GetVcsSourceType(filenamepath);
             this.datareader = datareader;
-
+            // There's a chance HullShader, DomainShader and RaytracingShader work but they haven't been tested
             if (vcsFileType == VcsFileType.Features)
             {
                 featuresHeader = new FeaturesHeaderBlock(datareader, datareader.GetOffset());
@@ -202,7 +201,7 @@ namespace MyShaderAnalysis.vcsparsing
 
 
         private uint zFrameCount;
-        const int SKIP_ZFRAMES_IFMORETHAN = 10;
+        const int SKIP_ZFRAMES_IF_MORE_THAN = 10;
 
         public void PrintByteAnalysis(bool shortenOutput = true)
         {
@@ -292,7 +291,7 @@ namespace MyShaderAnalysis.vcsparsing
             }
 
             PrintZframes(shortenOutput);
-            if (shortenOutput && zFrameCount > SKIP_ZFRAMES_IFMORETHAN)
+            if (shortenOutput && zFrameCount > SKIP_ZFRAMES_IF_MORE_THAN)
             {
                 datareader.Comment("rest of data contains compressed zframes");
                 datareader.BreakLine();
@@ -305,14 +304,6 @@ namespace MyShaderAnalysis.vcsparsing
         public int[] GetDBlockConfig(int blockId)
         {
             return dBlockConfigGen.GetConfigState(blockId);
-        }
-
-        public void ShowZFrames()
-        {
-            foreach (var zframeData in zframesLookup)
-            {
-                Debug.WriteLine($"{zframeData}");
-            }
         }
 
         private void PrintZframes(bool shortenOutput)
@@ -335,7 +326,7 @@ namespace MyShaderAnalysis.vcsparsing
                 zFrameIndexes.Add(zframeId);
             }
             datareader.BreakLine();
-            if (shortenOutput && zFrameCount > SKIP_ZFRAMES_IFMORETHAN)
+            if (shortenOutput && zFrameCount > SKIP_ZFRAMES_IF_MORE_THAN)
             {
                 return;
             }
@@ -458,11 +449,7 @@ namespace MyShaderAnalysis.vcsparsing
             return $"zframeId[0x{zframeId:x08}] {comprDesc} offset={offsetToZFrameHeader,8} " +
                 $"compressedLength={compressedLength,7} uncompressedLength={uncompressedLength,9}";
         }
+
+
     }
-
-
-
 }
-
-
-

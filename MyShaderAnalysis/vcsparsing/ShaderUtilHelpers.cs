@@ -80,6 +80,10 @@ namespace MyShaderAnalysis.vcsparsing
                     return VcsSourceType.DXBC;
                 }
             }
+            if (filename.Contains("mobile_gles_"))
+            {
+                return VcsSourceType.MobileGles;
+            }
             if (filename.Contains("android_vulkan_"))
             {
                 return VcsSourceType.AndroidVulkan;
@@ -91,10 +95,6 @@ namespace MyShaderAnalysis.vcsparsing
             if (filename.Contains("vulkan_"))
             {
                 return VcsSourceType.Vulkan;
-            }
-            if (filename.Contains("mobile_gles_"))
-            {
-                return VcsSourceType.MobileGles;
             }
             throw new ShaderParserException($"Source type unknown or not supported {filenamepath}");
         }

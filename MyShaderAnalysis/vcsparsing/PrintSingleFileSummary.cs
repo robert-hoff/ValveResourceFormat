@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using MyShaderAnalysis.compat;
 using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
 
-
 namespace MyShaderAnalysis.vcsparsing
 {
     public class PrintSingleFileSummary
@@ -552,6 +551,6 @@ namespace MyShaderAnalysis.vcsparsing
             if (val == 999999999) return "+";
             return "" + val; ;
         }
-
     }
+
 }

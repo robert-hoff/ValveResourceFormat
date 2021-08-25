@@ -1,4 +1,3 @@
-
 namespace MyShaderAnalysis.vcsparsing
 {
     /*
@@ -12,9 +11,9 @@ namespace MyShaderAnalysis.vcsparsing
      * "IOS_VULKAN"
      * "ANDROID_VULKAN"
      *
-     * PCGL is implemented
-     * PC and VULKAN are correctly parsed, but lack support for exporting source (source may be viewed as bytecode)
-     * The rest are not implementated (and have not been attempted)
+     * PCGL and MOBILE_GLES work well
+     * PC, VULKAN, IOS_VULKAN, ANDROID_VULKAN parse without error, but lack decompiling source (source may be viewed as bytecode)
+     * X360, MAC are not implemented
      *
      *
      */

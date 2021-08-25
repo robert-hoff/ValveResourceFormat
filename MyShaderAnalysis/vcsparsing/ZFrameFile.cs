@@ -341,7 +341,6 @@ namespace MyShaderAnalysis.vcsparsing
                 }
                 throw new ShaderParserException("unexpected data!");
             }
-
             public override string ToString()
             {
                 if (dynExpLen > 0)
@@ -351,7 +350,6 @@ namespace MyShaderAnalysis.vcsparsing
                 {
                     return $"{name0,-40} 0x{murmur32:x08}     {ShaderDataReader.BytesToString(code)}   {(operatorVal != int.MinValue ? $"{operatorVal}" : "")}";
                 }
-
             }
         }
 
@@ -859,6 +857,6 @@ namespace MyShaderAnalysis.vcsparsing
             datareader.OutputWriteLine($"// {dynExp}");
             datareader.ShowBytes(dynExpLen);
         }
-
     }
+
 }
