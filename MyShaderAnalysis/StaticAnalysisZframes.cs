@@ -16,14 +16,14 @@ namespace MyShaderAnalysis
     public class StaticAnalysisZframes
     {
 
-        const string PCGL_DIR_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders-core\vfx";
-        const string PCGL_DIR_NOT_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders\vfx";
-        const string PC_DIR_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pc\shaders-core\vfx";
-        const string PC_DIR_NOT_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pc\shaders\vfx";
-        const string OUTPUT_DIR = @"Z:\active\projects\dota2-sourcesdk-modding\shader-analysis-vcs-format\OUTPUT_DUMP";
-        const string SERVER_OUTPUT_DIR = @"Z:\dev\www\vcs.codecreation.dev\GEN-output";
-        const string SERVER_BASEDIR = @"Z:\dev\www\vcs.codecreation.dev";
-        const string OUTPUT_SUB_DIR = @"\GEN-output";
+        const string PCGL_DIR_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders-core/vfx";
+        const string PCGL_DIR_NOT_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders/vfx";
+        const string PC_DIR_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pc/shaders-core/vfx";
+        const string PC_DIR_NOT_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pc/shaders/vfx";
+        const string OUTPUT_DIR = @"Z:/active/projects/dota2-sourcesdk-modding/shader-analysis-vcs-format/OUTPUT_DUMP";
+        const string SERVER_OUTPUT_DIR = @"Z:/dev/www/vcs.codecreation.dev/GEN-output";
+        const string SERVER_BASEDIR = @"Z:/dev/www/vcs.codecreation.dev";
+        const string OUTPUT_SUB_DIR = @"/GEN-output";
 
 
         public static void RunTrials()
@@ -65,11 +65,11 @@ namespace MyShaderAnalysis
 
         static void Trial1()
         {
-            // string filenamepath = $@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_vs.vcs"; int useZFrame = 0x24;
-            // string filenamepath = $@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_ps.vcs"; int useZFrame = 0xc9;
-            string filenamepath = $@"{PCGL_DIR_CORE}\depth_only_pcgl_30_vs.vcs"; int useZFrame = 0x68;
-            // string filenamepath = $@"{PCGL_DIR_NOT_CORE}\refract_pcgl_30_ps.vcs";
-            // string filenamepath = $@"{PCGL_DIR_CORE}\visualize_cloth_pcgl_40_ps.vcs";
+            // string filenamepath = $@"{PCGL_DIR_NOT_CORE}/multiblend_pcgl_30_vs.vcs"; int useZFrame = 0x24;
+            // string filenamepath = $@"{PCGL_DIR_NOT_CORE}/multiblend_pcgl_30_ps.vcs"; int useZFrame = 0xc9;
+            string filenamepath = $@"{PCGL_DIR_CORE}/depth_only_pcgl_30_vs.vcs"; int useZFrame = 0x68;
+            // string filenamepath = $@"{PCGL_DIR_NOT_CORE}/refract_pcgl_30_ps.vcs";
+            // string filenamepath = $@"{PCGL_DIR_CORE}/visualize_cloth_pcgl_40_ps.vcs";
 
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             ZFrameFile zframeFile = shaderFile.GetZFrameFile(useZFrame);
@@ -141,10 +141,10 @@ namespace MyShaderAnalysis
          */
         static void CountZframeAndSourceFilesSingleFile1()
         {
-            // string filenamepath = $@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_vs.vcs";
-            // string filenamepath = $@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_ps.vcs";
-            // string filenamepath = $@"{PCGL_DIR_NOT_CORE}\hero_pcgl_30_ps.vcs";
-            string filenamepath = $@"{PCGL_DIR_NOT_CORE}\global_lit_simple_pcgl_30_vs.vcs";
+            // string filenamepath = $@"{PCGL_DIR_NOT_CORE}/multiblend_pcgl_30_vs.vcs";
+            // string filenamepath = $@"{PCGL_DIR_NOT_CORE}/multiblend_pcgl_30_ps.vcs";
+            // string filenamepath = $@"{PCGL_DIR_NOT_CORE}/hero_pcgl_30_ps.vcs";
+            string filenamepath = $@"{PCGL_DIR_NOT_CORE}/global_lit_simple_pcgl_30_vs.vcs";
 
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             // Debug.WriteLine($"{shaderFile.zframesLookup.Count}");
@@ -189,7 +189,7 @@ namespace MyShaderAnalysis
         static void StateSummariesValuesSeen()
         {
             // List<string> vcsFiles = new();
-            // vcsFiles.Add($@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_ps.vcs");
+            // vcsFiles.Add($@"{PCGL_DIR_NOT_CORE}/multiblend_pcgl_30_ps.vcs");
             List<string> vcsFiles = GetFileSelectionWithLimitedZframes();
 
             foreach (string vcsFilenamepath in vcsFiles)
@@ -233,7 +233,7 @@ namespace MyShaderAnalysis
         static void DifferencesInSuccessiveH0H2()
         {
             List<string> vcsFiles = new();
-            vcsFiles.Add($@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_ps.vcs");
+            vcsFiles.Add($@"{PCGL_DIR_NOT_CORE}/multiblend_pcgl_30_ps.vcs");
             // List<string> vcsFiles = GetFileSelectionWithLimitedZframes();
 
             foreach (string vcsFilenamepath in vcsFiles)
@@ -270,8 +270,8 @@ namespace MyShaderAnalysis
         static void ZFrameHeaderComparisonGivenFile()
         {
             List<string> vcsFiles = new();
-            // vcsFiles.Add($@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_ps.vcs");
-            vcsFiles.Add($@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_vs.vcs");
+            // vcsFiles.Add($@"{PCGL_DIR_NOT_CORE}/multiblend_pcgl_30_ps.vcs");
+            vcsFiles.Add($@"{PCGL_DIR_NOT_CORE}/multiblend_pcgl_30_vs.vcs");
 
             // List<string> vcsFiles = GetFileSelectionWithLimitedZframes();
             foreach (string vcsFilenamepath in vcsFiles)
@@ -304,7 +304,7 @@ namespace MyShaderAnalysis
         static void MultiblendPsHeadersWhereDepthPassIsMissing()
         {
             List<string> vcsFiles = new();
-            vcsFiles.Add($@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_ps.vcs");
+            vcsFiles.Add($@"{PCGL_DIR_NOT_CORE}/multiblend_pcgl_30_ps.vcs");
             // List<string> vcsFiles = GetFileSelectionWithLimitedZframes();
             foreach (string vcsFilenamepath in vcsFiles)
             {
@@ -369,7 +369,7 @@ namespace MyShaderAnalysis
         static void CheckB0ValueAgainstParameterCount()
         {
             // List<string> vcsFiles = new();
-            // vcsFiles.Add($@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_ps.vcs");
+            // vcsFiles.Add($@"{PCGL_DIR_NOT_CORE}/multiblend_pcgl_30_ps.vcs");
 
             List<string> vcsFiles = GetFileSelectionWithLimitedZframes();
             foreach (string vcsFilenamepath in vcsFiles)
@@ -408,7 +408,7 @@ namespace MyShaderAnalysis
         static void CheckB0ValuesUniqeness()
         {
             // List<string> vcsFiles = new();
-            // vcsFiles.Add($@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_vs.vcs");
+            // vcsFiles.Add($@"{PCGL_DIR_NOT_CORE}/multiblend_pcgl_30_vs.vcs");
 
             List<string> vcsFiles = GetFileSelectionWithLimitedZframes();
             foreach (string vcsFilenamepath in vcsFiles)
@@ -452,7 +452,7 @@ namespace MyShaderAnalysis
         {
             // List<string> vcsFiles = GetFileSelectionWithLimitedZframes();
             List<string> vcsFiles = new();
-            vcsFiles.Add($@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_vs.vcs");
+            vcsFiles.Add($@"{PCGL_DIR_NOT_CORE}/multiblend_pcgl_30_vs.vcs");
             foreach (string vcsFilenamepath in vcsFiles)
             {
                 ShaderFile shaderFile = InstantiateShaderFile(vcsFilenamepath);
@@ -543,9 +543,9 @@ namespace MyShaderAnalysis
 
         static void DataBlockCountSelectedfile()
         {
-            // string filenamepath = $@"{PCGL_DIR_NOT_CORE}\spritecard_pcgl_30_ps.vcs";
-            // string filenamepath = $@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_ps.vcs";
-            string filenamepath = $@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_vs.vcs";
+            // string filenamepath = $@"{PCGL_DIR_NOT_CORE}/spritecard_pcgl_30_ps.vcs";
+            // string filenamepath = $@"{PCGL_DIR_NOT_CORE}/multiblend_pcgl_30_ps.vcs";
+            string filenamepath = $@"{PCGL_DIR_NOT_CORE}/multiblend_pcgl_30_vs.vcs";
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             for (int i = 0; i < shaderFile.GetZFrameCount(); i++)
             {
@@ -676,8 +676,8 @@ namespace MyShaderAnalysis
          */
         static void SurveryH0H2RelationshipInSpriteCardPs()
         {
-            // string filenamepath = $@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_ps.vcs";
-            string filenamepath = $@"{PCGL_DIR_NOT_CORE}\spritecard_pcgl_30_ps.vcs";
+            // string filenamepath = $@"{PCGL_DIR_NOT_CORE}/multiblend_pcgl_30_ps.vcs";
+            string filenamepath = $@"{PCGL_DIR_NOT_CORE}/spritecard_pcgl_30_ps.vcs";
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             for (int i = 0; i < shaderFile.GetZFrameCount(); i++)
             {
@@ -807,12 +807,12 @@ breakhere: Debug.WriteLine("");
         static List<string> GetManualFileSelection()
         {
             // don't do this one yet!
-            // string filenamepath = $@"{PCGL_DIR_NOT_CORE}\hero_pcgl_30_ps.vcs";
+            // string filenamepath = $@"{PCGL_DIR_NOT_CORE}/hero_pcgl_30_ps.vcs";
             List<string> vcsFiles = new();
-            vcsFiles.Add($@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_ps.vcs");
-            vcsFiles.Add($@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_vs.vcs");
-            vcsFiles.Add($@"{PCGL_DIR_NOT_CORE}\grasstile_pcgl_41_ps.vcs");
-            vcsFiles.Add($@"{PCGL_DIR_NOT_CORE}\grasstile_pcgl_41_vs.vcs");
+            vcsFiles.Add($@"{PCGL_DIR_NOT_CORE}/multiblend_pcgl_30_ps.vcs");
+            vcsFiles.Add($@"{PCGL_DIR_NOT_CORE}/multiblend_pcgl_30_vs.vcs");
+            vcsFiles.Add($@"{PCGL_DIR_NOT_CORE}/grasstile_pcgl_41_ps.vcs");
+            vcsFiles.Add($@"{PCGL_DIR_NOT_CORE}/grasstile_pcgl_41_vs.vcs");
             return null;
         }
 

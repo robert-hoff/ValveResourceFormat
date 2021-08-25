@@ -175,19 +175,19 @@ namespace MyShaderAnalysis.utilhelpers
         // todo - problem here with the backslashes, it's not consistent, if I call this with the consts from FileSystem it will fail
         public static ARCHIVE DetermineArchiveType(string vcsFileName)
         {
-            if (Path.GetDirectoryName(vcsFileName).EndsWith("shaders\\vfx") && vcsFileName.Contains("_pcgl_"))
+            if (Path.GetDirectoryName(vcsFileName).EndsWith("shaders/vfx") && vcsFileName.Contains("_pcgl_"))
             {
                 return ARCHIVE.dotagame_pcgl;
             }
-            if (Path.GetDirectoryName(vcsFileName).EndsWith("shaders-core\\vfx") && vcsFileName.Contains("_pcgl_"))
+            if (Path.GetDirectoryName(vcsFileName).EndsWith("shaders-core/vfx") && vcsFileName.Contains("_pcgl_"))
             {
                 return ARCHIVE.dotacore_pcgl;
             }
-            if (Path.GetDirectoryName(vcsFileName).EndsWith("shaders\\vfx") && vcsFileName.Contains("_pc_"))
+            if (Path.GetDirectoryName(vcsFileName).EndsWith("shaders/vfx") && vcsFileName.Contains("_pc_"))
             {
                 return ARCHIVE.dotagame_pc;
             }
-            if (Path.GetDirectoryName(vcsFileName).EndsWith("shaders-core\\vfx") && vcsFileName.Contains("_pc_"))
+            if (Path.GetDirectoryName(vcsFileName).EndsWith("shaders-core/vfx") && vcsFileName.Contains("_pc_"))
             {
                 return ARCHIVE.dotacore_pc;
             }

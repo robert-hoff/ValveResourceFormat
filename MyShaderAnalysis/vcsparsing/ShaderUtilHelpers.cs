@@ -17,7 +17,7 @@ namespace MyShaderAnalysis.vcsparsing
         {
             if (zstdDictionary == null)
             {
-                zstdDictionary = File.ReadAllBytes(@"..\..\zstdictionary_2bc2fa87.dat");
+                zstdDictionary = File.ReadAllBytes(@"../../zstdictionary_2bc2fa87.dat");
             }
             return zstdDictionary;
         }
@@ -154,11 +154,12 @@ namespace MyShaderAnalysis.vcsparsing
             {
                 return filesFound;
             }
+
             foreach (string filenamepath in Directory.GetFiles(dir))
             {
                 if (filenamepath.EndsWith(endsWith))
                 {
-                    filesFound.Add(filenamepath);
+                    filesFound.Add(filenamepath.Replace("\\","/"));
                 }
             }
             return filesFound;
@@ -210,14 +211,14 @@ namespace MyShaderAnalysis.vcsparsing
 
         public static string RemoveBaseDir(string filenamepath)
         {
-            string dirname = Path.GetDirectoryName(filenamepath);
-            string filename = Path.GetFileName(filenamepath);
-            if (dirname.EndsWith(@"\shaders\vfx"))
+            string dirname = Path.GetDirectoryName(filenamepath).Replace("\\","/");
+            string filename = Path.GetFileName(filenamepath).Replace("\\","/");
+            if (dirname.EndsWith(@"/shaders/vfx"))
             {
-                return @"\shaders\vfx\" + filename;
-            } else if (dirname.EndsWith(@"\shaders-core\vfx"))
+                return @"/shaders/vfx/" + filename;
+            } else if (dirname.EndsWith(@"/shaders-core/vfx"))
             {
-                return @"\shaders-core\vfx\" + filename;
+                return @"/shaders-core/vfx/" + filename;
             } else
             {
                 return filenamepath;
@@ -226,15 +227,15 @@ namespace MyShaderAnalysis.vcsparsing
 
         public static string ShortHandName(string filenamepath)
         {
-            filenamepath = filenamepath.Replace("/", "\\");
+            filenamepath = filenamepath.Replace("\\","/");
             string dirname = Path.GetDirectoryName(filenamepath);
             string filename = Path.GetFileName(filenamepath);
-            if (dirname.EndsWith(@"\shaders\vfx"))
+            if (dirname.EndsWith(@"/shaders/vfx"))
             {
-                return @"\dota\" + filename;
-            } else if (dirname.EndsWith(@"\shaders-core\vfx"))
+                return @"/dota/" + filename;
+            } else if (dirname.EndsWith(@"/shaders-core/vfx"))
             {
-                return @"\core\" + filename;
+                return @"/core/" + filename;
             } else
             {
 
@@ -293,11 +294,11 @@ namespace MyShaderAnalysis.vcsparsing
 
         public static string GetCoreOrDotaString(string vcsFileName)
         {
-            if (Path.GetDirectoryName(vcsFileName).EndsWith("shaders\\vfx"))
+            if (Path.GetDirectoryName(vcsFileName).EndsWith("shaders/vfx"))
             {
                 return "dota";
             }
-            if (Path.GetDirectoryName(vcsFileName).EndsWith("shaders-core\\vfx"))
+            if (Path.GetDirectoryName(vcsFileName).EndsWith("shaders-core/vfx"))
             {
                 return "core";
             }
@@ -308,6 +309,14 @@ namespace MyShaderAnalysis.vcsparsing
             if (Path.GetDirectoryName(vcsFileName).EndsWith("artifact-shaders-pc-dcg"))
             {
                 return "artifact-dcg";
+            }
+            if (vcsFileName.Contains("mobile-gles/core"))
+            {
+                return "dota-core-gles";
+            }
+            if (vcsFileName.Contains("mobile-gles/dac"))
+            {
+                return "dota-dac-gles";
             }
             throw new ShaderParserException("don't know where this file belongs");
         }
@@ -402,9 +411,9 @@ namespace MyShaderAnalysis.vcsparsing
          * filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/hero_pcgl_30_ps.vcs"
          *
          * returns
-         * ..\shaders\vfx\hero_pcgl_30_features.vcs
-         * ..\shaders\vfx\hero_pcgl_30_vs.vcs
-         * ..\shaders\vfx\hero_pcgl_30_psrs.vcs
+         * ../shaders/vfx/hero_pcgl_30_features.vcs
+         * ../shaders/vfx/hero_pcgl_30_vs.vcs
+         * ../shaders/vfx/hero_pcgl_30_psrs.vcs
          *
          *
          */
@@ -422,13 +431,13 @@ namespace MyShaderAnalysis.vcsparsing
 
                     if (f.EndsWith("features.vcs"))
                     {
-                        featuresFile = f;
+                        featuresFile = f.Replace("\\","/");
                     } else if (f.EndsWith("vs.vcs"))
                     {
-                        relatedFiles.Insert(0, f);
+                        relatedFiles.Insert(0, f.Replace("\\","/"));
                     } else
                     {
-                        relatedFiles.Add(f);
+                        relatedFiles.Add(f.Replace("\\","/"));
                     }
                 }
             }

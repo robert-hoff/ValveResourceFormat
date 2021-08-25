@@ -15,8 +15,8 @@ namespace MyShaderAnalysis
 {
     public class PrintoutsByteAnalysis
     {
-        const string OUTPUT_DIR = @"Z:\active\projects\dota2-sourcesdk-modding\shader-analysis-vcs-format\OUTPUT_DUMP";
-        const string SERVER_OUTPUT_DIR = @"Z:\dev\www\vcs.codecreation.dev\GEN-output";
+        const string OUTPUT_DIR = @"Z:/active/projects/dota2-sourcesdk-modding/shader-analysis-vcs-format/OUTPUT_DUMP";
+        const string SERVER_OUTPUT_DIR = @"Z:/dev/www/vcs.codecreation.dev/GEN-output";
         static OutputWriter output = new(WriteToConsole: false, WriteToDebug: true);
 
         public static void RunTrials()
@@ -26,10 +26,9 @@ namespace MyShaderAnalysis
             // Trial3();
 
             // PrintAllByteAnalysis();
-
-            // PrintZFramesAllFiles();
+            PrintZFramesAllFiles();
             // PrintZFramesSingleFile();
-            PrintGlslAllFiles();
+            // PrintGlslAllFiles();
             // PrintGlslSingleFiles();
             output.CloseStreamWriter();
         }
@@ -66,7 +65,9 @@ namespace MyShaderAnalysis
         static void PrintAllByteAnalysis()
         {
             // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PC_SOURCE, DOTA_GAME_PC_SOURCE, VcsFileType.Any, -1);
-            List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PCGL_SOURCE, DOTA_GAME_PCGL_SOURCE, VcsFileType.Any, -1);
+            // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PCGL_SOURCE, DOTA_GAME_PCGL_SOURCE, VcsFileType.Any, -1);
+            List<string> vcsFiles = GetVcsFiles(DOTA_CORE_MOBILE_GLES_SOURCE, DOTA_DAC_MOBILE_GLES_SOURCE, VcsFileType.Any, -1);
+
             foreach (var filenamepath in vcsFiles)
             {
                 FileTokens fileTokens = new FileTokens(filenamepath);
@@ -131,12 +132,15 @@ namespace MyShaderAnalysis
 
 
 
-        const int LIMIT_ZFRAME_PRINTOUT = 50;
+        const int LIMIT_ZFRAME_PRINTOUT = 5;
 
 
         static void PrintZFramesAllFiles()
         {
-            List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PCGL_SOURCE, DOTA_GAME_PCGL_SOURCE, VcsFileType.Any, -1);
+            // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PCGL_SOURCE, DOTA_GAME_PCGL_SOURCE, VcsFileType.Any, -1);
+            // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_MOBILE_GLES_SOURCE, DOTA_DAC_MOBILE_GLES_SOURCE, VcsFileType.Any, 30);
+            List<string> vcsFiles = GetVcsFiles(DOTA_CORE_MOBILE_GLES_SOURCE, DOTA_DAC_MOBILE_GLES_SOURCE, VcsFileType.Any, -1);
+
             foreach (var filenamepath in vcsFiles)
             {
                 FileTokens fileTokens = new FileTokens(filenamepath);
@@ -203,14 +207,16 @@ namespace MyShaderAnalysis
         static void PrintGlslAllFiles()
         {
             // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PCGL_SOURCE, DOTA_GAME_PCGL_SOURCE, VcsFileType.Any, -1);
-            List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PCGL_SOURCE, DOTA_GAME_PCGL_SOURCE, VcsFileType.Any, 30);
+            // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PCGL_SOURCE, DOTA_GAME_PCGL_SOURCE, VcsFileType.Any, 30);
+            // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_MOBILE_GLES_SOURCE, DOTA_DAC_MOBILE_GLES_SOURCE, VcsFileType.Any, 30);
+            List<string> vcsFiles = GetVcsFiles(DOTA_CORE_MOBILE_GLES_SOURCE, DOTA_DAC_MOBILE_GLES_SOURCE, VcsFileType.Any, -1);
 
             foreach (var filenamepath in vcsFiles)
             {
                 FileTokens fileTokens = new FileTokens(filenamepath);
-                if (!fileTokens.sourceType.Equals("glsl"))
+                if (!fileTokens.sourceType.Equals("glsl") && !fileTokens.sourceType.Equals("gles"))
                 {
-                    throw new ShaderParserException("This only makes sense for glsl sources");
+                    throw new ShaderParserException("This only makes sense for glsl or gles sources");
                 }
                 string glslServerDir = fileTokens.GetGlslServerDir(createDirs: true);
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
@@ -221,7 +227,7 @@ namespace MyShaderAnalysis
                     foreach (var glslSource in zframeFile.gpuSources)
                     {
                         string outputFilenamepath = $"{glslServerDir}/{fileTokens.GetGlslHtmlFilename((GlslSource)glslSource)}";
-                        WriteBytesToFile(glslSource.sourcebytes, outputFilenamepath);
+                        WriteBytesToFile(glslSource.sourcebytes, outputFilenamepath, overWrite: false);
                     }
                 }
             }

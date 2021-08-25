@@ -23,7 +23,7 @@ namespace MyShaderAnalysis
             // PrintoutsZframes1.RunTrials();
             // StaticAnalysisZframes.RunTrials();
 
-            // PrintoutsSingleFile.RunTrials();
+            PrintoutsSingleFile.RunTrials();
             // StaticAnalysis2.RunTrials();
             // StaticAnalysis.RunTrials();
 
@@ -33,7 +33,7 @@ namespace MyShaderAnalysis
 
             // Snippetcode.RunTrials();
             // LzmaAnalysis.RunTrials();
-            TestStuff.RunTrials();
+            // TestStuff.RunTrials();
             // CrcTrialsSha1.RunTrials();
             // CrcTrialsMurmur32.RunTrials();
 

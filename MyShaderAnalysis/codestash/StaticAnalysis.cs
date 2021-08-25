@@ -33,43 +33,43 @@ namespace MyShaderAnalysis
     public class StaticAnalysis
     {
 
-        const string PCGL_DIR_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders-core\vfx";
-        const string PCGL_DIR_NOT_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders\vfx";
-        const string PC_DIR_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pc\shaders-core\vfx";
-        const string PC_DIR_NOT_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pc\shaders\vfx";
-        // const string OUTPUT_DIR = @"..\..\..\GEN-OUTPUT";
-        const string OUTPUT_DIR = @"Z:\active\projects\dota2-sourcesdk-modding\shader-analysis-vcs-format\OUTPUT_DUMP";
-        const string SERVER_OUTPUT_DIR = @"Z:\dev\www\vcs.codecreation.dev\GEN-output";
-        const string SERVER_BASEDIR = @"Z:\dev\www\vcs.codecreation.dev";
-        const string OUTPUT_SUB_DIR = @"\GEN-output";
+        const string PCGL_DIR_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders-core/vfx";
+        const string PCGL_DIR_NOT_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders/vfx";
+        const string PC_DIR_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pc/shaders-core/vfx";
+        const string PC_DIR_NOT_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pc/shaders/vfx";
+        // const string OUTPUT_DIR = @"../../../GEN-OUTPUT";
+        const string OUTPUT_DIR = @"Z:/active/projects/dota2-sourcesdk-modding/shader-analysis-vcs-format/OUTPUT_DUMP";
+        const string SERVER_OUTPUT_DIR = @"Z:/dev/www/vcs.codecreation.dev/GEN-output";
+        const string SERVER_BASEDIR = @"Z:/dev/www/vcs.codecreation.dev";
+        const string OUTPUT_SUB_DIR = @"/GEN-output";
         const string ARTIFACT_CLASSIC_CORE_PC_SOURCE = "X:/artifact-classic-exports/artifact-shaders-pc-core";
         const string ARTIFACT_CLASSIC_DCG_PC_SOURCE = "X:/artifact-classic-exports/artifact-shaders-pc-dcg";
 
 
 
-        // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
-        // string filenamepath = PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_features.vcs";
-        // string filenamepath = PCGL_DIR_CORE + @"\generic_light_pcgl_30_features.vcs";
-        // string filenamepath = PCGL_DIR_CORE + @"\apply_fog_pcgl_40_ps.vcs";
-        // string filenamepath = PCGL_DIR_CORE + @"\tools_wireframe_pcgl_40_gs.vcs";
-        // string filenamepath = PCGL_DIR_NOT_CORE + @"\spring_meteor_pcgl_30_vs.vcs";
-        // string filenamepath = PCGL_DIR_NOT_CORE + @"\cables_pcgl_30_features.vcs";
-        // string filenamepath = PCGL_DIR_NOT_CORE + @"\spritecard_pcgl_30_features.vcs";
+        // string filenamepath = PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_ps.vcs";
+        // string filenamepath = PCGL_DIR_NOT_CORE + @"/hero_pcgl_30_features.vcs";
+        // string filenamepath = PCGL_DIR_CORE + @"/generic_light_pcgl_30_features.vcs";
+        // string filenamepath = PCGL_DIR_CORE + @"/apply_fog_pcgl_40_ps.vcs";
+        // string filenamepath = PCGL_DIR_CORE + @"/tools_wireframe_pcgl_40_gs.vcs";
+        // string filenamepath = PCGL_DIR_NOT_CORE + @"/spring_meteor_pcgl_30_vs.vcs";
+        // string filenamepath = PCGL_DIR_NOT_CORE + @"/cables_pcgl_30_features.vcs";
+        // string filenamepath = PCGL_DIR_NOT_CORE + @"/spritecard_pcgl_30_features.vcs";
 
 
         public static void RunTrials()
         {
-            // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_ps.vcs";
 
             // -- writes a useful summary for every file (pretty long process)
             FileSummaryAllFiles();
 
             // - prints a single page summary and links to all the files produced with FileSummaryAllFiles()
-            // BlockCountSurvery($@"{SERVER_OUTPUT_DIR}\file-overview.html", writeFile: true);
+            // BlockCountSurvery($@"{SERVER_OUTPUT_DIR}/file-overview.html", writeFile: true);
 
 
             // NOTE - currently points to Artifact classic
-            // BlockCountSurvery($@"{SERVER_OUTPUT_DIR}\testfile.html", writeFile: true);
+            // BlockCountSurvery($@"{SERVER_OUTPUT_DIR}/testfile.html", writeFile: true);
             // FileBlockCount(filenamepath);
             // WriteSfArgumentsAllFiles($"{SERVER_OUTPUT_DIR}/testrun.html", writeFile: true);
 
@@ -89,7 +89,7 @@ namespace MyShaderAnalysis
             // AllFiles();
             // ShowFileTriples();
             // SfBlockInspections2();
-            // CompatBlockDetailsConcise(PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
+            // CompatBlockDetailsConcise(PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_ps.vcs");
 
 
 
@@ -99,32 +99,32 @@ namespace MyShaderAnalysis
 
 
 
-            // FullFileSummary(@$"{PCGL_DIR_NOT_CORE}\water_dota_pcgl_30_features.vcs", "water", $@"{SERVER_OUTPUT_DIR}\summary-water.html", writeFile: false);
+            // FullFileSummary(@$"{PCGL_DIR_NOT_CORE}/water_dota_pcgl_30_features.vcs", "water", $@"{SERVER_OUTPUT_DIR}/summary-water.html", writeFile: false);
 
 
             // -- useful methods
-            // CompareTriplesMainParams($@"{SERVER_OUTPUT_DIR}\SF-names.html", writeFile: true);
-            // CompatBlockPresence($@"{SERVER_OUTPUT_DIR}\Compat-block-count.html", writeFile: false);
+            // CompareTriplesMainParams($@"{SERVER_OUTPUT_DIR}/SF-names.html", writeFile: true);
+            // CompatBlockPresence($@"{SERVER_OUTPUT_DIR}/Compat-block-count.html", writeFile: false);
 
             // CompatibilityBlocksValuesSeenAtOffset(24);
-            // CompatibilityBlocksSurvery($@"{SERVER_OUTPUT_DIR}\CBlock-value-survey.html", writeFile: false);
-            // CompatBlockDetails($@"{SERVER_OUTPUT_DIR}\Compat-block-details.html", writeFile: true);
-            // CompatBlockDetails($@"{SERVER_OUTPUT_DIR}\Compat-block-details-all.html", writeFile: true);
+            // CompatibilityBlocksSurvery($@"{SERVER_OUTPUT_DIR}/CBlock-value-survey.html", writeFile: false);
+            // CompatBlockDetails($@"{SERVER_OUTPUT_DIR}/Compat-block-details.html", writeFile: true);
+            // CompatBlockDetails($@"{SERVER_OUTPUT_DIR}/Compat-block-details-all.html", writeFile: true);
 
-            // CompatBlockDetailsConcise2(PCGL_DIR_NOT_CORE + @"\hero_pcgl_40_ps.vcs", showLink: false);
-            // CompatBlockConciseAll($@"{SERVER_OUTPUT_DIR}\Compat-blocks-summary.html", writeFile: true);
+            // CompatBlockDetailsConcise2(PCGL_DIR_NOT_CORE + @"/hero_pcgl_40_ps.vcs", showLink: false);
+            // CompatBlockConciseAll($@"{SERVER_OUTPUT_DIR}/Compat-blocks-summary.html", writeFile: true);
             // CompatibilityBlocksSurveyIntRange(92, 3);
             // CompatBlockRelationships();
 
             // slight changes here
-            // CompatBlockResolveSfReferences($@"{SERVER_OUTPUT_DIR}\Compat-blocks-resolved-names.html", writeFile: true);
+            // CompatBlockResolveSfReferences($@"{SERVER_OUTPUT_DIR}/Compat-blocks-resolved-names.html", writeFile: true);
 
             // multiblend
-            // CompatBlockResolveSfReferences($@"{SERVER_OUTPUT_DIR}\Compat-blocks-sf-names-multiblend.html", writeFile: true);
+            // CompatBlockResolveSfReferences($@"{SERVER_OUTPUT_DIR}/Compat-blocks-sf-names-multiblend.html", writeFile: true);
 
             // CompatBlockResolveSfReferences();
-            // ShowSfArgumentList(PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
-            // ShowDBlock(PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
+            // ShowSfArgumentList(PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_ps.vcs");
+            // ShowDBlock(PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_ps.vcs");
             // DBlockSurvey();
             // ShowUnknownBlock();
             // UnknownBlocksSurvey();
@@ -262,7 +262,7 @@ namespace MyShaderAnalysis
 
         static void TestRun()
         {
-            // string targetFile = @$"{PCGL_DIR_CORE}\depth_only_pcgl_40_vs.vcs";
+            // string targetFile = @$"{PCGL_DIR_CORE}/depth_only_pcgl_40_vs.vcs";
             // UnknownBlockConcise(targetFile, showLink: false);
             FileSummarySingleFile();
         }
@@ -277,7 +277,7 @@ namespace MyShaderAnalysis
          */
         static void ZFramePrintout()
         {
-            string filenamepath = @$"{PCGL_DIR_NOT_CORE}\water_dota_pcgl_30_ps.vcs";
+            string filenamepath = @$"{PCGL_DIR_NOT_CORE}/water_dota_pcgl_30_ps.vcs";
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
 
             foreach (var item in shaderFile.zframesLookup)
@@ -385,7 +385,7 @@ namespace MyShaderAnalysis
 
         static void ScanForValueSfBlocks()
         {
-            // string filenamepath = PCGL_DIR_NOT_CORE + @"\water_dota_pcgl_30_ps.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"/water_dota_pcgl_30_ps.vcs";
 
             List<string> result = new();
 
@@ -508,11 +508,11 @@ namespace MyShaderAnalysis
 
         static void ShowUnknownBlockConcise()
         {
-            // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_ps.vcs";
 
-            // string filenamepath = PCGL_DIR_NOT_CORE + @"\global_lit_simple_pcgl_30_features.vcs"; // 0 d-blocks
-            // string filenamepath = PCGL_DIR_NOT_CORE + @"\global_lit_simple_pcgl_30_vs.vcs";
-            string filenamepath = PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_ps.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"/global_lit_simple_pcgl_30_features.vcs"; // 0 d-blocks
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"/global_lit_simple_pcgl_30_vs.vcs";
+            string filenamepath = PCGL_DIR_NOT_CORE + @"/hero_pcgl_30_ps.vcs";
 
             UnknownBlockConcise(filenamepath);
 
@@ -653,8 +653,8 @@ namespace MyShaderAnalysis
 
         static void ShowUnknownBlock()
         {
-            // ShaderFile shaderFile = new(PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
-            ShaderFile shaderFile = InstantiateShaderFile(PCGL_DIR_CORE + @"\depth_only_pcgl_40_vs.vcs");
+            // ShaderFile shaderFile = new(PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_ps.vcs");
+            ShaderFile shaderFile = InstantiateShaderFile(PCGL_DIR_CORE + @"/depth_only_pcgl_40_vs.vcs");
             Debug.WriteLine($"{RemoveBaseDir(shaderFile.filenamepath)}");
 
             foreach (DConstraintsBlock uBlock in shaderFile.dConstraintsBlocks)
@@ -695,7 +695,7 @@ namespace MyShaderAnalysis
 
             List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Any, -1);
             // List<string> allVcsFiles = new();
-            // allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
+            // allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_ps.vcs");
 
             foreach (string filenamepath in allVcsFiles)
             {
@@ -906,8 +906,8 @@ namespace MyShaderAnalysis
 
         static void FileSummaryMultiblendPs()
         {
-            string featuresfile = @$"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_features.vcs";
-            string outputFilenamepath = $@"{SERVER_BASEDIR}\dota-game\pcgl\multiblend_pcgl_30\multiblend_pcgl_30_ps-summary.html";
+            string featuresfile = @$"{PCGL_DIR_NOT_CORE}/multiblend_pcgl_30_features.vcs";
+            string outputFilenamepath = $@"{SERVER_BASEDIR}/dota-game/pcgl/multiblend_pcgl_30/multiblend_pcgl_30_ps-summary.html";
             bool writeFile = true;
             FileTriple triple = FileTriple.GetTripleIfExists(ARCHIVE.dotagame_pcgl, featuresfile);
 
@@ -1013,17 +1013,17 @@ namespace MyShaderAnalysis
             // List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
             List<string> allVcsFiles = new();
 
-            // allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_features.vcs");
-            // allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_vs.vcs");
-            // allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
+            // allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_features.vcs");
+            // allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_vs.vcs");
+            // allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_ps.vcs");
 
-            //allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_features.vcs");
-            //allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_vs.vcs");
-            //allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_ps.vcs");
+            //allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/hero_pcgl_30_features.vcs");
+            //allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/hero_pcgl_30_vs.vcs");
+            //allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/hero_pcgl_30_ps.vcs");
 
-            allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\global_lit_simple_pcgl_30_features.vcs");
-            allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\global_lit_simple_pcgl_30_vs.vcs");
-            allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\global_lit_simple_pcgl_30_ps.vcs");
+            allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/global_lit_simple_pcgl_30_features.vcs");
+            allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/global_lit_simple_pcgl_30_vs.vcs");
+            allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/global_lit_simple_pcgl_30_ps.vcs");
 
             string h0 = "Block";
             string h5 = "params";
@@ -1139,12 +1139,12 @@ namespace MyShaderAnalysis
             }
             List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Any, -1);
             //List<string> allVcsFiles = new();
-            //allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_features.vcs");
-            //allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_vs.vcs");
-            //allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
-            //allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_features.vcs");
-            //allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_vs.vcs");
-            //allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_ps.vcs");
+            //allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_features.vcs");
+            //allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_vs.vcs");
+            //allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_ps.vcs");
+            //allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/hero_pcgl_30_features.vcs");
+            //allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/hero_pcgl_30_vs.vcs");
+            //allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/hero_pcgl_30_ps.vcs");
 
             string h0 = "Block";
             string h1 = "Rule";
@@ -1234,12 +1234,12 @@ namespace MyShaderAnalysis
             }
             // List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
             List<string> allVcsFiles = new();
-            allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_features.vcs");
-            allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_vs.vcs");
-            allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
-            allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_features.vcs");
-            allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_vs.vcs");
-            allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_ps.vcs");
+            allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_features.vcs");
+            allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_vs.vcs");
+            allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_ps.vcs");
+            allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/hero_pcgl_30_features.vcs");
+            allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/hero_pcgl_30_vs.vcs");
+            allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/hero_pcgl_30_ps.vcs");
 
             foreach (string filenamepath in allVcsFiles)
             {
@@ -1292,12 +1292,12 @@ namespace MyShaderAnalysis
             // List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
             // List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.features_file, -1);
             List<string> allVcsFiles = new();
-            //allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_features.vcs");
-            //allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_vs.vcs");
-            //allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_ps.vcs");
-            // allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_features.vcs");
-            // allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_vs.vcs");
-            allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs");
+            //allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/hero_pcgl_30_features.vcs");
+            //allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/hero_pcgl_30_vs.vcs");
+            //allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/hero_pcgl_30_ps.vcs");
+            // allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_features.vcs");
+            // allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_vs.vcs");
+            allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_ps.vcs");
 
 
             foreach (string filenamepath in allVcsFiles)
@@ -1513,7 +1513,7 @@ namespace MyShaderAnalysis
                 ConfigureOutputFile(outputFilenamepath);
                 WriteHtmlFile("", "");
             }
-            string filenamepath = $@"{PCGL_DIR_NOT_CORE}\multiblend_pcgl_30_ps.vcs";
+            string filenamepath = $@"{PCGL_DIR_NOT_CORE}/multiblend_pcgl_30_ps.vcs";
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
 
             SfConstraintsBlock block0 = shaderFile.sfConstraintsBlocks[0];

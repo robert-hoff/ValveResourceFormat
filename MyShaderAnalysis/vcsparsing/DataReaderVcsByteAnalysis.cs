@@ -11,7 +11,7 @@ namespace MyShaderAnalysis.vcsparsing
     public class DataReaderVcsByteAnalysis : ShaderDataReader
     {
 
-        const string SERVER_BASEDIR = @"Z:\dev\www\vcs.codecreation.dev";
+        const string SERVER_BASEDIR = @"Z:/dev/www/vcs.codecreation.dev";
 
         private VcsFileType filetype;
         private string vcsFilename = null;

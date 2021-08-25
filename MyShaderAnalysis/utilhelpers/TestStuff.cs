@@ -72,7 +72,7 @@ namespace MyShaderAnalysis.utilhelpers
 
             // NOTE - the gles sources are assigned as the class GlslSource
             GpuSource gpuSource = zframeFile.gpuSources[0];
-            if (gpuSource is GlslSource)
+            if (gpuSource is not GlslSource)
             {
                 Debug.WriteLine($"this source is considered a GlslSource");
             }

@@ -14,16 +14,16 @@ namespace MyShaderAnalysis
 {
     public class PrintoutsSingleFile
     {
-        const string OUTPUT_DIR = @"Z:\active\projects\dota2-sourcesdk-modding\shader-analysis-vcs-format\OUTPUT_DUMP";
-        const string SERVER_OUTPUT_DIR = @"Z:\dev\www\vcs.codecreation.dev\GEN-output";
+        const string OUTPUT_DIR = @"Z:/active/projects/dota2-sourcesdk-modding/shader-analysis-vcs-format/OUTPUT_DUMP";
+        const string SERVER_OUTPUT_DIR = @"Z:/dev/www/vcs.codecreation.dev/GEN-output";
         static OutputWriter output = new();
 
 
         public static void RunTrials()
         {
 
-            // PrintAllFiles();
-            TestBatchPrinting();
+            PrintAllFiles();
+            // TestBatchPrinting();
             // Trial1();
             // Trial2();
             // Trial3();
@@ -84,7 +84,9 @@ namespace MyShaderAnalysis
         static void PrintAllFiles()
         {
             // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PC_SOURCE, DOTA_GAME_PC_SOURCE, VcsFileType.Any, -1);
-            List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PCGL_SOURCE, DOTA_GAME_PCGL_SOURCE, VcsFileType.Any, -1);
+            // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PCGL_SOURCE, DOTA_GAME_PCGL_SOURCE, VcsFileType.Any, -1);
+            List<string> vcsFiles = GetVcsFiles(DOTA_CORE_MOBILE_GLES_SOURCE, DOTA_DAC_MOBILE_GLES_SOURCE, VcsFileType.Any, -1);
+
             foreach (var filenamepath in vcsFiles)
             {
                 FileTokens fileTokens = new FileTokens(filenamepath);
@@ -146,6 +148,12 @@ namespace MyShaderAnalysis
                 PrintPsVsHeader(shaderFile, fileTokens);
                 PrintSBlocks(shaderFile);
             }
+
+            if (shaderFile.vcsFileType == VcsFileType.PixelShader)
+            {
+
+            }
+
 
             PrintStaticConstraints(shaderFile);
             PrintDynamicConfigurations(shaderFile);

@@ -12,52 +12,52 @@ namespace MyShaderAnalysis
 
     public class ShaderAnalysis
     {
-        const string PCGL_DIR_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders-core\vfx";
-        const string PCGL_DIR_NOT_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders\vfx"; // i.e. Dota2 specific
-        const string PC_DIR_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pc\shaders-core\vfx";
-        const string PC_DIR_NOT_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pc\shaders\vfx";
+        const string PCGL_DIR_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders-core/vfx";
+        const string PCGL_DIR_NOT_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders/vfx"; // i.e. Dota2 specific
+        const string PC_DIR_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pc/shaders-core/vfx";
+        const string PC_DIR_NOT_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pc/shaders/vfx";
         const string ARTIFACT_CLASSIC_CORE_PC_SOURCE = "X:/artifact-classic-exports/artifact-shaders-pc-core";
         const string ARTIFACT_CLASSIC_DCG_PC_SOURCE = "X:/artifact-classic-exports/artifact-shaders-pc-dcg";
 
-        // const string OUTPUT_DIR = @"..\..\..\GEN-OUTPUT";
-        const string OUTPUT_DIR = @"Z:\active\projects\dota2-sourcesdk-modding\shader-analysis-vcs-format\OUTPUT_DUMP";
+        // const string OUTPUT_DIR = @"../../../GEN-OUTPUT";
+        const string OUTPUT_DIR = @"Z:/active/projects/dota2-sourcesdk-modding/shader-analysis-vcs-format/OUTPUT_DUMP";
 
 
 
 
         public static void RunTrials()
         {
-            // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_vs.vcs";
-            // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
-            // string filenamepath = PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_features.vcs";
-            // string filenamepath = PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_vs.vcs";
-            // string filenamepath = PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_ps.vcs";
-            // string filenamepath = PCGL_DIR_CORE + @"\generic_light_pcgl_30_features.vcs";
-            // string filenamepath = PCGL_DIR_CORE + @"\generic_light_pcgl_30_vs.vcs";
-            // string filenamepath = PCGL_DIR_CORE + @"\generic_light_pcgl_30_ps.vcs";
-            // string filenamepath = PCGL_DIR_CORE + @"\apply_fog_pcgl_40_ps.vcs";
-            // string filenamepath = PCGL_DIR_CORE + @"\tools_wireframe_pcgl_40_gs.vcs";
-            // string filenamepath = PCGL_DIR_NOT_CORE + @"\spring_meteor_pcgl_30_vs.vcs";
-            // string filenamepath = PCGL_DIR_NOT_CORE + @"\cables_pcgl_30_features.vcs";
-            // string filenamepath = PCGL_DIR_NOT_CORE + @"\cables_pcgl_30_vs.vcs";
-            // string filenamepath = PCGL_DIR_NOT_CORE + @"\spritecard_pcgl_30_features.vcs";
-            // string filenamepath = PCGL_DIR_NOT_CORE + @"\blur_pcgl_30_features.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_vs.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_ps.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"/hero_pcgl_30_features.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"/hero_pcgl_30_vs.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"/hero_pcgl_30_ps.vcs";
+            // string filenamepath = PCGL_DIR_CORE + @"/generic_light_pcgl_30_features.vcs";
+            // string filenamepath = PCGL_DIR_CORE + @"/generic_light_pcgl_30_vs.vcs";
+            // string filenamepath = PCGL_DIR_CORE + @"/generic_light_pcgl_30_ps.vcs";
+            // string filenamepath = PCGL_DIR_CORE + @"/apply_fog_pcgl_40_ps.vcs";
+            // string filenamepath = PCGL_DIR_CORE + @"/tools_wireframe_pcgl_40_gs.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"/spring_meteor_pcgl_30_vs.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"/cables_pcgl_30_features.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"/cables_pcgl_30_vs.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"/spritecard_pcgl_30_features.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"/blur_pcgl_30_features.vcs";
 
-            // string filenamepath = PCGL_DIR_CORE + @"\physics_wireframe_pcgl_30_ps.vcs"; // frame 16
-            // string filenamepath = PCGL_DIR_CORE + @"\tools_solid_pcgl_30_ps.vcs"; // frame 7
-            // string filenamepath = PCGL_DIR_CORE + @"\visualize_cloth_pcgl_40_ps.vcs"; // frame 5 has an empty glsl file reference
-            // string filenamepath = PCGL_DIR_CORE + @"\visualize_nav_pcgl_40_ps.vcs"; // frame 10
-            // string filenamepath = PCGL_DIR_CORE + @"\tools_sprite_pcgl_40_gs.vcs"; // gs file
-            // string filenamepath = PCGL_DIR_NOT_CORE + @"\hero_pcgl_40_psrs.vcs"; // psrs file
-            // string filenamepath = PCGL_DIR_CORE + @"\deferred_shading_pcgl_41_ps.vcs"; // interesting zframe content
-            // string filenamepath = PCGL_DIR_NOT_CORE + @"\grasstile_pcgl_30_vs.vcs";
-            // string filenamepath = PCGL_DIR_NOT_CORE + @"\3dskyboxstencil_pcgl_30_features.vcs";
-            // string filenamepath = PCGL_DIR_CORE + @"\tools_wireframe_pcgl_40_gs.vcs"; // this file has some very short zframes
-            // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
-            // string filenamepath = PCGL_DIR_NOT_CORE + @"\blur_pcgl_30_ps.vcs";
-            // string filenamepath = PCGL_DIR_CORE + @"\apply_fog_pcgl_40_ps.vcs";
-            // string filenamepath = PCGL_DIR_CORE + @"\spritecard_pcgl_30_ps.vcs";
-            string filenamepath = PCGL_DIR_CORE + @"\panorama_pcgl_50_ps.vcs";
+            // string filenamepath = PCGL_DIR_CORE + @"/physics_wireframe_pcgl_30_ps.vcs"; // frame 16
+            // string filenamepath = PCGL_DIR_CORE + @"/tools_solid_pcgl_30_ps.vcs"; // frame 7
+            // string filenamepath = PCGL_DIR_CORE + @"/visualize_cloth_pcgl_40_ps.vcs"; // frame 5 has an empty glsl file reference
+            // string filenamepath = PCGL_DIR_CORE + @"/visualize_nav_pcgl_40_ps.vcs"; // frame 10
+            // string filenamepath = PCGL_DIR_CORE + @"/tools_sprite_pcgl_40_gs.vcs"; // gs file
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"/hero_pcgl_40_psrs.vcs"; // psrs file
+            // string filenamepath = PCGL_DIR_CORE + @"/deferred_shading_pcgl_41_ps.vcs"; // interesting zframe content
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"/grasstile_pcgl_30_vs.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"/3dskyboxstencil_pcgl_30_features.vcs";
+            // string filenamepath = PCGL_DIR_CORE + @"/tools_wireframe_pcgl_40_gs.vcs"; // this file has some very short zframes
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_ps.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"/blur_pcgl_30_ps.vcs";
+            // string filenamepath = PCGL_DIR_CORE + @"/apply_fog_pcgl_40_ps.vcs";
+            // string filenamepath = PCGL_DIR_CORE + @"/spritecard_pcgl_30_ps.vcs";
+            string filenamepath = PCGL_DIR_CORE + @"/panorama_pcgl_50_ps.vcs";
 
 
 
@@ -108,10 +108,10 @@ namespace MyShaderAnalysis
             // string directoryToUse = PCGL_DIR_NOT_CORE;
             // string[] filenames = { "crystal_pcgl_30_features.vcs", "crystal_pcgl_30_vs.vcs", "crystal_pcgl_30_ps.vcs" };
 
-            // (string, string, string) triple = GetTriple(PCGL_DIR_CORE+@"\visualize_cloth_pcgl_40_features.vcs");
+            // (string, string, string) triple = GetTriple(PCGL_DIR_CORE+@"/visualize_cloth_pcgl_40_features.vcs");
 
 
-            (string, string, string) triple = GetTriple(PCGL_DIR_CORE + @"\blur_pcgl_30_features.vcs");
+            (string, string, string) triple = GetTriple(PCGL_DIR_CORE + @"/blur_pcgl_30_features.vcs");
 
 
 
@@ -119,7 +119,7 @@ namespace MyShaderAnalysis
             // foreach (var filename in filenames) {
             foreach (var filenamepath in filenames)
             {
-                // string filenamepath = @$"{directoryToUse}\{filename}";
+                // string filenamepath = @$"{directoryToUse}/{filename}";
                 WriteVcsByteAnalysisToHtml(filenamepath, writeHtmlLinks: true);
                 ShaderFile shaderFile = new ReadShaderFile(filenamepath).GetShaderFile();
                 int zFrameCount = shaderFile.GetZFrameCount();
@@ -134,10 +134,10 @@ namespace MyShaderAnalysis
 
         static void Write3ZFramesEveryHundedAfter300()
         {
-            // string filenamespecific = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
-            // string filenamespecific1 = PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_ps.vcs";
-            // string filenamespecific2 = PCGL_DIR_NOT_CORE + @"\hero_pcgl_40_ps.vcs";
-            // string filenamespecific = PCGL_DIR_CORE + @"\blur_pcgl_30_ps.vcs";
+            // string filenamespecific = PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_ps.vcs";
+            // string filenamespecific1 = PCGL_DIR_NOT_CORE + @"/hero_pcgl_30_ps.vcs";
+            // string filenamespecific2 = PCGL_DIR_NOT_CORE + @"/hero_pcgl_40_ps.vcs";
+            // string filenamespecific = PCGL_DIR_CORE + @"/blur_pcgl_30_ps.vcs";
             // List<string> vcsFiles = new();
             // vcsFiles.Add(filenamespecific1);
             // vcsFiles.Add(filenamespecific2);
@@ -150,18 +150,18 @@ namespace MyShaderAnalysis
             {
 
                 // skip hero files, they are too big
-                if (filenamepath.Equals(PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_ps.vcs"))
+                if (filenamepath.Equals(PCGL_DIR_NOT_CORE + @"/hero_pcgl_30_ps.vcs"))
                 {
                     continue;
                 }
-                if (filenamepath.Equals(PCGL_DIR_NOT_CORE + @"\hero_pcgl_40_ps.vcs"))
+                if (filenamepath.Equals(PCGL_DIR_NOT_CORE + @"/hero_pcgl_40_ps.vcs"))
                 {
                     continue;
                 }
 
 
                 string token = GetCoreOrDotaString(filenamepath);
-                string outputdir = @$"Z:\dev\www\vcs.codecreation.dev\vcs-all\{token}\zsource";
+                string outputdir = @$"Z:/dev/www/vcs.codecreation.dev/vcs-all/{token}/zsource";
 
                 ShaderFile shaderFile = new ReadShaderFile(filenamepath).GetShaderFile();
                 //int zframesToWrite = 100;
@@ -208,8 +208,8 @@ namespace MyShaderAnalysis
             int ZFRAME_FILES_TO_WRITE = 10;
 
 
-            // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
-            // string filenamepath = PCGL_DIR_CORE + @"\blur_pcgl_30_ps.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_ps.vcs";
+            // string filenamepath = PCGL_DIR_CORE + @"/blur_pcgl_30_ps.vcs";
             // List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
 
             List<string> vcsFiles = new();
@@ -229,7 +229,7 @@ namespace MyShaderAnalysis
                 string token = GetCoreOrDotaString(filenamepath);
                 if (useServerDefaultDir)
                 {
-                    outputdir = @$"Z:\dev\www\vcs.codecreation.dev\vcs-all\{token}\zsource";
+                    outputdir = @$"Z:/dev/www/vcs.codecreation.dev/vcs-all/{token}/zsource";
                 }
 
                 ShaderFile shaderFile = new ReadShaderFile(filenamepath).GetShaderFile();
@@ -261,7 +261,7 @@ namespace MyShaderAnalysis
         //    ShaderFile shaderFile = new ReadShaderFile(filenamepath).GetShaderFile();
         //    byte[] zframeDatabytes = shaderFile.GetDecompressedZFrame(zframeId);
         //    string outputFilename = GetZframeHtmlFilename((uint)zframeId, shaderFile.filenamepath);
-        //    string outputFilenamepath = @$"{outputdir}\{outputFilename}";
+        //    string outputFilenamepath = @$"{outputdir}/{outputFilename}";
         //    DataReaderZFrameByteAnalysis zFrameParser = new(zframeDatabytes, shaderFile.vcsFileType, shaderFile.vcsSourceType);
         //    Debug.WriteLine($"writing to {outputFilenamepath}");
         //    StreamWriter sw = new(outputFilenamepath);
@@ -291,7 +291,7 @@ namespace MyShaderAnalysis
             byte[] zframeDatabytes = shaderFile.GetDecompressedZFrameByIndex(zframeIndex);
             uint zframeId = (uint)shaderFile.GetZFrameIdByIndex(zframeIndex);
             string outputFilename = GetZframeHtmlFilename(zframeId, "", shaderFile.filenamepath);
-            string outputFilenamepath = @$"{outputdir}\{outputFilename}";
+            string outputFilenamepath = @$"{outputdir}/{outputFilename}";
             DataReaderZFrameByteAnalysis zFrameParser = new(zframeDatabytes, shaderFile.vcsFileType, shaderFile.vcsSourceType);
             Debug.WriteLine($"writing to {outputFilenamepath}");
             StreamWriter sw = new(outputFilenamepath);
@@ -312,8 +312,8 @@ namespace MyShaderAnalysis
 
         static void RunWriteZframeAsTxt()
         {
-            string filenamepath = PCGL_DIR_CORE + @"\rendermicrobenchmark_pcgl_40_ps.vcs";
-            // string filenamepath = PCGL_DIR_CORE + @"\sky_pcgl_40_ps.vcs";
+            string filenamepath = PCGL_DIR_CORE + @"/rendermicrobenchmark_pcgl_40_ps.vcs";
+            // string filenamepath = PCGL_DIR_CORE + @"/sky_pcgl_40_ps.vcs";
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
 
             byte[] zframeDatabytes = shaderFile.GetDecompressedZFrameByIndex(0);
@@ -336,7 +336,7 @@ namespace MyShaderAnalysis
             byte[] zframeDatabytes = shaderFile.GetDecompressedZFrameByIndex(zframeIndex);
             uint zframeId = (uint)shaderFile.GetZFrameIdByIndex(zframeIndex);
             string outputFilename = GetZframeTxtFilename(zframeId, shaderFile.filenamepath);
-            string outputFilenamepath = @$"{outputdir}\{outputFilename}";
+            string outputFilenamepath = @$"{outputdir}/{outputFilename}";
             DataReaderZFrameByteAnalysis zFrameParser = new(zframeDatabytes, shaderFile.vcsFileType, shaderFile.vcsSourceType);
             Debug.WriteLine($"writing to {outputFilenamepath}");
             StreamWriter sw = new(outputFilenamepath);
@@ -366,7 +366,7 @@ namespace MyShaderAnalysis
                     continue;
                 }
                 byte[] zframeDatabytes = shaderFile.GetDecompressedZFrameByIndex(0);
-                string outputFilenamepath = @$"{OUTPUT_DIR}\{GetZframeTxtFilename((uint)shaderFile.GetZFrameIdByIndex(0), vcsFile)}";
+                string outputFilenamepath = @$"{OUTPUT_DIR}/{GetZframeTxtFilename((uint)shaderFile.GetZFrameIdByIndex(0), vcsFile)}";
                 StreamWriter sw = new(outputFilenamepath);
                 Debug.WriteLine($"parsing {vcsFile}");
                 Debug.WriteLine($"writing to {outputFilenamepath}");
@@ -404,7 +404,7 @@ namespace MyShaderAnalysis
         {
             ShaderFile shaderFile = new ReadShaderFile(filenamepath).GetShaderFile();
             byte[] zframeDatabytes = shaderFile.GetDecompressedZFrame(zframeId);
-            string outputFilenamepath = @$"{OUTPUT_DIR}\{GetZframeTxtFilename((uint)zframeId, filenamepath)}";
+            string outputFilenamepath = @$"{OUTPUT_DIR}/{GetZframeTxtFilename((uint)zframeId, filenamepath)}";
             StreamWriter sw = new(outputFilenamepath);
             Debug.WriteLine($"parsing {filenamepath}");
             Debug.WriteLine($"writing to {outputFilenamepath}");
@@ -419,7 +419,7 @@ namespace MyShaderAnalysis
         {
             ShaderFile shaderFile = new ReadShaderFile(filenamepath).GetShaderFile();
             byte[] zframeDatabytes = shaderFile.GetDecompressedZFrameByIndex(zframeIndex);
-            string outputFilenamepath = @$"{OUTPUT_DIR}\{GetZframeTxtFilename((uint)shaderFile.GetZFrameIdByIndex(zframeIndex), filenamepath)}";
+            string outputFilenamepath = @$"{OUTPUT_DIR}/{GetZframeTxtFilename((uint)shaderFile.GetZFrameIdByIndex(zframeIndex), filenamepath)}";
             StreamWriter sw = new(outputFilenamepath);
             Debug.WriteLine($"parsing {filenamepath}");
             Debug.WriteLine($"writing to {outputFilenamepath}");
@@ -431,12 +431,12 @@ namespace MyShaderAnalysis
 
         static void TestZFrameSingleFile()
         {
-            // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_vs.vcs";
-            // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
-            // string filenamepath = ARTIFACT_CLASSIC_CORE_PC_SOURCE + @"\aerial_perspective_pc_30_ps.vcs";
-            // string filenamepath = PCGL_DIR_CORE + @"\convolve_environment_map_pcgl_41_vs.vcs";
-            // string filenamepath = PCGL_DIR_CORE + @"\panorama_pcgl_40_ps.vcs";
-            string filenamepath = PCGL_DIR_NOT_CORE + @"\dof2_pcgl_30_ps.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_vs.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_ps.vcs";
+            // string filenamepath = ARTIFACT_CLASSIC_CORE_PC_SOURCE + @"/aerial_perspective_pc_30_ps.vcs";
+            // string filenamepath = PCGL_DIR_CORE + @"/convolve_environment_map_pcgl_41_vs.vcs";
+            // string filenamepath = PCGL_DIR_CORE + @"/panorama_pcgl_40_ps.vcs";
+            string filenamepath = PCGL_DIR_NOT_CORE + @"/dof2_pcgl_30_ps.vcs";
             // ShaderFile shaderfile = new(filenamepath);
 
             PrintZFrame(filenamepath, 0x0);
@@ -482,11 +482,11 @@ namespace MyShaderAnalysis
 
         static void ShaderFileTestSinglefiles()
         {
-            // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_vs.vcs";
-            string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
-            // string filenamepath = PCGL_DIR_CORE + @"\apply_fog_pcgl_40_features.vcs";
-            // string filenamepath = ARTIFACT_CLASSIC_CORE_PC_SOURCE + @"\aerial_perspective_pc_30_ps.vcs";
-            // string filenamepath = ARTIFACT_CLASSIC_CORE_PC_SOURCE + @"\bilateral_blur_pc_30_vs.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_vs.vcs";
+            string filenamepath = PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_ps.vcs";
+            // string filenamepath = PCGL_DIR_CORE + @"/apply_fog_pcgl_40_features.vcs";
+            // string filenamepath = ARTIFACT_CLASSIC_CORE_PC_SOURCE + @"/aerial_perspective_pc_30_ps.vcs";
+            // string filenamepath = ARTIFACT_CLASSIC_CORE_PC_SOURCE + @"/bilateral_blur_pc_30_vs.vcs";
             ShaderFile shaderFile = new ReadShaderFile(filenamepath).GetShaderFile();
             shaderFile.ShowZFrames();
 
@@ -495,24 +495,24 @@ namespace MyShaderAnalysis
 
         static void VcsParsingTestSinglefiles()
         {
-            // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_vs.vcs";
-            // string filenamepath = PCGL_DIR_NOT_CORE + @"\multiblend_pcgl_30_ps.vcs";
-            // string filenamepath = PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_features.vcs";
-            // string filenamepath = PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_vs.vcs";
-            // string filenamepath = PCGL_DIR_NOT_CORE + @"\hero_pcgl_30_ps.vcs";
-            // string filenamepath = PCGL_DIR_CORE + @"\generic_light_pcgl_30_features.vcs";
-            // string filenamepath = PCGL_DIR_CORE + @"\generic_light_pcgl_30_vs.vcs";
-            // string filenamepath = PCGL_DIR_CORE + @"\generic_light_pcgl_30_ps.vcs";
-            // string filenamepath = PCGL_DIR_CORE + @"\apply_fog_pcgl_40_ps.vcs";
-            // string filenamepath = PCGL_DIR_CORE + @"\tools_wireframe_pcgl_40_gs.vcs";
-            // string filenamepath = PCGL_DIR_NOT_CORE + @"\spring_meteor_pcgl_30_vs.vcs";
-            // string filenamepath = PC_DIR_NOT_CORE + @"\spring_meteor_pc_30_vs.vcs";
-            // string filenamepath = PCGL_DIR_CORE + @"\apply_fog_pcgl_40_features.vcs";
-            // string filenamepath = PCGL_DIR_CORE + @"\tools_generic_pcgl_40_ps.vcs";
-            // string filenamepath = PCGL_DIR_CORE + @"\visualize_cloth_pcgl_40_ps.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_vs.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_ps.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"/hero_pcgl_30_features.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"/hero_pcgl_30_vs.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"/hero_pcgl_30_ps.vcs";
+            // string filenamepath = PCGL_DIR_CORE + @"/generic_light_pcgl_30_features.vcs";
+            // string filenamepath = PCGL_DIR_CORE + @"/generic_light_pcgl_30_vs.vcs";
+            // string filenamepath = PCGL_DIR_CORE + @"/generic_light_pcgl_30_ps.vcs";
+            // string filenamepath = PCGL_DIR_CORE + @"/apply_fog_pcgl_40_ps.vcs";
+            // string filenamepath = PCGL_DIR_CORE + @"/tools_wireframe_pcgl_40_gs.vcs";
+            // string filenamepath = PCGL_DIR_NOT_CORE + @"/spring_meteor_pcgl_30_vs.vcs";
+            // string filenamepath = PC_DIR_NOT_CORE + @"/spring_meteor_pc_30_vs.vcs";
+            // string filenamepath = PCGL_DIR_CORE + @"/apply_fog_pcgl_40_features.vcs";
+            // string filenamepath = PCGL_DIR_CORE + @"/tools_generic_pcgl_40_ps.vcs";
+            // string filenamepath = PCGL_DIR_CORE + @"/visualize_cloth_pcgl_40_ps.vcs";
 
-            // string filenamepath = ARTIFACT_CLASSIC_CORE_PC_SOURCE + @"\aerial_perspective_pc_30_ps.vcs";
-            string filenamepath = ARTIFACT_CLASSIC_CORE_PC_SOURCE + @"\bilateral_blur_pc_30_ps.vcs";
+            // string filenamepath = ARTIFACT_CLASSIC_CORE_PC_SOURCE + @"/aerial_perspective_pc_30_ps.vcs";
+            string filenamepath = ARTIFACT_CLASSIC_CORE_PC_SOURCE + @"/bilateral_blur_pc_30_ps.vcs";
 
             ShowVcsByteAnalysis(filenamepath);
         }

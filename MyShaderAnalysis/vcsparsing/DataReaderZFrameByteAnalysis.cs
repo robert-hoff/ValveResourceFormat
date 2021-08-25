@@ -481,7 +481,7 @@ namespace MyShaderAnalysis.vcsparsing
             foreach (var glslSourceItem in glslSources)
             {
                 string htmlFilename = GetGlslHtmlFilename(glslSourceItem.Item3);
-                string glslFilenamepath = @$"{outputDir}\{htmlFilename}";
+                string glslFilenamepath = @$"{outputDir}/{htmlFilename}";
                 if (File.Exists(glslFilenamepath))
                 {
                     continue;
@@ -506,7 +506,7 @@ namespace MyShaderAnalysis.vcsparsing
         {
             foreach (var glslSourceItem in glslSources)
             {
-                string glslFilenamepath = @$"{outputDir}\{GetGlslTxtFilename(glslSourceItem.Item3)}";
+                string glslFilenamepath = @$"{outputDir}/{GetGlslTxtFilename(glslSourceItem.Item3)}";
                 if (File.Exists(glslFilenamepath))
                 {
                     continue;
