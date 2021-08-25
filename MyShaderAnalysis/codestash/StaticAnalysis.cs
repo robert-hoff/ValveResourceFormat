@@ -62,10 +62,11 @@ namespace MyShaderAnalysis
             // string filenamepath = PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_ps.vcs";
 
             // -- writes a useful summary for every file (pretty long process)
-            FileSummaryAllFiles();
+            // FileSummaryAllFiles();
 
             // - prints a single page summary and links to all the files produced with FileSummaryAllFiles()
             // BlockCountSurvery($@"{SERVER_OUTPUT_DIR}/file-overview.html", writeFile: true);
+            BlockCountSurvery($@"{SERVER_OUTPUT_DIR}/files-mobile-gles.html", writeFile: true);
 
 
             // NOTE - currently points to Artifact classic
@@ -356,7 +357,8 @@ namespace MyShaderAnalysis
          */
         static void FileSummaryAllFiles()
         {
-            List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, -1);
+            // List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, -1);
+            List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(DOTA_CORE_MOBILE_GLES_SOURCE, DOTA_DAC_MOBILE_GLES_SOURCE, -1);
             // List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, -1);
             foreach (var triple in triples)
             {
@@ -440,7 +442,8 @@ namespace MyShaderAnalysis
             {
                 ConfigureOutputFile(outputFilenamepath);
                 // WriteHtmlFile("Files", "Vcs files / Artifact classic");
-                WriteHtmlFile("Files", "Vcs files Dota PCGL");
+                // WriteHtmlFile("Files", "Vcs files Dota PCGL");
+                WriteHtmlFile("Files-gles", "Vcs files Mobile GLES");
             }
             string fH = "File";
             string sfH = "SF blocks";
@@ -458,7 +461,8 @@ namespace MyShaderAnalysis
             OutputWriteLine($"{header}");
 
 
-            List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Any, -1);
+            // List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Any, -1);
+            List<string> allVcsFiles = GetVcsFiles(DOTA_CORE_MOBILE_GLES_SOURCE, DOTA_DAC_MOBILE_GLES_SOURCE, VcsFileType.Any, -1);
             // List<string> allVcsFiles = GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsFileType.Any, -1);
 
 
@@ -499,7 +503,7 @@ namespace MyShaderAnalysis
             string detLink = GetSFSummaryLink(filenamepath);
             const int linkLength = 4; // "det."
 
-            OutputWriteLine($"{GetHtmlLink(filenamepath)}{new string(' ', filepadlength)}{detLink,linkLength}" +
+            OutputWriteLine($"{GetHtmlLink(filenamepath, "summary2")}{new string(' ', filepadlength)}{detLink,linkLength}" +
                 $"{sfCount,pad}{cCount,pad}{dCount,pad}" +
                 $"{uCount,pad}{pCount,pad}{mCount,pad}{bCount,pad}{sCount,pad}{zCount,pad}");
         }
@@ -532,7 +536,7 @@ namespace MyShaderAnalysis
                     OutputWriteLine("D-BLOCK RULES");
                     if (showLink)
                     {
-                        OutputWriteLine(GetHtmlLink(filenamepath));
+                        OutputWriteLine(GetHtmlLink(filenamepath,""));
                     }
                     // OutputWriteLine(RemoveBaseDir(filenamepath));
                     // OutputWriteLine("");
@@ -779,7 +783,7 @@ namespace MyShaderAnalysis
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             if (showLink)
             {
-                OutputWriteLine($"SF params for {GetHtmlLink(filenamepath)}");
+                OutputWriteLine($"SF params for {GetHtmlLink(filenamepath,"")}");
             } else
             {
                 OutputWriteLine($"SF params for {ShortHandName(filenamepath)}");
@@ -1055,7 +1059,7 @@ namespace MyShaderAnalysis
 
                 if (newFile && showLink)
                 {
-                    OutputWriteLine($"Compatibility rules for {GetHtmlLink(filenamepath)}");
+                    OutputWriteLine($"Compatibility rules for {GetHtmlLink(filenamepath,"")}");
                     // OutputWriteLine(RemoveBaseDir(filenamepath));
                     OutputWriteLine("");
                 } else if (newFile)
@@ -1204,7 +1208,7 @@ namespace MyShaderAnalysis
 
                 if (newFile)
                 {
-                    OutputWrite(GetHtmlLink(filenamepath) + " ");
+                    OutputWrite(GetHtmlLink(filenamepath,"") + " ");
                 } else
                 {
                     OutputWrite("");
