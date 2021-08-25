@@ -24,7 +24,7 @@ namespace MyShaderAnalysis.compat
      *  6        0  1  1
      *  7        1  1  1
      *
-     * Some static-param can assume more than two states, for example S_DETAIL_2 from the file
+     * Some static-param can have more than two states, for example S_DETAIL_2 from the file
      * hero_pcgl_30_vs.vcs can be assigned as one of three (None, Add, Add Self Illum). In our example,
      * if S2 is expanded to take the values (0,1,2) the number of possible configurations becomes 12 and a new
      * mapping can be written as
@@ -100,11 +100,11 @@ namespace MyShaderAnalysis.compat
      *
      *
      */
-    public class SfBlockConfigurationMapping
+    public class ConfigMappingSParams
     {
         ShaderFile shaderfile;
 
-        public SfBlockConfigurationMapping(ShaderFile shaderfile)
+        public ConfigMappingSParams(ShaderFile shaderfile)
         {
             this.shaderfile = shaderfile;
             GenerateOffsetAndStateLookups(shaderfile);

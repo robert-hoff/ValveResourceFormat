@@ -620,7 +620,7 @@ namespace MyShaderAnalysis.vcsparsing
             try
             {
                 return new VfxEval(dynExpDatabytes).DynamicExpressionResult.Replace("UNKNOWN", "VAR"); ;
-            } catch (InvalidDataException)
+            } catch (Exception)
             {
                 return "[error in dyn-exp]";
             }
@@ -629,9 +629,8 @@ namespace MyShaderAnalysis.vcsparsing
 
         public class OutputFormatterTabulatedData
         {
-            private bool WriteToConsole = false;
-            private bool WriteToDebug = true;
-
+            private bool WriteToConsole;
+            private bool WriteToDebug;
             public OutputFormatterTabulatedData(bool WriteToConsole = false, bool WriteToDebug = true)
             {
                 this.WriteToConsole = WriteToConsole;

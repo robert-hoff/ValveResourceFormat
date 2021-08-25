@@ -34,7 +34,7 @@ namespace MyShaderAnalysis.vcsparsing
         // their Id (which is different) is the dictionary key
         // both their index and Id are used in different contexts
         public SortedDictionary<long, ZFrameDataDescription> zframesLookup { get; } = new();
-        private DBlockConfigurationMapping dBlockConfigGen;
+        private ConfigMappingDParams dBlockConfigGen;
 
         public ShaderFile(string filenamepath, ShaderDataReader datareader)
         {
@@ -43,17 +43,12 @@ namespace MyShaderAnalysis.vcsparsing
             vcsSourceType = GetVcsSourceType(filenamepath);
             this.datareader = datareader;
 
-            if (vcsFileType == VcsFileType.ComputeShader)
-            {
-                Console.WriteLine("Parsing cs.vcs files (compute shaders) is not yet implemented");
-                return;
-            }
-
             if (vcsFileType == VcsFileType.Features)
             {
                 featuresHeader = new FeaturesHeaderBlock(datareader, datareader.GetOffset());
             } else if (vcsFileType == VcsFileType.VertexShader || vcsFileType == VcsFileType.PixelShader
-                   || vcsFileType == VcsFileType.GeometryShader || vcsFileType == VcsFileType.PixelShaderRenderState)
+                   || vcsFileType == VcsFileType.GeometryShader || vcsFileType == VcsFileType.PixelShaderRenderState
+                   || vcsFileType == VcsFileType.ComputeShader)
             {
                 vspsHeader = new VsPsHeaderBlock(datareader, datareader.GetOffset());
             } else
@@ -88,7 +83,7 @@ namespace MyShaderAnalysis.vcsparsing
 
             // This is needed for the zframes to determine their source mapping
             // it must be instantiated after the D-blocks have been read
-            dBlockConfigGen = new DBlockConfigurationMapping(this);
+            dBlockConfigGen = new ConfigMappingDParams(this);
 
             int paramBlockCount = datareader.ReadInt();
             for (int i = 0; i < paramBlockCount; i++)

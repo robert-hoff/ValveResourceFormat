@@ -854,7 +854,7 @@ namespace MyShaderAnalysis
             ShaderFile shaderFile = InstantiateShaderFile(targetFile.filenamepath);
 
             // prepare the lookup to determine configuration state
-            SfBlockConfigurationMapping configGen = new(shaderFile);
+            ConfigMappingSParams configGen = new(shaderFile);
 
 
 
@@ -950,7 +950,7 @@ namespace MyShaderAnalysis
 
             string zFrameBaseDir = $"/multiblend_pcgl_30/";
             ShaderFile shaderFile = InstantiateShaderFile(multiBlendPsFile);
-            SfBlockConfigurationMapping configGen = new(shaderFile);
+            ConfigMappingSParams configGen = new(shaderFile);
             int zframeCount = 0;
 
             // collect names in the order they appear

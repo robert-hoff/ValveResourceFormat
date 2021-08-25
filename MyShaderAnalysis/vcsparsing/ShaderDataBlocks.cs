@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
-
 
 namespace MyShaderAnalysis.vcsparsing
 {
@@ -426,7 +424,7 @@ namespace MyShaderAnalysis.vcsparsing
     {
         public int blockIndex { get; }
         public int relRule { get; }  // 2 = dependency-rule (other files), 3 = exclusion (1 not present, as in the compat-blocks)
-        public int arg0 { get; } // ALWAYS 3 (for sf-constraint-blocks, this value is 1 for features files and 2 for all other files)
+        public int arg0 { get; } // ALWAYS 3 (for sf-constraint-blocks this value is 1 for features files and 2 for all other files)
         public int arg1 { get; } // arg1 at (88) sometimes has a value > -1 (in compat-blocks this value is always seen to be -1)
         public int[] flags { get; }
         public int[] range0 { get; }
@@ -635,34 +633,6 @@ namespace MyShaderAnalysis.vcsparsing
             command1 = datareader.ReadNullTermStringAtPosition();
             datareader.MoveOffset(32);
         }
-
-        public void ShowBlock()
-        {
-            Debug.WriteLine($"name0 {new string(' ', 20)} {name0}");
-            Debug.WriteLine($"name1 {new string(' ', 20)} {name1}");
-            Debug.WriteLine($"lead0,lead1 {new string(' ', 24)} ({type},{res0})");
-            Debug.WriteLine($"name2 {new string(' ', 20)} {name2}");
-            Debug.WriteLine($"paramType {new string(' ', 16)} {lead0}");
-            Debug.WriteLine($"dynExp {new string(' ', 1)} {ShaderDataReader.BytesToString(dynExp)}");
-            Debug.WriteLine($"arg0 {new string(' ', 21)} {arg0,9}");
-            Debug.WriteLine($"arg1 {new string(' ', 21)} {arg1,9}");
-            Debug.WriteLine($"arg2 {new string(' ', 21)} {arg2,9}");
-            Debug.WriteLine($"arg3 {new string(' ', 21)} {arg3,9}");
-            Debug.WriteLine($"arg4 {new string(' ', 21)} {arg4,9}");
-            Debug.WriteLine($"arg5 {new string(' ', 21)} {arg5,9}");
-            Debug.WriteLine($"fileref {new string(' ', 17)} {fileref}");
-            Debug.WriteLine($"ranges0 {new string(' ', 17)} {CombineIntArray(ranges0)}");
-            Debug.WriteLine($"ranges1 {new string(' ', 17)} {CombineIntArray(ranges1)}");
-            Debug.WriteLine($"ranges2 {new string(' ', 17)} {CombineIntArray(ranges2)}");
-            Debug.WriteLine($"ranges3 {new string(' ', 17)} {ranges3[0]},{ranges3[1]},{ranges3[2]},{ranges3[3]}");
-            Debug.WriteLine($"ranges4 {new string(' ', 17)} {ranges4[0]},{ranges4[1]},{ranges4[2]},{ranges4[3]}");
-            Debug.WriteLine($"ranges5 {new string(' ', 17)} {ranges5[0]},{ranges5[1]},{ranges5[2]},{ranges5[3]}");
-            Debug.WriteLine($"ranges6 {new string(' ', 17)} {CombineIntArray(ranges6)}");
-            Debug.WriteLine($"ranges7 {new string(' ', 17)} {CombineIntArray(ranges7)}");
-            Debug.WriteLine($"command0 {new string(' ', 16)} {command0}");
-            Debug.WriteLine($"command1 {new string(' ', 16)} {command1}");
-        }
-
         public void PrintAnnotatedBytestream()
         {
             datareader.SetOffset(start);
@@ -785,14 +755,13 @@ namespace MyShaderAnalysis.vcsparsing
     public class MipmapBlock : ShaderDataBlock
     {
         public int blockIndex { get; }
-        public string name;
-        public byte[] arg0;
-        public int arg1;
-        public int arg2;
-        public int arg3;
-        public int arg4;
-        public int arg5;
-
+        public string name { get; }
+        public byte[] arg0 { get; }
+        public int arg1 { get; }
+        public int arg2 { get; }
+        public int arg3 { get; }
+        public int arg4 { get; }
+        public int arg5 { get; }
 
         public MipmapBlock(ShaderDataReader datareader, int start, int blockIndex) : base(datareader, start)
         {
@@ -823,8 +792,8 @@ namespace MyShaderAnalysis.vcsparsing
         public int blockIndex { get; }
         public string name { get; }
         public int bufferSize { get; }
-        public int arg0;
-        public int paramCount;
+        public int arg0 { get; }
+        public int paramCount { get; }
         public List<(string, int, int, int, int)> bufferParams { get; } = new();
         public uint blockCrc { get; }
         public BufferBlock(ShaderDataReader datareader, int start, int blockIndex) : base(datareader, start)

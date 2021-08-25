@@ -591,7 +591,7 @@ namespace MyShaderAnalysis
             string configHeader = "Configuration";
             OutputWriteLine(configHeader);
             OutputWriteLine(new string('-', configHeader.Length));
-            SfBlockConfigurationMapping configGen = new(shaderFile);
+            ConfigMappingSParams configGen = new(shaderFile);
             int[] configState = configGen.GetConfigState(zframeId);
             for (int i = 0; i < configState.Length; i++)
             {

@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using MyShaderAnalysis.utilhelpers;
 using MyValveResourceFormat.ThirdParty;
 using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
 

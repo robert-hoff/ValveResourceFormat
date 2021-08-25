@@ -356,8 +356,8 @@ namespace MyShaderAnalysis.vcsparsing
                 string hasDynExp = param.lead0 == 6 || param.lead0 == 7 ? "true" : "";
                 output.AddTabulatedRow(new string[] { $"[{("" + param.blockIndex).PadLeft(indexPad)}]", $"{param.name0}",
                     $"{param.type,2},{param.lead0,2},{BlankNegOne(param.arg0),2},{param.arg1,2},{param.arg2,2},{param.arg4,2},{BlankNegOne(param.arg5),2}",
-                    $"{comb(r0)}", $"{comb(r1)}", $"{comb(r2)}", $"{comb(r3)}", $"{comb(r4)}",
-                    $"{comb(r5)}", $"{comb(r6)}", $"{comb(r7)}", $"{param.command0}", $"{hasFileRef}", $"{hasDynExp}"});
+                    $"{Comb(r0)}", $"{Comb(r1)}", $"{Comb(r2)}", $"{Comb(r3)}", $"{Comb(r4)}",
+                    $"{Comb(r5)}", $"{Comb(r6)}", $"{Comb(r7)}", $"{param.command0}", $"{hasFileRef}", $"{hasDynExp}"});
             }
             output.printTabulatedValues(spacing: 1);
             output.BreakLine();
@@ -473,7 +473,7 @@ namespace MyShaderAnalysis.vcsparsing
             // print the config headers every 100 frames
             int zframeCount = 0;
             // prepare the lookup to determine configuration state
-            SfBlockConfigurationMapping configGen = new(shaderFile);
+            ConfigMappingSParams configGen = new(shaderFile);
             output.WriteLine(new string('-', zframesHeader.Length));
             // collect names in the order they appear
             List<string> sfNames = new();
@@ -485,6 +485,10 @@ namespace MyShaderAnalysis.vcsparsing
                 sfNames.Add(sfShortName);
             }
             string[] breakabbreviations = CombineValuesBreakString(abbreviations.ToArray(), 120);
+            foreach (string abbr in breakabbreviations)
+            {
+                output.WriteLine(abbr);
+            }
             output.BreakLine();
             string configHeader = CombineStringsSpaceSep(sfNames.ToArray(), 6);
             configHeader = $"{new string(' ', 14)}{configHeader}";
@@ -525,24 +529,24 @@ namespace MyShaderAnalysis.vcsparsing
             return $"2^{pow}";
         }
 
-        private static string comb(int[] ints0)
+        private static string Comb(int[] ints0)
         {
-            return $"({f(ints0[0])},{f(ints0[1])},{f(ints0[2])},{f(ints0[3])})";
+            return $"({Fmt(ints0[0])},{Fmt(ints0[1])},{Fmt(ints0[2])},{Fmt(ints0[3])})";
         }
 
-        private static string comb(float[] floats0)
+        private static string Comb(float[] floats0)
         {
-            return $"({f(floats0[0])},{f(floats0[1])},{f(floats0[2])},{f(floats0[3])})";
+            return $"({Fmt(floats0[0])},{Fmt(floats0[1])},{Fmt(floats0[2])},{Fmt(floats0[3])})";
         }
 
-        private static string f(float val)
+        private static string Fmt(float val)
         {
             if (val == -1e9) return "-";
             if (val == 1e9) return "+";
             return $"{val}";
         }
 
-        private static string f(int val)
+        private static string Fmt(int val)
         {
             if (val == -999999999) return "-";
             if (val == 999999999) return "+";

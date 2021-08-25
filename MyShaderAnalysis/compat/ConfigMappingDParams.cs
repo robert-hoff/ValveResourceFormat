@@ -6,11 +6,11 @@ using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
 namespace MyShaderAnalysis.compat
 {
 
-    public class DBlockConfigurationMapping
+    public class ConfigMappingDParams
     {
         ShaderFile shaderfile;
 
-        public DBlockConfigurationMapping(ShaderFile shaderfile)
+        public ConfigMappingDParams(ShaderFile shaderfile)
         {
             this.shaderfile = shaderfile;
             GenerateOffsetAndStateLookups(shaderfile);
