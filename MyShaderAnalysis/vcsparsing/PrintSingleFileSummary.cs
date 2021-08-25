@@ -22,7 +22,6 @@ namespace MyShaderAnalysis.vcsparsing
                 PrintPsVsHeader(shaderFile);
                 PrintSBlocks(shaderFile);
             }
-
             PrintStaticConstraints(shaderFile);
             PrintDynamicConfigurations(shaderFile);
             PrintDynamicConstraints(shaderFile);
@@ -140,8 +139,7 @@ namespace MyShaderAnalysis.vcsparsing
             output.DefineHeaders(new string[] { "index", "name", "arg2", "arg3", "arg4" });
             foreach (var item in shaderFile.sfBlocks)
             {
-                output.AddTabulatedRow(new string[] {$"[{item.blockIndex,2}]", $"{item.name0}", $"{item.arg2}",
-                    $"{item.arg3}", $"{item.arg4,2}"});
+                output.AddTabulatedRow(new string[] { $"[{item.blockIndex,2}]", $"{item.name0}", $"{item.arg2}", $"{item.arg3}", $"{item.arg4,2}" });
             }
             output.printTabulatedValues();
             output.BreakLine();
@@ -156,22 +154,22 @@ namespace MyShaderAnalysis.vcsparsing
                 output.BreakLine();
                 return;
             }
-            foreach (SfConstraintsBlock cBlock in shaderFile.sfConstraintsBlocks)
+            foreach (SfConstraintsBlock sfRuleBlock in shaderFile.sfConstraintsBlocks)
             {
-                string[] sfNames = new string[cBlock.range0.Length];
+                string[] sfNames = new string[sfRuleBlock.range0.Length];
                 for (int i = 0; i < sfNames.Length; i++)
                 {
-                    sfNames[i] = shaderFile.sfBlocks[cBlock.range0[i]].name0;
+                    sfNames[i] = shaderFile.sfBlocks[sfRuleBlock.range0[i]].name0;
                 }
                 const int BL = 70;
                 string[] breakNames = CombineValuesBreakString(sfNames, BL);
-                string s0 = $"[{cBlock.blockIndex,2}]";
-                string s1 = (cBlock.relRule == 1 || cBlock.relRule == 2) ? $"INC({cBlock.relRule})" : $"EXC({cBlock.relRule})";
-                string s3 = $"{cBlock.GetByteFlagsAsString()}";
+                string s0 = $"[{sfRuleBlock.blockIndex,2}]";
+                string s1 = (sfRuleBlock.relRule == 1 || sfRuleBlock.relRule == 2) ? $"INC({sfRuleBlock.relRule})" : $"EXC({sfRuleBlock.relRule})";
+                string s3 = $"{sfRuleBlock.GetByteFlagsAsString()}";
                 string s4 = $"{breakNames[0]}";
-                string s5 = $"{CombineIntArray(cBlock.range0)}";
-                string s6 = $"{CombineIntArray(cBlock.range1)}";
-                string s7 = $"{CombineIntArray(cBlock.range2)}";
+                string s5 = $"{CombineIntArray(sfRuleBlock.range0)}";
+                string s6 = $"{CombineIntArray(sfRuleBlock.range1)}";
+                string s7 = $"{CombineIntArray(sfRuleBlock.range2)}";
                 string blockSummary = $"{s0.PadRight(7)}{s1.PadRight(10)}{s5.PadRight(16)}{s4.PadRight(BL)}{s6.PadRight(8)}{s7.PadRight(8)}";
                 for (int i = 1; i < breakNames.Length; i++)
                 {
@@ -226,32 +224,32 @@ namespace MyShaderAnalysis.vcsparsing
                 output.BreakLine();
                 return;
             }
-            foreach (DConstraintsBlock uBlock in shaderFile.dConstraintsBlocks)
+            foreach (DConstraintsBlock dRuleBlock in shaderFile.dConstraintsBlocks)
             {
-                string[] uknNames = new string[uBlock.flags.Length];
-                for (int i = 0; i < uknNames.Length; i++)
+                string[] dRuleName = new string[dRuleBlock.flags.Length];
+                for (int i = 0; i < dRuleName.Length; i++)
                 {
-                    if (uBlock.flags[i] == 3)
+                    if (dRuleBlock.flags[i] == 3)
                     {
-                        uknNames[i] = shaderFile.dBlocks[uBlock.range0[i]].name0;
+                        dRuleName[i] = shaderFile.dBlocks[dRuleBlock.range0[i]].name0;
                         continue;
                     }
-                    if (uBlock.flags[i] == 2)
+                    if (dRuleBlock.flags[i] == 2)
                     {
-                        uknNames[i] = shaderFile.sfBlocks[uBlock.range0[i]].name0;
+                        dRuleName[i] = shaderFile.sfBlocks[dRuleBlock.range0[i]].name0;
                         continue;
                     }
-                    throw new ShaderParserException($"unknown flag value {uBlock.flags[i]}");
+                    throw new ShaderParserException($"unknown flag value {dRuleBlock.flags[i]}");
                 }
                 const int BL = 70;
-                string[] breakNames = CombineValuesBreakString(uknNames, BL);
-                string s0 = $"[{uBlock.blockIndex,2}]";
-                string s1 = (uBlock.relRule == 1 || uBlock.relRule == 2) ? $"INC({uBlock.relRule})" : $"EXC({uBlock.relRule})";
-                string s3 = $"{uBlock.ReadByteFlagsAsString()}";
+                string[] breakNames = CombineValuesBreakString(dRuleName, BL);
+                string s0 = $"[{dRuleBlock.blockIndex,2}]";
+                string s1 = (dRuleBlock.relRule == 1 || dRuleBlock.relRule == 2) ? $"INC({dRuleBlock.relRule})" : $"EXC({dRuleBlock.relRule})";
+                string s3 = $"{dRuleBlock.ReadByteFlagsAsString()}";
                 string s4 = $"{breakNames[0]}";
-                string s5 = $"{CombineIntArray(uBlock.range0)}";
-                string s6 = $"{CombineIntArray(uBlock.range1)}";
-                string s7 = $"{CombineIntArray(uBlock.range2)}";
+                string s5 = $"{CombineIntArray(dRuleBlock.range0)}";
+                string s6 = $"{CombineIntArray(dRuleBlock.range1)}";
+                string s7 = $"{CombineIntArray(dRuleBlock.range2)}";
                 string blockSummary = $"{s0,-7}{s1,-10}{s3,-15}{s5,-16}{s4,-BL}{s6,-10}{s7,-8}";
                 for (int i = 1; i < breakNames.Length; i++)
                 {
@@ -260,7 +258,6 @@ namespace MyShaderAnalysis.vcsparsing
                 output.Write(blockSummary);
                 output.BreakLine();
             }
-
             output.BreakLine();
         }
 
@@ -551,7 +548,6 @@ namespace MyShaderAnalysis.vcsparsing
             if (val == 999999999) return "+";
             return "" + val; ;
         }
-
 
     }
 }
