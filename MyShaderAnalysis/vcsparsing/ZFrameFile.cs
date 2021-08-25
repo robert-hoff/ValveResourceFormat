@@ -93,6 +93,8 @@ namespace MyShaderAnalysis.vcsparsing
                     ReadDxbcSources(gpuSourceCount);
                     break;
                 case VcsSourceType.Vulkan:
+                case VcsSourceType.AndroidVulkan:
+                case VcsSourceType.IosVulkan:
                     ReadVulkanSources(gpuSourceCount);
                     break;
             }
@@ -472,7 +474,7 @@ namespace MyShaderAnalysis.vcsparsing
             {
                 ShowDxbcSources(gpuSourceCount);
             }
-            if (vcsSourceType == VcsSourceType.Vulkan)
+            if (vcsSourceType == VcsSourceType.Vulkan || vcsSourceType == VcsSourceType.AndroidVulkan || vcsSourceType == VcsSourceType.IosVulkan)
             {
                 ShowVulkanSources(gpuSourceCount);
             }
