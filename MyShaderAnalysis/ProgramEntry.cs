@@ -4,6 +4,7 @@ using MyShaderAnalysis.compat;
 using MyShaderAnalysis.utilhelpers;
 using MyShaderAnalysis.utilhelpers.snippetcode;
 using static MyShaderAnalysis.utilhelpers.FileSystem;
+using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
 
 namespace MyShaderAnalysis
 {
@@ -18,7 +19,7 @@ namespace MyShaderAnalysis
             // PrintoutsZframes1.RunTrials();
             // StaticAnalysisZframes.RunTrials();
 
-            PrintoutsSingleFile.RunTrials();
+            // PrintoutsSingleFile.RunTrials();
             // StaticAnalysis2.RunTrials();
             // StaticAnalysis.RunTrials();
 
@@ -49,6 +50,23 @@ namespace MyShaderAnalysis
             // BitTestGeneration.RunTrials();
 
 
+            Trial1();
+
+        }
+
+
+        static void Trial1()
+        {
+            int[] sconf = { 1, 2, 1 };
+
+            SfBlockConfigurationMapping rules = new SfBlockConfigurationMapping(sconf);
+            for (int i = 0; i < rules.MaxEnumeration(); i++)
+            {
+                int[] state = rules.GetConfigState(i);
+                ShowIntArray(state);
+            }
+
+            // rules.ShowOffsetAndLayersArrays();
 
         }
 
