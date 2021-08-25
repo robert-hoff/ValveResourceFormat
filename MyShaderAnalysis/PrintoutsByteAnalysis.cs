@@ -17,7 +17,7 @@ namespace MyShaderAnalysis
     {
         const string OUTPUT_DIR = @"Z:\active\projects\dota2-sourcesdk-modding\shader-analysis-vcs-format\OUTPUT_DUMP";
         const string SERVER_OUTPUT_DIR = @"Z:\dev\www\vcs.codecreation.dev\GEN-output";
-        static OutputWriter output = new();
+        static OutputWriter output = new(WriteToConsole: false, WriteToDebug: true);
 
         public static void RunTrials()
         {

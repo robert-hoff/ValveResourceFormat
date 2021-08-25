@@ -25,7 +25,7 @@ namespace MyShaderAnalysis.utilhelpers
 
 
 
-        static OutputWriter output = new();
+        static OutputWriter output = new(WriteToConsole: false, WriteToDebug: true);
 
         static void TestWriteSystem(string outputFilenamepath = null, bool writeFile = false)
         {

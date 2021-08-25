@@ -3,9 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
 
 
@@ -14,18 +11,17 @@ namespace MyShaderAnalysis.utilhelpers
 
     public class OutputWriter : IDisposable
     {
-
-        public OutputWriter()
-        {
-
-        }
-
-
-        public StreamWriter sw;
+        public StreamWriter sw { get; private set; }
         private bool WriteToConsole = false;
         private bool WriteToDebug = true;
         private bool writeAsHtml = false;
         private bool swWriterAlreadyClosed = false;
+
+        public OutputWriter(bool WriteToConsole = true, bool WriteToDebug = false)
+        {
+            this.WriteToConsole = WriteToConsole;
+            this.WriteToDebug = WriteToDebug;
+        }
 
         public void SetOutputFile(string filenamepath)
         {
@@ -132,7 +128,7 @@ namespace MyShaderAnalysis.utilhelpers
             for (int i = 0; i < rowMembers.Length; i++)
             {
                 string[] multipleLines = rowMembers[i].Split("\n");
-                if (multipleLines.Length>1)
+                if (multipleLines.Length > 1)
                 {
                     addExtraLines(additionalRows, multipleLines, i);
                 }
@@ -149,7 +145,6 @@ namespace MyShaderAnalysis.utilhelpers
                 tabulatedValues.Add(additionalRow);
             }
         }
-
 
         private void addExtraLines(List<List<string>> additionalRows, string[] multipleLines, int ind)
         {
@@ -179,11 +174,9 @@ namespace MyShaderAnalysis.utilhelpers
             return newRow;
         }
 
-
-
         public void printTabulatedValues(int spacing = 2)
         {
-            if (tabulatedValues.Count==1 && tabulatedValues[0].Count==0)
+            if (tabulatedValues.Count == 1 && tabulatedValues[0].Count == 0)
             {
                 return;
             }
