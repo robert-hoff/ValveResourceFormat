@@ -16,7 +16,7 @@ namespace MyShaderAnalysis
         static void Main()
         {
 
-            // PrintoutsZframes1.RunTrials();
+            PrintoutsZframes1.RunTrials();
             // StaticAnalysisZframes.RunTrials();
 
             // PrintoutsSingleFile.RunTrials();
@@ -48,33 +48,13 @@ namespace MyShaderAnalysis
             // CompatRules2.RunTrials();
             // CompatRules.RunTrials();
             // BitTestGeneration.RunTrials();
-
-
-            Trial1();
-
         }
 
 
-        static void Trial1()
-        {
-            int[] sconf = { 1, 2, 1 };
 
-            SfBlockConfigurationMapping rules = new SfBlockConfigurationMapping(sconf);
-            for (int i = 0; i < rules.MaxEnumeration(); i++)
-            {
-                int[] state = rules.GetConfigState(i);
-                ShowIntArray(state);
-            }
-
-            // rules.ShowOffsetAndLayersArrays();
-
-        }
 
 
     }
-
-
-
 }
 
 

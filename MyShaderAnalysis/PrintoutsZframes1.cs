@@ -67,7 +67,7 @@ namespace MyShaderAnalysis
 
         static void WriteBunchOfZframes()
         {
-            int NUM_TO_PRINT = 5;
+            int NUM_TO_PRINT = 10;
             // List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, -1);
             List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, 30);
             // List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, -1);
@@ -129,7 +129,6 @@ namespace MyShaderAnalysis
             if (writeFile)
             {
                 vcsFile.CreateZFramesDirectory();
-                // todo - changes here, needs testing
                 string outputFilenamepath = vcsFile.GetZFrameHtmlFilenamepath(zframeId, "summary");
                 ConfigureOutputFile(outputFilenamepath, disableOutput);
                 WriteHtmlFile($"Z 0x{zframeId:x}", vcsFile.GetZFrameHtmlFilename(zframeId, "")[0..^5]);
@@ -271,9 +270,6 @@ namespace MyShaderAnalysis
 
             foreach (int blockId in activeBlockIds)
             {
-                //if (zframeFile.dataBlocks[blockId].h0 == 0) {
-                //    continue;
-                //}
                 if (dBlockCount % 100 == 0)
                 {
                     OutputWriteLine($"{configNames}");
@@ -595,7 +591,7 @@ namespace MyShaderAnalysis
             string configHeader = "Configuration";
             OutputWriteLine(configHeader);
             OutputWriteLine(new string('-', configHeader.Length));
-            CompatRulesGeneration configGen = new(shaderFile);
+            SfBlockConfigurationMapping configGen = new(shaderFile);
             int[] configState = configGen.GetConfigState(zframeId);
             for (int i = 0; i < configState.Length; i++)
             {

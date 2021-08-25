@@ -109,7 +109,10 @@ namespace MyShaderAnalysis
             // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PCGL_SOURCE, null, VcsFileType.Any, -1);
 
             List<string> vcsFiles = new();
-            vcsFiles.Add($"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_ps.vcs");
+            // vcsFiles.Add($"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_features.vcs");
+            // vcsFiles.Add($"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs");
+            // vcsFiles.Add($"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_features.vcs");
+            vcsFiles.Add($"{DOTA_GAME_PCGL_SOURCE}/water_dota_pcgl_30_ps.vcs");
 
 
             FileTokens fileTokens = new FileTokens(vcsFiles[0]);
@@ -641,7 +644,7 @@ namespace MyShaderAnalysis
             // print the zframes
             string zFrameBaseDir = $"/vcs-all/{GetCoreOrDotaString(shaderFile.filenamepath)}/zsource/";
             // prepare the lookup to determine configuration state
-            CompatRulesGeneration configGen = new(shaderFile);
+            SfBlockConfigurationMapping configGen = new(shaderFile);
             output.WriteLine(new string('-', zframesHeader.Length));
             // collect names in the order they appear
             List<string> sfNames = new();

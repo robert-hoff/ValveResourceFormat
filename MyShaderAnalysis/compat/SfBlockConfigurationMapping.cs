@@ -13,12 +13,7 @@ namespace MyShaderAnalysis.compat
         public SfBlockConfigurationMapping(ShaderFile shaderfile)
         {
             this.shaderfile = shaderfile;
-            GenerateOffsetAndLayers(shaderfile);
-        }
-
-        public SfBlockConfigurationMapping(int[] sc)
-        {
-            GenerateOffsetAndLayers(sc);
+            GenerateOffsetAndStateLookups(shaderfile);
         }
 
 
@@ -39,7 +34,7 @@ namespace MyShaderAnalysis.compat
          * nr_states = [5    2]
          *
          */
-        private void GenerateOffsetAndLayers(ShaderFile shaderFile)
+        private void GenerateOffsetAndStateLookups(ShaderFile shaderFile)
         {
             if (shaderFile.sfBlocks.Count == 0)
             {
@@ -60,22 +55,6 @@ namespace MyShaderAnalysis.compat
                 offsets[i] = offsets[i - 1] * (nr_states[i - 1]);
             }
         }
-
-        private void GenerateOffsetAndLayers(int[] sc)
-        {
-            offsets = new int[sc.Length];
-            nr_states = new int[sc.Length];
-
-            offsets[0] = 1;
-            nr_states[0] = sc[0] + 1;
-
-            for (int i = 1; i < sc.Length; i++)
-            {
-                nr_states[i] = sc[i] + 1;
-                offsets[i] = offsets[i - 1] * (nr_states[i - 1]);
-            }
-        }
-
 
 
         /*
@@ -172,6 +151,5 @@ namespace MyShaderAnalysis.compat
 
 
     }
-
-
 }
+

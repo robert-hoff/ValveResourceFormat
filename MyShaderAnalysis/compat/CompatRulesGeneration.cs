@@ -101,22 +101,16 @@ namespace MyShaderAnalysis.compat
      *
      */
 
-    public class CompatRulesGeneration
+    public class CompatRulesGenerationz
     {
 
         ShaderFile shaderfile;
 
-        public CompatRulesGeneration(ShaderFile shaderfile)
+        public CompatRulesGenerationz(ShaderFile shaderfile)
         {
             this.shaderfile = shaderfile;
             GenerateOffsetAndLayers(shaderfile);
         }
-
-        public CompatRulesGeneration(int[] sc)
-        {
-            GenerateOffsetAndLayers(sc);
-        }
-
 
         /*
          *
@@ -153,23 +147,6 @@ namespace MyShaderAnalysis.compat
                 offsets[i] = offsets[i - 1] * (layers[i - 1] + 1);
             }
         }
-
-        private void GenerateOffsetAndLayers(int[] sc)
-        {
-            offsets = new int[sc.Length];
-            layers = new int[sc.Length];
-
-            offsets[0] = 1;
-            layers[0] = sc[0];
-
-            for (int i = 1; i < sc.Length; i++)
-            {
-                int curLayer = sc[i];
-                layers[i] = curLayer;
-                offsets[i] = offsets[i - 1] * (layers[i - 1] + 1);
-            }
-        }
-
 
 
         /*
