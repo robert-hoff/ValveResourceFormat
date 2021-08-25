@@ -14,8 +14,8 @@ namespace MyShaderAnalysis.compat
     public class CompatRulesWater2
     {
 
-        const string PCGL_DIR_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders-core\vfx";
-        const string PCGL_DIR_NOT_CORE = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders\vfx";
+        const string PCGL_DIR_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders-core/vfx";
+        const string PCGL_DIR_NOT_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders/vfx";
 
         public static void RunTrials()
         {
@@ -34,7 +34,7 @@ namespace MyShaderAnalysis.compat
         static void Trial1()
         {
 
-            // string filenamepath = @$"{PCGL_DIR_NOT_CORE}\water_dota_pcgl_30_ps.vcs";
+            // string filenamepath = @$"{PCGL_DIR_NOT_CORE}/water_dota_pcgl_30_ps.vcs";
             // ShaderFile shaderFile = new(filenamepath);
             // ShowBitGeneration();
 
