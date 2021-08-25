@@ -25,7 +25,7 @@ namespace MyShaderAnalysis.compat
      *  7        1  1  1
      *
      * Some static-param can have more than two states, for example S_DETAIL_2 from the file
-     * hero_pcgl_30_vs.vcs can be assigned as one of three (None, Add, Add Self Illum). In our example,
+     * hero_pcgl_30_vs.vcs can be assigned to one of three (None, Add, Add Self Illum). In our example,
      * if S2 is expanded to take the values (0,1,2) the number of possible configurations becomes 12 and a new
      * mapping can be written as
      *

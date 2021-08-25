@@ -35,6 +35,18 @@ namespace ValveResourceFormat.ShaderParser
             {
                 return VcsFileType.ComputeShader;
             }
+            if (filenamepath.EndsWith("hs.vcs"))
+            {
+                return VcsFileType.HullShader;
+            }
+            if (filenamepath.EndsWith("ds.vcs"))
+            {
+                return VcsFileType.DomainShader;
+            }
+            if (filenamepath.EndsWith("rtx.vcs"))
+            {
+                return VcsFileType.RaytracingShader;
+            }
             throw new ShaderParserException($"don't know what this file is {filenamepath}");
         }
 

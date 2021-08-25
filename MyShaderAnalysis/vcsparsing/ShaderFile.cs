@@ -48,7 +48,8 @@ namespace MyShaderAnalysis.vcsparsing
                 featuresHeader = new FeaturesHeaderBlock(datareader, datareader.GetOffset());
             } else if (vcsFileType == VcsFileType.VertexShader || vcsFileType == VcsFileType.PixelShader
                    || vcsFileType == VcsFileType.GeometryShader || vcsFileType == VcsFileType.PixelShaderRenderState
-                   || vcsFileType == VcsFileType.ComputeShader)
+                   || vcsFileType == VcsFileType.ComputeShader || vcsFileType == VcsFileType.HullShader
+                   || vcsFileType == VcsFileType.DomainShader || vcsFileType == VcsFileType.RaytracingShader)
             {
                 vspsHeader = new VsPsHeaderBlock(datareader, datareader.GetOffset());
             } else
