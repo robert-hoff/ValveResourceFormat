@@ -165,7 +165,7 @@ namespace MyShaderAnalysis
         static Dictionary<int, GpuSource> GetBlockIdToSource(ZFrameFile zframeFile)
         {
             Dictionary<int, GpuSource> blockIdToSource = new();
-            if (zframeFile.vcsFileType == VcsFileType.VertexShader)
+            if (zframeFile.vcsProgramType == VcsProgramType.VertexShader)
             {
                 foreach (VsEndBlock vsEndBlock in zframeFile.vsEndBlocks)
                 {
@@ -215,7 +215,7 @@ namespace MyShaderAnalysis
 
         static void PrintLeadSummary(ZFrameFile zframeFile)
         {
-            if (zframeFile.vcsFileType != VcsFileType.VertexShader)
+            if (zframeFile.vcsProgramType != VcsProgramType.VertexShader)
             {
                 return;
             }
@@ -306,7 +306,7 @@ namespace MyShaderAnalysis
         static List<int> GetActiveBlockIds(ZFrameFile zframeFile)
         {
             List<int> blockIds = new();
-            if (zframeFile.vcsFileType == VcsFileType.VertexShader)
+            if (zframeFile.vcsProgramType == VcsProgramType.VertexShader)
             {
                 foreach (VsEndBlock vsEndBlock in zframeFile.vsEndBlocks)
                 {
@@ -628,8 +628,8 @@ namespace MyShaderAnalysis
             OutputWriteLine($"{headerText}");
             OutputWriteLine(new string('-', headerText.Length));
 
-            VcsFileType vcsFiletype = shaderFile.vcsFileType;
-            if (vcsFiletype == VcsFileType.VertexShader || vcsFiletype == VcsFileType.GeometryShader)
+            VcsProgramType vcsFiletype = shaderFile.vcsProgramType;
+            if (vcsFiletype == VcsProgramType.VertexShader || vcsFiletype == VcsProgramType.GeometryShader)
             {
                 OutputWriteLine($"{zframeFile.vsEndBlocks.Count:X02} 00 00 00   // end blocks ({zframeFile.vsEndBlocks.Count})");
                 OutputWriteLine("");
@@ -689,7 +689,7 @@ namespace MyShaderAnalysis
             }
 
             Dictionary<FileTokens, List<long>> zframesFound = new();
-            List<string> coreFiles = GetVcsFiles(PCGL_DIR_CORE, null, VcsFileType.Undetermined, 30);
+            List<string> coreFiles = GetVcsFiles(PCGL_DIR_CORE, null, VcsProgramType.Undetermined, 30);
             foreach (var filenamepath in coreFiles)
             {
                 FileTokens vcsFile = new(ARCHIVE.dotacore_pcgl, filenamepath);
@@ -702,7 +702,7 @@ namespace MyShaderAnalysis
                 }
             }
 
-            List<string> gameFiles = GetVcsFiles(PCGL_DIR_NOT_CORE, null, VcsFileType.Undetermined, 30);
+            List<string> gameFiles = GetVcsFiles(PCGL_DIR_NOT_CORE, null, VcsProgramType.Undetermined, 30);
             foreach (var filenamepath in gameFiles)
             {
                 FileTokens vcsFile = new(ARCHIVE.dotagame_pcgl, filenamepath);

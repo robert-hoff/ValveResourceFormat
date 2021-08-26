@@ -58,7 +58,7 @@ namespace MyShaderAnalysis
         static void DoSomething()
         {
 
-            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Features, -1);
+            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsProgramType.Features, -1);
             foreach (string filenamepath in vcsFiles)
             {
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
@@ -104,7 +104,7 @@ namespace MyShaderAnalysis
             }
             int CUTLEN = 0;
 
-            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Features, -1);
+            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsProgramType.Features, -1);
             foreach (string filenamepath in vcsFiles)
             {
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
@@ -185,7 +185,7 @@ namespace MyShaderAnalysis
                 ConfigureOutputFile(outputFilenamepath);
                 WriteHtmlFile("params", "Parameters, i7 sorted");
             }
-            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Features, -1);
+            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsProgramType.Features, -1);
             int CUTLEN = 0;
 
             foreach (string filenamepath in vcsFiles)
@@ -313,7 +313,7 @@ namespace MyShaderAnalysis
                 ConfigureOutputFile(outputFilenamepath);
                 WriteHtmlFile("test", "test");
             }
-            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Features, -1);
+            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsProgramType.Features, -1);
             foreach (string filenamepath in vcsFiles)
             {
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
@@ -335,7 +335,7 @@ namespace MyShaderAnalysis
                 ConfigureOutputFile(outputFilenamepath);
                 WriteHtmlFile("mul-params", "Params with multiple configurations (only F-params have this)");
             }
-            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Undetermined, -1);
+            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsProgramType.Undetermined, -1);
             foreach (string filenamepath in vcsFiles)
             {
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
@@ -358,7 +358,7 @@ namespace MyShaderAnalysis
 
         static void ShowFeaturesDetails()
         {
-            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Features, -1);
+            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsProgramType.Features, -1);
             // List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.features_file, -1);
             // List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, null, FILETYPE.features_file, -1);
             // List<string> vcsFiles = GetVcsFiles(PCGL_DIR_NOT_CORE, null, FILETYPE.features_file, -1);

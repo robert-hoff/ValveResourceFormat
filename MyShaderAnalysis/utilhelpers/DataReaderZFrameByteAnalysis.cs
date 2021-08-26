@@ -13,14 +13,14 @@ namespace MyShaderAnalysis.utilhelpers
     public class DataReaderZFrameByteAnalysis : ShaderDataReader
     {
 
-        private VcsFileType filetype;
+        private VcsProgramType filetype;
         private VcsPlatformType vcsSourceType;
-        private VcsModelType vcsModelType;
+        private VcsShaderModelType vcsModelType;
 
-        public DataReaderZFrameByteAnalysis(byte[] data, VcsFileType filetype,
-            VcsPlatformType vcsSourceType, VcsModelType vcsModelType) : base(new MemoryStream(data))
+        public DataReaderZFrameByteAnalysis(byte[] data, VcsProgramType filetype,
+            VcsPlatformType vcsSourceType, VcsShaderModelType vcsModelType) : base(new MemoryStream(data))
         {
-            if (filetype == VcsFileType.Features)
+            if (filetype == VcsProgramType.Features)
             {
                 throw new ShaderParserException("file type cannot be features, as they don't contain any zframes");
             }
@@ -53,7 +53,7 @@ namespace MyShaderAnalysis.utilhelpers
             ShowZDataSection(-1);
             ShowZFrameHeader();
             // this applies only to vs files (ps, gs and psrs files don't have this section)
-            if (filetype == VcsFileType.VertexShader)
+            if (filetype == VcsProgramType.VertexShader)
             {
                 // values seen
                 // 1,2,4,5,8,10,12,16,20,40,48,80,120,160
@@ -98,15 +98,15 @@ namespace MyShaderAnalysis.utilhelpers
             {
                 switch (vcsModelType)
                 {
-                    case VcsModelType._20:
-                    case VcsModelType._2b:
-                    case VcsModelType._30:
-                    case VcsModelType._31:
+                    case VcsShaderModelType._20:
+                    case VcsShaderModelType._2b:
+                    case VcsShaderModelType._30:
+                    case VcsShaderModelType._31:
                         ShowDxilSources(gpuSourceCount);
                         break;
-                    case VcsModelType._40:
-                    case VcsModelType._41:
-                    case VcsModelType._50:
+                    case VcsShaderModelType._40:
+                    case VcsShaderModelType._41:
+                    case VcsShaderModelType._50:
                         ShowDxbcSources(gpuSourceCount);
                         break;
                     default:
@@ -126,13 +126,13 @@ namespace MyShaderAnalysis.utilhelpers
             }
 
             //  End blocks for vs and gs files
-            if (filetype == VcsFileType.VertexShader || filetype == VcsFileType.GeometryShader)
+            if (filetype == VcsProgramType.VertexShader || filetype == VcsProgramType.GeometryShader)
             {
                 ShowZAllEndBlocksTypeVs();
                 BreakLine();
             }
             //  End blocks for ps and psrs files
-            if (filetype == VcsFileType.PixelShader || filetype == VcsFileType.PixelShaderRenderState)
+            if (filetype == VcsProgramType.PixelShader || filetype == VcsProgramType.PixelShaderRenderState)
             {
                 ShowByteCount();
                 int nrEndBlocks = ReadIntAtPosition();
@@ -188,15 +188,15 @@ namespace MyShaderAnalysis.utilhelpers
                 {
                     switch (vcsModelType)
                     {
-                        case VcsModelType._20:
-                        case VcsModelType._2b:
-                        case VcsModelType._30:
-                        case VcsModelType._31:
+                        case VcsShaderModelType._20:
+                        case VcsShaderModelType._2b:
+                        case VcsShaderModelType._30:
+                        case VcsShaderModelType._31:
                             throw new ShaderParserException($"Source save not implemented for {vcsSourceType} {vcsModelType}");
                             break;
-                        case VcsModelType._40:
-                        case VcsModelType._41:
-                        case VcsModelType._50:
+                        case VcsShaderModelType._40:
+                        case VcsShaderModelType._41:
+                        case VcsShaderModelType._50:
                             throw new ShaderParserException($"Source save not implemented for {vcsSourceType} {vcsModelType}");
                             break;
                         default:

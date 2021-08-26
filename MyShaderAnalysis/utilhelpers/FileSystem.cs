@@ -156,17 +156,17 @@ namespace MyShaderAnalysis.utilhelpers
             throw new ShaderParserException("unknown archive");
         }
 
-        public static string GetVcsToken(VcsFileType vcsFiletype)
+        public static string GetVcsToken(VcsProgramType vcsFiletype)
         {
-            if (vcsFiletype == VcsFileType.Features) return "ft"; ;
-            if (vcsFiletype == VcsFileType.VertexShader) return "vs"; ;
-            if (vcsFiletype == VcsFileType.PixelShader) return "ps"; ;
-            if (vcsFiletype == VcsFileType.PixelShaderRenderState) return "psrs"; ;
-            if (vcsFiletype == VcsFileType.ComputeShader) return "cs"; ;
-            if (vcsFiletype == VcsFileType.HullShader) return "hs"; ;
-            if (vcsFiletype == VcsFileType.DomainShader) return "ds"; ;
-            if (vcsFiletype == VcsFileType.GeometryShader) return "gs"; ;
-            if (vcsFiletype == VcsFileType.RaytracingShader) return "rtx"; ;
+            if (vcsFiletype == VcsProgramType.Features) return "ft"; ;
+            if (vcsFiletype == VcsProgramType.VertexShader) return "vs"; ;
+            if (vcsFiletype == VcsProgramType.PixelShader) return "ps"; ;
+            if (vcsFiletype == VcsProgramType.PixelShaderRenderState) return "psrs"; ;
+            if (vcsFiletype == VcsProgramType.ComputeShader) return "cs"; ;
+            if (vcsFiletype == VcsProgramType.HullShader) return "hs"; ;
+            if (vcsFiletype == VcsProgramType.DomainShader) return "ds"; ;
+            if (vcsFiletype == VcsProgramType.GeometryShader) return "gs"; ;
+            if (vcsFiletype == VcsProgramType.RaytracingShader) return "rtx"; ;
             throw new ShaderParserException($"Unknown vcsFileType {vcsFiletype}");
         }
 

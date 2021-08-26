@@ -14,7 +14,7 @@ namespace MyShaderAnalysis.utilhelpers
 
         const string SERVER_BASEDIR = @"Z:/dev/www/vcs.codecreation.dev";
 
-        private VcsFileType filetype;
+        private VcsProgramType filetype;
         private string vcsFilename = null;
         public DataReaderVcsByteAnalysis(string filenamepath) : base(new MemoryStream(File.ReadAllBytes(filenamepath)))
         {
@@ -41,11 +41,11 @@ namespace MyShaderAnalysis.utilhelpers
 
         public void PrintByteAnalysis()
         {
-            if (filetype == VcsFileType.Features)
+            if (filetype == VcsProgramType.Features)
             {
                 PrintVcsFeaturesHeader();
-            } else if (filetype == VcsFileType.VertexShader || filetype == VcsFileType.PixelShader
-                  || filetype == VcsFileType.GeometryShader || filetype == VcsFileType.PixelShaderRenderState)
+            } else if (filetype == VcsProgramType.VertexShader || filetype == VcsProgramType.PixelShader
+                  || filetype == VcsProgramType.GeometryShader || filetype == VcsProgramType.PixelShaderRenderState)
             {
                 PrintVsPsHeader();
             } else
@@ -68,7 +68,7 @@ namespace MyShaderAnalysis.utilhelpers
             PrintAllMipmapBlocks();
             PrintAllBufferBlocks();
             // for some reason only features and vs files observe symbol blocks
-            if (filetype == VcsFileType.Features || filetype == VcsFileType.VertexShader)
+            if (filetype == VcsProgramType.Features || filetype == VcsProgramType.VertexShader)
             {
                 PrintAllSymbolNameBlocks();
             }

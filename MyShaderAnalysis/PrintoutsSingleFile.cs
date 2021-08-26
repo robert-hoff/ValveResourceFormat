@@ -84,12 +84,12 @@ namespace MyShaderAnalysis
         {
             // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PC_SOURCE, DOTA_GAME_PC_SOURCE, VcsFileType.Any, -1);
             // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PCGL_SOURCE, DOTA_GAME_PCGL_SOURCE, VcsFileType.Any, -1);
-            List<string> vcsFiles = GetVcsFiles(DOTA_CORE_MOBILE_GLES_SOURCE, DOTA_DAC_MOBILE_GLES_SOURCE, VcsFileType.Undetermined, -1);
+            List<string> vcsFiles = GetVcsFiles(DOTA_CORE_MOBILE_GLES_SOURCE, DOTA_DAC_MOBILE_GLES_SOURCE, VcsProgramType.Undetermined, -1);
 
             foreach (var filenamepath in vcsFiles)
             {
                 FileTokens fileTokens = new FileTokens(filenamepath);
-                if (fileTokens.vcsFiletype == VcsFileType.ComputeShader || fileTokens.vcsFiletype == VcsFileType.GeometryShader)
+                if (fileTokens.vcsFiletype == VcsProgramType.ComputeShader || fileTokens.vcsFiletype == VcsProgramType.GeometryShader)
                 {
                     continue;
                 }
@@ -138,7 +138,7 @@ namespace MyShaderAnalysis
                 }
             }
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
-            if (shaderFile.vcsFileType == VcsFileType.Features)
+            if (shaderFile.vcsProgramType == VcsProgramType.Features)
             {
                 PrintFeaturesHeader(shaderFile, fileTokens);
                 PrintFBlocks(shaderFile);
@@ -148,7 +148,7 @@ namespace MyShaderAnalysis
                 PrintSBlocks(shaderFile);
             }
 
-            if (shaderFile.vcsFileType == VcsFileType.PixelShader)
+            if (shaderFile.vcsProgramType == VcsProgramType.PixelShader)
             {
 
             }
@@ -230,7 +230,7 @@ namespace MyShaderAnalysis
         {
             output.WriteLine($"Valve Compiled Shader 2 (vcs2), version {shaderFile.vspsHeader.vcsFileVersion}");
             output.BreakLine();
-            output.Write($"{shaderFile.vcsFileType} ({Path.GetFileName(shaderFile.filenamepath)})");
+            output.Write($"{shaderFile.vcsProgramType} ({Path.GetFileName(shaderFile.filenamepath)})");
             output.WriteLine($" (byte version <a href='{fileTokens.GetServerFileUrl("bytes")}'>{fileTokens.filename}</a>)");
             string[] relatedFiles = GetRelatedFiles(fileTokens.filenamepath);
             if (relatedFiles.Length > 0)
@@ -637,7 +637,7 @@ namespace MyShaderAnalysis
             if (shaderFile.GetZFrameCount() == 0)
             {
                 string infoText = "";
-                if (shaderFile.vcsFileType == VcsFileType.Features)
+                if (shaderFile.vcsProgramType == VcsProgramType.Features)
                 {
                     infoText = "(Features files in general don't contain zframes)";
                 }

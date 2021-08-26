@@ -23,7 +23,7 @@ namespace MyShaderAnalysis.utilhelpers
         public string sourceType { get; }    // glsl, dxil, dxbc, gles, vulkan, android_vulkan, ios_vulkan
         public string sourceVersion { get; }    // 30,40,50,etc
         public string serverdir { get; }     // full directory path of the server files
-        public VcsFileType vcsFiletype { get; }
+        public VcsProgramType vcsFiletype { get; }
 
 
         public FileTokens(string filenamepath) : this(DetermineArchiveType(filenamepath), filenamepath) { }
@@ -202,7 +202,7 @@ namespace MyShaderAnalysis.utilhelpers
         // todo - get rid of this shit
         public string GetBestPath()
         {
-            if (vcsFiletype == VcsFileType.PixelShader || vcsFiletype == VcsFileType.VertexShader)
+            if (vcsFiletype == VcsProgramType.PixelShader || vcsFiletype == VcsProgramType.VertexShader)
             {
                 string summariesPath = GetSummariesPath();
                 return File.Exists($"{serverdir}{summariesPath}") ? summariesPath : "";

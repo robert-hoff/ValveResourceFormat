@@ -12,40 +12,40 @@ namespace MyShaderAnalysis.utilhelpers
     class MyShaderUtilHelpers
     {
 
-        public static List<string> GetVcsFiles(string dir1, VcsFileType fileType)
+        public static List<string> GetVcsFiles(string dir1, VcsProgramType fileType)
         {
             return GetVcsFiles(dir1, null, fileType, -1);
         }
 
 
-        public static List<string> GetVcsFiles(string dir1, string dir2, VcsFileType fileType, int numEnding, bool sortFiles = true)
+        public static List<string> GetVcsFiles(string dir1, string dir2, VcsProgramType fileType, int numEnding, bool sortFiles = true)
         {
             List<string> filesFound = new();
-            if (fileType == VcsFileType.Features || fileType == VcsFileType.Undetermined)
+            if (fileType == VcsProgramType.Features || fileType == VcsProgramType.Undetermined)
             {
                 string endsWith = numEnding > -1 ? $"{numEnding}_features.vcs" : "features.vcs";
                 filesFound.AddRange(GetAllFilesWithEnding(dir1, endsWith));
                 filesFound.AddRange(GetAllFilesWithEnding(dir2, endsWith));
             }
-            if (fileType == VcsFileType.VertexShader || fileType == VcsFileType.Undetermined)
+            if (fileType == VcsProgramType.VertexShader || fileType == VcsProgramType.Undetermined)
             {
                 string endsWith = numEnding > -1 ? $"{numEnding}_vs.vcs" : "vs.vcs";
                 filesFound.AddRange(GetAllFilesWithEnding(dir1, endsWith));
                 filesFound.AddRange(GetAllFilesWithEnding(dir2, endsWith));
             }
-            if (fileType == VcsFileType.PixelShader || fileType == VcsFileType.Undetermined)
+            if (fileType == VcsProgramType.PixelShader || fileType == VcsProgramType.Undetermined)
             {
                 string endsWith = numEnding > -1 ? $"{numEnding}_ps.vcs" : "ps.vcs";
                 filesFound.AddRange(GetAllFilesWithEnding(dir1, endsWith));
                 filesFound.AddRange(GetAllFilesWithEnding(dir2, endsWith));
             }
-            if (fileType == VcsFileType.GeometryShader || fileType == VcsFileType.Undetermined)
+            if (fileType == VcsProgramType.GeometryShader || fileType == VcsProgramType.Undetermined)
             {
                 string endsWith = numEnding > -1 ? $"{numEnding}_gs.vcs" : "gs.vcs";
                 filesFound.AddRange(GetAllFilesWithEnding(dir1, endsWith));
                 filesFound.AddRange(GetAllFilesWithEnding(dir2, endsWith));
             }
-            if (fileType == VcsFileType.PixelShaderRenderState || fileType == VcsFileType.Undetermined)
+            if (fileType == VcsProgramType.PixelShaderRenderState || fileType == VcsProgramType.Undetermined)
             {
                 string endsWith = numEnding > -1 ? $"{numEnding}_psrs.vcs" : "psrs.vcs";
                 filesFound.AddRange(GetAllFilesWithEnding(dir1, endsWith));
@@ -101,7 +101,7 @@ namespace MyShaderAnalysis.utilhelpers
         public static List<(string, string, string)> GetFeaturesVsPsFileTriple(string dir1, string dir2, int vcsFileVer = -1)
         {
             List<(string, string, string)> fileTriplets = new();
-            List<string> featuresFiles = GetVcsFiles(dir1, dir2, VcsFileType.Features, vcsFileVer);
+            List<string> featuresFiles = GetVcsFiles(dir1, dir2, VcsProgramType.Features, vcsFileVer);
             foreach (string featFile in featuresFiles)
             {
                 string vsFile = $"{featFile[0..^12]}vs.vcs";
@@ -237,12 +237,12 @@ namespace MyShaderAnalysis.utilhelpers
             string shortName = "";
             string token = "";
             string filename = Path.GetFileName(vcsFileName);
-            VcsFileType vcsFiletype = ComputeVCSFileName(vcsFileName).Item1;
-            if (vcsFiletype == VcsFileType.Features)
+            VcsProgramType vcsFiletype = ComputeVCSFileName(vcsFileName).Item1;
+            if (vcsFiletype == VcsProgramType.Features)
             {
                 shortName = filename[0..^16];
                 token = "ft";
-            } else if (vcsFiletype == VcsFileType.PixelShaderRenderState)
+            } else if (vcsFiletype == VcsProgramType.PixelShaderRenderState)
             {
                 shortName = filename[0..^12];
                 token = "psrs";
