@@ -96,6 +96,7 @@ namespace ValveResourceFormat.CompiledShader
                     case VcsShaderModelType._40:
                     case VcsShaderModelType._41:
                     case VcsShaderModelType._50:
+                    case VcsShaderModelType._60:
                         ReadDxbcSources(gpuSourceCount);
                         break;
                     default:
@@ -492,6 +493,7 @@ namespace ValveResourceFormat.CompiledShader
                     case VcsShaderModelType._40:
                     case VcsShaderModelType._41:
                     case VcsShaderModelType._50:
+                    case VcsShaderModelType._60:
                         ShowDxbcSources(gpuSourceCount);
                         break;
                     default:

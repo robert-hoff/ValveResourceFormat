@@ -26,7 +26,7 @@ namespace ShaderAnalysis.utilhelpers
         public string gputype;       // pcgl, pc, vulkan
         public string sourcetype;    // glsl, dx11, etc.
         public string serverdir;     // full directory path of the server files
-        public VcsFileType vcsFiletype;
+        public VcsProgramType vcsProgramType;
 
 
         public FileTokens(string filenamepath) : this(DetermineArchiveType(filenamepath), filenamepath) { }
@@ -43,7 +43,7 @@ namespace ShaderAnalysis.utilhelpers
             this.name = filename[0..^4];
             this.foldername = name.Substring(0, name.LastIndexOf('_'));
             this.filenamepath = GetFilenamepath(archive, filename);
-            this.vcsFiletype = ComputeVCSFileName(filename).Item1;
+            this.vcsProgramType = ComputeVCSFileName(filename).Item1;
             this.sourcedir = GetSourceDir(archive);
             this.archivename = GetArchiveName(archive);
             this.archivelabel = GetArchiveLabel(archive);
@@ -51,7 +51,7 @@ namespace ShaderAnalysis.utilhelpers
             this.sourcetype = GetSourceType(archive);
             this.serverdir = GetServerBaseDir();
             this.namelabel = filename.Split('_')[0];
-            this.vcstoken = GetVcsToken(vcsFiletype);
+            this.vcstoken = GetVcsToken(vcsProgramType);
 
             if (!File.Exists(filenamepath))
             {
@@ -173,7 +173,7 @@ namespace ShaderAnalysis.utilhelpers
 
         public string GetBestPath()
         {
-            if (vcsFiletype == VcsFileType.PixelShader || vcsFiletype == VcsFileType.VertexShader)
+            if (vcsProgramType == VcsProgramType.PixelShader || vcsProgramType == VcsProgramType.VertexShader)
             {
                 string summariesPath = GetSummariesPath();
                 return File.Exists($"{serverdir}{summariesPath}") ? summariesPath : "";

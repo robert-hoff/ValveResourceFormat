@@ -193,12 +193,11 @@ namespace MyShaderAnalysis.utilhelpers
                         case VcsShaderModelType._30:
                         case VcsShaderModelType._31:
                             throw new ShaderParserException($"Source save not implemented for {vcsSourceType} {vcsModelType}");
-                            break;
                         case VcsShaderModelType._40:
                         case VcsShaderModelType._41:
                         case VcsShaderModelType._50:
+                        case VcsShaderModelType._60:
                             throw new ShaderParserException($"Source save not implemented for {vcsSourceType} {vcsModelType}");
-                            break;
                         default:
                             throw new ShaderParserException($"Source save not implemented for {vcsSourceType} {vcsModelType}");
                     }

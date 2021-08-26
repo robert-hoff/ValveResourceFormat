@@ -15,12 +15,12 @@ namespace ShaderAnalysis.utilhelpers
             datareader = new ShaderDataReader(File.OpenRead(filenamepath));
         }
 
-
         public ShaderFile GetShaderFile()
         {
-            return new ShaderFile(filenamepath, datareader);
+            ShaderFile shaderFile = new ShaderFile();
+            shaderFile.Read(filenamepath);
+            return shaderFile;
         }
-
 
         public void Dispose()
         {
@@ -37,9 +37,11 @@ namespace ShaderAnalysis.utilhelpers
             }
         }
 
-
-
-
+        public static ShaderFile InstantiateShaderFile(string filenamepath)
+        {
+            ShaderFile shaderFile = new ReadShaderFile(filenamepath).GetShaderFile();
+            return shaderFile;
+        }
     }
 }
 

@@ -45,10 +45,5 @@ namespace MyShaderAnalysis.utilhelpers
             ShaderFile shaderFile = new ReadShaderFile(filenamepath).GetShaderFile();
             return shaderFile;
         }
-
-
     }
 }
-
-
-
