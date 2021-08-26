@@ -13,8 +13,8 @@ namespace ValveResourceFormat.CompiledShader
             GenerateOffsetAndStateLookups(shaderfile);
         }
 
-        static int[] offsets;
-        static int[] nr_states;
+        int[] offsets;
+        int[] nr_states;
 
         private void GenerateOffsetAndStateLookups(ShaderFile shaderFile)
         {
