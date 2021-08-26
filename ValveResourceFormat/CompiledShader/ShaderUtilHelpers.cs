@@ -7,10 +7,10 @@ namespace ValveResourceFormat.CompiledShader
 {
     public static class ShaderUtilHelpers
     {
-        public static (VcsFileType, VcsSourceType, VcsModelType) ComputeVCSFileName(string filenamepath)
+        public static (VcsFileType, VcsPlatformType, VcsModelType) ComputeVCSFileName(string filenamepath)
         {
             VcsFileType vcsFileType = VcsFileType.Undetermined;
-            VcsSourceType vcsSourceType = VcsSourceType.Undetermined;
+            VcsPlatformType vcsSourceType = VcsPlatformType.Undetermined;
             VcsModelType vcsModelType = VcsModelType.Undetermined;
 
             string[] fileTokens = Path.GetFileName(filenamepath).Split("_");
@@ -33,19 +33,19 @@ namespace ValveResourceFormat.CompiledShader
             };
             vcsSourceType = fileTokens[^3].ToLower() switch
             {
-                "pc" => VcsSourceType.PC,
-                "pcgl" => VcsSourceType.PCGL,
-                "gles" => VcsSourceType.MobileGles,
-                "vulkan" => VcsSourceType.Vulkan,
-                _ => VcsSourceType.Undetermined
+                "pc" => VcsPlatformType.PC,
+                "pcgl" => VcsPlatformType.PCGL,
+                "gles" => VcsPlatformType.MOBILE_GLES,
+                "vulkan" => VcsPlatformType.VULKAN,
+                _ => VcsPlatformType.Undetermined
             };
-            if (vcsSourceType == VcsSourceType.Vulkan)
+            if (vcsSourceType == VcsPlatformType.VULKAN)
             {
                 vcsSourceType = fileTokens[^4].ToLower() switch
                 {
-                    "android" => VcsSourceType.AndroidVulkan,
-                    "ios" => VcsSourceType.IosVulkan,
-                    _ => VcsSourceType.Vulkan
+                    "android" => VcsPlatformType.ANDROID_VULKAN,
+                    "ios" => VcsPlatformType.IOS_VULKAN,
+                    _ => VcsPlatformType.VULKAN
                 };
             }
             vcsModelType = fileTokens[^2].ToLower() switch
@@ -61,7 +61,7 @@ namespace ValveResourceFormat.CompiledShader
                 _ => VcsModelType.Undetermined
             };
             if (vcsFileType == VcsFileType.Undetermined ||
-                vcsSourceType == VcsSourceType.Undetermined ||
+                vcsSourceType == VcsPlatformType.Undetermined ||
                 vcsModelType == VcsModelType.Undetermined)
             {
                 throw new ShaderParserException($"Filetype type unknown or not supported {filenamepath}");

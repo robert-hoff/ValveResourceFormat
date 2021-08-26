@@ -100,7 +100,7 @@ namespace ValveResourceFormat.CompiledShader
                         ReadDxbcSources(gpuSourceCount);
                         break;
                     default:
-                        throw new ShaderParserException($"Unknown or unsupported model type {vcsModelType}");
+                        throw new ShaderParserException($"Unknown or unsupported model type {vcsSourceType} {vcsModelType}");
                 }
             } else
             {
@@ -496,7 +496,7 @@ namespace ValveResourceFormat.CompiledShader
                         ShowDxbcSources(gpuSourceCount);
                         break;
                     default:
-                        throw new ShaderParserException($"Unknown or unsupported model type {vcsModelType}");
+                        throw new ShaderParserException($"Unknown or unsupported model type {vcsSourceType} {vcsModelType}");
                 }
             } else
             {
