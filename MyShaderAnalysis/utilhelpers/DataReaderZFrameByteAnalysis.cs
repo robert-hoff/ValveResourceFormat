@@ -88,7 +88,7 @@ namespace MyShaderAnalysis.utilhelpers
             ShowBytes(1, "always 0");
             ShowBytes(1, "values seen (0,1)");
             BreakLine();
-            ShowByteCount($"Start of source section, {GetOffset()} is the base offset for end-section source pointers");
+            ShowByteCount($"Start of source section, {BaseStream.Position} is the base offset for end-section source pointers");
             int gpuSourceCount = ReadIntAtPosition();
             ShowBytes(4, $"{vcsSourceType} source files ({gpuSourceCount})");
             ShowBytes(1, "unknown boolean, values seen 0,1", tabLen: 13);
@@ -345,7 +345,7 @@ namespace MyShaderAnalysis.utilhelpers
             {
                 int sourceOffset = ReadIntAtPosition();
                 ShowByteCount();
-                ShowBytes(4, $"offset to end of source {sourceOffset} (taken from {GetOffset() + 4})");
+                ShowBytes(4, $"offset to end of source {sourceOffset} (taken from {BaseStream.Position + 4})");
                 int additionalSourceBytes = 0;
                 if (sourceOffset > 0)
                 {
@@ -361,18 +361,18 @@ namespace MyShaderAnalysis.utilhelpers
                     }
                     additionalSourceBytes = sourceSize - unknown_prog_uint16 * 4;
                 }
-                int endOfSource = GetOffset() + additionalSourceBytes;
+                int endOfSource = (int)BaseStream.Position + additionalSourceBytes;
                 if (additionalSourceBytes > SOURCE_BYTES_TO_SHOW)
                 {
                     ShowBytes(SOURCE_BYTES_TO_SHOW, breakLine: false);
                     OutputWrite(" ");
-                    int remainingBytes = endOfSource - GetOffset();
+                    int remainingBytes = endOfSource - (int)BaseStream.Position;
                     if (remainingBytes < 50)
                     {
                         ShowBytes(remainingBytes);
                     } else
                     {
-                        Comment($"... ({endOfSource - GetOffset()} bytes of data not shown)");
+                        Comment($"... ({endOfSource - BaseStream.Position} bytes of data not shown)");
                     }
                 } else if (additionalSourceBytes <= SOURCE_BYTES_TO_SHOW && additionalSourceBytes > 0)
                 {
@@ -381,7 +381,7 @@ namespace MyShaderAnalysis.utilhelpers
                 {
                     OutputWriteLine("// no source present");
                 }
-                SetOffset(endOfSource);
+                BaseStream.Position = endOfSource;
                 BreakLine();
                 ShowByteCount();
                 ShowBytes(16, "DXIL(hlsl) Editor ref.");
@@ -396,7 +396,7 @@ namespace MyShaderAnalysis.utilhelpers
                 ShowByteCount();
                 ShowBytes(4, $"Source size, {sourceSize} bytes");
                 BreakLine();
-                int endOfSource = GetOffset() + sourceSize;
+                long endOfSource = BaseStream.Position + sourceSize;
                 ShowByteCount($"DXBC-SOURCE[{sourceId}]");
                 if (sourceSize == 0)
                 {
@@ -406,12 +406,12 @@ namespace MyShaderAnalysis.utilhelpers
                 {
                     ShowBytes(SOURCE_BYTES_TO_SHOW, breakLine: false);
                     OutputWrite(" ");
-                    Comment($"... ({endOfSource - GetOffset()} bytes of data not shown)");
+                    Comment($"... ({endOfSource - BaseStream.Position} bytes of data not shown)");
                 } else if (sourceSize <= SOURCE_BYTES_TO_SHOW && sourceSize > 0)
                 {
                     ShowBytes(sourceSize);
                 }
-                SetOffset(endOfSource);
+                BaseStream.Position = endOfSource;
 
                 BreakLine();
                 ShowByteCount();
@@ -424,7 +424,7 @@ namespace MyShaderAnalysis.utilhelpers
             for (int sourceId = 0; sourceId < glslSourceCount; sourceId++)
             {
                 int sourceSize = ShowGlslSourceOffsets();
-                int sourceOffset = GetOffset();
+                int sourceOffset = (int)BaseStream.Position;
                 ShowZGlslSourceSummary(sourceId);
                 ShowByteCount();
                 byte[] fileIdBytes = ReadBytes(16);
@@ -460,7 +460,7 @@ namespace MyShaderAnalysis.utilhelpers
         public void ShowZGlslSourceSummary(int sourceId)
         {
             int bytesToRead = ReadIntAtPosition(-4);
-            int endOfSource = GetOffset() + bytesToRead;
+            long endOfSource = BaseStream.Position + bytesToRead;
             ShowByteCount($"GLSL-SOURCE[{sourceId}]");
             if (bytesToRead == 0)
             {
@@ -469,12 +469,12 @@ namespace MyShaderAnalysis.utilhelpers
             if (bytesToRead > SOURCE_BYTES_TO_SHOW)
             {
                 ShowBytes(SOURCE_BYTES_TO_SHOW);
-                Comment($"... ({endOfSource - GetOffset()} bytes of data not shown)");
+                Comment($"... ({endOfSource - BaseStream.Position} bytes of data not shown)");
             } else if (bytesToRead <= SOURCE_BYTES_TO_SHOW && bytesToRead > 0)
             {
                 ShowBytes(bytesToRead);
             }
-            SetOffset(endOfSource);
+            BaseStream.Position = endOfSource;
             BreakLine();
         }
         public void ShowZAllEndBlocksTypeVs()

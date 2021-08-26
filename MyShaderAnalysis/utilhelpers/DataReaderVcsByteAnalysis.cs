@@ -221,7 +221,7 @@ namespace MyShaderAnalysis.utilhelpers
             TabComment($"({arg0},{arg1},{arg2},{arg3})");
             ShowBytes(4, $"({arg4}) known values [-1,28]");
             ShowBytes(4, $"{arg5} additional string params");
-            int string_offset = GetOffset();
+            int string_offset = (int)BaseStream.Position;
             List<string> names = new();
             for (int i = 0; i < arg5; i++)
             {
@@ -232,7 +232,7 @@ namespace MyShaderAnalysis.utilhelpers
             if (names.Count > 0)
             {
                 PrintStringList(names);
-                ShowBytes(string_offset - GetOffset());
+                ShowBytes(string_offset - (int)BaseStream.Position);
             }
             BreakLine();
         }
@@ -268,7 +268,7 @@ namespace MyShaderAnalysis.utilhelpers
             ShowByteCount($"COMPAT-BLOCK[{compatBlockId}]");
             ShowBytes(216);
             string name1 = ReadNullTermStringAtPosition();
-            OutputWriteLine($"[{GetOffset()}] {name1}");
+            OutputWriteLine($"[{BaseStream.Position}] {name1}");
             ShowBytes(256);
             BreakLine();
         }
@@ -386,22 +386,22 @@ namespace MyShaderAnalysis.utilhelpers
             a3 = ReadIntAtPosition(12);
             ShowBytes(16, breakLine: false);
             TabComment($"ints   ({Format(a0)},{Format(a1)},{Format(a2)},{Format(a3)})", 10);
-            float f0 = ReadFloatAtPosition(0);
-            float f1 = ReadFloatAtPosition(4);
-            float f2 = ReadFloatAtPosition(8);
-            float f3 = ReadFloatAtPosition(12);
+            float f0 = ReadSingleAtPosition(0);
+            float f1 = ReadSingleAtPosition(4);
+            float f2 = ReadSingleAtPosition(8);
+            float f3 = ReadSingleAtPosition(12);
             ShowBytes(16, breakLine: false);
             TabComment($"floats ({Format(f0)},{Format(f1)},{Format(f2)},{Format(f3)})", 10);
-            f0 = ReadFloatAtPosition(0);
-            f1 = ReadFloatAtPosition(4);
-            f2 = ReadFloatAtPosition(8);
-            f3 = ReadFloatAtPosition(12);
+            f0 = ReadSingleAtPosition(0);
+            f1 = ReadSingleAtPosition(4);
+            f2 = ReadSingleAtPosition(8);
+            f3 = ReadSingleAtPosition(12);
             ShowBytes(16, breakLine: false);
             TabComment($"floats ({Format(f0)},{Format(f1)},{Format(f2)},{Format(f3)})", 10);
-            f0 = ReadFloatAtPosition(0);
-            f1 = ReadFloatAtPosition(4);
-            f2 = ReadFloatAtPosition(8);
-            f3 = ReadFloatAtPosition(12);
+            f0 = ReadSingleAtPosition(0);
+            f1 = ReadSingleAtPosition(4);
+            f2 = ReadSingleAtPosition(8);
+            f3 = ReadSingleAtPosition(12);
             ShowBytes(16, breakLine: false);
             TabComment($"floats ({Format(f0)},{Format(f1)},{Format(f2)},{Format(f3)})", 10);
             a0 = ReadIntAtPosition(0);
@@ -587,7 +587,7 @@ namespace MyShaderAnalysis.utilhelpers
 
         public void PrintCompressedZFrame(uint zframeId)
         {
-            OutputWriteLine($"[{GetOffset()}] {getZFrameIdString(zframeId)}");
+            OutputWriteLine($"[{BaseStream.Position}] {getZFrameIdString(zframeId)}");
             bool isLzma = false;
             uint zstdDelimOrChunkSize = ReadUIntAtPosition();
             if (zstdDelimOrChunkSize == ShaderFile.ZSTD_DELIM)
@@ -617,7 +617,7 @@ namespace MyShaderAnalysis.utilhelpers
             {
                 Comment($"... ({compressed_length - MAX_ZFRAME_BYTES_SHOWN} bytes not shown)");
             }
-            MoveOffset(compressed_length);
+            MovePosition(compressed_length);
             BreakLine();
         }
 

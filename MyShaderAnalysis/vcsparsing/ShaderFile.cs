@@ -109,40 +109,40 @@ namespace ValveResourceFormat.CompiledShader
             // There's a chance HullShader, DomainShader and RaytracingShader work but they haven't been tested
             if (vcsProgramType == VcsProgramType.Features)
             {
-                featuresHeader = new FeaturesHeaderBlock(datareader, datareader.GetOffset());
+                featuresHeader = new FeaturesHeaderBlock(datareader);
             } else if (vcsProgramType == VcsProgramType.VertexShader || vcsProgramType == VcsProgramType.PixelShader
                    || vcsProgramType == VcsProgramType.GeometryShader || vcsProgramType == VcsProgramType.PixelShaderRenderState
                    || vcsProgramType == VcsProgramType.ComputeShader || vcsProgramType == VcsProgramType.HullShader
                    || vcsProgramType == VcsProgramType.DomainShader || vcsProgramType == VcsProgramType.RaytracingShader)
             {
-                vspsHeader = new VsPsHeaderBlock(datareader, datareader.GetOffset());
+                vspsHeader = new VsPsHeaderBlock(datareader);
             } else
             {
                 throw new ShaderParserException($"Can't parse this filetype: {vcsProgramType}");
             }
-            possibleMinorVersion = datareader.ReadInt();
-            int sfBlockCount = datareader.ReadInt();
+            possibleMinorVersion = datareader.ReadInt32();
+            int sfBlockCount = datareader.ReadInt32();
             for (int i = 0; i < sfBlockCount; i++)
             {
-                SfBlock nextSfBlock = new(datareader, datareader.GetOffset(), i);
+                SfBlock nextSfBlock = new(datareader, i);
                 sfBlocks.Add(nextSfBlock);
             }
-            int sfConstraintsBlockCount = datareader.ReadInt();
+            int sfConstraintsBlockCount = datareader.ReadInt32();
             for (int i = 0; i < sfConstraintsBlockCount; i++)
             {
-                SfConstraintsBlock nextSfConstraintsBlock = new(datareader, datareader.GetOffset(), i);
+                SfConstraintsBlock nextSfConstraintsBlock = new(datareader, i);
                 sfConstraintsBlocks.Add(nextSfConstraintsBlock);
             }
-            int dBlockCount = datareader.ReadInt();
+            int dBlockCount = datareader.ReadInt32();
             for (int i = 0; i < dBlockCount; i++)
             {
-                DBlock nextDBlock = new(datareader, datareader.GetOffset(), i);
+                DBlock nextDBlock = new(datareader, i);
                 dBlocks.Add(nextDBlock);
             }
-            int dConstraintsBlockCount = datareader.ReadInt();
+            int dConstraintsBlockCount = datareader.ReadInt32();
             for (int i = 0; i < dConstraintsBlockCount; i++)
             {
-                DConstraintsBlock nextDConstraintsBlock = new(datareader, datareader.GetOffset(), i);
+                DConstraintsBlock nextDConstraintsBlock = new(datareader, i);
                 dConstraintsBlocks.Add(nextDConstraintsBlock);
             }
 
@@ -150,36 +150,36 @@ namespace ValveResourceFormat.CompiledShader
             // it must be instantiated after the D-blocks have been read
             dBlockConfigGen = new ConfigMappingDParams(this);
 
-            int paramBlockCount = datareader.ReadInt();
+            int paramBlockCount = datareader.ReadInt32();
             for (int i = 0; i < paramBlockCount; i++)
             {
-                ParamBlock nextParamBlock = new(datareader, datareader.GetOffset(), i);
+                ParamBlock nextParamBlock = new(datareader, i);
                 paramBlocks.Add(nextParamBlock);
             }
-            int mipmapBlockCount = datareader.ReadInt();
+            int mipmapBlockCount = datareader.ReadInt32();
             for (int i = 0; i < mipmapBlockCount; i++)
             {
-                MipmapBlock nextMipmapBlock = new(datareader, datareader.GetOffset(), i);
+                MipmapBlock nextMipmapBlock = new(datareader, i);
                 mipmapBlocks.Add(nextMipmapBlock);
             }
-            int bufferBlockCount = datareader.ReadInt();
+            int bufferBlockCount = datareader.ReadInt32();
             for (int i = 0; i < bufferBlockCount; i++)
             {
-                BufferBlock nextBufferBlock = new(datareader, datareader.GetOffset(), i);
+                BufferBlock nextBufferBlock = new(datareader, i);
                 bufferBlocks.Add(nextBufferBlock);
             }
             if (vcsProgramType == VcsProgramType.Features || vcsProgramType == VcsProgramType.VertexShader)
             {
-                int sybmolsBlockCount = datareader.ReadInt();
+                int sybmolsBlockCount = datareader.ReadInt32();
                 for (int i = 0; i < sybmolsBlockCount; i++)
                 {
-                    VertexSymbolsBlock nextSymbolsBlock = new(datareader, datareader.GetOffset(), i);
+                    VertexSymbolsBlock nextSymbolsBlock = new(datareader, i);
                     symbolBlocks.Add(nextSymbolsBlock);
                 }
             }
 
             List<long> zframeIds = new();
-            int zframesCount = datareader.ReadInt();
+            int zframesCount = datareader.ReadInt32();
             if (zframesCount == 0)
             {
                 // if zframes = 0 there's nothing more to do
@@ -191,17 +191,17 @@ namespace ValveResourceFormat.CompiledShader
             }
             for (int i = 0; i < zframesCount; i++)
             {
-                zframeIds.Add(datareader.ReadLong());
+                zframeIds.Add(datareader.ReadInt64());
             }
 
             List<(long, int)> zframeIdsAndOffsets = new();
             foreach (long zframeId in zframeIds)
             {
-                zframeIdsAndOffsets.Add((zframeId, datareader.ReadInt()));
+                zframeIdsAndOffsets.Add((zframeId, datareader.ReadInt32()));
             }
 
-            int offsetToEndOffile = datareader.ReadInt();
-            if (offsetToEndOffile != datareader.GetFileSize())
+            int offsetToEndOffile = datareader.ReadInt32();
+            if (offsetToEndOffile != (int)datareader.BaseStream.Length)
             {
                 throw new ShaderParserException($"Pointer to end of file expected, value read = {offsetToEndOffile}");
             }
@@ -210,18 +210,18 @@ namespace ValveResourceFormat.CompiledShader
             {
                 long zframeId = item.Item1;
                 int offsetToZframeHeader = item.Item2;
-                datareader.SetOffset(offsetToZframeHeader);
-                uint chunkSizeOrZframeDelim = datareader.ReadUInt();
+                datareader.BaseStream.Position = offsetToZframeHeader;
+                uint chunkSizeOrZframeDelim = datareader.ReadUInt32();
                 int compressionType = chunkSizeOrZframeDelim == ZSTD_DELIM ? ZSTD_COMPRESSION : LZMA_COMPRESSION;
                 if (chunkSizeOrZframeDelim != ZSTD_DELIM)
                 {
-                    if (datareader.ReadUInt() != LZMA_DELIM)
+                    if (datareader.ReadUInt32() != LZMA_DELIM)
                     {
                         throw new ShaderParserException("Unknown compression, neither ZStd nor Lzma found");
                     }
                 }
-                int uncompressedLength = datareader.ReadInt();
-                int compressedLength = datareader.ReadInt();
+                int uncompressedLength = datareader.ReadInt32();
+                int compressedLength = datareader.ReadInt32();
 
                 ZFrameDataDescription zframeDataDesc = new ZFrameDataDescription(zframeId, offsetToZframeHeader,
                     compressionType, uncompressedLength, compressedLength, datareader);
@@ -269,7 +269,7 @@ namespace ValveResourceFormat.CompiledShader
 
         public void PrintByteAnalysis(bool shortenOutput = true)
         {
-            datareader.SetOffset(0);
+            datareader.BaseStream.Position = 0;
             if (vcsProgramType == VcsProgramType.Features)
             {
                 featuresHeader.PrintAnnotatedBytestream();
@@ -412,7 +412,7 @@ namespace ValveResourceFormat.CompiledShader
         int MAX_ZFRAME_BYTES_TO_SHOW = 96;
         public void PrintCompressedZFrame(uint zframeId)
         {
-            datareader.OutputWriteLine($"[{datareader.GetOffset()}] {getZFrameIdString(zframeId)}");
+            datareader.OutputWriteLine($"[{datareader.BaseStream.Position}] {getZFrameIdString(zframeId)}");
             bool isLzma = false;
             uint zstdDelimOrChunkSize = datareader.ReadUIntAtPosition();
             if (zstdDelimOrChunkSize == ZSTD_DELIM)
@@ -442,7 +442,7 @@ namespace ValveResourceFormat.CompiledShader
             {
                 datareader.Comment($"... ({compressed_length - MAX_ZFRAME_BYTES_TO_SHOW} bytes not shown)");
             }
-            datareader.MoveOffset(compressed_length);
+            datareader.MovePosition(compressed_length);
             datareader.BreakLine();
         }
 
@@ -473,10 +473,10 @@ namespace ValveResourceFormat.CompiledShader
         }
         public byte[] GetDecompressedZFrame()
         {
-            datareader.SetOffset(offsetToZFrameHeader);
+            datareader.BaseStream.Position = offsetToZFrameHeader;
             if (compressionType == ShaderFile.ZSTD_COMPRESSION)
             {
-                datareader.MoveOffset(12);
+                datareader.MovePosition(12);
                 byte[] compressedZframe = datareader.ReadBytes(compressedLength);
                 using var zstdDecoder = new Decompressor();
                 zstdDecoder.LoadDictionary(ZstdDictionary.GetDictionary());
@@ -492,7 +492,7 @@ namespace ValveResourceFormat.CompiledShader
             if (compressionType == ShaderFile.LZMA_COMPRESSION)
             {
                 var lzmaDecoder = new LzmaDecoder();
-                datareader.MoveOffset(16);
+                datareader.MovePosition(16);
                 lzmaDecoder.SetDecoderProperties(datareader.ReadBytes(5));
                 var compressedBuffer = datareader.ReadBytes(compressedLength);
                 using (var inputStream = new MemoryStream(compressedBuffer))

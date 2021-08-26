@@ -92,11 +92,9 @@ namespace MyShaderAnalysis
         {
             string filenamepath = $"{ARTIFACT_CLASSIC_CORE_PC_SOURCE}/aerial_perspective_pc_30_ps.vcs";
             DataReaderVcsByteAnalysis reader = new(filenamepath);
-
-            // reader.SetPosition(9525);
-            reader.SetOffset(10340);
-
-            float num = reader.ReadFloatAtPosition();
+            reader.BaseStream.Position = 9525;
+            reader.BaseStream.Position = 10340;
+            float num = reader.ReadSingleAtPosition();
             // int num = reader.ReadIntAtPosition();
             Console.WriteLine($"{num}");
             reader.ShowBytes(4);
@@ -111,7 +109,7 @@ namespace MyShaderAnalysis
         {
             string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/apply_fog_pcgl_40_ps.vcs";
             DataReaderVcsByteAnalysis reader = new(filenamepath);
-            reader.SetOffset(2032);
+            reader.BaseStream.Position = 2032;
             int num = reader.ReadIntAtPosition();
             Console.WriteLine($"{num}");
             reader.ShowBytes(4);
@@ -147,9 +145,8 @@ namespace MyShaderAnalysis
             reader.ShowBytes(4, $"EOF {offset2}");
             reader.BreakLine();
 
-
             reader.ShowByteCount();
-            int chunkOffset = reader.GetOffset();
+            int chunkOffset = (int)reader.BaseStream.Position;
             int chunkSize = reader.ReadIntAtPosition();
             reader.ShowBytes(4, $"{chunkSize}");
             reader.ShowBytes(4);
@@ -159,9 +156,9 @@ namespace MyShaderAnalysis
             reader.ShowBytesAtPosition(0, 100);
             reader.BreakLine();
 
-            reader.SetOffset(chunkOffset + chunkSize + 4);
+            reader.BaseStream.Position = chunkOffset + chunkSize + 4;
             reader.ShowByteCount();
-            int chunkOffset2 = reader.GetOffset();
+            int chunkOffset2 = (int)reader.BaseStream.Position;
             int chunkSize2 = reader.ReadIntAtPosition();
             reader.ShowBytes(4, $"{chunkSize2}");
             reader.ShowBytes(4);
@@ -171,7 +168,7 @@ namespace MyShaderAnalysis
             reader.ShowBytesAtPosition(0, 100);
             reader.BreakLine();
 
-            reader.SetOffset(chunkOffset2 + chunkSize2 + 4);
+            reader.BaseStream.Position = chunkOffset2 + chunkSize2 + 4;
 
             if (!reader.CheckPositionIsAtEOF())
             {
@@ -180,16 +177,6 @@ namespace MyShaderAnalysis
             reader.ShowByteCount();
             reader.OutputWriteLine("EOF");
             reader.BreakLine();
-
         }
-
-
     }
-
-
 }
-
-
-
-
-

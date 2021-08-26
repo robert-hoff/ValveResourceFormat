@@ -45,7 +45,7 @@ namespace ValveResourceFormat.CompiledShader
                 return;
             }
 
-            leadingData = new ZDataBlock(datareader, datareader.GetOffset(), -1);
+            leadingData = new ZDataBlock(datareader, -1);
             zframeParams = new();
             int paramCount = datareader.ReadInt16();
             for (int i = 0; i < paramCount; i++)
@@ -65,7 +65,7 @@ namespace ValveResourceFormat.CompiledShader
             int dataBlockCount = datareader.ReadInt16();
             for (int blockId = 0; blockId < dataBlockCount; blockId++)
             {
-                ZDataBlock dataBlock = new(datareader, datareader.GetOffset(), blockId);
+                ZDataBlock dataBlock = new(datareader, blockId);
                 if (dataBlock.h0 > 0)
                 {
                     nonZeroDataBlockCount++;
@@ -80,7 +80,7 @@ namespace ValveResourceFormat.CompiledShader
             }
             flags0 = datareader.ReadBytes(4);
             flagbyte0 = datareader.ReadByte();
-            gpuSourceCount = datareader.ReadInt();
+            gpuSourceCount = datareader.ReadInt32();
             flagbyte1 = datareader.ReadByte();
 
             if (vcsPlatformType == VcsPlatformType.PC)
@@ -120,7 +120,7 @@ namespace ValveResourceFormat.CompiledShader
                 }
             }
 
-            nrEndBlocks = datareader.ReadInt();
+            nrEndBlocks = datareader.ReadInt32();
             for (int i = 0; i < nrEndBlocks; i++)
             {
                 if (this.vcsProgramType == VcsProgramType.VertexShader || this.vcsProgramType == VcsProgramType.GeometryShader)
@@ -143,7 +143,7 @@ namespace ValveResourceFormat.CompiledShader
         {
             for (int sourceId = 0; sourceId < glslSourceCount; sourceId++)
             {
-                GlslSource glslSource = new(datareader, datareader.GetOffset(), sourceId);
+                GlslSource glslSource = new(datareader, sourceId);
                 gpuSources.Add(glslSource);
             }
         }
@@ -151,7 +151,7 @@ namespace ValveResourceFormat.CompiledShader
         {
             for (int sourceId = 0; sourceId < dxilSourceCount; sourceId++)
             {
-                DxilSource dxilSource = new(datareader, datareader.GetOffset(), sourceId);
+                DxilSource dxilSource = new(datareader, sourceId);
                 gpuSources.Add(dxilSource);
             }
         }
@@ -159,7 +159,7 @@ namespace ValveResourceFormat.CompiledShader
         {
             for (int sourceId = 0; sourceId < dxbcSourceCount; sourceId++)
             {
-                DxbcSource dxbcSource = new(datareader, datareader.GetOffset(), sourceId);
+                DxbcSource dxbcSource = new(datareader, sourceId);
                 gpuSources.Add(dxbcSource);
             }
         }
@@ -167,7 +167,7 @@ namespace ValveResourceFormat.CompiledShader
         {
             for (int sourceId = 0; sourceId < vulkanSourceCount; sourceId++)
             {
-                VulkanSource vulkanSource = new(datareader, datareader.GetOffset(), sourceId);
+                VulkanSource vulkanSource = new(datareader, sourceId);
                 gpuSources.Add(vulkanSource);
             }
         }
@@ -330,7 +330,7 @@ namespace ValveResourceFormat.CompiledShader
             public ZFrameParam(ShaderDataReader datareader)
             {
                 name0 = datareader.ReadNullTermString();
-                murmur32 = datareader.ReadUInt();
+                murmur32 = datareader.ReadUInt32();
                 uint murmurCheck = MurmurHash2.Hash(name0.ToLower(), ShaderFile.PI_MURMURSEED);
                 if (murmur32 != murmurCheck)
                 {
@@ -342,7 +342,7 @@ namespace ValveResourceFormat.CompiledShader
                 {
                     return;
                 }
-                dynExpLen = datareader.ReadInt();
+                dynExpLen = datareader.ReadInt32();
                 if (dynExpLen > 0)
                 {
                     dynExpression = datareader.ReadBytes(dynExpLen);
@@ -356,7 +356,7 @@ namespace ValveResourceFormat.CompiledShader
                 }
                 if (headerOperator == 5)
                 {
-                    operatorVal = datareader.ReadInt(); ;
+                    operatorVal = datareader.ReadInt32(); ;
                     return;
                 }
                 throw new ShaderParserException("unexpected data!");
@@ -383,10 +383,10 @@ namespace ValveResourceFormat.CompiledShader
             public VsEndBlock(ShaderDataReader datareader)
             {
                 databytes = datareader.ReadBytesAtPosition(0, 16);
-                blockIdRef = datareader.ReadInt();
-                arg0 = datareader.ReadInt();
-                sourceRef = datareader.ReadInt();
-                sourcePointer = datareader.ReadInt();
+                blockIdRef = datareader.ReadInt32();
+                arg0 = datareader.ReadInt32();
+                sourceRef = datareader.ReadInt32();
+                sourcePointer = datareader.ReadInt32();
             }
         }
 
@@ -404,10 +404,10 @@ namespace ValveResourceFormat.CompiledShader
             public byte[] data2 { get; }
             public PsEndBlock(ShaderDataReader datareader)
             {
-                blockIdRef = datareader.ReadInt();
-                arg0 = datareader.ReadInt();
-                sourceRef = datareader.ReadInt();
-                sourcePointer = datareader.ReadInt();
+                blockIdRef = datareader.ReadInt32();
+                arg0 = datareader.ReadInt32();
+                sourceRef = datareader.ReadInt32();
+                sourcePointer = datareader.ReadInt32();
                 int flag0 = datareader.ReadByte();
                 int flag1 = datareader.ReadByte();
                 int flag2 = datareader.ReadByte();
@@ -437,7 +437,7 @@ namespace ValveResourceFormat.CompiledShader
 
         public void PrintByteAnalysis()
         {
-            datareader.SetOffset(0);
+            datareader.BaseStream.Position = 0;
             ShowZDataSection(-1);
             ShowZFrameHeader();
             // this applies only to vs files (ps, gs and psrs files don't have this section)
@@ -474,7 +474,8 @@ namespace ValveResourceFormat.CompiledShader
             datareader.ShowBytes(1, "always 0");
             datareader.ShowBytes(1, "values seen (0,1)");
             datareader.BreakLine();
-            datareader.ShowByteCount($"Start of source section, {datareader.GetOffset()} is the base offset for end-section source pointers");
+            datareader.ShowByteCount($"Start of source section, {datareader.BaseStream.Position} is " +
+                $"the base offset for end-section source pointers");
             int gpuSourceCount = datareader.ReadIntAtPosition();
             datareader.ShowBytes(4, $"{vcsPlatformType} source files ({gpuSourceCount})");
             datareader.ShowBytes(1, "unknown boolean, values seen 0,1", tabLen: 13);
@@ -703,7 +704,7 @@ namespace ValveResourceFormat.CompiledShader
             {
                 int sourceOffset = datareader.ReadIntAtPosition();
                 datareader.ShowByteCount();
-                datareader.ShowBytes(4, $"offset to end of source {sourceOffset} (taken from {datareader.GetOffset() + 4})");
+                datareader.ShowBytes(4, $"offset to end of source {sourceOffset} (taken from {datareader.BaseStream.Position + 4})");
                 int additionalSourceBytes = 0;
                 if (sourceOffset > 0)
                 {
@@ -720,18 +721,18 @@ namespace ValveResourceFormat.CompiledShader
                     }
                     additionalSourceBytes = sourceSize - unknown_prog_uint16 * 4;
                 }
-                int endOfSource = datareader.GetOffset() + additionalSourceBytes;
+                int endOfSource = (int)datareader.BaseStream.Position + additionalSourceBytes;
                 if (additionalSourceBytes > SOURCE_BYTES_TO_SHOW)
                 {
                     datareader.ShowBytes(SOURCE_BYTES_TO_SHOW, breakLine: false);
                     datareader.OutputWrite(" ");
-                    int remainingBytes = endOfSource - datareader.GetOffset();
+                    int remainingBytes = endOfSource - (int)datareader.BaseStream.Position;
                     if (remainingBytes < 50)
                     {
                         datareader.ShowBytes(remainingBytes);
                     } else
                     {
-                        datareader.Comment($"... ({endOfSource - datareader.GetOffset()} bytes of data not shown)");
+                        datareader.Comment($"... ({endOfSource - datareader.BaseStream.Position} bytes of data not shown)");
                     }
                 } else if (additionalSourceBytes <= SOURCE_BYTES_TO_SHOW && additionalSourceBytes > 0)
                 {
@@ -740,7 +741,7 @@ namespace ValveResourceFormat.CompiledShader
                 {
                     datareader.OutputWriteLine("// no source present");
                 }
-                datareader.SetOffset(endOfSource);
+                datareader.BaseStream.Position = endOfSource;
                 datareader.BreakLine();
                 datareader.ShowByteCount();
                 datareader.ShowBytes(16, "DXIL(hlsl) Editor ref.");
@@ -755,7 +756,7 @@ namespace ValveResourceFormat.CompiledShader
                 datareader.ShowByteCount();
                 datareader.ShowBytes(4, $"Source size, {sourceSize} bytes");
                 datareader.BreakLine();
-                int endOfSource = datareader.GetOffset() + sourceSize;
+                int endOfSource = (int)datareader.BaseStream.Position + sourceSize;
                 datareader.ShowByteCount($"DXBC-SOURCE[{sourceId}]");
                 if (sourceSize == 0)
                 {
@@ -765,12 +766,12 @@ namespace ValveResourceFormat.CompiledShader
                 {
                     datareader.ShowBytes(SOURCE_BYTES_TO_SHOW, breakLine: false);
                     datareader.OutputWrite(" ");
-                    datareader.Comment($"... ({endOfSource - datareader.GetOffset()} bytes of data not shown)");
+                    datareader.Comment($"... ({endOfSource - datareader.BaseStream.Position} bytes of data not shown)");
                 } else if (sourceSize <= SOURCE_BYTES_TO_SHOW && sourceSize > 0)
                 {
                     datareader.ShowBytes(sourceSize);
                 }
-                datareader.SetOffset(endOfSource);
+                datareader.BaseStream.Position = endOfSource;
                 datareader.BreakLine();
                 datareader.ShowByteCount();
                 datareader.ShowBytes(16, "DXBC(hlsl) Editor ref.");
@@ -791,7 +792,7 @@ namespace ValveResourceFormat.CompiledShader
                 {
                     datareader.ShowByteCount();
                     datareader.ShowBytes(4, $"({offsetToEditorId}) offset to Editor ref. ID ");
-                    int endOfSourceOffset = datareader.GetOffset() + offsetToEditorId;
+                    int endOfSourceOffset = (int)datareader.BaseStream.Position + offsetToEditorId;
                     int arg0 = datareader.ReadIntAtPosition();
                     datareader.ShowBytes(4, $"({arg0}) values seen for Vulkan sources are (2,3)");
                     int offset2 = datareader.ReadIntAtPosition();
@@ -807,8 +808,7 @@ namespace ValveResourceFormat.CompiledShader
                         datareader.Comment($"... {bytesNotShown} bytes of data not shown)");
                     }
                     datareader.BreakLine();
-                    datareader.SetOffset(endOfSourceOffset);
-
+                    datareader.BaseStream.Position = endOfSourceOffset;
                     datareader.ShowBytes(16, "Vulkan Editor ref. ID");
                     datareader.BreakLine();
                 }
@@ -820,7 +820,7 @@ namespace ValveResourceFormat.CompiledShader
             for (int sourceId = 0; sourceId < glslSourceCount; sourceId++)
             {
                 int sourceSize = ShowGlslSourceOffsets();
-                int sourceOffset = datareader.GetOffset();
+                int sourceOffset = (int)datareader.BaseStream.Position;
                 ShowZGlslSourceSummary(sourceId);
                 datareader.ShowByteCount();
                 byte[] fileIdBytes = datareader.ReadBytes(16);
@@ -849,7 +849,7 @@ namespace ValveResourceFormat.CompiledShader
         public void ShowZGlslSourceSummary(int sourceId)
         {
             int bytesToRead = datareader.ReadIntAtPosition(-4);
-            int endOfSource = datareader.GetOffset() + bytesToRead;
+            int endOfSource = (int)datareader.BaseStream.Position + bytesToRead;
             datareader.ShowByteCount($"GLSL-SOURCE[{sourceId}]");
             if (bytesToRead == 0)
             {
@@ -858,12 +858,12 @@ namespace ValveResourceFormat.CompiledShader
             if (bytesToRead > SOURCE_BYTES_TO_SHOW)
             {
                 datareader.ShowBytes(SOURCE_BYTES_TO_SHOW);
-                datareader.Comment($"... ({endOfSource - datareader.GetOffset()} bytes of data not shown)");
+                datareader.Comment($"... ({endOfSource - datareader.BaseStream.Position} bytes of data not shown)");
             } else if (bytesToRead <= SOURCE_BYTES_TO_SHOW && bytesToRead > 0)
             {
                 datareader.ShowBytes(bytesToRead);
             }
-            datareader.SetOffset(endOfSource);
+            datareader.BaseStream.Position = endOfSource;
             datareader.BreakLine();
         }
         public void ShowZAllEndBlocksTypeVs()

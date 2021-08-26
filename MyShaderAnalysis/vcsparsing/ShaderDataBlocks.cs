@@ -20,50 +20,50 @@ namespace ValveResourceFormat.CompiledShader
         public int arg7 { get; }
         public List<(string, string)> mainParams { get; } = new();
         public List<(string, string)> editorIDs { get; } = new();
-        public FeaturesHeaderBlock(ShaderDataReader datareader, int start) : base(datareader, start)
+        public FeaturesHeaderBlock(ShaderDataReader datareader) : base(datareader, datareader.BaseStream.Position)
         {
-            int vcsMagicId = datareader.ReadInt();
+            int vcsMagicId = datareader.ReadInt32();
             if (vcsMagicId != ShaderFile.MAGIC)
             {
                 throw new ShaderParserException($"Wrong file id {vcsMagicId:x}");
             }
-            vcsFileVersion = datareader.ReadInt();
+            vcsFileVersion = datareader.ReadInt32();
             if (vcsFileVersion != 64)
             {
                 throw new ShaderParserException($"Wrong version {vcsFileVersion}, only version 64 supported");
             }
-            int psrs_arg = datareader.ReadInt();
+            int psrs_arg = datareader.ReadInt32();
             if (psrs_arg != 0 && psrs_arg != 1)
             {
                 throw new ShaderParserException($"unexpected value psrs_arg = {psrs_arg}");
             }
             has_psrs_file = psrs_arg > 0;
-            unknown_val = datareader.ReadInt();
-            datareader.ReadInt(); // length of name, but not needed because it's always null-term
+            unknown_val = datareader.ReadInt32();
+            datareader.ReadInt32(); // length of name, but not needed because it's always null-term
             file_description = datareader.ReadNullTermString();
-            arg0 = datareader.ReadInt();
-            arg1 = datareader.ReadInt();
-            arg2 = datareader.ReadInt();
-            arg3 = datareader.ReadInt();
-            arg4 = datareader.ReadInt();
-            arg5 = datareader.ReadInt();
-            arg6 = datareader.ReadInt();
-            arg7 = datareader.ReadInt();
-            int nr_of_arguments = datareader.ReadInt();
+            arg0 = datareader.ReadInt32();
+            arg1 = datareader.ReadInt32();
+            arg2 = datareader.ReadInt32();
+            arg3 = datareader.ReadInt32();
+            arg4 = datareader.ReadInt32();
+            arg5 = datareader.ReadInt32();
+            arg6 = datareader.ReadInt32();
+            arg7 = datareader.ReadInt32();
+            int nr_of_arguments = datareader.ReadInt32();
             if (has_psrs_file)
             {
                 // nr_of_arguments is overwritten
-                nr_of_arguments = datareader.ReadInt();
+                nr_of_arguments = datareader.ReadInt32();
             }
             for (int i = 0; i < nr_of_arguments; i++)
             {
                 string string_arg0 = datareader.ReadNullTermStringAtPosition();
                 string string_arg1 = "";
-                datareader.MoveOffset(128);
-                if (datareader.ReadInt() > 0)
+                datareader.MovePosition(128);
+                if (datareader.ReadInt32() > 0)
                 {
                     string_arg1 = datareader.ReadNullTermStringAtPosition();
-                    datareader.MoveOffset(68);
+                    datareader.MovePosition(68);
                 }
                 mainParams.Add((string_arg0, string_arg1));
             }
@@ -88,7 +88,7 @@ namespace ValveResourceFormat.CompiledShader
 
         public void PrintAnnotatedBytestream()
         {
-            datareader.SetOffset(start);
+            datareader.BaseStream.Position = start;
             datareader.ShowByteCount("vcs file");
             datareader.ShowBytes(4, "\"vcs2\"");
             datareader.ShowBytes(4, "version 64");
@@ -176,19 +176,19 @@ namespace ValveResourceFormat.CompiledShader
         public bool hasPsrsFile { get; }
         public string fileID0 { get; }
         public string fileID1 { get; }
-        public VsPsHeaderBlock(ShaderDataReader datareader, int start) : base(datareader, start)
+        public VsPsHeaderBlock(ShaderDataReader datareader) : base(datareader, datareader.BaseStream.Position)
         {
-            int magic = datareader.ReadInt();
+            int magic = datareader.ReadInt32();
             if (magic != ShaderFile.MAGIC)
             {
                 throw new ShaderParserException($"Wrong file id {magic:x} (not a vcs2 file)");
             }
-            vcsFileVersion = datareader.ReadInt();
+            vcsFileVersion = datareader.ReadInt32();
             if (vcsFileVersion != 64)
             {
                 throw new ShaderParserException($"Unsupported version {vcsFileVersion}, only version 64 is supported");
             }
-            int psrs_arg = datareader.ReadInt();
+            int psrs_arg = datareader.ReadInt32();
             if (psrs_arg != 0 && psrs_arg != 1)
             {
                 throw new ShaderParserException($"Unexpected value psrs_arg = {psrs_arg}");
@@ -199,7 +199,7 @@ namespace ValveResourceFormat.CompiledShader
         }
         public void PrintAnnotatedBytestream()
         {
-            datareader.SetOffset(start);
+            datareader.BaseStream.Position = start;
             datareader.ShowByteCount("vcs file");
             datareader.ShowBytes(4, "\"vcs2\"");
             datareader.ShowBytes(4, "version 64");
@@ -228,20 +228,20 @@ namespace ValveResourceFormat.CompiledShader
         public int arg4 { get; }
         public int arg5 { get; }
         public List<string> additionalParams { get; } = new();
-        public SfBlock(ShaderDataReader datareader, int start, int blockIndex) : base(datareader, start)
+        public SfBlock(ShaderDataReader datareader, int blockIndex) : base(datareader, datareader.BaseStream.Position)
         {
             this.blockIndex = blockIndex;
             name0 = datareader.ReadNullTermStringAtPosition();
-            datareader.MoveOffset(64);
+            datareader.MovePosition(64);
             name1 = datareader.ReadNullTermStringAtPosition();
-            datareader.MoveOffset(64);
-            arg0 = datareader.ReadInt();
-            arg1 = datareader.ReadInt();
-            arg2 = datareader.ReadInt();
-            arg3 = datareader.ReadInt();
-            arg4 = datareader.ReadInt();
+            datareader.MovePosition(64);
+            arg0 = datareader.ReadInt32();
+            arg1 = datareader.ReadInt32();
+            arg2 = datareader.ReadInt32();
+            arg3 = datareader.ReadInt32();
+            arg4 = datareader.ReadInt32();
             arg5 = datareader.ReadIntAtPosition();
-            int additionalStringsCount = datareader.ReadInt();
+            int additionalStringsCount = datareader.ReadInt32();
             for (int i = 0; i < additionalStringsCount; i++)
             {
                 additionalParams.Add(datareader.ReadNullTermString());
@@ -249,7 +249,7 @@ namespace ValveResourceFormat.CompiledShader
         }
         public void PrintAnnotatedBytestream()
         {
-            datareader.SetOffset(start);
+            datareader.BaseStream.Position = start;
             datareader.ShowByteCount();
             for (int i = 0; i < 2; i++)
             {
@@ -270,7 +270,7 @@ namespace ValveResourceFormat.CompiledShader
             datareader.TabComment($"({arg0},{arg1},{arg2},{arg3})");
             datareader.ShowBytes(4, $"({arg4}) known values [-1,28]");
             datareader.ShowBytes(4, $"{arg5} additional string params");
-            int string_offset = datareader.GetOffset();
+            int string_offset = (int)datareader.BaseStream.Position;
             List<string> names = new();
             for (int i = 0; i < arg5; i++)
             {
@@ -281,7 +281,7 @@ namespace ValveResourceFormat.CompiledShader
             if (names.Count > 0)
             {
                 PrintStringList(names);
-                datareader.ShowBytes(string_offset - datareader.GetOffset());
+                datareader.ShowBytes(string_offset - (int)datareader.BaseStream.Position);
             }
             datareader.BreakLine();
         }
@@ -311,50 +311,50 @@ namespace ValveResourceFormat.CompiledShader
         public int[] range1 { get; }
         public int[] range2 { get; }
         public string description { get; }
-        public SfConstraintsBlock(ShaderDataReader datareader, int start, int blockIndex) : base(datareader, start)
+        public SfConstraintsBlock(ShaderDataReader datareader, int blockIndex) : base(datareader, datareader.BaseStream.Position)
         {
             this.blockIndex = blockIndex;
-            relRule = datareader.ReadInt();
-            arg0 = datareader.ReadInt();
+            relRule = datareader.ReadInt32();
+            arg0 = datareader.ReadInt32();
             // flags are at (8)
             flags = ReadByteFlags();
             // range 0 at (24)
             range0 = ReadIntRange();
-            datareader.MoveOffset(68 - range0.Length * 4);
+            datareader.BaseStream.Position += 68 - range0.Length * 4;
             // range 1 at (92)
             range1 = ReadIntRange();
-            datareader.MoveOffset(60 - range1.Length * 4);
+
+            datareader.BaseStream.Position += 60 - range1.Length * 4;
             // range 2 at (152)
             range2 = ReadIntRange();
-            datareader.MoveOffset(64 - range2.Length * 4);
+            datareader.BaseStream.Position += 64 - range2.Length * 4;
             description = datareader.ReadNullTermStringAtPosition();
-            datareader.MoveOffset(256);
+            datareader.BaseStream.Position += 256;
         }
         private int[] ReadIntRange()
         {
             List<int> ints0 = new();
             while (datareader.ReadIntAtPosition() >= 0)
             {
-                ints0.Add(datareader.ReadInt());
+                ints0.Add(datareader.ReadInt32());
             }
             return ints0.ToArray();
         }
         private int[] ReadByteFlags()
         {
             int count = 0;
-            datareader.SavePosition();
+            long savedPosition = datareader.BaseStream.Position;
             while (datareader.ReadByte() > 0 && count < 16)
             {
                 count++;
             }
             int[] byteFlags = new int[count];
-            datareader.RestorePosition();
+            datareader.BaseStream.Position = savedPosition;
             for (int i = 0; i < count; i++)
             {
                 byteFlags[i] = datareader.ReadByte();
             }
-            datareader.RestorePosition();
-            datareader.MoveOffset(16);
+            datareader.BaseStream.Position = savedPosition + 16;
             return byteFlags;
         }
         public string RelRuleDescribe()
@@ -367,11 +367,11 @@ namespace ValveResourceFormat.CompiledShader
         }
         public void PrintAnnotatedBytestream()
         {
-            datareader.SetOffset(start);
+            datareader.BaseStream.Position = start;
             datareader.ShowByteCount($"SF-CONTRAINTS-BLOCK[{blockIndex}]");
             datareader.ShowBytes(216);
             string name1 = datareader.ReadNullTermStringAtPosition();
-            datareader.OutputWriteLine($"[{datareader.GetOffset()}] {name1}");
+            datareader.OutputWriteLine($"[{datareader.BaseStream.Position}] {name1}");
             datareader.ShowBytes(256);
             datareader.BreakLine();
         }
@@ -389,23 +389,23 @@ namespace ValveResourceFormat.CompiledShader
         public int arg3 { get; }
         public int arg4 { get; }
         public int arg5 { get; }
-        public DBlock(ShaderDataReader datareader, int start, int blockIndex) : base(datareader, start)
+        public DBlock(ShaderDataReader datareader, int blockIndex) : base(datareader, datareader.BaseStream.Position)
         {
             this.blockIndex = blockIndex;
             name0 = datareader.ReadNullTermStringAtPosition();
-            datareader.MoveOffset(64);
+            datareader.BaseStream.Position += 64;
             name1 = datareader.ReadNullTermStringAtPosition();
-            datareader.MoveOffset(64);
-            arg0 = datareader.ReadInt();
-            arg1 = datareader.ReadInt();
-            arg2 = datareader.ReadInt();
-            arg3 = datareader.ReadInt();
-            arg4 = datareader.ReadInt();
-            arg5 = datareader.ReadInt();
+            datareader.BaseStream.Position += 64;
+            arg0 = datareader.ReadInt32();
+            arg1 = datareader.ReadInt32();
+            arg2 = datareader.ReadInt32();
+            arg3 = datareader.ReadInt32();
+            arg4 = datareader.ReadInt32();
+            arg5 = datareader.ReadInt32();
         }
         public void PrintAnnotatedBytestream()
         {
-            datareader.SetOffset(start);
+            datareader.BaseStream.Position = start;
             string dBlockName = datareader.ReadNullTermStringAtPosition();
             datareader.ShowByteCount($"D-BLOCK[{blockIndex}]");
             datareader.Comment(dBlockName);
@@ -429,11 +429,11 @@ namespace ValveResourceFormat.CompiledShader
         public int[] range2 { get; }
         public string description { get; }
 
-        public DConstraintsBlock(ShaderDataReader datareader, int start, int blockIndex) : base(datareader, start)
+        public DConstraintsBlock(ShaderDataReader datareader, int blockIndex) : base(datareader, datareader.BaseStream.Position)
         {
             this.blockIndex = blockIndex;
-            relRule = datareader.ReadInt();
-            arg0 = datareader.ReadInt();
+            relRule = datareader.ReadInt32();
+            arg0 = datareader.ReadInt32();
             if (arg0 != 3)
             {
                 throw new ShaderParserException("unexpected value!");
@@ -442,44 +442,44 @@ namespace ValveResourceFormat.CompiledShader
             flags = ReadByteFlags();
             // range0 at (24)
             range0 = ReadIntRange();
-            datareader.MoveOffset(64 - range0.Length * 4);
+            datareader.MovePosition(64 - range0.Length * 4);
             // integer at (88)
-            arg1 = datareader.ReadInt();
+            arg1 = datareader.ReadInt32();
             // range1 at (92)
             range1 = ReadIntRange();
-            datareader.MoveOffset(60 - range1.Length * 4);
+            datareader.MovePosition(60 - range1.Length * 4);
             // range1 at (152)
             range2 = ReadIntRange();
-            datareader.MoveOffset(64 - range2.Length * 4);
+            datareader.MovePosition(64 - range2.Length * 4);
             // there is a provision here for a description, but for the dota2 archive this is always null
             description = datareader.ReadNullTermStringAtPosition();
-            datareader.MoveOffset(256);
+            datareader.MovePosition(256);
         }
         private int[] ReadIntRange()
         {
             List<int> ints0 = new();
             while (datareader.ReadIntAtPosition() >= 0)
             {
-                ints0.Add(datareader.ReadInt());
+                ints0.Add(datareader.ReadInt32());
             }
             return ints0.ToArray();
         }
         private int[] ReadByteFlags()
         {
             int count = 0;
-            datareader.SavePosition();
+            long savedPosition = datareader.BaseStream.Position;
             while (datareader.ReadByte() > 0 && count < 16)
             {
                 count++;
             }
             int[] byteFlags = new int[count];
-            datareader.RestorePosition();
+            datareader.BaseStream.Position = savedPosition;
             for (int i = 0; i < count; i++)
             {
                 byteFlags[i] = datareader.ReadByte();
             }
-            datareader.RestorePosition();
-            datareader.MoveOffset(16);
+            datareader.BaseStream.Position = savedPosition;
+            datareader.MovePosition(16);
             return byteFlags;
         }
         public string ReadByteFlagsAsString()
@@ -534,7 +534,7 @@ namespace ValveResourceFormat.CompiledShader
         }
         public void PrintAnnotatedBytestream()
         {
-            datareader.SetOffset(start);
+            datareader.BaseStream.Position = start;
             datareader.ShowByteCount($"D-CONSTRAINTS-BLOCK[{blockIndex}]");
             datareader.ShowBytes(472);
             datareader.BreakLine();
@@ -568,72 +568,72 @@ namespace ValveResourceFormat.CompiledShader
         public int[] ranges7 { get; } = new int[4];
         public string command0 { get; }
         public string command1 { get; }
-        public ParamBlock(ShaderDataReader datareader, int start, int blockIndex) : base(datareader, start)
+        public ParamBlock(ShaderDataReader datareader, int blockIndex) : base(datareader, datareader.BaseStream.Position)
         {
             this.blockIndex = blockIndex;
             name0 = datareader.ReadNullTermStringAtPosition();
-            datareader.MoveOffset(64);
+            datareader.MovePosition(64);
             name1 = datareader.ReadNullTermStringAtPosition();
-            datareader.MoveOffset(64);
-            type = datareader.ReadInt();
-            res0 = datareader.ReadFloat();
+            datareader.MovePosition(64);
+            type = datareader.ReadInt32();
+            res0 = datareader.ReadSingle();
             name2 = datareader.ReadNullTermStringAtPosition();
-            datareader.MoveOffset(64);
-            lead0 = datareader.ReadInt();
+            datareader.MovePosition(64);
+            lead0 = datareader.ReadInt32();
             if (lead0 == 6 || lead0 == 7)
             {
-                int dynExpLen = datareader.ReadInt();
+                int dynExpLen = datareader.ReadInt32();
                 dynExp = datareader.ReadBytes(dynExpLen);
             }
-            arg0 = datareader.ReadInt();
-            arg1 = datareader.ReadInt();
-            arg2 = datareader.ReadInt();
-            arg3 = datareader.ReadInt();
-            arg4 = datareader.ReadInt();
-            arg5 = datareader.ReadInt();
+            arg0 = datareader.ReadInt32();
+            arg1 = datareader.ReadInt32();
+            arg2 = datareader.ReadInt32();
+            arg3 = datareader.ReadInt32();
+            arg4 = datareader.ReadInt32();
+            arg5 = datareader.ReadInt32();
             fileref = datareader.ReadNullTermStringAtPosition();
-            datareader.MoveOffset(64);
+            datareader.MovePosition(64);
             for (int i = 0; i < 4; i++)
             {
-                ranges0[i] = datareader.ReadInt();
+                ranges0[i] = datareader.ReadInt32();
             }
             for (int i = 0; i < 4; i++)
             {
-                ranges1[i] = datareader.ReadInt();
+                ranges1[i] = datareader.ReadInt32();
             }
             for (int i = 0; i < 4; i++)
             {
-                ranges2[i] = datareader.ReadInt();
+                ranges2[i] = datareader.ReadInt32();
             }
             for (int i = 0; i < 4; i++)
             {
-                ranges3[i] = datareader.ReadFloat();
+                ranges3[i] = datareader.ReadSingle();
             }
             for (int i = 0; i < 4; i++)
             {
-                ranges4[i] = datareader.ReadFloat();
+                ranges4[i] = datareader.ReadSingle();
             }
             for (int i = 0; i < 4; i++)
             {
-                ranges5[i] = datareader.ReadFloat();
+                ranges5[i] = datareader.ReadSingle();
             }
             for (int i = 0; i < 4; i++)
             {
-                ranges6[i] = datareader.ReadInt();
+                ranges6[i] = datareader.ReadInt32();
             }
             for (int i = 0; i < 4; i++)
             {
-                ranges7[i] = datareader.ReadInt();
+                ranges7[i] = datareader.ReadInt32();
             }
             command0 = datareader.ReadNullTermStringAtPosition();
-            datareader.MoveOffset(32);
+            datareader.MovePosition(32);
             command1 = datareader.ReadNullTermStringAtPosition();
-            datareader.MoveOffset(32);
+            datareader.MovePosition(32);
         }
 
         public void PrintAnnotatedBytestream()
         {
-            datareader.SetOffset(start);
+            datareader.BaseStream.Position = start;
             datareader.ShowByteCount($"PARAM-BLOCK[{blockIndex}]");
             string name1 = datareader.ReadNullTermStringAtPosition();
             datareader.OutputWriteLine($"// {name1}");
@@ -690,22 +690,22 @@ namespace ValveResourceFormat.CompiledShader
             a3 = datareader.ReadIntAtPosition(12);
             datareader.ShowBytes(16, breakLine: false);
             datareader.TabComment($"ints   ({Fmt(a0)},{Fmt(a1)},{Fmt(a2)},{Fmt(a3)})", 10);
-            float f0 = datareader.ReadFloatAtPosition(0);
-            float f1 = datareader.ReadFloatAtPosition(4);
-            float f2 = datareader.ReadFloatAtPosition(8);
-            float f3 = datareader.ReadFloatAtPosition(12);
+            float f0 = datareader.ReadSingleAtPosition(0);
+            float f1 = datareader.ReadSingleAtPosition(4);
+            float f2 = datareader.ReadSingleAtPosition(8);
+            float f3 = datareader.ReadSingleAtPosition(12);
             datareader.ShowBytes(16, breakLine: false);
             datareader.TabComment($"floats ({Fmt(f0)},{Fmt(f1)},{Fmt(f2)},{Fmt(f3)})", 10);
-            f0 = datareader.ReadFloatAtPosition(0);
-            f1 = datareader.ReadFloatAtPosition(4);
-            f2 = datareader.ReadFloatAtPosition(8);
-            f3 = datareader.ReadFloatAtPosition(12);
+            f0 = datareader.ReadSingleAtPosition(0);
+            f1 = datareader.ReadSingleAtPosition(4);
+            f2 = datareader.ReadSingleAtPosition(8);
+            f3 = datareader.ReadSingleAtPosition(12);
             datareader.ShowBytes(16, breakLine: false);
             datareader.TabComment($"floats ({Fmt(f0)},{Fmt(f1)},{Fmt(f2)},{Fmt(f3)})", 10);
-            f0 = datareader.ReadFloatAtPosition(0);
-            f1 = datareader.ReadFloatAtPosition(4);
-            f2 = datareader.ReadFloatAtPosition(8);
-            f3 = datareader.ReadFloatAtPosition(12);
+            f0 = datareader.ReadSingleAtPosition(0);
+            f1 = datareader.ReadSingleAtPosition(4);
+            f2 = datareader.ReadSingleAtPosition(8);
+            f3 = datareader.ReadSingleAtPosition(12);
             datareader.ShowBytes(16, breakLine: false);
             datareader.TabComment($"floats ({Fmt(f0)},{Fmt(f1)},{Fmt(f2)},{Fmt(f3)})", 10);
             a0 = datareader.ReadIntAtPosition(0);
@@ -761,21 +761,21 @@ namespace ValveResourceFormat.CompiledShader
         public int arg4 { get; }
         public int arg5 { get; }
 
-        public MipmapBlock(ShaderDataReader datareader, int start, int blockIndex) : base(datareader, start)
+        public MipmapBlock(ShaderDataReader datareader, int blockIndex) : base(datareader, datareader.BaseStream.Position)
         {
             this.blockIndex = blockIndex;
             arg0 = datareader.ReadBytes(4);
-            arg1 = datareader.ReadInt();
-            arg2 = datareader.ReadInt();
-            arg3 = datareader.ReadInt();
-            arg4 = datareader.ReadInt();
-            arg5 = datareader.ReadInt();
+            arg1 = datareader.ReadInt32();
+            arg2 = datareader.ReadInt32();
+            arg3 = datareader.ReadInt32();
+            arg4 = datareader.ReadInt32();
+            arg5 = datareader.ReadInt32();
             name = datareader.ReadNullTermStringAtPosition();
-            datareader.MoveOffset(256);
+            datareader.MovePosition(256);
         }
         public void PrintAnnotatedBytestream()
         {
-            datareader.SetOffset(start);
+            datareader.BaseStream.Position = start;
             datareader.ShowByteCount($"MIPMAP-BLOCK[{blockIndex}]");
             datareader.ShowBytes(24, 4);
             string name1 = datareader.ReadNullTermStringAtPosition();
@@ -794,30 +794,30 @@ namespace ValveResourceFormat.CompiledShader
         public int paramCount { get; }
         public List<(string, int, int, int, int)> bufferParams { get; } = new();
         public uint blockCrc { get; }
-        public BufferBlock(ShaderDataReader datareader, int start, int blockIndex) : base(datareader, start)
+        public BufferBlock(ShaderDataReader datareader, int blockIndex) : base(datareader, datareader.BaseStream.Position)
         {
             this.blockIndex = blockIndex;
             name = datareader.ReadNullTermStringAtPosition();
-            datareader.MoveOffset(64);
-            bufferSize = datareader.ReadInt();
+            datareader.MovePosition(64);
+            bufferSize = datareader.ReadInt32();
             // datareader.MoveOffset(4); // these 4 bytes are always 0
-            arg0 = datareader.ReadInt();
-            paramCount = datareader.ReadInt();
+            arg0 = datareader.ReadInt32();
+            paramCount = datareader.ReadInt32();
             for (int i = 0; i < paramCount; i++)
             {
                 string paramName = datareader.ReadNullTermStringAtPosition();
-                datareader.MoveOffset(64);
-                int bufferIndex = datareader.ReadInt();
-                int arg0 = datareader.ReadInt();
-                int arg1 = datareader.ReadInt();
-                int arg2 = datareader.ReadInt();
+                datareader.MovePosition(64);
+                int bufferIndex = datareader.ReadInt32();
+                int arg0 = datareader.ReadInt32();
+                int arg1 = datareader.ReadInt32();
+                int arg2 = datareader.ReadInt32();
                 bufferParams.Add((paramName, bufferIndex, arg0, arg1, arg2));
             }
-            blockCrc = datareader.ReadUInt();
+            blockCrc = datareader.ReadUInt32();
         }
         public void PrintAnnotatedBytestream()
         {
-            datareader.SetOffset(start);
+            datareader.BaseStream.Position = start;
             string blockname = datareader.ReadNullTermStringAtPosition();
             datareader.ShowByteCount($"BUFFER-BLOCK[{blockIndex}] {blockname}");
             datareader.ShowBytes(64);
@@ -852,22 +852,22 @@ namespace ValveResourceFormat.CompiledShader
         public int symbolsCount { get; }
         public List<(string, string, string, int)> symbolsDefinition { get; } = new();
 
-        public VertexSymbolsBlock(ShaderDataReader datareader, int start, int blockIndex) : base(datareader, start)
+        public VertexSymbolsBlock(ShaderDataReader datareader, int blockIndex) : base(datareader, datareader.BaseStream.Position)
         {
             this.blockIndex = blockIndex;
-            symbolsCount = datareader.ReadInt();
+            symbolsCount = datareader.ReadInt32();
             for (int i = 0; i < symbolsCount; i++)
             {
                 string name = datareader.ReadNullTermString();
                 string type = datareader.ReadNullTermString();
                 string option = datareader.ReadNullTermString();
-                int semanticIndex = datareader.ReadInt();
+                int semanticIndex = datareader.ReadInt32();
                 symbolsDefinition.Add((name, type, option, semanticIndex));
             }
         }
         public void PrintAnnotatedBytestream()
         {
-            datareader.SetOffset(start);
+            datareader.BaseStream.Position = start;
             datareader.ShowByteCount($"SYMBOL-NAMES-BLOCK[{blockIndex}]");
             uint symbolGroupCount = datareader.ReadUIntAtPosition();
             datareader.ShowBytes(4, $"{symbolGroupCount} string groups in this block");
