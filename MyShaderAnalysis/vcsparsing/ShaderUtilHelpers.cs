@@ -10,7 +10,7 @@ namespace ValveResourceFormat.CompiledShader
         public static (VcsFileType, VcsPlatformType, VcsModelType) ComputeVCSFileName(string filenamepath)
         {
             VcsFileType vcsFileType = VcsFileType.Undetermined;
-            VcsPlatformType vcsSourceType = VcsPlatformType.Undetermined;
+            VcsPlatformType vcsPlatformType = VcsPlatformType.Undetermined;
             VcsModelType vcsModelType = VcsModelType.Undetermined;
 
             string[] fileTokens = Path.GetFileName(filenamepath).Split("_");
@@ -31,7 +31,7 @@ namespace ValveResourceFormat.CompiledShader
                 "rtx.vcs" => VcsFileType.RaytracingShader,
                 _ => VcsFileType.Undetermined
             };
-            vcsSourceType = fileTokens[^3].ToLower() switch
+            vcsPlatformType = fileTokens[^3].ToLower() switch
             {
                 "pc" => VcsPlatformType.PC,
                 "pcgl" => VcsPlatformType.PCGL,
@@ -39,9 +39,9 @@ namespace ValveResourceFormat.CompiledShader
                 "vulkan" => VcsPlatformType.VULKAN,
                 _ => VcsPlatformType.Undetermined
             };
-            if (vcsSourceType == VcsPlatformType.VULKAN)
+            if (vcsPlatformType == VcsPlatformType.VULKAN)
             {
-                vcsSourceType = fileTokens[^4].ToLower() switch
+                vcsPlatformType = fileTokens[^4].ToLower() switch
                 {
                     "android" => VcsPlatformType.ANDROID_VULKAN,
                     "ios" => VcsPlatformType.IOS_VULKAN,
@@ -61,13 +61,13 @@ namespace ValveResourceFormat.CompiledShader
                 _ => VcsModelType.Undetermined
             };
             if (vcsFileType == VcsFileType.Undetermined ||
-                vcsSourceType == VcsPlatformType.Undetermined ||
+                vcsPlatformType == VcsPlatformType.Undetermined ||
                 vcsModelType == VcsModelType.Undetermined)
             {
                 throw new ShaderParserException($"Filetype type unknown or not supported {filenamepath}");
             } else
             {
-                return (vcsFileType, vcsSourceType, vcsModelType);
+                return (vcsFileType, vcsPlatformType, vcsModelType);
             }
         }
 

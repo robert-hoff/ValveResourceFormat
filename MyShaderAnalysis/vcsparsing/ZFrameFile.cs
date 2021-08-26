@@ -11,7 +11,7 @@ namespace ValveResourceFormat.CompiledShader
         public ShaderDataReader datareader { get; private set; }
         public string filenamepath { get; }
         public VcsFileType vcsFileType { get; }
-        public VcsPlatformType vcsSourceType { get; }
+        public VcsPlatformType vcsPlatformType { get; }
         public VcsModelType vcsModelType { get; }
         public long zframeId { get; }
         public ZDataBlock leadingData { get; }
@@ -34,8 +34,8 @@ namespace ValveResourceFormat.CompiledShader
         {
             this.filenamepath = filenamepath;
             this.vcsFileType = vcsFileType;
-            this.vcsSourceType = vcsSourceType;
-            this.vcsSourceType = vcsSourceType;
+            this.vcsPlatformType = vcsSourceType;
+            this.vcsPlatformType = vcsSourceType;
             this.vcsModelType = vcsModelType;
             datareader = new ShaderDataReader(new MemoryStream(databytes));
             this.zframeId = zframeId;
@@ -476,11 +476,11 @@ namespace ValveResourceFormat.CompiledShader
             datareader.BreakLine();
             datareader.ShowByteCount($"Start of source section, {datareader.GetOffset()} is the base offset for end-section source pointers");
             int gpuSourceCount = datareader.ReadIntAtPosition();
-            datareader.ShowBytes(4, $"{vcsSourceType} source files ({gpuSourceCount})");
+            datareader.ShowBytes(4, $"{vcsPlatformType} source files ({gpuSourceCount})");
             datareader.ShowBytes(1, "unknown boolean, values seen 0,1", tabLen: 13);
             datareader.BreakLine();
 
-            if (vcsSourceType == VcsPlatformType.PC)
+            if (vcsPlatformType == VcsPlatformType.PC)
             {
                 switch (vcsModelType)
                 {
@@ -496,11 +496,11 @@ namespace ValveResourceFormat.CompiledShader
                         ShowDxbcSources(gpuSourceCount);
                         break;
                     default:
-                        throw new ShaderParserException($"Unknown or unsupported model type {vcsSourceType} {vcsModelType}");
+                        throw new ShaderParserException($"Unknown or unsupported model type {vcsPlatformType} {vcsModelType}");
                 }
             } else
             {
-                switch (vcsSourceType)
+                switch (vcsPlatformType)
                 {
                     case VcsPlatformType.PCGL:
                     case VcsPlatformType.MOBILE_GLES:
@@ -512,7 +512,7 @@ namespace ValveResourceFormat.CompiledShader
                         ShowVulkanSources(gpuSourceCount);
                         break;
                     default:
-                        throw new ShaderParserException($"Unknown or unsupported source type {vcsSourceType}");
+                        throw new ShaderParserException($"Unknown or unsupported source type {vcsPlatformType}");
                 }
             }
 

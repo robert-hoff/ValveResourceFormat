@@ -13,7 +13,7 @@ namespace ValveResourceFormat.CompiledShader
         public ShaderDataReader datareader { get; }
         public string filenamepath { get; }
         public VcsFileType vcsFileType { get; }
-        public VcsPlatformType vcsSourceType { get; }
+        public VcsPlatformType vcsPlatformType { get; }
         public VcsModelType vcsModelType { get; }
         public FeaturesHeaderBlock featuresHeader { get; }
         public VsPsHeaderBlock vspsHeader { get; }
@@ -42,7 +42,7 @@ namespace ValveResourceFormat.CompiledShader
             this.filenamepath = filenamepath;
             var vcsFileProperties = ComputeVCSFileName(filenamepath);
             vcsFileType = vcsFileProperties.Item1;
-            vcsSourceType = vcsFileProperties.Item2;
+            vcsPlatformType = vcsFileProperties.Item2;
             vcsModelType = vcsFileProperties.Item3;
             this.datareader = datareader;
             // There's a chance HullShader, DomainShader and RaytracingShader work but they haven't been tested
@@ -193,7 +193,7 @@ namespace ValveResourceFormat.CompiledShader
         public ZFrameFile GetZFrameFile(long zframeId, bool omitParsing = false)
         {
             return new ZFrameFile(GetDecompressedZFrame(zframeId), filenamepath, zframeId,
-                vcsFileType, vcsSourceType, vcsModelType, omitParsing);
+                vcsFileType, vcsPlatformType, vcsModelType, omitParsing);
         }
 
         public ZFrameFile GetZFrameFileByIndex(int zframeIndex)
