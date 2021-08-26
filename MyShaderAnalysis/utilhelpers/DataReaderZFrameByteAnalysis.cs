@@ -14,16 +14,19 @@ namespace MyShaderAnalysis.utilhelpers
     {
 
         private VcsFileType filetype;
-        private VcsSourceType sourceType;
+        private VcsPlatformType vcsSourceType;
+        private VcsModelType vcsModelType;
 
-        public DataReaderZFrameByteAnalysis(byte[] data, VcsFileType filetype, VcsSourceType vcsSourceType) : base(new MemoryStream(data))
+        public DataReaderZFrameByteAnalysis(byte[] data, VcsFileType filetype,
+            VcsPlatformType vcsSourceType, VcsModelType vcsModelType) : base(new MemoryStream(data))
         {
             if (filetype == VcsFileType.Features)
             {
                 throw new ShaderParserException("file type cannot be features, as they don't contain any zframes");
             }
             this.filetype = filetype;
-            this.sourceType = vcsSourceType;
+            this.vcsSourceType = vcsSourceType;
+            this.vcsModelType = vcsModelType;
         }
 
 
@@ -87,22 +90,41 @@ namespace MyShaderAnalysis.utilhelpers
             BreakLine();
             ShowByteCount($"Start of source section, {GetOffset()} is the base offset for end-section source pointers");
             int gpuSourceCount = ReadIntAtPosition();
-            ShowBytes(4, $"{sourceType} source files ({gpuSourceCount})");
+            ShowBytes(4, $"{vcsSourceType} source files ({gpuSourceCount})");
             ShowBytes(1, "unknown boolean, values seen 0,1", tabLen: 13);
             BreakLine();
 
-            if (sourceType == VcsSourceType.Glsl)
+            if (vcsSourceType == VcsPlatformType.PC)
             {
-                ShowGlslSources(gpuSourceCount);
-            }
-            if (sourceType == VcsSourceType.DXIL)
+                switch (vcsModelType)
+                {
+                    case VcsModelType._20:
+                    case VcsModelType._2b:
+                    case VcsModelType._30:
+                    case VcsModelType._31:
+                        ShowDxilSources(gpuSourceCount);
+                        break;
+                    case VcsModelType._40:
+                    case VcsModelType._41:
+                    case VcsModelType._50:
+                        ShowDxbcSources(gpuSourceCount);
+                        break;
+                    default:
+                        throw new ShaderParserException($"Unknown or unsupported model type {vcsModelType}");
+                }
+            } else
             {
-                ShowDxilSources(gpuSourceCount);
+                switch (vcsSourceType)
+                {
+                    case VcsPlatformType.PCGL:
+                    case VcsPlatformType.MOBILE_GLES:
+                        ShowGlslSources(gpuSourceCount);
+                        break;
+                    default:
+                        throw new ShaderParserException($"Unknown or unsupported source type {vcsSourceType}");
+                }
             }
-            if (sourceType == VcsSourceType.DXBC)
-            {
-                ShowDxbcSources(gpuSourceCount);
-            }
+
             //  End blocks for vs and gs files
             if (filetype == VcsFileType.VertexShader || filetype == VcsFileType.GeometryShader)
             {
@@ -159,17 +181,39 @@ namespace MyShaderAnalysis.utilhelpers
             ShowEndOfFile();
 
             // write the gsls source, if indicated
-            if (sourceType == VcsSourceType.DXIL && saveGlslSources && !writeAsHtml)
+            if (saveGlslSources && !writeAsHtml)
             {
-                SaveGlslSourcestoTxt(glslSources);
-            }
-            if (sourceType == VcsSourceType.DXIL && saveGlslSources && writeAsHtml)
-            {
-                SaveGlslSourcestoHtml(glslSources);
-            }
-            if (sourceType != VcsSourceType.DXIL && saveGlslSources)
-            {
-                Console.WriteLine($"glsl save indicated but source is not glsl");
+
+                if (vcsSourceType == VcsPlatformType.PC)
+                {
+                    switch (vcsModelType)
+                    {
+                        case VcsModelType._20:
+                        case VcsModelType._2b:
+                        case VcsModelType._30:
+                        case VcsModelType._31:
+                            throw new ShaderParserException($"Source save not implemented for {vcsSourceType} {vcsModelType}");
+                            break;
+                        case VcsModelType._40:
+                        case VcsModelType._41:
+                        case VcsModelType._50:
+                            throw new ShaderParserException($"Source save not implemented for {vcsSourceType} {vcsModelType}");
+                            break;
+                        default:
+                            throw new ShaderParserException($"Source save not implemented for {vcsSourceType} {vcsModelType}");
+                    }
+                } else
+                {
+                    switch (vcsSourceType)
+                    {
+                        case VcsPlatformType.PCGL:
+                        case VcsPlatformType.MOBILE_GLES:
+                            SaveGlslSourcestoTxt(glslSources);
+                            break;
+                        default:
+                            throw new ShaderParserException($"glsl save indicated but source is not glsl");
+                    }
+                }
             }
         }
 

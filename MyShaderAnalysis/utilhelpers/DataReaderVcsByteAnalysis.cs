@@ -18,7 +18,7 @@ namespace MyShaderAnalysis.utilhelpers
         private string vcsFilename = null;
         public DataReaderVcsByteAnalysis(string filenamepath) : base(new MemoryStream(File.ReadAllBytes(filenamepath)))
         {
-            this.filetype = GetVcsFileType(filenamepath);
+            this.filetype = ComputeVCSFileName(filenamepath).Item1;
             this.vcsFilename = filenamepath;
         }
 

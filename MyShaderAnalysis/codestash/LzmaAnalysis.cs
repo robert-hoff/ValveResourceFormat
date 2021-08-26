@@ -49,7 +49,9 @@ namespace MyShaderAnalysis
             // string filenamepath = $"{ARTIFACT_CLASSIC_DCG_PC_SOURCE}/visualize_physics_pc_30_ps.vcs"; long zId = 0x10;
             ShaderFile shaderFile = new ReadShaderFile(filenamepath).GetShaderFile();
             byte[] zframeDatabytes = shaderFile.GetDecompressedZFrame(zId);
-            DataReaderZFrameByteAnalysis datareader = new(zframeDatabytes, GetVcsFileType(filenamepath), GetVcsSourceType(filenamepath));
+            var vcsFileProperties = ComputeVCSFileName(filenamepath);
+            DataReaderZFrameByteAnalysis datareader = new(zframeDatabytes,
+                vcsFileProperties.Item1, vcsFileProperties.Item2, vcsFileProperties.Item3);
             datareader.PrintByteAnalysis();
 
         }
@@ -70,7 +72,7 @@ namespace MyShaderAnalysis
             string filenamepath = $"{DOTA_GAME_PC_SOURCE}/multiblend_pc_30_ps.vcs";
             ShaderFile shaderFile = new ReadShaderFile(filenamepath).GetShaderFile();
             byte[] zframeDatabytes = shaderFile.GetDecompressedZFrame(0x1a1);
-            DataReaderZFrameByteAnalysis datareader = new(zframeDatabytes, shaderFile.vcsFileType, shaderFile.vcsSourceType);
+            DataReaderZFrameByteAnalysis datareader = new(zframeDatabytes, shaderFile.vcsFileType, shaderFile.vcsSourceType, shaderFile.vcsModelType);
             datareader.PrintByteAnalysis();
         }
 

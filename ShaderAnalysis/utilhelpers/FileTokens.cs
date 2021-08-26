@@ -43,7 +43,7 @@ namespace ShaderAnalysis.utilhelpers
             this.name = filename[0..^4];
             this.foldername = name.Substring(0, name.LastIndexOf('_'));
             this.filenamepath = GetFilenamepath(archive, filename);
-            this.vcsFiletype = GetVcsFileType(filename);
+            this.vcsFiletype = ComputeVCSFileName(filename).Item1;
             this.sourcedir = GetSourceDir(archive);
             this.archivename = GetArchiveName(archive);
             this.archivelabel = GetArchiveLabel(archive);

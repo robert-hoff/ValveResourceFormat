@@ -689,7 +689,7 @@ namespace MyShaderAnalysis
             }
 
             Dictionary<FileTokens, List<long>> zframesFound = new();
-            List<string> coreFiles = GetVcsFiles(PCGL_DIR_CORE, null, VcsFileType.Any, 30);
+            List<string> coreFiles = GetVcsFiles(PCGL_DIR_CORE, null, VcsFileType.Undetermined, 30);
             foreach (var filenamepath in coreFiles)
             {
                 FileTokens vcsFile = new(ARCHIVE.dotacore_pcgl, filenamepath);
@@ -702,7 +702,7 @@ namespace MyShaderAnalysis
                 }
             }
 
-            List<string> gameFiles = GetVcsFiles(PCGL_DIR_NOT_CORE, null, VcsFileType.Any, 30);
+            List<string> gameFiles = GetVcsFiles(PCGL_DIR_NOT_CORE, null, VcsFileType.Undetermined, 30);
             foreach (var filenamepath in gameFiles)
             {
                 FileTokens vcsFile = new(ARCHIVE.dotagame_pcgl, filenamepath);

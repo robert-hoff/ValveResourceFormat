@@ -143,7 +143,7 @@ namespace MyShaderAnalysis
             // vcsFiles.Add(filenamespecific1);
             // vcsFiles.Add(filenamespecific2);
 
-            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Any, -1);
+            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Undetermined, -1);
 
 
 
@@ -378,7 +378,7 @@ namespace MyShaderAnalysis
 
         static void ParseABunchOfZframes()
         {
-            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Any, -1);
+            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Undetermined, -1);
             foreach (string vcsFile in vcsFiles)
             {
                 ShaderFile shaderFile = new ReadShaderFile(vcsFile).GetShaderFile();
@@ -450,7 +450,7 @@ namespace MyShaderAnalysis
             PrintZFrame(zframeDatabytes, shaderFile.vcsFileType, shaderFile.vcsSourceType, disableOutput);
         }
 
-        static void PrintZFrame(byte[] databytes, VcsFileType vcsFiletype, VcsSourceType sourceType,
+        static void PrintZFrame(byte[] databytes, VcsFileType vcsFiletype, VcsPlatformType sourceType,
             bool disableOutput = false, StreamWriter sw = null)
         {
             //DataReaderZFrameByteAnalysis zFrameParser = new(databytes, vcsFiletype, sourceType);
@@ -468,7 +468,7 @@ namespace MyShaderAnalysis
          */
         static void TestShaderFile()
         {
-            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Any, -1);
+            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Undetermined, -1);
             foreach (string filenamepath in vcsFiles)
             {
                 Console.Write($"parsing {RemoveBaseDir(filenamepath)}");
@@ -528,7 +528,7 @@ namespace MyShaderAnalysis
 
         static void WriteAllVcsFilesToTxt()
         {
-            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Any, -1);
+            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Undetermined, -1);
             foreach (string vcsFile in vcsFiles)
             {
                 WriteVcsByteAnalysisToTxt(vcsFile);

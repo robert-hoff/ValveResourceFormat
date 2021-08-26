@@ -29,7 +29,7 @@ namespace MyShaderAnalysis.utilhelpers.snippetcode
         // search for small glsl sources
         static void SearchForSmallGlsl()
         {
-            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Any, -1);
+            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Undetermined, -1);
             foreach (var filenamepath in vcsFiles)
             {
                 ShaderFile shaderfile = InstantiateShaderFile(filenamepath);
@@ -41,7 +41,7 @@ namespace MyShaderAnalysis.utilhelpers.snippetcode
                     if (zframeData.uncompressedLength < 100000)
                     {
                         ZFrameFile zframeFile = new(zframeData.GetDecompressedZFrame(), filenamepath, zframeData.zframeId,
-                            shaderfile.vcsFileType, shaderfile.vcsSourceType);
+                            shaderfile.vcsFileType, shaderfile.vcsSourceType, shaderfile.vcsModelType);
                         foreach (var source in zframeFile.gpuSources)
                         {
                             // if ((source.offset1-1)%64==0 && source.offset1<500) {

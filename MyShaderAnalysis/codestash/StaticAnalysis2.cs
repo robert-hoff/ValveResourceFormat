@@ -335,7 +335,7 @@ namespace MyShaderAnalysis
                 ConfigureOutputFile(outputFilenamepath);
                 WriteHtmlFile("mul-params", "Params with multiple configurations (only F-params have this)");
             }
-            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Any, -1);
+            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Undetermined, -1);
             foreach (string filenamepath in vcsFiles)
             {
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);

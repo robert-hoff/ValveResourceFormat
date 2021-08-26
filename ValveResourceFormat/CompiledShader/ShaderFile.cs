@@ -39,8 +39,9 @@ namespace ValveResourceFormat.CompiledShader
         public ShaderFile(string filenamepath, ShaderDataReader datareader)
         {
             this.filenamepath = filenamepath;
-            vcsFileType = GetVcsFileType(filenamepath);
-            vcsSourceType = GetVcsSourceType(filenamepath);
+            var vcsFileProperties = ComputeVCSFileName(filenamepath);
+            vcsFileType = vcsFileProperties.Item1;
+            vcsSourceType = vcsFileProperties.Item2;
             this.datareader = datareader;
             // There's a chance HullShader, DomainShader and RaytracingShader work but they haven't been tested
             if (vcsFileType == VcsFileType.Features)

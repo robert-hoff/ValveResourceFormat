@@ -39,7 +39,7 @@ namespace MyShaderAnalysis.utilhelpers
             // string filenamepath = $"{DOTA_GAME_PC_SOURCE}/multiblend_pc_30_vs.vcs";
             // string filenamepath = $"{DOTA_GAME_PC_SOURCE}/multiblend_pc_40_vs.vcs";
             // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_40_vs.vcs";
-            VcsSourceType vcsSourceType = GetVcsSourceType(filenamepath);
+            VcsPlatformType vcsSourceType = ComputeVCSFileName(filenamepath).Item2;
             Console.WriteLine($"{vcsSourceType}");
         }
 
