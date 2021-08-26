@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -31,7 +30,7 @@ namespace ShaderAnalysis.utilhelpers
             "00 07 00 00 80 3F 00";
             byte[] databytes = ParseString(exampleStr);
             VfxEval vfxEval = new VfxEval(databytes, omitReturnStatement: true);
-            Debug.WriteLine($"{vfxEval.DynamicExpressionResult}");
+            Console.WriteLine($"{vfxEval.DynamicExpressionResult}");
         }
 
 
@@ -51,7 +50,7 @@ namespace ShaderAnalysis.utilhelpers
                 "09 02 14 09 02 09 01 13 06 1A 00 15 14 07 00 00 00 3F 13 08 03 09 02 09 01 09 03 1E 55 06 19 00 00";
             byte[] databytes = ParseString(byteString);
             VfxEval vfxEval = new VfxEval(databytes, omitReturnStatement: true);
-            Debug.WriteLine($"{vfxEval.DynamicExpressionResult}");
+            Console.WriteLine($"{vfxEval.DynamicExpressionResult}");
         }
 
         // (COND[19] && exists(UNKNOWN[7090a628])) ? UNKNOWN[1e52d0a1] : EVAL[b829896f]
@@ -60,7 +59,7 @@ namespace ShaderAnalysis.utilhelpers
             string byteString = "1A 13 04 0F 00 07 00 07 00 00 00 00 02 14 00 1F 28 A6 90 70 04 19 00 21 00 19 A1 D0 52 1E 02 26 00 1D 6F 89 29 B8 00";
             byte[] databytes = ParseString(byteString);
             VfxEval vfxEval = new VfxEval(databytes, omitReturnStatement: true);
-            Debug.WriteLine($"{vfxEval.DynamicExpressionResult}");
+            Console.WriteLine($"{vfxEval.DynamicExpressionResult}");
         }
 
         // SrgbGammaToLinear(EVAL[a392133c].xyz)
@@ -69,7 +68,7 @@ namespace ShaderAnalysis.utilhelpers
             string byteString = "1D 3C 13 92 A3 1E A4 06 1F 00 00";
             byte[] databytes = ParseString(byteString);
             VfxEval vfxEval = new VfxEval(databytes, omitReturnStatement: true);
-            Debug.WriteLine($"{vfxEval.DynamicExpressionResult}");
+            Console.WriteLine($"{vfxEval.DynamicExpressionResult}");
         }
 
 
@@ -78,7 +77,7 @@ namespace ShaderAnalysis.utilhelpers
         {
             string byteString = "1A 11 04 07 00 0F 00 07 00 00 80 3F 02 14 00 07 00 00 00 00 00";
             byte[] databytes = ParseString(byteString);
-            Debug.WriteLine($"{new VfxEval(databytes, omitReturnStatement: true).DynamicExpressionResult}");
+            Console.WriteLine($"{new VfxEval(databytes, omitReturnStatement: true).DynamicExpressionResult}");
         }
 
 

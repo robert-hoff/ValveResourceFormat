@@ -39,7 +39,7 @@ namespace ShaderAnalysis
             // string filenamepath = $"{PCGL_DIR_NOT_CORE}/grasstile_pcgl_30_ps.vcs";
             string filenamepath = $"{PCGL_DIR_NOT_CORE}/grasstile_preview_pcgl_30_ps.vcs";
             ShaderFile shaderFile = new ReadShaderFile(filenamepath).GetShaderFile();
-            Debug.WriteLine($"{shaderFile.GetZFrameCount()}");
+            Console.WriteLine($"{shaderFile.GetZFrameCount()}");
         }
 
 
@@ -50,9 +50,6 @@ namespace ShaderAnalysis
             string filenamepath = $"{TEST_SHADERS_DIR}/error_vulkan_40_vs.vcs";
             ShaderFile shaderFile = new ReadShaderFile(filenamepath).GetShaderFile();
             ZFrameFile zframeFile = shaderFile.GetZFrameFile(0, omitParsing: true);
-            zframeFile.datareader.WriteToDebug = true;
-            zframeFile.datareader.WriteToConsole = false;
-
             zframeFile.PrintByteAnalysis();
         }
 
@@ -94,10 +91,10 @@ namespace ShaderAnalysis
             string filenamepath = $"{FileSystem.DOTA_CORE_PCGL_SOURCE}/generic_light_pcgl_40_ps.vcs";
             ShaderFile shaderFile = new ReadShaderFile(filenamepath).GetShaderFile();
 
-            // Debug.WriteLine($"{shaderFile.GetZFrameCount()}");
+            // Console.WriteLine($"{shaderFile.GetZFrameCount()}");
             shaderFile.PrintByteAnalysis(shortenOutput: false);
 
-            // Debug.WriteLine($"{shaderFile.GetZFrameCount()}");
+            // Console.WriteLine($"{shaderFile.GetZFrameCount()}");
             shaderFile.GetZFrameFile(0).PrintByteAnalysis();
 
         }

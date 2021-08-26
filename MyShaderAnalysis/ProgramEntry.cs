@@ -1,6 +1,6 @@
 using System;
-using System.Diagnostics;
 using System.IO;
+using System.Diagnostics;
 using MyShaderAnalysis.compat;
 using MyShaderAnalysis.utilhelpers;
 using MyShaderAnalysis.utilhelpers.snippetcode;

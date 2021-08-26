@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,7 +32,7 @@ namespace ShaderAnalysis.utilhelpers
         {
 
             int i = seg * 4;
-            // Debug.WriteLine($"{i}");
+            // Console.WriteLine($"{i}");
             return zstd_2bc2fa87[i..(i + 4)];
         }
 

@@ -1,6 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,7 +11,7 @@ namespace ShaderAnalysis.utilhelpers
     class DataReaderVcsTesting : ShaderDataReader
     {
 
-        public DataReaderVcsTesting(string filenamepath) : base(File.ReadAllBytes(filenamepath), false, true)
+        public DataReaderVcsTesting(string filenamepath) : base(File.ReadAllBytes(filenamepath))
         {
 
             ShowBytes(4);
