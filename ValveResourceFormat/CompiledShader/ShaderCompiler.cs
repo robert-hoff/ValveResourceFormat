@@ -1,10 +1,9 @@
 using System;
 using System.IO;
-using ValveResourceFormat.ShaderParser;
 
-namespace ValveResourceFormat
+namespace ValveResourceFormat.CompiledShader
 {
-    public class CompiledShader : IDisposable
+    public class ShaderCompiler : IDisposable
     {
         public const int MAGIC = 0x32736376; // "vcs2"
         public const uint ZSTD_DELIM = 0xFFFFFFFD;

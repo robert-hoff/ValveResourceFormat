@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace ValveResourceFormat.ShaderParser
+namespace ValveResourceFormat.CompiledShader
 {
     public class ConfigMappingDParams
     {

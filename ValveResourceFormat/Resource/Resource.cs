@@ -5,6 +5,7 @@ using System.Text;
 using ValveResourceFormat.Blocks;
 using ValveResourceFormat.Blocks.ResourceEditInfoStructs;
 using ValveResourceFormat.ResourceTypes;
+using ValveResourceFormat.CompiledShader;
 
 namespace ValveResourceFormat
 {
@@ -168,7 +169,7 @@ namespace ValveResourceFormat
                 throw new InvalidDataException("Use ValvePak library to parse VPK files.\nSee https://github.com/SteamDatabase/ValvePak");
             }
 
-            if (FileSize == CompiledShader.MAGIC)
+            if (FileSize == ShaderCompiler.MAGIC)
             {
                 throw new InvalidDataException("Use CompiledShader() class to parse compiled shader files.");
             }

@@ -1,4 +1,4 @@
-namespace ValveResourceFormat.ShaderParser
+namespace ValveResourceFormat.CompiledShader
 {
     public enum VcsFileType
     {

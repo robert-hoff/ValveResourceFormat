@@ -23,7 +23,7 @@ namespace MyShaderAnalysis.vcsparsing
         public FeaturesHeaderBlock(ShaderDataReader datareader, int start) : base(datareader, start)
         {
             int vcsMagicId = datareader.ReadInt();
-            if (vcsMagicId != CompiledShader.MAGIC)
+            if (vcsMagicId != ShaderCompiler.MAGIC)
             {
                 throw new ShaderParserException($"Wrong file id {vcsMagicId:x}");
             }
@@ -182,7 +182,7 @@ namespace MyShaderAnalysis.vcsparsing
         public VsPsHeaderBlock(ShaderDataReader datareader, int start) : base(datareader, start)
         {
             int magic = datareader.ReadInt();
-            if (magic != CompiledShader.MAGIC)
+            if (magic != ShaderCompiler.MAGIC)
             {
                 throw new ShaderParserException($"Wrong file id {magic:x} (not a vcs2 file)");
             }

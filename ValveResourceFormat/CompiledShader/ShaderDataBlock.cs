@@ -1,5 +1,5 @@
 
-namespace ValveResourceFormat.ShaderParser
+namespace ValveResourceFormat.CompiledShader
 {
     public abstract class ShaderDataBlock
     {

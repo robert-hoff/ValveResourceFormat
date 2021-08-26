@@ -1,9 +1,9 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
-using static ValveResourceFormat.ShaderParser.ShaderUtilHelpers;
+using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
-namespace ValveResourceFormat.ShaderParser
+namespace ValveResourceFormat.CompiledShader
 {
     public class PrintSingleFileSummary
     {

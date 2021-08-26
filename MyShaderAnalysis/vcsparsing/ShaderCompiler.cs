@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MyShaderAnalysis.vcsparsing
 {
-    public class CompiledShader
+    public class ShaderCompiler
     {
         public const int MAGIC = 0x32736376; // "vcs2"
         public const uint ZSTD_DELIM = 0xFFFFFFFD;
