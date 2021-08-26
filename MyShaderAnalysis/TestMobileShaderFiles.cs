@@ -2,12 +2,10 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
-using MyShaderAnalysis.compat;
-using MyShaderAnalysis.utilhelpers;
-using MyShaderAnalysis.vcsparsing;
-using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
+using ValveResourceFormat.CompiledShader;
 using static MyShaderAnalysis.utilhelpers.FileSystem;
 using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
+using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
 namespace MyShaderAnalysis
 {

@@ -1,10 +1,10 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
-using MyValveResourceFormat.ThirdParty;
-using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
+using ValveResourceFormat.ThirdParty;
+using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
-namespace MyShaderAnalysis.vcsparsing
+namespace ValveResourceFormat.CompiledShader
 {
     public class ZFrameFile : IDisposable
     {

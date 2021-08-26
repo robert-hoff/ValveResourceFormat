@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using ValveResourceFormat.ThirdParty;
 
-namespace MyShaderAnalysis.utilhelpers
+namespace ValveResourceFormat.Serialization.VfxEval
 {
     public class VfxEval
     {

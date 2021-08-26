@@ -1,10 +1,9 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
-using MyShaderAnalysis.compat;
-using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
+using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
-namespace MyShaderAnalysis.vcsparsing
+namespace ValveResourceFormat.CompiledShader
 {
     public class PrintVcsFileSummary
     {

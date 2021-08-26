@@ -3,14 +3,11 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using ZstdSharp;
-using MyShaderAnalysis.compat;
-using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
 using LzmaDecoder = SevenZip.Compression.LZMA.Decoder;
+using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
-
-namespace MyShaderAnalysis.vcsparsing
+namespace ValveResourceFormat.CompiledShader
 {
-
     public class ShaderFile
     {
         public ShaderDataReader datareader { get; }

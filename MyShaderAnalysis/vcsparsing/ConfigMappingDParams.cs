@@ -1,9 +1,7 @@
 using System;
-using MyShaderAnalysis.vcsparsing;
-using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
+using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
-
-namespace MyShaderAnalysis.compat
+namespace ValveResourceFormat.CompiledShader
 {
 
     public class ConfigMappingDParams

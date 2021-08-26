@@ -2,10 +2,12 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using ValveResourceFormat.ThirdParty;
-using MyShaderAnalysis.utilhelpers;
-using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
+using ValveResourceFormat.CompiledShader;
+using ValveResourceFormat.Serialization.VfxEval;
+using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
+// using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
-namespace MyShaderAnalysis.vcsparsing
+namespace MyShaderAnalysis.utilhelpers
 {
 
     public class DataReaderZFrameByteAnalysis : ShaderDataReader

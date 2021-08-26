@@ -1,5 +1,5 @@
 
-namespace MyShaderAnalysis.vcsparsing
+namespace ValveResourceFormat.CompiledShader
 {
     public abstract class ShaderDataBlock
     {
@@ -12,12 +12,4 @@ namespace MyShaderAnalysis.vcsparsing
         }
     }
 }
-
-
-
-
-
-
-
-
 

@@ -1,9 +1,8 @@
 using System;
 using System.IO;
 
-namespace MyShaderAnalysis.vcsparsing
+namespace ValveResourceFormat.CompiledShader
 {
-
     public class ShaderDataReader : IDisposable
     {
         private BinaryReader BinReader;
@@ -304,3 +303,4 @@ namespace MyShaderAnalysis.vcsparsing
 
     }
 }
+

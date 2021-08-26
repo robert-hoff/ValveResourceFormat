@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
-using MyShaderAnalysis.vcsparsing;
+using ValveResourceFormat.CompiledShader;
 using static MyShaderAnalysis.utilhelpers.FileSystem;
 
 
@@ -189,7 +189,7 @@ namespace MyShaderAnalysis.utilhelpers
         // todo - this one is a bit weird, clean up any calling references
         public string RemoveBaseDir()
         {
-            return ShaderUtilHelpers.RemoveBaseDir(filenamepath);
+            return MyShaderUtilHelpers.RemoveBaseDir(filenamepath);
         }
 
         // todo - this can be replaced by getPath() and label

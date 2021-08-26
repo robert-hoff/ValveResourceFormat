@@ -1,9 +1,9 @@
-using MyShaderAnalysis.vcsparsing;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
-
+using System.Collections.Generic;
+using ValveResourceFormat.CompiledShader;
+using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
+using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
 namespace MyShaderAnalysis.utilhelpers
 {

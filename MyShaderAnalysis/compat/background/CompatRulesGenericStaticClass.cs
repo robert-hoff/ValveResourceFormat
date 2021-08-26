@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MyShaderAnalysis.utilhelpers;
-using MyShaderAnalysis.vcsparsing;
-using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
+using ValveResourceFormat.CompiledShader;
+using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
+
 
 
 /*

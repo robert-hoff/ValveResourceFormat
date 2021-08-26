@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
-using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
+using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
-namespace MyShaderAnalysis.vcsparsing
+namespace ValveResourceFormat.CompiledShader
 {
     public class FeaturesHeaderBlock : ShaderDataBlock
     {
@@ -67,7 +67,6 @@ namespace MyShaderAnalysis.vcsparsing
                 }
                 mainParams.Add((string_arg0, string_arg1));
             }
-
             editorIDs.Add(($"{datareader.ReadBytesAsString(16)}", "// Editor ref. ID0 (produces this file)"));
             editorIDs.Add(($"{datareader.ReadBytesAsString(16)}", "// Editor ref. ID1 - usually a ref to the vs file (VertexShader)"));
             editorIDs.Add(($"{datareader.ReadBytesAsString(16)}", "// Editor ref. ID2 - usually a ref to the ps file (PixelShader)"));
@@ -86,8 +85,6 @@ namespace MyShaderAnalysis.vcsparsing
                     "// Editor ref. ID7 - this ID is shared across archives for vcs files with the same minor-version"));
             }
         }
-
-
 
         public void PrintAnnotatedBytestream()
         {
@@ -633,6 +630,7 @@ namespace MyShaderAnalysis.vcsparsing
             command1 = datareader.ReadNullTermStringAtPosition();
             datareader.MoveOffset(32);
         }
+
         public void PrintAnnotatedBytestream()
         {
             datareader.SetOffset(start);

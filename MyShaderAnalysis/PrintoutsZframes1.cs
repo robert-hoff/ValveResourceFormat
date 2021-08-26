@@ -2,13 +2,13 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
-using MyShaderAnalysis.compat;
-using MyShaderAnalysis.vcsparsing;
 using MyShaderAnalysis.utilhelpers;
-using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
-using static MyShaderAnalysis.vcsparsing.ZFrameFile;
+using ValveResourceFormat.CompiledShader;
 using static MyShaderAnalysis.utilhelpers.FileSystem;
+using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
 using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
+using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
+using static ValveResourceFormat.CompiledShader.ZFrameFile;
 
 
 namespace MyShaderAnalysis

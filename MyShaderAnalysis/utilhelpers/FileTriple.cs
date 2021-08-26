@@ -1,10 +1,9 @@
+using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
-using MyShaderAnalysis.vcsparsing;
-using System;
-using MyShaderAnalysis.compat;
-using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
+using ValveResourceFormat.CompiledShader;
+using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
 using static MyShaderAnalysis.utilhelpers.FileSystem;
 
 

@@ -1,6 +1,6 @@
 using System;
-using MyShaderAnalysis.vcsparsing;
-using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
+using ValveResourceFormat.CompiledShader;
+using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
 
 namespace MyShaderAnalysis.compat

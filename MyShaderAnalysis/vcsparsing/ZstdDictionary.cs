@@ -1,10 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace MyShaderAnalysis.vcsparsing
+namespace ValveResourceFormat.CompiledShader
 {
     public static class ZstdDictionary
     {
@@ -914,6 +909,4 @@ namespace MyShaderAnalysis.vcsparsing
         "70040<06000M000040X001h02P2W2@007@0001P0000=00003@0001d0001<2`00_`H00<06000P00@0H@00";
 
     }
-
 }
-

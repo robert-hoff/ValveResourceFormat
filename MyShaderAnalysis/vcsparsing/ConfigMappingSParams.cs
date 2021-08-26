@@ -1,8 +1,7 @@
-using MyShaderAnalysis.vcsparsing;
 using System;
-using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
+using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
-namespace MyShaderAnalysis.compat
+namespace ValveResourceFormat.CompiledShader
 {
     /*
      * ZFrameId to static-configuration mapping

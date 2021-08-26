@@ -1,4 +1,4 @@
-namespace MyShaderAnalysis.vcsparsing
+namespace ValveResourceFormat.CompiledShader
 {
     public enum VcsFileType
     {

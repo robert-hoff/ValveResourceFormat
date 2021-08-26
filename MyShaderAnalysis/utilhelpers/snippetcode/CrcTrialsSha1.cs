@@ -2,9 +2,10 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
-using MyShaderAnalysis.vcsparsing;
-using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
+using ValveResourceFormat.CompiledShader;
+using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
 using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
+using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
 namespace MyShaderAnalysis.utilhelpers.snippetcode
 {
@@ -28,7 +29,7 @@ namespace MyShaderAnalysis.utilhelpers.snippetcode
         // search for small glsl sources
         static void SearchForSmallGlsl()
         {
-            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, vcsparsing.VcsFileType.Any, -1);
+            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Any, -1);
             foreach (var filenamepath in vcsFiles)
             {
                 ShaderFile shaderfile = InstantiateShaderFile(filenamepath);

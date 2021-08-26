@@ -1,12 +1,8 @@
 using System;
 using System.IO;
 using System.Diagnostics;
-using MyShaderAnalysis.compat;
-using MyShaderAnalysis.utilhelpers;
-using MyShaderAnalysis.utilhelpers.snippetcode;
-using MyShaderAnalysis.vcsparsing;
+using ValveResourceFormat.CompiledShader;
 using static MyShaderAnalysis.utilhelpers.FileSystem;
-using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
 using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
 
 namespace MyShaderAnalysis

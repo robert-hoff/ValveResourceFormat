@@ -1,6 +1,6 @@
 using System;
 
-namespace MyShaderAnalysis.vcsparsing
+namespace ValveResourceFormat.CompiledShader
 {
     public class ZDataBlock : ShaderDataBlock
     {

@@ -1,11 +1,11 @@
-using MyShaderAnalysis.utilhelpers;
-using MyShaderAnalysis.vcsparsing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
+using MyShaderAnalysis.utilhelpers;
+using ValveResourceFormat.CompiledShader;
+using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
 namespace MyShaderAnalysis.compat
 {

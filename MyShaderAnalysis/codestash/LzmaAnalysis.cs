@@ -1,12 +1,13 @@
+using System;
 using System.IO;
-using MyShaderAnalysis.vcsparsing;
 using System.Collections.Generic;
-using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
-using static MyShaderAnalysis.utilhelpers.FileSystem;
 using Decoder = SevenZip.Compression.LZMA.Decoder;
 using MyValveResourceFormat.ThirdParty;
-using System;
 using MyShaderAnalysis.utilhelpers;
+using ValveResourceFormat.CompiledShader;
+using static MyShaderAnalysis.utilhelpers.FileSystem;
+using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
+
 
 namespace MyShaderAnalysis
 {
