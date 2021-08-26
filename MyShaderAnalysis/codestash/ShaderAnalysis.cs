@@ -369,7 +369,7 @@ namespace MyShaderAnalysis
                 StreamWriter sw = new(outputFilenamepath);
                 Console.WriteLine($"parsing {vcsFile}");
                 Console.WriteLine($"writing to {outputFilenamepath}");
-                PrintZFrame(zframeDatabytes, shaderFile.vcsProgramType, shaderFile.vcsSourceType, true, sw);
+                PrintZFrame(zframeDatabytes, shaderFile.vcsProgramType, shaderFile.vcsPlatformType, true, sw);
                 sw.Close();
 
                 break;
@@ -393,7 +393,7 @@ namespace MyShaderAnalysis
                 for (int i = 0; i < nrToParse; i++)
                 {
                     byte[] zframeDatabytes = shaderFile.GetDecompressedZFrameByIndex(i);
-                    PrintZFrame(zframeDatabytes, shaderFile.vcsProgramType, shaderFile.vcsSourceType, true);
+                    PrintZFrame(zframeDatabytes, shaderFile.vcsProgramType, shaderFile.vcsPlatformType, true);
                 }
             }
         }
@@ -407,7 +407,7 @@ namespace MyShaderAnalysis
             StreamWriter sw = new(outputFilenamepath);
             Console.WriteLine($"parsing {filenamepath}");
             Console.WriteLine($"writing to {outputFilenamepath}");
-            PrintZFrame(zframeDatabytes, shaderFile.vcsProgramType, shaderFile.vcsSourceType, true, sw);
+            PrintZFrame(zframeDatabytes, shaderFile.vcsProgramType, shaderFile.vcsPlatformType, true, sw);
             sw.Close();
         }
 
@@ -422,7 +422,7 @@ namespace MyShaderAnalysis
             StreamWriter sw = new(outputFilenamepath);
             Console.WriteLine($"parsing {filenamepath}");
             Console.WriteLine($"writing to {outputFilenamepath}");
-            PrintZFrame(zframeDatabytes, shaderFile.vcsProgramType, shaderFile.vcsSourceType, true, sw);
+            PrintZFrame(zframeDatabytes, shaderFile.vcsProgramType, shaderFile.vcsPlatformType, true, sw);
             sw.Close();
         }
 
@@ -447,7 +447,7 @@ namespace MyShaderAnalysis
         {
             ShaderFile shaderFile = new ReadShaderFile(filenamepath).GetShaderFile();
             byte[] zframeDatabytes = shaderFile.GetDecompressedZFrameByIndex(zframeIndex);
-            PrintZFrame(zframeDatabytes, shaderFile.vcsProgramType, shaderFile.vcsSourceType, disableOutput);
+            PrintZFrame(zframeDatabytes, shaderFile.vcsProgramType, shaderFile.vcsPlatformType, disableOutput);
         }
 
         static void PrintZFrame(byte[] databytes, VcsProgramType vcsFiletype, VcsPlatformType sourceType,

@@ -494,7 +494,7 @@ namespace MyShaderAnalysis.utilhelpers
         {
             string nulltermstr = ReadNullTermStringAtPosition();
             uint murmur32 = ReadUIntAtPosition(nulltermstr.Length + 1);
-            uint murmurCheck = MurmurHash2.Hash(nulltermstr.ToLower(), ShaderCollection.PI_MURMURSEED);
+            uint murmurCheck = MurmurHash2.Hash(nulltermstr.ToLower(), ShaderFile.PI_MURMURSEED);
             if (murmur32 != murmurCheck)
             {
                 throw new ShaderParserException("not a murmur string!");

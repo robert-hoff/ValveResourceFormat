@@ -18,7 +18,9 @@ namespace MyShaderAnalysis.utilhelpers
 
         public ShaderFile GetShaderFile()
         {
-            return new ShaderFile(filenamepath, datareader);
+            ShaderFile shaderFile = new ShaderFile();
+            shaderFile.Read(filenamepath);
+            return shaderFile;
         }
 
 

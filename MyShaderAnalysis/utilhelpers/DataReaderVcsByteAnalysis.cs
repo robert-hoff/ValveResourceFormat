@@ -590,19 +590,19 @@ namespace MyShaderAnalysis.utilhelpers
             OutputWriteLine($"[{GetOffset()}] {getZFrameIdString(zframeId)}");
             bool isLzma = false;
             uint zstdDelimOrChunkSize = ReadUIntAtPosition();
-            if (zstdDelimOrChunkSize == ShaderCollection.ZSTD_DELIM)
+            if (zstdDelimOrChunkSize == ShaderFile.ZSTD_DELIM)
             {
-                ShowBytes(4, $"Zstd delim (0x{ShaderCollection.ZSTD_DELIM:x08})");
+                ShowBytes(4, $"Zstd delim (0x{ShaderFile.ZSTD_DELIM:x08})");
             } else
             {
                 ShowBytes(4, $"Lzma chunk size {zstdDelimOrChunkSize}");
                 uint lzmaDelim = ReadUIntAtPosition();
-                if (lzmaDelim != ShaderCollection.LZMA_DELIM)
+                if (lzmaDelim != ShaderFile.LZMA_DELIM)
                 {
                     throw new ShaderParserException("Unknown compression, neither ZStd nor Lzma found");
                 }
                 isLzma = true;
-                ShowBytes(4, $"Lzma delim (0x{ShaderCollection.LZMA_DELIM:x08})");
+                ShowBytes(4, $"Lzma delim (0x{ShaderFile.LZMA_DELIM:x08})");
             }
             int uncompressed_length = ReadIntAtPosition();
             ShowBytes(4, $"{uncompressed_length,-8} uncompressed length");

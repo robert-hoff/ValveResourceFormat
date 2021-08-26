@@ -72,7 +72,7 @@ namespace MyShaderAnalysis
             string filenamepath = $"{DOTA_GAME_PC_SOURCE}/multiblend_pc_30_ps.vcs";
             ShaderFile shaderFile = new ReadShaderFile(filenamepath).GetShaderFile();
             byte[] zframeDatabytes = shaderFile.GetDecompressedZFrame(0x1a1);
-            DataReaderZFrameByteAnalysis datareader = new(zframeDatabytes, shaderFile.vcsProgramType, shaderFile.vcsSourceType, shaderFile.vcsShaderModelType);
+            DataReaderZFrameByteAnalysis datareader = new(zframeDatabytes, shaderFile.vcsProgramType, shaderFile.vcsPlatformType, shaderFile.vcsShaderModelType);
             datareader.PrintByteAnalysis();
         }
 
