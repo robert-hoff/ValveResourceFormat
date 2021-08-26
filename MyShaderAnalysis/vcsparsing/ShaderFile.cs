@@ -64,13 +64,13 @@ namespace ValveResourceFormat.CompiledShader
 
             // todo - let the user select their own zframe
             // print a few zframes, if there are any
-            //for (int i = 0; i < Math.Min(3, shaderFile.GetZFrameCount()); i++)
+            //for (int i = 0; i < Math.Min(3, GetZFrameCount()); i++)
             //{
-            //    string headerText = $"Byte printout of zframe[{shaderFile.GetZFrameIdByIndex(i):x08}], {Path.GetFileName(filenamepath)}";
+            //    string headerText = $"Byte printout of zframe[{GetZFrameIdByIndex(i):x08}], {Path.GetFileName(filenamepath)}";
             //    Console.WriteLine($"\n\n{headerText}");
             //    Console.WriteLine($"{new string('-', headerText.Length)}");
             //    Console.WriteLine($"{new string('-', headerText.Length)}\n");
-            //    shaderFile.GetZFrameFile(0).PrintByteAnalysis();
+            //    GetZFrameFile(0).PrintByteAnalysis();
             //}
         }
 
@@ -212,11 +212,10 @@ namespace ValveResourceFormat.CompiledShader
                 int offsetToZframeHeader = item.Item2;
                 datareader.SetOffset(offsetToZframeHeader);
                 uint chunkSizeOrZframeDelim = datareader.ReadUInt();
-                int compressionType = chunkSizeOrZframeDelim == ShaderFile.ZSTD_DELIM ?
-                    ShaderFile.ZSTD_COMPRESSION : ShaderFile.LZMA_COMPRESSION;
-                if (chunkSizeOrZframeDelim != ShaderFile.ZSTD_DELIM)
+                int compressionType = chunkSizeOrZframeDelim == ZSTD_DELIM ? ZSTD_COMPRESSION : LZMA_COMPRESSION;
+                if (chunkSizeOrZframeDelim != ZSTD_DELIM)
                 {
-                    if (datareader.ReadUInt() != ShaderFile.LZMA_DELIM)
+                    if (datareader.ReadUInt() != LZMA_DELIM)
                     {
                         throw new ShaderParserException("Unknown compression, neither ZStd nor Lzma found");
                     }
@@ -416,19 +415,19 @@ namespace ValveResourceFormat.CompiledShader
             datareader.OutputWriteLine($"[{datareader.GetOffset()}] {getZFrameIdString(zframeId)}");
             bool isLzma = false;
             uint zstdDelimOrChunkSize = datareader.ReadUIntAtPosition();
-            if (zstdDelimOrChunkSize == ShaderFile.ZSTD_DELIM)
+            if (zstdDelimOrChunkSize == ZSTD_DELIM)
             {
-                datareader.ShowBytes(4, $"Zstd delim (0x{ShaderFile.ZSTD_DELIM:x08})");
+                datareader.ShowBytes(4, $"Zstd delim (0x{ZSTD_DELIM:x08})");
             } else
             {
                 datareader.ShowBytes(4, $"Lzma chunk size {zstdDelimOrChunkSize}");
                 uint lzmaDelim = datareader.ReadUIntAtPosition();
-                if (lzmaDelim != ShaderFile.LZMA_DELIM)
+                if (lzmaDelim != LZMA_DELIM)
                 {
                     throw new ShaderParserException("Unknown compression, neither ZStd nor Lzma found");
                 }
                 isLzma = true;
-                datareader.ShowBytes(4, $"Lzma delim (0x{ShaderFile.LZMA_DELIM:x08})");
+                datareader.ShowBytes(4, $"Lzma delim (0x{LZMA_DELIM:x08})");
             }
             int uncompressed_length = datareader.ReadIntAtPosition();
             datareader.ShowBytes(4, $"{uncompressed_length,-8} uncompressed length");
