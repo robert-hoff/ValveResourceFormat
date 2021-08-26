@@ -23,7 +23,7 @@ namespace ValveResourceFormat.CompiledShader
         public FeaturesHeaderBlock(ShaderDataReader datareader, int start) : base(datareader, start)
         {
             int vcsMagicId = datareader.ReadInt();
-            if (vcsMagicId != ShaderCompiler.MAGIC)
+            if (vcsMagicId != ShaderCollection.MAGIC)
             {
                 throw new ShaderParserException($"Wrong file id {vcsMagicId:x}");
             }
@@ -179,7 +179,7 @@ namespace ValveResourceFormat.CompiledShader
         public VsPsHeaderBlock(ShaderDataReader datareader, int start) : base(datareader, start)
         {
             int magic = datareader.ReadInt();
-            if (magic != ShaderCompiler.MAGIC)
+            if (magic != ShaderCollection.MAGIC)
             {
                 throw new ShaderParserException($"Wrong file id {magic:x} (not a vcs2 file)");
             }

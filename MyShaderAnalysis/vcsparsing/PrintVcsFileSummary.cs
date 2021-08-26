@@ -1,15 +1,16 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
-using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
+using MyShaderAnalysis.compat;
+using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
 
-namespace ValveResourceFormat.CompiledShader
+namespace MyShaderAnalysis.vcsparsing
 {
-    public class PrintSingleFileSummary
+    public class PrintVcsFileSummary
     {
         private OutputFormatterTabulatedData output = new();
 
-        public PrintSingleFileSummary(ShaderFile shaderFile)
+        public PrintVcsFileSummary(ShaderFile shaderFile)
         {
             if (shaderFile.vcsFileType == VcsFileType.Features)
             {

@@ -311,7 +311,7 @@ namespace MyShaderAnalysis.vcsparsing
             {
                 name0 = datareader.ReadNullTermString();
                 murmur32 = datareader.ReadUInt();
-                uint murmurCheck = MurmurHash2.Hash(name0.ToLower(), ShaderCompiler.PI_MURMURSEED);
+                uint murmurCheck = MurmurHash2.Hash(name0.ToLower(), ShaderCollection.PI_MURMURSEED);
                 if (murmur32 != murmurCheck)
                 {
                     throw new ShaderParserException("not a murmur string!");
@@ -842,7 +842,7 @@ namespace MyShaderAnalysis.vcsparsing
         {
             string nulltermstr = datareader.ReadNullTermStringAtPosition();
             uint murmur32 = datareader.ReadUIntAtPosition(nulltermstr.Length + 1);
-            uint murmurCheck = MurmurHash2.Hash(nulltermstr.ToLower(), ShaderCompiler.PI_MURMURSEED);
+            uint murmurCheck = MurmurHash2.Hash(nulltermstr.ToLower(), ShaderCollection.PI_MURMURSEED);
             if (murmur32 != murmurCheck)
             {
                 throw new ShaderParserException("not a murmur string!");

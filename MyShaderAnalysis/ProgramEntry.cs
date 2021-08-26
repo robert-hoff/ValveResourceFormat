@@ -98,7 +98,7 @@ namespace MyShaderAnalysis
             // string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/msaa_resolve_cs_pcgl_50_features.vcs"; // strange file that doesn't contain any data
 
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
-            new PrintSingleFileSummary(shaderFile);
+            new PrintVcsFileSummary(shaderFile);
 
         }
 
