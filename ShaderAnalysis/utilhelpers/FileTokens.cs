@@ -3,11 +3,11 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System;
-using ValveResourceFormat.ShaderParser;
+using ValveResourceFormat.CompiledShader;
 // using static MyShaderAnalysis.utilhelpers.FileSystem;
 using static ShaderAnalysis.utilhelpers.FileSystem;
 // using static MyShaderAnalysis.vcsparsing.UtilHelpers;
-using static ValveResourceFormat.ShaderParser.ShaderUtilHelpers;
+using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
 
 namespace ShaderAnalysis.utilhelpers
@@ -26,7 +26,7 @@ namespace ShaderAnalysis.utilhelpers
         public string gputype;       // pcgl, pc, vulkan
         public string sourcetype;    // glsl, dx11, etc.
         public string serverdir;     // full directory path of the server files
-        public ValveResourceFormat.ShaderParser.VcsFileType vcsFiletype;
+        public VcsFileType vcsFiletype;
 
 
         public FileTokens(string filenamepath) : this(DetermineArchiveType(filenamepath), filenamepath) { }
@@ -173,7 +173,7 @@ namespace ShaderAnalysis.utilhelpers
 
         public string GetBestPath()
         {
-            if (vcsFiletype == ValveResourceFormat.ShaderParser.VcsFileType.PixelShader || vcsFiletype == ValveResourceFormat.ShaderParser.VcsFileType.VertexShader)
+            if (vcsFiletype == VcsFileType.PixelShader || vcsFiletype == VcsFileType.VertexShader)
             {
                 string summariesPath = GetSummariesPath();
                 return File.Exists($"{serverdir}{summariesPath}") ? summariesPath : "";

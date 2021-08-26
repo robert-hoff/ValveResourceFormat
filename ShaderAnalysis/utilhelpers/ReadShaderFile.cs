@@ -1,6 +1,6 @@
 using System;
 using System.IO;
-using ValveResourceFormat.ShaderParser;
+using ValveResourceFormat.CompiledShader;
 
 namespace ShaderAnalysis.utilhelpers
 {

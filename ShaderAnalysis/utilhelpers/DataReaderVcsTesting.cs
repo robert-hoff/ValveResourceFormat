@@ -4,14 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ValveResourceFormat.ShaderParser;
+using ValveResourceFormat.CompiledShader;
 
 namespace ShaderAnalysis.utilhelpers
 {
     class DataReaderVcsTesting : ShaderDataReader
     {
 
-        public DataReaderVcsTesting(string filenamepath) : base(File.ReadAllBytes(filenamepath))
+        public DataReaderVcsTesting(string filenamepath) : base(new MemoryStream(File.ReadAllBytes(filenamepath)))
         {
 
             ShowBytes(4);

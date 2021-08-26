@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ValveResourceFormat.ShaderParser;
+using ValveResourceFormat.CompiledShader;
 
 
 namespace ShaderAnalysis.utilhelpers
@@ -76,9 +76,9 @@ namespace ShaderAnalysis.utilhelpers
             throw new ShaderParserException("unknown archive");
         }
 
-        public static string GetVcsToken(ValveResourceFormat.ShaderParser.VcsFileType vcsFiletype)
+        public static string GetVcsToken(VcsFileType vcsFiletype)
         {
-            if (vcsFiletype == ValveResourceFormat.ShaderParser.VcsFileType.Features)
+            if (vcsFiletype == VcsFileType.Features)
             {
                 return "ft";
             } else

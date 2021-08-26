@@ -3,10 +3,10 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System;
-using ValveResourceFormat.ShaderParser;
+using ValveResourceFormat.CompiledShader;
 using ShaderAnalysis.utilhelpers;
 using static ShaderAnalysis.utilhelpers.FileHelpers;
-// using static ValveResourceFormat.ShaderParser.ShaderUtilHelpers;
+
 
 namespace ShaderAnalysis
 {
@@ -103,7 +103,7 @@ namespace ShaderAnalysis
 
         static void Trial1()
         {
-            var vcsFiles = GetVcsFiles(FileSystem.DOTA_CORE_PCGL_SOURCE, FileSystem.DOTA_GAME_PCGL_SOURCE, ShaderAnalysis.utilhelpers.VcsFileType.Features, -1);
+            var vcsFiles = GetVcsFiles(FileSystem.DOTA_CORE_PCGL_SOURCE, FileSystem.DOTA_GAME_PCGL_SOURCE, VcsFileType.Features, -1);
 
             foreach (var item in vcsFiles)
             {
