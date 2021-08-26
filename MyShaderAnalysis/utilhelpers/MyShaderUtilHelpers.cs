@@ -205,11 +205,11 @@ namespace MyShaderAnalysis.utilhelpers
 
         public static string GetCoreOrDotaString(string vcsFileName)
         {
-            if (Path.GetDirectoryName(vcsFileName).EndsWith("shaders/vfx"))
+            if (Path.GetDirectoryName(vcsFileName).EndsWith("shaders\\vfx"))
             {
                 return "dota";
             }
-            if (Path.GetDirectoryName(vcsFileName).EndsWith("shaders-core/vfx"))
+            if (Path.GetDirectoryName(vcsFileName).EndsWith("shaders-core\\vfx"))
             {
                 return "core";
             }

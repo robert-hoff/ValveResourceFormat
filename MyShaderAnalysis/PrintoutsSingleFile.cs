@@ -21,8 +21,8 @@ namespace MyShaderAnalysis
         public static void RunTrials()
         {
 
-            PrintAllFiles();
-            // TestBatchPrinting();
+            // PrintAllFiles();
+            TestBatchPrinting(); // (works for single file)
             // Trial1();
             // Trial2();
             // Trial3();
