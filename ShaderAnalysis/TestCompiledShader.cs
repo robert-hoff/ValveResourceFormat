@@ -49,7 +49,7 @@ namespace ShaderAnalysis
         {
             string filenamepath = $"{TEST_SHADERS_DIR}/error_vulkan_40_vs.vcs";
             ShaderFile shaderFile = new ReadShaderFile(filenamepath).GetShaderFile();
-            ZFrameFile zframeFile = shaderFile.GetZFrameFile(0, omitParsing: true);
+            ZframeFilez zframeFile = shaderFile.GetZFrameFile(0, omitParsing: true);
             zframeFile.PrintByteAnalysis();
         }
 

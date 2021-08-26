@@ -6,7 +6,7 @@ using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
 namespace ValveResourceFormat.CompiledShader
 {
-    public class ZFrameFile : IDisposable
+    public class ZframeFilez : IDisposable
     {
         public ShaderDataReader datareader { get; private set; }
         public string filenamepath { get; }
@@ -29,7 +29,7 @@ namespace ValveResourceFormat.CompiledShader
         public int nrEndBlocks { get; }
         public int nonZeroDataBlockCount { get; }
 
-        public ZFrameFile(byte[] databytes, string filenamepath, long zframeId, VcsFileType vcsFileType,
+        public ZframeFilez(byte[] databytes, string filenamepath, long zframeId, VcsFileType vcsFileType,
             VcsPlatformType vcsSourceType, VcsModelType vcsModelType, bool omitParsing = false)
         {
             this.filenamepath = filenamepath;
