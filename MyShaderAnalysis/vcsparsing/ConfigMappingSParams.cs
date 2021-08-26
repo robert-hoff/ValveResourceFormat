@@ -148,7 +148,6 @@ namespace ValveResourceFormat.CompiledShader
             }
         }
 
-
         /*
          * getting the config state is not dependent on processing the configuration constraints (but is useful for verification)
          * It is much more efficient to move from a known zframeId to a configuration state
@@ -166,14 +165,12 @@ namespace ValveResourceFormat.CompiledShader
         int[] nr_states;
         bool[,] exclusions = new bool[100, 100];
         bool[,] inclusions = new bool[100, 100];
-
         void AddExclusionRule(int s1, int s2, int s3)
         {
             AddExclusionRule(s1, s2);
             AddExclusionRule(s1, s3);
             AddExclusionRule(s2, s3);
         }
-
         void AddExclusionRule(int s1, int s2)
         {
             exclusions[s1, s2] = true;
@@ -232,7 +229,6 @@ namespace ValveResourceFormat.CompiledShader
             }
             return true;
         }
-
         public void ShowOffsetAndNrStatesArrays()
         {
             ShowIntArray(offsets, 8, "offsets", hex: true);
@@ -240,7 +236,5 @@ namespace ValveResourceFormat.CompiledShader
 
         }
 
-
     }
 }
-

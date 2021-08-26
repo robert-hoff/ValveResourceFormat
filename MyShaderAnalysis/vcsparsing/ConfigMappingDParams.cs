@@ -3,7 +3,6 @@ using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
 namespace ValveResourceFormat.CompiledShader
 {
-
     public class ConfigMappingDParams
     {
         ShaderFile shaderfile;
@@ -55,14 +54,5 @@ namespace ValveResourceFormat.CompiledShader
             ShowIntArray(nr_states, 8, "layers");
         }
 
-
     }
 }
-
-
-
-
-
-
-
-
