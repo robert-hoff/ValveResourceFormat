@@ -9,7 +9,7 @@ namespace ValveResourceFormat.CompiledShader
         public int h1 { get; }
         public int h2 { get; }
         public byte[] dataload { get; }
-        public ZDataBlock(ShaderDataReader datareader, int blockId) : base(datareader, datareader.BaseStream.Position)
+        public ZDataBlock(ShaderDataReader datareader, int blockId) : base(datareader)
         {
             this.blockId = blockId;
             h0 = datareader.ReadInt32();
@@ -28,13 +28,13 @@ namespace ValveResourceFormat.CompiledShader
         public int offset { get; protected set; }
         public byte[] sourcebytes { get; protected set; } = Array.Empty<byte>();
         public byte[] editorRefId { get; protected set; }
-        protected GpuSource(ShaderDataReader datareader, int sourceId) : base(datareader, datareader.BaseStream.Position)
+        protected GpuSource(ShaderDataReader datareader, int sourceId) : base(datareader)
         {
             this.sourceId = sourceId;
         }
         public string GetEditorRefIdAsString()
         {
-            string stringId = ShaderDataReader.BytesToString(editorRefId);
+            string stringId = ShaderUtilHelpers.BytesToString(editorRefId);
             stringId = stringId.Replace(" ", "").ToLower();
             return stringId;
         }
@@ -55,7 +55,7 @@ namespace ValveResourceFormat.CompiledShader
                 arg0 = datareader.ReadInt32();
                 offset2 = datareader.ReadInt32();
                 sourcebytes = datareader.ReadBytes(offset2-1); // -1 because the sourcebytes are null-term
-                datareader.MovePosition(1);
+                datareader.BaseStream.Position += 1;
             }
             editorRefId = datareader.ReadBytes(16);
         }

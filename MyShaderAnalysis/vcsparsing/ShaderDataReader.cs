@@ -8,20 +8,10 @@ namespace ValveResourceFormat.CompiledShader
         public HandleOutputWrite OutputWriter { get; set; }
         public delegate void HandleOutputWrite(string s);
 
-        // pass an OutputWriter to direct output somewhere else, Console.Write is used by default
+        // pass an OutputWriter to direct output somewhere else, Console.Write is assigned by default
         public ShaderDataReader(Stream input, HandleOutputWrite OutputWriter = null) : base(input)
         {
             this.OutputWriter = OutputWriter ?? ((x) => { Console.Write(x); });
-        }
-
-        //public void MovePosition(int delta)
-        //{
-        //    BaseStream.Position += delta;
-        //}
-
-        public bool CheckPositionIsAtEOF()
-        {
-            return BaseStream.Position == BaseStream.Length;
         }
 
         public byte ReadByteAtPosition(long ind = 0, bool rel = true)
@@ -54,7 +44,7 @@ namespace ValveResourceFormat.CompiledShader
             return s0;
         }
 
-        public uint ReadUIntAtPosition(long ind = 0, bool rel = true)
+        public uint ReadUInt32AtPosition(long ind = 0, bool rel = true)
         {
             long savedPosition = BaseStream.Position;
             long fromInd = rel ? BaseStream.Position + ind : ind;
@@ -64,7 +54,7 @@ namespace ValveResourceFormat.CompiledShader
             return uint0;
         }
 
-        public int ReadIntAtPosition(long ind = 0, bool rel = true)
+        public int ReadInt32AtPosition(long ind = 0, bool rel = true)
         {
             long savedPosition = BaseStream.Position;
             long fromInd = rel ? BaseStream.Position + ind : ind;
@@ -98,7 +88,7 @@ namespace ValveResourceFormat.CompiledShader
         public string ReadBytesAsString(int len)
         {
             byte[] bytes0 = ReadBytes(len);
-            return BytesToString(bytes0);
+            return ShaderUtilHelpers.BytesToString(bytes0);
         }
 
         public string ReadNullTermString()
@@ -125,7 +115,7 @@ namespace ValveResourceFormat.CompiledShader
 
         public void ShowEndOfFile()
         {
-            if (!CheckPositionIsAtEOF())
+            if (BaseStream.Position != BaseStream.Length)
             {
                 throw new ShaderParserException("End of file not reached");
             }
@@ -136,9 +126,9 @@ namespace ValveResourceFormat.CompiledShader
 
         public void ShowBytesWithIntValue()
         {
-            int intval = ReadIntAtPosition();
+            int intval = ReadInt32AtPosition();
             ShowBytes(4, breakLine: false);
-            TabComment($"{intval}");
+            TabComment(intval.ToString());
         }
 
         public void ShowByteCount(string message = null)
@@ -154,7 +144,7 @@ namespace ValveResourceFormat.CompiledShader
         public void ShowBytes(int len, int breakLen, string message = null, int tabLen = 4, bool use_slashes = true, bool breakLine = true)
         {
             byte[] bytes0 = ReadBytes(len);
-            string byteString = BytesToString(bytes0, breakLen);
+            string byteString = ShaderUtilHelpers.BytesToString(bytes0, breakLen);
             OutputWrite(byteString);
             if (message != null)
             {
@@ -169,8 +159,8 @@ namespace ValveResourceFormat.CompiledShader
         public void ShowBytesAtPosition(int ind, int len, int breakLen = 32, bool rel = true)
         {
             byte[] bytes0 = ReadBytesAtPosition(ind, len, rel);
-            string bytestr = BytesToString(bytes0, breakLen);
-            OutputWriteLine($"{bytestr}");
+            string bytestr = ShaderUtilHelpers.BytesToString(bytes0, breakLen);
+            OutputWriteLine(bytestr);
         }
 
         public void BreakLine()
@@ -186,25 +176,6 @@ namespace ValveResourceFormat.CompiledShader
         public void TabComment(string message, int tabLen = 4, bool useSlashes = true)
         {
             OutputWrite($"{"".PadLeft(tabLen)}{(useSlashes ? "// " : "")}{message}\n");
-        }
-
-        public static string BytesToString(byte[] databytes, int breakLen = 32)
-        {
-            if (breakLen == -1)
-            {
-                breakLen = int.MaxValue;
-            }
-            int count = 0;
-            string bytestring = "";
-            for (int i = 0; i < databytes.Length; i++)
-            {
-                bytestring += $"{databytes[i]:X02} ";
-                if (++count % breakLen == 0)
-                {
-                    bytestring += "\n";
-                }
-            }
-            return bytestring.Trim();
         }
 
         public void OutputWrite(string text)

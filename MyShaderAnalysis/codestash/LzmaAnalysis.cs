@@ -110,7 +110,7 @@ namespace MyShaderAnalysis
             string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/apply_fog_pcgl_40_ps.vcs";
             DataReaderVcsByteAnalysis reader = new(filenamepath);
             reader.BaseStream.Position = 2032;
-            int num = reader.ReadIntAtPosition();
+            int num = reader.ReadInt32AtPosition();
             Console.WriteLine($"{num}");
             reader.ShowBytes(4);
 
@@ -137,17 +137,17 @@ namespace MyShaderAnalysis
             // reader.ShowBytes(300);
 
             reader.ShowByteCount();
-            int offset0 = reader.ReadIntAtPosition();
+            int offset0 = reader.ReadInt32AtPosition();
             reader.ShowBytes(4, $"zframe[0] offset {offset0}");
-            int offset1 = reader.ReadIntAtPosition();
+            int offset1 = reader.ReadInt32AtPosition();
             reader.ShowBytes(4, $"zframe[1] offset {offset1}");
-            int offset2 = reader.ReadIntAtPosition();
+            int offset2 = reader.ReadInt32AtPosition();
             reader.ShowBytes(4, $"EOF {offset2}");
             reader.BreakLine();
 
             reader.ShowByteCount();
             int chunkOffset = (int)reader.BaseStream.Position;
-            int chunkSize = reader.ReadIntAtPosition();
+            int chunkSize = reader.ReadInt32AtPosition();
             reader.ShowBytes(4, $"{chunkSize}");
             reader.ShowBytes(4);
             reader.ShowBytesWithIntValue();
@@ -159,7 +159,7 @@ namespace MyShaderAnalysis
             reader.BaseStream.Position = chunkOffset + chunkSize + 4;
             reader.ShowByteCount();
             int chunkOffset2 = (int)reader.BaseStream.Position;
-            int chunkSize2 = reader.ReadIntAtPosition();
+            int chunkSize2 = reader.ReadInt32AtPosition();
             reader.ShowBytes(4, $"{chunkSize2}");
             reader.ShowBytes(4);
             reader.ShowBytesWithIntValue();
@@ -170,7 +170,7 @@ namespace MyShaderAnalysis
 
             reader.BaseStream.Position = chunkOffset2 + chunkSize2 + 4;
 
-            if (!reader.CheckPositionIsAtEOF())
+            if (reader.BaseStream.Position != reader.BaseStream.Length)
             {
                 throw new ShaderParserException("End of file not reached!");
             }

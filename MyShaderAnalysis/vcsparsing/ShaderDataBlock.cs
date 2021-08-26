@@ -5,9 +5,9 @@ namespace ValveResourceFormat.CompiledShader
     {
         public ShaderDataReader datareader { get; }
         protected long start { get; }
-        protected ShaderDataBlock(ShaderDataReader datareader, long offsetAtStartOfBlock)
+        protected ShaderDataBlock(ShaderDataReader datareader)
         {
-            this.start = offsetAtStartOfBlock;
+            this.start = datareader.BaseStream.Position;
             this.datareader = datareader;
         }
     }

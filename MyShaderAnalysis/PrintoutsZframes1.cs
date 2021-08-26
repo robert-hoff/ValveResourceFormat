@@ -450,7 +450,7 @@ namespace MyShaderAnalysis
                 writeSequences.Add("", seqCount++);
             } else
             {
-                writeSequences.Add(ShaderDataReader.BytesToString(zframeFile.leadingData.dataload, -1), seqCount++);
+                writeSequences.Add(BytesToString(zframeFile.leadingData.dataload, -1), seqCount++);
             }
             foreach (ZDataBlock zBlock in zframeFile.dataBlocks)
             {
@@ -459,7 +459,7 @@ namespace MyShaderAnalysis
                     sequencesMap.Add(zBlock.blockId, -1);
                     continue;
                 }
-                string dataloadStr = ShaderDataReader.BytesToString(zBlock.dataload, -1);
+                string dataloadStr = BytesToString(zBlock.dataload, -1);
                 int seq = writeSequences.GetValueOrDefault(dataloadStr, -1);
                 if (seq == -1)
                 {
@@ -639,7 +639,7 @@ namespace MyShaderAnalysis
                     OutputWriteLine($"arg0              {vsEndBlock.arg0}");
                     OutputWriteLine($"source-ref        {vsEndBlock.sourceRef}");
                     OutputWriteLine($"source-pointer    {vsEndBlock.sourcePointer}");
-                    OutputWriteLine($"{ShaderDataReader.BytesToString(vsEndBlock.databytes)}");
+                    OutputWriteLine($"{BytesToString(vsEndBlock.databytes)}");
                     OutputWriteLine("");
                 }
             } else
@@ -656,19 +656,19 @@ namespace MyShaderAnalysis
                     if (psEndBlock.hasData0)
                     {
                         OutputWriteLine("// data-section 0");
-                        OutputWriteLine($"{ShaderDataReader.BytesToString(psEndBlock.data0)}");
+                        OutputWriteLine($"{BytesToString(psEndBlock.data0)}");
                     }
                     if (psEndBlock.hasData1)
                     {
                         OutputWriteLine("// data-section 1");
-                        OutputWriteLine($"{ShaderDataReader.BytesToString(psEndBlock.data1)}");
+                        OutputWriteLine($"{BytesToString(psEndBlock.data1)}");
                     }
                     if (psEndBlock.hasData2)
                     {
                         OutputWriteLine("// data-section 2");
-                        OutputWriteLine($"{ShaderDataReader.BytesToString(psEndBlock.data2[0..3])}");
-                        OutputWriteLine($"{ShaderDataReader.BytesToString(psEndBlock.data2[3..11])}");
-                        OutputWriteLine($"{ShaderDataReader.BytesToString(psEndBlock.data2[11..75])}");
+                        OutputWriteLine($"{BytesToString(psEndBlock.data2[0..3])}");
+                        OutputWriteLine($"{BytesToString(psEndBlock.data2[3..11])}");
+                        OutputWriteLine($"{BytesToString(psEndBlock.data2[11..75])}");
                     }
                     OutputWriteLine("");
                 }

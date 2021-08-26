@@ -52,7 +52,7 @@ namespace MyShaderAnalysis.utilhelpers
             {
                 throw new ShaderParserException($"can't parse this filetype: {filetype}");
             }
-            uint blockDelim = ReadUIntAtPosition();
+            uint blockDelim = ReadUInt32AtPosition();
             if (blockDelim != 17)
             {
                 throw new ShaderParserException($"unexpected block delim value! {blockDelim}");
@@ -87,11 +87,11 @@ namespace MyShaderAnalysis.utilhelpers
             ShowBytes(4, "version 64");
             BreakLine();
             ShowByteCount("features header");
-            int has_psrs_file = ReadIntAtPosition();
+            int has_psrs_file = ReadInt32AtPosition();
             ShowBytes(4, "has_psrs_file = " + (has_psrs_file > 0 ? "True" : "False"));
-            int unknown_val = ReadIntAtPosition();
+            int unknown_val = ReadInt32AtPosition();
             ShowBytes(4, $"unknown_val = {unknown_val} (usually 0)");
-            int len_name_description = ReadIntAtPosition();
+            int len_name_description = ReadInt32AtPosition();
             ShowBytes(4, $"{len_name_description} len of name");
             BreakLine();
             string name_desc = ReadNullTermStringAtPosition();
@@ -99,26 +99,26 @@ namespace MyShaderAnalysis.utilhelpers
             ShowBytes(len_name_description + 1);
             BreakLine();
             ShowByteCount();
-            uint arg1 = ReadUIntAtPosition(0);
-            uint arg2 = ReadUIntAtPosition(4);
-            uint arg3 = ReadUIntAtPosition(8);
-            uint arg4 = ReadUIntAtPosition(12);
+            uint arg1 = ReadUInt32AtPosition(0);
+            uint arg2 = ReadUInt32AtPosition(4);
+            uint arg3 = ReadUInt32AtPosition(8);
+            uint arg4 = ReadUInt32AtPosition(12);
             ShowBytes(16, 4, breakLine: false);
             TabComment($"({arg1},{arg2},{arg3},{arg4})");
-            uint arg5 = ReadUIntAtPosition(0);
-            uint arg6 = ReadUIntAtPosition(4);
-            uint arg7 = ReadUIntAtPosition(8);
-            uint arg8 = ReadUIntAtPosition(12);
+            uint arg5 = ReadUInt32AtPosition(0);
+            uint arg6 = ReadUInt32AtPosition(4);
+            uint arg7 = ReadUInt32AtPosition(8);
+            uint arg8 = ReadUInt32AtPosition(12);
             ShowBytes(16, 4, breakLine: false);
             TabComment($"({arg5},{arg6},{arg7},{arg8})");
             BreakLine();
             ShowByteCount();
-            int nr_of_arguments = ReadIntAtPosition();
+            int nr_of_arguments = ReadInt32AtPosition();
             ShowBytes(4, $"nr of arguments {nr_of_arguments}");
             if (has_psrs_file == 1)
             {
                 // NOTE nr_of_arguments is overwritten
-                nr_of_arguments = ReadIntAtPosition();
+                nr_of_arguments = ReadInt32AtPosition();
                 ShowBytes(4, $"nr of arguments overriden ({nr_of_arguments})");
             }
             BreakLine();
@@ -128,11 +128,11 @@ namespace MyShaderAnalysis.utilhelpers
                 string default_name = ReadNullTermStringAtPosition();
                 Comment($"{default_name}");
                 ShowBytes(128);
-                uint has_s_argument = ReadUIntAtPosition();
+                uint has_s_argument = ReadUInt32AtPosition();
                 ShowBytes(4);
                 if (has_s_argument > 0)
                 {
-                    uint sSymbolArgValue = ReadUIntAtPosition(64);
+                    uint sSymbolArgValue = ReadUInt32AtPosition(64);
                     string sSymbolName = ReadNullTermStringAtPosition();
                     Comment($"{sSymbolName}");
                     ShowBytes(68);
@@ -180,7 +180,7 @@ namespace MyShaderAnalysis.utilhelpers
             ShowBytes(4, "version 64");
             BreakLine();
             ShowByteCount("ps/vs header");
-            int has_psrs_file = ReadIntAtPosition();
+            int has_psrs_file = ReadInt32AtPosition();
             ShowBytes(4, $"has_psrs_file = {(has_psrs_file > 0 ? "True" : "False")}");
             ShowBytes(16, "file ID0");
             ShowBytes(16, "file ID1 - shared by all Valve v64 vcs files");
@@ -190,7 +190,7 @@ namespace MyShaderAnalysis.utilhelpers
         private void PrintAllSfBlocks()
         {
             ShowByteCount();
-            uint sfBlockCount = ReadUIntAtPosition();
+            uint sfBlockCount = ReadUInt32AtPosition();
             ShowBytes(4, $"{sfBlockCount} SF blocks (usually 152 bytes each)");
             BreakLine();
             for (int i = 0; i < sfBlockCount; i++)
@@ -211,12 +211,12 @@ namespace MyShaderAnalysis.utilhelpers
                 }
                 ShowBytes(64);
             }
-            int arg0 = ReadIntAtPosition(0);
-            int arg1 = ReadIntAtPosition(4);
-            int arg2 = ReadIntAtPosition(8);
-            int arg3 = ReadIntAtPosition(12);
-            int arg4 = ReadIntAtPosition(16);
-            int arg5 = ReadIntAtPosition(20);
+            int arg0 = ReadInt32AtPosition(0);
+            int arg1 = ReadInt32AtPosition(4);
+            int arg2 = ReadInt32AtPosition(8);
+            int arg3 = ReadInt32AtPosition(12);
+            int arg4 = ReadInt32AtPosition(16);
+            int arg5 = ReadInt32AtPosition(20);
             ShowBytes(16, 4, breakLine: false);
             TabComment($"({arg0},{arg1},{arg2},{arg3})");
             ShowBytes(4, $"({arg4}) known values [-1,28]");
@@ -254,7 +254,7 @@ namespace MyShaderAnalysis.utilhelpers
         private void PrintAllCompatibilityBlocks()
         {
             ShowByteCount();
-            uint combatibilityBlockCount = ReadUIntAtPosition();
+            uint combatibilityBlockCount = ReadUInt32AtPosition();
             ShowBytes(4, $"{combatibilityBlockCount} compatibility blocks (472 bytes each)");
             BreakLine();
             for (int i = 0; i < combatibilityBlockCount; i++)
@@ -276,7 +276,7 @@ namespace MyShaderAnalysis.utilhelpers
         private void PrintAllDBlocks()
         {
             ShowByteCount();
-            uint dBlockCount = ReadUIntAtPosition();
+            uint dBlockCount = ReadUInt32AtPosition();
             ShowBytes(4, $"{dBlockCount} D-blocks (152 bytes each)");
             BreakLine();
             for (int i = 0; i < dBlockCount; i++)
@@ -299,7 +299,7 @@ namespace MyShaderAnalysis.utilhelpers
         private void PrintAllUknownBlocks()
         {
             ShowByteCount();
-            uint unknownBlockCount = ReadUIntAtPosition();
+            uint unknownBlockCount = ReadUInt32AtPosition();
             ShowBytes(4, $"{unknownBlockCount} unknown blocks (472 bytes each)");
             BreakLine();
             for (int i = 0; i < unknownBlockCount; i++)
@@ -318,7 +318,7 @@ namespace MyShaderAnalysis.utilhelpers
         private void PrintAllParamBlocks()
         {
             ShowByteCount();
-            uint paramBlockCount = ReadUIntAtPosition();
+            uint paramBlockCount = ReadUInt32AtPosition();
             ShowBytes(4, $"{paramBlockCount} Param-Blocks (may contain dynamic expressions)");
             BreakLine();
             for (int i = 0; i < paramBlockCount; i++)
@@ -346,12 +346,12 @@ namespace MyShaderAnalysis.utilhelpers
                 OutputWriteLine($"// {name3}");
             }
             ShowBytes(64);
-            uint paramType = ReadUIntAtPosition();
+            uint paramType = ReadUInt32AtPosition();
             OutputWriteLine($"// param-type, 6 or 7 lead dynamic-exp. Known values: 0,1,5,6,7,8,10,11,13");
             ShowBytes(4);
             if (paramType == 6 || paramType == 7)
             {
-                int dynLength = ReadIntAtPosition();
+                int dynLength = ReadInt32AtPosition();
                 ShowBytes(4, breakLine: false);
                 TabComment("dyn-exp len", 1);
 
@@ -368,22 +368,22 @@ namespace MyShaderAnalysis.utilhelpers
             }
             ShowBytes(64);
             // float or int arguments
-            int a0 = ReadIntAtPosition(0);
-            int a1 = ReadIntAtPosition(4);
-            int a2 = ReadIntAtPosition(8);
-            int a3 = ReadIntAtPosition(12);
+            int a0 = ReadInt32AtPosition(0);
+            int a1 = ReadInt32AtPosition(4);
+            int a2 = ReadInt32AtPosition(8);
+            int a3 = ReadInt32AtPosition(12);
             ShowBytes(16, breakLine: false);
             TabComment($"ints   ({Format(a0)},{Format(a1)},{Format(a2)},{Format(a3)})", 10);
-            a0 = ReadIntAtPosition(0);
-            a1 = ReadIntAtPosition(4);
-            a2 = ReadIntAtPosition(8);
-            a3 = ReadIntAtPosition(12);
+            a0 = ReadInt32AtPosition(0);
+            a1 = ReadInt32AtPosition(4);
+            a2 = ReadInt32AtPosition(8);
+            a3 = ReadInt32AtPosition(12);
             ShowBytes(16, breakLine: false);
             TabComment($"ints   ({Format(a0)},{Format(a1)},{Format(a2)},{Format(a3)})", 10);
-            a0 = ReadIntAtPosition(0);
-            a1 = ReadIntAtPosition(4);
-            a2 = ReadIntAtPosition(8);
-            a3 = ReadIntAtPosition(12);
+            a0 = ReadInt32AtPosition(0);
+            a1 = ReadInt32AtPosition(4);
+            a2 = ReadInt32AtPosition(8);
+            a3 = ReadInt32AtPosition(12);
             ShowBytes(16, breakLine: false);
             TabComment($"ints   ({Format(a0)},{Format(a1)},{Format(a2)},{Format(a3)})", 10);
             float f0 = ReadSingleAtPosition(0);
@@ -404,16 +404,16 @@ namespace MyShaderAnalysis.utilhelpers
             f3 = ReadSingleAtPosition(12);
             ShowBytes(16, breakLine: false);
             TabComment($"floats ({Format(f0)},{Format(f1)},{Format(f2)},{Format(f3)})", 10);
-            a0 = ReadIntAtPosition(0);
-            a1 = ReadIntAtPosition(4);
-            a2 = ReadIntAtPosition(8);
-            a3 = ReadIntAtPosition(12);
+            a0 = ReadInt32AtPosition(0);
+            a1 = ReadInt32AtPosition(4);
+            a2 = ReadInt32AtPosition(8);
+            a3 = ReadInt32AtPosition(12);
             ShowBytes(16, breakLine: false);
             TabComment($"ints   ({Format(a0)},{Format(a1)},{Format(a2)},{Format(a3)})", 10);
-            a0 = ReadIntAtPosition(0);
-            a1 = ReadIntAtPosition(4);
-            a2 = ReadIntAtPosition(8);
-            a3 = ReadIntAtPosition(12);
+            a0 = ReadInt32AtPosition(0);
+            a1 = ReadInt32AtPosition(4);
+            a2 = ReadInt32AtPosition(8);
+            a3 = ReadInt32AtPosition(12);
             ShowBytes(16, breakLine: false);
             TabComment($"ints   ({Format(a0)},{Format(a1)},{Format(a2)},{Format(a3)})", 10);
             // a command word, or pair of these
@@ -449,7 +449,7 @@ namespace MyShaderAnalysis.utilhelpers
         private void PrintAllMipmapBlocks()
         {
             ShowByteCount();
-            uint mipmapBlockCount = ReadUIntAtPosition();
+            uint mipmapBlockCount = ReadUInt32AtPosition();
             ShowBytes(4, $"{mipmapBlockCount} Mipmap blocks (280 bytes each)");
             BreakLine();
             for (int i = 0; i < mipmapBlockCount; i++)
@@ -471,7 +471,7 @@ namespace MyShaderAnalysis.utilhelpers
         private void PrintAllBufferBlocks()
         {
             ShowByteCount();
-            uint bufferBlockCount = ReadUIntAtPosition();
+            uint bufferBlockCount = ReadUInt32AtPosition();
             ShowBytes(4, $"{bufferBlockCount} Buffer blocks (variable length)");
             BreakLine();
             for (int i = 0; i < bufferBlockCount; i++)
@@ -485,22 +485,22 @@ namespace MyShaderAnalysis.utilhelpers
             string blockname = ReadNullTermStringAtPosition();
             ShowByteCount($"BUFFER-BLOCK[{bufferBlockId}] {blockname}");
             ShowBytes(64);
-            uint bufferSize = ReadUIntAtPosition();
+            uint bufferSize = ReadUInt32AtPosition();
             ShowBytes(4, $"{bufferSize} buffer-size");
             ShowBytes(4);
-            uint paramCount = ReadUIntAtPosition();
+            uint paramCount = ReadUInt32AtPosition();
             ShowBytes(4, $"{paramCount} param-count");
             for (int i = 0; i < paramCount; i++)
             {
                 string paramname = ReadNullTermStringAtPosition();
                 OutputWriteLine($"// {paramname}");
                 ShowBytes(64);
-                uint paramIndex = ReadUIntAtPosition();
+                uint paramIndex = ReadUInt32AtPosition();
                 ShowBytes(4, breakLine: false);
                 TabComment($"{paramIndex} buffer-offset", 28);
-                uint vertexSize = ReadUIntAtPosition();
-                uint attributeCount = ReadUIntAtPosition(4);
-                uint size = ReadUIntAtPosition(8);
+                uint vertexSize = ReadUInt32AtPosition();
+                uint attributeCount = ReadUInt32AtPosition(4);
+                uint size = ReadUInt32AtPosition(8);
                 ShowBytes(12, $"({vertexSize},{attributeCount},{size}) (vertex-size, attribute-count, length)");
             }
             BreakLine();
@@ -512,7 +512,7 @@ namespace MyShaderAnalysis.utilhelpers
         private void PrintAllSymbolNameBlocks()
         {
             ShowByteCount();
-            uint symbolBlockCount = ReadUIntAtPosition();
+            uint symbolBlockCount = ReadUInt32AtPosition();
             ShowBytes(4, $"{symbolBlockCount} symbol/names blocks");
             for (int i = 0; i < symbolBlockCount; i++)
             {
@@ -525,7 +525,7 @@ namespace MyShaderAnalysis.utilhelpers
         private void PrintSymbolNameBlock(int symbolsBlockId)
         {
             ShowByteCount($"SYMBOL-NAMES-BLOCK[{symbolsBlockId}]");
-            uint symbolGroupCount = ReadUIntAtPosition();
+            uint symbolGroupCount = ReadUInt32AtPosition();
             ShowBytes(4, $"{symbolGroupCount} string groups in this block");
             for (int i = 0; i < symbolGroupCount; i++)
             {
@@ -544,7 +544,7 @@ namespace MyShaderAnalysis.utilhelpers
         private void PrintZframes()
         {
             ShowByteCount();
-            zFrameCount = ReadUIntAtPosition();
+            zFrameCount = ReadUInt32AtPosition();
             ShowBytes(4, $"{zFrameCount} zframes");
             BreakLine();
             if (zFrameCount == 0)
@@ -555,7 +555,7 @@ namespace MyShaderAnalysis.utilhelpers
             ShowByteCount("zFrame IDs");
             for (int i = 0; i < zFrameCount; i++)
             {
-                uint zframeId = ReadUIntAtPosition();
+                uint zframeId = ReadUInt32AtPosition();
                 ShowBytes(8, breakLine: false);
                 TabComment($"{getZFrameIdString(zframeId)}    {Convert.ToString(zframeId, 2).PadLeft(20, '0')}");
                 zFrameIndexes.Add(zframeId);
@@ -570,10 +570,10 @@ namespace MyShaderAnalysis.utilhelpers
             ShowByteCount("zFrame file offsets");
             foreach (uint zframeId in zFrameIndexes)
             {
-                uint zframe_offset = ReadUIntAtPosition();
+                uint zframe_offset = ReadUInt32AtPosition();
                 ShowBytes(4, $"{zframe_offset} offset of {getZFrameIdString(zframeId)}");
             }
-            uint total_size = ReadUIntAtPosition();
+            uint total_size = ReadUInt32AtPosition();
             ShowBytes(4, $"{total_size} - end of file");
             OutputWriteLine("");
             foreach (uint zframeId in zFrameIndexes)
@@ -589,14 +589,14 @@ namespace MyShaderAnalysis.utilhelpers
         {
             OutputWriteLine($"[{BaseStream.Position}] {getZFrameIdString(zframeId)}");
             bool isLzma = false;
-            uint zstdDelimOrChunkSize = ReadUIntAtPosition();
+            uint zstdDelimOrChunkSize = ReadUInt32AtPosition();
             if (zstdDelimOrChunkSize == ShaderFile.ZSTD_DELIM)
             {
                 ShowBytes(4, $"Zstd delim (0x{ShaderFile.ZSTD_DELIM:x08})");
             } else
             {
                 ShowBytes(4, $"Lzma chunk size {zstdDelimOrChunkSize}");
-                uint lzmaDelim = ReadUIntAtPosition();
+                uint lzmaDelim = ReadUInt32AtPosition();
                 if (lzmaDelim != ShaderFile.LZMA_DELIM)
                 {
                     throw new ShaderParserException("Unknown compression, neither ZStd nor Lzma found");
@@ -604,9 +604,9 @@ namespace MyShaderAnalysis.utilhelpers
                 isLzma = true;
                 ShowBytes(4, $"Lzma delim (0x{ShaderFile.LZMA_DELIM:x08})");
             }
-            int uncompressed_length = ReadIntAtPosition();
+            int uncompressed_length = ReadInt32AtPosition();
             ShowBytes(4, $"{uncompressed_length,-8} uncompressed length");
-            int compressed_length = ReadIntAtPosition();
+            int compressed_length = ReadInt32AtPosition();
             ShowBytes(4, $"{compressed_length,-8} compressed length");
             if (isLzma)
             {
@@ -617,7 +617,7 @@ namespace MyShaderAnalysis.utilhelpers
             {
                 Comment($"... ({compressed_length - MAX_ZFRAME_BYTES_SHOWN} bytes not shown)");
             }
-            MovePosition(compressed_length);
+            BaseStream.Position += compressed_length;
             BreakLine();
         }
 

@@ -610,7 +610,7 @@ namespace MyShaderAnalysis
                 {
                     for (int i = 0; i < 8; i += 4)
                     {
-                        int val = uBlock.datareader.ReadIntAtPosition(i);
+                        int val = uBlock.datareader.ReadInt32AtPosition(i);
                         int curVal = values[i / 4].GetValueOrDefault(val, 0);
                         values[i / 4][val] = curVal + 1;
                     }
@@ -622,7 +622,7 @@ namespace MyShaderAnalysis
                     }
                     for (int i = 24; i < 216; i += 4)
                     {
-                        int val = uBlock.datareader.ReadIntAtPosition(i);
+                        int val = uBlock.datareader.ReadInt32AtPosition(i);
                         int curVal = values[i / 4].GetValueOrDefault(val, 0);
                         values[i / 4][val] = curVal + 1;
                     }
@@ -703,7 +703,7 @@ namespace MyShaderAnalysis
                 {
                     for (int i = ARG_OFFSET; i < ARG_OFFSET + 24; i += 4)
                     {
-                        int val = dBlock.datareader.ReadIntAtPosition(i);
+                        int val = dBlock.datareader.ReadInt32AtPosition(i);
                         int curVal = values[(i - ARG_OFFSET) / 4].GetValueOrDefault(val, 0);
                         values[(i - ARG_OFFSET) / 4][val] = curVal + 1;
 
@@ -1307,7 +1307,7 @@ namespace MyShaderAnalysis
                     int[] ints0 = new int[count];
                     for (int i = 0; i < count; i++)
                     {
-                        ints0[i] = cBlock.datareader.ReadIntAtPosition(offset + i * 4);
+                        ints0[i] = cBlock.datareader.ReadInt32AtPosition(offset + i * 4);
                     }
                     string intsStr = CombineValues(ints0);
                     int parmCount = intrange.GetValueOrDefault(intsStr, 0);
@@ -1347,7 +1347,7 @@ namespace MyShaderAnalysis
                 {
                     for (int i = 0; i < 8; i += 4)
                     {
-                        int val = cBlock.datareader.ReadIntAtPosition(i);
+                        int val = cBlock.datareader.ReadInt32AtPosition(i);
                         int curVal = values[i / 4].GetValueOrDefault(val, 0);
                         values[i / 4][val] = curVal + 1;
                     }
@@ -1359,7 +1359,7 @@ namespace MyShaderAnalysis
                     }
                     for (int i = 24; i < 216; i += 4)
                     {
-                        int val = cBlock.datareader.ReadIntAtPosition(i);
+                        int val = cBlock.datareader.ReadInt32AtPosition(i);
                         int curVal = values[i / 4].GetValueOrDefault(val, 0);
                         values[i / 4][val] = curVal + 1;
                     }
@@ -1400,7 +1400,7 @@ namespace MyShaderAnalysis
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
                 foreach (SfConstraintsBlock cBlock in shaderFile.sfConstraintsBlocks)
                 {
-                    int val = cBlock.datareader.ReadIntAtPosition(offset);
+                    int val = cBlock.datareader.ReadInt32AtPosition(offset);
                     int curVal = values.GetValueOrDefault(val, offset);
                     values[val] = curVal + 1;
                 }
@@ -1424,7 +1424,7 @@ namespace MyShaderAnalysis
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
                 foreach (SfConstraintsBlock cBlock in shaderFile.sfConstraintsBlocks)
                 {
-                    int val = cBlock.datareader.ReadIntAtPosition(0);
+                    int val = cBlock.datareader.ReadInt32AtPosition(0);
                     int curVal = values.GetValueOrDefault(val, 0);
                     values[val] = curVal + 1;
                 }
@@ -1516,13 +1516,13 @@ namespace MyShaderAnalysis
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
 
             SfConstraintsBlock block0 = shaderFile.sfConstraintsBlocks[0];
-            Console.WriteLine($"{block0.datareader.ReadIntAtPosition(0)}");
-            Console.WriteLine($"{block0.datareader.ReadIntAtPosition(4)}");
+            Console.WriteLine($"{block0.datareader.ReadInt32AtPosition(0)}");
+            Console.WriteLine($"{block0.datareader.ReadInt32AtPosition(4)}");
             Console.WriteLine($"{block0.GetByteFlagsAsString()}");
 
             for (int i = 24; i <= 215; i += 4)
             {
-                Console.WriteLine($"{block0.datareader.ReadIntAtPosition(i)}");
+                Console.WriteLine($"{block0.datareader.ReadInt32AtPosition(i)}");
             }
 
             // if present, the bytes following contain a string decription of the block

@@ -89,7 +89,7 @@ namespace MyShaderAnalysis.utilhelpers
             ShowBytes(1, "values seen (0,1)");
             BreakLine();
             ShowByteCount($"Start of source section, {BaseStream.Position} is the base offset for end-section source pointers");
-            int gpuSourceCount = ReadIntAtPosition();
+            int gpuSourceCount = ReadInt32AtPosition();
             ShowBytes(4, $"{vcsSourceType} source files ({gpuSourceCount})");
             ShowBytes(1, "unknown boolean, values seen 0,1", tabLen: 13);
             BreakLine();
@@ -135,7 +135,7 @@ namespace MyShaderAnalysis.utilhelpers
             if (filetype == VcsProgramType.PixelShader || filetype == VcsProgramType.PixelShaderRenderState)
             {
                 ShowByteCount();
-                int nrEndBlocks = ReadIntAtPosition();
+                int nrEndBlocks = ReadInt32AtPosition();
                 ShowBytes(4, breakLine: false);
                 TabComment($"nr of end blocks ({nrEndBlocks})");
                 OutputWriteLine("");
@@ -150,7 +150,7 @@ namespace MyShaderAnalysis.utilhelpers
                     int sourceReference = ReadInt16AtPosition();
                     ShowBytes(4, breakLine: false);
                     TabComment($"source ref ({sourceReference})");
-                    uint glslPointer = ReadUIntAtPosition();
+                    uint glslPointer = ReadUInt32AtPosition();
                     ShowBytes(4, breakLine: false);
                     TabComment($"glsl source pointer ({glslPointer})");
                     bool hasData0 = ReadByteAtPosition(0) == 0;
@@ -224,9 +224,9 @@ namespace MyShaderAnalysis.utilhelpers
         }
         public int ShowZBlockDataHeader(int blockId)
         {
-            int arg0 = ReadIntAtPosition();
-            int arg1 = ReadIntAtPosition(4);
-            int arg2 = ReadIntAtPosition(8);
+            int arg0 = ReadInt32AtPosition();
+            int arg1 = ReadInt32AtPosition(4);
+            int arg2 = ReadInt32AtPosition(8);
 
             if (blockId != -1 && arg0 == 0 && arg1 == 0 && arg2 == 0)
             {
@@ -243,7 +243,7 @@ namespace MyShaderAnalysis.utilhelpers
             {
                 comment = $"data-block[{blockId}]";
             }
-            int blockSize = ReadIntAtPosition();
+            int blockSize = ReadInt32AtPosition();
             if (prevBlockWasZero)
             {
                 OutputWriteLine("");
@@ -292,7 +292,7 @@ namespace MyShaderAnalysis.utilhelpers
                 }
                 if (headerOperator == 1)
                 {
-                    int dynExpLen = ReadIntAtPosition(3);
+                    int dynExpLen = ReadInt32AtPosition(3);
                     if (dynExpLen == 0)
                     {
                         ShowBytes(8);
@@ -306,7 +306,7 @@ namespace MyShaderAnalysis.utilhelpers
                 }
                 if (headerOperator == 9)
                 {
-                    int dynExpLen = ReadIntAtPosition(3);
+                    int dynExpLen = ReadInt32AtPosition(3);
                     if (dynExpLen == 0)
                     {
                         ShowBytes(8);
@@ -320,7 +320,7 @@ namespace MyShaderAnalysis.utilhelpers
                 }
                 if (headerOperator == 5)
                 {
-                    int dynExpLen = ReadIntAtPosition(3);
+                    int dynExpLen = ReadInt32AtPosition(3);
                     if (dynExpLen == 0)
                     {
                         ShowBytes(11);
@@ -343,7 +343,7 @@ namespace MyShaderAnalysis.utilhelpers
         {
             for (int i = 0; i < dxilSourceCount; i++)
             {
-                int sourceOffset = ReadIntAtPosition();
+                int sourceOffset = ReadInt32AtPosition();
                 ShowByteCount();
                 ShowBytes(4, $"offset to end of source {sourceOffset} (taken from {BaseStream.Position + 4})");
                 int additionalSourceBytes = 0;
@@ -392,7 +392,7 @@ namespace MyShaderAnalysis.utilhelpers
         {
             for (int sourceId = 0; sourceId < dxbcSourceCount; sourceId++)
             {
-                int sourceSize = ReadIntAtPosition();
+                int sourceSize = ReadInt32AtPosition();
                 ShowByteCount();
                 ShowBytes(4, $"Source size, {sourceSize} bytes");
                 BreakLine();
@@ -428,7 +428,7 @@ namespace MyShaderAnalysis.utilhelpers
                 ShowZGlslSourceSummary(sourceId);
                 ShowByteCount();
                 byte[] fileIdBytes = ReadBytes(16);
-                string fileIdStr = BytesToString(fileIdBytes);
+                string fileIdStr = ShaderUtilHelpers.BytesToString(fileIdBytes);
                 if (writeAsHtml)
                 {
                     OutputWrite(GetGlslHtmlLink(fileIdStr));
@@ -444,7 +444,7 @@ namespace MyShaderAnalysis.utilhelpers
         public int ShowGlslSourceOffsets()
         {
             ShowByteCount("glsl source offsets");
-            uint offset1 = ReadUIntAtPosition();
+            uint offset1 = ReadUInt32AtPosition();
             ShowBytesWithIntValue();
             if (offset1 == 0)
             {
@@ -452,14 +452,14 @@ namespace MyShaderAnalysis.utilhelpers
             }
             ShowBytes(4, breakLine: false);
             TabComment("always 3");
-            int sourceSize = ReadIntAtPosition() - 1; // one less because of null-term
+            int sourceSize = ReadInt32AtPosition() - 1; // one less because of null-term
             ShowBytesWithIntValue();
             BreakLine();
             return sourceSize;
         }
         public void ShowZGlslSourceSummary(int sourceId)
         {
-            int bytesToRead = ReadIntAtPosition(-4);
+            int bytesToRead = ReadInt32AtPosition(-4);
             long endOfSource = BaseStream.Position + bytesToRead;
             ShowByteCount($"GLSL-SOURCE[{sourceId}]");
             if (bytesToRead == 0)
@@ -480,7 +480,7 @@ namespace MyShaderAnalysis.utilhelpers
         public void ShowZAllEndBlocksTypeVs()
         {
             ShowByteCount();
-            int nr_end_blocks = ReadIntAtPosition();
+            int nr_end_blocks = ReadInt32AtPosition();
             ShowBytes(4, breakLine: false);
             TabComment($"nr end blocks ({nr_end_blocks})");
             BreakLine();
@@ -492,7 +492,7 @@ namespace MyShaderAnalysis.utilhelpers
         private void ShowMurmurString()
         {
             string nulltermstr = ReadNullTermStringAtPosition();
-            uint murmur32 = ReadUIntAtPosition(nulltermstr.Length + 1);
+            uint murmur32 = ReadUInt32AtPosition(nulltermstr.Length + 1);
             uint murmurCheck = MurmurHash2.Hash(nulltermstr.ToLower(), ShaderFile.PI_MURMURSEED);
             if (murmur32 != murmurCheck)
             {
