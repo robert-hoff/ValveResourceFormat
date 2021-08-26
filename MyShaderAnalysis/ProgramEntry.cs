@@ -11,8 +11,6 @@ using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
 
 namespace MyShaderAnalysis
 {
-
-
     class ProgramEntry
     {
 
@@ -20,16 +18,17 @@ namespace MyShaderAnalysis
         {
             public override void WriteLine(string str0)
             {
-                Console.WriteLine(str0);
-                base.WriteLine(str0);
+                Debug.WriteLine(str0);
+            }
+            public override void Write(string str0)
+            {
+                Debug.Write(str0);
             }
         }
+
         static void Main()
         {
             Console.SetOut(new ToDebugWriter());
-
-
-
 
 
             // TestMobileShaderFiles.RunTrials();
@@ -39,10 +38,10 @@ namespace MyShaderAnalysis
 
             // PrintoutsSingleFile.RunTrials();
             // StaticAnalysis2.RunTrials();
-            // StaticAnalysis.RunTrials();
+            StaticAnalysis.RunTrials();
 
 
-            PrintoutsByteAnalysis.RunTrials();
+            // PrintoutsByteAnalysis.RunTrials();
             // ShaderAnalysis.RunTrials();
 
             // Snippetcode.RunTrials();

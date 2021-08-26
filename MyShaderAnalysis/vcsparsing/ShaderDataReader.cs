@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using System.IO;
 
 namespace MyShaderAnalysis.vcsparsing
@@ -8,15 +7,14 @@ namespace MyShaderAnalysis.vcsparsing
     public class ShaderDataReader : IDisposable
     {
         private BinaryReader BinReader;
+        public HandleOutputWrite OutputWriter { get; set; }
+        public delegate void HandleOutputWrite(string s);
 
-        public ShaderDataReader(Stream input)
+        // pass an OutputWriter to direct output somewhere else, Console.Write is used by default
+        public ShaderDataReader(Stream input, HandleOutputWrite OutputWriter = null)
         {
             BinReader = new BinaryReader(input);
-        }
-
-        public ShaderDataReader(byte[] databytes)
-        {
-            BinReader = new BinaryReader(new MemoryStream(databytes));
+            this.OutputWriter = OutputWriter ?? ((x) => { Console.Write(x); });
         }
 
 #pragma warning disable CA1024 // Use properties where appropriate
@@ -279,28 +277,9 @@ namespace MyShaderAnalysis.vcsparsing
             return bytestring.Trim();
         }
 
-
-        public bool WriteToConsole { get; set; }
-        public bool WriteToDebug { get; set; }
-
-        public bool DisableOutput { get; set; } = false;
-
-        private StreamWriter sw;
-        public void ConfigureWriteToFile(StreamWriter sw)
-        {
-            this.sw = sw;
-        }
-
         public void OutputWrite(string text)
         {
-            if (!DisableOutput)
-            {
-                Console.Write(text);
-            }
-            if (sw != null)
-            {
-                sw.Write(text);
-            }
+            OutputWriter(text);
         }
 
         public void OutputWriteLine(string text)
@@ -323,16 +302,5 @@ namespace MyShaderAnalysis.vcsparsing
             }
         }
 
-
-
     }
 }
-
-
-
-
-
-
-
-
-

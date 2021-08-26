@@ -1,7 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
+using System.Collections.Generic;
 using ValveResourceFormat.ThirdParty;
 using MyShaderAnalysis.utilhelpers;
 using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
@@ -15,7 +14,7 @@ namespace MyShaderAnalysis.vcsparsing
         private VcsFileType filetype;
         private VcsSourceType sourceType;
 
-        public DataReaderZFrameByteAnalysis(byte[] data, VcsFileType filetype, VcsSourceType vcsSourceType) : base(data)
+        public DataReaderZFrameByteAnalysis(byte[] data, VcsFileType filetype, VcsSourceType vcsSourceType) : base(new MemoryStream(data))
         {
             if (filetype == VcsFileType.Features)
             {

@@ -1,6 +1,6 @@
 using System;
+using System.IO;
 using System.Collections.Generic;
-using System.Diagnostics;
 using MyValveResourceFormat.ThirdParty;
 using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
 
@@ -34,7 +34,7 @@ namespace MyShaderAnalysis.vcsparsing
             this.filenamepath = filenamepath;
             this.vcsFileType = vcsFileType;
             this.vcsSourceType = vcsSourceType;
-            datareader = new ShaderDataReader(databytes);
+            datareader = new ShaderDataReader(new MemoryStream(databytes));
             this.zframeId = zframeId;
 
             // in case of failure; enable omitParsing and use the datareader directly

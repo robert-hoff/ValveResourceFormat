@@ -1,7 +1,6 @@
 using MyShaderAnalysis.utilhelpers;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Text;
 
@@ -781,17 +780,57 @@ namespace MyShaderAnalysis.vcsparsing
         }
 
 
-        public class ShaderBinaryReader : BinaryReader
+        //public interface IHandleOutputWrite
+        //{
+        //    public void HandleOutputWrite(string text);
+        //}
+
+
+
+        //public class ShaderBinaryReader : BinaryReader, IHandleOutputWrite
+        //{
+        //    private IHandleOutputWrite outputWriter;
+        //    public ShaderBinaryReader(Stream input, IHandleOutputWrite outputWriter = null) : base (input)
+        //    {
+        //        this.outputWriter = outputWriter ?? this;
+        //    }
+        //    public void HandleOutputWrite(string text)
+        //    {
+        //        Console.Write(text);
+        //    }
+        //    private void Write(string text)
+        //    {
+        //        outputWriter.HandleOutputWrite(text);
+        //    }
+        //    private void WriteLine(string text)
+        //    {
+        //        Write($"{text}\n");
+        //    }
+        //}
+
+
+        /*
+        public class ShaderDataReader : IHandleOutputWrite
         {
-
-            public ShaderBinaryReader(Stream input) : base (input)
+            private IHandleOutputWrite outputWriter;
+            public ShaderDataReader(Stream input, IHandleOutputWrite outputWriter = null)
             {
-
+                this.outputWriter = outputWriter ?? this;
             }
-
-
+            public void HandleOutputWrite(string text)
+            {
+                Console.Write(text);
+            }
+            private void Write(string text)
+            {
+                outputWriter.HandleOutputWrite(text);
+            }
+            private void WriteLine(string text)
+            {
+                Write($"{text}\n");
+            }
         }
-
+        */
 
 
 

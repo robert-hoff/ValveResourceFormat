@@ -1,5 +1,4 @@
 using System.IO;
-using System.Diagnostics;
 using MyShaderAnalysis.vcsparsing;
 using System.Collections.Generic;
 using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
@@ -111,7 +110,7 @@ namespace MyShaderAnalysis
             DataReaderVcsByteAnalysis reader = new(filenamepath);
             reader.SetOffset(2032);
             int num = reader.ReadIntAtPosition();
-            ConsoleConsole.WriteLine($"{num}");
+            Console.WriteLine($"{num}");
             reader.ShowBytes(4);
 
         }

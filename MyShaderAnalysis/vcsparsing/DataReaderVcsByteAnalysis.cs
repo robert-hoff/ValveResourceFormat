@@ -1,6 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
+using System.Collections.Generic;
 using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
 
 
@@ -15,7 +15,7 @@ namespace MyShaderAnalysis.vcsparsing
 
         private VcsFileType filetype;
         private string vcsFilename = null;
-        public DataReaderVcsByteAnalysis(string filenamepath) : base(File.ReadAllBytes(filenamepath))
+        public DataReaderVcsByteAnalysis(string filenamepath) : base(new MemoryStream(File.ReadAllBytes(filenamepath)))
         {
             this.filetype = GetVcsFileType(filenamepath);
             this.vcsFilename = filenamepath;

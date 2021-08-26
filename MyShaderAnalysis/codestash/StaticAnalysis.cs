@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Linq;
-using System.Diagnostics;
 using MyShaderAnalysis.compat;
 using MyShaderAnalysis.utilhelpers;
 using MyShaderAnalysis.vcsparsing;
@@ -66,7 +65,7 @@ namespace MyShaderAnalysis
 
             // - prints a single page summary and links to all the files produced with FileSummaryAllFiles()
             // BlockCountSurvery($@"{SERVER_OUTPUT_DIR}/file-overview.html", writeFile: true);
-            BlockCountSurvery($@"{SERVER_OUTPUT_DIR}/files-mobile-gles.html", writeFile: true);
+            // BlockCountSurvery($@"{SERVER_OUTPUT_DIR}/files-mobile-gles.html", writeFile: true);
 
 
             // NOTE - currently points to Artifact classic
@@ -76,7 +75,7 @@ namespace MyShaderAnalysis
 
 
 
-            // FileSummarySingleFile();
+            FileSummarySingleFile();
             // ZFramePrintout();
 
 
@@ -340,9 +339,10 @@ namespace MyShaderAnalysis
             // FileTriple triple = new(ARCHIVE.dotacore_pcgl, "apply_fog_pcgl_40_features.vcs");
             // FileTriple triple = new(ARCHIVE.dotacore_pcgl, "blur_pcgl_30_features.vcs");
             // FileTriple triple = new(ARCHIVE.dotagame_pcgl, "water_dota_pcgl_30_features.vcs");
-            FileTriple triple = new(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_features.vcs");
+            // FileTriple triple = new(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_features.vcs");
             // FileTriple triple = new(ARCHIVE.dotacore_pcgl, "spritecard_pcgl_30_features.vcs");
             // FileTriple triple = new(ARCHIVE.dotagame_pcgl, "spritecard_pcgl_30_features.vcs");
+            FileTriple triple = new(ARCHIVE.dota_core_gles, "copytexture_mobile_gles_30_features.vcs");
 
 
             // FileTriple triple = new(ARCHIVE.artifact_classiccore_pc, "aerial_perspective_pc_30_features.vcs");

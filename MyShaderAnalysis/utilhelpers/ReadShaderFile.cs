@@ -12,7 +12,7 @@ namespace MyShaderAnalysis.utilhelpers
         public ReadShaderFile(string filenamepath)
         {
             this.filenamepath = filenamepath;
-            datareader = new ShaderDataReader(File.OpenRead(filenamepath);
+            datareader = new ShaderDataReader(File.OpenRead(filenamepath));
         }
 
 

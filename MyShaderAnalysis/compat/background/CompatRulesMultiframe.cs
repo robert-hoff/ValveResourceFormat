@@ -2,7 +2,6 @@ using MyShaderAnalysis.utilhelpers;
 using MyShaderAnalysis.vcsparsing;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;

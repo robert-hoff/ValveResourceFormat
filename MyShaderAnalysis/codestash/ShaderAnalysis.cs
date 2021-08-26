@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
-using System.Diagnostics;
 using MyShaderAnalysis.utilhelpers;
 using MyShaderAnalysis.vcsparsing;
 using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
@@ -597,26 +596,26 @@ namespace MyShaderAnalysis
          */
         static void ParseAllVcsFilesDisableOutput()
         {
-            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Any, -1);
-            int filesParsed = 0;
-            int[] typesParsed = new int[10];
-            foreach (string filenamepath in vcsFiles)
-            {
-                Console.Write($"parsing {RemoveBaseDir(filenamepath)}");
-                DataReaderVcsByteAnalysis shaderByteAnalysis = new(filenamepath);
-                shaderByteAnalysis.SetShortenOutput(false);
-                shaderByteAnalysis.DisableOutput();
-                shaderByteAnalysis.PrintByteAnalysis();
-                Console.WriteLine($" [SUCCESS]");
-                typesParsed[(int)GetVcsFileType(filenamepath)]++;
-                filesParsed++;
-            }
-            Console.WriteLine($"{filesParsed} files were parsed. " +
-                $"features({typesParsed[(int)VcsFileType.Features]}), " +
-                $"vs({typesParsed[(int)VcsFileType.VertexShader]}), " +
-                $"ps({typesParsed[(int)VcsFileType.PixelShader]}), " +
-                $"gs({typesParsed[(int)VcsFileType.GeometryShader]}), " +
-                $"psrs({typesParsed[(int)VcsFileType.PixelShaderRenderState]})");
+            //List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Any, -1);
+            //int filesParsed = 0;
+            //int[] typesParsed = new int[10];
+            //foreach (string filenamepath in vcsFiles)
+            //{
+            //    Console.Write($"parsing {RemoveBaseDir(filenamepath)}");
+            //    DataReaderVcsByteAnalysis shaderByteAnalysis = new(filenamepath);
+            //    shaderByteAnalysis.SetShortenOutput(false);
+            //    shaderByteAnalysis.DisableOutput = true;
+            //    shaderByteAnalysis.PrintByteAnalysis();
+            //    Console.WriteLine($" [SUCCESS]");
+            //    typesParsed[(int)GetVcsFileType(filenamepath)]++;
+            //    filesParsed++;
+            //}
+            //Console.WriteLine($"{filesParsed} files were parsed. " +
+            //    $"features({typesParsed[(int)VcsFileType.Features]}), " +
+            //    $"vs({typesParsed[(int)VcsFileType.VertexShader]}), " +
+            //    $"ps({typesParsed[(int)VcsFileType.PixelShader]}), " +
+            //    $"gs({typesParsed[(int)VcsFileType.GeometryShader]}), " +
+            //    $"psrs({typesParsed[(int)VcsFileType.PixelShaderRenderState]})");
         }
 
 

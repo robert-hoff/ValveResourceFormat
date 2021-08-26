@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using MyShaderAnalysis.compat;
@@ -33,15 +32,16 @@ namespace MyShaderAnalysis
 
         public static void RunTrials()
         {
-            Trial1();
 
+            // WriteBunchOfZframes();
+            PrintSingleFileSummary();
 
             PrintReport();
             CloseStreamWriter();
         }
 
 
-        static void Trial1()
+        static void PrintSingleFileSummary()
         {
 
             // ZFileSummary(ARCHIVE.dotacore_pcgl, "bilateral_blur_pcgl_30_vs.vcs", 0x0, writeFile: true);
@@ -59,7 +59,9 @@ namespace MyShaderAnalysis
             // ZFileSummary(ARCHIVE.dotacore_pcgl, "copytexture_pcgl_30_vs.vcs", 0x0, writeFile: true);
             // ZFileSummary(ARCHIVE.artifact_classiccore_pc, "generic_pc_30_ps.vcs", 0x10, writeFile: true);
 
-            WriteBunchOfZframes();
+            ZFileSummary(ARCHIVE.dota_core_gles, "copytexture_mobile_gles_30_ps.vcs", 0x0, writeFile: true);
+
+            // WriteBunchOfZframes();
             // PrintZframeFileDirectory(SERVER_OUTPUT_DIR, writeFile: true);
         }
 
@@ -134,7 +136,6 @@ namespace MyShaderAnalysis
                 ConfigureOutputFile(outputFilenamepath, disableOutput);
                 WriteHtmlFile($"Z 0x{zframeId:x}", vcsFile.GetZFrameHtmlFilename(zframeId, "")[0..^5]);
             }
-
 
 
             // print referring files

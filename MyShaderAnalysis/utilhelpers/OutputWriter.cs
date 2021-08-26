@@ -1,7 +1,6 @@
 using MyShaderAnalysis.vcsparsing;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using static MyShaderAnalysis.vcsparsing.ShaderUtilHelpers;
 
