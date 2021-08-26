@@ -190,13 +190,13 @@ namespace ValveResourceFormat.CompiledShader
             return zframesLookup[zframeId].GetDecompressedZFrame();
         }
 
-        public ZframeFilez GetZFrameFile(long zframeId, bool omitParsing = false)
+        public ZFrameFile GetZFrameFile(long zframeId, bool omitParsing = false)
         {
-            return new ZframeFilez(GetDecompressedZFrame(zframeId), filenamepath, zframeId,
+            return new ZFrameFile(GetDecompressedZFrame(zframeId), filenamepath, zframeId,
                 vcsFileType, vcsSourceType, vcsModelType, omitParsing);
         }
 
-        public ZframeFilez GetZFrameFileByIndex(int zframeIndex)
+        public ZFrameFile GetZFrameFileByIndex(int zframeIndex)
         {
             long zframeId = zframesLookup.ElementAt(zframeIndex).Key;
             return GetZFrameFile(zframeId);
