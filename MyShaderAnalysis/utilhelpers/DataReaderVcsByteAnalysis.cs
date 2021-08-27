@@ -14,11 +14,11 @@ namespace MyShaderAnalysis.utilhelpers
 
         const string SERVER_BASEDIR = @"Z:/dev/www/vcs.codecreation.dev";
 
-        private VcsProgramType filetype;
+        private VcsProgramType vcsProgramType;
         private string vcsFilename = null;
         public DataReaderVcsByteAnalysis(string filenamepath) : base(new MemoryStream(File.ReadAllBytes(filenamepath)))
         {
-            this.filetype = ComputeVCSFileName(filenamepath).Item1;
+            this.vcsProgramType = ComputeVCSFileName(filenamepath).Item1;
             this.vcsFilename = filenamepath;
         }
 
@@ -38,25 +38,29 @@ namespace MyShaderAnalysis.utilhelpers
         private uint zFrameCount = 0;
         const int LIMIT_ZFRAMES = 4;
 
+        private int version = 64;
+
 
         public void PrintByteAnalysis()
         {
-            if (filetype == VcsProgramType.Features)
+            if (vcsProgramType == VcsProgramType.Features)
             {
                 PrintVcsFeaturesHeader();
-            } else if (filetype == VcsProgramType.VertexShader || filetype == VcsProgramType.PixelShader
-                  || filetype == VcsProgramType.GeometryShader || filetype == VcsProgramType.PixelShaderRenderState)
+            } else if (vcsProgramType == VcsProgramType.VertexShader || vcsProgramType == VcsProgramType.PixelShader
+                   || vcsProgramType == VcsProgramType.GeometryShader || vcsProgramType == VcsProgramType.PixelShaderRenderState
+                   || vcsProgramType == VcsProgramType.ComputeShader || vcsProgramType == VcsProgramType.HullShader
+                   || vcsProgramType == VcsProgramType.DomainShader || vcsProgramType == VcsProgramType.RaytracingShader)
             {
-                PrintVsPsHeader();
+                version = PrintVsPsHeader();
             } else
             {
-                throw new ShaderParserException($"can't parse this filetype: {filetype}");
+                throw new ShaderParserException($"can't parse this filetype: {vcsProgramType}");
             }
             uint blockDelim = ReadUInt32AtPosition();
-            if (blockDelim != 17)
-            {
-                throw new ShaderParserException($"unexpected block delim value! {blockDelim}");
-            }
+            //if (blockDelim != 17)
+            //{
+            //    throw new ShaderParserException($"unexpected block delim value! {blockDelim}");
+            //}
             ShowByteCount();
             ShowBytes(4, $"block DELIM always 17");
             BreakLine();
@@ -68,7 +72,7 @@ namespace MyShaderAnalysis.utilhelpers
             PrintAllMipmapBlocks();
             PrintAllBufferBlocks();
             // for some reason only features and vs files observe symbol blocks
-            if (filetype == VcsProgramType.Features || filetype == VcsProgramType.VertexShader)
+            if (vcsProgramType == VcsProgramType.Features || vcsProgramType == VcsProgramType.VertexShader)
             {
                 PrintAllSymbolNameBlocks();
             }
@@ -84,11 +88,16 @@ namespace MyShaderAnalysis.utilhelpers
         {
             ShowByteCount("vcs file");
             ShowBytes(4, "\"vcs2\"");
-            ShowBytes(4, "version 64");
+            version = ReadInt32AtPosition();
+            ShowBytes(4, $"version {version}");
             BreakLine();
             ShowByteCount("features header");
-            int has_psrs_file = ReadInt32AtPosition();
-            ShowBytes(4, "has_psrs_file = " + (has_psrs_file > 0 ? "True" : "False"));
+            int has_psrs_file = 0;
+            if (version == 64)
+            {
+                has_psrs_file = ReadInt32AtPosition();
+                ShowBytes(4, "has_psrs_file = " + (has_psrs_file > 0 ? "True" : "False"));
+            }
             int unknown_val = ReadInt32AtPosition();
             ShowBytes(4, $"unknown_val = {unknown_val} (usually 0)");
             int len_name_description = ReadInt32AtPosition();
@@ -108,11 +117,21 @@ namespace MyShaderAnalysis.utilhelpers
             uint arg5 = ReadUInt32AtPosition(0);
             uint arg6 = ReadUInt32AtPosition(4);
             uint arg7 = ReadUInt32AtPosition(8);
-            uint arg8 = ReadUInt32AtPosition(12);
-            ShowBytes(16, 4, breakLine: false);
-            TabComment($"({arg5},{arg6},{arg7},{arg8})");
+            if (version==64)
+            {
+                uint arg8 = ReadUInt32AtPosition(12);
+                ShowBytes(16, 4, breakLine: false);
+                TabComment($"({arg5},{arg6},{arg7},{arg8})");
+            } else
+            {
+                ShowBytes(12, 4, breakLine: false);
+                TabComment($"({arg5},{arg6},{arg7})");
+            }
+
+
             BreakLine();
             ShowByteCount();
+
             int nr_of_arguments = ReadInt32AtPosition();
             ShowBytes(4, $"nr of arguments {nr_of_arguments}");
             if (has_psrs_file == 1)
@@ -161,11 +180,11 @@ namespace MyShaderAnalysis.utilhelpers
             ShowBytes(16, "file ID4");
             ShowBytes(16, "file ID5");
             ShowBytes(16, "file ID6");
-            if (has_psrs_file == 0)
+            if (version==64 && has_psrs_file == 0)
             {
                 ShowBytes(16, "file ID7 - shared by all Dota2 vcs files");
             }
-            if (has_psrs_file == 1)
+            if (version==64 && has_psrs_file == 1)
             {
                 ShowBytes(16, "file ID7 - reference to psrs file");
                 ShowBytes(16, "file ID8 - shared by all Dota2 vcs files");
@@ -173,18 +192,23 @@ namespace MyShaderAnalysis.utilhelpers
             BreakLine();
         }
 
-        private void PrintVsPsHeader()
+        private int PrintVsPsHeader()
         {
             ShowByteCount("vcs file");
             ShowBytes(4, "\"vcs2\"");
-            ShowBytes(4, "version 64");
+            int version = ReadInt32AtPosition();
+            ShowBytes(4, $"version {version}");
             BreakLine();
             ShowByteCount("ps/vs header");
-            int has_psrs_file = ReadInt32AtPosition();
-            ShowBytes(4, $"has_psrs_file = {(has_psrs_file > 0 ? "True" : "False")}");
+            if (version == 64)
+            {
+                int has_psrs_file = ReadInt32AtPosition();
+                ShowBytes(4, $"has_psrs_file = {(has_psrs_file > 0 ? "True" : "False")}");
+            }
             ShowBytes(16, "file ID0");
             ShowBytes(16, "file ID1 - shared by all Valve v64 vcs files");
             BreakLine();
+            return version;
         }
 
         private void PrintAllSfBlocks()
@@ -358,8 +382,18 @@ namespace MyShaderAnalysis.utilhelpers
                 ShowBytes(dynLength);
                 TabComment("dynamic expression", 1);
             }
+
             // 6 int parameters follow the dynamic expression
-            ShowBytes(24, 4);
+            if (version == 64)
+            {
+                ShowBytes(24, 4);
+            } else
+            {
+                ShowBytes(20, 4);
+            }
+
+
+
             // a rarely seen file reference
             string name4 = ReadNullTermStringAtPosition();
             if (name4.Length > 0)
@@ -599,7 +633,10 @@ namespace MyShaderAnalysis.utilhelpers
                 uint lzmaDelim = ReadUInt32AtPosition();
                 if (lzmaDelim != ShaderFile.LZMA_DELIM)
                 {
-                    throw new ShaderParserException("Unknown compression, neither ZStd nor Lzma found");
+                    // throw new ShaderParserException("Unknown compression, neither ZStd nor Lzma found");
+                    Console.WriteLine($"neither zstd or lzma found");
+                    ShowBytes((int) zstdDelimOrChunkSize);
+                    return;
                 }
                 isLzma = true;
                 ShowBytes(4, $"Lzma delim (0x{ShaderFile.LZMA_DELIM:x08})");

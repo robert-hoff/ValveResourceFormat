@@ -13,6 +13,8 @@ namespace MyShaderAnalysis
 {
     public class PrintoutsByteAnalysis
     {
+        public const string V62_EXAMPLES_SOURCE = "X:/v62shaders-from-xpaw";
+        public const string THE_LAB_SOURCE = "X:/Steam/steamapps/common/The Lab/RobotRepair/core/shaders/vfx";
         const string OUTPUT_DIR = @"Z:/active/projects/dota2-sourcesdk-modding/shader-analysis-vcs-format/OUTPUT_DUMP";
         const string SERVER_OUTPUT_DIR = @"Z:/dev/www/vcs.codecreation.dev/GEN-output";
         static OutputWriter output = new(WriteToConsole: false, WriteToDebug: true);
@@ -23,7 +25,9 @@ namespace MyShaderAnalysis
             // Trial2();
             // Trial3();
             // PrintAllByteAnalysis();
-            RunSingleFileByteAnalysis();
+            // RunSingleFileByteAnalysis();
+            // PrintSingleFileByteAnalysis(filenamepath, $"{SERVER_OUTPUT_DIR}/testfile.html", writeFile: true);
+            PrintSingleFileScreenOnly();
             // PrintZFramesAllFiles();
             // PrintZFramesSingleFile();
             // PrintGlslAllFiles();
@@ -69,7 +73,7 @@ namespace MyShaderAnalysis
             // string filenamepath = $"{DOTA_GAME_PC_SOURCE}/multiblend_pc_30_vs.vcs";
             // string filenamepath = $"{DOTA_GAME_PC_SOURCE}/multiblend_pc_30_ps.vcs";
             // string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/generic_light_pcgl_30_features.vcs";
-            string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/generic_light_pcgl_30_vs.vcs";
+            // string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/generic_light_pcgl_30_vs.vcs";
             // string filenamepath = $"{DOTA_CORE_PC_SOURCE}/generic_light_pc_30_features.vcs";
             // string filenamepath = $"{DOTA_CORE_PC_SOURCE}/generic_light_pc_30_vs.vcs";
             // string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/generic_light_pcgl_30_ps.vcs";
@@ -78,7 +82,6 @@ namespace MyShaderAnalysis
             // string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/spritecard_pcgl_30_vs.vcs";
             // string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/msaa_resolve_cs_pcgl_50_features.vcs"; // strange file that doesn't contain any data
 
-            PrintSingleFileByteAnalysis(filenamepath, $"{SERVER_OUTPUT_DIR}/testfile.html", writeFile: true);
         }
 
 
@@ -87,14 +90,16 @@ namespace MyShaderAnalysis
             bool writeFile = false, bool disableOutput = false)
         {
             ShaderFile shaderFile = null;
-            try
-            {
+            //try
+            //{
                 shaderFile = InstantiateShaderFile(filenamepath);
-            } catch (Exception)
-            {
-                Console.WriteLine($"ERROR! couldn't parse {filenamepath}");
-                return;
-            }
+            //} catch (Exception e)
+            //{
+            //    Console.WriteLine($"ERROR! couldn't parse {filenamepath}");
+            //    Console.WriteLine(e.Message);
+            //    return;
+            //}
+
             FileTokens fileTokens = new FileTokens(filenamepath);
             if (outputFilenamepath != null && writeFile)
             {
@@ -110,6 +115,27 @@ namespace MyShaderAnalysis
             shaderFile.PrintByteAnalysis();
         }
 
+
+        static void PrintSingleFileScreenOnly()
+        {
+            // string filenamepath = $"{V62_EXAMPLES_SOURCE}/test_pcgl_30_ps.vcs";
+            // string filenamepath = $"{V62_EXAMPLES_SOURCE}/test_pc_30_vs.vcs";
+            // string filenamepath = $"{V62_EXAMPLES_SOURCE}/test_pc_40_gs.vcs";
+            // string filenamepath = $"{V62_EXAMPLES_SOURCE}/test_pc_50_hs.vcs";
+            // string filenamepath = $"{V62_EXAMPLES_SOURCE}/test_pcgl_40_ps.vcs";
+            // string filenamepath = $"{THE_LAB_SOURCE}/downsample_pc_40_ps.vcs";
+            // string filenamepath = $"{THE_LAB_SOURCE}/downsample_pc_40_features.vcs";
+            // string filenamepath = $"{THE_LAB_SOURCE}/fogsprite_pcgl_41_features.vcs";
+            // string filenamepath = $"{THE_LAB_SOURCE}/foliage_pc_41_ps.vcs";
+            string filenamepath = $"{THE_LAB_SOURCE}/foliage_pc_41_features.vcs";
+
+
+
+            DataReaderVcsByteAnalysis testfile = new DataReaderVcsByteAnalysis(filenamepath);
+            testfile.PrintByteAnalysis();
+
+
+        }
 
 
 

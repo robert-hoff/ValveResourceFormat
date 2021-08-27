@@ -13,7 +13,7 @@ namespace MyShaderAnalysis.utilhelpers
     public class DataReaderZFrameByteAnalysis : ShaderDataReader
     {
 
-        private VcsProgramType filetype;
+        private VcsProgramType vcsProgramType;
         private VcsPlatformType vcsSourceType;
         private VcsShaderModelType vcsModelType;
 
@@ -24,7 +24,7 @@ namespace MyShaderAnalysis.utilhelpers
             {
                 throw new ShaderParserException("file type cannot be features, as they don't contain any zframes");
             }
-            this.filetype = filetype;
+            this.vcsProgramType = filetype;
             this.vcsSourceType = vcsSourceType;
             this.vcsModelType = vcsModelType;
         }
@@ -53,7 +53,7 @@ namespace MyShaderAnalysis.utilhelpers
             ShowZDataSection(-1);
             ShowZFrameHeader();
             // this applies only to vs files (ps, gs and psrs files don't have this section)
-            if (filetype == VcsProgramType.VertexShader)
+            if (vcsProgramType == VcsProgramType.VertexShader)
             {
                 // values seen
                 // 1,2,4,5,8,10,12,16,20,40,48,80,120,160
@@ -126,13 +126,13 @@ namespace MyShaderAnalysis.utilhelpers
             }
 
             //  End blocks for vs and gs files
-            if (filetype == VcsProgramType.VertexShader || filetype == VcsProgramType.GeometryShader)
+            if (vcsProgramType == VcsProgramType.VertexShader || vcsProgramType == VcsProgramType.GeometryShader)
             {
                 ShowZAllEndBlocksTypeVs();
                 BreakLine();
             }
             //  End blocks for ps and psrs files
-            if (filetype == VcsProgramType.PixelShader || filetype == VcsProgramType.PixelShaderRenderState)
+            if (vcsProgramType == VcsProgramType.PixelShader || vcsProgramType == VcsProgramType.PixelShaderRenderState)
             {
                 ShowByteCount();
                 int nrEndBlocks = ReadInt32AtPosition();

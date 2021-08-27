@@ -28,21 +28,20 @@ namespace MyShaderAnalysis
             Console.SetOut(new ToDebugWriter());
 
 
-            //Console.WriteLine("hi");
-            //Console.WriteLine("hi");
-            //Console.WriteLine("hi");
-            //Console.WriteLine("hi");
+            // CollectConfigurations.RunTrials();
+
+            // DataReaderV62.RunTrials();
 
             // TestMobileShaderFiles.RunTrials();
 
             // PrintoutsZframes1.RunTrials();
-            StaticAnalysisZframes.RunTrials();
+            // StaticAnalysisZframes.RunTrials();
 
             // PrintoutsSingleFile.RunTrials();
             // StaticAnalysis2.RunTrials();
             // StaticAnalysis.RunTrials();
 
-            // PrintoutsByteAnalysis.RunTrials();
+            PrintoutsByteAnalysis.RunTrials();
             // ShaderAnalysis.RunTrials();
             // TestBasics.RunTrials();
 
