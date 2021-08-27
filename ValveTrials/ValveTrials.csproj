@@ -36,6 +36,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MyShaderAnalysis\MyShaderAnalysis.csproj" />
+    <ProjectReference Include="..\MyValveKeyValue\MyValveKeyValue.csproj" />
     <ProjectReference Include="..\MyValvePak\MyValvePak.csproj" />
     <ProjectReference Include="..\MyValveResourceFormat\MyValveResourceFormat.csproj" />
   </ItemGroup>

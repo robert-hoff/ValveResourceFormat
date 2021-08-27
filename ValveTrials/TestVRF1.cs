@@ -11,18 +11,21 @@ using MyValveResourceFormat.IO;
 using MyValveResourceFormat.ResourceTypes;
 using System.Diagnostics;
 
-
-
 namespace ValveTrials {
     class TestVRF1 {
 
+        public static (TabPage, TextBox) makeANewTag()
+        {
+            return ShaderTab.Create();
+        }
 
 
         public static void doIt2() {
             // ShaderAnalysis1.RunTrials();
+            Console.WriteLine($"hello!");
+            Debug.WriteLine("hello!");
 
         }
-
 
         public static void doIt() {
 
@@ -37,7 +40,6 @@ namespace ValveTrials {
             var resource = new Resource {
                 FileName = huskar_filename
             };
-
 
             package.ReadEntry(model_entry, out byte[] output);
             resource.Read(new MemoryStream(output));
@@ -132,9 +134,6 @@ namespace ValveTrials {
 			};
 			extractDialog.ShowDialog();
 			*/
-
-
-
         }
 
 
@@ -143,13 +142,6 @@ namespace ValveTrials {
             Auto,
             GLB
         }
-
-
-
-
-
-
-
 
 
 

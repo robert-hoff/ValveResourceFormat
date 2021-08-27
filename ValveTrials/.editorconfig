@@ -7,13 +7,93 @@ charset = utf-8
 trim_trailing_whitespace = true
 # insert_final_newline = true
 
-
-# R: can't seem to get rid of this fucking thing
-dotnet_diagnostic.NU1701.severity = none
-
-
-
 [*.cs]
+
+# R: my additions
+# Some uselss simplication tip
+dotnet_diagnostic.IDE0003.severity = none
+
+# Static holder type
+dotnet_diagnostic.CA1052.severity = none
+
+# unused field
+dotnet_diagnostic.CA1823.severity = none
+
+# member can be removed as its never used
+dotnet_diagnostic.IDE0052.severity = none
+
+# make member read only
+dotnet_diagnostic.IDE0044.severity = none
+
+# unecessary assignment
+dotnet_diagnostic.IDE0059.severity = none
+
+
+
+# unused member
+dotnet_diagnostic.IDE0051.severity = none
+
+# Member is explicitly initialized to its default value
+dotnet_diagnostic.CA1805.severity = none
+
+# Going on about Exceptions needing to be specific
+dotnet_diagnostic.CA2201.severity = none
+
+# Field is never used
+dotnet_diagnostic.CS0169.severity = none
+
+# behaviour of string parsing could vary
+dotnet_diagnostic.CA1305.severity = none
+
+# unused parameters
+dotnet_diagnostic.CA1801.severity = none
+
+# Remove unused parameter
+dotnet_diagnostic.IDE0060.severity = none
+
+# Use discard
+dotnet_diagnostic.IDE0058.severity = none
+
+
+dotnet_diagnostic.CA1806.severity = none
+dotnet_diagnostic.CS0219.severity = none
+dotnet_diagnostic.CA1822.severity = none
+dotnet_diagnostic.CA1310.severity = none
+dotnet_diagnostic.CA1304.severity = none
+dotnet_diagnostic.CA1024.severity = none
+dotnet_diagnostic.CA1054.severity = none
+dotnet_diagnostic.CA2225.severity = none
+dotnet_diagnostic.CA1309.severity = none
+dotnet_diagnostic.CA1307.severity = none
+dotnet_diagnostic.CA1820.severity = none
+dotnet_diagnostic.IDE0071.severity = none
+dotnet_diagnostic.CA1055.severity = none
+dotnet_diagnostic.CA5350.severity = none
+dotnet_diagnostic.IDE0007.severity = none
+dotnet_diagnostic.IDE0011.severity = none
+dotnet_diagnostic.IDE1006.severity = none
+dotnet_diagnostic.CA2211.severity = none
+dotnet_diagnostic.IDE0007.severity = none
+dotnet_diagnostic.IDE0008.severity = none
+dotnet_diagnostic.CS0162.severity = none
+dotnet_diagnostic.CA1812.severity = none
+dotnet_diagnostic.CA1825.severity = none
+
+
+# CA1051 - do not declare visible instance fields
+# do not declare visible instance fields
+# dotnet_diagnostic.CA1051.severity = error
+dotnet_diagnostic.CA1051.severity = none
+
+
+# CA1014: Mark assemblies with CLSCompliant
+dotnet_diagnostic.CA1014.severity = none
+
+
+
+
+# ----------- these definitions came with VRF
+
 # CA1002: Do not expose generic lists.
 dotnet_diagnostic.CA1002.severity = none
 
@@ -39,16 +119,16 @@ dotnet_diagnostic.CA1062.severity = none
 dotnet_diagnostic.CA1303.severity = none
 
 # CA1304: Specify CultureInfo
-dotnet_diagnostic.CA1304.severity = suggestion
+# dotnet_diagnostic.CA1304.severity = none
 
 # CA1305: Specify IFormatProvider
-dotnet_diagnostic.CA1305.severity = suggestion
+# dotnet_diagnostic.CA1305.severity = suggestion
 
 # CA1307: Specify StringComparison
-dotnet_diagnostic.CA1307.severity = suggestion
+# dotnet_diagnostic.CA1307.severity = suggestion
 
 # CA1310: Specify StringComparison for correctness
-dotnet_diagnostic.CA1310.severity = suggestion
+# dotnet_diagnostic.CA1310.severity = suggestion
 
 # CA1508: Avoid dead conditional code
 dotnet_diagnostic.CA1508.severity = none
@@ -90,7 +170,7 @@ dotnet_diagnostic.CA2008.severity = none
 dotnet_diagnostic.CA2119.severity = none
 
 # CA2201: Do not raise reserved exception types
-dotnet_diagnostic.CA2201.severity = suggestion
+# dotnet_diagnostic.CA2201.severity = suggestion
 
 # CA2214: Do not call overridable methods in constructors
 dotnet_diagnostic.CA2214.severity = none
@@ -125,5 +205,86 @@ dotnet_style_null_propagation = true:suggestion
 dotnet_style_explicit_tuple_names = true:suggestion
 
 
-# CA1014: Mark assemblies with CLSCompliant
-dotnet_diagnostic.CA1014.severity = none
+
+
+#
+# CSharp code style settings:
+#
+
+# Newline settings
+csharp_new_line_before_open_brace = all
+csharp_new_line_before_else = true:suggestion
+csharp_new_line_before_catch = true:suggestion
+csharp_new_line_before_finally = true:suggestion
+csharp_new_line_before_members_in_object_initializers = true:suggestion
+csharp_new_line_before_members_in_anonymous_types = true:suggestion
+csharp_new_line_between_query_expression_clauses = true:suggestion
+
+# Indentation preferences
+csharp_indent_block_contents = true:suggestion
+csharp_indent_braces = false:suggestion
+csharp_indent_case_contents = true:suggestion
+csharp_indent_case_contents_when_block = false:suggestion
+csharp_indent_switch_labels = true:suggestion
+csharp_indent_labels = flush_left
+
+# Prefer "var" everywhere
+csharp_style_var_for_built_in_types = true:suggestion
+csharp_style_var_when_type_is_apparent = true:suggestion
+csharp_style_var_elsewhere = true:suggestion
+
+# Prefer method-like constructs to have a block body
+csharp_style_expression_bodied_methods = false:none
+csharp_style_expression_bodied_constructors = false:none
+csharp_style_expression_bodied_operators = false:none
+
+# Prefer property-like constructs to have an expression-body
+csharp_style_expression_bodied_properties = true:none
+csharp_style_expression_bodied_indexers = true:none
+csharp_style_expression_bodied_accessors = true:none
+
+# Suggest more modern language features when available
+csharp_style_pattern_matching_over_is_with_cast_check = true:suggestion
+csharp_style_pattern_matching_over_as_with_null_check = true:suggestion
+csharp_style_inlined_variable_declaration = true:suggestion
+csharp_style_throw_expression = true:suggestion
+csharp_style_conditional_delegate_call = true:suggestion
+
+# Space preferences
+csharp_space_after_cast = false:suggestion
+csharp_space_after_colon_in_inheritance_clause = true:suggestion
+csharp_space_after_comma = true:suggestion
+csharp_space_after_dot = false:suggestion
+csharp_space_after_keywords_in_control_flow_statements = true:suggestion
+csharp_space_after_semicolon_in_for_statement = true:suggestion
+csharp_space_around_binary_operators = before_and_after
+csharp_space_around_declaration_statements = false:suggestion
+csharp_space_before_colon_in_inheritance_clause = true:suggestion
+csharp_space_before_comma = false:suggestion
+csharp_space_before_dot = false:suggestion
+csharp_space_before_open_square_brackets = false:suggestion
+csharp_space_before_semicolon_in_for_statement = false:suggestion
+csharp_space_between_empty_square_brackets = false:suggestion
+csharp_space_between_method_call_empty_parameter_list_parentheses = false:suggestion
+csharp_space_between_method_call_name_and_opening_parenthesis = false:suggestion
+csharp_space_between_method_call_parameter_list_parentheses = false:suggestion
+csharp_space_between_method_declaration_empty_parameter_list_parentheses = false:suggestion
+csharp_space_between_method_declaration_name_and_open_parenthesis = false:suggestion
+csharp_space_between_method_declaration_parameter_list_parentheses = false:suggestion
+csharp_space_between_parentheses = false:suggestion
+csharp_space_between_square_brackets = false:suggestion
+
+# Code style defaults
+csharp_using_directive_placement = outside_namespace:suggestion
+dotnet_sort_system_directives_first = true:suggestion
+csharp_prefer_braces = true:suggestion
+csharp_preserve_single_line_blocks = true:suggestion
+csharp_preserve_single_line_statements = false:suggestion
+csharp_prefer_static_local_function = true:suggestion
+csharp_prefer_simple_using_statement = true:suggestion
+csharp_style_prefer_switch_expression = true:suggestion
+
+
+
+
+

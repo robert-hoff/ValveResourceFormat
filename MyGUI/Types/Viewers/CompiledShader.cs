@@ -11,6 +11,16 @@ namespace MyGUI.Types.Viewers {
             return magic == MyValveResourceFormat.CompiledShader.MAGIC;
         }
 
+        /*
+         *
+         * The Create method is called both when selecting a vcs file directly from the file-dialog
+         * or when selecting a vcs file from inside a valve-pak (vpk archive)
+         *
+         * It's clear looking at this that a TextBox is used when opening a new shader file
+         *
+         *
+         *
+         */
         public TabPage Create(VrfGuiContext vrfGuiContext, byte[] input) {
             var tab = new TabPage();
             var shader = new MyValveResourceFormat.CompiledShader();
@@ -34,6 +44,8 @@ namespace MyGUI.Types.Viewers {
             control.Multiline = true;
             control.ReadOnly = true;
             control.ScrollBars = ScrollBars.Both;
+            // control.TabStop = false;
+            // control.TabIndex = 1;
             tab.Controls.Add(control);
 
             return tab;

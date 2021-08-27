@@ -95,7 +95,6 @@ namespace MyGUI {
                     return i;
                 }
             }
-
             return -1;
         }
 
@@ -212,18 +211,36 @@ namespace MyGUI {
             form.ShowDialog(this);
         }
 
+
+        /*
+         * this is the yellow 'Open' button that triggers the file dialog window
+         * It will normally expect that the user targets a VPK file, but it's also possible to
+         * open other files here
+         *
+         */
         private void OpenToolStripMenuItem_Click(object sender, EventArgs e) {
+
+
+
             using var openDialog = new OpenFileDialog {
                 InitialDirectory = Settings.Config.OpenDirectory,
                 Filter = "Valve Resource Format (*.*_c, *.vpk)|*.*_c;*.vpk;*.vcs|All files (*.*)|*.*",
                 Multiselect = true,
             };
+
+            // R: userOK returns a DialogResult that returns an enum that can have the following values
+            // None, OK, Cancel, Abort, Retry, Ignore, Yes, NO
+            // (99% of the time the result will be 'OK')
+
             var userOK = openDialog.ShowDialog();
+
 
             if (userOK != DialogResult.OK) {
                 return;
             }
 
+            // R: this obviously has something to do with settings
+            // ah, the most recent open folder is obviously saved to the settings for next time
             if (openDialog.FileNames.Length > 0) {
                 Settings.Config.OpenDirectory = Path.GetDirectoryName(openDialog.FileNames[0]);
                 Settings.Save();
@@ -234,7 +251,23 @@ namespace MyGUI {
             }
         }
 
+        /*
+         * R: I'm interested  in what happens when a user opens a shader file, so try for example
+         *
+         * file:        multiblend_pcgl_30_vs.vcs
+         * dir:         X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders\vfx\
+         *
+         * the Dota2 main folder is
+         *
+         *              X:\Steam\steamapps\common\dota 2 beta\game\dota
+         *`
+         *
+         *
+         *
+         */
         public void OpenFile(string fileName, byte[] input = null, TreeViewWithSearchResults.TreeViewPackageTag currentPackage = null) {
+
+
             Console.WriteLine($"Opening {fileName}");
 
             if (input == null && Regex.IsMatch(fileName, @"_[0-9]{3}\.vpk$")) {
@@ -246,6 +279,7 @@ namespace MyGUI {
                 }
             }
 
+            // R: it looks like regardless of what file is selected the new tab will become a 'TabPage'
             var tab = new TabPage(Path.GetFileName(fileName));
             tab.ToolTipText = fileName;
             tab.Controls.Add(new LoadingFile());
@@ -295,6 +329,11 @@ namespace MyGUI {
          * The file from the ValvePak has already been read into byte[] input at this point!
          *
          *
+         * R: regardless of what file is selected it will be passed here. The comments above don't
+         * seem to apply to a file that's not part of a valvepak.
+         * But, however, if a file is selected from within a ValvePak then the byte[] input will be populated
+         *
+         *
          */
         private TabPage ProcessFile(string fileName, byte[] input, TreeViewWithSearchResults.TreeViewPackageTag currentPackage) {
             uint magic = 0;
@@ -333,10 +372,24 @@ namespace MyGUI {
              */
             var vrfGuiContext = new VrfGuiContext(fileName, currentPackage);
 
+            // R: it looks like VrfGuiContext
+            // Debug.WriteLine($"{ vrfGuiContext.ShaderLoader}");
+
+
+
+
             if (Types.Viewers.Package.IsAccepted(magic)) {
 
                 // R: Package here is the interface viewer for the ValvePak (it probably needs a list of icons)
                 // I'm guessing the MainForm is instantiated with the icons (or ImageList) - the Package.ImageList get a pointer to this
+
+                /*
+                 * Package inherits from IViewer which offers the method
+                 *
+                 *      public TabPage Create(VrfGuiContext vrfGuiContext, byte[] input);
+                 *
+                 *
+                 */
                 var tab = new Types.Viewers.Package {
                     ImageList = ImageList, // TODO: Move this directly into Package
                 }.Create(vrfGuiContext, input);
@@ -346,7 +399,12 @@ namespace MyGUI {
 
                 return tab;
             } else if (Types.Viewers.CompiledShader.IsAccepted(magic)) {
-
+                /*
+                 * All of these things inherit from IViewer, so it's apparent that the key class in all of this is the TabPage
+                 * that is returned with create
+                 *
+                 *
+                 */
                 return new Types.Viewers.CompiledShader().Create(vrfGuiContext, input);
             } else if (Types.Viewers.ClosedCaptions.IsAccepted(magic)) {
 
