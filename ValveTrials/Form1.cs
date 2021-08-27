@@ -29,6 +29,10 @@ namespace ValveTrials
             StartPosition = FormStartPosition.Manual;
             Location = new Point(left, top);
             Size = new Size(width, height);
+
+
+            // Debug.WriteLine(RichTextBoxScrollBars.ForcedVertical | RichTextBoxScrollBars.Horizontal);
+            // Debug.WriteLine("hello");
         }
 
         private void goToolStripMenuItem_Click(object sender, EventArgs e)
@@ -37,15 +41,17 @@ namespace ValveTrials
             // TestVRF1.doIt();
             // tabControl1.TabPages.Clear();
 
-            (TabPage, TextBox) controlz = TestVRF1.makeANewTag();
+            // (TabPage, TextBox) controlz = TestVRF1.makeANewTag();
+            (TabPage, MyRichTextBox) controlz = ShaderTextDisplayTab.Create();
             TabPage tab = controlz.Item1;
             mainTabs.TabPages.Add(tab);
             mainTabs.SelectTab(tab);
-            // Console.WriteLine("new tab created!!!");
 
-            controlz.Item2.DeselectAll();
-            // tabControl1.Controls.
+            // controlz.Item2.Click += new System.EventHandler((controlz.Item2).Link_Clicked);
+            controlz.Item2.LinkClicked += new LinkClickedEventHandler((controlz.Item2).Link_Clicked);
+
         }
+
 
         protected override void OnClosing(CancelEventArgs e)
         {
