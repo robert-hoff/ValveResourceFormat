@@ -22,7 +22,8 @@ namespace MyShaderAnalysis.compat
         static void Trials1()
         {
 
-            ShaderFile shaderFile = new ReadShaderFile(@$"{PCGL_DIR_NOT_CORE}/water_dota_pcgl_30_ps.vcs").GetShaderFile();
+            string filenamepath = @$"{PCGL_DIR_NOT_CORE}/water_dota_pcgl_30_ps.vcs";
+            ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
             foreach (var sfBlock in shaderFile.sfBlocks)
             {
 

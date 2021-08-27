@@ -543,6 +543,7 @@ namespace Decompiler
             try
             {
                 shader.Read(path, stream);
+                shader.PrintSummary();
             }
             catch (Exception e)
             {

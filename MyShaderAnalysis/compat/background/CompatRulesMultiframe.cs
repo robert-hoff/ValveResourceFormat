@@ -42,7 +42,7 @@ namespace MyShaderAnalysis.compat
             List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsProgramType.Undetermined, -1);
             foreach (string filenamepath in allVcsFiles)
             {
-                ShaderFile shaderFile = new ReadShaderFile(filenamepath).GetShaderFile();
+                ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
                 foreach (var item in shaderFile.sfBlocks)
                 {
                     map[item.name0] = 1;
@@ -67,7 +67,7 @@ namespace MyShaderAnalysis.compat
         {
 
             string vcsFilenamepath = @$"{PCGL_DIR_NOT_CORE}/multiblend_pcgl_30_ps.vcs";
-            ShaderFile shaderFile = new ReadShaderFile(vcsFilenamepath).GetShaderFile();
+            ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(vcsFilenamepath);
 
             offset = new int[shaderFile.sfBlocks.Count];
             layers = new int[shaderFile.sfBlocks.Count];

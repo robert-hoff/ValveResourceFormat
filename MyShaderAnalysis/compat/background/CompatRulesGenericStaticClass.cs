@@ -46,7 +46,7 @@ namespace MyShaderAnalysis.compat
             string vcsFilenamepath = @$"{PCGL_DIR_NOT_CORE}/multiblend_pcgl_30_ps.vcs";
             // string vcsFilenamepath = @$"{PCGL_DIR_CORE}/blur_pcgl_30_ps.vcs";
             // string vcsFilenamepath = @$"{PCGL_DIR_NOT_CORE}/water_dota_pcgl_30_ps.vcs";
-            ShaderFile shaderFile = new ReadShaderFile(vcsFilenamepath).GetShaderFile();
+            ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(vcsFilenamepath);
             GenerateZFrames(shaderFile);
         }
 

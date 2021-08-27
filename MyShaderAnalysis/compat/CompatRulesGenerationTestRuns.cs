@@ -30,7 +30,7 @@ namespace MyShaderAnalysis.compat
             string vcsFilenamepath = @$"{PCGL_DIR_NOT_CORE}/refract_pcgl_30_ps.vcs";
             // string vcsFilenamepath = @$"{PCGL_DIR_NOT_CORE}/water_dota_pcgl_30_ps.vcs";
 
-            ShaderFile shaderFile = new ReadShaderFile(vcsFilenamepath).GetShaderFile();
+            ShaderFile shaderFile =ReadShaderFile.InstantiateShaderFile(vcsFilenamepath);
             ConfigMappingSParams configGen = new(shaderFile);
             // zframeGen.ShowOffsetAndLayersArrays();
 

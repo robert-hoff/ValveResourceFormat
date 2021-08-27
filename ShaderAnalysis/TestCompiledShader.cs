@@ -38,7 +38,7 @@ namespace ShaderAnalysis
         {
             // string filenamepath = $"{PCGL_DIR_NOT_CORE}/grasstile_pcgl_30_ps.vcs";
             string filenamepath = $"{PCGL_DIR_NOT_CORE}/grasstile_preview_pcgl_30_ps.vcs";
-            ShaderFile shaderFile = new ReadShaderFile(filenamepath).GetShaderFile();
+            ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
             Console.WriteLine($"{shaderFile.GetZFrameCount()}");
         }
 
@@ -48,7 +48,7 @@ namespace ShaderAnalysis
         static void Trial5()
         {
             string filenamepath = $"{TEST_SHADERS_DIR}/error_vulkan_40_vs.vcs";
-            ShaderFile shaderFile = new ReadShaderFile(filenamepath).GetShaderFile();
+            ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
             ZFrameFile zframeFile = shaderFile.GetZFrameFile(0, omitParsing: true);
             zframeFile.PrintByteAnalysis();
         }
@@ -67,7 +67,7 @@ namespace ShaderAnalysis
             // string filenamepath = $"{TEST_SHADERS_DIR}/error_vulkan_40_vs.vcs";
             // string filenamepath = $"{ALYX_VULKAN_CORE}/brushsplat_vulkan_40_ps.vcs";
             string filenamepath = $"{PC_DIR_CORE}/debugoverlay_wireframe_pc_40_ps.vcs";
-            ShaderFile shaderFile = new ReadShaderFile(filenamepath).GetShaderFile();
+            ShaderFile shaderFile  = ReadShaderFile.InstantiateShaderFile(filenamepath);
             shaderFile.PrintByteAnalysis(shortenOutput: false);
         }
 
@@ -89,7 +89,7 @@ namespace ShaderAnalysis
             // string filenamepath = $"{FileSystem.ARTIFACT_CLASSIC_CORE_PC_SOURCE}/refract_pc_30_ps.vcs";
             // string filenamepath = $"{FileSystem.ARTIFACT_CLASSIC_CORE_PC_SOURCE}/refract_pc_30_features.vcs";
             string filenamepath = $"{FileSystem.DOTA_CORE_PCGL_SOURCE}/generic_light_pcgl_40_ps.vcs";
-            ShaderFile shaderFile = new ReadShaderFile(filenamepath).GetShaderFile();
+            ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
 
             // Console.WriteLine($"{shaderFile.GetZFrameCount()}");
             shaderFile.PrintByteAnalysis(shortenOutput: false);

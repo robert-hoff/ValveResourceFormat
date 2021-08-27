@@ -7,7 +7,7 @@ using static MyShaderAnalysis.utilhelpers.FileSystem;
 using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
 using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
-
+using System.Diagnostics;
 
 namespace MyShaderAnalysis
 {
@@ -24,8 +24,8 @@ namespace MyShaderAnalysis
             // Trial3();
             // PrintAllByteAnalysis();
             // RunSingleFileByteAnalysis();
-            // PrintZFramesAllFiles();
-            PrintZFramesSingleFile();
+            PrintZFramesAllFiles();
+            // PrintZFramesSingleFile();
             // PrintGlslAllFiles();
             // PrintGlslSingleFiles();
             output.CloseStreamWriter();
@@ -36,10 +36,11 @@ namespace MyShaderAnalysis
         {
             // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PC_SOURCE, DOTA_GAME_PC_SOURCE, VcsFileType.Any, -1);
             // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PCGL_SOURCE, DOTA_GAME_PCGL_SOURCE, VcsFileType.Any, -1);
-            List<string> vcsFiles = GetVcsFiles(DOTA_CORE_MOBILE_GLES_SOURCE, DOTA_DAC_MOBILE_GLES_SOURCE, VcsProgramType.Undetermined, -1);
-
+            // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_MOBILE_GLES_SOURCE, DOTA_DAC_MOBILE_GLES_SOURCE, VcsProgramType.Undetermined, -1);
+            List<string> vcsFiles = GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsProgramType.Undetermined, -1);
             foreach (var filenamepath in vcsFiles)
             {
+                Console.WriteLine(filenamepath);
                 FileTokens fileTokens = new FileTokens(filenamepath);
                 if (fileTokens.vcsFiletype == VcsProgramType.ComputeShader || fileTokens.vcsFiletype == VcsProgramType.GeometryShader)
                 {
@@ -130,14 +131,15 @@ namespace MyShaderAnalysis
 
 
 
-        const int LIMIT_ZFRAME_PRINTOUT = 20;
+        const int LIMIT_ZFRAME_PRINTOUT = 5;
 
 
         static void PrintZFramesAllFiles()
         {
             // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PCGL_SOURCE, DOTA_GAME_PCGL_SOURCE, VcsFileType.Any, -1);
             // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_MOBILE_GLES_SOURCE, DOTA_DAC_MOBILE_GLES_SOURCE, VcsFileType.Any, 30);
-            List<string> vcsFiles = GetVcsFiles(DOTA_CORE_MOBILE_GLES_SOURCE, DOTA_DAC_MOBILE_GLES_SOURCE, VcsProgramType.Undetermined, -1);
+            // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_MOBILE_GLES_SOURCE, DOTA_DAC_MOBILE_GLES_SOURCE, VcsProgramType.Undetermined, -1);
+            List<string> vcsFiles = GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsProgramType.Undetermined, -1);
 
             foreach (var filenamepath in vcsFiles)
             {

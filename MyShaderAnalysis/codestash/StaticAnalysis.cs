@@ -148,7 +148,7 @@ namespace MyShaderAnalysis
             // List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, null, FILETYPE.any, 30);
             foreach (string vcsFilenamepath in allVcsFiles)
             {
-                ShaderFile shaderFile = new ReadShaderFile(vcsFilenamepath).GetShaderFile();
+                ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(vcsFilenamepath);
                 foreach (DConstraintsBlock uknBlock in shaderFile.dConstraintsBlocks)
                 {
 

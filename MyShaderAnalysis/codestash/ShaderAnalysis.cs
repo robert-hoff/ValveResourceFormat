@@ -122,7 +122,7 @@ namespace MyShaderAnalysis
             {
                 // string filenamepath = @$"{directoryToUse}/{filename}";
                 WriteVcsByteAnalysisToHtml(filenamepath, writeHtmlLinks: true);
-                ShaderFile shaderFile = new ReadShaderFile(filenamepath).GetShaderFile();
+                ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
                 int zFrameCount = shaderFile.GetZFrameCount();
                 for (int i = 0; i < zFrameCount; i++)
                 {
@@ -164,7 +164,7 @@ namespace MyShaderAnalysis
                 string token = GetCoreOrDotaString(filenamepath);
                 string outputdir = @$"Z:/dev/www/vcs.codecreation.dev/vcs-all/{token}/zsource";
 
-                ShaderFile shaderFile = new ReadShaderFile(filenamepath).GetShaderFile();
+                ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
                 //int zframesToWrite = 100;
                 //if (shaderFile.GetZFrameCount() < zframesToWrite) {
                 //    zframesToWrite = shaderFile.GetZFrameCount();
@@ -233,7 +233,7 @@ namespace MyShaderAnalysis
                     outputdir = @$"Z:/dev/www/vcs.codecreation.dev/vcs-all/{token}/zsource";
                 }
 
-                ShaderFile shaderFile = new ReadShaderFile(filenamepath).GetShaderFile();
+                ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
                 int zframesToWrite = ZFRAME_FILES_TO_WRITE;
                 if (shaderFile.GetZFrameCount() < zframesToWrite)
                 {
@@ -359,7 +359,7 @@ namespace MyShaderAnalysis
             List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsProgramType.PixelShader, 30);
             foreach (string vcsFile in vcsFiles)
             {
-                ShaderFile shaderFile = new ReadShaderFile(vcsFile).GetShaderFile();
+                ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(vcsFile);
                 if (shaderFile.GetZFrameCount() == 0)
                 {
                     continue;
@@ -381,7 +381,7 @@ namespace MyShaderAnalysis
             List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsProgramType.Undetermined, -1);
             foreach (string vcsFile in vcsFiles)
             {
-                ShaderFile shaderFile = new ReadShaderFile(vcsFile).GetShaderFile();
+                ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(vcsFile);
                 int zcount = shaderFile.GetZFrameCount();
                 int nrToParse = zcount > 100 ? 100 : zcount;
                 if (nrToParse == 0)
@@ -401,7 +401,7 @@ namespace MyShaderAnalysis
 
         static void WriteZFrameToFileByZframeId(string filenamepath, long zframeId)
         {
-            ShaderFile shaderFile = new ReadShaderFile(filenamepath).GetShaderFile();
+            ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
             byte[] zframeDatabytes = shaderFile.GetDecompressedZFrame(zframeId);
             string outputFilenamepath = @$"{OUTPUT_DIR}/{GetZframeTxtFilename((uint)zframeId, filenamepath)}";
             StreamWriter sw = new(outputFilenamepath);
@@ -416,7 +416,7 @@ namespace MyShaderAnalysis
         // THIS OUTPUTS FUCKING txt (which can be good!)
         static void WriteZFrameToFile(string filenamepath, int zframeIndex)
         {
-            ShaderFile shaderFile = new ReadShaderFile(filenamepath).GetShaderFile();
+            ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
             byte[] zframeDatabytes = shaderFile.GetDecompressedZFrameByIndex(zframeIndex);
             string outputFilenamepath = @$"{OUTPUT_DIR}/{GetZframeTxtFilename((uint)shaderFile.GetZFrameIdByIndex(zframeIndex), filenamepath)}";
             StreamWriter sw = new(outputFilenamepath);
@@ -445,7 +445,7 @@ namespace MyShaderAnalysis
 
         static void PrintZFrame(string filenamepath, int zframeIndex, bool disableOutput = false)
         {
-            ShaderFile shaderFile = new ReadShaderFile(filenamepath).GetShaderFile();
+            ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
             byte[] zframeDatabytes = shaderFile.GetDecompressedZFrameByIndex(zframeIndex);
             PrintZFrame(zframeDatabytes, shaderFile.vcsProgramType, shaderFile.vcsPlatformType, disableOutput);
         }
@@ -472,7 +472,7 @@ namespace MyShaderAnalysis
             foreach (string filenamepath in vcsFiles)
             {
                 Console.Write($"parsing {RemoveBaseDir(filenamepath)}");
-                ShaderFile shaderFile = new ReadShaderFile(filenamepath).GetShaderFile();
+                ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
                 Console.WriteLine($"{shaderFile.GetZFrameCount()}");
             }
         }
@@ -486,7 +486,7 @@ namespace MyShaderAnalysis
             // string filenamepath = PCGL_DIR_CORE + @"/apply_fog_pcgl_40_features.vcs";
             // string filenamepath = ARTIFACT_CLASSIC_CORE_PC_SOURCE + @"/aerial_perspective_pc_30_ps.vcs";
             // string filenamepath = ARTIFACT_CLASSIC_CORE_PC_SOURCE + @"/bilateral_blur_pc_30_vs.vcs";
-            ShaderFile shaderFile = new ReadShaderFile(filenamepath).GetShaderFile();
+            ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
 
 
         }

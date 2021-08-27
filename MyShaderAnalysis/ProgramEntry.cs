@@ -4,6 +4,7 @@ using System.Diagnostics;
 using ValveResourceFormat.CompiledShader;
 using static MyShaderAnalysis.utilhelpers.FileSystem;
 using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
+using MyShaderAnalysis.utilhelpers;
 
 namespace MyShaderAnalysis
 {
@@ -32,13 +33,13 @@ namespace MyShaderAnalysis
             // PrintoutsZframes1.RunTrials();
             // StaticAnalysisZframes.RunTrials();
 
-            PrintoutsSingleFile.RunTrials();
+            // PrintoutsSingleFile.RunTrials();
             // StaticAnalysis2.RunTrials();
             // StaticAnalysis.RunTrials();
 
-
             // PrintoutsByteAnalysis.RunTrials();
             // ShaderAnalysis.RunTrials();
+            TestBasics.RunTrials();
 
             // Snippetcode.RunTrials();
             // LzmaAnalysis.RunTrials();
