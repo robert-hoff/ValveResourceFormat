@@ -23,7 +23,7 @@ namespace MyShaderAnalysis.utilhelpers
         {
             string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs";
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
-            // Console.WriteLine($"{shaderFile.GetZFrameCount()}");
+            Console.WriteLine($"{shaderFile.GetZFrameCount()}");
         }
 
 

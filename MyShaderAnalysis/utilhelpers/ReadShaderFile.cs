@@ -35,9 +35,9 @@ namespace MyShaderAnalysis.utilhelpers
 
         public static ShaderFile InstantiateShaderFile(string filenamepath)
         {
-            // ShaderFile shaderFile = new ReadShaderFile(filenamepath).GetShaderFile();
-            // return shaderFile;
-            return new ShaderFile(filenamepath);
+            ShaderFile shaderFile = new ShaderFile();
+            shaderFile.Read(filenamepath);
+            return shaderFile;
         }
     }
 }
