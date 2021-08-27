@@ -23,8 +23,8 @@ namespace MyShaderAnalysis
             // Trial2();
             // Trial3();
             // PrintAllByteAnalysis();
-            // RunSingleFileByteAnalysis();
-            PrintZFramesAllFiles();
+            RunSingleFileByteAnalysis();
+            // PrintZFramesAllFiles();
             // PrintZFramesSingleFile();
             // PrintGlslAllFiles();
             // PrintGlslSingleFiles();
@@ -86,7 +86,15 @@ namespace MyShaderAnalysis
         static void PrintSingleFileByteAnalysis(string filenamepath, string outputFilenamepath = null,
             bool writeFile = false, bool disableOutput = false)
         {
-            ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
+            ShaderFile shaderFile = null;
+            try
+            {
+                shaderFile = InstantiateShaderFile(filenamepath);
+            } catch (Exception)
+            {
+                Console.WriteLine($"ERROR! couldn't parse {filenamepath}");
+                return;
+            }
             FileTokens fileTokens = new FileTokens(filenamepath);
             if (outputFilenamepath != null && writeFile)
             {
@@ -143,10 +151,20 @@ namespace MyShaderAnalysis
 
             foreach (var filenamepath in vcsFiles)
             {
+                Console.WriteLine($"{filenamepath}");
                 FileTokens fileTokens = new FileTokens(filenamepath);
                 string zframesServerDir = fileTokens.GetZFramesServerDir(createDirs: true);
 
-                ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
+                ShaderFile shaderFile = null;
+                try
+                {
+                    shaderFile = InstantiateShaderFile(filenamepath);
+                } catch (ShaderParserException e)
+                {
+                    Console.WriteLine($"ERROR! couldn't parse {filenamepath}");
+                    Console.WriteLine(e);
+                    continue;
+                }
                 int zframesToPrint = Math.Min(shaderFile.GetZFrameCount(), LIMIT_ZFRAME_PRINTOUT);
                 for (int i = 0; i < zframesToPrint; i++)
                 {

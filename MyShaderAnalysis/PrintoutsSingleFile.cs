@@ -84,15 +84,12 @@ namespace MyShaderAnalysis
         {
             // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PC_SOURCE, DOTA_GAME_PC_SOURCE, VcsFileType.Any, -1);
             // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PCGL_SOURCE, DOTA_GAME_PCGL_SOURCE, VcsFileType.Any, -1);
-            List<string> vcsFiles = GetVcsFiles(DOTA_CORE_MOBILE_GLES_SOURCE, DOTA_DAC_MOBILE_GLES_SOURCE, VcsProgramType.Undetermined, -1);
+            // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_MOBILE_GLES_SOURCE, DOTA_DAC_MOBILE_GLES_SOURCE, VcsProgramType.Undetermined, -1);
+            List<string> vcsFiles = GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsProgramType.Undetermined, -1);
 
             foreach (var filenamepath in vcsFiles)
             {
                 FileTokens fileTokens = new FileTokens(filenamepath);
-                if (fileTokens.vcsFiletype == VcsProgramType.ComputeShader || fileTokens.vcsFiletype == VcsProgramType.GeometryShader)
-                {
-                    continue;
-                }
                 string outputFilenamepath = $"{fileTokens.GetServerFilenamepath("summary2", createDirs: true)}";
                 PrintSingleFileFullSummary(filenamepath, outputFilenamepath, writeFile: true, disableOutput: true);
                 output.CloseStreamWriter();
@@ -113,7 +110,8 @@ namespace MyShaderAnalysis
             // vcsFiles.Add($"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_features.vcs");
             // vcsFiles.Add($"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs");
             // vcsFiles.Add($"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_features.vcs");
-            vcsFiles.Add($"{DOTA_GAME_PCGL_SOURCE}/water_dota_pcgl_30_ps.vcs");
+            // vcsFiles.Add($"{DOTA_GAME_PCGL_SOURCE}/water_dota_pcgl_30_ps.vcs");
+            vcsFiles.Add($"{ARTIFACT_CLASSIC_CORE_PC_SOURCE}/depth_only_pc_40_vs.vcs");
 
 
             FileTokens fileTokens = new FileTokens(vcsFiles[0]);
@@ -137,7 +135,15 @@ namespace MyShaderAnalysis
                     output.DisableOutput();
                 }
             }
-            ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
+            ShaderFile shaderFile = null;
+            try
+            {
+                shaderFile = InstantiateShaderFile(filenamepath);
+            } catch (Exception)
+            {
+                Console.WriteLine($"ERROR! couldn't parse this file {filenamepath}");
+                return;
+            }
             if (shaderFile.vcsProgramType == VcsProgramType.Features)
             {
                 PrintFeaturesHeader(shaderFile, fileTokens);

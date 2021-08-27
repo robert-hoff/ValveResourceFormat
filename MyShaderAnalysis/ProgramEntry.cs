@@ -33,13 +33,13 @@ namespace MyShaderAnalysis
             // PrintoutsZframes1.RunTrials();
             // StaticAnalysisZframes.RunTrials();
 
-            // PrintoutsSingleFile.RunTrials();
+            PrintoutsSingleFile.RunTrials();
             // StaticAnalysis2.RunTrials();
             // StaticAnalysis.RunTrials();
 
             // PrintoutsByteAnalysis.RunTrials();
             // ShaderAnalysis.RunTrials();
-            TestBasics.RunTrials();
+            // TestBasics.RunTrials();
 
             // Snippetcode.RunTrials();
             // LzmaAnalysis.RunTrials();

@@ -61,7 +61,7 @@ namespace MyShaderAnalysis
             // - prints a single page summary and links to all the files produced with FileSummaryAllFiles()
             // BlockCountSurvery($@"{SERVER_OUTPUT_DIR}/file-overview.html", writeFile: true);
             // BlockCountSurvery($@"{SERVER_OUTPUT_DIR}/files-mobile-gles.html", writeFile: true);
-
+            BlockCountSurvery($@"{SERVER_OUTPUT_DIR}/files-artifact-classic.html", writeFile: true);
 
             // NOTE - currently points to Artifact classic
             // BlockCountSurvery($@"{SERVER_OUTPUT_DIR}/testfile.html", writeFile: true);
@@ -70,7 +70,7 @@ namespace MyShaderAnalysis
 
 
 
-            FileSummarySingleFile();
+            // FileSummarySingleFile();
             // ZFramePrintout();
 
 
@@ -353,8 +353,8 @@ namespace MyShaderAnalysis
         static void FileSummaryAllFiles()
         {
             // List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, -1);
-            List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(DOTA_CORE_MOBILE_GLES_SOURCE, DOTA_DAC_MOBILE_GLES_SOURCE, -1);
-            // List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, -1);
+            // List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(DOTA_CORE_MOBILE_GLES_SOURCE, DOTA_DAC_MOBILE_GLES_SOURCE, -1);
+            List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, -1);
             foreach (var triple in triples)
             {
                 WriteVsPsFileSummary(triple, VcsProgramType.VertexShader, disableOutput: true);
@@ -436,9 +436,9 @@ namespace MyShaderAnalysis
             if (outputFilenamepath != null && writeFile)
             {
                 ConfigureOutputFile(outputFilenamepath);
-                // WriteHtmlFile("Files", "Vcs files / Artifact classic");
+                WriteHtmlFile("Files", "Vcs files / Artifact classic");
                 // WriteHtmlFile("Files", "Vcs files Dota PCGL");
-                WriteHtmlFile("Files-gles", "Vcs files Mobile GLES");
+                // WriteHtmlFile("Files-gles", "Vcs files Mobile GLES");
             }
             string fH = "File";
             string sfH = "SF blocks";
@@ -457,8 +457,8 @@ namespace MyShaderAnalysis
 
 
             // List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Any, -1);
-            List<string> allVcsFiles = GetVcsFiles(DOTA_CORE_MOBILE_GLES_SOURCE, DOTA_DAC_MOBILE_GLES_SOURCE, VcsProgramType.Undetermined, -1);
-            // List<string> allVcsFiles = GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsFileType.Any, -1);
+            // List<string> allVcsFiles = GetVcsFiles(DOTA_CORE_MOBILE_GLES_SOURCE, DOTA_DAC_MOBILE_GLES_SOURCE, VcsProgramType.Undetermined, -1);
+            List<string> allVcsFiles = GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsProgramType.Undetermined, -1);
 
 
             //List<string> allVcsFiles = new();
@@ -478,7 +478,16 @@ namespace MyShaderAnalysis
 
         static void FileBlockCount(string filenamepath)
         {
-            ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
+            ShaderFile shaderFile = null;
+            try
+            {
+            shaderFile = InstantiateShaderFile(filenamepath);
+            } catch (Exception)
+            {
+                Console.WriteLine($"ERROR! couldn't parse this file {filenamepath}");
+                return;
+            }
+
             int sfCount = shaderFile.sfBlocks.Count;
             int cCount = shaderFile.sfConstraintsBlocks.Count;
             int dCount = shaderFile.dBlocks.Count;
