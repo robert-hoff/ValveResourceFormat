@@ -82,10 +82,10 @@ namespace MyShaderAnalysis
 
         static void PrintAllFiles()
         {
-            // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PC_SOURCE, DOTA_GAME_PC_SOURCE, VcsFileType.Any, -1);
-            // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PCGL_SOURCE, DOTA_GAME_PCGL_SOURCE, VcsFileType.Any, -1);
+            // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PC_SOURCE, DOTA_GAME_PC_SOURCE, VcsProgramType.Undetermined, -1);
+            List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PCGL_SOURCE, DOTA_GAME_PCGL_SOURCE, VcsProgramType.Undetermined, -1);
             // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_MOBILE_GLES_SOURCE, DOTA_DAC_MOBILE_GLES_SOURCE, VcsProgramType.Undetermined, -1);
-            List<string> vcsFiles = GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsProgramType.Undetermined, -1);
+            // List<string> vcsFiles = GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsProgramType.Undetermined, -1);
 
             foreach (var filenamepath in vcsFiles)
             {
@@ -111,7 +111,9 @@ namespace MyShaderAnalysis
             // vcsFiles.Add($"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs");
             // vcsFiles.Add($"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_features.vcs");
             // vcsFiles.Add($"{DOTA_GAME_PCGL_SOURCE}/water_dota_pcgl_30_ps.vcs");
-            vcsFiles.Add($"{ARTIFACT_CLASSIC_CORE_PC_SOURCE}/depth_only_pc_40_vs.vcs");
+            // vcsFiles.Add($"{DOTA_GAME_PCGL_SOURCE}/visualize_physics_pcgl_40_gs.vcs");
+            vcsFiles.Add($"{DOTA_CORE_PCGL_SOURCE}/visualize_physics_pcgl_40_gs.vcs");
+            // vcsFiles.Add($"{ARTIFACT_CLASSIC_CORE_PC_SOURCE}/depth_only_pc_40_vs.vcs");
 
 
             FileTokens fileTokens = new FileTokens(vcsFiles[0]);

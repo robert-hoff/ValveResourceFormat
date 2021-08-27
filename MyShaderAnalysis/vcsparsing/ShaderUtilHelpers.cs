@@ -184,6 +184,10 @@ namespace ValveResourceFormat.CompiledShader
 
         public static string BytesToString(byte[] databytes, int breakLen = 32)
         {
+            if (databytes == null || databytes.Length==0)
+            {
+                return "";
+            }
             if (breakLen == -1)
             {
                 breakLen = int.MaxValue;

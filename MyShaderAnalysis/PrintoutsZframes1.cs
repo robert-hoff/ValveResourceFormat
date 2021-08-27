@@ -59,15 +59,20 @@ namespace MyShaderAnalysis
             // ZFileSummary(ARCHIVE.dotacore_pcgl, "copytexture_pcgl_30_vs.vcs", 0x0, writeFile: true);
             // ZFileSummary(ARCHIVE.artifact_classiccore_pc, "generic_pc_30_ps.vcs", 0x10, writeFile: true);
             // ZFileSummary(ARCHIVE.dota_core_gles, "copytexture_mobile_gles_30_ps.vcs", 0x0, writeFile: true);
-            ZFileSummary(ARCHIVE.artifact_classiccore_pc, "depth_only_pc_40_vs.vcs", 0x0, writeFile: true, disableOutput: true);
+            // ZFileSummary(ARCHIVE.artifact_classiccore_pc, "depth_only_pc_40_vs.vcs", 0x0, writeFile: true, disableOutput: true);
             // WriteBunchOfZframes();
+
+
+
+            // ZFileSummary(ARCHIVE.dotagame_pcgl, "visualize_physics_pcgl_40_gs.vcs", 0x0, writeFile: true);
+
+
+            ZFileSummary(ARCHIVE.dotacore_pcgl, "visualize_physics_pcgl_40_gs.vcs", 0x0, writeFile: true);
+            // ZFileSummary(ARCHIVE.dotacore_pcgl, "debug_show_texture_pcgl_30_vs.vcs", 0x0, writeFile: true);
+
+
+
             // PrintZframeFileDirectory(SERVER_OUTPUT_DIR, writeFile: true);
-
-
-
-
-
-
         }
 
 
@@ -75,10 +80,10 @@ namespace MyShaderAnalysis
         static void WriteBunchOfZframes()
         {
             int NUM_TO_PRINT = 50;
-            // List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, -1);
+            List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, -1);
             // List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, 30);
             // List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(DOTA_CORE_MOBILE_GLES_SOURCE, DOTA_DAC_MOBILE_GLES_SOURCE, -1);
-            List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, -1);
+            // List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, -1);
 
 
             int count = 0;
@@ -181,7 +186,7 @@ namespace MyShaderAnalysis
         static Dictionary<int, GpuSource> GetBlockIdToSource(ZFrameFile zframeFile)
         {
             Dictionary<int, GpuSource> blockIdToSource = new();
-            if (zframeFile.vcsProgramType == VcsProgramType.VertexShader)
+            if (zframeFile.vcsProgramType == VcsProgramType.VertexShader || zframeFile.vcsProgramType == VcsProgramType.GeometryShader)
             {
                 foreach (VsEndBlock vsEndBlock in zframeFile.vsEndBlocks)
                 {
@@ -274,7 +279,7 @@ namespace MyShaderAnalysis
             OutputWriteLine(new string('-', configHeader.Length));
             PrintAbbreviations(shaderFile);
             List<int> activeBlockIds = GetActiveBlockIds(zframeFile);
-            OutputWriteLine("");
+
 
             List<string> dParamNames = new();
             foreach (DBlock dBlock in shaderFile.dBlocks)
@@ -322,7 +327,7 @@ namespace MyShaderAnalysis
         static List<int> GetActiveBlockIds(ZFrameFile zframeFile)
         {
             List<int> blockIds = new();
-            if (zframeFile.vcsProgramType == VcsProgramType.VertexShader)
+            if (zframeFile.vcsProgramType == VcsProgramType.VertexShader || zframeFile.vcsProgramType == VcsProgramType.GeometryShader)
             {
                 foreach (VsEndBlock vsEndBlock in zframeFile.vsEndBlocks)
                 {
@@ -400,6 +405,11 @@ namespace MyShaderAnalysis
                 string abbreviation = $"{dBlock.name0}({ShortenShaderParam(dBlock.name0).ToLower()})";
                 abbreviations.Add(abbreviation);
             }
+            if (abbreviations.Count == 0)
+            {
+                return;
+            }
+
             string[] breakabbreviations = CombineValuesBreakString(abbreviations.ToArray(), 120);
             if (breakabbreviations.Length == 1 && breakabbreviations[0] == "")
             {
@@ -408,6 +418,7 @@ namespace MyShaderAnalysis
             foreach (string abbr in breakabbreviations)
             {
                 OutputWriteLine(abbr.Replace("(", "<span style='color: blue'>(").Replace(")", "</span>)"));
+                OutputWriteLine("");
             }
         }
 
@@ -683,8 +694,12 @@ namespace MyShaderAnalysis
                     {
                         OutputWriteLine("// data-section 2");
                         OutputWriteLine($"{BytesToString(psEndBlock.data2[0..3])}");
-                        OutputWriteLine($"{BytesToString(psEndBlock.data2[3..11])}");
-                        OutputWriteLine($"{BytesToString(psEndBlock.data2[11..75])}");
+                        // OutputWriteLine($"{BytesToString(psEndBlock.data2[3..11])}");
+                        // OutputWriteLine($"{BytesToString(psEndBlock.data2[11..75])}");
+
+                        OutputWriteLine($"{BytesToString(psEndBlock.data2[3..27])}");
+                        OutputWriteLine($"{BytesToString(psEndBlock.data2[27..51])}");
+                        OutputWriteLine($"{BytesToString(psEndBlock.data2[51..75])}");
                     }
                     OutputWriteLine("");
                 }

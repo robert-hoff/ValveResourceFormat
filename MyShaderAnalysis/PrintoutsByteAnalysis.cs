@@ -42,7 +42,7 @@ namespace MyShaderAnalysis
             {
                 Console.WriteLine(filenamepath);
                 FileTokens fileTokens = new FileTokens(filenamepath);
-                if (fileTokens.vcsFiletype == VcsProgramType.ComputeShader || fileTokens.vcsFiletype == VcsProgramType.GeometryShader)
+                if (fileTokens.vcsProgramType == VcsProgramType.ComputeShader || fileTokens.vcsProgramType == VcsProgramType.GeometryShader)
                 {
                     continue;
                 }

@@ -59,9 +59,9 @@ namespace MyShaderAnalysis
             // FileSummaryAllFiles();
 
             // - prints a single page summary and links to all the files produced with FileSummaryAllFiles()
-            // BlockCountSurvery($@"{SERVER_OUTPUT_DIR}/file-overview.html", writeFile: true);
+            BlockCountSurvery($@"{SERVER_OUTPUT_DIR}/file-overview.html", writeFile: true);
             // BlockCountSurvery($@"{SERVER_OUTPUT_DIR}/files-mobile-gles.html", writeFile: true);
-            BlockCountSurvery($@"{SERVER_OUTPUT_DIR}/files-artifact-classic.html", writeFile: true);
+            // BlockCountSurvery($@"{SERVER_OUTPUT_DIR}/files-artifact-classic.html", writeFile: true);
 
             // NOTE - currently points to Artifact classic
             // BlockCountSurvery($@"{SERVER_OUTPUT_DIR}/testfile.html", writeFile: true);
@@ -436,8 +436,8 @@ namespace MyShaderAnalysis
             if (outputFilenamepath != null && writeFile)
             {
                 ConfigureOutputFile(outputFilenamepath);
-                WriteHtmlFile("Files", "Vcs files / Artifact classic");
-                // WriteHtmlFile("Files", "Vcs files Dota PCGL");
+                // WriteHtmlFile("Files", "Vcs files / Artifact classic");
+                WriteHtmlFile("Files", "Vcs files Dota PCGL");
                 // WriteHtmlFile("Files-gles", "Vcs files Mobile GLES");
             }
             string fH = "File";
@@ -456,9 +456,9 @@ namespace MyShaderAnalysis
             OutputWriteLine($"{header}");
 
 
-            // List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsFileType.Any, -1);
+            List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsProgramType.Undetermined, -1);
             // List<string> allVcsFiles = GetVcsFiles(DOTA_CORE_MOBILE_GLES_SOURCE, DOTA_DAC_MOBILE_GLES_SOURCE, VcsProgramType.Undetermined, -1);
-            List<string> allVcsFiles = GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsProgramType.Undetermined, -1);
+            // List<string> allVcsFiles = GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsProgramType.Undetermined, -1);
 
 
             //List<string> allVcsFiles = new();

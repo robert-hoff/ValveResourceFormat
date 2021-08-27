@@ -23,7 +23,7 @@ namespace MyShaderAnalysis.utilhelpers
         public FileTriple(ARCHIVE archive, string ftFileName)
         {
             ftFile = new FileTokens(archive, ftFileName);
-            if (ftFile.vcsFiletype != VcsProgramType.Features)
+            if (ftFile.vcsProgramType != VcsProgramType.Features)
             {
                 throw new System.Exception("not a features file");
             }

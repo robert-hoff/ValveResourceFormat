@@ -6,7 +6,7 @@ using ValveResourceFormat.CompiledShader;
 using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
 using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
-
+using MyShaderAnalysis.utilhelpers;
 
 namespace MyShaderAnalysis
 {
@@ -15,6 +15,20 @@ namespace MyShaderAnalysis
     public class StaticAnalysisZframes
     {
 
+        public const string DOTA_CORE_PCGL_SOURCE = "X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders-core/vfx";
+        public const string DOTA_GAME_PCGL_SOURCE = "X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders/vfx";
+        public const string DOTA_CORE_PC_SOURCE = "X:/dota-2-VRF-exports/dota2-export-shaders-pc/shaders-core/vfx";
+        public const string DOTA_GAME_PC_SOURCE = "X:/dota-2-VRF-exports/dota2-export-shaders-pc/shaders/vfx";
+        public const string DOTA_CORE_MOBILE_GLES_SOURCE = "X:/dota-2-VRF-exports/dota2-shaders-mobile-gles/core";
+        public const string DOTA_DAC_MOBILE_GLES_SOURCE = "X:/dota-2-VRF-exports/dota2-shaders-mobile-gles/dac";
+        public const string DOTA_CORE_ANDROID_VULKAN_SOURCE = "X:/dota-2-VRF-exports/dota2-shaders-android-vulkan/core";
+        public const string DOTA_DAC_ANDROID_VULKAN_SOURCE = "X:/dota-2-VRF-exports/dota2-shaders-android-vulkan/dac";
+        public const string DOTA_CORE_IOS_VULKAN_SOURCE = "X:/dota-2-VRF-exports/dota2-shaders-ios-vulkan/core";
+        public const string DOTA_DAC_IOS_VULKAN_SOURCE = "X:/dota-2-VRF-exports/dota2-shaders-ios-vulkan/dac";
+        public const string ARTIFACT_CLASSIC_CORE_PC_SOURCE = "X:/artifact-classic-exports/artifact-shaders-pc-core";
+        public const string ARTIFACT_CLASSIC_DCG_PC_SOURCE = "X:/artifact-classic-exports/artifact-shaders-pc-dcg";
+        public const string HLALYX_CORE_VULKAN_SOURCE = "X:/hl2alyx-export/alyx-vulkan-core";
+        public const string HLALYX_HLVR_VULKAN_SOURCE = "X:/hl2alyx-export/alyx-vulkan-hlvr";
         const string PCGL_DIR_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders-core/vfx";
         const string PCGL_DIR_NOT_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders/vfx";
         const string PC_DIR_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pc/shaders-core/vfx";
@@ -29,7 +43,15 @@ namespace MyShaderAnalysis
         {
             // Trial1();
 
+            // float f = BitConverter.ToSingle(new byte[] { 0xff,0xff,0xff,0xff}, 0);
+            // Console.WriteLine($"{f}");
 
+
+            ZFrameEndBlocks5();
+            // ZFrameEndBlocks4();
+            // ZFrameEndBlocks3();
+            // ZFrameEndBlocks2();
+            // ZFrameEndBlocks();
             // CountZframeAndSourceFilesSingleFile1();
             // SurverH0LeadingData();
             // SurverH1H2ValuesInDatablocks();
@@ -57,6 +79,251 @@ namespace MyShaderAnalysis
             CloseStreamWriter();
         }
 
+
+        static void ZFrameEndBlocks5()
+        {
+            // List<string> vcsFiles = new();
+            // vcsFiles.Add($@"{PCGL_DIR_NOT_CORE}/multiblend_pcgl_30_ps.vcs");
+            List<string> vcsFiles = GetFileSelectionWithLimitedZframes();
+
+            foreach (string vcsFilenamepath in vcsFiles)
+            {
+                if (ComputeVCSFileName(vcsFilenamepath).Item1 != VcsProgramType.PixelShader)
+                {
+                    continue;
+                }
+
+                ShaderFile shaderFile = InstantiateShaderFile(vcsFilenamepath);
+
+                for (int zframeIndex = 0; zframeIndex < shaderFile.GetZFrameCount(); zframeIndex++)
+                {
+                    ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(zframeIndex);
+                    foreach (var endBlock in zframeFile.psEndBlocks)
+                    {
+                        //if (endBlock.data1 == null)
+                        //{
+                        //    endBlock.data1 = new byte[] { };
+                        //}
+                        //CollectStringValue($"{BytesToString(endBlock.data1, -1)}");
+
+                        //string hasdata0 = endBlock.hasData0 ? "1" : "0";
+                        //string hasdata1 = endBlock.hasData1 ? "1" : "0";
+                        //string hasdata2 = endBlock.hasData2 ? "1" : "0";
+                        //CollectStringValue($"{hasdata0} {hasdata1} {hasdata2}");
+
+                        //if (!endBlock.hasData0 && endBlock.hasData1 && !endBlock.hasData2)
+                        //{
+                        //    Console.WriteLine($"{zframeFile.filenamepath}       zframeId={zframeFile.zframeId:x08}");
+                        //}
+
+
+
+                        //if (endBlock.data0 == null || endBlock.data1 == null)
+                        //{
+                        //    endBlock.data0 = new byte[] { };
+                        //    continue;
+                        //}
+
+                        // int f1 = BitConverter.ToInt32(endBlock.data0, 4);
+                        // float f2 = BitConverter.ToSingle(endBlock.data0, 8);
+                        // CollectStringValue($"{BytesToString(endBlock.data0)}    {f1} {f2}");
+
+
+                        string show0 = endBlock.data0 == null ? "".PadRight(47) : BytesToString(endBlock.data0);
+                        string show1 = endBlock.data1 == null ? "".PadRight(59) : BytesToString(endBlock.data1);
+                        CollectStringValue($"{show0}   {show1}");
+
+
+                    }
+                }
+            }
+        }
+
+
+        static void ZFrameEndBlocks4()
+        {
+            List<string> vcsFiles = new();
+            // vcsFiles.Add($@"{PCGL_DIR_CORE}/bilateral_blur_pcgl_30_ps.vcs");
+            vcsFiles.Add($@"{PCGL_DIR_CORE}/complex_pcgl_50_ps.vcs");
+            // vcsFiles.Add($@"{PCGL_DIR_CORE}/bilateral_blur_pcgl_30_ps.vcs");
+            // vcsFiles.Add($@"{DOTA_CORE_PC_SOURCE}/tools_grid_pc_50_ps.vcs");
+            // vcsFiles.Add($@"{PCGL_DIR_CORE}/copytexture_pcgl_30_ps.vcs");
+            // vcsFiles.Add($@"{PCGL_DIR_CORE}/depth_only_pcgl_30_ps.vcs");
+            foreach (string vcsFilenamepath in vcsFiles)
+            {
+                if (ComputeVCSFileName(vcsFilenamepath).Item1 != VcsProgramType.PixelShader)
+                {
+                    continue;
+                }
+                ShaderFile shaderFile = InstantiateShaderFile(vcsFilenamepath);
+
+                // Console.WriteLine($"{vcsFilenamepath}");
+                //Console.WriteLine("hi");
+                //Console.WriteLine("hi2");
+                //Console.WriteLine("h3");
+
+                ConfigMappingSParams configMap = new ConfigMappingSParams(shaderFile);
+
+
+                // Console.WriteLine($"{shaderFile.GetZFrameCount()}");
+                for (int zIndex = 0; zIndex < shaderFile.GetZFrameCount(); zIndex++)
+                {
+
+                    ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(zIndex);
+                    int[] configState = configMap.GetConfigState(zframeFile.zframeId);
+                    Console.WriteLine($"{zframeFile.filenamepath}       zframeId={zframeFile.zframeId:x08}");
+                    ShowIntArray(configState);
+                    foreach (var endBlock in zframeFile.psEndBlocks)
+                    {
+
+                        byte[] sec0 = new byte[3];
+                        sec0[0] = endBlock.data2[0];
+                        sec0[1] = endBlock.data2[1];
+                        sec0[2] = endBlock.data2[2];
+                        byte[] sec1 = new byte[24];
+                        byte[] sec2 = new byte[32];
+                        for (int i = 3; i < 27; i++)
+                        {
+                            sec1[i - 3] = endBlock.data2[i];
+                        }
+                        for (int i = 35; i < 67; i++)
+                        {
+                            sec2[i - 35] = endBlock.data2[i];
+                        }
+                        if (endBlock.data1 == null)
+                        {
+                            // endBlock.data1 = new byte[] { };
+                            continue;
+                        }
+                        CollectStringValue($"{BytesToString(endBlock.data1, -1)}");
+
+                        // Console.WriteLine($"{BytesToString(endBlock.data1, -1)}");
+                        Console.WriteLine($"[{endBlock.blockIdRef,2}] {BytesToString(sec0, -1)}  {BytesToString(sec1, -1)}     {BytesToString(sec2, -1)}");
+                    }
+                }
+            }
+
+        }
+
+
+
+        static void ZFrameEndBlocks3()
+        {
+            List<string> vcsFiles = new();
+            // vcsFiles.Add($@"{PCGL_DIR_NOT_CORE}/multiblend_pcgl_30_ps.vcs");
+            // List<string> vcsFiles = GetFileSelectionWithLimitedZframes();
+
+            foreach (string vcsFilenamepath in vcsFiles)
+            {
+                if (ComputeVCSFileName(vcsFilenamepath).Item1 != VcsProgramType.PixelShader)
+                {
+                    continue;
+                }
+
+                ShaderFile shaderFile = InstantiateShaderFile(vcsFilenamepath);
+                for (int zframeIndex = 0; zframeIndex < shaderFile.GetZFrameCount(); zframeIndex++)
+                {
+                    ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(zframeIndex);
+                    foreach (var endBlock in zframeFile.psEndBlocks)
+                    {
+                        if (endBlock.data2 == null || endBlock.data2.Length == 0)
+                        {
+                            continue;
+                        }
+                        byte[] sec1 = new byte[24];
+                        byte[] sec2 = new byte[32];
+                        for (int i = 3; i < 27; i++)
+                        {
+                            sec1[i - 3] = endBlock.data2[i];
+                        }
+                        for (int i = 35; i < 67; i++)
+                        {
+                            sec2[i - 35] = endBlock.data2[i];
+                        }
+                        // if (endBlock.data2[11] == 8)
+                        // if (endBlock.data2[19] == 12)
+                        if (endBlock.data2[0] == 1)
+                        {
+                            Console.WriteLine(vcsFilenamepath);
+                            Console.WriteLine($"{BytesToString(sec1, -1)}     {BytesToString(sec2, -1)}");
+                        }
+
+                    }
+                }
+            }
+        }
+
+
+        static void ZFrameEndBlocks2()
+        {
+            // List<string> vcsFiles = new();
+            // vcsFiles.Add($@"{PCGL_DIR_NOT_CORE}/multiblend_pcgl_30_ps.vcs");
+            List<string> vcsFiles = GetFileSelectionWithLimitedZframes();
+
+            foreach (string vcsFilenamepath in vcsFiles)
+            {
+                if (ComputeVCSFileName(vcsFilenamepath).Item1 != VcsProgramType.PixelShader)
+                {
+                    continue;
+                }
+
+                ShaderFile shaderFile = InstantiateShaderFile(vcsFilenamepath);
+                for (int zframeIndex = 0; zframeIndex < shaderFile.GetZFrameCount(); zframeIndex++)
+                {
+                    ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(zframeIndex);
+                    foreach (var endBlock in zframeFile.psEndBlocks)
+                    {
+                        if (endBlock.data2 == null || endBlock.data2.Length == 0)
+                        {
+                            continue;
+                        }
+                        byte[] sec1 = new byte[24];
+                        byte[] sec2 = new byte[32];
+                        for (int i = 3; i < 27; i++)
+                        {
+                            sec1[i - 3] = endBlock.data2[i];
+                        }
+                        for (int i = 35; i < 67; i++)
+                        {
+                            sec2[i - 35] = endBlock.data2[i];
+                        }
+                        CollectStringValue($"{BytesToString(sec1, -1)}     {BytesToString(sec2, -1)}");
+                    }
+                }
+            }
+        }
+
+
+
+        static void ZFrameEndBlocks()
+        {
+            // List<string> vcsFiles = new();
+            // vcsFiles.Add($@"{PCGL_DIR_NOT_CORE}/multiblend_pcgl_30_ps.vcs");
+            List<string> vcsFiles = GetFileSelectionWithLimitedZframes();
+
+            foreach (string vcsFilenamepath in vcsFiles)
+            {
+                if (ComputeVCSFileName(vcsFilenamepath).Item1 != VcsProgramType.PixelShader)
+                {
+                    continue;
+                }
+
+                ShaderFile shaderFile = InstantiateShaderFile(vcsFilenamepath);
+
+                for (int zframeIndex = 0; zframeIndex < shaderFile.GetZFrameCount(); zframeIndex++)
+                {
+                    ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(zframeIndex);
+                    foreach (var endBlock in zframeFile.psEndBlocks)
+                    {
+                        if (endBlock.data2 == null || endBlock.data2.Length == 0)
+                        {
+                            continue;
+                        }
+                        CollectStringValue($"{BytesToString(endBlock.data2, -1)}");
+                    }
+                }
+            }
+        }
 
 
 
@@ -787,12 +1054,24 @@ breakhere: Console.WriteLine("");
         {
             List<string> vcsFiles = new();
             List<string> selectedFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsProgramType.Undetermined, 30);
-            // List<string> selectedFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.vs_file, 30);
+            // List<string> selectedFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsProgramType.Undetermined, -1);
+            // List<string> selectedFiles = GetVcsFiles(PC_DIR_CORE, PC_DIR_NOT_CORE, VcsProgramType.Undetermined, -1);
+            // List<string> selectedFiles = GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsProgramType.Undetermined, -1);
+            // List<string> selectedFiles = GetVcsFiles(DOTA_CORE_MOBILE_GLES_SOURCE, DOTA_DAC_MOBILE_GLES_SOURCE, VcsProgramType.Undetermined, -1);
 
+            // something wrong in the vulkan source
+            // List<string> selectedFiles = GetVcsFiles(HLALYX_CORE_VULKAN_SOURCE, HLALYX_HLVR_VULKAN_SOURCE, VcsProgramType.Undetermined, -1);
 
             foreach (string checkVcsFile in selectedFiles)
             {
-                ShaderFile shaderFile = InstantiateShaderFile(checkVcsFile);
+                ShaderFile shaderFile = null;
+                try
+                {
+                    shaderFile = InstantiateShaderFile(checkVcsFile);
+                } catch (Exception)
+                {
+                    continue;
+                }
                 if (shaderFile.GetZFrameCount() < 4000 && shaderFile.GetZFrameCount() > 0)
                 {
                     vcsFiles.Add(checkVcsFile);

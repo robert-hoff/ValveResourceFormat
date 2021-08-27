@@ -23,7 +23,7 @@ namespace MyShaderAnalysis.utilhelpers
         public string sourceType { get; }    // glsl, dxil, dxbc, gles, vulkan, android_vulkan, ios_vulkan
         public string sourceVersion { get; }    // 30,40,50,etc
         public string serverdir { get; }     // full directory path of the server files
-        public VcsProgramType vcsFiletype { get; }
+        public VcsProgramType vcsProgramType { get; }
 
 
         public FileTokens(string filenamepath) : this(DetermineArchiveType(filenamepath), filenamepath) { }
@@ -39,7 +39,7 @@ namespace MyShaderAnalysis.utilhelpers
             this.name = filename[0..^4];
             this.foldername = name.Substring(0, name.LastIndexOf('_'));
             this.filenamepath = GetFilenamepath(archive, filename);
-            this.vcsFiletype = ShaderUtilHelpers.ComputeVCSFileName(filenamepath).Item1;
+            this.vcsProgramType = ShaderUtilHelpers.ComputeVCSFileName(filenamepath).Item1;
             this.sourcedir = GetSourceDir(archive);
             this.archivename = GetArchiveName(archive);
             this.archivelabel = GetArchiveLabel(archive);
@@ -48,7 +48,7 @@ namespace MyShaderAnalysis.utilhelpers
             this.sourceVersion = filename.Split('_')[^2];
             this.serverdir = GetServerBaseDir();
             this.namelabel = filename.Split('_')[0];
-            this.vcstoken = GetVcsToken(vcsFiletype);
+            this.vcstoken = GetVcsToken(vcsProgramType);
 
             if (!File.Exists(filenamepath))
             {
@@ -202,7 +202,7 @@ namespace MyShaderAnalysis.utilhelpers
         // todo - get rid of this shit
         public string GetBestPath()
         {
-            if (vcsFiletype == VcsProgramType.PixelShader || vcsFiletype == VcsProgramType.VertexShader)
+            if (vcsProgramType == VcsProgramType.PixelShader || vcsProgramType == VcsProgramType.VertexShader)
             {
                 string summariesPath = GetSummariesPath();
                 return File.Exists($"{serverdir}{summariesPath}") ? summariesPath : "";
