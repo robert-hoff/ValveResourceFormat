@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
-using MyValveResourceFormat.Serialization.VfxEval;
+using ValveResourceFormat.Serialization.VfxEval;
 using static ValveResourceFormat.CompiledShader.ShaderDataReader;
 
 namespace ValveResourceFormat.CompiledShader

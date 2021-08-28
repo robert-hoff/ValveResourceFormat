@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using MyValveResourceFormat.ThirdParty;
 
-namespace MyValveResourceFormat.Serialization.VfxEval
+namespace ValveResourceFormat.Serialization.VfxEval
 {
     public class VfxEval
     {

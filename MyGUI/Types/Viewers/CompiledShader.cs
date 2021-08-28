@@ -12,12 +12,6 @@ namespace MyGUI.Types.Viewers {
             return magic == ShaderFile.MAGIC;
         }
 
-        public static void Hello() {
-
-        }
-
-
-
         /*
          *
          * The Create method is called both when selecting a vcs file directly from the file-dialog

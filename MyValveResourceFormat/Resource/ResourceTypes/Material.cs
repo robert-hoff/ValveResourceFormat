@@ -7,7 +7,7 @@ using ValveKeyValue;
 using MyValveResourceFormat.Blocks;
 using MyValveResourceFormat.Blocks.ResourceEditInfoStructs;
 using MyValveResourceFormat.Serialization;
-using MyValveResourceFormat.Serialization.VfxEval;
+using ValveResourceFormat.Serialization.VfxEval;
 
 namespace MyValveResourceFormat.ResourceTypes
 {

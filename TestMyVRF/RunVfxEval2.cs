@@ -15,7 +15,7 @@ using MyValveResourceFormat.ResourceTypes;
 using MyValveResourceFormat.Serialization;
 using MyValveResourceFormat.Serialization.KeyValues;
 using MyValveResourceFormat.Serialization.NTRO;
-using MyValveResourceFormat.Serialization.VfxEval;
+using ValveResourceFormat.Serialization.VfxEval;
 
 namespace TestMyVRF {
     class RunVfxEval2 {

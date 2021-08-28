@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using ValveResourceFormat.Serialization.VfxEval;
+using static ValveResourceFormat.CompiledShader.ShaderDataReader;
 
 namespace ValveResourceFormat.CompiledShader
 {
@@ -184,7 +185,7 @@ namespace ValveResourceFormat.CompiledShader
 
         public static string BytesToString(byte[] databytes, int breakLen = 32)
         {
-            if (databytes == null || databytes.Length==0)
+            if (databytes == null || databytes.Length == 0)
             {
                 return "";
             }
@@ -231,15 +232,16 @@ namespace ValveResourceFormat.CompiledShader
 
         public class OutputFormatterTabulatedData
         {
-            private bool WriteToConsole = true;
+            public HandleOutputWrite OutputWriter { get; set; }
 
-            public OutputFormatterTabulatedData() { }
+            public OutputFormatterTabulatedData(HandleOutputWrite OutputWriter = null)
+            {
+                this.OutputWriter = OutputWriter ?? ((x) => { Console.Write(x); });
+            }
+
             public void Write(string text)
             {
-                if (WriteToConsole)
-                {
-                    Console.Write(text);
-                }
+                OutputWriter(text);
             }
 
             public void WriteLine(string text)
