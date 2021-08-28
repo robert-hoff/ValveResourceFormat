@@ -60,10 +60,10 @@ namespace MyGUI.Types.Viewers {
         private void Link_Clicked(object sender, LinkClickedEventArgs e)
         {
             var buffer = new StringWriter(CultureInfo.InvariantCulture);
-            long zframeId = Convert.ToInt64(e.LinkText.Substring(2));
+            long zframeId = Convert.ToInt64(e.LinkText.Substring(2), 16);
             ZFrameFile zframeFile = shaderFile.GetZFrameFile(zframeId, OutputWriter: buffer.Write);
             zframeFile.PrintByteAnalysis();
-            parentTab.Text = $"Z[{zframeId:x08}]";
+            parentTab.Text = $"Z[{zframeId:X08}]";
             Text = Utils.Utils.NormalizeLineEndings(buffer.ToString());
             Console.WriteLine($"console print: {zframeId}");
         }
