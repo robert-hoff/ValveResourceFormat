@@ -299,6 +299,7 @@ namespace MyGUI {
             }
 
             // R: it looks like regardless of what file is selected the new tab will become a 'TabPage'
+            // this sets the title of the TabPage to the filename
             var tab = new TabPage(Path.GetFileName(fileName));
             tab.ToolTipText = fileName;
             tab.Controls.Add(new LoadingFile());
@@ -306,7 +307,9 @@ namespace MyGUI {
             mainTabs.TabPages.Add(tab);
             mainTabs.SelectTab(tab);
 
-            var task = Task.Factory.StartNew(() => ProcessFile(fileName, input, currentPackage));
+            // R: ProcessFile returns a tabPage, but this tab-page doesn't seem to be the one that
+            // contains the title that I assign to it
+            var task = Task.Factory.StartNew(() => ProcessFile(fileName, input, currentPackage, tab));
 
             task.ContinueWith(
                 t => {
@@ -334,6 +337,7 @@ namespace MyGUI {
                     tab.Controls.Clear();
 
                     foreach (Control c in t.Result.Controls) {
+                        Debug.WriteLine($"{c.GetType()}");
                         tab.Controls.Add(c);
                     }
                 },
@@ -354,7 +358,7 @@ namespace MyGUI {
          *
          *
          */
-        private TabPage ProcessFile(string fileName, byte[] input, TreeViewWithSearchResults.TreeViewPackageTag currentPackage) {
+        private TabPage ProcessFile(string fileName, byte[] input, TreeViewWithSearchResults.TreeViewPackageTag currentPackage, TabPage parentTab = null) {
             uint magic = 0;
             ushort magicResourceVersion = 0;
 
@@ -424,7 +428,7 @@ namespace MyGUI {
                  *
                  *
                  */
-                return new Types.Viewers.CompiledShader().Create(vrfGuiContext, input);
+                return Types.Viewers.CompiledShader.Createz(vrfGuiContext, input, parentTab);
             } else if (Types.Viewers.ClosedCaptions.IsAccepted(magic)) {
 
                 return new Types.Viewers.ClosedCaptions().Create(vrfGuiContext, input);

@@ -1,4 +1,4 @@
-using MyValveResourceFormat.ThirdParty;
+using ValveResourceFormat.ThirdParty;
 using System;
 using System.Collections.Generic;
 using System.Linq;

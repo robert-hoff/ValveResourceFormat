@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using Decoder = SevenZip.Compression.LZMA.Decoder;
-using MyValveResourceFormat.ThirdParty;
+using ValveResourceFormat.ThirdParty;
 using MyShaderAnalysis.utilhelpers;
 using ValveResourceFormat.CompiledShader;
 using static MyShaderAnalysis.utilhelpers.FileSystem;

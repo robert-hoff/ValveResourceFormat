@@ -7,10 +7,16 @@ using MyGUI.Utils;
 using ValveResourceFormat.CompiledShader;
 
 namespace MyGUI.Types.Viewers {
-    public class CompiledShader : IViewer {
+    public static class CompiledShader {
         public static bool IsAccepted(uint magic) {
             return magic == ShaderFile.MAGIC;
         }
+
+        public static void Hello() {
+
+        }
+
+
 
         /*
          *
@@ -22,36 +28,50 @@ namespace MyGUI.Types.Viewers {
          *
          *
          */
-        public TabPage Create(VrfGuiContext vrfGuiContext, byte[] input) {
+        public static TabPage Createz(VrfGuiContext vrfGuiContext, byte[] input, TabPage parentTab) {
             var tab = new TabPage();
-            var shader = new ShaderFile();
-
-            var buffer = new StringWriter(CultureInfo.InvariantCulture);
-            var oldOut = Console.Out;
-            Console.SetOut(buffer);
-
-            if (input != null)
-            {
-                shader.Read(vrfGuiContext.FileName, new MemoryStream(input));
-            }
-            else
-            {
-                shader.Read(vrfGuiContext.FileName);
-            }
-            shader.PrintSummary();
-
-            Console.SetOut(oldOut);
-
-            var control = new TextBox();
-            control.Font = new Font(FontFamily.GenericMonospace, control.Font.Size);
-            control.Text = Utils.Utils.NormalizeLineEndings(buffer.ToString());
-            control.Dock = DockStyle.Fill;
-            control.Multiline = true;
-            control.ReadOnly = true;
-            control.ScrollBars = ScrollBars.Both;
+            var control = new MyRichTextBox(vrfGuiContext, input, parentTab);
             tab.Controls.Add(control);
-
             return tab;
+        }
+    }
+
+    public class MyRichTextBox : RichTextBox
+    {
+        private readonly TabPage parentTab;
+        private ShaderFile shaderFile;
+
+        public MyRichTextBox(VrfGuiContext vrfGuiContext, byte[] input, TabPage parentTab) : base()
+        {
+            this.parentTab = parentTab;
+            shaderFile = new ShaderFile();
+            var buffer = new StringWriter(CultureInfo.InvariantCulture);
+            if (input != null) {
+                shaderFile.Read(vrfGuiContext.FileName, new MemoryStream(input));
+            } else {
+                shaderFile.Read(vrfGuiContext.FileName);
+            }
+            shaderFile.PrintSummary(buffer.Write);
+            Font = new Font(FontFamily.GenericMonospace, Font.Size);
+            DetectUrls = true;
+            Dock = DockStyle.Fill;
+            Multiline = true;
+            ReadOnly = true;
+            WordWrap = false;
+            Text = Utils.Utils.NormalizeLineEndings(buffer.ToString());
+            ScrollBars = RichTextBoxScrollBars.Both;
+            LinkClicked += new LinkClickedEventHandler(Link_Clicked);
+        }
+
+        private void Link_Clicked(object sender, LinkClickedEventArgs e)
+        {
+            var buffer = new StringWriter(CultureInfo.InvariantCulture);
+            long zframeId = Convert.ToInt64(e.LinkText.Substring(2));
+            ZFrameFile zframeFile = shaderFile.GetZFrameFile(zframeId, OutputWriter: buffer.Write);
+            zframeFile.PrintByteAnalysis();
+            parentTab.Text = $"Z[{zframeId:x08}]";
+            Text = Utils.Utils.NormalizeLineEndings(buffer.ToString());
+            Console.WriteLine($"console print: {zframeId}");
         }
     }
 }
