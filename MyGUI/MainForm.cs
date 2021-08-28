@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -30,6 +31,16 @@ namespace MyGUI {
             LoadAssetTypes();
             InitializeComponent();
 
+            Settings.Load();
+            int left = Settings.Config.WindowLeft == 0 ? 100 : Settings.Config.WindowLeft;
+            int top = Settings.Config.WindowTop == 0 ?  100 : Settings.Config.WindowTop;
+            int width = Settings.Config.WindowWidth == 0 ? 1101 : Settings.Config.WindowWidth;
+            int height = Settings.Config.WindowHeight == 0 ? 532 : Settings.Config.WindowHeight;
+            StartPosition = FormStartPosition.Manual;
+            Location = new Point(left, top);
+            Size = new Size(width, height);
+
+
             Text = "VRF - Source 2 Resource Viewer v" + Application.ProductVersion;
 
             mainTabs.SelectedIndexChanged += (o, e) => {
@@ -44,8 +55,6 @@ namespace MyGUI {
 
             searchForm = new SearchForm();
 
-            Settings.Load();
-
             string[] args = Environment.GetCommandLineArgs();
             for (int i = 1; i < args.Length; i++) {
                 string file = args[i];
@@ -58,6 +67,16 @@ namespace MyGUI {
         private void MainForm_Load(object sender, EventArgs e) {
             // so we can bind keys to actions properly
             KeyPreview = true;
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            Settings.Config.WindowLeft = Left;
+            Settings.Config.WindowTop = Top;
+            Settings.Config.WindowWidth = Width;
+            Settings.Config.WindowHeight = Height;
+            Settings.Save();
+            base.OnClosing(e);
         }
 
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData) {
@@ -228,7 +247,7 @@ namespace MyGUI {
                 Multiselect = true,
             };
 
-            // R: userOK returns a DialogResult that returns an enum that can have the following values
+            // R: userOK returns a DialogResult which is an enum that can have the following values
             // None, OK, Cancel, Abort, Retry, Ignore, Yes, NO
             // (99% of the time the result will be 'OK')
 
