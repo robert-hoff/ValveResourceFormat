@@ -35,10 +35,10 @@ namespace TestMyVRF {
 
 
             // VfxEval result = new VfxEval(databytes);
-            VfxEval result = new VfxEval(databytes, new string[]{ "time", "myvarvar" });
+            VfxEval result = new(databytes, new string[]{ "time", "myvarvar" });
 
 
-            Debug.WriteLine(result.ErrorWhileParsing);
+
             Debug.WriteLine(result.DynamicExpressionResult);
 
 

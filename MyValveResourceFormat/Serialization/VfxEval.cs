@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using MyValveResourceFormat.ThirdParty;
@@ -12,13 +13,8 @@ namespace MyValveResourceFormat.Serialization.VfxEval
         // parse the input one line at a time
         private readonly List<string> DynamicExpressionList = new();
 
-        // check externally if we have problems parsing
-        public bool ErrorWhileParsing { get; private set; }
-        public string ErrorMessage { get; private set; }
-
-
         // function reference, name and number of arguments
-        private readonly (string, int)[] FUNCTION_REF = {
+        private readonly (string Name, int ArgumentCount)[] FUNCTION_REF = {
             ("sin",        1),     // 00
             ("cos",        1),     // 01
             ("tan",        1),     // 02
@@ -56,103 +52,120 @@ namespace MyValveResourceFormat.Serialization.VfxEval
             ("length",     1),     // 22
             ("sqr",        1),     // 23
             ("TextureSize",1),     // 24
+            ("rotation2d", 1),     // 25
+            ("rotate2d",   2),     // 26
+            ("sincos",     1),     // 27
         };
-
-        private static readonly string[] OperatorSymbols = {
-            "","","","","","","","","","","","","",
-            "==","!=",">",">=","<","<=","+","-","*","/","%"};
 
         private enum OPCODE
         {
-            ENDOFDATA = 0x00,
-            BRANCH_SEP = 0x02,
-            BRANCH = 0x04,
-            FUNC = 0x06,
-            FLOAT = 0x07,
-            ASSIGN = 0x08,
-            LOCALVAR = 0x09,
-            NOT = 0x0C,
-            EQUALS = 0x0D,               // 0D		==					13
-            NEQUALS = 0x0E,              // 0E		!=					14
-            GT = 0x0F,                   // 0F		> 					15
-            GTE = 0x10,                  // 10		>=					16
-            LT = 0x11,                   // 11		< 					17
-            LTE = 0x12,                  // 12		<=					18
-            ADD = 0x13,                  // 13		+					19
-            SUB = 0x14,                  // 14		-					20
-            MUL = 0x15,                  // 15		*					21
-            DIV = 0x16,                  // 16		/					22
-            MODULO = 0x17,               // 17		%					23
-            NEGATE = 0x18,
-            EXTVAR = 0x19,
-            SWIZZLE = 0x1E,
-            EXISTS = 0x1F,
-            // NOT_AN_OPS = 0xff,
+            ENDOFDATA,          // 00
+            UNKNOWN01,
+            BRANCH_SEP,         // 02
+            UNKNOWN03,
+            BRANCH,             // 04
+            UNKNOWN05,
+            FUNC,               // 06
+            FLOAT,              // 07
+            ASSIGN,             // 08
+            LOCALVAR,           // 09
+            UNKNOWN0A,
+            UNKNOWN0B,
+            NOT,                // 0C
+            EQUALS,             // 0D
+            NEQUALS,            // 0E
+            GT,                 // 0F
+            GTE,                // 10
+            LT,                 // 11
+            LTE,                // 12
+            ADD,                // 13
+            SUB,                // 14
+            MUL,                // 15
+            DIV,                // 16
+            MODULO,             // 17
+            NEGATE,             // 18
+            EXTVAR,             // 19
+            COND,               // 1A (inferred from the shader code)
+            UNKNOWN1B,
+            UNKNOWN1C,
+            EVAL,               // 1D (inferred from the shader code)
+            SWIZZLE,            // 1E
+            EXISTS,             // 1F
+            UNKNOWN20,
+            UNKNOWN21,
         };
+
+        private static readonly Dictionary<OPCODE, string> OpCodeToSymbol = new()
+        {
+            { OPCODE.EQUALS, "==" },
+            { OPCODE.NEQUALS, "!=" },
+            { OPCODE.GT, ">" },
+            { OPCODE.GTE, ">=" },
+            { OPCODE.LT, "<" },
+            { OPCODE.LTE, "<=" },
+            { OPCODE.ADD, "+" },
+            { OPCODE.SUB, "-" },
+            { OPCODE.MUL, "*" },
+            { OPCODE.DIV, "/" },
+            { OPCODE.MODULO, "%" },
+        };
+
+        private const uint IFELSE_BRANCH = 0;     //    <cond> : <e1> ? <e2>
+        private const uint AND_BRANCH = 1;        //    <e1> && <e2>            (these expressions are encoded as branches on the bytestream!)
+        private const uint OR_BRANCH = 2;         //    <e1> || <e2>
 
         private readonly Stack<string> Expressions = new();
 
         // check on each OPS if we are exiting a branch,
         // when we do we should combine expressions on the stack
         private readonly Stack<uint> OffsetAtBranchExits = new();
+        private readonly Dictionary<uint, string> LocalVariableNames = new();
 
         // build a dictionary of the external variables seen, passed as 'renderAttributesUsed'
-        private static readonly Dictionary<uint, string> ExternalVarsReference = new();
+        private static readonly ConcurrentDictionary<uint, string> ExternalVarsReference = new();
 
-        public VfxEval(byte[] binaryBlob)
+        // The 'return' keyword in the last line of a dynamic expression is optional (it is implied where absent)
+        // OmitReturnStatement controls whether it is shown
+        private readonly bool OmitReturnStatement;
+
+        public VfxEval(byte[] binaryBlob, bool omitReturnStatement = false)
         {
-            ParseExpression(binaryBlob, Array.Empty<string>());
-        }
-        public VfxEval(byte[] binaryBlob, string[] renderAttributesUsed)
-        {
-            ParseExpression(binaryBlob, renderAttributesUsed);
+            this.OmitReturnStatement = omitReturnStatement;
+            ParseExpression(binaryBlob);
         }
 
-        private void ParseExpression(byte[] binaryBlob, string[] renderAttributesUsed)
+        public VfxEval(byte[] binaryBlob, string[] renderAttributesUsed, bool omitReturnStatement = false)
         {
+            this.OmitReturnStatement = omitReturnStatement;
             uint MURMUR2SEED = 0x31415926; // pi!
+
             foreach (var externalVarName in renderAttributesUsed)
             {
                 var murmur32 = MurmurHash2.Hash(externalVarName.ToLower(), MURMUR2SEED);
-                ExternalVarsReference.TryGetValue(murmur32, out var varName);
-                // overwrite existing entries because newer additions may have different case
-                if (varName != null)
-                {
-                    ExternalVarsReference.Remove(murmur32);
-                }
-                ExternalVarsReference.Add(murmur32, externalVarName);
+
+                ExternalVarsReference.AddOrUpdate(murmur32, externalVarName, (k, v) => externalVarName);
             }
 
+            ParseExpression(binaryBlob);
+        }
+
+        private void ParseExpression(byte[] binaryBlob)
+        {
             using var dataReader = new BinaryReader(new MemoryStream(binaryBlob));
             OffsetAtBranchExits.Push(0);
 
             while (dataReader.BaseStream.Position < binaryBlob.Length)
             {
-                try
-                {
-                    ProcessOps((OPCODE)dataReader.ReadByte(), dataReader);
-                }
-                catch (System.IO.EndOfStreamException)
-                {
-                    ErrorWhileParsing = true;
-                    ErrorMessage = "Parsing error - reader exceeded input";
-                }
-                if (ErrorWhileParsing)
-                {
-                    return;
-                }
+                ProcessOps((OPCODE)dataReader.ReadByte(), dataReader);
             }
+
             foreach (var expression in DynamicExpressionList)
             {
                 DynamicExpressionResult += $"{expression}\n";
             }
+
             DynamicExpressionResult = DynamicExpressionResult.Trim();
         }
-
-
-        private const uint IFELSE_BRANCH = 0;     //    <cond> : <e1> ? <e2>
-        private const uint AND_BRANCH = 1;        //    <e1> && <e2>            (these expressions are encoded as branches on the bytestream!)
-        private const uint OR_BRANCH = 2;         //    <e1> || <e2>
 
         private void ProcessOps(OPCODE op, BinaryReader dataReader)
         {
@@ -167,9 +180,7 @@ namespace MyValveResourceFormat.Serialization.VfxEval
                     case IFELSE_BRANCH:
                         if (Expressions.Count < 3)
                         {
-                            ErrorWhileParsing = true;
-                            ErrorMessage = "error! - not on a branch exit";
-                            return;
+                            throw new InvalidDataException($"Error parsing dynamic expression, insufficient expressions evaluating IFELSE_BRANCH (position: {dataReader.BaseStream.Position})");
                         }
                         {
                             var exp3 = Expressions.Pop();
@@ -185,9 +196,7 @@ namespace MyValveResourceFormat.Serialization.VfxEval
                     case AND_BRANCH:
                         if (Expressions.Count < 2)
                         {
-                            ErrorWhileParsing = true;
-                            ErrorMessage = "parse error, evaluating AND_BRANCH";
-                            return;
+                            throw new InvalidDataException($"Error parsing dynamic expression, insufficient expressions evaluating AND_BRANCH (position: {dataReader.BaseStream.Position})");
                         }
                         {
                             var exp2 = Expressions.Pop();
@@ -200,9 +209,7 @@ namespace MyValveResourceFormat.Serialization.VfxEval
                     case OR_BRANCH:
                         if (Expressions.Count < 2)
                         {
-                            ErrorWhileParsing = true;
-                            ErrorMessage = "parse error, evaluating OR_BRANCH";
-                            return;
+                            throw new InvalidDataException($"Error parsing dynamic expression, insufficient expressions evaluating OR_BRANCH (position: {dataReader.BaseStream.Position})");
                         }
                         {
                             var exp2 = Expressions.Pop();
@@ -213,9 +220,7 @@ namespace MyValveResourceFormat.Serialization.VfxEval
                         break;
 
                     default:
-                        ErrorWhileParsing = true;
-                        ErrorMessage = "error! this should not happen";
-                        return;
+                        throw new InvalidDataException($"Error parsing dynamic expression, unknown branch switch ({branchType}) (position: {dataReader.BaseStream.Position})");
                 }
             }
 
@@ -262,30 +267,18 @@ namespace MyValveResourceFormat.Serialization.VfxEval
                 var funcCheckByte = dataReader.ReadByte();
                 if (funcId >= FUNCTION_REF.Length)
                 {
-                    ErrorWhileParsing = true;
-                    ErrorMessage = $"Parsing error - invalid function Id = {funcId:x}";
-                    return;
+                    throw new InvalidDataException($"Error parsing dynamic expression, invalid function Id = {funcId:x} (position: {dataReader.BaseStream.Position})");
                 }
                 if (funcCheckByte != 0)
                 {
-                    ErrorWhileParsing = true;
-                    ErrorMessage = $"Parsing error - malformed data";
-                    return;
+                    throw new InvalidDataException($"Error parsing dynamic expression, malformed function signature (position: {dataReader.BaseStream.Position})");
                 }
-                var funcName = FUNCTION_REF[funcId].Item1;
-                var nrArguments = FUNCTION_REF[funcId].Item2;
 
-                if (nrArguments == -1)
-                {
-                    ErrorWhileParsing = true;
-                    ErrorMessage = $"Parsing error - unknown function ID = {funcId:x}";
-                    return;
-                }
+                var (funcName, nrArguments) = FUNCTION_REF[funcId];
+
                 if (nrArguments > Expressions.Count)
                 {
-                    ErrorWhileParsing = true;
-                    ErrorMessage = $"Parsing error - too many arguments!";
-                    return;
+                    throw new InvalidDataException($"Error parsing dynamic expression, insufficient expressions evaluatuating function {funcName} (position: {dataReader.BaseStream.Position})");
                 }
 
                 ApplyFunction(funcName, nrArguments);
@@ -335,14 +328,11 @@ namespace MyValveResourceFormat.Serialization.VfxEval
             {
                 if (Expressions.Count < 2)
                 {
-                    ErrorWhileParsing = true;
-                    ErrorMessage = $"Parsing error - missing expressions, cannot build the operation {op}";
-                    return;
+                    throw new InvalidDataException($"Error parsing dynamic expression, insufficient expressions for operation {op} (position: {dataReader.BaseStream.Position})");
                 }
                 var exp2 = Expressions.Pop();
                 var exp1 = Expressions.Pop();
-                var opSymbol = OperatorSymbols[(int)op];
-                Expressions.Push($"({exp1}{opSymbol}{exp2})");
+                Expressions.Push($"({exp1}{OpCodeToSymbol[op]}{exp2})");
                 return;
             }
 
@@ -358,6 +348,22 @@ namespace MyValveResourceFormat.Serialization.VfxEval
                 var varId = dataReader.ReadUInt32();
                 var extVarname = GetExternalVarName(varId);
                 Expressions.Push(extVarname);
+                return;
+            }
+
+            if (op == OPCODE.COND)
+            {
+                uint expressionId = dataReader.ReadByte();
+                Expressions.Push($"COND[{expressionId}]");
+                return;
+            }
+
+            if (op == OPCODE.EVAL)
+            {
+                uint intval = dataReader.ReadUInt32();
+                // if this reference exists in the vars-reference, then show it
+                string murmurString = ExternalVarsReference.GetValueOrDefault(intval, $"{intval:x08}");
+                Expressions.Push($"EVAL[{murmurString}]");
                 return;
             }
 
@@ -382,23 +388,21 @@ namespace MyValveResourceFormat.Serialization.VfxEval
             {
                 if (dataReader.PeekChar() != -1)
                 {
-                    ErrorMessage = "malformed data!";
-                    ErrorWhileParsing = true;
-                    return;
+                    throw new InvalidDataException($"Looks like we did not read the data correctly (position: {dataReader.BaseStream.Position})");
                 }
                 var finalExp = Expressions.Pop();
-                while (finalExp.Length > 2 && finalExp[0] == '(' && finalExp[^1] == ')')
+                finalExp = Trimb(finalExp);
+                if (OmitReturnStatement)
                 {
-                    finalExp = Trimb(finalExp);
+                    DynamicExpressionList.Add(finalExp);
+                } else
+                {
+                    DynamicExpressionList.Add($"return {finalExp};");
                 }
-                DynamicExpressionList.Add($"return {finalExp};");
                 return;
             }
 
-            // this point should never be reached
-            // throw new Exception($"UNKNOWN OPCODE = 0x{(int)op:x2}, offset = {dataReader.BaseStream.Position}");
-            ErrorWhileParsing = true;
-            ErrorMessage = $"UNKNOWN OPCODE = 0x{(int)op:x2}, offset = {dataReader.BaseStream.Position}";
+            throw new InvalidDataException($"Error parsing dynamic expression, unknown opcode = 0x{(int)op:x2} (position: {dataReader.BaseStream.Position})");
         }
 
         private void ApplyFunction(string funcName, int nrArguments)
@@ -423,9 +427,9 @@ namespace MyValveResourceFormat.Serialization.VfxEval
             var exp3 = Expressions.Pop();
             if (nrArguments == 3)
             {
-                // trim or not to trim ...
+                // Trimming the brackets here because it's always safe to remove these from functions
+                // (as they always carry their own brackets)
                 Expressions.Push($"{funcName}({Trimb(exp3)},{Trimb(exp2)},{Trimb(exp1)})");
-                // expressions.Push($"{funcName}({exp3},{exp2},{exp1})");
                 return;
             }
             var exp4 = Expressions.Pop();
@@ -435,7 +439,7 @@ namespace MyValveResourceFormat.Serialization.VfxEval
                 return;
             }
 
-            throw new Exception("this cannot happen!");
+            throw new InvalidDataException($"Error parsing dynamic expression, unexpected number of arguments ({nrArguments}) for function ${funcName}");
         }
 
         private static string GetSwizzle(byte b)
@@ -447,47 +451,33 @@ namespace MyValveResourceFormat.Serialization.VfxEval
             {
                 i--;
             }
-            return swizzle.Substring(0, i + 1);
+            return swizzle[0..(i + 1)];
         }
 
+        // The decompiler has a tendency to accumulate brackets so we trim them in places where
+        // it is safe (which is just done for readability).
+        // The approach to removing brackets is not optimised in any way, arithmetic expressions
+        // will accumulate brackets and it's not trivial to know when it's safe to remove them
+        // For example 1+2+3+4 will decompile as ((1+2)+3)+4
         private static string Trimb(string exp)
         {
             return exp[0] == '(' && exp[^1] == ')' ? exp[1..^1] : exp;
         }
-        //private string Trimb2(string exp)
-        //{
-        //    return OffsetAtBranchExits.Count == 1 ? Trimb(exp) : exp;
-        //}
 
-
-        private readonly Dictionary<uint, string> ExternalVariablesPlaceholderNames = new();
-        private readonly Dictionary<uint, string> LocalVariableNames = new();
-
-        // naming external variables EXT, EXT2, EXT3,.. where not found
-        private string GetExternalVarName(uint varId)
+        // if the variable reference is unknown return in the form UNKNOWN[e46d252d] (showing the murmur32)
+        private static string GetExternalVarName(uint varId)
         {
             ExternalVarsReference.TryGetValue(varId, out var varKnownName);
             if (varKnownName != null)
             {
                 return varKnownName;
-            }
-            ExternalVariablesPlaceholderNames.TryGetValue(varId, out var varName);
-            if (varName == null)
+            } else
             {
-                if (ExternalVariablesPlaceholderNames.Count == 0)
-                {
-                    varName = "EXT";
-                }
-                else
-                {
-                    varName = string.Format("EXT{0}", ExternalVariablesPlaceholderNames.Count + 1);
-                }
-                ExternalVariablesPlaceholderNames.Add(varId, varName);
+                return $"UNKNOWN[{varId:x08}]";
             }
-            return varName;
         }
 
-        // naming local variables v1,v2,v3,..
+        // naming local variables v0,v1,v2,..
         private string GetLocalVarName(uint varId)
         {
             LocalVariableNames.TryGetValue(varId, out var varName);
@@ -498,6 +488,5 @@ namespace MyValveResourceFormat.Serialization.VfxEval
             }
             return varName;
         }
-
     }
 }

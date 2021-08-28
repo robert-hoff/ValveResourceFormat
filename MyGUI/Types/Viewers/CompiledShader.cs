@@ -4,11 +4,12 @@ using System.Globalization;
 using System.IO;
 using System.Windows.Forms;
 using MyGUI.Utils;
+using ValveResourceFormat.CompiledShader;
 
 namespace MyGUI.Types.Viewers {
     public class CompiledShader : IViewer {
         public static bool IsAccepted(uint magic) {
-            return magic == MyValveResourceFormat.CompiledShader.MAGIC;
+            return magic == ShaderFile.MAGIC;
         }
 
         /*
@@ -23,17 +24,21 @@ namespace MyGUI.Types.Viewers {
          */
         public TabPage Create(VrfGuiContext vrfGuiContext, byte[] input) {
             var tab = new TabPage();
-            var shader = new MyValveResourceFormat.CompiledShader();
+            var shader = new ShaderFile();
 
             var buffer = new StringWriter(CultureInfo.InvariantCulture);
             var oldOut = Console.Out;
             Console.SetOut(buffer);
 
-            if (input != null) {
+            if (input != null)
+            {
                 shader.Read(vrfGuiContext.FileName, new MemoryStream(input));
-            } else {
+            }
+            else
+            {
                 shader.Read(vrfGuiContext.FileName);
             }
+            shader.PrintSummary();
 
             Console.SetOut(oldOut);
 
@@ -44,8 +49,6 @@ namespace MyGUI.Types.Viewers {
             control.Multiline = true;
             control.ReadOnly = true;
             control.ScrollBars = ScrollBars.Both;
-            // control.TabStop = false;
-            // control.TabIndex = 1;
             tab.Controls.Add(control);
 
             return tab;

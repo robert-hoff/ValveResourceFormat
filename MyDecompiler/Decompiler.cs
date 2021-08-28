@@ -16,6 +16,7 @@ using MyValveResourceFormat.Blocks;
 using MyValveResourceFormat.IO;
 using MyValveResourceFormat.ResourceTypes;
 using MyValveResourceFormat.ToolsAssetInfo;
+using ValveResourceFormat.CompiledShader;
 
 namespace MyDecompiler {
     [Command(Name = "vrf_decompiler", Description = "A test bed command line interface for the VRF library")]
@@ -259,7 +260,7 @@ namespace MyDecompiler {
 
             switch (magic) {
                 case Package.MAGIC: ParseVPK(path, fs); return;
-                case CompiledShader.MAGIC: ParseVCS(path, fs); return;
+                case ShaderFile.MAGIC: ParseVCS(path, fs); return;
                 case ToolsAssetInfo.MAGIC2:
                 case ToolsAssetInfo.MAGIC: ParseToolsAssetInfo(path, fs); return;
                 case BinaryKV3.MAGIC3:
@@ -511,10 +512,11 @@ namespace MyDecompiler {
                 Console.ResetColor();
             }
 
-            var shader = new CompiledShader();
+            var shader = new ShaderFile();
 
             try {
                 shader.Read(path, stream);
+                shader.PrintSummary();
             } catch (Exception e) {
                 lock (ConsoleWriterLock) {
                     Console.ForegroundColor = ConsoleColor.Cyan;

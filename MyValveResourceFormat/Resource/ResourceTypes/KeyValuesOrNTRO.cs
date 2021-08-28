@@ -3,8 +3,10 @@ using System.IO;
 using MyValveResourceFormat.Blocks;
 using MyValveResourceFormat.Serialization;
 
-namespace MyValveResourceFormat.ResourceTypes {
-    public class KeyValuesOrNTRO : ResourceData {
+namespace MyValveResourceFormat.ResourceTypes
+{
+    public class KeyValuesOrNTRO : ResourceData
+    {
         private string IntrospectionStructName;
         private BlockType KVBlockType;
         public override BlockType Type => KVBlockType;
@@ -14,28 +16,36 @@ namespace MyValveResourceFormat.ResourceTypes {
 
         private ResourceData BackingData;
 
-        public KeyValuesOrNTRO() {
+        public KeyValuesOrNTRO()
+        {
             KVBlockType = BlockType.DATA;
         }
 
-        public KeyValuesOrNTRO(BlockType type, string introspectionStructName) {
+        public KeyValuesOrNTRO(BlockType type, string introspectionStructName)
+        {
             KVBlockType = type;
             IntrospectionStructName = introspectionStructName;
         }
 
-        public override void Read(BinaryReader reader, Resource resource) {
+        public override void Read(BinaryReader reader, Resource resource)
+        {
             Resource = resource;
 
-            if (!resource.ContainsBlockType(BlockType.NTRO)) {
-                var kv3 = new BinaryKV3(KVBlockType) {
+            if (!resource.ContainsBlockType(BlockType.NTRO))
+            {
+                var kv3 = new BinaryKV3(KVBlockType)
+                {
                     Offset = Offset,
                     Size = Size,
                 };
                 kv3.Read(reader, resource);
                 Data = kv3.Data;
                 BackingData = kv3;
-            } else {
-                var ntro = new NTRO {
+            }
+            else
+            {
+                var ntro = new NTRO
+                {
                     StructName = IntrospectionStructName,
                     Offset = Offset,
                     Size = Size,
@@ -46,8 +56,10 @@ namespace MyValveResourceFormat.ResourceTypes {
             }
         }
 
-        public override string ToString() {
-            if (BackingData is BinaryKV3 dataKv3) {
+        public override string ToString()
+        {
+            if (BackingData is BinaryKV3 dataKv3)
+            {
                 return dataKv3.GetKV3File().ToString();
             }
 
