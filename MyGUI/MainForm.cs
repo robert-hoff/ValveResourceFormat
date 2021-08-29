@@ -95,6 +95,11 @@ namespace MyGUI {
                 CloseTabsToRight(mainTabs.SelectedTab);
             }
 
+            if (keyData == Keys.Escape)
+            {
+                Close();
+            }
+
             return base.ProcessCmdKey(ref msg, keyData);
         }
 
@@ -309,7 +314,7 @@ namespace MyGUI {
 
             // R: ProcessFile returns a tabPage, but this tab-page doesn't seem to be the one that
             // contains the title that I assign to it
-            var task = Task.Factory.StartNew(() => ProcessFile(fileName, input, currentPackage, tab));
+            var task = Task.Factory.StartNew(() => ProcessFile(fileName, input, currentPackage));
 
             task.ContinueWith(
                 t => {
@@ -335,9 +340,7 @@ namespace MyGUI {
             task.ContinueWith(
                 t => {
                     tab.Controls.Clear();
-
                     foreach (Control c in t.Result.Controls) {
-                        Debug.WriteLine($"{c.GetType()}");
                         tab.Controls.Add(c);
                     }
                 },
@@ -358,7 +361,7 @@ namespace MyGUI {
          *
          *
          */
-        private TabPage ProcessFile(string fileName, byte[] input, TreeViewWithSearchResults.TreeViewPackageTag currentPackage, TabPage parentTab = null) {
+        private TabPage ProcessFile(string fileName, byte[] input, TreeViewWithSearchResults.TreeViewPackageTag currentPackage) {
             uint magic = 0;
             ushort magicResourceVersion = 0;
 
@@ -428,7 +431,7 @@ namespace MyGUI {
                  *
                  *
                  */
-                return Types.Viewers.CompiledShader.Createz(vrfGuiContext, input, parentTab);
+                return new Types.Viewers.CompiledShader().Create(vrfGuiContext, input);
             } else if (Types.Viewers.ClosedCaptions.IsAccepted(magic)) {
 
                 return new Types.Viewers.ClosedCaptions().Create(vrfGuiContext, input);
@@ -447,7 +450,7 @@ namespace MyGUI {
 
             } else if (Types.Viewers.Resource.IsAccepted(magicResourceVersion)) {
 
-
+                // - ARMOR OF RECKLESS VIGOR IS MATCHED HERE
 
 
 

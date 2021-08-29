@@ -301,7 +301,7 @@ namespace GUI
             mainTabs.TabPages.Add(tab);
             mainTabs.SelectTab(tab);
 
-            var task = Task.Factory.StartNew(() => ProcessFile(fileName, input, currentPackage));
+            var task = Task.Factory.StartNew(() => ProcessFile(fileName, input, currentPackage, tab));
 
             task.ContinueWith(
                 t =>
@@ -342,7 +342,7 @@ namespace GUI
                 TaskScheduler.FromCurrentSynchronizationContext());
         }
 
-        private TabPage ProcessFile(string fileName, byte[] input, TreeViewWithSearchResults.TreeViewPackageTag currentPackage)
+        private TabPage ProcessFile(string fileName, byte[] input, TreeViewWithSearchResults.TreeViewPackageTag currentPackage, TabPage parentTab)
         {
             uint magic = 0;
             ushort magicResourceVersion = 0;
@@ -384,7 +384,7 @@ namespace GUI
             }
             else if (Types.Viewers.CompiledShader.IsAccepted(magic))
             {
-                return new Types.Viewers.CompiledShader().Create(vrfGuiContext, input);
+                return Types.Viewers.CompiledShader.Create(vrfGuiContext, input, parentTab);
             }
             else if (Types.Viewers.ClosedCaptions.IsAccepted(magic))
             {

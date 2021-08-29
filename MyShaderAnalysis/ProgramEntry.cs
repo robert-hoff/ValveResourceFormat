@@ -28,6 +28,9 @@ namespace MyShaderAnalysis
             Console.SetOut(new ToDebugWriter());
 
 
+            Console.WriteLine("hello777hello778hellohello".IndexOf("78"));
+
+
             // CollectConfigurations.RunTrials();
 
             // DataReaderV62.RunTrials();
@@ -41,7 +44,7 @@ namespace MyShaderAnalysis
             // StaticAnalysis2.RunTrials();
             // StaticAnalysis.RunTrials();
 
-            PrintoutsByteAnalysis.RunTrials();
+            // PrintoutsByteAnalysis.RunTrials();
             // ShaderAnalysis.RunTrials();
             // TestBasics.RunTrials();
 

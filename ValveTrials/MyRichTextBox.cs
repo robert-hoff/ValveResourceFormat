@@ -22,8 +22,9 @@ namespace ValveTrials
      * Adding links in RichTextBox
      * https://stackoverflow.com/questions/12303414/add-clickable-hyperlinks-to-a-richtextbox-without-new-paragraph
      * https://stackoverflow.com/questions/9279061/dynamically-adding-hyperlinks-to-a-richtextbox
+     * https://stackoverflow.com/questions/29606198/clickable-text-in-richtextbox
      *
-     *
+     * They say something about the 'Document' property that might be important
      *
      *
      *

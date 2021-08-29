@@ -29,6 +29,7 @@ namespace ValveTrials
         {
             var tab = new TabPage("snazzy title");
             var control = new MyRichTextBox();
+            // control.ScrollBars =
             tab.Controls.Add(control);
             return (tab, control);
         }

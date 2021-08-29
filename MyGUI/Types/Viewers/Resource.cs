@@ -20,7 +20,11 @@ namespace MyGUI.Types.Viewers {
         }
 
         public TabPage Create(VrfGuiContext vrfGuiContext, byte[] input) {
+
+
             var tab = new TabPage();
+
+
             var resource = new MyValveResourceFormat.Resource {
                 FileName = vrfGuiContext.FileName,
             };
