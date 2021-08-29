@@ -92,8 +92,6 @@ namespace ValveResourceFormat.CompiledShader
              };
         }
 
-
-
         public static string ShortenShaderParam(string shaderParam)
         {
             if (shaderParam.Length <= 4)

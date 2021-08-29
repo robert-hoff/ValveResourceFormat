@@ -32,50 +32,21 @@ namespace MyShaderAnalysis
             Console.SetOut(new ToDebugWriter());
 
 
-            // -- will sort
-            // SortedDictionary<(int, string), int> hello = new();
-            //hello.Add((5,"sdfsdf"),10);
-            //hello.Add((1,"sdfsdf"),10);
-            //hello.Add((10,"sdfsdf"),10);
-            //hello.Add((2,"sdfsdf"),10);
-            //foreach (var item in hello)
-            //{
-            //}
-
-
-            // -- will sort
-            //SortedDictionary<(VcsProgramType, string), int> hello = new();
-            //hello.Add((VcsProgramType.HullShader, "sdfsdf"), 10);
-            //hello.Add((VcsProgramType.Features, "sdfsdf"), 10);
-            //hello.Add((VcsProgramType.PixelShaderRenderState, "sdfsdf"), 10);
-            //hello.Add((VcsProgramType.PixelShader, "sdfsdf"), 10);
-            //foreach (var item in hello)
-            //{
-            //    Console.WriteLine($"{item.Key.Item1}");
-            //}
-
-
-
-
             // X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders\vfx\water_dota_pcgl_40_features.vcs
             // var filenamepath = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders\vfx\water_dota_pcgl_40_features.vcs";
             // string[] relatedFiles = GetRelatedFiles(filenamepath);
             // List<string> relatedFiles = GetRelatedFiles2(filenamepath);
 
-
-
-
-
             // CollectConfigurations.RunTrials();
 
-            // DataReaderV62.RunTrials();
 
+            // DataReaderV62.RunTrials();
             // TestMobileShaderFiles.RunTrials();
 
             // PrintoutsZframes1.RunTrials();
             // StaticAnalysisZframes.RunTrials();
 
-            // PrintoutsSingleFile.RunTrials();
+            PrintoutsSingleFile.RunTrials();
             // StaticAnalysis2.RunTrials();
             // StaticAnalysis.RunTrials();
 
