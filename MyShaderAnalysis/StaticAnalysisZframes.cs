@@ -348,10 +348,11 @@ namespace MyShaderAnalysis
             // Console.WriteLine($"{zframeFile.leadingData.h2}");
             // Console.WriteLine($"{DataReader.BytesToString(zframeFile.leadingData.dataload)}");
 
+            // R: took these out
             // zframeFile.ShowZFrameHeader();
-            zframeFile.ShowLeadSummary();
+            // zframeFile.ShowLeadSummary();
             // zframeFile.ShowDatablocks();
-            zframeFile.ShowTailSummary();
+            // zframeFile.ShowTailSummary();
             // zframeFile.ShowGlslSources();
             // zframeFile.ShowEndBlocks();
 

@@ -1,14 +1,13 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using MyGUI.Utils;
-using ValveResourceFormat.CompiledShader;
-using System.Runtime.InteropServices;
 using SteamDatabase.ValvePak;
+using ValveResourceFormat.CompiledShader;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 using VrfPackage = SteamDatabase.ValvePak.Package;
 
@@ -23,9 +22,9 @@ namespace MyGUI.Types.Viewers {
             public ShaderTabcontrol() : base() { }
         }
 
-        ShaderTabcontrol tabControl;
-        ShaderFile shaderFile;
-        SortedDictionary<(VcsProgramType, string), ShaderFile> shaderCollection;
+        private ShaderTabcontrol tabControl;
+        private ShaderFile shaderFile;
+        private SortedDictionary<(VcsProgramType, string), ShaderFile> shaderCollection;
 
 
         /*
@@ -61,7 +60,6 @@ namespace MyGUI.Types.Viewers {
         }
 
 
-
         private static SortedDictionary<(VcsProgramType, string), ShaderFile> GetShaderCollection(string targetFilename, VrfPackage vrfPackage) {
             SortedDictionary<(VcsProgramType, string), ShaderFile> shaderCollection = new();
             if (vrfPackage != null) {
@@ -95,7 +93,7 @@ namespace MyGUI.Types.Viewers {
         }
 
         private static void MouseEnterHandler(object sender, EventArgs e) {
-            ShaderRichTextBox shaderRTB = sender as ShaderRichTextBox;
+            RichTextBox shaderRTB = sender as RichTextBox;
             shaderRTB.Focus();
         }
 
@@ -129,15 +127,11 @@ namespace MyGUI.Types.Viewers {
         }
 
 
-
-
-
         private class ShaderRichTextBox : RichTextBox {
             private ShaderFile shaderFile;
             SortedDictionary<(VcsProgramType, string), ShaderFile> shaderCollection;
             private TabControl tabControl;
             private List<string> relatedFiles = new();
-
 
             public ShaderRichTextBox(ShaderFile shaderFile, TabControl tabControl,
                 SortedDictionary<(VcsProgramType, string), ShaderFile> shaderCollection = null, bool byteVersion = false) : base() {
@@ -149,7 +143,6 @@ namespace MyGUI.Types.Viewers {
                         relatedFiles.Add(vcsFilenames.Item2);
                     }
                 }
-
                 var buffer = new StringWriter(CultureInfo.InvariantCulture);
                 if (!byteVersion) {
                     shaderFile.PrintSummary(buffer.Write, showRichTextBoxLinks: true, relatedfiles: relatedFiles);
@@ -167,16 +160,9 @@ namespace MyGUI.Types.Viewers {
                 LinkClicked += new LinkClickedEventHandler(ShaderRichTextBoxLinkClicked);
             }
 
-
-
-
-
             private void ShaderRichTextBoxLinkClicked(object sender, LinkClickedEventArgs evt) {
-
                 string linkText = evt.LinkText[2..]; // remove two starting backslahses
                 string[] linkTokens = linkText.Split("\\");
-
-
                 VcsProgramType programType = ComputeVcsProgramType(linkTokens[0]);
                 if (programType != VcsProgramType.Undetermined) {
                     ShaderFile shaderFile = shaderCollection[(programType, linkTokens[0])];
@@ -195,24 +181,31 @@ namespace MyGUI.Types.Viewers {
                     }
                     return;
                 }
-
-
-
                 long zframeId = Convert.ToInt64(linkText, 16);
-                var zframeTab = new TabPage($"Z[{zframeId:X08}]");
-                var zframeRichTextBox = new ZFrameRichTextBox(shaderFile, zframeId);
+                var zframeTab = new TabPage($"{shaderFile.filenamepath.Split('_')[^1][..^4]}-Z[{zframeId:X08}]");
+                var zframeRichTextBox = new ZFrameRichTextBox(tabControl, shaderFile, zframeId);
+                zframeRichTextBox.MouseEnter += new EventHandler(MouseEnterHandler);
                 zframeTab.Controls.Add(zframeRichTextBox);
                 tabControl.Controls.Add(zframeTab);
-
             }
         }
 
 
         private class ZFrameRichTextBox : RichTextBox {
-            public ZFrameRichTextBox(ShaderFile shaderFile, long zframeId) : base() {
+            private TabControl tabControl;
+            private ShaderFile shaderFile;
+            private ZFrameFile zframeFile;
+
+            public ZFrameRichTextBox(TabControl tabControl, ShaderFile shaderFile, long zframeId, bool byteVersion = false) : base() {
+                this.tabControl = tabControl;
+                this.shaderFile = shaderFile;
                 var buffer = new StringWriter(CultureInfo.InvariantCulture);
-                ZFrameFile zframeFile = shaderFile.GetZFrameFile(zframeId, OutputWriter: buffer.Write);
-                zframeFile.PrintByteAnalysis();
+                zframeFile = shaderFile.GetZFrameFile(zframeId, OutputWriter: buffer.Write);
+                if (byteVersion) {
+                    zframeFile.PrintByteAnalysis();
+                } else {
+                    PrintZFrameSummary zframeSummary = new PrintZFrameSummary(shaderFile, zframeFile, buffer.Write, true);
+                }
                 Font = new Font(FontFamily.GenericMonospace, Font.Size);
                 DetectUrls = true;
                 Dock = DockStyle.Fill;
@@ -221,6 +214,35 @@ namespace MyGUI.Types.Viewers {
                 WordWrap = false;
                 Text = Utils.Utils.NormalizeLineEndings(buffer.ToString());
                 ScrollBars = RichTextBoxScrollBars.Both;
+                LinkClicked += new LinkClickedEventHandler(ZFrameRichTextBoxLinkClicked);
+            }
+
+            private void ZFrameRichTextBoxLinkClicked(object sender, LinkClickedEventArgs evt) {
+                string[] linkTokens = evt.LinkText[2..].Split("\\");
+                if (linkTokens.Length == 1) {
+                    long zframeId = Convert.ToInt64(linkTokens[0].Split('-')[^2][6..], 16);
+                    var zframeTab = new TabPage($"{shaderFile.filenamepath.Split('_')[^1][..^4]}-Z[{zframeId:X08}] bytes");
+                    var zframeRichTextBox = new ZFrameRichTextBox(tabControl, shaderFile, zframeId, byteVersion: true);
+                    zframeRichTextBox.MouseEnter += new EventHandler(MouseEnterHandler);
+                    zframeTab.Controls.Add(zframeRichTextBox);
+                    tabControl.Controls.Add(zframeTab);
+                    return;
+                }
+                int glslSourceId = Int32.Parse(linkTokens[1]);
+                var buffer = new StringWriter(CultureInfo.InvariantCulture);
+                zframeFile.PrintGlslSource(glslSourceId, buffer.Write);
+                var glslTab = new TabPage($"{shaderFile.filenamepath.Split('_')[^1][..^4]}-glsl[{glslSourceId}]");
+                var glslRichTextBox = new RichTextBox();
+                glslRichTextBox.Font = new Font(FontFamily.GenericMonospace, Font.Size);
+                glslRichTextBox.DetectUrls = true;
+                glslRichTextBox.Dock = DockStyle.Fill;
+                glslRichTextBox.Multiline = true;
+                glslRichTextBox.ReadOnly = true;
+                glslRichTextBox.WordWrap = false;
+                glslRichTextBox.Text = Utils.Utils.NormalizeLineEndings(buffer.ToString());
+                glslRichTextBox.ScrollBars = RichTextBoxScrollBars.Both;
+                glslTab.Controls.Add(glslRichTextBox);
+                tabControl.Controls.Add(glslTab);
             }
         }
     }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using MyValveResourceFormat.ThirdParty;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 using static ValveResourceFormat.CompiledShader.ShaderDataReader;
+using System.Text;
 
 namespace ValveResourceFormat.CompiledShader
 {
@@ -188,12 +189,6 @@ namespace ValveResourceFormat.CompiledShader
             return zframeHeaderString;
         }
 
-        public void ShowLeadSummary()
-        {
-            Console.WriteLine(GetLeadSummary());
-            Console.WriteLine($"");
-        }
-
         public string GetLeadSummary()
         {
             if (vcsProgramType != VcsProgramType.VertexShader)
@@ -212,26 +207,6 @@ namespace ValveResourceFormat.CompiledShader
             return leadSummaryDesc.Trim();
         }
 
-        public void ShowDatablocks()
-        {
-            foreach (ZDataBlock dataBlock in dataBlocks)
-            {
-                Console.WriteLine($"// data-block[{dataBlock.blockId}]");
-                Console.WriteLine($"{dataBlock.h0},{dataBlock.h1},{dataBlock.h2}");
-                if (dataBlock.dataload != null)
-                {
-                    Console.WriteLine($"{BytesToString(dataBlock.dataload)}");
-                    Console.WriteLine("");
-                }
-            }
-        }
-
-        public void ShowTailSummary()
-        {
-            Console.WriteLine(GetTailSummary());
-            Console.WriteLine($"");
-        }
-
         public string GetTailSummary()
         {
             string tailSummaryDesc = $"{tailSummary.Length:X02} 00   // configuration states ({tailSummary.Length}), tail summary\n";
@@ -245,64 +220,6 @@ namespace ValveResourceFormat.CompiledShader
             }
             return tailSummaryDesc.Trim();
         }
-
-        public void ShowGlslSources()
-        {
-            foreach (GpuSource gpuSource in gpuSources)
-            {
-                Console.WriteLine(gpuSource.GetBlockName());
-                if (gpuSource.sourcebytes.Length > 0)
-                {
-                    Console.WriteLine($"{gpuSource.sourcebytes.Length}");
-                    // Console.WriteLine($"{DataReader.BytesToString(glslSource.sourcebytes)}");
-                } else
-                {
-                    Console.WriteLine($"// empty source");
-                }
-                Console.WriteLine($"{BytesToString(gpuSource.editorRefId)}  // File ID");
-            }
-        }
-
-        public void ShowEndBlocks()
-        {
-            if (vcsProgramType == VcsProgramType.VertexShader || vcsProgramType == VcsProgramType.GeometryShader)
-            {
-                Console.WriteLine($"{vsEndBlocks.Count:X02} 00 00 00   // nr of end blocks ({vsEndBlocks.Count})");
-                foreach (VsEndBlock vsEndBlock in vsEndBlocks)
-                {
-                    Console.WriteLine($"{BytesToString(vsEndBlock.databytes)}");
-                }
-            } else
-            {
-                Console.WriteLine($"{psEndBlocks.Count:X02} 00 00 00   // nr of end blocks ({vsEndBlocks.Count})");
-                foreach (PsEndBlock psEndBlock in psEndBlocks)
-                {
-                    Console.WriteLine($"blockId Ref {psEndBlock.blockIdRef}");
-                    Console.WriteLine($"arg0 {psEndBlock.arg0}");
-                    Console.WriteLine($"source ref {psEndBlock.sourceRef}");
-                    Console.WriteLine($"source pointer {psEndBlock.sourcePointer}");
-                    Console.WriteLine($"has data ({psEndBlock.hasData0},{psEndBlock.hasData1},{psEndBlock.hasData2})");
-                    if (psEndBlock.hasData0)
-                    {
-                        Console.WriteLine("// data-section 0");
-                        Console.WriteLine($"{BytesToString(psEndBlock.data0)}");
-                    }
-                    if (psEndBlock.hasData1)
-                    {
-                        Console.WriteLine("// data-section 1");
-                        Console.WriteLine($"{BytesToString(psEndBlock.data1)}");
-                    }
-                    if (psEndBlock.hasData2)
-                    {
-                        Console.WriteLine("// data-section 2");
-                        Console.WriteLine($"{BytesToString(psEndBlock.data2[0..3])}");
-                        Console.WriteLine($"{BytesToString(psEndBlock.data2[3..11])}");
-                        Console.WriteLine($"{BytesToString(psEndBlock.data2[11..75])}");
-                    }
-                }
-            }
-        }
-
         public void Dispose()
         {
             Dispose(true);
@@ -314,6 +231,19 @@ namespace ValveResourceFormat.CompiledShader
             {
                 datareader.Dispose();
                 datareader = null;
+            }
+        }
+
+        public void PrintGlslSource(int sourceId, HandleOutputWrite OutputWriter)
+        {
+            GlslSource glslSource = gpuSources[sourceId] as GlslSource;
+            string result = Encoding.UTF8.GetString(glslSource.sourcebytes);
+            if (result.Length == 0)
+            {
+                OutputWriter("[empty source]");
+            } else
+            {
+                OutputWriter(result);
             }
         }
 

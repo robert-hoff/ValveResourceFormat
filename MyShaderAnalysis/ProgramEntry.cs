@@ -90,7 +90,11 @@ namespace MyShaderAnalysis
             ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(0);
 
 
-            new PrintZFrameSummary(shaderFile, zframeFile);
+            zframeFile.PrintGlslSource(0, Console.Write);
+
+            // new PrintZFrameSummary(shaderFile, zframeFile);
+
+
 
 
 

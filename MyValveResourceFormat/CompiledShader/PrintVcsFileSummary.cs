@@ -17,7 +17,6 @@ namespace ValveResourceFormat.CompiledShader
         {
             this.showRichTextBoxLinks = showRichTextBoxLinks;
             this.relatedFiles = relatedFiles;
-
             output = new OutputFormatterTabulatedData(OutputWriter);
             if (shaderFile.vcsProgramType == VcsProgramType.Features)
             {
