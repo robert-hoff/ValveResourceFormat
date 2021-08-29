@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using static ValveResourceFormat.CompiledShader.ShaderDataReader;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 using static ValveResourceFormat.CompiledShader.ZFrameFile;
@@ -20,6 +21,11 @@ namespace ValveResourceFormat.CompiledShader
             this.zframeFile = zframeFile;
             this.OutputWriter = OutputWriter ?? ((x) => { Console.Write(x); });
             this.showRichTextBoxLinks = showRichTextBoxLinks;
+            if (showRichTextBoxLinks)
+            {
+                OutputWriteLine($"Byte printout \\\\{Path.GetFileName(shaderFile.filenamepath)}-ZFRAME{zframeFile.zframeId:x08}-databytes");
+                OutputWriteLine("");
+            }
             PrintConfigurationState();
             PrintFrameLeadingArgs();
             SortedDictionary<int, int> writeSequences = GetWriteSequences();

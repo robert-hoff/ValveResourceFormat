@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using static ValveResourceFormat.CompiledShader.ShaderDataReader;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 using static ValveResourceFormat.CompiledShader.ZFrameFile;
@@ -20,11 +21,16 @@ namespace ValveResourceFormat.CompiledShader
             this.zframeFile = zframeFile;
             this.OutputWriter = OutputWriter ?? ((x) => { Console.Write(x); });
             this.showRichTextBoxLinks = showRichTextBoxLinks;
+            if (showRichTextBoxLinks)
+            {
+                OutputWriteLine($"Byte printout \\\\{Path.GetFileName(shaderFile.filenamepath)}-ZFRAME{zframeFile.zframeId:x08}-databytes");
+                OutputWriteLine("");
+            }
             PrintConfigurationState();
             PrintFrameLeadingArgs();
             SortedDictionary<int, int> writeSequences = GetWriteSequences();
             PrintWriteSequences(writeSequences);
-            PrintDataBlocks3(writeSequences);
+            PrintDataBlocks(writeSequences);
             PrintLeadSummary();
             PrintTailSummary();
             PrintSourceSummary();
@@ -177,7 +183,7 @@ namespace ValveResourceFormat.CompiledShader
             }
         }
 
-        private void PrintDataBlocks3(SortedDictionary<int, int> writeSequences)
+        private void PrintDataBlocks(SortedDictionary<int, int> writeSequences)
         {
             Dictionary<int, GpuSource> blockIdToSource = GetBlockIdToSource(zframeFile);
             string configHeader = $"D-Param configurations ({blockIdToSource.Count})";
@@ -212,10 +218,17 @@ namespace ValveResourceFormat.CompiledShader
 
                 if (blockSource is GlslSource source)
                 {
-                    string urlText = $"source[{blockSource.GetEditorRefIdAsString()}]";
                     // string sourceLink = $"<a href='{fileTokens.GetGlslHtmlUrl((GlslSource) blockSource)}'>{urlText}</a>";
                     // OutputWriteLine($"    {sourceLink} {blockSource.sourcebytes.Length,12}  (bytes)");
-                    OutputWriteLine(urlText);
+
+                    if (showRichTextBoxLinks)
+                    {
+                        OutputWriteLine($"\\\\source\\{blockSource.sourceId}");
+                    } else
+                    {
+                        string sourceDesc = $"source[{blockSource.GetEditorRefIdAsString()}]";
+                        OutputWriteLine(sourceDesc);
+                    }
                 } else
                 {
                     OutputWriteLine($"  {blockSource.GetBlockName().PadRight(20)} {blockSource.sourcebytes.Length,12} (bytes)");

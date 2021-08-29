@@ -1,10 +1,10 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Text;
 using MyValveResourceFormat.ThirdParty;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 using static ValveResourceFormat.CompiledShader.ShaderDataReader;
-using System.Text;
 
 namespace ValveResourceFormat.CompiledShader
 {
