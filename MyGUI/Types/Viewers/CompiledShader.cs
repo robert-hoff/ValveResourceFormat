@@ -10,6 +10,8 @@ using ValveResourceFormat.CompiledShader;
 using System.Runtime.InteropServices;
 using SteamDatabase.ValvePak;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
+using VrfPackage = SteamDatabase.ValvePak.Package;
+
 
 namespace MyGUI.Types.Viewers {
     public class CompiledShader : IViewer {
@@ -36,15 +38,10 @@ namespace MyGUI.Types.Viewers {
          *
          */
         public TabPage Create(VrfGuiContext vrfGuiContext, byte[] input) {
-            ShaderFile shaderFile = new ShaderFile();
-            if (input != null) {
-                shaderFile.Read(vrfGuiContext.FileName, new MemoryStream(input));
-            } else {
-                shaderFile.Read(vrfGuiContext.FileName);
-            }
 
-            GetRelatedFiles(vrfGuiContext, input);
-
+            SortedDictionary<(VcsProgramType, string), ShaderFile> shaderCollection = GetRelatedFiles(vrfGuiContext.FileName, vrfGuiContext.CurrentPackage);
+            string filename = Path.GetFileName(vrfGuiContext.FileName);
+            ShaderFile shaderFile = shaderCollection[(ComputeVcsProgramType(filename), filename)];
 
 
 
@@ -76,43 +73,37 @@ namespace MyGUI.Types.Viewers {
 
 
 
-
-        private static SortedDictionary<(VcsProgramType, string), ShaderFile> GetRelatedFiles(VrfGuiContext vrfGuiContext, byte[] input) {
-
+        private static SortedDictionary<(VcsProgramType, string), ShaderFile> GetRelatedFiles(string targetFilename, VrfPackage vrfPackage) {
             SortedDictionary<(VcsProgramType, string), ShaderFile> shaderCollection = new();
-
-            if (input != null) {
-                // search packages
-                ShaderFile targetFile = new();
-                targetFile.Read(vrfGuiContext.FileName, new MemoryStream(input));
-                VcsProgramType vcsProgramType = ComputeVCSFileName($"{vrfGuiContext.FileName}").Item1;
-                shaderCollection.Add((vcsProgramType, vrfGuiContext.FileName), targetFile);
-                string vcsCollectionName = vrfGuiContext.FileName.Substring(0, vrfGuiContext.FileName.LastIndexOf('_')); // in the form water_dota_pcgl_40
-
-                List<PackageEntry> vcsEntries = vrfGuiContext.CurrentPackage.Entries["vcs"];
+            if (vrfPackage != null) {
+                // search the package
+                string vcsCollectionName = targetFilename.Substring(0, targetFilename.LastIndexOf('_')); // in the form water_dota_pcgl_40
+                List<PackageEntry> vcsEntries = vrfPackage.Entries["vcs"];
+                // vcsEntry.FileName is in the form bloom_dota_pcgl_30_ps (without vcs extension)
                 foreach (var vcsEntry in vcsEntries) {
-                    // vcsEntry.FileName is in the form bloom_dota_pcgl_30_ps (without vcs extension)
                     if (vcsEntry.FileName.StartsWith(vcsCollectionName)) {
-                        VcsProgramType programType = ComputeVCSFileName($"{vcsEntry.FileName}.vcs").Item1;
-                        if (!shaderCollection.ContainsKey((programType, $"{vcsEntry.FileName}.vcs"))) {
-                            ShaderFile relatedShaderFile = new();
-                            vrfGuiContext.CurrentPackage.ReadEntry(vcsEntry, out var shaderDatabytes);
-                            relatedShaderFile.Read($"{vcsEntry.FileName}.vcs", new MemoryStream(shaderDatabytes));
-                            shaderCollection.Add((programType, $"{vcsEntry.FileName}.vcs"), relatedShaderFile);
-                        }
+                        VcsProgramType programType = ComputeVcsProgramType($"{vcsEntry.FileName}.vcs");
+                        vrfPackage.ReadEntry(vcsEntry, out var shaderDatabytes);
+                        ShaderFile relatedShaderFile = new();
+                        relatedShaderFile.Read($"{vcsEntry.FileName}.vcs", new MemoryStream(shaderDatabytes));
+                        shaderCollection.Add((programType, $"{vcsEntry.FileName}.vcs"), relatedShaderFile);
                     }
                 }
             } else {
                 // search file-system
-
+                string filename = Path.GetFileName(targetFilename);
+                string vcsCollectionName = filename.Substring(0, filename.LastIndexOf('_'));
+                foreach (var vcsFile in Directory.GetFiles(Path.GetDirectoryName(targetFilename))) {
+                    if (Path.GetFileName(vcsFile).StartsWith(vcsCollectionName)) {
+                        VcsProgramType programType = ComputeVcsProgramType(vcsFile);
+                        ShaderFile relatedShaderFile = new();
+                        relatedShaderFile.Read(vcsFile);
+                        shaderCollection.Add((programType, Path.GetFileName(vcsFile)), relatedShaderFile);
+                    }
+                }
             }
-
-
-
             return shaderCollection;
         }
-
-
 
 
 
