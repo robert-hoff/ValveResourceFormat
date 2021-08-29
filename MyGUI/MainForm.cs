@@ -104,10 +104,10 @@ namespace MyGUI {
                 CloseTabsToRight(mainTabs.SelectedTab);
             }
 
-            if (keyData == Keys.Escape)
-            {
-                Close();
-            }
+            //if (keyData == Keys.Escape)
+            //{
+            //    Close();
+            //}
 
             return base.ProcessCmdKey(ref msg, keyData);
         }
