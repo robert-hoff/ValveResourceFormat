@@ -172,7 +172,7 @@ namespace MyShaderAnalysis
             PrintZFrames(shaderFile);
         }
 
-        private static void PrintFeaturesHeader(ShaderFile shaderFile, FileTokens fileTokens)
+        private static void PrintFeaturesHeader(ShaderFile shaderFile, FileTokens fileTokens, bool showRichTextBoxLinks = false)
         {
             output.WriteLine($"Valve Compiled Shader 2 (vcs2), version {shaderFile.featuresHeader.vcsFileVersion}");
             output.BreakLine();

@@ -62,7 +62,16 @@ namespace MyGUI {
                     OpenFile(file);
                 }
             }
+
+
+            // OnShown += new HandledEventArgs(HandeOnShownEvent);
+
         }
+
+        // private void HandeOnShownEvent(object sender, EventArgs e) {
+        // }
+
+
 
         private void MainForm_Load(object sender, EventArgs e) {
             // so we can bind keys to actions properly
@@ -270,6 +279,8 @@ namespace MyGUI {
                 Settings.Save();
             }
 
+
+
             foreach (var file in openDialog.FileNames) {
                 OpenFile(file);
             }
@@ -284,7 +295,10 @@ namespace MyGUI {
          * the Dota2 main folder is
          *
          *              X:\Steam\steamapps\common\dota 2 beta\game\dota
-         *`
+         *
+         * If the file is opened from a vpk package THEN the byte[] input will have already been set
+         *
+         *
          *
          *
          *

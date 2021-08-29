@@ -1,3 +1,4 @@
+using System;
 using System.Windows.Forms;
 
 namespace MyGUI {
@@ -25,6 +26,14 @@ namespace MyGUI {
         }
 
         #region Windows Form Designer generated code
+
+        //protected override void OnShown(EventArgs e) {
+        //    base.OnShown(e);
+        //    Console.WriteLine("on shown event");
+        //}
+
+
+
 
         /// <summary>
         /// Required method for Designer support - do not modify

@@ -360,6 +360,22 @@ namespace MyShaderAnalysis.utilhelpers
         }
 
 
+        // not sorted in any way, backslashes not replaced, also includes the input file
+        public static List<string> GetRelatedFiles2(string filenamepath)
+        {
+            string filename = Path.GetFileName(filenamepath);
+            string vcsCollectionName = filename.Substring(0, filename.LastIndexOf('_')); // in the form water_dota_pcgl_40
+            List<string> relatedFiles = new();
+            foreach (var f in Directory.GetFiles(Path.GetDirectoryName(filenamepath)))
+            {
+                if (Path.GetFileName(f).StartsWith(vcsCollectionName))
+                {
+                    relatedFiles.Add(f);
+                }
+            }
+            return relatedFiles;
+        }
+
 
 
         public static SortedDictionary<int, int> collectValuesInt = new();

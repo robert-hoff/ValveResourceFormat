@@ -1,4 +1,4 @@
-﻿
+
 
 /*
  * Read() function was mostly taken from Rick's Gibbed.Valve.FileFormats,

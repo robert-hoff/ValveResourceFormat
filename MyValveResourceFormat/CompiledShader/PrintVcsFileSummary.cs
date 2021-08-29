@@ -9,9 +9,11 @@ namespace ValveResourceFormat.CompiledShader
     public class PrintVcsFileSummary
     {
         private OutputFormatterTabulatedData output;
+        private bool showRichTextBoxLinks;
 
-        public PrintVcsFileSummary(ShaderFile shaderFile, HandleOutputWrite OutputWriter = null)
+        public PrintVcsFileSummary(ShaderFile shaderFile, HandleOutputWrite OutputWriter = null, bool showRichTextBoxLinks = false)
         {
+            this.showRichTextBoxLinks = showRichTextBoxLinks;
             output = new OutputFormatterTabulatedData(OutputWriter);
             if (shaderFile.vcsProgramType == VcsProgramType.Features)
             {
@@ -36,7 +38,14 @@ namespace ValveResourceFormat.CompiledShader
         {
             output.WriteLine($"Valve Compiled Shader 2 (vcs2), version {shaderFile.featuresHeader.vcsFileVersion}");
             output.BreakLine();
-            output.WriteLine($"Features Detail ({Path.GetFileName(shaderFile.filenamepath)})");
+            output.Write($"Features Detail ({Path.GetFileName(shaderFile.filenamepath)})");
+            if (showRichTextBoxLinks)
+            {
+                output.WriteLine($" (byte version \\\\{Path.GetFileName(shaderFile.filenamepath)}\\bytes)");
+            } else
+            {
+                output.BreakLine();
+            }
             output.WriteLine($"VFX File Desc: {shaderFile.featuresHeader.file_description}");
             output.BreakLine();
             output.WriteLine($"has_psrs_file = {shaderFile.featuresHeader.has_psrs_file}");

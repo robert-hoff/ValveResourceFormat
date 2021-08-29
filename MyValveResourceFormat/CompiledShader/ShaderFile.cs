@@ -60,12 +60,12 @@ namespace ValveResourceFormat.CompiledShader
             ParseFile();
         }
 
-        public void PrintSummary(HandleOutputWrite OutputWriter = null)
+        public void PrintSummary(HandleOutputWrite OutputWriter = null, bool showRichTextBoxLinks = false)
         {
             // todo - let the user switch between byte printout and summary
             // todo - let the user select and view the zframes
             // PrintByteAnalysis();
-            PrintVcsFileSummary fileSummary = new PrintVcsFileSummary(this, OutputWriter);
+            PrintVcsFileSummary fileSummary = new PrintVcsFileSummary(this, OutputWriter, showRichTextBoxLinks);
         }
 
         public string filenamepath { get; private set; }
