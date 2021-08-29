@@ -46,7 +46,7 @@ namespace MyShaderAnalysis
             // PrintoutsZframes1.RunTrials();
             // StaticAnalysisZframes.RunTrials();
 
-            PrintoutsSingleFile.RunTrials();
+            // PrintoutsSingleFile.RunTrials();
             // StaticAnalysis2.RunTrials();
             // StaticAnalysis.RunTrials();
 
@@ -76,8 +76,27 @@ namespace MyShaderAnalysis
             // BitTestGeneration.RunTrials();
 
 
+            TestZFrameFilePrintout();
             // TestSingleFilePrintout();
         }
+
+
+
+        static void TestZFrameFilePrintout()
+        {
+            string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs";
+            ShaderFile shaderFile = new ShaderFile();
+            shaderFile.Read(filenamepath);
+            ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(0);
+
+
+            new PrintZFrameSummary(shaderFile, zframeFile);
+
+
+
+        }
+
+
 
 
 
