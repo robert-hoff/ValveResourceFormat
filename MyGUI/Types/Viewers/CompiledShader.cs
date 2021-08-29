@@ -23,9 +23,10 @@ namespace MyGUI.Types.Viewers {
             public ShaderTabcontrol() : base() { }
         }
 
-
         ShaderTabcontrol tabControl;
-        // TabControl tabControl;
+        ShaderFile shaderFile;
+        SortedDictionary<(VcsProgramType, string), ShaderFile> shaderCollection;
+
 
         /*
          *
@@ -39,12 +40,9 @@ namespace MyGUI.Types.Viewers {
          */
         public TabPage Create(VrfGuiContext vrfGuiContext, byte[] input) {
 
-            SortedDictionary<(VcsProgramType, string), ShaderFile> shaderCollection = GetRelatedFiles(vrfGuiContext.FileName, vrfGuiContext.CurrentPackage);
+            shaderCollection = GetShaderCollection(vrfGuiContext.FileName, vrfGuiContext.CurrentPackage);
             string filename = Path.GetFileName(vrfGuiContext.FileName);
-            ShaderFile shaderFile = shaderCollection[(ComputeVcsProgramType(filename), filename)];
-
-
-
+            shaderFile = shaderCollection[(ComputeVcsProgramType(filename), filename)];
 
             // tab here is only used as a container for the new controls, assigning a title won't do anything
             var tab = new TabPage();
@@ -53,27 +51,18 @@ namespace MyGUI.Types.Viewers {
             };
 
             tabControl.MouseClick += new MouseEventHandler(OnTabClick);
-            // tabControl.Selected += new TabControlEventHandler(TabControl1_Selected);
-            // tabControl.Selecting += new TabControlCancelEventHandler(TabControl1_Selecting);
-
-
             var mainFileTab = new TabPage(Path.GetFileName(vrfGuiContext.FileName));
-            // var control = new MyRichTextBox(shaderFile, vrfGuiContext, input);
-            var control = new ShaderRichTextBox(shaderFile, tabControl);
+            var control = new ShaderRichTextBox(shaderFile, tabControl, shaderCollection);
             mainFileTab.Controls.Add(control);
             tabControl.Controls.Add(mainFileTab);
             tab.Controls.Add(tabControl);
-            // tabControl.Validated += new EventHandler(textBox1_Validated);
-
             control.MouseEnter += new EventHandler(MouseEnterHandler);
-            // mainFileTab.Focus();
-            // control.Focus();
             return tab;
         }
 
 
 
-        private static SortedDictionary<(VcsProgramType, string), ShaderFile> GetRelatedFiles(string targetFilename, VrfPackage vrfPackage) {
+        private static SortedDictionary<(VcsProgramType, string), ShaderFile> GetShaderCollection(string targetFilename, VrfPackage vrfPackage) {
             SortedDictionary<(VcsProgramType, string), ShaderFile> shaderCollection = new();
             if (vrfPackage != null) {
                 // search the package
@@ -105,21 +94,9 @@ namespace MyGUI.Types.Viewers {
             return shaderCollection;
         }
 
-
-
-        private void MouseEnterHandler(object sender, EventArgs e) {
+        private static void MouseEnterHandler(object sender, EventArgs e) {
             ShaderRichTextBox shaderRTB = sender as ShaderRichTextBox;
             shaderRTB.Focus();
-        }
-        private void textBox1_Validated(object sender, EventArgs e) {
-            Console.WriteLine("validated event");
-        }
-        private void TabControl1_Selecting(Object sender, TabControlCancelEventArgs e) {
-            Console.WriteLine("tb-selecting");
-        }
-        private void TabControl1_Selected(object sender, TabControlEventArgs e) {
-            Console.WriteLine("tb-selected");
-            ((ShaderTabcontrol)sender).BeginInvoke(new Action(() => e.TabPage.Controls.OfType<RichTextBox>().ToList().ForEach(rtb => rtb.Focus())));
         }
 
         private void OnTabClick(object sender, MouseEventArgs e) {
@@ -133,7 +110,7 @@ namespace MyGUI.Types.Viewers {
                 if (tabIndex == 0) {
                     return;
                 }
-                Console.WriteLine($"Closing {thisTab.Text}");
+                // Console.WriteLine($"Closing {thisTab.Text}");
                 if (tabIndex == tabControl.SelectedIndex && tabIndex > 0) {
                     tabControl.SelectedIndex = tabIndex - 1;
                 }
@@ -157,14 +134,28 @@ namespace MyGUI.Types.Viewers {
 
         private class ShaderRichTextBox : RichTextBox {
             private ShaderFile shaderFile;
+            SortedDictionary<(VcsProgramType, string), ShaderFile> shaderCollection;
             private TabControl tabControl;
+            private List<string> relatedFiles = new();
 
-            // public MyRichTextBox(ShaderFile shaderFile, VrfGuiContext vrfGuiContext, byte[] input) : base() {
-            public ShaderRichTextBox(ShaderFile shaderFile, TabControl tabPage) : base() {
+
+            public ShaderRichTextBox(ShaderFile shaderFile, TabControl tabControl,
+                SortedDictionary<(VcsProgramType, string), ShaderFile> shaderCollection = null, bool byteVersion = false) : base() {
                 this.shaderFile = shaderFile;
-                this.tabControl = tabPage;
+                this.tabControl = tabControl;
+                if (shaderCollection != null) {
+                    this.shaderCollection = shaderCollection;
+                    foreach (var vcsFilenames in shaderCollection.Keys) {
+                        relatedFiles.Add(vcsFilenames.Item2);
+                    }
+                }
+
                 var buffer = new StringWriter(CultureInfo.InvariantCulture);
-                shaderFile.PrintSummary(buffer.Write, showRichTextBoxLinks: true);
+                if (!byteVersion) {
+                    shaderFile.PrintSummary(buffer.Write, showRichTextBoxLinks: true, relatedfiles: relatedFiles);
+                } else {
+                    shaderFile.PrintByteAnalysis(OutputWriter: buffer.Write);
+                }
                 Font = new Font(FontFamily.GenericMonospace, Font.Size);
                 DetectUrls = true;
                 Dock = DockStyle.Fill;
@@ -174,31 +165,44 @@ namespace MyGUI.Types.Viewers {
                 Text = Utils.Utils.NormalizeLineEndings(buffer.ToString());
                 ScrollBars = RichTextBoxScrollBars.Both;
                 LinkClicked += new LinkClickedEventHandler(ShaderRichTextBoxLinkClicked);
-                // MouseClick += new MouseEventHandler(ShaderRichTextBoxMouseClick);
-                // GotFocus += new EventHandler(MyGotFocus);
             }
 
-            //public override void OnShown() {
-            //}
 
 
-            private void MyGotFocus(object sender, EventArgs e) {
-            }
 
-            private void ShaderRichTextBoxMouseClick(object sender, MouseEventArgs e) {
-            }
 
-            private void ShaderRichTextBoxLinkClicked(object sender, LinkClickedEventArgs e) {
-                long zframeId = Convert.ToInt64(e.LinkText.Substring(2), 16);
+            private void ShaderRichTextBoxLinkClicked(object sender, LinkClickedEventArgs evt) {
+
+                string linkText = evt.LinkText[2..]; // remove two starting backslahses
+                string[] linkTokens = linkText.Split("\\");
+
+
+                VcsProgramType programType = ComputeVcsProgramType(linkTokens[0]);
+                if (programType != VcsProgramType.Undetermined) {
+                    ShaderFile shaderFile = shaderCollection[(programType, linkTokens[0])];
+                    if (linkTokens.Length > 1 && linkTokens[1].Equals("bytes")) {
+                        var newShaderTab = new TabPage($"{programType} bytes");
+                        var shaderRichTextBox = new ShaderRichTextBox(shaderFile, tabControl, byteVersion: true);
+                        shaderRichTextBox.MouseEnter += new EventHandler(MouseEnterHandler);
+                        newShaderTab.Controls.Add(shaderRichTextBox);
+                        tabControl.Controls.Add(newShaderTab);
+                    } else {
+                        var newShaderTab = new TabPage($"{programType}");
+                        var shaderRichTextBox = new ShaderRichTextBox(shaderFile, tabControl, shaderCollection);
+                        shaderRichTextBox.MouseEnter += new EventHandler(MouseEnterHandler);
+                        newShaderTab.Controls.Add(shaderRichTextBox);
+                        tabControl.Controls.Add(newShaderTab);
+                    }
+                    return;
+                }
+
+
+
+                long zframeId = Convert.ToInt64(linkText, 16);
                 var zframeTab = new TabPage($"Z[{zframeId:X08}]");
                 var zframeRichTextBox = new ZFrameRichTextBox(shaderFile, zframeId);
                 zframeTab.Controls.Add(zframeRichTextBox);
                 tabControl.Controls.Add(zframeTab);
-                // to prevent undesirable scrolling, set the caret position to the beginning of the link
-                //if (SelectionStart == 0) {
-                //    SelectionStart = Text.IndexOf(e.LinkText);
-                //    SelectionLength = 0;
-                //}
 
             }
         }
