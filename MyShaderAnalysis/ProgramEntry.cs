@@ -96,15 +96,11 @@ namespace MyShaderAnalysis
             // ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(0, omitParsing: true);
             ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(0);
 
-
              // zframeFile.PrintByteAnalysis();
-
 
             // zframeFile.PrintGlslSource(0, Console.Write);
             new PrintZFrameSummary(shaderFile, zframeFile);
-
-
-            int i = 0;
+            // int i = 0;
 
             // Console.WriteLine($"{zframeFile.gpuSourceCount}");
 
