@@ -121,11 +121,11 @@ namespace ValveResourceFormat.CompiledShader
                         throw new ShaderParserException($"Unknown or unsupported source type {vcsPlatformType}");
                 }
             }
-
             nrEndBlocks = datareader.ReadInt32();
             for (int i = 0; i < nrEndBlocks; i++)
             {
-                if (this.vcsProgramType == VcsProgramType.VertexShader || this.vcsProgramType == VcsProgramType.GeometryShader)
+                if (this.vcsProgramType == VcsProgramType.VertexShader ||
+                    this.vcsProgramType == VcsProgramType.GeometryShader || this.vcsProgramType == VcsProgramType.ComputeShader)
                 {
                     VsEndBlock vsEndBlock = new(datareader);
                     vsEndBlocks.Add(vsEndBlock);
@@ -449,8 +449,8 @@ namespace ValveResourceFormat.CompiledShader
                 }
             }
 
-            //  End blocks for vs and gs files
-            if (vcsProgramType == VcsProgramType.VertexShader || vcsProgramType == VcsProgramType.GeometryShader)
+            //  End blocks for vs, gs and cs files
+            if (vcsProgramType == VcsProgramType.VertexShader || vcsProgramType == VcsProgramType.GeometryShader || vcsProgramType == VcsProgramType.ComputeShader)
             {
                 ShowZAllEndBlocksTypeVs();
                 datareader.BreakLine();
@@ -718,7 +718,9 @@ namespace ValveResourceFormat.CompiledShader
                 int offsetToEditorId = datareader.ReadInt32AtPosition();
                 if (offsetToEditorId == 0)
                 {
+                    datareader.ShowBytes(4);
                     datareader.OutputWriteLine("// no source present");
+                    datareader.BreakLine();
                 } else
                 {
                     datareader.ShowByteCount();
@@ -740,9 +742,9 @@ namespace ValveResourceFormat.CompiledShader
                     }
                     datareader.BreakLine();
                     datareader.BaseStream.Position = endOfSourceOffset;
-                    datareader.ShowBytes(16, "Vulkan Editor ref. ID");
-                    datareader.BreakLine();
                 }
+                datareader.ShowBytes(16, "Vulkan Editor ref. ID");
+                datareader.BreakLine();
             }
         }
 

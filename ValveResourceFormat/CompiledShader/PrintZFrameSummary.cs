@@ -266,7 +266,8 @@ namespace ValveResourceFormat.CompiledShader
         private List<int> GetActiveBlockIds()
         {
             List<int> blockIds = new();
-            if (zframeFile.vcsProgramType == VcsProgramType.VertexShader || zframeFile.vcsProgramType == VcsProgramType.GeometryShader)
+            if (zframeFile.vcsProgramType == VcsProgramType.VertexShader ||
+                zframeFile.vcsProgramType == VcsProgramType.GeometryShader || zframeFile.vcsProgramType == VcsProgramType.ComputeShader)
             {
                 foreach (VsEndBlock vsEndBlock in zframeFile.vsEndBlocks)
                 {
@@ -285,7 +286,8 @@ namespace ValveResourceFormat.CompiledShader
         static Dictionary<int, GpuSource> GetBlockIdToSource(ZFrameFile zframeFile)
         {
             Dictionary<int, GpuSource> blockIdToSource = new();
-            if (zframeFile.vcsProgramType == VcsProgramType.VertexShader || zframeFile.vcsProgramType == VcsProgramType.GeometryShader)
+            if (zframeFile.vcsProgramType == VcsProgramType.VertexShader ||
+                zframeFile.vcsProgramType == VcsProgramType.GeometryShader || zframeFile.vcsProgramType == VcsProgramType.ComputeShader)
             {
                 foreach (VsEndBlock vsEndBlock in zframeFile.vsEndBlocks)
                 {
@@ -351,7 +353,7 @@ namespace ValveResourceFormat.CompiledShader
             OutputWriteLine(new string('-', headerText.Length));
 
             VcsProgramType vcsFiletype = shaderFile.vcsProgramType;
-            if (vcsFiletype == VcsProgramType.VertexShader || vcsFiletype == VcsProgramType.GeometryShader)
+            if (vcsFiletype == VcsProgramType.VertexShader || vcsFiletype == VcsProgramType.GeometryShader || vcsFiletype == VcsProgramType.ComputeShader)
             {
                 OutputWriteLine($"{zframeFile.vsEndBlocks.Count:X02} 00 00 00   // end blocks ({zframeFile.vsEndBlocks.Count})");
                 OutputWriteLine("");

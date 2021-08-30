@@ -84,16 +84,29 @@ namespace MyShaderAnalysis
 
         static void TestZFrameFilePrintout()
         {
-            string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs";
+            // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs";
+
+
+            string filenamepath = $"{HLALYX_HLVR_VULKAN_SOURCE}/cs_surface_interactions_vulkan_50_cs.vcs";
+
+            // X:\hl2alyx-export\alyx-vulkan-hlvr
+
             ShaderFile shaderFile = new ShaderFile();
             shaderFile.Read(filenamepath);
+            // ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(0, omitParsing: true);
             ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(0);
 
 
-            zframeFile.PrintGlslSource(0, Console.Write);
+             // zframeFile.PrintByteAnalysis();
 
-            // new PrintZFrameSummary(shaderFile, zframeFile);
 
+            // zframeFile.PrintGlslSource(0, Console.Write);
+            new PrintZFrameSummary(shaderFile, zframeFile);
+
+
+            int i = 0;
+
+            // Console.WriteLine($"{zframeFile.gpuSourceCount}");
 
 
 

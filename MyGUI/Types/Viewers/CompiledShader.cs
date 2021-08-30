@@ -19,15 +19,14 @@ namespace MyGUI.Types.Viewers {
             return magic == ShaderFile.MAGIC;
         }
         public class ShaderTabControl : TabControl {
-            public bool ShowTip { get; set; } = true;
             public ShaderTabControl() : base() { }
             protected override void OnKeyDown(KeyEventArgs ke) {
                 base.OnKeyDown(ke);
                 if (ke.KeyData == Keys.Escape) {
-                    int selectedIndex = SelectedIndex;
-                    if (selectedIndex > 0) {
-                        TabPages.RemoveAt(selectedIndex);
-                        SelectedIndex = selectedIndex - 1;
+                    int tabIndex = SelectedIndex;
+                    if (tabIndex > 0) {
+                        TabPages.RemoveAt(tabIndex);
+                        SelectedIndex = tabIndex - 1;
                     }
                 }
             }
@@ -61,19 +60,22 @@ namespace MyGUI.Types.Viewers {
 
             tabControl.MouseClick += new MouseEventHandler(OnTabClick);
             var mainFileTab = new TabPage(Path.GetFileName(vrfGuiContext.FileName));
-            var control = new ShaderRichTextBox(shaderFile, tabControl, shaderCollection);
-            mainFileTab.Controls.Add(control);
+            var shaderRichTextBox = new ShaderRichTextBox(shaderFile, tabControl, shaderCollection);
+            mainFileTab.Controls.Add(shaderRichTextBox);
             tabControl.Controls.Add(mainFileTab);
             tab.Controls.Add(tabControl);
-            control.MouseEnter += new EventHandler(MouseEnterHandler);
-
+            shaderRichTextBox.MouseEnter += new EventHandler(MouseEnterHandler);
 
             // R: couldn't make this a way to focus on the very first tab
             // tabControl.Selected += new TabControlEventHandler(TabControl1_Selected);
 
-            // tabControl.KeyDownEvent += new KeyPressEventHandler(mykeys);
+            string helpText = "[hold ctrl to open and focus links, ESC or right-click on tabs to close]\n\n";
+            shaderRichTextBox.Text = $"{helpText}{shaderRichTextBox.Text}";
 
-
+            // R: heck doesn't this work?
+            // shaderRichTextBox.Select(0, 78);
+            // shaderRichTextBox.Find("vcs");
+            // shaderRichTextBox.SelectionColor = Color.Red;
             return tab;
         }
 
@@ -174,11 +176,6 @@ namespace MyGUI.Types.Viewers {
                     }
                 }
                 var buffer = new StringWriter(CultureInfo.InvariantCulture);
-                if (tabControl.ShowTip) {
-                    buffer.WriteLine("[hold ctrl to open and focus links, ESC or right-click on tabs to close]\n");
-                    tabControl.ShowTip = false;
-                }
-
                 if (!byteVersion) {
                     shaderFile.PrintSummary(buffer.Write, showRichTextBoxLinks: true, relatedfiles: relatedFiles);
                 } else {
@@ -195,7 +192,8 @@ namespace MyGUI.Types.Viewers {
                 LinkClicked += new LinkClickedEventHandler(ShaderRichTextBoxLinkClicked);
 
 
-
+                // R: started making a context-menu, but links dont' identity right-cliks, so don't know how
+                // I would be able to create the event necessary to open it
                 // shaderContextMenuStrip = new();
                 // ToolStripMenuItem openLinkMenuItem = new();
                 // openLinkMenuItem.Name = "openLinkMenuItem";
@@ -204,7 +202,6 @@ namespace MyGUI.Types.Viewers {
                 // openLinkMenuItem.Click += new EventHandler(this.ExtractToolStripMenuItem_Click);
                 // shaderContextMenuStrip.Items.Add(openLinkMenuItem);
             }
-
 
 
 
@@ -236,7 +233,7 @@ namespace MyGUI.Types.Viewers {
                     return;
                 }
                 long zframeId = Convert.ToInt64(linkText, 16);
-                var zframeTab = new TabPage($"{shaderFile.filenamepath.Split('_')[^1][..^4]}-Z[{zframeId:X08}]");
+                var zframeTab = new TabPage($"{shaderFile.filenamepath.Split('_')[^1][..^4]}[{zframeId:X}]");
                 var zframeRichTextBox = new ZFrameRichTextBox(tabControl, shaderFile, zframeId);
                 zframeRichTextBox.MouseEnter += new EventHandler(MouseEnterHandler);
                 zframeTab.Controls.Add(zframeRichTextBox);
@@ -278,7 +275,7 @@ namespace MyGUI.Types.Viewers {
                 string[] linkTokens = evt.LinkText[2..].Split("\\");
                 if (linkTokens.Length == 1) {
                     long zframeId = Convert.ToInt64(linkTokens[0].Split('-')[^2][6..], 16);
-                    var zframeTab = new TabPage($"{shaderFile.filenamepath.Split('_')[^1][..^4]}-Z[{zframeId:X08}] bytes");
+                    var zframeTab = new TabPage($"{shaderFile.filenamepath.Split('_')[^1][..^4]}[{zframeId:X}] bytes");
                     var zframeRichTextBox = new ZFrameRichTextBox(tabControl, shaderFile, zframeId, byteVersion: true);
                     zframeRichTextBox.MouseEnter += new EventHandler(MouseEnterHandler);
                     zframeTab.Controls.Add(zframeRichTextBox);
@@ -291,7 +288,7 @@ namespace MyGUI.Types.Viewers {
                 int glslSourceId = Convert.ToInt32(linkTokens[1]);
                 var buffer = new StringWriter(CultureInfo.InvariantCulture);
                 zframeFile.PrintGlslSource(glslSourceId, buffer.Write);
-                var glslTab = new TabPage($"{shaderFile.filenamepath.Split('_')[^1][..^4]}-glsl[{glslSourceId}]");
+                var glslTab = new TabPage($"{shaderFile.filenamepath.Split('_')[^1][..^4]}[{zframeFile.zframeId:x}]-glsl[{glslSourceId}]");
                 var glslRichTextBox = new RichTextBox();
                 glslRichTextBox.Font = new Font(FontFamily.GenericMonospace, Font.Size);
                 glslRichTextBox.DetectUrls = true;
