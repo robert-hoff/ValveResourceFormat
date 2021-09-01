@@ -23,4 +23,8 @@
     <PackageReference Include="ZstdSharp.Port" Version="0.5.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MyShaderFile\MyShaderFile.csproj" />
+  </ItemGroup>
+
 </Project>

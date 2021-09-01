@@ -30,10 +30,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ValveTrials", "ValveTrials\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MyShaderAnalysis", "MyShaderAnalysis\MyShaderAnalysis.csproj", "{4AD9C78D-06BA-40A8-9FA3-DAC65D0B4E88}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShaderAnalysis", "ShaderAnalysis\ShaderAnalysis.csproj", "{E8802B97-53A9-4885-879C-D5F30BDC60AD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShaderAnalysis", "ShaderAnalysis\ShaderAnalysis.csproj", "{E8802B97-53A9-4885-879C-D5F30BDC60AD}"
 	ProjectSection(ProjectDependencies) = postProject
 		{E685E563-5F49-4D8D-8342-A7354229E54F} = {E685E563-5F49-4D8D-8342-A7354229E54F}
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyShaderFile", "MyShaderFile\MyShaderFile.csproj", "{DD177F7F-C066-4A33-80C6-25CEE8E04CFC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -101,6 +103,10 @@ Global
 		{E8802B97-53A9-4885-879C-D5F30BDC60AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E8802B97-53A9-4885-879C-D5F30BDC60AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E8802B97-53A9-4885-879C-D5F30BDC60AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD177F7F-C066-4A33-80C6-25CEE8E04CFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD177F7F-C066-4A33-80C6-25CEE8E04CFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD177F7F-C066-4A33-80C6-25CEE8E04CFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD177F7F-C066-4A33-80C6-25CEE8E04CFC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

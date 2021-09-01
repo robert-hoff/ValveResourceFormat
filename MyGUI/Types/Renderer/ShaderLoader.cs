@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using OpenTK.Graphics.OpenGL;
-using MyValveResourceFormat.ThirdParty;
+using ValveResourceFormat.ThirdParty;
 
 namespace MyGUI.Types.Renderer {
     public class ShaderLoader {

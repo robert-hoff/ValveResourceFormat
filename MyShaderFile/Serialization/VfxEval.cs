@@ -1,8 +1,7 @@
-using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using MyValveResourceFormat.ThirdParty;
+using ValveResourceFormat.ThirdParty;
 
 namespace ValveResourceFormat.Serialization.VfxEval
 {
@@ -488,5 +487,6 @@ namespace ValveResourceFormat.Serialization.VfxEval
             }
             return varName;
         }
+
     }
 }

@@ -1,5 +1,5 @@
 using System.Collections.Concurrent;
-using MyValveResourceFormat.ThirdParty;
+using ValveResourceFormat.ThirdParty;
 
 namespace MyValveResourceFormat.Utils {
     public static class EntityLumpKeyLookup {
