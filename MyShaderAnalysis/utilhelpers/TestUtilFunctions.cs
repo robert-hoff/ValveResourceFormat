@@ -6,12 +6,13 @@ using MyShaderAnalysis.compat;
 using ValveResourceFormat.CompiledShader;
 using static MyShaderAnalysis.utilhelpers.FileSystem;
 using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
+using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
 
 namespace MyShaderAnalysis.utilhelpers
 {
-    public class TestStuff
+    public class TestUtilFunctions
     {
 
 
@@ -22,12 +23,32 @@ namespace MyShaderAnalysis.utilhelpers
             // TestWriteSystem();
             // TestSourceTypes();
             // TestFileTokensForNewGlesArchive();
-            TestGpuSourceFileTokens();
+            // TestGpuSourceFileTokens();
+            TestGetRelatedFiles();
         }
 
 
 
+        static void TestFileTokensAbbreviatedName()
+        {
+            string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/hero_pcgl_30_ps.vcs";
+            // string filenamepath = $"{DOTA_GAME_PC_SOURCE}/hero_pc_40_ps.vcs";
+            FileTokens fileTokens = new FileTokens(filenamepath);
+            Console.WriteLine($"{fileTokens.GetAbbreviatedName()}");
+        }
 
+
+        static void TestGetRelatedFiles()
+        {
+            // string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/generic_light_pcgl_30_features.vcs";
+            // string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/generic_light_pcgl_30_ps.vcs";
+            // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/hero_pcgl_30_features.vcs";
+            string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/hero_pcgl_30_ps.vcs";
+            foreach (var f in GetRelatedFiles(filenamepath))
+            {
+                Console.WriteLine($"{f}");
+            }
+        }
 
 
         static void TestSourceTypes()
@@ -44,21 +65,19 @@ namespace MyShaderAnalysis.utilhelpers
         }
 
 
-
-
-        static OutputWriter output = new(WriteToConsole: false, WriteToDebug: true);
-
         static void TestWriteSystem(string outputFilenamepath = null, bool writeFile = false)
         {
+            /*
+            OutputWriter output = new(WriteToConsole: false, WriteToDebug: true);
             if (outputFilenamepath != null && writeFile)
             {
                 output.SetOutputFile(outputFilenamepath);
                 output.WriteAsHtml("title", "header");
             }
-
             output.DefineHeaders(new string[] { "index", "name", "arg2", "arg3" });
             output.AddTabulatedRow(new string[] { $"sdf", "1", "2" });
             output.printTabulatedValues();
+            */
         }
 
 
@@ -78,8 +97,6 @@ namespace MyShaderAnalysis.utilhelpers
 
             FileTokens fileTokens = new FileTokens(filenamepath);
             Console.WriteLine($"{fileTokens.GetGlslHtmlUrl((GlslSource) gpuSource)}");
-
-
         }
 
 

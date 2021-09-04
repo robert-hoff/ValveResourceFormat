@@ -237,28 +237,38 @@ namespace MyShaderAnalysis.utilhelpers
             string shortName = "";
             string token = "";
             string filename = Path.GetFileName(vcsFileName);
-            VcsProgramType vcsFiletype = ComputeVCSFileName(vcsFileName).Item1;
-            if (vcsFiletype == VcsProgramType.Features)
+            VcsProgramType vcsProgramType = ComputeVCSFileName(vcsFileName).Item1;
+            token = vcsProgramType switch
             {
-                shortName = filename[0..^16];
-                token = "ft";
-            } else if (vcsFiletype == VcsProgramType.PixelShaderRenderState)
+                VcsProgramType.Features => "ft",
+                VcsProgramType.VertexShader => "vs",
+                VcsProgramType.PixelShader => "ps",
+                VcsProgramType.GeometryShader => "gs",
+                VcsProgramType.HullShader => "hs",
+                VcsProgramType.DomainShader => "ds",
+                VcsProgramType.ComputeShader => "cs",
+                VcsProgramType.PixelShaderRenderState => "psrs",
+                VcsProgramType.RaytracingShader => "rtx",
+                _ => throw new ShaderParserException("not possible")
+            };
+            Console.WriteLine($"{token}");
+
+            // E.g. generic_light_pcgl_30_vs.vcs
+            string[] fileTokens = filename.Split('_');
+            if (fileTokens.Length < 4 || fileTokens.Length >= 6)
             {
-                shortName = filename[0..^12];
-                token = "psrs";
-            } else
-            {
-                shortName = filename[0..^10];
-                token = $"{vcsFiletype.ToString()[0..^5]}";
+                throw new ShaderParserException("not a valid filename");
             }
-            if (!shortName.EndsWith("pcgl"))
+            if (fileTokens.Length == 4)
             {
-                throw new ShaderParserException("this is only implemented for pcgl files");
+                shortName = fileTokens[0];
             }
-            return $"{shortName[0..^5]}({token})";
+            if (fileTokens.Length == 5)
+            {
+                shortName = $"{fileTokens[0]}_{fileTokens[1]}";
+            }
+            return $"{shortName}({token})";
         }
-
-
 
 
         public static string GetVsHtmlFilename(string vcsFeaturesFilename)

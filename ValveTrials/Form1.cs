@@ -79,8 +79,60 @@ namespace ValveTrials
             {
                 Close();
             }
+
+
+            string symbol = "";
+
+            if (keyData == Keys.Right)
+            {
+                symbol = "->";
+            }
+            if (keyData == Keys.Left)
+            {
+                symbol = "<-";
+            }
+            if (keyData == Keys.Up)
+            {
+                symbol = "^";
+            }
+            if (keyData == Keys.Down)
+            {
+                symbol = "v";
+            }
+
+
+            if (keyData == Keys.Right || keyData == Keys.Left || keyData == Keys.Up || keyData == Keys.Down)
+            {
+
+                long delta = 0;
+                if (startTime == 0)
+                {
+                    startTime = ((DateTimeOffset)DateTime.Now).ToUnixTimeMilliseconds();
+                }
+
+                delta = ((DateTimeOffset)DateTime.Now).ToUnixTimeMilliseconds() - startTime;
+                // Debug.WriteLine($"{symbol,4} {delta/10,8} {(delta-prev_delta)/10,8}");
+                Debug.WriteLine($"{symbol,4} {(delta-prev_delta)/10,8}");
+                prev_delta = delta;
+            }
+
+
             return base.ProcessCmdKey(ref msg, keyData);
         }
+
+
+        static long prev_delta = 0;
+        static long startTime = 0;
+
+
+
+        protected override void OnShown(EventArgs e)
+        {
+            // long unixTime = ((DateTimeOffset)DateTime.Now).ToUnixTimeSeconds();
+            // Debug.WriteLine($"{unixTime}");
+        }
+
+
 
         private void OnTabClick(object sender, MouseEventArgs e)
         {

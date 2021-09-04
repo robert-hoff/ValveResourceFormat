@@ -17,7 +17,10 @@ namespace MyShaderAnalysis
         public const string THE_LAB_SOURCE = "X:/Steam/steamapps/common/The Lab/RobotRepair/core/shaders/vfx";
         const string OUTPUT_DIR = @"Z:/active/projects/dota2-sourcesdk-modding/shader-analysis-vcs-format/OUTPUT_DUMP";
         const string SERVER_OUTPUT_DIR = @"Z:/dev/www/vcs.codecreation.dev/GEN-output";
-        static OutputWriter output = new(WriteToConsole: false, WriteToDebug: true);
+        // static OutputWriter output = new(WriteToConsole: false, WriteToDebug: true);
+        static OutputFormatterTabulatedData output = new OutputFormatterTabulatedData();
+
+
 
         public static void RunTrials()
         {
@@ -32,7 +35,10 @@ namespace MyShaderAnalysis
             // PrintZFramesSingleFile();
             // PrintGlslAllFiles();
             // PrintGlslSingleFiles();
-            output.CloseStreamWriter();
+
+
+            // todo - need something new here
+            // output.CloseStreamWriter();
         }
 
 
@@ -52,7 +58,9 @@ namespace MyShaderAnalysis
                 }
                 string outputFilenamepath = $"{fileTokens.GetServerFilenamepath("bytes", createDirs: true)}";
                 PrintSingleFileByteAnalysis(filenamepath, outputFilenamepath, writeFile: true, disableOutput: true);
-                output.CloseStreamWriter();
+
+                // todo - need something new here
+                // output.CloseStreamWriter();
             }
         }
 
@@ -100,6 +108,9 @@ namespace MyShaderAnalysis
             //    return;
             //}
 
+
+            // todo - need something new here
+            /*
             FileTokens fileTokens = new FileTokens(filenamepath);
             if (outputFilenamepath != null && writeFile)
             {
@@ -113,6 +124,7 @@ namespace MyShaderAnalysis
                 // shaderFile.datareader.OutputWriter = (x) => { Console.Write(x); };
             }
             shaderFile.PrintByteAnalysis();
+            */
         }
 
 
@@ -197,7 +209,9 @@ namespace MyShaderAnalysis
                     ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(i);
                     string zframeHtmlFilename = fileTokens.GetZFrameHtmlFilename(zframeFile.zframeId, "bytes");
                     PrintZFrameByteAnalysis(zframeFile, $"{zframesServerDir}/{zframeHtmlFilename}", writeFile: true, disableOutput: true);
-                    output.CloseStreamWriter();
+
+                    // todo - need something new here
+                    // output.CloseStreamWriter();
                 }
             }
         }
@@ -219,7 +233,9 @@ namespace MyShaderAnalysis
                 ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(i);
                 string zframeHtmlFilename = fileTokens.GetZFrameHtmlFilename(zframeFile.zframeId, "bytes");
                 PrintZFrameByteAnalysis(zframeFile, $"{zframesServerDir}/{zframeHtmlFilename}", writeFile: true, disableOutput: true);
-                output.CloseStreamWriter();
+
+                // todo - need something new here
+                // output.CloseStreamWriter();
             }
         }
 
@@ -230,6 +246,9 @@ namespace MyShaderAnalysis
             FileTokens fileTokens = new FileTokens(zframeFile.filenamepath);
             if (outputFilenamepath != null && writeFile)
             {
+
+
+                /*
                 output.SetOutputFile(outputFilenamepath);
                 output.WriteAsHtml($"{fileTokens.namelabel}-Z[0x{zframeFile.zframeId:x}]",
                     $"{GetZframeHtmlFilename(zframeFile.zframeId, "", zframeFile.filenamepath)[0..^5]}");
@@ -247,6 +266,7 @@ namespace MyShaderAnalysis
                         Console.Write(x);
                     };
                 }
+                */
             }
             zframeFile.PrintByteAnalysis();
         }
