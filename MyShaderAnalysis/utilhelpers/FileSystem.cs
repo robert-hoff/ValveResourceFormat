@@ -174,7 +174,7 @@ namespace MyShaderAnalysis.utilhelpers
         // todo - problem here with the backslashes, it's not consistent, if I call this with the consts from FileSystem it will fail
         public static ARCHIVE DetermineArchiveType(string vcsFileName)
         {
-            // GetDirectoryName will always return a path using back-slashes
+            // the built-in method Path.GetDirectoryName always returns a path containing back-slashes
             if (Path.GetDirectoryName(vcsFileName).EndsWith("shaders\\vfx") && vcsFileName.Contains("_pcgl_"))
             {
                 return ARCHIVE.dotagame_pcgl;
