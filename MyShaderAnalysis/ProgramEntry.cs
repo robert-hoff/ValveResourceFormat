@@ -54,7 +54,7 @@ namespace MyShaderAnalysis
 
 
 
-            RunPrintoutsSingleFile.RunTrials();
+            // RunPrintoutsSingleFile.RunTrials();
             // TestUtilFunctions.RunTrials();
             // TestBasicParsing.RunTrials();
 
@@ -78,6 +78,13 @@ namespace MyShaderAnalysis
             // CompatRules2.RunTrials();
             // CompatRules.RunTrials();
             // BitTestGeneration.RunTrials();
+
+
+
+
+            // 14 March 2022, R: try to read a Vulkan Zframe
+            PrintoutVulkanCode.RunTrials();
+
 
 
 
