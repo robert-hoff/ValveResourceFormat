@@ -7,13 +7,53 @@ namespace ValveResourceFormat.CompiledShader
      * ZFrameId to static-configuration mapping
      * ----------------------------------------
      *
-     * During parsing, the configuration mapping is applied to all vcs files that contain zframes
-     * to identify the configuration that each zframes belongs to.
+     * BACKGROUND
+     * ----------
+     * We can define 'static configuration' as a particular state that the 'static shader variables' (defined by names given in the vcs files)
+     * are allowed to take. A given state is described by assigning integers (that count from 0) to all static variables belonging to
+     * the current context. Most of the static variables are by nature binary, accepting the values 0 or 1 (usually indicating some effect being
+     * disabled or enabled).
+     * For example F_HORZ_BLUR and F_MUL_COLOR_BY_ALPHA are two such variables, a possible state would be
+     *
+     * (F_HORZ_BLUR, F_MUL_COLOR_BY_ALPHA) = (1,0)
+     *
+     * If we reason that F_HORZ_BLUR and F_MUL_COLOR_BY_ALPHA may each be assigned the values 0 or 1 we can write all possible configurations as
+     *
+     * (F_HORZ_BLUR, F_MUL_COLOR_BY_ALPHA)[ID] = {(0,0),(0,1),(1,0),(1,1)}
+     *
+     * Defined like this the specific state (F_HORZ_BLUR, F_MUL_COLOR_BY_ALPHA)[2] = (1,0) can be considered as a member of a set. It is practical to
+     * use an id enumerated from 0 to 3 to distinguish between members (see the next section for more details on this).
+     * Knowledge of any variables' functionality is not strictly required to achieve the rendering. It is only their assigned state which is
+     * essential; the calling application must therefore always present a legal configuration.
+     *
+     * Because the static variables are determined externally by the application's runtime,
+     * no advanced assumptions are made for specific requests. However, if the number of states are small
+     * (say less than 100,000) it's possible to fully describe and precompile assets for all possible responses. Designed in this
+     * way, it means an important responsibility of the graphics system is to identify and retrieve such precompiled GPU assets.
+     * This is computationally fast but involves a lot of redundancy on the disk; the vcs archives
+     * tend to be large and in some cases includes many thousands of definitions for tasks that appear simple. Another design
+     * decision present allieviating disk space somewhat is maintaining the GPU assets
+     * under compression; GPU assets are decompressed at runtime as required.
+     *
+     * For our purposess we've called the GPU dataloads for *zframes*; that are containers of precompiled GPU code in the
+     * form of GLSL source code, DXIL or VULKAN bytecode, and various header data. (This is not a Valve name, the name is drawn from the
+     * code being organised as compressed 'ZStd frames'. There is a 1:1 correspondence between the compressed frames and
+     * uncompressed dataloads needed to fulfill requests - hence the adoption of the name.)
+     *
+     * The configuration mapping performed in this file will match any valid static configuration with its predefined zframe. All legal
+     * static configurations have a matching zframe. If the size of the state space is 4 it implies the existence of exactly
+     * 4 predefined zframes. To complete steps in the rendering pipeline (e.g. vertex or pixel shading) only the
+     * matching zframe is considered; all other zframes are ignored (and left in their compressed state).
+     *
+     *
+     *
+     * APPROACH
+     * --------
      * The basic idea for mapping zframe-Ids to static configurations is by enumerating all possible
      * legal states and writing them (in order) next to the zframes.
      *
-     * For example if there are 3 static-params (S1,S2,S2) that can each take two configurations (on or off)
-     * they combine to give 8 possible configurations, the zframe mapping will be
+     * For example if there are 3 static-params (S1,S2,S3) that can each be in one of two states (on/off or 0/1)
+     * they will combine to give 8 possible configurations, the zframe mapping will be
      *
      * zframeId S1 S2 S3
      *  0        0  0  0
@@ -26,9 +66,9 @@ namespace ValveResourceFormat.CompiledShader
      *  7        1  1  1
      *
      * Sometimes static-params have more than two states, for example S_DETAIL_2 from the Dota2 file
-     * hero_pcgl_30_vs.vcs can be assigned to one of three (None, Add, Add Self Illum). In our example,
+     * hero_pcgl_30_vs.vcs can be assigned to one of three states (identified as 'None', 'Add', 'Add Self Illum'). In our example,
      * if S2 is expanded to take the values (0,1,2) the number of possible configurations becomes 12 and a new
-     * mapping can be written as
+     * mapping would be written as
      *
      * zframeId S1 S2 S3
      *  0        0  0  0
@@ -49,7 +89,7 @@ namespace ValveResourceFormat.CompiledShader
      * between pairs of parameters.
      *
      * EXC(S1,S2) means S1 and S2 are mutually exclusive and cannot appear together
-     * INC(S2,S3) means S2 is dependent on S3 and cannot appear without it (but S3 can still appear without S2).
+     * INC(S2,S3) means S2 is dependent on S3 and cannot appear by itself (but S3 can still appear without S2).
      *
      * To determine the configuration mapping where constraints are defined; the constraints are applied to the
      * mapping by deleting the rows that are disallowed. Importantly, the values of the zframeId's are left
@@ -76,18 +116,19 @@ namespace ValveResourceFormat.CompiledShader
      * offset        1           2           6
      * nr_states     2           3           2
      *
-     * The state belonging to a given zframeId can then be found as
+     * It is possible to derive from this that a given zframeId can then be found as
      *
-     *       state[i] = zframeId / offset[i] % nr_states[i]
+     *       state[i] = (zframeId / offset[i]) % nr_states[i]
      *
-     * (where zframeId / offset[i] is an integer division - the remainder is discarded)
+     * where zframeId / offset[i] is an integer division (the remainder is discarded)
      *
      *
-     * Substituting zframeId = 10
-     * S1 = 10 / offset[0] % nr_states[0] = 10 / 1 % 2 = 0
-     * S2 = 10 / offset[1] % nr_states[1] = 10 / 2 % 3 = 2
-     * S3 = 10 / offset[2] % nr_states[2] = 10 / 6 % 2 = 1
+     * For example, substituting zframeId = 10
+     * S1 = 10 / offset[0] % nr_states[0] = (10 / 1) % 2 = 10 % 2 = 0
+     * S2 = 10 / offset[1] % nr_states[1] = (10 / 2) % 3 =  5 % 3 = 2
+     * S3 = 10 / offset[2] % nr_states[2] = (10 / 6) % 2 =  1 % 2 = 1
      *
+     * Produces the last row in the table above (S1,S2,S3) = (0,2,1)
      *
      *
      * Dynamic-configurations
