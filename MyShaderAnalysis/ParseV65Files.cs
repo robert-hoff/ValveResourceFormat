@@ -36,7 +36,8 @@ namespace MyShaderAnalysis
         {
             // string filenamepath = $"{V65_EXAMPLES_SOURCE}/cables_pc_40_features.vcs";
             // string filenamepath = $"{V65_EXAMPLES_SOURCE}/cables_pc_40_ps.vcs";
-            string filenamepath = $"{V65_EXAMPLES_SOURCE}/cables_pc_40_vs.vcs";
+            // string filenamepath = $"{V65_EXAMPLES_SOURCE}/cables_pc_40_vs.vcs";
+            string filenamepath = $"{V65_EXAMPLES_SOURCE}/hero_pc_40_features.vcs";
             new ParseV65Files(filenamepath);
         }
 
@@ -377,7 +378,7 @@ namespace MyShaderAnalysis
             {
                 PrintParameterBlock(i);
 
-                //if (i==1)
+                //if (i == 81)
                 //{
                 //    break;
                 //}
@@ -403,18 +404,30 @@ namespace MyShaderAnalysis
                 OutputWriteLine($"// {name3}");
             }
             ShowBytes(64);
+
             uint paramType = ReadUInt32AtPosition();
             OutputWriteLine($"// param-type, 6 or 7 lead dynamic-exp. Known values: 0,1,5,6,7,8,10,11,13");
             ShowBytes(4);
             if (paramType == 6 || paramType == 7)
             {
                 int dynLength = ReadInt32AtPosition();
-                ShowBytes(4, breakLine: false);
-                TabComment("dyn-exp len", 1);
-
-                ShowBytes(dynLength);
-                TabComment("dynamic expression", 1);
+                ShowBytes(4, "dyn-exp len");
+                ShowBytes(dynLength, "dynamic expression", 1);
             }
+
+
+
+            // check to see if this reads 'SBMS' (unknown what this is, instance found in v65 hero_pc_40_features.vcs file)
+            byte[] checkSBMS = ReadBytesAtPosition(0, 4);
+            if (checkSBMS[0] == 0x53 && checkSBMS[1] == 0x42 && checkSBMS[2] == 0x4D && checkSBMS[3] == 0x53)
+            {
+                ShowBytes(4, "SBMS");
+                int dynLength = ReadInt32AtPosition();
+                ShowBytes(4, "dyn-exp len");
+                ShowBytes(dynLength, "dynamic expression", 1);
+            }
+
+
 
             // 6 int parameters follow the dynamic expression
             if (version == 64 || version == 65)

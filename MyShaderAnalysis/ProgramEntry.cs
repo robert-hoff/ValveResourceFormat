@@ -89,6 +89,11 @@ namespace MyShaderAnalysis
 
 
 
+            // Looking at a dynamic expression
+            // ParseDynamicExpression.RunTrials();
+
+
+
         }
     }
 }
