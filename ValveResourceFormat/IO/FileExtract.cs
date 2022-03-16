@@ -16,9 +16,7 @@ namespace ValveResourceFormat.IO
             switch (resource.ResourceType)
             {
                 case ResourceType.Panorama:
-                case ResourceType.PanoramaLayout:
                 case ResourceType.PanoramaScript:
-                case ResourceType.PanoramaStyle:
                 case ResourceType.PanoramaVectorGraphic:
                     data = ((Panorama)resource.DataBlock).Data;
                     break;
@@ -53,14 +51,19 @@ namespace ValveResourceFormat.IO
                     data = ((Material)resource.DataBlock).ToValveMaterial();
                     break;
 
+                case ResourceType.EntityLump:
+                    data = Encoding.UTF8.GetBytes(((EntityLump)resource.DataBlock).ToEntityDumpString());
+                    break;
+
                 // These all just use ToString() and WriteText() to do the job
+                case ResourceType.PanoramaStyle:
+                case ResourceType.PanoramaLayout:
                 case ResourceType.SoundEventScript:
                 case ResourceType.SoundStackScript:
                     data = Encoding.UTF8.GetBytes(resource.DataBlock.ToString());
                     break;
 
                 default:
-                    Console.WriteLine("-- (I don't know how to dump this resource type)"); // TODO: What do we do with this
                     data = Encoding.UTF8.GetBytes(resource.DataBlock.ToString());
                     break;
             }

@@ -187,6 +187,11 @@ namespace ValveResourceFormat
                 throw new InvalidDataException(string.Format("Bad header version. ({0} != expected {1})", HeaderVersion, KnownHeaderVersion));
             }
 
+            if (FileName != null)
+            {
+                ResourceType = DetermineResourceTypeByFileExtension();
+            }
+
             Version = Reader.ReadUInt16();
 
             var blockOffset = Reader.ReadUInt32();
@@ -278,11 +283,6 @@ namespace ValveResourceFormat
                 Reader.BaseStream.Position = position + 8;
             }
 
-            if (ResourceType == ResourceType.Unknown && FileName != null)
-            {
-                ResourceType = DetermineResourceTypeByFileExtension();
-            }
-
             foreach (var block in Blocks)
             {
                 if (block.Type is not BlockType.REDI and not BlockType.RED2 and not BlockType.NTRO)
@@ -324,6 +324,7 @@ namespace ValveResourceFormat
                 nameof(BlockType.MDAT) => new BinaryKV3(BlockType.MDAT),
                 nameof(BlockType.INSG) => new BinaryKV3(BlockType.INSG),
                 nameof(BlockType.SrMa) => new BinaryKV3(BlockType.SrMa), // SourceMap
+                nameof(BlockType.LaCo) => new BinaryKV3(BlockType.LaCo), // vxml ast
                 nameof(BlockType.MRPH) => new KeyValuesOrNTRO(BlockType.MRPH, "MorphSetData_t"),
                 nameof(BlockType.ANIM) => new KeyValuesOrNTRO(BlockType.ANIM, "AnimationResourceData_t"),
                 nameof(BlockType.ASEQ) => new KeyValuesOrNTRO(BlockType.ASEQ, "SequenceGroupResourceData_t"),
@@ -338,12 +339,16 @@ namespace ValveResourceFormat
             switch (ResourceType)
             {
                 case ResourceType.Panorama:
-                case ResourceType.PanoramaStyle:
                 case ResourceType.PanoramaScript:
-                case ResourceType.PanoramaLayout:
                 case ResourceType.PanoramaDynamicImages:
                 case ResourceType.PanoramaVectorGraphic:
                     return new Panorama();
+
+                case ResourceType.PanoramaStyle:
+                    return new PanoramaStyle();
+
+                case ResourceType.PanoramaLayout:
+                    return new PanoramaLayout();
 
                 case ResourceType.Sound:
                     return new Sound();

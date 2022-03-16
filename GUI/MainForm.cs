@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -60,6 +61,61 @@ namespace GUI
                     OpenFile(file);
                 }
             }
+        }
+
+        protected override void OnShown(EventArgs e)
+        {
+            var savedWindowDimensionsAreValid = IsOnScreen(new Rectangle(
+                Settings.Config.WindowLeft,
+                Settings.Config.WindowTop,
+                Settings.Config.WindowWidth,
+                Settings.Config.WindowHeight));
+
+            if (savedWindowDimensionsAreValid)
+            {
+                Left = Settings.Config.WindowLeft;
+                Top = Settings.Config.WindowTop;
+                Height = Settings.Config.WindowHeight;
+                Width = Settings.Config.WindowWidth;
+
+                var newState = (FormWindowState)Settings.Config.WindowState;
+
+                if (newState == FormWindowState.Maximized || newState == FormWindowState.Normal)
+                {
+                    WindowState = newState;
+                }
+            }
+
+            base.OnShown(e);
+        }
+
+        // checks if the Rectangle is within bounds of one of the user's screen
+        public bool IsOnScreen(Rectangle formRectangle)
+        {
+            if (formRectangle.Width < MinimumSize.Width || formRectangle.Height < MinimumSize.Height)
+            {
+                return false;
+            }
+
+            return Screen.AllScreens.Any(screen => screen.WorkingArea.IntersectsWith(formRectangle));
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            // save the application window size, position and state (if maximized)
+            (Settings.Config.WindowLeft, Settings.Config.WindowTop, Settings.Config.WindowWidth, Settings.Config.WindowHeight, Settings.Config.WindowState) = WindowState switch
+            {
+                FormWindowState.Normal => (Left, Top, Width, Height, (int)FormWindowState.Normal),
+                // will restore window to maximized
+                FormWindowState.Maximized => (RestoreBounds.Left, RestoreBounds.Top, RestoreBounds.Width, RestoreBounds.Height, (int)FormWindowState.Maximized),
+                // if minimized restore to Normal instead, using RestoreBound values
+                FormWindowState.Minimized => (RestoreBounds.Left, RestoreBounds.Top, RestoreBounds.Width, RestoreBounds.Height, (int)FormWindowState.Normal),
+                // the default switch should never happen (FormWindowState only takes the values Normal, Maximized, Minimized)
+                _ => (0, 0, 0, 0, (int)FormWindowState.Normal),
+            };
+
+            Settings.Save();
+            base.OnClosing(e);
         }
 
         private void MainForm_Load(object sender, EventArgs e)
