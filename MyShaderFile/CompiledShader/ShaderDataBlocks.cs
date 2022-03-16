@@ -28,7 +28,7 @@ namespace ValveResourceFormat.CompiledShader
                 throw new ShaderParserException($"Wrong file id {vcsMagicId:x}");
             }
             vcsFileVersion = datareader.ReadInt32();
-            if (vcsFileVersion != 64)
+            if (vcsFileVersion != 64 && vcsFileVersion != 65)
             {
                 throw new ShaderParserException($"Wrong version {vcsFileVersion}, only version 64 supported");
             }

@@ -83,7 +83,8 @@ namespace MyShaderAnalysis
 
 
             // 14 March 2022, R: try to read a Vulkan Zframe
-            PrintoutVulkanCode.RunTrials();
+            // PrintoutVulkanCode.RunTrials();
+            ParseV65Files.RunTrials();
 
 
 
