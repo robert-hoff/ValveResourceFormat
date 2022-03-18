@@ -69,7 +69,7 @@ namespace MyGUI.Types.Viewers {
             // R: couldn't make this a way to focus on the very first tab
             // tabControl.Selected += new TabControlEventHandler(TabControl1_Selected);
 
-            string helpText = "[hold ctrl to open and focus links, ESC or right-click on tabs to close]\n\n";
+            string helpText = "[ctrl+click to open and focus links, ESC or right-click on tabs to close]\n\n";
             shaderRichTextBox.Text = $"{helpText}{shaderRichTextBox.Text}";
 
             // R: heck doesn't this work?

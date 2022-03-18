@@ -73,7 +73,7 @@ namespace ValveResourceFormat.CompiledShader
         public FeaturesHeaderBlock featuresHeader { get; private set; }
         public VsPsHeaderBlock vspsHeader { get; private set; }
         public int vcsVersion { get; private set; }
-        public int possibleMinorVersion { get; private set; } // 17 for all up to date files. 14 seen in old test files
+        public int possibleEditorDescription { get; private set; } // 17 for all up to date files. 14 seen in old test files
         public List<SfBlock> sfBlocks { get; private set; } = new();
         public List<SfConstraintsBlock> sfConstraintsBlocks { get; private set; } = new();
         public List<DBlock> dBlocks { get; private set; } = new();
@@ -115,7 +115,7 @@ namespace ValveResourceFormat.CompiledShader
             {
                 throw new ShaderParserException($"Can't parse this filetype: {vcsProgramType}");
             }
-            possibleMinorVersion = datareader.ReadInt32();
+            possibleEditorDescription = datareader.ReadInt32();
             int sfBlockCount = datareader.ReadInt32();
             for (int i = 0; i < sfBlockCount; i++)
             {
@@ -286,10 +286,10 @@ namespace ValveResourceFormat.CompiledShader
                 vspsHeader.PrintAnnotatedBytestream();
             }
             datareader.ShowByteCount();
-            int unknown_val = datareader.ReadInt32AtPosition();
-            datareader.ShowBytes(4, $"({unknown_val}) unknown significance");
+            int possible_editor_desc = datareader.ReadInt32AtPosition();
+            datareader.ShowBytes(4, $"({possible_editor_desc}) possible editor description");
             int lastEditorRef = vcsProgramType == VcsProgramType.Features ? featuresHeader.editorIDs.Count - 1 : 1;
-            datareader.TabComment($"value may to be linked to the last Editor reference (Editor ref. ID{lastEditorRef})", 15);
+            datareader.TabComment($"value appears to be linked to the last Editor reference (Editor ref. ID{lastEditorRef})", 15);
             datareader.ShowByteCount();
             uint sfBlockCount = datareader.ReadUInt32AtPosition();
             datareader.ShowBytes(4, $"{sfBlockCount} SF blocks (usually 152 bytes each)");
@@ -425,11 +425,14 @@ namespace ValveResourceFormat.CompiledShader
                 datareader.ShowBytes(4, $"Zstd delim (0x{ZSTD_DELIM:x08})");
             } else
             {
-                datareader.ShowBytes(4, $"Lzma chunk size {zstdDelimOrChunkSize}");
+                datareader.ShowBytes(4, $"Chunk size {zstdDelimOrChunkSize}");
                 uint lzmaDelim = datareader.ReadUInt32AtPosition();
                 if (lzmaDelim != LZMA_DELIM)
                 {
-                    throw new ShaderParserException("Unknown compression, neither ZStd nor Lzma found");
+                    datareader.Comment($"neither ZStd or Lzma found (frame appears to be uncompressed)");
+                    datareader.ShowBytes((int)zstdDelimOrChunkSize);
+                    datareader.BreakLine();
+                    return;
                 }
                 isLzma = true;
                 datareader.ShowBytes(4, $"Lzma delim (0x{LZMA_DELIM:x08})");

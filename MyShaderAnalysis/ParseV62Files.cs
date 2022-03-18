@@ -25,8 +25,8 @@ namespace MyShaderAnalysis
         public static void RunTrials()
         {
             // Trial1();
-            // Trial2InstantiateShaderFile();
-            V62UncompressedZFrames();
+            Trial2InstantiateShaderFile();
+            // V62UncompressedZFrames();
         }
 
 
@@ -60,6 +60,10 @@ namespace MyShaderAnalysis
             // string filenamepath = $"{THE_LAB_SOURCE}/downsample_pc_40_ps.vcs";
             string filenamepath = $"{THE_LAB_SOURCE}/aerial_perspective_pc_30_features.vcs";
             ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
+
+
+            shaderFile.PrintByteAnalysis();
+
 
         }
 
@@ -172,25 +176,25 @@ namespace MyShaderAnalysis
             ShowBytes(len_name_description + 1);
             BreakLine();
             ShowByteCount();
-            uint arg1 = ReadUInt32AtPosition(0);
-            uint arg2 = ReadUInt32AtPosition(4);
-            uint arg3 = ReadUInt32AtPosition(8);
-            uint arg4 = ReadUInt32AtPosition(12);
+            uint arg0 = ReadUInt32AtPosition(0);
+            uint arg1 = ReadUInt32AtPosition(4);
+            uint arg2 = ReadUInt32AtPosition(8);
+            uint arg3 = ReadUInt32AtPosition(12);
             ShowBytes(16, 4, breakLine: false);
-            TabComment($"({arg1},{arg2},{arg3},{arg4})");
-            uint arg5 = ReadUInt32AtPosition(0);
-            uint arg6 = ReadUInt32AtPosition(4);
-            uint arg7 = ReadUInt32AtPosition(8);
+            TabComment($"({arg0},{arg1},{arg2},{arg3})");
+            uint arg4 = ReadUInt32AtPosition(0);
+            uint arg5 = ReadUInt32AtPosition(4);
+            uint arg6 = ReadUInt32AtPosition(8);
             if (version == 64 || version == 65)
             {
-                uint arg8 = ReadUInt32AtPosition(12);
+                uint arg7 = ReadUInt32AtPosition(12);
                 ShowBytes(16, 4, breakLine: false);
-                TabComment($"({arg5},{arg6},{arg7},{arg8})");
+                TabComment($"({arg4},{arg5},{arg6},{arg7})");
             }
             else
             {
                 ShowBytes(12, 4, breakLine: false);
-                TabComment($"({arg5},{arg6},{arg7})");
+                TabComment($"({arg4},{arg5},{arg6})");
             }
 
 
@@ -729,7 +733,7 @@ namespace MyShaderAnalysis
                 if (lzmaDelim != ShaderFile.LZMA_DELIM)
                 {
                     // throw new ShaderParserException("Unknown compression, neither ZStd nor Lzma found");
-                    Console.WriteLine($"neither zstd or lzma found");
+                    Comment($"neither zstd or lzma found");
                     ShowBytes((int)zstdDelimOrChunkSize);
                     return;
                 }

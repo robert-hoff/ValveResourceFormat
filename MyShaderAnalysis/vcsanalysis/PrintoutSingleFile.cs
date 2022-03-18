@@ -80,7 +80,7 @@ namespace MyShaderAnalysis.vcsanalysis
             var ftHeader = shaderFile.featuresHeader;
             output.WriteLine($"bool flags = ({ftHeader.arg0},{ftHeader.arg1},{ftHeader.arg2},{ftHeader.arg3}," +
                 $"{ftHeader.arg4},{ftHeader.arg5},{ftHeader.arg6},{ftHeader.arg7}) (related to editor dependencies)");
-            output.WriteLine($"probable minor version = {shaderFile.possibleMinorVersion}");
+            output.WriteLine($"probable minor version = {shaderFile.possibleEditorDescription}");
             output.BreakLine();
             output.WriteLine("Editor/Shader compiler stack");
             for (int i = 0; i < ftHeader.editorIDs.Count - 1; i++)
@@ -88,7 +88,7 @@ namespace MyShaderAnalysis.vcsanalysis
                 output.WriteLine($"{ftHeader.editorIDs[i].Item1}    {ftHeader.editorIDs[i].Item2}");
             }
             output.WriteLine($"{ftHeader.editorIDs[^1].Item1}    // Editor ref. ID{ftHeader.editorIDs.Count - 1} " +
-                $"- this ID is shared across archives for vcs files with minor-version = {shaderFile.possibleMinorVersion}");
+                $"- this ID is shared across archives for vcs files with minor-version = {shaderFile.possibleEditorDescription}");
             output.BreakLine();
             if (ftHeader.mainParams.Count == 0)
             {
@@ -114,7 +114,7 @@ namespace MyShaderAnalysis.vcsanalysis
             output.PrintTabulatedValues();
             output.BreakLine();
         }
-
+         
         private void PrintPsVsHeader()
         {
             output.WriteLine($"Valve Compiled Shader 2 (vcs2), version {shaderFile.vspsHeader.vcsFileVersion}");
@@ -132,12 +132,12 @@ namespace MyShaderAnalysis.vcsanalysis
                 }
                 output.BreakLine();
             }
-            output.WriteLine($"probable minor version = {shaderFile.possibleMinorVersion}");
+            output.WriteLine($"probable minor version = {shaderFile.possibleEditorDescription}");
             output.BreakLine();
             output.WriteLine("Editor/Shader compiler stack");
             output.WriteLine($"{shaderFile.vspsHeader.fileID0}    // Editor ref. ID0 (produces this file)");
             output.WriteLine($"{shaderFile.vspsHeader.fileID1}    // Editor ref. ID1 " +
-                $"- this ID is shared across archives for vcs files with minor-version = {shaderFile.possibleMinorVersion}");
+                $"- this ID is shared across archives for vcs files with minor-version = {shaderFile.possibleEditorDescription}");
             output.BreakLine();
         }
 

@@ -113,8 +113,12 @@ namespace ValveResourceFormat.CompiledShader
             datareader.ShowBytes(4, $"version {vcs_version}");
             datareader.BreakLine();
             datareader.ShowByteCount("features header");
-            int has_psrs_file = datareader.ReadInt32AtPosition();
-            datareader.ShowBytes(4, "has_psrs_file = " + (has_psrs_file > 0 ? "True" : "False"));
+            int has_psrs_file = 0;
+            if (vcs_version == 64 || vcs_version == 65)
+            {
+                has_psrs_file = datareader.ReadInt32AtPosition();
+                datareader.ShowBytes(4, "has_psrs_file = " + (has_psrs_file > 0 ? "True" : "False"));
+            }
             int unknown_val = datareader.ReadInt32AtPosition();
             datareader.ShowBytes(4, $"unknown_val = {unknown_val} (usually 0)");
             int len_name_description = datareader.ReadInt32AtPosition();
@@ -125,25 +129,34 @@ namespace ValveResourceFormat.CompiledShader
             datareader.ShowBytes(len_name_description + 1);
             datareader.BreakLine();
             datareader.ShowByteCount();
-            uint arg1 = datareader.ReadUInt32AtPosition(0);
-            uint arg2 = datareader.ReadUInt32AtPosition(4);
-            uint arg3 = datareader.ReadUInt32AtPosition(8);
-            uint arg4 = datareader.ReadUInt32AtPosition(12);
+            uint arg0 = datareader.ReadUInt32AtPosition(0);
+            uint arg1 = datareader.ReadUInt32AtPosition(4);
+            uint arg2 = datareader.ReadUInt32AtPosition(8);
+            uint arg3 = datareader.ReadUInt32AtPosition(12);
             datareader.ShowBytes(16, 4, breakLine: false);
-            datareader.TabComment($"({arg1},{arg2},{arg3},{arg4})");
-            uint arg5 = datareader.ReadUInt32AtPosition(0);
-            uint arg6 = datareader.ReadUInt32AtPosition(4);
-            uint arg7 = datareader.ReadUInt32AtPosition(8);
-            uint arg8 = datareader.ReadUInt32AtPosition(12);
-            datareader.ShowBytes(16, 4, breakLine: false);
-            datareader.TabComment($"({arg5},{arg6},{arg7},{arg8})");
+            datareader.TabComment($"({arg0},{arg1},{arg2},{arg3})");
+            uint arg4 = datareader.ReadUInt32AtPosition(0);
+            uint arg5 = datareader.ReadUInt32AtPosition(4);
+            uint arg6 = datareader.ReadUInt32AtPosition(8);
+            if (vcs_version == 64 || vcs_version == 65)
+            {
+                uint arg7 = datareader.ReadUInt32AtPosition(12);
+                datareader.ShowBytes(16, 4, breakLine: false);
+                datareader.TabComment($"({arg4},{arg5},{arg6},{arg7})");
+            }
+            else
+            {
+                datareader.ShowBytes(12, 4, breakLine: false);
+                datareader.TabComment($"({arg4},{arg5},{arg6})");
+            }
+
             datareader.BreakLine();
             datareader.ShowByteCount();
             int nr_of_arguments = datareader.ReadInt32AtPosition();
             datareader.ShowBytes(4, $"nr of arguments {nr_of_arguments}");
             if (has_psrs_file == 1)
             {
-                // nr_of_arguments is overwritten
+                // nr_of_arguments becomes overwritten
                 nr_of_arguments = datareader.ReadInt32AtPosition();
                 datareader.ShowBytes(4, $"nr of arguments overriden ({nr_of_arguments})");
             }
@@ -175,17 +188,18 @@ namespace ValveResourceFormat.CompiledShader
             datareader.ShowBytes(16, "Editor ref. ID4");
             datareader.ShowBytes(16, "Editor ref. ID5");
             datareader.ShowBytes(16, "Editor ref. ID6");
-            if (has_psrs_file == 0)
+            if ((vcs_version == 64 || vcs_version == 65) && has_psrs_file == 0)
             {
                 datareader.ShowBytes(16,
-                    "Editor ref. ID7 - ID appears to be shared across archives for vcs files with the same minor-version");
+                    "Editor ref. ID7 - common editor reference shared by multiple files");
             }
-            if (has_psrs_file == 1)
+            if ((vcs_version == 64 || vcs_version == 65) && has_psrs_file == 1)
             {
                 datareader.ShowBytes(16, $"Editor ref. ID7 - reference to psrs file ({VcsProgramType.PixelShaderRenderState})");
                 datareader.ShowBytes(16,
-                    "Editor ref. ID7 - ID appears to be shared across archives for vcs files with the same minor-version");
+                    "Editor ref. ID7 - common editor reference shared by multiple files");
             }
+            datareader.BreakLine();
         }
     }
 
@@ -231,8 +245,11 @@ namespace ValveResourceFormat.CompiledShader
             datareader.ShowBytes(4, $"version {vcs_version}");
             datareader.BreakLine();
             datareader.ShowByteCount("ps/vs header");
-            int has_psrs_file = datareader.ReadInt32AtPosition();
-            datareader.ShowBytes(4, $"has_psrs_file = {(has_psrs_file > 0 ? "True" : "False")}");
+            if (vcs_version == 64 || vcs_version == 65)
+            {
+                int has_psrs_file = datareader.ReadInt32AtPosition();
+                datareader.ShowBytes(4, $"has_psrs_file = {(has_psrs_file > 0 ? "True" : "False")}");
+            }
             datareader.BreakLine();
             datareader.ShowByteCount("Editor/Shader stack for generating the file");
             datareader.ShowBytes(16, "Editor ref. ID0 (produces this file)");
