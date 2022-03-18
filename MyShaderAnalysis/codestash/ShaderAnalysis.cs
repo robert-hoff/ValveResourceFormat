@@ -85,8 +85,8 @@ namespace MyShaderAnalysis
             // WriteVcsByteAnalysisToTxt(filenamepath);
 
             // R: I wrote the core and dota files separately and copied them onto the server
-            WriteAllVcsFilesToHtml();
-            // WriteVcsByteAnalysisToHtml(filenamepath, writeHtmlLinks: true);
+            // WriteAllVcsFilesToHtml();
+            WriteVcsByteAnalysisToHtml(filenamepath, writeHtmlLinks: true);
             // ParseAllVcsFilesDisableOutput();
 
 

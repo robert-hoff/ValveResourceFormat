@@ -37,8 +37,6 @@ namespace MyShaderAnalysis
             // string[] relatedFiles = GetRelatedFiles(filenamepath);
             // List<string> relatedFiles = GetRelatedFiles2(filenamepath);
 
-            // CollectConfigurations.RunTrials();
-
 
             // DataReaderV62.RunTrials();
             // TestMobileShaderFiles.RunTrials();
@@ -50,7 +48,7 @@ namespace MyShaderAnalysis
             // StaticAnalysis.RunTrials();
 
             // PrintoutsByteAnalysis.RunTrials();
-            // ShaderAnalysis.RunTrials();
+            ShaderAnalysis.RunTrials();
 
 
 
@@ -81,12 +79,9 @@ namespace MyShaderAnalysis
 
 
 
-
             // 14 March 2022, R: try to read a Vulkan Zframe
             // PrintoutVulkanCode.RunTrials();
-            ParseV65Files.RunTrials();
-
-
+            // ParseV65Files.RunTrials();
 
 
             // Looking at a dynamic expression
