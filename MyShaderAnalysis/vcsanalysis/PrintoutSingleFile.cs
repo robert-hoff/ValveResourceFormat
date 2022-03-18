@@ -20,6 +20,10 @@ namespace MyShaderAnalysis.vcsanalysis
 
 
         // todo - I'm not doing anything currently with the printHtmlLinks variable
+        // (i.e. it always outputs as HTML)
+        // NOTE - this file is almost the same as MyShaderFile.CompiledShader.PrintVcsFileSummary
+        // only difference is the output is conditioned for HTML versus Windows GUI (using richbox links)
+        // 
         public PrintoutSingleFile(string filenamepath, HandleOutputWrite OutputWriter = null, bool printHtmlLinks = true)
         {
             output = new OutputFormatterTabulatedData(OutputWriter);

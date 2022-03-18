@@ -135,11 +135,11 @@ namespace MyShaderAnalysis
             // string filenamepath = $"{V62_EXAMPLES_SOURCE}/test_pc_40_gs.vcs";
             // string filenamepath = $"{V62_EXAMPLES_SOURCE}/test_pc_50_hs.vcs";
             // string filenamepath = $"{V62_EXAMPLES_SOURCE}/test_pcgl_40_ps.vcs";
-            // string filenamepath = $"{THE_LAB_SOURCE}/downsample_pc_40_ps.vcs";
             // string filenamepath = $"{THE_LAB_SOURCE}/downsample_pc_40_features.vcs";
+            string filenamepath = $"{THE_LAB_SOURCE}/downsample_pc_40_ps.vcs";
             // string filenamepath = $"{THE_LAB_SOURCE}/fogsprite_pcgl_41_features.vcs";
             // string filenamepath = $"{THE_LAB_SOURCE}/foliage_pc_41_ps.vcs";
-            string filenamepath = $"{THE_LAB_SOURCE}/foliage_pc_41_features.vcs";
+            // string filenamepath = $"{THE_LAB_SOURCE}/foliage_pc_41_features.vcs";
 
 
 

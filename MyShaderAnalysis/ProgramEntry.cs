@@ -32,6 +32,21 @@ namespace MyShaderAnalysis
             Console.SetOut(new ToDebugWriter());
 
 
+            // 18 March 2022
+            ParseV62Files.RunTrials();
+
+
+            // 14 March 2022, R: try to read a Vulkan Zframe
+            // PrintoutVulkanCode.RunTrials();
+            // ParseV65Files.RunTrials();
+
+            // Looking at a dynamic expression
+            // ParseDynamicExpression.RunTrials();
+
+
+
+            // before March 2022
+
             // X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders\vfx\water_dota_pcgl_40_features.vcs
             // var filenamepath = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders\vfx\water_dota_pcgl_40_features.vcs";
             // string[] relatedFiles = GetRelatedFiles(filenamepath);
@@ -47,11 +62,12 @@ namespace MyShaderAnalysis
             // StaticAnalysis2.RunTrials();
             // StaticAnalysis.RunTrials();
 
+            // support for v62 was written into PrintoutsByteAnalysis.cs
             // PrintoutsByteAnalysis.RunTrials();
             // ShaderAnalysis.RunTrials();
 
 
-            RunPrintoutsSingleFile.RunTrials();
+            // RunPrintoutsSingleFile.RunTrials();
             // TestUtilFunctions.RunTrials();
             // TestBasicParsing.RunTrials();
 
@@ -75,16 +91,6 @@ namespace MyShaderAnalysis
             // CompatRules2.RunTrials();
             // CompatRules.RunTrials();
             // BitTestGeneration.RunTrials();
-
-
-
-            // 14 March 2022, R: try to read a Vulkan Zframe
-            // PrintoutVulkanCode.RunTrials();
-            // ParseV65Files.RunTrials();
-
-
-            // Looking at a dynamic expression
-            // ParseDynamicExpression.RunTrials();
 
 
 
