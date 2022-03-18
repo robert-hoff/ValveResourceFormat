@@ -48,11 +48,10 @@ namespace MyShaderAnalysis
             // StaticAnalysis.RunTrials();
 
             // PrintoutsByteAnalysis.RunTrials();
-            ShaderAnalysis.RunTrials();
+            // ShaderAnalysis.RunTrials();
 
 
-
-            // RunPrintoutsSingleFile.RunTrials();
+            RunPrintoutsSingleFile.RunTrials();
             // TestUtilFunctions.RunTrials();
             // TestBasicParsing.RunTrials();
 
