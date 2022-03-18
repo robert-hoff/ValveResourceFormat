@@ -24,8 +24,14 @@ namespace MyShaderAnalysis
 
         public static void RunTrials()
         {
-            Trial1();
+            // Trial1();
+            // Trial2InstantiateShaderFile();
+            V62UncompressedZFrames();
         }
+
+
+
+
 
 
 
@@ -34,13 +40,39 @@ namespace MyShaderAnalysis
         public const string THE_LAB_SOURCE = "X:/Steam/steamapps/common/The Lab/RobotRepair/core/shaders/vfx";
 
 
+        static void V62UncompressedZFrames()
+        {
+            // string filenamepath = $"{THE_LAB_SOURCE}/downsample_pc_40_features.vcs";
+            // string filenamepath = $"{THE_LAB_SOURCE}/downsample_pc_40_ps.vcs";
+            string filenamepath = $"{THE_LAB_SOURCE}/aerial_perspective_pc_30_features.vcs";
+            ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
+
+            // byte[] zframeDecomp = shaderFile.GetDecompressedZFrame(0);
+
+            ZFrameFile zframe = shaderFile.GetZFrameFile(0);
+            zframe.PrintByteAnalysis();
+        }
+
+
+        static void Trial2InstantiateShaderFile()
+        {
+            // string filenamepath = $"{THE_LAB_SOURCE}/downsample_pc_40_features.vcs";
+            // string filenamepath = $"{THE_LAB_SOURCE}/downsample_pc_40_ps.vcs";
+            string filenamepath = $"{THE_LAB_SOURCE}/aerial_perspective_pc_30_features.vcs";
+            ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
+
+        }
+
+
         static void Trial1()
         {
             // string filenamepath = $"{V65_EXAMPLES_SOURCE}/cables_pc_40_features.vcs";
             // string filenamepath = $"{V65_EXAMPLES_SOURCE}/cables_pc_40_ps.vcs";
             // string filenamepath = $"{V65_EXAMPLES_SOURCE}/cables_pc_40_vs.vcs";
             // string filenamepath = $"{V65_EXAMPLES_SOURCE}/hero_pc_40_features.vcs";
-            string filenamepath = $"{THE_LAB_SOURCE}/downsample_pc_40_ps.vcs";
+            // string filenamepath = $"{THE_LAB_SOURCE}/downsample_pc_40_features.vcs";
+            // string filenamepath = $"{THE_LAB_SOURCE}/downsample_pc_40_ps.vcs";
+            string filenamepath = $"{THE_LAB_SOURCE}/aerial_perspective_pc_30_features.vcs";
 
             new ParseV62Files(filenamepath);
         }

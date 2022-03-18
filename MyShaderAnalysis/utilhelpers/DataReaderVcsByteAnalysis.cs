@@ -108,24 +108,24 @@ namespace MyShaderAnalysis.utilhelpers
             ShowBytes(len_name_description + 1);
             BreakLine();
             ShowByteCount();
-            uint arg1 = ReadUInt32AtPosition(0);
-            uint arg2 = ReadUInt32AtPosition(4);
-            uint arg3 = ReadUInt32AtPosition(8);
-            uint arg4 = ReadUInt32AtPosition(12);
+            uint arg0 = ReadUInt32AtPosition(0);
+            uint arg1 = ReadUInt32AtPosition(4);
+            uint arg2 = ReadUInt32AtPosition(8);
+            uint arg3 = ReadUInt32AtPosition(12);
             ShowBytes(16, 4, breakLine: false);
-            TabComment($"({arg1},{arg2},{arg3},{arg4})");
-            uint arg5 = ReadUInt32AtPosition(0);
-            uint arg6 = ReadUInt32AtPosition(4);
-            uint arg7 = ReadUInt32AtPosition(8);
+            TabComment($"({arg0},{arg1},{arg2},{arg3})");
+            uint arg4 = ReadUInt32AtPosition(0);
+            uint arg5 = ReadUInt32AtPosition(4);
+            uint arg6 = ReadUInt32AtPosition(8);
             if (version==64)
             {
-                uint arg8 = ReadUInt32AtPosition(12);
+                uint arg7 = ReadUInt32AtPosition(12);
                 ShowBytes(16, 4, breakLine: false);
-                TabComment($"({arg5},{arg6},{arg7},{arg8})");
+                TabComment($"({arg4},{arg5},{arg6},{arg7})");
             } else
             {
                 ShowBytes(12, 4, breakLine: false);
-                TabComment($"({arg5},{arg6},{arg7})");
+                TabComment($"({arg4},{arg5},{arg6})");
             }
 
 
@@ -623,19 +623,19 @@ namespace MyShaderAnalysis.utilhelpers
         {
             OutputWriteLine($"[{BaseStream.Position}] {getZFrameIdString(zframeId)}");
             bool isLzma = false;
-            uint zstdDelimOrChunkSize = ReadUInt32AtPosition();
-            if (zstdDelimOrChunkSize == ShaderFile.ZSTD_DELIM)
+            uint chuckSizeOrZFrameDelim = ReadUInt32AtPosition();
+            if (chuckSizeOrZFrameDelim == ShaderFile.ZSTD_DELIM)
             {
                 ShowBytes(4, $"Zstd delim (0x{ShaderFile.ZSTD_DELIM:x08})");
             } else
             {
-                ShowBytes(4, $"Lzma chunk size {zstdDelimOrChunkSize}");
+                ShowBytes(4, $"Lzma chunk size {chuckSizeOrZFrameDelim}");
                 uint lzmaDelim = ReadUInt32AtPosition();
                 if (lzmaDelim != ShaderFile.LZMA_DELIM)
                 {
                     // throw new ShaderParserException("Unknown compression, neither ZStd nor Lzma found");
                     Console.WriteLine($"neither zstd or lzma found");
-                    ShowBytes((int) zstdDelimOrChunkSize);
+                    ShowBytes((int) chuckSizeOrZFrameDelim);
                     return;
                 }
                 isLzma = true;

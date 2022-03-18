@@ -16,6 +16,7 @@ namespace ValveResourceFormat.CompiledShader
         public const uint LZMA_DELIM = 0x414D5A4C;
         public const int ZSTD_COMPRESSION = 1;
         public const int LZMA_COMPRESSION = 2;
+        public const int UNCOMPRESSED = 3;
         public const uint PI_MURMURSEED = 0x31415926;
         public ShaderDataReader datareader { get; set; }
 
@@ -207,15 +208,24 @@ namespace ValveResourceFormat.CompiledShader
                 datareader.BaseStream.Position = offsetToZframeHeader;
                 uint chunkSizeOrZframeDelim = datareader.ReadUInt32();
                 int compressionType = chunkSizeOrZframeDelim == ZSTD_DELIM ? ZSTD_COMPRESSION : LZMA_COMPRESSION;
+
+                int uncompressedLength = 0;
+                int compressedLength = 0;
                 if (chunkSizeOrZframeDelim != ZSTD_DELIM)
                 {
-                    if (datareader.ReadUInt32() != LZMA_DELIM)
+                    uint lzmaDelimOrStartOfData = datareader.ReadUInt32();
+                    if (lzmaDelimOrStartOfData != LZMA_DELIM)
                     {
-                        throw new ShaderParserException("Unknown compression, neither ZStd nor Lzma found");
+                        uncompressedLength = (int) chunkSizeOrZframeDelim;
+                        compressionType = UNCOMPRESSED;
                     }
                 }
-                int uncompressedLength = datareader.ReadInt32();
-                int compressedLength = datareader.ReadInt32();
+
+                if (compressionType == ZSTD_COMPRESSION || compressionType == LZMA_COMPRESSION)
+                {
+                    uncompressedLength = datareader.ReadInt32();
+                    compressedLength = datareader.ReadInt32();
+                }
 
                 ZFrameDataDescription zframeDataDesc = new ZFrameDataDescription(zframeId, offsetToZframeHeader,
                     compressionType, uncompressedLength, compressedLength, datareader);
@@ -498,7 +508,13 @@ namespace ValveResourceFormat.CompiledShader
                 }
             }
 
-            throw new ShaderParserException("This point cannot be reached, compressionType should be either ZSTD or LZMA");
+            if (compressionType == ShaderFile.UNCOMPRESSED)
+            {
+                datareader.BaseStream.Position += 4;
+                return datareader.ReadBytes(uncompressedLength);
+            }
+
+            throw new ShaderParserException($"Unknown compression type or compression type not determined {compressionType}");
         }
 
         public override string ToString()
