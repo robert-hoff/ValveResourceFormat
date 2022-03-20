@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MyShaderAnalysis.utilhelpers;
 
+
 namespace MyShaderAnalysis
 {
     class ProgramEntry
@@ -32,8 +33,13 @@ namespace MyShaderAnalysis
             Console.SetOut(new ToDebugWriter());
 
 
+            // Console.WriteLine($"{0xAF6E}");
+            Console.WriteLine($"{0xdc99}");
+
+                
+
             // 18 March 2022
-            ParseV62Files.RunTrials();
+            // ParseV62Files.RunTrials();
 
 
             // 14 March 2022, R: try to read a Vulkan Zframe

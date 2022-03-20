@@ -1,7 +1,7 @@
 
 namespace ValveResourceFormat.CompiledShader
 {
-    public static class ZstdDictionary
+    public static class ZStdDictionary
     {
         private static byte[] zstdDict;
         public static byte[] GetDictionary()
