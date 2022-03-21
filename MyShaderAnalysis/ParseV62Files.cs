@@ -11,7 +11,7 @@ using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
 namespace MyShaderAnalysis
 {
-    internal class ParseV62Files : ShaderDataReader
+    class ParseV62Files : ShaderDataReader
     {
 
         // public static void RunTrials()
@@ -28,10 +28,6 @@ namespace MyShaderAnalysis
             Trial2InstantiateShaderFile();
             // V62UncompressedZFrames();
         }
-
-
-
-
 
 
 

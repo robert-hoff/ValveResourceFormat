@@ -33,10 +33,10 @@ namespace MyShaderAnalysis
             Console.SetOut(new ToDebugWriter());
 
 
-            // Console.WriteLine($"{0xAF6E}");
-            Console.WriteLine($"{0xdc99}");
 
-                
+            DemoCode.RunTrials();
+
+
 
             // 18 March 2022
             // ParseV62Files.RunTrials();

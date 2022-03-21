@@ -33,6 +33,11 @@ namespace MyShaderAnalysis.utilhelpers
         //    }
         //}
 
+        /*
+         * This method is provided so that the interface shown by ShaderFile is the same
+         * as the one used in the VRF library
+         *
+         */
         public static ShaderFile InstantiateShaderFile(string filenamepath)
         {
             ShaderFile shaderFile = new ShaderFile();

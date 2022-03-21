@@ -3,13 +3,24 @@
  * ZstdDictionary.GetDictionary()
  *
  * Returns a Zstandard dictionary with dictionary id (DID) = 0x2bc2fa87 as a byte[] of size 65536.
- * The data is encoded as a Base64 string, converted to byte[] as part of the call.
+ * The data is stored in this file as a Base64 string, conversion to byte[] is written into the call.
+ *
+ *
+ * Example use (using ZstdSharp.Port)
+ * ----------------------------------
+ *
+ *      byte[] zstdDict = ZstdDictionary.GetDictionary();
+ *      var zstdDecoder = new ZstdSharp.Decompressor();
+ *      zstdDecoder.LoadDictionary(zstdDict);
+ *      byte[] decompressedData = zstdDecoder.Unwrap(compressedZstdFrame).ToArray();
+ *
+ * compressedZstdFrame given as byte[]
  *
  *
  * Zstd dictionary format
  * ----------------------
  *
- * The first 4 bytes of the dictionary is the magic number 0xec30a437 (shared by all Zstd dictionaries),
+ * The first 4 bytes of the dictionary is the magic number 0xec30a437 (common to all Zstd dictionaries),
  * and the following 4 bytes is the dictionary id 0x2bc2fa87. Where these two values are known we can scan
  * for the presence of a target dictionary (see 'Extracting the Zstd dictionary from Valve binaries' below).
  *
@@ -81,14 +92,11 @@
  *      /game/bin/win64/tools/model_editor.dll
  *      /game/bin/win64/vfxcompile.dll
  *
- * To complete extraction knowledge of the dictionary length is also required; if known it can be read directly
- * from where it is found. While there is no easy way to know the length of the dictionary from the dictionary data
- * itself; in the current version of Dota 2 it can be found by decompiling the dll's, seen as
+ * To complete extraction of the dictionary knowledge of the length is also needed. In the current game files
+ * it can be found by decompiling the dlls. The name is given as V_ZSTD_createDDict_byReference in the dlls,
+ * and the length is seen as 65536.
  *
  *      V_ZSTD_createDDict_byReference(&unk_1802027B0, 65536i64);
- *
- * The length here (65536) is given as part of the header.
- *
  *
  *
  */

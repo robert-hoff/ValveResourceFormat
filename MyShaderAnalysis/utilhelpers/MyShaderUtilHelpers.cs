@@ -18,7 +18,8 @@ namespace MyShaderAnalysis.utilhelpers
         }
 
 
-        public static List<string> GetVcsFiles(string dir1, string dir2, VcsProgramType fileType, int numEnding, bool sortFiles = true)
+        public static List<string> GetVcsFiles(string dir1, string dir2 = null,
+            VcsProgramType fileType = VcsProgramType.Undetermined, int numEnding = -1, bool sortFiles = true)
         {
             List<string> filesFound = new();
             if (fileType == VcsProgramType.Features || fileType == VcsProgramType.Undetermined)
