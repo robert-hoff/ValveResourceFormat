@@ -34,7 +34,7 @@ namespace MyShaderAnalysis
 
 
 
-            DemoCode.RunTrials();
+            // DemoCode.RunTrials();
 
 
 
@@ -43,7 +43,7 @@ namespace MyShaderAnalysis
 
 
             // 14 March 2022, R: try to read a Vulkan Zframe
-            // PrintoutVulkanCode.RunTrials();
+            PrintoutVulkanCode.RunTrials();
             // ParseV65Files.RunTrials();
 
             // Looking at a dynamic expression

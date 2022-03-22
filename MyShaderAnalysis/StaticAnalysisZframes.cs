@@ -466,7 +466,7 @@ namespace MyShaderAnalysis
                 {
                     ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(zframeIndex);
 
-                    foreach (int v in zframeFile.tailSummary)
+                    foreach (int v in zframeFile.trailingSummary)
                     {
                         CollectIntValue(v);
                     }

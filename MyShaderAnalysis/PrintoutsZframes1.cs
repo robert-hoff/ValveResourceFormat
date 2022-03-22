@@ -236,17 +236,12 @@ namespace MyShaderAnalysis
 
         static void PrintLeadSummary(ZFrameFile zframeFile)
         {
-            if (zframeFile.vcsProgramType != VcsProgramType.VertexShader)
-            {
-                return;
-            }
-            OutputWriteLine(zframeFile.GetLeadSummary());
+            OutputWriteLine(PrintZFrameSummary.SummarizeBytes(zframeFile.leadingSummary));
             OutputWriteLine("");
         }
-
         static void PrintTailSummary(ZFrameFile zframeFile)
         {
-            OutputWriteLine(zframeFile.GetTailSummary());
+            OutputWriteLine(PrintZFrameSummary.SummarizeBytes(zframeFile.trailingSummary));
             OutputWriteLine("");
         }
 
@@ -315,6 +310,7 @@ namespace MyShaderAnalysis
                     OutputWriteLine($"    {sourceLink} {blockSource.sourcebytes.Length,12}  (bytes)");
                 } else
                 {
+                    // todo - doesn't show id along with block name
                     OutputWriteLine($"  {blockSource.GetBlockName().PadRight(20)} {blockSource.sourcebytes.Length,12} (bytes)");
                 }
 

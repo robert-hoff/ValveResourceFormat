@@ -192,8 +192,8 @@ namespace MyGUI.Types.Viewers {
                 LinkClicked += new LinkClickedEventHandler(ShaderRichTextBoxLinkClicked);
 
 
-                // R: started making a context-menu, but links dont' identity right-cliks, so don't know how
-                // I would be able to create the event necessary to open it
+                // R: started making a context-menu, but RichTextBox links don't identify right-clicks, so don't know how
+                // If I would be able to create the event necessary to open it:
                 // shaderContextMenuStrip = new();
                 // ToolStripMenuItem openLinkMenuItem = new();
                 // openLinkMenuItem.Name = "openLinkMenuItem";
@@ -210,6 +210,8 @@ namespace MyGUI.Types.Viewers {
             private void ShaderRichTextBoxLinkClicked(object sender, LinkClickedEventArgs evt) {
                 string linkText = evt.LinkText[2..]; // remove two starting backslahses
                 string[] linkTokens = linkText.Split("\\");
+                // linkTokens[0] is sometimes a zframe id, in those cases programType equals 'undetermined'
+                // where linkTokens[0] is a filename VcsProgramType will be set to a shader (program) type
                 VcsProgramType programType = ComputeVcsProgramType(linkTokens[0]);
                 if (programType != VcsProgramType.Undetermined) {
                     ShaderFile shaderFile = shaderCollection[(programType, linkTokens[0])];
@@ -233,7 +235,7 @@ namespace MyGUI.Types.Viewers {
                     return;
                 }
                 long zframeId = Convert.ToInt64(linkText, 16);
-                var zframeTab = new TabPage($"{shaderFile.filenamepath.Split('_')[^1][..^4]}[{zframeId:X}]");
+                var zframeTab = new TabPage($"{shaderFile.filenamepath.Split('_')[^1][..^4]}[{zframeId:x}]");
                 var zframeRichTextBox = new ZFrameRichTextBox(tabControl, shaderFile, zframeId);
                 zframeRichTextBox.MouseEnter += new EventHandler(MouseEnterHandler);
                 zframeTab.Controls.Add(zframeRichTextBox);
@@ -254,11 +256,11 @@ namespace MyGUI.Types.Viewers {
                 this.tabControl = tabControl;
                 this.shaderFile = shaderFile;
                 var buffer = new StringWriter(CultureInfo.InvariantCulture);
-                zframeFile = shaderFile.GetZFrameFile(zframeId, OutputWriter: buffer.Write);
+                zframeFile = shaderFile.GetZFrameFile(zframeId, outputWriter: buffer.Write);
                 if (byteVersion) {
                     zframeFile.PrintByteAnalysis();
                 } else {
-                    PrintZFrameSummary zframeSummary = new PrintZFrameSummary(shaderFile, zframeFile, buffer.Write, true);
+                    PrintZFrameSummary zframeSummary = new(shaderFile, zframeFile, buffer.Write, true);
                 }
                 Font = new Font(FontFamily.GenericMonospace, Font.Size);
                 DetectUrls = true;
@@ -273,9 +275,13 @@ namespace MyGUI.Types.Viewers {
 
             private void ZFrameRichTextBoxLinkClicked(object sender, LinkClickedEventArgs evt) {
                 string[] linkTokens = evt.LinkText[2..].Split("\\");
+                // if the link contains only one token it is the name of the zframe in the form
+                // blur_pcgl_40_vs.vcs-ZFRAME00000000-databytes
                 if (linkTokens.Length == 1) {
+                    // the target id is extracted from the text link, strictly dependent on the particular format used
+                    // linkTokens[0].Split('-')[^2] evaluates as ZFRAME00000000, number is read as base 16
                     long zframeId = Convert.ToInt64(linkTokens[0].Split('-')[^2][6..], 16);
-                    var zframeTab = new TabPage($"{shaderFile.filenamepath.Split('_')[^1][..^4]}[{zframeId:X}] bytes");
+                    var zframeTab = new TabPage($"{shaderFile.filenamepath.Split('_')[^1][..^4]}[{zframeId:x}] bytes");
                     var zframeRichTextBox = new ZFrameRichTextBox(tabControl, shaderFile, zframeId, byteVersion: true);
                     zframeRichTextBox.MouseEnter += new EventHandler(MouseEnterHandler);
                     zframeTab.Controls.Add(zframeRichTextBox);
@@ -285,10 +291,14 @@ namespace MyGUI.Types.Viewers {
                     }
                     return;
                 }
+                // if (linkTokens.Length != 1) the link text will always be in the form '\\source\0'
+                // the sourceId is given in decimals, extracted here from the second token
+                // (the sourceId is not the same as the zframeId - a single zframe may contain more than 1 source,
+                // they are enumerated in each zframe file starting from 0)
                 int glslSourceId = Convert.ToInt32(linkTokens[1]);
                 var buffer = new StringWriter(CultureInfo.InvariantCulture);
-                zframeFile.PrintGlslSource(glslSourceId, buffer.Write);
-                var glslTab = new TabPage($"{shaderFile.filenamepath.Split('_')[^1][..^4]}[{zframeFile.zframeId:x}]-glsl[{glslSourceId}]");
+                zframeFile.PrintGpuSource(glslSourceId, buffer.Write);
+                var glslTab = new TabPage($"{shaderFile.filenamepath.Split('_')[^1][..^4]}[{zframeFile.zframeId:x}]({glslSourceId})");
                 var glslRichTextBox = new RichTextBox();
                 glslRichTextBox.Font = new Font(FontFamily.GenericMonospace, Font.Size);
                 glslRichTextBox.DetectUrls = true;

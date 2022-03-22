@@ -18,13 +18,14 @@ namespace MyShaderAnalysis
         public static void RunTrials()
         {
             Trial1();
+            // ManualZFrameDecompression();
             // ShowVcsFilesForGivenArchive();
         }
 
 
         public const string THE_LAB_SOURCE = "X:/Steam/steamapps/common/The Lab/RobotRepair/core/shaders/vfx";
 
-        static void Trial10()
+        static void Trial999()
         {
             // string filenamepath = $"{V65_EXAMPLES_SOURCE}/cables_pc_40_features.vcs";
             // string filenamepath = $"{V65_EXAMPLES_SOURCE}/cables_pc_40_ps.vcs";
@@ -37,6 +38,12 @@ namespace MyShaderAnalysis
         }
 
         static void Trial1()
+        {
+
+        }
+
+
+        static void ManualZFrameDecompression()
         {
             string filenamepath = $"{DOTA_GAME_PC_SOURCE_V65}/crystal_pc_40_vs.vcs";
             ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
@@ -51,21 +58,17 @@ namespace MyShaderAnalysis
             Console.WriteLine(BytesToString(uncompressedData));
 
             // Console.WriteLine(uncompressedData.Length);
-
         }
 
 
         static byte[] DecompressZstdFrame(byte[] compressedZstdFrame)
         {
-
             byte[] zstdDict = ZstdDictionary.GetDictionary();
             var zstdDecoder = new ZstdSharp.Decompressor();
             zstdDecoder.LoadDictionary(zstdDict);
             byte[] decompressedData = zstdDecoder.Unwrap(compressedZstdFrame).ToArray();
             return decompressedData;
         }
-
-
 
 
         static void ShowVcsFilesForGivenArchive()
