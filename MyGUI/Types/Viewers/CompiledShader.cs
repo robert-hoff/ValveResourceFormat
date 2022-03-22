@@ -216,7 +216,7 @@ namespace MyGUI.Types.Viewers {
                 if (programType != VcsProgramType.Undetermined) {
                     ShaderFile shaderFile = shaderCollection[(programType, linkTokens[0])];
                     TabPage newShaderTab = null;
-                    if (linkTokens.Length > 1 && linkTokens[1].Equals("bytes")) {
+                    if (linkTokens.Length > 1 && linkTokens[1].Equals("bytes", StringComparison.Ordinal)) {
                         newShaderTab = new TabPage($"{programType} bytes");
                         var shaderRichTextBox = new ShaderRichTextBox(shaderFile, tabControl, byteVersion: true);
                         shaderRichTextBox.MouseEnter += new EventHandler(MouseEnterHandler);
