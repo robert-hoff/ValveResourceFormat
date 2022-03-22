@@ -248,9 +248,9 @@ namespace MyGUI.Types.Viewers {
 
 
         private class ZFrameRichTextBox : RichTextBox {
-            private TabControl tabControl;
-            private ShaderFile shaderFile;
-            private ZFrameFile zframeFile;
+            private readonly TabControl tabControl;
+            private readonly ShaderFile shaderFile;
+            private readonly ZFrameFile zframeFile;
 
             public ZFrameRichTextBox(TabControl tabControl, ShaderFile shaderFile, long zframeId, bool byteVersion = false) : base() {
                 this.tabControl = tabControl;
@@ -295,24 +295,59 @@ namespace MyGUI.Types.Viewers {
                 // the sourceId is given in decimals, extracted here from the second token
                 // (the sourceId is not the same as the zframeId - a single zframe may contain more than 1 source,
                 // they are enumerated in each zframe file starting from 0)
-                int glslSourceId = Convert.ToInt32(linkTokens[1]);
-                var buffer = new StringWriter(CultureInfo.InvariantCulture);
-                zframeFile.PrintGpuSource(glslSourceId, buffer.Write);
-                var glslTab = new TabPage($"{shaderFile.filenamepath.Split('_')[^1][..^4]}[{zframeFile.zframeId:x}]({glslSourceId})");
-                var glslRichTextBox = new RichTextBox();
-                glslRichTextBox.Font = new Font(FontFamily.GenericMonospace, Font.Size);
-                glslRichTextBox.DetectUrls = true;
-                glslRichTextBox.Dock = DockStyle.Fill;
-                glslRichTextBox.Multiline = true;
-                glslRichTextBox.ReadOnly = true;
-                glslRichTextBox.WordWrap = false;
-                glslRichTextBox.Text = Utils.Utils.NormalizeLineEndings(buffer.ToString());
-                glslRichTextBox.ScrollBars = RichTextBoxScrollBars.Both;
-                glslTab.Controls.Add(glslRichTextBox);
-                tabControl.Controls.Add(glslTab);
-                if ((ModifierKeys & Keys.Control) == Keys.Control) {
-                    tabControl.SelectedTab = glslTab;
+                int gpuSourceId = Convert.ToInt32(linkTokens[1], CultureInfo.InvariantCulture);
+                string gpuSourceLabel = $"{shaderFile.filenamepath.Split('_')[^1][..^4]}[{zframeFile.zframeId:x}]({gpuSourceId})";
+
+                TabPage gpuSourceTab = null;
+                switch (zframeFile.gpuSources[gpuSourceId])
+                {
+                    case GlslSource:
+                        var buffer = new StringWriter(CultureInfo.InvariantCulture);
+                        zframeFile.PrintGpuSource(gpuSourceId, buffer.Write);
+                        gpuSourceTab = new TabPage(gpuSourceLabel);
+                        var glslRichTextBox = new RichTextBox
+                        {
+                            Font = new Font(FontFamily.GenericMonospace, Font.Size),
+                            DetectUrls = true,
+                            Dock = DockStyle.Fill,
+                            Multiline = true,
+                            ReadOnly = true,
+                            WordWrap = false,
+                            Text = Utils.Utils.NormalizeLineEndings(buffer.ToString()),
+                            ScrollBars = RichTextBoxScrollBars.Both
+                        };
+                        gpuSourceTab.Controls.Add(glslRichTextBox);
+                        break;
+
+                    case DxbcSource:
+                    case DxilSource:
+                    case VulkanSource:
+                        gpuSourceTab = CreateByteViewerTab(zframeFile.gpuSources[gpuSourceId].sourcebytes, gpuSourceLabel);
+                        break;
+
+                    default:
+                        throw new InvalidDataException($"Unimplemented GPU source type {zframeFile.gpuSources[gpuSourceId].GetType()}");
                 }
+
+                tabControl.Controls.Add(gpuSourceTab);
+                if ((ModifierKeys & Keys.Control) == Keys.Control) {
+                    tabControl.SelectedTab = gpuSourceTab;
+                }
+            }
+
+            private static TabPage CreateByteViewerTab(byte[] input, string tabName)
+            {
+                var bvTab = new TabPage(tabName);
+                var bv = new System.ComponentModel.Design.ByteViewer
+                {
+                    Dock = DockStyle.Fill,
+                };
+                bvTab.Controls.Add(bv);
+                Program.MainForm.Invoke((MethodInvoker)(() =>
+                {
+                    bv.SetBytes(input);
+                }));
+                return bvTab;
             }
         }
     }
