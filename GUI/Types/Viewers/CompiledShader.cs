@@ -319,7 +319,7 @@ namespace GUI.Types.Viewers
                         var buffer = new StringWriter(CultureInfo.InvariantCulture);
                         zframeFile.PrintGpuSource(gpuSourceId, buffer.Write);
                         gpuSourceTab = new TabPage(gpuSourceLabel);
-                        var glslRichTextBox = new RichTextBox
+                        var gpuSourceRichTextBox = new RichTextBox
                         {
                             Font = new Font(FontFamily.GenericMonospace, Font.Size),
                             DetectUrls = true,
@@ -330,7 +330,7 @@ namespace GUI.Types.Viewers
                             Text = Utils.Utils.NormalizeLineEndings(buffer.ToString()),
                             ScrollBars = RichTextBoxScrollBars.Both
                         };
-                        gpuSourceTab.Controls.Add(glslRichTextBox);
+                        gpuSourceTab.Controls.Add(gpuSourceRichTextBox);
                         break;
 
                     case DxbcSource:

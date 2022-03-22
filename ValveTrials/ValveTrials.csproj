@@ -8,8 +8,6 @@
     <Description>Valve Trials</Description>
     <ApplicationIcon>..\Icons\vrf.ico</ApplicationIcon>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-    <PublishSingleFile>true</PublishSingleFile>
-    <PublishTrimmed>true</PublishTrimmed>
     <IncludeAllContentForSelfExtract>true</IncludeAllContentForSelfExtract>
     <StartupObject>ValveTrials.Program</StartupObject>
     <AssemblyName>VRF</AssemblyName>
