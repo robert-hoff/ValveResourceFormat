@@ -178,7 +178,6 @@ namespace ValveResourceFormat.CompiledShader
             }
             string b2Desc = "dest";
             string b3Desc = "control";
-            // string dataBlockHeader = $"{new string(' ', 5)} {new string(' ', 28)} {b2Desc,-11} {b3Desc}";
             string dataBlockHeader = $"{seqName,-35} {b2Desc,-11} {b3Desc}";
             OutputWriteLine(dataBlockHeader);
             for (int i = 0; i < h0; i++)
@@ -422,9 +421,6 @@ namespace ValveResourceFormat.CompiledShader
                     {
                         OutputWriteLine("// data-section 2");
                         OutputWriteLine($"{BytesToString(psEndBlock.data2[0..3])}");
-                        // OutputWriteLine($"{BytesToString(psEndBlock.data2[3..11])}");
-                        // OutputWriteLine($"{BytesToString(psEndBlock.data2[11..75])}");
-
                         OutputWriteLine($"{BytesToString(psEndBlock.data2[3..27])}");
                         OutputWriteLine($"{BytesToString(psEndBlock.data2[27..51])}");
                         OutputWriteLine($"{BytesToString(psEndBlock.data2[51..75])}");

@@ -13,7 +13,8 @@ using VrfPackage = SteamDatabase.ValvePak.Package;
 
 
 namespace MyGUI.Types.Viewers {
-    public class CompiledShader : IViewer {
+    public class CompiledShader : IDisposable, IViewer
+    {
 
         public static bool IsAccepted(uint magic) {
             return magic == ShaderFile.MAGIC;
@@ -42,7 +43,6 @@ namespace MyGUI.Types.Viewers {
          * or when selecting a vcs file from inside a valve-pak (vpk archive)
          *
          * It's clear looking at this that a TextBox is used when opening a new shader file
-         *
          *
          *
          */
@@ -88,7 +88,6 @@ namespace MyGUI.Types.Viewers {
         //private void TabControl1_Selected(Object sender, TabControlEventArgs e) {
         //    Console.WriteLine($"selected event");
         //}
-
 
 
 
@@ -157,6 +156,24 @@ namespace MyGUI.Types.Viewers {
             return -1;
         }
 
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing && tabControl != null)
+            {
+                tabControl.Dispose();
+                tabControl = null;
+            }
+            if (disposing && shaderFile != null)
+            {
+                shaderFile.Dispose();
+                tabControl = null;
+            }
+        }
 
 
         private class ShaderRichTextBox : RichTextBox {

@@ -7,12 +7,26 @@ using System.Windows.Forms;
 
 namespace ValveTrials
 {
+    // from
+    // https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.design.byteviewer?view=windowsdesktop-6.0
     public class ByteViewerForm : System.Windows.Forms.Form
     {
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
         private System.ComponentModel.Design.ByteViewer byteviewer;
 
+
+        // ByteViewer class
+        // for some reason can't select text and the text doesn't scroll on mouse-wheel (pretty weird really)
+        //
+        // https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.design.byteviewer?view=windowsdesktop-6.0
+        // inherits from Control, Panel, ScrollableControl, Panel, TableLayoutPanel
+        // The Control class has a particularly large number of methods and settings
+        // https://docs.microsoft.com/en-us/dotnet/api/system.componentmodel.design.byteviewer?view=windowsdesktop-6.0
+        //
+        // using example files here
+        // X:\checkouts\SPIRV-Cross\Debug
+        //
         public ByteViewerForm()
         {
             // Initialize the controls other than the ByteViewer.
@@ -26,6 +40,12 @@ namespace ValveTrials
             byteviewer.SetBytes(new byte[] { });
             byteviewer.SetDisplayMode(DisplayMode.Hexdump);
             byteviewer.AutoScroll = true;
+            // Console.WriteLine($"{byteviewer.CanSelect}");
+            // byteviewer.Enabled = true;
+            // Console.WriteLine($"{byteviewer.Focused}");
+            // Console.WriteLine($"{byteviewer.CanFocus}");
+            // Console.WriteLine($"{byteviewer.Select() }");
+            byteviewer.Select();
             this.Controls.Add(byteviewer);
         }
 

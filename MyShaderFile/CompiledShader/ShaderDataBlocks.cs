@@ -110,7 +110,7 @@ namespace ValveResourceFormat.CompiledShader
             datareader.BaseStream.Position = start;
             datareader.ShowByteCount("vcs file");
             datareader.ShowBytes(4, "\"vcs2\"");
-            int vcs_version = datareader.ReadInt32AtPosition();            
+            int vcs_version = datareader.ReadInt32AtPosition();
             datareader.ShowBytes(4, $"version {vcs_version}");
             datareader.BreakLine();
             datareader.ShowByteCount("features header");
