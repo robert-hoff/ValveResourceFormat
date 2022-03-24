@@ -17,11 +17,11 @@ namespace ValveResourceFormat.CompiledShader
         // If OutputWriter is left as null; output will be written to Console.
         // Otherwise output is directed to the passed HandleOutputWrite object (defined by the calling application, for example GUI element or file)
         public PrintZFrameSummary(ShaderFile shaderFile, ZFrameFile zframeFile,
-            HandleOutputWrite OutputWriter = null, bool showRichTextBoxLinks = false)
+            HandleOutputWrite outputWriter = null, bool showRichTextBoxLinks = false)
         {
             this.shaderFile = shaderFile;
             this.zframeFile = zframeFile;
-            this.OutputWriter = OutputWriter ?? ((x) => { Console.Write(x); });
+            this.OutputWriter = outputWriter ?? ((x) => { Console.Write(x); });
 
             if (zframeFile.vcsProgramType == VcsProgramType.Features)
             {

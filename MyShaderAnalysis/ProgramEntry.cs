@@ -35,11 +35,11 @@ namespace MyShaderAnalysis
 
             // Methods for building html printouts
             // -- vcs and zframe byte detail
-            PrintoutsByteAnalysis.RunTrials();
+            // PrintoutsByteAnalysis.RunTrials();
             // -- formatted zframes
-            PrintoutsZframes1.RunTrials();
+            // PrintoutsZframes1.RunTrials();
             // -- formatted vcs
-            RunPrintoutsSingleFile.RunTrials();
+            ParseVcsFiles.RunTrials();
 
 
 

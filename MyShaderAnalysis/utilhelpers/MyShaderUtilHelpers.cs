@@ -399,7 +399,7 @@ namespace MyShaderAnalysis.utilhelpers
             {
                 if (Path.GetFileName(f).StartsWith(vcsCollectionName))
                 {
-                    relatedFiles.Add(f);
+                    relatedFiles.Add(Path.GetFileName(f));
                 }
             }
             return relatedFiles;

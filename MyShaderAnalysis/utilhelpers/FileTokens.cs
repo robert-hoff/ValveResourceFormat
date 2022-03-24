@@ -5,9 +5,30 @@ using System.Linq;
 using ValveResourceFormat.CompiledShader;
 using static MyShaderAnalysis.utilhelpers.FileSystem;
 
-
+/*
+ *
+ *
+ * GetServerFileDir()                  Z:/dev/www/vcs.codecreation.dev/dota-game/pcgl/multiblend_pcgl_30
+ * GetServerFilenamepath(label)        Z:/dev/www/vcs.codecreation.dev/dota-game/pcgl/multiblend_pcgl_30/multiblend_pcgl_30_ps-label.html
+ * GetServerFilePath()                 /dota-game/pcgl/multiblend_pcgl_30
+ * GetServerFileUrl(label)             /dota-game/pcgl/multiblend_pcgl_30/multiblend_pcgl_30_ps-label.html
+ * GetGlslServerDir()                  Z:/dev/www/vcs.codecreation.dev/dota-game/pcgl/multiblend_pcgl_30/glsl
+ * GetGlslHtmlFilename(gpuSource)      glsl-e46ad784246f747dd88a611874194020.html
+ * GetGlslHtmlUrl(gpusource)           /dota-game/pcgl/multiblend_pcgl_30/glsl/glsl-e46ad784246f747dd88a611874194020.html
+ * GetZFramesServerDir()               Z:/dev/www/vcs.codecreation.dev/dota-game/pcgl/multiblend_pcgl_30/zframes
+ * GetZFramesServerPath()              /dota-game/pcgl/multiblend_pcgl_30/zframes
+ * GetZFrameHtmlFilenamepath(id,label) Z:/dev/www/vcs.codecreation.dev/dota-game/pcgl/multiblend_pcgl_30/zframes/multiblend_pcgl_30_ps-ZFRAME00000000-label.html
+ * GetZFrameHtmlFilename(id,label)     multiblend_pcgl_30_ps-ZFRAME00000000-label.html
+ * GetZFrameLink(id,label)             /dota-game/pcgl/multiblend_pcgl_30/zframes/multiblend_pcgl_30_ps-ZFRAME00000000-label.html
+ * GetShortHandName()                  multiblend_pcgl_30_ps (dota)
+ *
+ *
+ *
+ */
+// todo - get rid of  GetShortName(string vcsFileName) from MyShaderUtilHelpers (and others)
 namespace MyShaderAnalysis.utilhelpers
 {
+
     public class FileTokens
     {
         public string name { get; }          // name without the file extension, e.g. spritecard_pcgl_30_ps
@@ -132,7 +153,7 @@ namespace MyShaderAnalysis.utilhelpers
             return $"{GetZFramesServerDir(createDirs)}/{name}-ZFRAME{zframeId:x08}-{label}.html";
         }
 
-        public string GetZFrameHtmlFilename(long zframeId, string label)
+        public string GetZFrameHtmlFilename(long zframeId, string label = "")
         {
             if (label.Length>0)
             {
@@ -174,6 +195,18 @@ namespace MyShaderAnalysis.utilhelpers
         {
             return $"{name} ({archivelabel})";
         }
+
+        public string GetShortName()
+        {
+            return $"{namelabel}({platformType}-{vcstoken})";
+        }
+
+
+        public string GetBaseName()
+        {
+            return $"/{archivename}/{platformType}/{filename}";
+        }
+
 
         // hero(pcgl-ps)
         public string GetAbbreviatedName()

@@ -19,8 +19,9 @@ namespace MyShaderAnalysis.utilhelpers
 
         public static void RunTrials()
         {
+            ShowFileTokenDetail();
             // TestGenerateTargetFilenames();
-            TestCreateDirectoryStructures();
+            // TestCreateDirectoryStructures();
             // TestFileTokensAbbreviatedName();
             // TestGetRelatedFiles();
             // TestSourceTypes();
@@ -30,6 +31,35 @@ namespace MyShaderAnalysis.utilhelpers
             // TestFileAndPathNamesNewArchive();
             // TestFileSystem();
         }
+
+
+        static void ShowFileTokenDetail()
+        {
+            string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_ps.vcs";
+
+            ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
+            ZFrameFile zframeFile = shaderFile.GetZFrameFile(0);
+
+            FileTokens fileToken = new FileTokens(filenamepath);
+
+            Console.WriteLine($"GetServerFileDir()                  {fileToken.GetServerFileDir()}");
+            Console.WriteLine($"GetServerFilenamepath(label)        {fileToken.GetServerFilenamepath("label")}");
+            Console.WriteLine($"GetServerFilePath()                 {fileToken.GetServerFilePath()}");
+            Console.WriteLine($"GetServerFileUrl(label)             {fileToken.GetServerFileUrl("label")}");
+            Console.WriteLine($"GetGlslServerDir()                  {fileToken.GetGlslServerDir()}");
+            Console.WriteLine($"GetGlslHtmlFilename(gpuSource)      {fileToken.GetGlslHtmlFilename(zframeFile.gpuSources[0] as GlslSource)}");
+            Console.WriteLine($"GetGlslHtmlUrl(gpusource)           {fileToken.GetGlslHtmlUrl(zframeFile.gpuSources[0] as GlslSource)}");
+
+
+            Console.WriteLine($"GetZFramesServerDir()               {fileToken.GetZFramesServerDir()}");
+            // Console.WriteLine($"CreateZFramesDirectory()         {fileToken.CreateZFramesDirectory()}"); // returns void
+            Console.WriteLine($"GetZFramesServerPath()              {fileToken.GetZFramesServerPath()}");
+            Console.WriteLine($"GetZFrameHtmlFilenamepath(id,label) {fileToken.GetZFrameHtmlFilenamepath(0,"label")}");
+            Console.WriteLine($"GetZFrameHtmlFilename(id,label)     {fileToken.GetZFrameHtmlFilename(0,"label")}");
+            Console.WriteLine($"GetZFrameLink(id,label)             {fileToken.GetZFrameLink(0,"label")}");
+            Console.WriteLine($"GetShortHandName()                  {fileToken.GetShortHandName()}");
+        }
+
 
 
         /*
