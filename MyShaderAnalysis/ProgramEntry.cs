@@ -33,6 +33,16 @@ namespace MyShaderAnalysis
             Console.SetOut(new ToDebugWriter());
 
 
+            // Methods for building html printouts
+            // RunPrintoutsSingleFile.RunTrials();
+            PrintoutsByteAnalysis.RunTrials();
+
+
+            // -- what!? this still works?
+            // PrintoutsZframes1.RunTrials();
+
+
+
             // 23 March 2022
             // -- does this work? yes it does. Produces a file summary overview (particularly for the static variables)
             // StaticAnalysis.RunTrials();
@@ -72,7 +82,7 @@ namespace MyShaderAnalysis
             // StaticAnalysis.RunTrials();
 
             // support for v62 was written into PrintoutsByteAnalysis.cs
-            PrintoutsByteAnalysis.RunTrials();
+            // PrintoutsByteAnalysis.RunTrials();
             // ShaderAnalysis.RunTrials();
 
 

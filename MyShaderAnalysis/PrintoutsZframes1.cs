@@ -622,6 +622,7 @@ namespace MyShaderAnalysis
         }
 
 
+        // todo - remove this, functionality should be overed by FileTokens class
         static void PrintZframeByteCodeLink(string filenamepath, long zframeId)
         {
             string token = GetCoreOrDotaString(filenamepath);

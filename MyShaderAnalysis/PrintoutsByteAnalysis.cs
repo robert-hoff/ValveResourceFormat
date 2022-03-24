@@ -13,39 +13,35 @@ namespace MyShaderAnalysis
 {
     public class PrintoutsByteAnalysis
     {
-        public const string V62_EXAMPLES_SOURCE = "X:/v62shaders-from-xpaw";
-        public const string THE_LAB_SOURCE = "X:/Steam/steamapps/common/The Lab/RobotRepair/core/shaders/vfx";
-        const string OUTPUT_DIR = @"Z:/active/projects/dota2-sourcesdk-modding/shader-analysis-vcs-format/OUTPUT_DUMP";
-        const string SERVER_OUTPUT_DIR = @"Z:/dev/www/vcs.codecreation.dev/GEN-output";
 
-        // static OutputWriter output = new(WriteToConsole: false, WriteToDebug: true);
-
-        // not actually using this anywhere
-        // static OutputFormatterTabulatedData output = new OutputFormatterTabulatedData();
+        // const string OUTPUT_DIR = @"Z:/active/projects/dota2-sourcesdk-modding/shader-analysis-vcs-format/OUTPUT_DUMP";
+        // const string SERVER_OUTPUT_DIR = @"Z:/dev/www/vcs.codecreation.dev/GEN-output";
 
 
 
         public static void RunTrials()
         {
-            // Trial1();
             // Trial2();
-            // Trial3();
-            RunBatchPrintVcsBytes();
-            // RunSingleFileByteAnalysis();
-            // PrintSingleFileToScreen();
-            // PrintZFramesAllFiles();
-            // PrintZFramesSingleFile();
+            // RunBatchPrintVcsBytes();
+            // RunPrintVcsFilesAsBytes();
+            // PrintVcsFileToScreen();
+            // BatchPrintZframeBytes();
+            // RunPrintZFrameBytes();
+            // DemoPrintZFrameBytes(10);
+            PrintZFrameBytesAsTestfile();
+            // DemoZframeHeaderAndTitle();
+            // PrintZFrameBytesToScreen()
+
+
             // PrintGlslAllFiles();
             // PrintGlslSingleFiles();
 
-
-            // todo - need something new here
-            // output.CloseStreamWriter();
         }
 
 
 
-        static void RunBatchPrintVcsBytes() {
+        static void RunBatchPrintVcsBytes()
+        {
             // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PC_SOURCE, DOTA_GAME_PC_SOURCE, VcsFileType.Any, -1, LIMIT_NR: 20);
             // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PCGL_SOURCE, DOTA_GAME_PCGL_SOURCE, VcsFileType.Any, -1, LIMIT_NR: 20);
             // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_MOBILE_GLES_SOURCE, DOTA_DAC_MOBILE_GLES_SOURCE, VcsProgramType.Undetermined, -1, LIMIT_NR: 20);
@@ -108,7 +104,7 @@ namespace MyShaderAnalysis
 
 
 
-        static void PrintSingleFileToScreen()
+        static void PrintVcsFileToScreen()
         {
             // string filenamepath = $"{V62_EXAMPLES_SOURCE}/test_pcgl_30_ps.vcs";
             // string filenamepath = $"{V62_EXAMPLES_SOURCE}/test_pc_30_vs.vcs";
@@ -146,112 +142,139 @@ namespace MyShaderAnalysis
         }
 
 
-        static void Trial3()
-        {
-            string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/generic_light_pcgl_30_vs.vcs";
-            ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
-            ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(0);
-            PrintZFrameByteAnalysis(zframeFile, $"{SERVER_OUTPUT_DIR}/testfile.html", writeFile: true);
-
-
-        }
-
 
 
         const int LIMIT_ZFRAME_PRINTOUT = 5;
 
-
-        static void PrintZFramesAllFiles()
+        static void BatchPrintZframeBytes()
         {
-            // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PCGL_SOURCE, DOTA_GAME_PCGL_SOURCE, VcsFileType.Any, -1);
+            // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PCGL_SOURCE, DOTA_GAME_PCGL_SOURCE, VcsProgramType.Undetermined, -1, LIMIT_NR: 20);
+            List<string> vcsFiles = GetVcsFiles(DOTA_GAME_PCGL_SOURCE, VcsProgramType.Undetermined, -1, LIMIT_NR: 20);
             // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_MOBILE_GLES_SOURCE, DOTA_DAC_MOBILE_GLES_SOURCE, VcsFileType.Any, 30);
             // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_MOBILE_GLES_SOURCE, DOTA_DAC_MOBILE_GLES_SOURCE, VcsProgramType.Undetermined, -1);
-            List<string> vcsFiles = GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsProgramType.Undetermined, -1);
+            // List<string> vcsFiles = GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsProgramType.Undetermined, -1);
 
             foreach (var filenamepath in vcsFiles)
             {
-                Console.WriteLine($"{filenamepath}");
+                ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
                 FileTokens fileTokens = new FileTokens(filenamepath);
-                string zframesServerDir = fileTokens.GetZFramesServerDir(createDirs: true);
-
-                ShaderFile shaderFile = null;
-                try
-                {
-                    shaderFile = InstantiateShaderFile(filenamepath);
-                }
-                catch (ShaderParserException e)
-                {
-                    Console.WriteLine($"ERROR! couldn't parse {filenamepath}");
-                    Console.WriteLine(e);
-                    continue;
-                }
                 int zframesToPrint = Math.Min(shaderFile.GetZFrameCount(), LIMIT_ZFRAME_PRINTOUT);
                 for (int i = 0; i < zframesToPrint; i++)
                 {
                     ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(i);
-                    string zframeHtmlFilename = fileTokens.GetZFrameHtmlFilename(zframeFile.zframeId, "bytes");
-                    PrintZFrameByteAnalysis(zframeFile, $"{zframesServerDir}/{zframeHtmlFilename}", writeFile: true, disableOutput: true);
-
-                    // todo - need something new here
-                    // output.CloseStreamWriter();
+                    PrintZFrameBytes(zframeFile, fileTokens);
                 }
             }
         }
 
 
-        static void PrintZFramesSingleFile()
+        static void RunPrintZFrameBytes()
         {
-            // string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/apply_fog_pcgl_40_ps.vcs";
-            // string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/bilateral_blur_pcgl_30_ps.vcs";
-            // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs";
-            string filenamepath = $"{DOTA_CORE_MOBILE_GLES_SOURCE}/copytexture_mobile_gles_30_vs.vcs";
-            FileTokens fileTokens = new FileTokens(filenamepath);
-            string zframesServerDir = fileTokens.GetZFramesServerDir(createDirs: true);
-
+            int ZFRAME_INDEX = 11;
+            string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs";
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
-            int zframesToPrint = Math.Min(shaderFile.GetZFrameCount(), LIMIT_ZFRAME_PRINTOUT);
-            for (int i = 0; i < zframesToPrint; i++)
-            {
-                ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(i);
-                string zframeHtmlFilename = fileTokens.GetZFrameHtmlFilename(zframeFile.zframeId, "bytes");
-                PrintZFrameByteAnalysis(zframeFile, $"{zframesServerDir}/{zframeHtmlFilename}", writeFile: true, disableOutput: true);
-
-                // todo - need something new here
-                // output.CloseStreamWriter();
-            }
+            FileTokens fileTokens = new FileTokens(filenamepath);
+            ZFrameFile zframe = shaderFile.GetZFrameFileByIndex(ZFRAME_INDEX);
+            PrintZFrameBytes(zframe, fileTokens);
         }
 
 
-        static void PrintZFrameByteAnalysis(ZFrameFile zframeFile, string outputFilenamepath = null,
-            bool writeFile = false, bool disableOutput = false)
+        static void PrintZFrameBytes(ZFrameFile zframe, FileTokens fileTokens = null)
         {
-            FileTokens fileTokens = new FileTokens(zframeFile.filenamepath);
-            if (outputFilenamepath != null && writeFile)
+            if (fileTokens == null)
             {
-
-                /*
-                output.SetOutputFile(outputFilenamepath);
-                output.WriteAsHtml($"{fileTokens.namelabel}-Z[0x{zframeFile.zframeId:x}]",
-                    $"{GetZframeHtmlFilename(zframeFile.zframeId, "", zframeFile.filenamepath)[0..^5]}");
-                if (disableOutput)
-                {
-                    output.DisableOutput();
-                }
-                if (disableOutput)
-                {
-                    zframeFile.datareader.OutputWriter = (x) => { output.sw.Write(x); };
-                } else
-                {
-                    zframeFile.datareader.OutputWriter = (x) => {
-                        output.sw.Write(x);
-                        Console.Write(x);
-                    };
-                }
-                */
+                fileTokens = new FileTokens(zframe.filenamepath);
             }
-            zframeFile.PrintByteAnalysis();
+            string outputFilenamepath = fileTokens.GetZFrameHtmlFilenamepath(zframe.zframeId, "bytes", createDirs: true);
+            FileWriter fileWriter = new FileWriter(outputFilenamepath, showOutputToConsole: false);
+
+            string htmlTitle = $"{fileTokens.namelabel}-Z[0x{zframe.zframeId:x}]";
+            string htmlHeader = fileTokens.GetZFrameHtmlFilename(zframe.zframeId, "bytes")[..^5];
+            fileWriter.WriteHtmlHeader(htmlTitle, htmlHeader);
+
+            zframe.PrintByteAnalysis(outputWriter: fileWriter.GetOutputWriter());
+            fileWriter.CloseStreamWriter();
         }
 
+
+        /*
+         * Note this is printed by index not by zframeId
+         *
+         * may throw ArgumentOutOfRangeException
+         *
+         */
+        static void DemoPrintZFrameBytes(int zframeIndex)
+        {
+            string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs";
+            ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
+            ZFrameFile zframe = shaderFile.GetZFrameFileByIndex(zframeIndex);
+
+            FileTokens fileTokens = new FileTokens(filenamepath);
+            string outputFilenamepath = fileTokens.GetZFrameHtmlFilenamepath(zframe.zframeId, "bytes", createDirs: true);
+            FileWriter fileWriter = new FileWriter(outputFilenamepath, showOutputToConsole: false);
+
+            string htmlTitle = $"{fileTokens.namelabel}-Z[0x{zframe.zframeId:x}]";
+            string htmlHeader = fileTokens.GetZFrameHtmlFilename(zframe.zframeId, "bytes")[..^5];
+            fileWriter.WriteHtmlHeader(htmlTitle, htmlHeader);
+
+            zframe.PrintByteAnalysis(outputWriter: fileWriter.GetOutputWriter());
+            fileWriter.CloseStreamWriter();
+        }
+
+
+        static void PrintZFrameBytesAsTestfile()
+        {
+            long ZFRAME_ID = 0;
+            string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/generic_light_pcgl_30_vs.vcs";
+            ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
+            ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(0);
+            FileTokens fileTokens = new FileTokens(filenamepath);
+
+            string outputFilenamepath = $"{FileSystem.GetServerTestDir()}/testfile.html";
+            FileWriter fileWriter = new FileWriter(outputFilenamepath, showOutputToConsole: false);
+
+            string htmlTitle = $"{fileTokens.namelabel}-Z[0x{ZFRAME_ID:x}]";
+            string htmlHeader = fileTokens.GetZFrameHtmlFilename(ZFRAME_ID, "bytes")[..^5];
+            fileWriter.WriteHtmlHeader(htmlTitle, htmlHeader);
+
+            zframeFile.PrintByteAnalysis(outputWriter: fileWriter.GetOutputWriter());
+            fileWriter.CloseStreamWriter();
+        }
+
+
+
+        static void DemoZframeHeaderAndTitle()
+        {
+            string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs";
+            FileTokens fileTokens = new FileTokens(filenamepath);
+            int zframeId = 20;
+
+            // html title
+            Console.WriteLine($"{fileTokens.namelabel}-Z[0x{zframeId:x}]");
+
+            // html header
+            Console.WriteLine(fileTokens.GetZFrameHtmlFilename(zframeId, "bytes")[..^5]);
+        }
+
+
+        /*
+         * there are two ways to print the zframe bytes
+         * DataReaderZFrameByteAnalysis.cs is used for fixing bugs and analysis version changes
+         *
+         */
+        static void PrintZFrameBytesToScreen()
+        {
+            // -- using the datareader directly
+            // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs";
+            // ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
+            // byte[] zframeBytes = shaderFile.GetDecompressedZFrameByIndex(0);
+            // new DataReaderZFrameByteAnalysis(zframeBytes, shaderFile.vcsProgramType, shaderFile.vcsPlatformType, shaderFile.vcsShaderModelType);
+
+            string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs";
+            ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
+            ZFrameFile zframe = shaderFile.GetZFrameFileByIndex(0);
+            zframe.PrintByteAnalysis();
+        }
 
 
         static void PrintGlslAllFiles()
@@ -344,14 +367,7 @@ namespace MyShaderAnalysis
             {
                 File.WriteAllBytes(outputFilenamepath, databytes);
             }
-
-
-
-
         }
-
-
-
 
 
 

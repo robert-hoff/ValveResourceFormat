@@ -69,6 +69,9 @@ namespace MyShaderAnalysis.utilhelpers
         public const string DOTA_CORE_PC_SOURCE_V65 = "X:/dota-2-VRF-exports/dota2-export-shaders-pc-V65/shaders-core/vfx";
         public const string DOTA_GAME_PC_SOURCE_V65 = "X:/dota-2-VRF-exports/dota2-export-shaders-pc-V65/shaders/vfx";
 
+        // v62 not registered as an enum
+        public const string V62_EXAMPLES_SOURCE = "X:/v62shaders-from-xpaw";
+        public const string THE_LAB_SOURCE = "X:/Steam/steamapps/common/The Lab/RobotRepair/core/shaders/vfx";
 
 
         public enum ARCHIVE
@@ -89,6 +92,11 @@ namespace MyShaderAnalysis.utilhelpers
         public static string GetServerBaseDir()
         {
             return SERVER_BASEDIR;
+        }
+
+        public static string GetServerTestDir()
+        {
+            return $"{SERVER_BASEDIR}{SERVER_TESTPATH}"; ;
         }
 
 

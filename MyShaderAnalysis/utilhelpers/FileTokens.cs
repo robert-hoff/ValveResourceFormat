@@ -117,9 +117,9 @@ namespace MyShaderAnalysis.utilhelpers
             return serverZframesDir;
         }
 
-        public void CreateZFramesDirectory()
+        public void CreateZFramesDirectory(bool createDirs = true)
         {
-            GetZFramesServerDir(createDirs: true);
+            GetZFramesServerDir(createDirs);
         }
 
         public string GetZFramesServerPath()
@@ -127,9 +127,9 @@ namespace MyShaderAnalysis.utilhelpers
             return $"{GetServerFilePath()}/zframes";
         }
 
-        public string GetZFrameHtmlFilenamepath(long zframeId, string label)
+        public string GetZFrameHtmlFilenamepath(long zframeId, string label, bool createDirs = true)
         {
-            return $"{GetZFramesServerDir()}/{name}-ZFRAME{zframeId:x08}-{label}.html";
+            return $"{GetZFramesServerDir(createDirs)}/{name}-ZFRAME{zframeId:x08}-{label}.html";
         }
 
         public string GetZFrameHtmlFilename(long zframeId, string label)

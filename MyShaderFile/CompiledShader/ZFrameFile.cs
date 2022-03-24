@@ -355,8 +355,12 @@ namespace ValveResourceFormat.CompiledShader
             }
         }
 
-        public void PrintByteAnalysis()
+        public void PrintByteAnalysis(HandleOutputWrite outputWriter = null)
         {
+            if (outputWriter !=  null)
+            {
+                datareader.outputWriter = outputWriter;
+            }
             datareader.BaseStream.Position = 0;
             if (vcsProgramType == VcsProgramType.Features)
             {
