@@ -22,18 +22,18 @@ namespace MyShaderAnalysis
         public static void RunTrials()
         {
             // Trial2();
-            // RunBatchPrintVcsBytes();
+            RunBatchPrintVcsBytes();
             // RunPrintVcsFilesAsBytes();
             // PrintVcsFileToScreen();
-            // BatchPrintZframeBytes();
+            RunBatchPrintZframeBytes();
             // RunPrintZFrameBytes();
             // DemoPrintZFrameBytes(10);
-            PrintZFrameBytesAsTestfile();
+            // PrintZFrameBytesAsTestfile();
             // DemoZframeHeaderAndTitle();
             // PrintZFrameBytesToScreen()
 
 
-            // PrintGlslAllFiles();
+            PrintGlslAllFiles();
             // PrintGlslSingleFiles();
 
         }
@@ -146,24 +146,29 @@ namespace MyShaderAnalysis
 
         const int LIMIT_ZFRAME_PRINTOUT = 5;
 
-        static void BatchPrintZframeBytes()
+        static void RunBatchPrintZframeBytes()
         {
             // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PCGL_SOURCE, DOTA_GAME_PCGL_SOURCE, VcsProgramType.Undetermined, -1, LIMIT_NR: 20);
             List<string> vcsFiles = GetVcsFiles(DOTA_GAME_PCGL_SOURCE, VcsProgramType.Undetermined, -1, LIMIT_NR: 20);
             // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_MOBILE_GLES_SOURCE, DOTA_DAC_MOBILE_GLES_SOURCE, VcsFileType.Any, 30);
             // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_MOBILE_GLES_SOURCE, DOTA_DAC_MOBILE_GLES_SOURCE, VcsProgramType.Undetermined, -1);
             // List<string> vcsFiles = GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsProgramType.Undetermined, -1);
-
             foreach (var filenamepath in vcsFiles)
             {
-                ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
-                FileTokens fileTokens = new FileTokens(filenamepath);
-                int zframesToPrint = Math.Min(shaderFile.GetZFrameCount(), LIMIT_ZFRAME_PRINTOUT);
-                for (int i = 0; i < zframesToPrint; i++)
-                {
-                    ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(i);
-                    PrintZFrameBytes(zframeFile, fileTokens);
-                }
+                BatchPrintZframeBytes(filenamepath, LIMIT_ZFRAME_PRINTOUT);
+            }
+        }
+
+
+        static void BatchPrintZframeBytes(string filenamepath, int limitZframes)
+        {
+            ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
+            FileTokens fileTokens = new FileTokens(filenamepath);
+            int zframesToPrint = Math.Min(shaderFile.GetZFrameCount(), limitZframes);
+            for (int i = 0; i < zframesToPrint; i++)
+            {
+                ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(i);
+                PrintZFrameBytes(zframeFile, fileTokens);
             }
         }
 
@@ -277,12 +282,16 @@ namespace MyShaderAnalysis
         }
 
 
+        static int LIMIT_GPU_SOURCES_TO_PRINT = 2;
+
         static void PrintGlslAllFiles()
         {
-            // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PCGL_SOURCE, DOTA_GAME_PCGL_SOURCE, VcsFileType.Any, -1);
-            // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PCGL_SOURCE, DOTA_GAME_PCGL_SOURCE, VcsFileType.Any, 30);
-            // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_MOBILE_GLES_SOURCE, DOTA_DAC_MOBILE_GLES_SOURCE, VcsFileType.Any, 30);
-            List<string> vcsFiles = GetVcsFiles(DOTA_CORE_MOBILE_GLES_SOURCE, DOTA_DAC_MOBILE_GLES_SOURCE, VcsProgramType.Undetermined, -1);
+
+            // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PCGL_SOURCE, DOTA_GAME_PCGL_SOURCE, VcsProgramType.Undetermined, -1, LIMIT_NR: 20);
+            List<string> vcsFiles = GetVcsFiles(DOTA_GAME_PCGL_SOURCE, VcsProgramType.Undetermined, -1, LIMIT_NR: 20);
+            // List<string> vcsFiles = GetVcsFiles(DOTA_GAME_PCGL_SOURCE, DOTA_CORE_PCGL_SOURCE, VcsProgramType.Undetermined, 30, LIMIT_NR: 20);
+            // List<string> vcsFiles = GetVcsFiles(DOTA_DAC_MOBILE_GLES_SOURCE, DOTA_CORE_MOBILE_GLES_SOURCE, VcsProgramType.Undetermined, 30, LIMIT_NR: 20);
+            // List<string> vcsFiles = GetVcsFiles(DOTA_DAC_MOBILE_GLES_SOURCE, DOTA_CORE_MOBILE_GLES_SOURCE, VcsProgramType.Undetermined, -1, LIMIT_NR: 20);
 
             foreach (var filenamepath in vcsFiles)
             {
@@ -297,19 +306,32 @@ namespace MyShaderAnalysis
                 for (int i = 0; i < zframesToPrint; i++)
                 {
                     ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(i);
-                    foreach (var glslSource in zframeFile.gpuSources)
+                    int gpuSourceToPrint = Math.Min(zframeFile.gpuSources.Count, LIMIT_GPU_SOURCES_TO_PRINT);
+                    for (int j = 0; j < gpuSourceToPrint; j++)
                     {
+                        var glslSource = zframeFile.gpuSources[j];
                         string outputFilenamepath = $"{glslServerDir}/{fileTokens.GetGlslHtmlFilename((GlslSource)glslSource)}";
-                        WriteBytesToFile(glslSource.sourcebytes, outputFilenamepath, overWrite: false);
+                        WriteBytesToFile(glslSource.sourcebytes, outputFilenamepath);
                     }
+
+                    //foreach (var glslSource in zframeFile.gpuSources)
+                    //{
+                    //    string outputFilenamepath = $"{glslServerDir}/{fileTokens.GetGlslHtmlFilename((GlslSource)glslSource)}";
+                    //    WriteBytesToFile(glslSource.sourcebytes, outputFilenamepath, overWrite: false);
+                    //}
                 }
             }
         }
 
 
 
+
+
         /*
          * This currently only makes sense for glsl sources (it's the only one where the bytes are the sourcecode)
+         *
+         * NOTE - method not in use!!
+         *
          *
          */
         static void PrintGlslSingleFiles()
@@ -328,11 +350,21 @@ namespace MyShaderAnalysis
             for (int i = 0; i < zframesToPrint; i++)
             {
                 ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(i);
-                foreach (var glslSource in zframeFile.gpuSources)
+
+                int gpuSourceToPrint = Math.Min(zframeFile.gpuSources.Count, LIMIT_GPU_SOURCES_TO_PRINT);
+                for (int j = 0; j < gpuSourceToPrint; j++)
                 {
+                    var glslSource = zframeFile.gpuSources[j];
                     string outputFilenamepath = $"{glslServerDir}/{fileTokens.GetGlslHtmlFilename((GlslSource)glslSource)}";
                     WriteBytesToFile(glslSource.sourcebytes, outputFilenamepath);
                 }
+
+
+                //foreach (var glslSource in zframeFile.gpuSources)
+                //{
+                //    string outputFilenamepath = $"{glslServerDir}/{fileTokens.GetGlslHtmlFilename((GlslSource)glslSource)}";
+                //    WriteBytesToFile(glslSource.sourcebytes, outputFilenamepath);
+                //}
             }
         }
 
@@ -346,6 +378,7 @@ namespace MyShaderAnalysis
         {
             if (!overWrite && File.Exists(outputFilenamepath))
             {
+                Console.WriteLine($"SKIPPING {outputFilenamepath}");
                 return;
             }
             Console.WriteLine($"writing to {outputFilenamepath}");

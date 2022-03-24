@@ -18,14 +18,14 @@ namespace MyShaderAnalysis
     public class PrintoutsZframes1
     {
 
-        const string PCGL_DIR_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders-core/vfx";
-        const string PCGL_DIR_NOT_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders/vfx";
+        // const string PCGL_DIR_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders-core/vfx";
+        // const string PCGL_DIR_NOT_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders/vfx";
         //const string PC_DIR_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pc/shaders-core/vfx";
         //const string PC_DIR_NOT_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pc/shaders/vfx";
-        const string ARTIFACT_CLASSIC_CORE_PC_SOURCE = "X:/artifact-classic-exports/artifact-shaders-pc-core";
-        const string ARTIFACT_CLASSIC_DCG_PC_SOURCE = "X:/artifact-classic-exports/artifact-shaders-pc-dcg";
+        // const string ARTIFACT_CLASSIC_CORE_PC_SOURCE = "X:/artifact-classic-exports/artifact-shaders-pc-core";
+        // const string ARTIFACT_CLASSIC_DCG_PC_SOURCE = "X:/artifact-classic-exports/artifact-shaders-pc-dcg";
         //const string OUTPUT_DIR = @"Z:/active/projects/dota2-sourcesdk-modding/shader-analysis-vcs-format/OUTPUT_DUMP";
-        const string SERVER_OUTPUT_DIR = @"Z:/dev/www/vcs.codecreation.dev/GEN-output";
+        // const string SERVER_OUTPUT_DIR = @"Z:/dev/www/vcs.codecreation.dev/GEN-output";
         //const string SERVER_BASEDIR = @"Z:/dev/www/vcs.codecreation.dev";
         //const string OUTPUT_SUB_DIR = @"/GEN-output";
 
@@ -80,8 +80,10 @@ namespace MyShaderAnalysis
         static void WriteBunchOfZframes()
         {
             int NUM_TO_PRINT = 2;
-            List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, -1);
-            // List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, 30);
+            List<string> vcsFiles = GetVcsFiles(DOTA_GAME_PCGL_SOURCE, VcsProgramType.Undetermined, -1, LIMIT_NR: 20);
+            List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(vcsFiles);
+            // List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(DOTA_GAME_PCGL_SOURCE, DOTA_CORE_PCGL_SOURCE, -1);
+            // List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(DOTA_GAME_PCGL_SOURCE, DOTA_CORE_PCGL_SOURCE, 30);
             // List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(DOTA_CORE_MOBILE_GLES_SOURCE, DOTA_DAC_MOBILE_GLES_SOURCE, -1);
             // List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, -1);
 
@@ -706,7 +708,7 @@ namespace MyShaderAnalysis
             }
 
             Dictionary<FileTokens, List<long>> zframesFound = new();
-            List<string> coreFiles = GetVcsFiles(PCGL_DIR_CORE, null, VcsProgramType.Undetermined, 30);
+            List<string> coreFiles = GetVcsFiles(DOTA_GAME_PCGL_SOURCE, null, VcsProgramType.Undetermined, 30);
             foreach (var filenamepath in coreFiles)
             {
                 FileTokens vcsFile = new(ARCHIVE.dotacore_pcgl, filenamepath);
@@ -719,7 +721,7 @@ namespace MyShaderAnalysis
                 }
             }
 
-            List<string> gameFiles = GetVcsFiles(PCGL_DIR_NOT_CORE, null, VcsProgramType.Undetermined, 30);
+            List<string> gameFiles = GetVcsFiles(DOTA_CORE_PCGL_SOURCE, null, VcsProgramType.Undetermined, 30);
             foreach (var filenamepath in gameFiles)
             {
                 FileTokens vcsFile = new(ARCHIVE.dotagame_pcgl, filenamepath);

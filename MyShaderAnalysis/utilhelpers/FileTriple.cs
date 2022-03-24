@@ -5,6 +5,8 @@ using System.Linq;
 using ValveResourceFormat.CompiledShader;
 using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
 using static MyShaderAnalysis.utilhelpers.FileSystem;
+using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
+
 
 
 namespace MyShaderAnalysis.utilhelpers
@@ -89,14 +91,45 @@ namespace MyShaderAnalysis.utilhelpers
 
                 // ARCHIVE archive = GetCoreOrDotaString(ftFilenamepath).Equals("core") ? ARCHIVE.dotacore_pcgl : ARCHIVE.dotagame_pcgl;
                 ARCHIVE archive = DetermineArchiveType(ftFilenamepath);
-
-
                 fileTriples.Add(new FileTriple(archive, ftFilenamepath));
             }
-
             return fileTriples;
         }
 
+
+
+        // untested, wrote it in to reduce a vcsFiles collection to only the features files
+        public static List<FileTriple> GetFeaturesVsPsFileTriple(List<string> vcsFiles)
+        {
+            List<FileTriple> fileTriples = new();
+            List<string> featuresFiles = new();
+            foreach (var vcsFile in vcsFiles)
+            {
+                if (ComputeVcsProgramType(vcsFile) == VcsProgramType.Features)
+                {
+                    featuresFiles.Add(vcsFile);
+                }
+            }
+            List<string> validFeaturesFiles = new();
+            foreach (string ftFilenamepath in featuresFiles)
+            {
+                string vsFile = $"{ftFilenamepath[0..^12]}vs.vcs";
+                string psFile = $"{ftFilenamepath[0..^12]}ps.vcs";
+                if (File.Exists(vsFile) && File.Exists(psFile))
+                {
+                    validFeaturesFiles.Add(ftFilenamepath);
+                }
+            }
+            validFeaturesFiles.Sort();
+            foreach (string ftFilenamepath in validFeaturesFiles)
+            {
+
+                // ARCHIVE archive = GetCoreOrDotaString(ftFilenamepath).Equals("core") ? ARCHIVE.dotacore_pcgl : ARCHIVE.dotagame_pcgl;
+                ARCHIVE archive = DetermineArchiveType(ftFilenamepath);
+                fileTriples.Add(new FileTriple(archive, ftFilenamepath));
+            }
+            return fileTriples;
+        }
 
 
 

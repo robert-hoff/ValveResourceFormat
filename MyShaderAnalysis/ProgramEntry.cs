@@ -34,24 +34,24 @@ namespace MyShaderAnalysis
 
 
             // Methods for building html printouts
-            // RunPrintoutsSingleFile.RunTrials();
+            // -- vcs and zframe byte detail
             PrintoutsByteAnalysis.RunTrials();
-
-
-            // -- what!? this still works?
-            // PrintoutsZframes1.RunTrials();
+            // -- formatted zframes
+            PrintoutsZframes1.RunTrials();
+            // -- formatted vcs
+            RunPrintoutsSingleFile.RunTrials();
 
 
 
             // 23 March 2022
-            // -- does this work? yes it does. Produces a file summary overview (particularly for the static variables)
+            // DemoCode.RunTrials();
+
+            // -- This still produces a file summary overview (particularly for the static variables)
             // StaticAnalysis.RunTrials();
 
 
-
-            // DemoCode.RunTrials();
-
             // 18 March 2022
+            // -- support for v62 was already written into DataReaderVcsByteAnalysis
             // ParseV62Files.RunTrials();
 
 
@@ -74,22 +74,18 @@ namespace MyShaderAnalysis
 
             // DataReaderV62.RunTrials();
             // TestMobileShaderFiles.RunTrials();
-
-            // PrintoutsZframes1.RunTrials();
             // StaticAnalysisZframes.RunTrials();
-
             // StaticAnalysis2.RunTrials();
             // StaticAnalysis.RunTrials();
 
-            // support for v62 was written into PrintoutsByteAnalysis.cs
-            // PrintoutsByteAnalysis.RunTrials();
+
             // ShaderAnalysis.RunTrials();
 
 
-            // RunPrintoutsSingleFile.RunTrials();
+
+            // -- testing code
             // TestUtilFunctions.RunTrials();
             // TestBasicParsing.RunTrials();
-
             // Snippetcode.RunTrials();
             // LzmaAnalysis.RunTrials();
             // TestStuff.RunTrials();
@@ -110,7 +106,6 @@ namespace MyShaderAnalysis
             // CompatRules2.RunTrials();
             // CompatRules.RunTrials();
             // BitTestGeneration.RunTrials();
-
 
 
         }
