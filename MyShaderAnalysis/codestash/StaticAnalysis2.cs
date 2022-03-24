@@ -45,12 +45,15 @@ namespace MyShaderAnalysis
             // ShowFeaturesDetails();
             // SurveyParamBlocks(TestFilenamepath("param-printout.html"), false);
             // PrintingAndSortingParams(TestFilenamepath("TESTFILE.html"), true);
-            // PrintingParamsWithDynamicExpressions(TestFilenamepath("TESTFILE.html"), true);
+            PrintingParamsWithDynamicExpressions(TestFilenamepath("shader-dynamic-expressions.html"), true);
 
 
 
-
-            DoSomething();
+            // wtf is this? the history of this file appears to show this as always enabled and the DoSomething()
+            // method itself never performing anything meaningful. Most of my changes were only refactoring changes
+            // so I must have copied the code in from another previous file maybe 'ShaderAnalysis'
+            //
+            // DoSomething();
 
         }
 
@@ -94,12 +97,18 @@ namespace MyShaderAnalysis
 
 
 
-
+        /*
+         *
+         * NOTE - this produces a strange output with numbers leading each line.
+         * This is intentional!
+         *
+         *
+         */
         static void PrintingParamsWithDynamicExpressions(string outputFilenamepath = null, bool writeFile = false)
         {
             if (outputFilenamepath != null && writeFile)
             {
-                ConfigureOutputFile(outputFilenamepath);
+                ConfigureOutputFile(outputFilenamepath, disableOutput: true);
                 WriteHtmlFile("all params", "Shader params");
             }
             int CUTLEN = 0;
@@ -136,7 +145,7 @@ namespace MyShaderAnalysis
                     string c1 = paramBlock.command1;
 
                     byte[] dynExp = paramBlock.dynExp;
-                    string dynExpstring = new VfxEval(dynExp).DynamicExpressionResult;
+                    string dynExpstring = dynExp.Length > 0 ? new VfxEval(dynExp).DynamicExpressionResult : "";
 
 
                     CUTLEN = 16;
@@ -172,6 +181,9 @@ namespace MyShaderAnalysis
 
                 }
             }
+
+            // this actually writes the output to file.
+            // It is the method PrintReport() shows the data to console. Called from Runtrials() method
             ShowStringsCollected(CUTLEN);
         }
 
@@ -186,7 +198,12 @@ namespace MyShaderAnalysis
                 WriteHtmlFile("params", "Parameters, i7 sorted");
             }
             List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsProgramType.Features, -1);
+
+            // I'm using a system here to sort files by prepending a number in front of each line
+            // 0103009901000099
+            // this has to be removed for the printouts to appear well
             int CUTLEN = 0;
+
 
             foreach (string filenamepath in vcsFiles)
             {
@@ -224,7 +241,7 @@ namespace MyShaderAnalysis
                     //    $"{c0} {c1}   |    {name1} {fileref}");
 
 
-                    CUTLEN = 16;
+                    // CUTLEN = 16;
                     string sortOn = $"{r7[0] + 100:d04}{r7[1] + 100:d04}{r7[2] + 100:d04}{r7[3] + 100:d04}";
 
                     string c0c1 = c0;
@@ -252,6 +269,7 @@ namespace MyShaderAnalysis
 
                 }
             }
+
 
             ShowStringsCollected(CUTLEN);
 
@@ -373,7 +391,8 @@ namespace MyShaderAnalysis
                 int a1 = shaderFile.featuresHeader.arg1;
                 int a2 = shaderFile.featuresHeader.arg2;
                 int a3 = shaderFile.featuresHeader.arg3;
-                //if (a2 == 0 && a3 == 0) {
+                //if (a2 == 0 && a3 == 0)
+                //{
                 //    Console.WriteLine($"{GetShortName(shaderFile.filenamepath)}");
                 //}
 

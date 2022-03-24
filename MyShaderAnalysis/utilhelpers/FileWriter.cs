@@ -15,11 +15,11 @@ namespace MyShaderAnalysis.utilhelpers
         bool writeToConsole;
         private bool writeAsHtml = false; // is set to true if html header is written
 
-        public FileWriter(string outputFilenamepath, bool writeToConsole = true)
+        public FileWriter(string outputFilenamepath, bool showOutputToConsole = true)
         {
             Console.WriteLine($"Writing to {outputFilenamepath}");
             sw = new StreamWriter(outputFilenamepath);
-            this.writeToConsole = writeToConsole;
+            this.writeToConsole = showOutputToConsole;
         }
 
 

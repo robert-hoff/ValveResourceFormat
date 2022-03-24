@@ -19,31 +19,117 @@ namespace MyShaderAnalysis.utilhelpers
 
         public static void RunTrials()
         {
-            // TestFileSystem();
-            // TestWriteSystem();
+            // TestGenerateTargetFilenames();
+            TestCreateDirectoryStructures();
+            // TestFileTokensAbbreviatedName();
+            // TestGetRelatedFiles();
             // TestSourceTypes();
-            // TestFileTokensForNewGlesArchive();
+            // TestWriteSystem();
             // TestGpuSourceFileTokens();
-            TestGetRelatedFiles();
+            // TestFileTokensForNewGlesArchive();
+            // TestFileAndPathNamesNewArchive();
+            // TestFileSystem();
+        }
+
+
+        /*
+         * Use this loop to generate names that I want, stick with the label 'summary2' for now
+         *
+         *
+         */
+        static void TestGenerateTargetFilenames()
+        {
+            // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PC_SOURCE, DOTA_GAME_PC_SOURCE, VcsProgramType.Undetermined, -1);
+            List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PCGL_SOURCE, DOTA_GAME_PCGL_SOURCE, VcsProgramType.Undetermined, -1);
+            // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_MOBILE_GLES_SOURCE, DOTA_DAC_MOBILE_GLES_SOURCE, VcsProgramType.Undetermined, -1);
+            // List<string> vcsFiles = GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsProgramType.Undetermined, -1);
+
+
+            foreach (var filenamepath in vcsFiles)
+            {
+                FileTokens fileTokens = new FileTokens(filenamepath);
+                string outputFilenamepath = $"{fileTokens.GetServerFilenamepath("summary2", createDirs: false)}";
+
+                // I really don't remember where these method names came from
+                // what is clear is that I need both a method for generating the desired output and a method
+                // for printing the output to file
+                // PrintSingleFileFullSummary(filenamepath, outputFilenamepath, writeFile: true, disableOutput: true);
+                // output.CloseStreamWriter();
+
+
+
+            }
+        }
+
+
+        /*
+         * creates the base folder for each file, in the form
+         *
+         * Z:\dev\www\vcs.codecreation.dev\dota-core\pcgl\apply_fog_pcgl_40\
+         *
+         * NOTE - all files starting as 'apply_fog_pcgl_40' go here, which whould include
+         * {apply_fog_pcgl_40_features.vcs, apply_fog_pcgl_40_vs.vcs, apply_fog_pcgl_40_ps.vcs}
+         *
+         * I've previously created three types of printouts 'summary', 'summary2' and 'bytes'
+         *
+         *
+         * The main overview should be saved as
+         *
+         * apply_fog_pcgl_40_features-summary2.html
+         *
+         * 'summary2' was the name I gave to the latest single file formatted outputs
+         *
+         * 'summary' files were earlier printouts where I choose to compare the static variables between related
+         * files (features, vs, ps). These previous 'summary' files do not include data from parameter, mipmap,
+         * buffer, and vertex-symbol blocks
+         *
+         *
+         *
+         */
+        static void TestCreateDirectoryStructures()
+        {
+            List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PCGL_SOURCE, null, VcsProgramType.Features, 40);
+            foreach (var filenamepath in vcsFiles)
+            {
+                FileTokens fileTokens = new FileTokens(filenamepath);
+                string outputFilenamepath = $"{fileTokens.GetServerFilenamepath("summary2", createDirs: true)}";
+
+                Console.WriteLine($"{filenamepath}");
+                Console.WriteLine($"{outputFilenamepath}");
+                return;
+            }
         }
 
 
 
+        /*
+         * hero(pcgl-ps)
+         * hero(dxbc-ps)
+         *
+         */
         static void TestFileTokensAbbreviatedName()
         {
-            string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/hero_pcgl_30_ps.vcs";
-            // string filenamepath = $"{DOTA_GAME_PC_SOURCE}/hero_pc_40_ps.vcs";
+            // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/hero_pcgl_30_ps.vcs";
+            string filenamepath = $"{DOTA_GAME_PC_SOURCE}/hero_pc_40_ps.vcs";
             FileTokens fileTokens = new FileTokens(filenamepath);
             Console.WriteLine($"{fileTokens.GetAbbreviatedName()}");
         }
 
 
+        /*
+         * Prints the full filenamepath of all related files. E.g. any file from the following collection
+         * should print all others
+         * {hero_pcgl_30_features.vcs, hero_pcgl_30_vs.vcs, hero_pcgl_30_ps.vcs, hero_pcgl_30_psrs.vcs}
+         *
+         */
         static void TestGetRelatedFiles()
         {
             // string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/generic_light_pcgl_30_features.vcs";
             // string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/generic_light_pcgl_30_ps.vcs";
             // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/hero_pcgl_30_features.vcs";
-            string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/hero_pcgl_30_ps.vcs";
+            // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/hero_pcgl_30_ps.vcs";
+            // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/hero_pcgl_30_vs.vcs";
+            string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/hero_pcgl_30_psrs.vcs";
             foreach (var f in GetRelatedFiles(filenamepath))
             {
                 Console.WriteLine($"{f}");
@@ -81,10 +167,21 @@ namespace MyShaderAnalysis.utilhelpers
         }
 
 
-
+        /*
+         * shows the server pathname for the first source file in spritecard_mobile_gles_30_vs.vcs
+         * (this file doesn't need to be present on disk, it is the name we want to use by convention)
+         *
+         * /dota-game/gles/spritecard_mobile_gles_30/gles/gles-4345fc45dbdc2fca73bbd6172fc79ad6.html
+         *
+         * This method also works for glsl sources, e.g.
+         *
+         * /dota-game/pcgl/hero_pcgl_30/glsl/glsl-6450bd7b85ba0c0b472265ebea6376f6.html
+         *
+         */
         static void TestGpuSourceFileTokens()
         {
             string filenamepath = $"{DOTA_DAC_MOBILE_GLES_SOURCE}/spritecard_mobile_gles_30_vs.vcs";
+            // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/hero_pcgl_30_vs.vcs";
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(0);
 
@@ -92,11 +189,12 @@ namespace MyShaderAnalysis.utilhelpers
             GpuSource gpuSource = zframeFile.gpuSources[0];
             if (gpuSource is not GlslSource)
             {
-                Console.WriteLine($"this source is considered a GlslSource");
+                Console.WriteLine($"this source is not considered a GlslSource");
+                return;
             }
 
             FileTokens fileTokens = new FileTokens(filenamepath);
-            Console.WriteLine($"{fileTokens.GetGlslHtmlUrl((GlslSource) gpuSource)}");
+            Console.WriteLine($"{fileTokens.GetGlslHtmlUrl((GlslSource)gpuSource)}");
         }
 
 
@@ -126,11 +224,24 @@ namespace MyShaderAnalysis.utilhelpers
         }
 
 
-
+        /*
+         * should they exist on disk, prints the zframes belonging to a given vcs files
+         * E.g.
+         * Z:/dev/www/vcs.codecreation/dota-core/pcgl/spritecard_pcgl_30/zframes\spritecard_pcgl_30_ps-ZFRAME00000000-bytes.html
+         * ...
+         *
+         * Note the mix of / and \ present, I couldn't find any easy fix for this
+         * (the path separator is a read only property of the Path class)
+         *
+         */
         static void TestFileSystem()
         {
             FileTokens spritecard = new(ARCHIVE.dotacore_pcgl, "spritecard_pcgl_30_ps.vcs");
-            spritecard.GetZFrameListing();
+            List<string> filenames = spritecard.GetZFrameListing();
+            foreach (var f in filenames)
+            {
+                Console.WriteLine($"{f}");
+            }
         }
 
 

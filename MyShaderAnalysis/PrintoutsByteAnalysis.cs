@@ -17,8 +17,11 @@ namespace MyShaderAnalysis
         public const string THE_LAB_SOURCE = "X:/Steam/steamapps/common/The Lab/RobotRepair/core/shaders/vfx";
         const string OUTPUT_DIR = @"Z:/active/projects/dota2-sourcesdk-modding/shader-analysis-vcs-format/OUTPUT_DUMP";
         const string SERVER_OUTPUT_DIR = @"Z:/dev/www/vcs.codecreation.dev/GEN-output";
+
         // static OutputWriter output = new(WriteToConsole: false, WriteToDebug: true);
-        static OutputFormatterTabulatedData output = new OutputFormatterTabulatedData();
+
+        // not actually using this anywhere
+        // static OutputFormatterTabulatedData output = new OutputFormatterTabulatedData();
 
 
 
@@ -60,6 +63,10 @@ namespace MyShaderAnalysis
                 PrintSingleFileByteAnalysis(filenamepath, outputFilenamepath, writeFile: true, disableOutput: true);
 
                 // todo - need something new here
+                // output used to be a static variable (defined above) that I directed my string output to
+                // the new OutputFormatterTabulatedData output seems to have been created with the intent of
+                // taking over some of the functionality from the old 'output'. But it doesn't look like
+                // I'm actually using the new class anywhere
                 // output.CloseStreamWriter();
             }
         }
@@ -247,7 +254,6 @@ namespace MyShaderAnalysis
             if (outputFilenamepath != null && writeFile)
             {
 
-
                 /*
                 output.SetOutputFile(outputFilenamepath);
                 output.WriteAsHtml($"{fileTokens.namelabel}-Z[0x{zframeFile.zframeId:x}]",
@@ -333,7 +339,11 @@ namespace MyShaderAnalysis
         }
 
 
-
+        /*
+         * This method is only called by the two functions above PrintGlslAllFiles() and PrintGlslSingleFiles()
+         * (it only makes sense to write databytes here directly to file if the databytes are ascii text)
+         *
+         */
         static void WriteBytesToFile(byte[] databytes, string outputFilenamepath, bool writeAsHtml = true, bool overWrite = false)
         {
             if (!overWrite && File.Exists(outputFilenamepath))
@@ -345,15 +355,15 @@ namespace MyShaderAnalysis
             if (writeAsHtml)
             {
                 string htmlTitle = Path.GetFileName(outputFilenamepath)[0..^5];
-                StreamWriter glslFileWriter = new(outputFilenamepath);
+                StreamWriter databytesFileWriter = new(outputFilenamepath);
                 string htmlHeader = GetHtmlHeader(htmlTitle, htmlTitle);
-                glslFileWriter.WriteLine($"{htmlHeader}");
-                glslFileWriter.Flush();
-                glslFileWriter.BaseStream.Write(databytes, 0, databytes.Length);
-                glslFileWriter.Flush();
-                glslFileWriter.WriteLine($"{GetHtmlFooter()}");
-                glslFileWriter.Flush();
-                glslFileWriter.Close();
+                databytesFileWriter.WriteLine($"{htmlHeader}");
+                databytesFileWriter.Flush();
+                databytesFileWriter.BaseStream.Write(databytes, 0, databytes.Length);
+                databytesFileWriter.Flush();
+                databytesFileWriter.WriteLine($"{GetHtmlFooter()}");
+                databytesFileWriter.Flush();
+                databytesFileWriter.Close();
             } else
             {
                 File.WriteAllBytes(outputFilenamepath, databytes);

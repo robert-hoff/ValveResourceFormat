@@ -59,7 +59,7 @@ namespace MyShaderAnalysis
             // FileSummaryAllFiles();
 
             // - prints a single page summary and links to all the files produced with FileSummaryAllFiles()
-            BlockCountSurvery($@"{SERVER_OUTPUT_DIR}/file-overview.html", writeFile: true);
+            // BlockCountSurvery($@"{SERVER_OUTPUT_DIR}/file-overview.html", writeFile: true);
             // BlockCountSurvery($@"{SERVER_OUTPUT_DIR}/files-mobile-gles.html", writeFile: true);
             // BlockCountSurvery($@"{SERVER_OUTPUT_DIR}/files-artifact-classic.html", writeFile: true);
 
@@ -70,7 +70,7 @@ namespace MyShaderAnalysis
 
 
 
-            // FileSummarySingleFile();
+            FileSummarySingleFile();
             // ZFramePrintout();
 
 
@@ -337,12 +337,14 @@ namespace MyShaderAnalysis
             // FileTriple triple = new(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_features.vcs");
             // FileTriple triple = new(ARCHIVE.dotacore_pcgl, "spritecard_pcgl_30_features.vcs");
             // FileTriple triple = new(ARCHIVE.dotagame_pcgl, "spritecard_pcgl_30_features.vcs");
-            FileTriple triple = new(ARCHIVE.dota_core_gles, "copytexture_mobile_gles_30_features.vcs");
+            // FileTriple triple = new(ARCHIVE.dota_core_gles, "copytexture_mobile_gles_30_features.vcs");
+            FileTriple triple = new(ARCHIVE.hl_hlvr_vulkan, "solidcolor_vulkan_50_features.vcs");
+
 
 
             // FileTriple triple = new(ARCHIVE.artifact_classiccore_pc, "aerial_perspective_pc_30_features.vcs");
 
-            WriteVsPsFileSummary(triple, VcsProgramType.PixelShader);
+            WriteVsPsFileSummary(triple, VcsProgramType.PixelShader, disableOutput: true);
         }
 
 
@@ -374,7 +376,15 @@ namespace MyShaderAnalysis
             }
             FileTokens targetFile = targetFileType == VcsProgramType.VertexShader ? fileTriple.vsFile : fileTriple.psFile;
             string htmlTitle = $"{targetFile.namelabel}({targetFile.vcstoken})";
+
+
             string outputNamepath = targetFile.GetServerFilenamepath("summary", createDirs: true);
+
+            // NOTE NOTE - overriding target output file
+            outputNamepath = "Z:/dev/www/vcs.codecreation.dev/testfile2.html";
+
+
+
             FileSummaryVsPSFile(fileTriple, targetFileType, htmlTitle, outputNamepath, writeFile: true, disableOutput);
         }
 

@@ -46,6 +46,8 @@ namespace MyShaderAnalysis.utilhelpers
 
         public const string PROJECT_TESTDIR = "Z:/active/projects/dota2-sourcesdk-modding/shader-analysis-vcs-format/OUTPUT_DUMP";
         public const string SERVER_BASEDIR = "Z:/dev/www/vcs.codecreation.dev";
+        // public const string SERVER_BASEDIR = "Z:/dev/www/vcs.codecreation.dev-SERVERBACKUP-2021-08-24";
+        // public const string SERVER_BASEDIR = "Z:/dev/www/vcs.codecreation.dev-SERVERBACKUP-2022-03-23";
         public const string SERVER_TESTPATH = "/GEN-output";
         public const string SERVER_BYTEPATH = "/vcs-all";
         public const string DOTA_CORE_PCGL_SOURCE = "X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders-core/vfx";
@@ -73,7 +75,8 @@ namespace MyShaderAnalysis.utilhelpers
         {
             dotacore_pcgl, dotagame_pcgl, dotacore_pc, dotagame_pc,
             dota_core_gles, dota_dac_gles,
-            artifact_classiccore_pc, artifact_classicdcg_pc
+            artifact_classiccore_pc, artifact_classicdcg_pc,
+            hl_hlvr_vulkan
         };
 
 
@@ -100,6 +103,7 @@ namespace MyShaderAnalysis.utilhelpers
             if (archive == ARCHIVE.dota_dac_gles) return DOTA_DAC_MOBILE_GLES_SOURCE;
             if (archive == ARCHIVE.artifact_classiccore_pc) return ARTIFACT_CLASSIC_CORE_PC_SOURCE;
             if (archive == ARCHIVE.artifact_classicdcg_pc) return ARTIFACT_CLASSIC_DCG_PC_SOURCE;
+            if (archive == ARCHIVE.hl_hlvr_vulkan) return HLALYX_HLVR_VULKAN_SOURCE;
             throw new ShaderParserException("unknown archive");
         }
 
@@ -113,6 +117,7 @@ namespace MyShaderAnalysis.utilhelpers
             if (archive == ARCHIVE.dota_dac_gles) return "dota-game";
             if (archive == ARCHIVE.artifact_classiccore_pc) return "aclassic-core";
             if (archive == ARCHIVE.artifact_classicdcg_pc) return "aclassic-dcg";
+            if (archive == ARCHIVE.hl_hlvr_vulkan) return "hlvr-vulkan";
             throw new ShaderParserException("unknown archive");
         }
 
@@ -128,6 +133,7 @@ namespace MyShaderAnalysis.utilhelpers
             if (archive == ARCHIVE.dota_dac_gles) return "dac-gles";
             if (archive == ARCHIVE.artifact_classiccore_pc) return "artifact-core";
             if (archive == ARCHIVE.artifact_classicdcg_pc) return "artifact-dcg";
+            if (archive == ARCHIVE.hl_hlvr_vulkan) return "hlvr-vulkan";
             throw new ShaderParserException("unknown archive");
         }
 
@@ -142,6 +148,7 @@ namespace MyShaderAnalysis.utilhelpers
             if (archive == ARCHIVE.dota_dac_gles) return "gles";
             if (archive == ARCHIVE.artifact_classiccore_pc) return "pc";
             if (archive == ARCHIVE.artifact_classicdcg_pc) return "pc";
+            if (archive == ARCHIVE.hl_hlvr_vulkan) return "vulkan";
             throw new ShaderParserException("unknown archive");
         }
 
@@ -156,6 +163,7 @@ namespace MyShaderAnalysis.utilhelpers
             if (archive == ARCHIVE.dota_dac_gles) return "gles";
             if (archive == ARCHIVE.artifact_classiccore_pc) return "pc"; // todo - I want dxil and dxbc here
             if (archive == ARCHIVE.artifact_classicdcg_pc) return "pc";
+            if (archive == ARCHIVE.hl_hlvr_vulkan) return "vulkan";
             throw new ShaderParserException("unknown archive");
         }
 
@@ -209,6 +217,10 @@ namespace MyShaderAnalysis.utilhelpers
             if (Path.GetDirectoryName(vcsFileName).EndsWith("artifact-shaders-pc-dcg"))
             {
                 return ARCHIVE.artifact_classicdcg_pc;
+            }
+            if (Path.GetDirectoryName(vcsFileName).EndsWith("alyx-vulkan-hlvr"))
+            {
+                return ARCHIVE.hl_hlvr_vulkan;
             }
             throw new ShaderParserException("don't know where this file belongs");
         }

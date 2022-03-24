@@ -12,15 +12,14 @@ namespace MyShaderAnalysis.utilhelpers
     class MyShaderUtilHelpers
     {
 
-        public static List<string> GetVcsFiles(string dir1, VcsProgramType fileType)
+        public static List<string> GetVcsFiles(string dir1, VcsProgramType fileType, int numEnding = -1, bool sortFiles = true, int LIMIT_NR = 1000)
         {
-            return GetVcsFiles(dir1, null, fileType, -1);
+            return GetVcsFiles(dir1, null, fileType, numEnding, sortFiles, LIMIT_NR);
         }
 
 
         public static List<string> GetVcsFiles(string dir1, string dir2 = null,
-            VcsProgramType fileType = VcsProgramType.Undetermined, int numEnding = -1, bool sortFiles = true)
-        {
+            VcsProgramType fileType = VcsProgramType.Undetermined, int numEnding = -1, bool sortFiles = true, int LIMIT_NR = 1000) {
             List<string> filesFound = new();
             if (fileType == VcsProgramType.Features || fileType == VcsProgramType.Undetermined)
             {
@@ -56,10 +55,22 @@ namespace MyShaderAnalysis.utilhelpers
             {
                 filesFound.Sort();
             }
-            return filesFound;
+            if (filesFound.Count <= LIMIT_NR)
+            {
+                return filesFound;
+            }
+            else
+            {
+                List<string> returnFiles = new();
+                for (int i = 0; i < LIMIT_NR; i++)
+                {
+                    returnFiles.Add(filesFound[i]);
+                }
+                return returnFiles;
+            }
         }
 
-        public static List<string> GetAllFilesWithEnding(string dir, string endsWith)
+        private static List<string> GetAllFilesWithEnding(string dir, string endsWith)
         {
             List<string> filesFound = new();
             if (dir == null)
@@ -230,9 +241,21 @@ namespace MyShaderAnalysis.utilhelpers
             {
                 return "dota-dac-gles";
             }
+            if (vcsFileName.Contains("alyx-vulkan-hlvr"))
+            {
+                return "hlvr";
+            }
             throw new ShaderParserException("don't know where this file belongs");
         }
 
+        /*
+         *
+         * E.g.
+         * cs_compress_stb_dxt5_pcgl_30_features.vcs"
+         * becomes
+         * cs_compress_stb_dxt5(ft)
+         *
+         */
         public static string GetShortName(string vcsFileName)
         {
             string shortName = "";
@@ -252,21 +275,16 @@ namespace MyShaderAnalysis.utilhelpers
                 VcsProgramType.RaytracingShader => "rtx",
                 _ => throw new ShaderParserException("not possible")
             };
-            Console.WriteLine($"{token}");
 
-            // E.g. generic_light_pcgl_30_vs.vcs
             string[] fileTokens = filename.Split('_');
-            if (fileTokens.Length < 4 || fileTokens.Length >= 6)
+            if (fileTokens.Length < 4)
             {
                 throw new ShaderParserException("not a valid filename");
             }
-            if (fileTokens.Length == 4)
+            shortName = fileTokens[0];
+            for (int i = 1; i < fileTokens.Length-3; i++)
             {
-                shortName = fileTokens[0];
-            }
-            if (fileTokens.Length == 5)
-            {
-                shortName = $"{fileTokens[0]}_{fileTokens[1]}";
+                shortName += $"_{fileTokens[i]}";
             }
             return $"{shortName}({token})";
         }

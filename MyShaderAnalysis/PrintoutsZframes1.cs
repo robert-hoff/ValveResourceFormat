@@ -33,8 +33,8 @@ namespace MyShaderAnalysis
         public static void RunTrials()
         {
 
-            // WriteBunchOfZframes();
-            PrintSingleFileSummary();
+            WriteBunchOfZframes();
+            // PrintSingleFileSummary();
 
             PrintReport();
             CloseStreamWriter();
@@ -79,7 +79,7 @@ namespace MyShaderAnalysis
 
         static void WriteBunchOfZframes()
         {
-            int NUM_TO_PRINT = 50;
+            int NUM_TO_PRINT = 2;
             List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, -1);
             // List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, 30);
             // List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(DOTA_CORE_MOBILE_GLES_SOURCE, DOTA_DAC_MOBILE_GLES_SOURCE, -1);
@@ -128,17 +128,6 @@ namespace MyShaderAnalysis
         static void ZFileSummary(ARCHIVE archive, string filename, long zframeId, bool writeFile = false, bool disableOutput = false)
         {
             FileTokens vcsFile = new(archive, filename);
-
-            // R: don't really have any support for printing multiple zframes from a given file, can use this as a hack
-            //ShaderFile shaderFile = InstantiateShaderFile(vcsFile.filenamepath);
-            //foreach (var item in shaderFile.zframesLookup)
-            //{
-            //    ZFileSummary(vcsFile, item.Key, writeFile, disableOutput);
-            //    CloseStreamWriter();
-            //}
-            //swWriterAlreadyClosed = true;
-
-
             ZFileSummary(vcsFile, zframeId, writeFile, disableOutput);
         }
 

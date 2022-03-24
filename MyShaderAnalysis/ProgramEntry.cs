@@ -33,17 +33,20 @@ namespace MyShaderAnalysis
             Console.SetOut(new ToDebugWriter());
 
 
+            // 23 March 2022
+            // -- does this work? yes it does. Produces a file summary overview (particularly for the static variables)
+            // StaticAnalysis.RunTrials();
+
+
 
             // DemoCode.RunTrials();
-
-
 
             // 18 March 2022
             // ParseV62Files.RunTrials();
 
 
             // 14 March 2022, R: try to read a Vulkan Zframe
-            PrintoutVulkanCode.RunTrials();
+            // PrintoutVulkanCode.RunTrials();
             // ParseV65Files.RunTrials();
 
             // Looking at a dynamic expression
@@ -73,7 +76,7 @@ namespace MyShaderAnalysis
             // ShaderAnalysis.RunTrials();
 
 
-            // RunPrintoutsSingleFile.RunTrials();
+            RunPrintoutsSingleFile.RunTrials();
             // TestUtilFunctions.RunTrials();
             // TestBasicParsing.RunTrials();
 

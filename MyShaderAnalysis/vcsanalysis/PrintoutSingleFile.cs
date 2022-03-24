@@ -19,11 +19,18 @@ namespace MyShaderAnalysis.vcsanalysis
         private ShaderFile shaderFile;
 
 
-        // todo - I'm not doing anything currently with the printHtmlLinks variable
-        // (i.e. it always outputs as HTML)
-        // NOTE - this file is almost the same as MyShaderFile.CompiledShader.PrintVcsFileSummary
-        // only difference is the output is conditioned for HTML versus Windows GUI (using richbox links)
-        // 
+        /* todo - I'm not doing anything currently with the printHtmlLinks variable
+         *
+         *
+         * (i.e. it output to HTML is always the case and hardcoded in)
+         * NOTE - this file is almost the same as MyShaderFile.CompiledShader.PrintVcsFileSummary
+         * only difference is the output is conditioned for HTML versus Windows GUI (using richbox links)
+         *
+         * NOTE - this file was previously named StaticAnalysis3
+         *
+         *
+         *
+         */
         public PrintoutSingleFile(string filenamepath, HandleOutputWrite OutputWriter = null, bool printHtmlLinks = true)
         {
             output = new OutputFormatterTabulatedData(OutputWriter);
@@ -114,7 +121,7 @@ namespace MyShaderAnalysis.vcsanalysis
             output.PrintTabulatedValues();
             output.BreakLine();
         }
-         
+
         private void PrintPsVsHeader()
         {
             output.WriteLine($"Valve Compiled Shader 2 (vcs2), version {shaderFile.vspsHeader.vcsFileVersion}");
