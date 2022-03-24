@@ -72,11 +72,11 @@ namespace MyShaderAnalysis
             // StaticAnalysis.RunTrials();
 
             // support for v62 was written into PrintoutsByteAnalysis.cs
-            // PrintoutsByteAnalysis.RunTrials();
+            PrintoutsByteAnalysis.RunTrials();
             // ShaderAnalysis.RunTrials();
 
 
-            RunPrintoutsSingleFile.RunTrials();
+            // RunPrintoutsSingleFile.RunTrials();
             // TestUtilFunctions.RunTrials();
             // TestBasicParsing.RunTrials();
 

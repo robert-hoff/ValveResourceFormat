@@ -196,7 +196,7 @@ namespace MyGUI.Types.Viewers {
                 if (!byteVersion) {
                     shaderFile.PrintSummary(buffer.Write, showRichTextBoxLinks: true, relatedfiles: relatedFiles);
                 } else {
-                    shaderFile.PrintByteAnalysis(OutputWriter: buffer.Write);
+                    shaderFile.PrintByteAnalysis(outputWriter: buffer.Write);
                 }
                 Font = new Font(FontFamily.GenericMonospace, Font.Size);
                 DetectUrls = true;

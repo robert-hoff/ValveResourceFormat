@@ -88,7 +88,6 @@ namespace MyShaderAnalysis
         {
             FileTokens fileTokens = new FileTokens(filenamepath);
             string outputFilenamepath = $"{fileTokens.GetServerFilenamepath("summary2", createDirs: true)}";
-
             FileWriter fileWriter = new FileWriter(outputFilenamepath, showOutputToConsole: false);
             fileWriter.WriteHtmlHeader(GetShortName(filenamepath), RemoveBaseDir(filenamepath));
             new PrintoutSingleFile(filenamepath, fileWriter.GetOutputWriter());

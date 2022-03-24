@@ -30,10 +30,9 @@ namespace MyShaderAnalysis
             // Trial1();
             // Trial2();
             // Trial3();
-            // PrintAllByteAnalysis();
+            RunBatchPrintVcsBytes();
             // RunSingleFileByteAnalysis();
-            // PrintSingleFileByteAnalysis(filenamepath, $"{SERVER_OUTPUT_DIR}/testfile.html", writeFile: true);
-            PrintSingleFileScreenOnly();
+            // PrintSingleFileToScreen();
             // PrintZFramesAllFiles();
             // PrintZFramesSingleFile();
             // PrintGlslAllFiles();
@@ -45,35 +44,26 @@ namespace MyShaderAnalysis
         }
 
 
-        static void PrintAllByteAnalysis()
+
+        static void RunBatchPrintVcsBytes() {
+            // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PC_SOURCE, DOTA_GAME_PC_SOURCE, VcsFileType.Any, -1, LIMIT_NR: 20);
+            // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PCGL_SOURCE, DOTA_GAME_PCGL_SOURCE, VcsFileType.Any, -1, LIMIT_NR: 20);
+            // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_MOBILE_GLES_SOURCE, DOTA_DAC_MOBILE_GLES_SOURCE, VcsProgramType.Undetermined, -1, LIMIT_NR: 20);
+            // List<string> vcsFiles = GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsProgramType.Undetermined, -1, LIMIT_NR: 20);
+            List<string> vcsFiles = GetVcsFiles(DOTA_GAME_PCGL_SOURCE, VcsProgramType.Undetermined, -1, LIMIT_NR: 20);
+            BatchPrintVcsBytes(vcsFiles);
+        }
+
+        static void BatchPrintVcsBytes(List<string> vcsFiles)
         {
-            // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PC_SOURCE, DOTA_GAME_PC_SOURCE, VcsFileType.Any, -1);
-            // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PCGL_SOURCE, DOTA_GAME_PCGL_SOURCE, VcsFileType.Any, -1);
-            // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_MOBILE_GLES_SOURCE, DOTA_DAC_MOBILE_GLES_SOURCE, VcsProgramType.Undetermined, -1);
-            List<string> vcsFiles = GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsProgramType.Undetermined, -1);
             foreach (var filenamepath in vcsFiles)
             {
-                Console.WriteLine(filenamepath);
-                FileTokens fileTokens = new FileTokens(filenamepath);
-                if (fileTokens.vcsProgramType == VcsProgramType.ComputeShader || fileTokens.vcsProgramType == VcsProgramType.GeometryShader)
-                {
-                    continue;
-                }
-                string outputFilenamepath = $"{fileTokens.GetServerFilenamepath("bytes", createDirs: true)}";
-                PrintSingleFileByteAnalysis(filenamepath, outputFilenamepath, writeFile: true, disableOutput: true);
-
-                // todo - need something new here
-                // output used to be a static variable (defined above) that I directed my string output to
-                // the new OutputFormatterTabulatedData output seems to have been created with the intent of
-                // taking over some of the functionality from the old 'output'. But it doesn't look like
-                // I'm actually using the new class anywhere
-                // output.CloseStreamWriter();
+                PrintVcsFilesAsBytes(filenamepath);
             }
         }
 
 
-
-        static void RunSingleFileByteAnalysis()
+        static void RunPrintVcsFilesAsBytes()
         {
             // string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/cs_compress_dxt5_pcgl_30_features.vcs";
             // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/hero_pcgl_30_features.vcs";
@@ -83,7 +73,7 @@ namespace MyShaderAnalysis
             // string filenamepath = $"{DOTA_GAME_PC_SOURCE}/hero_pc_30_vs.vcs";
             // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_features.vcs";
             // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs";
-            // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_ps.vcs";
+            string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_ps.vcs";
             // string filenamepath = $"{DOTA_GAME_PC_SOURCE}/multiblend_pc_30_features.vcs";
             // string filenamepath = $"{DOTA_GAME_PC_SOURCE}/multiblend_pc_30_vs.vcs";
             // string filenamepath = $"{DOTA_GAME_PC_SOURCE}/multiblend_pc_30_ps.vcs";
@@ -97,45 +87,28 @@ namespace MyShaderAnalysis
             // string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/spritecard_pcgl_30_vs.vcs";
             // string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/msaa_resolve_cs_pcgl_50_features.vcs"; // strange file that doesn't contain any data
 
+            PrintVcsFilesAsBytes(filenamepath);
         }
 
 
-
-        static void PrintSingleFileByteAnalysis(string filenamepath, string outputFilenamepath = null,
-            bool writeFile = false, bool disableOutput = false)
+        static void PrintVcsFilesAsBytes(string filenamepath)
         {
-            ShaderFile shaderFile = null;
-            //try
-            //{
-                shaderFile = InstantiateShaderFile(filenamepath);
-            //} catch (Exception e)
-            //{
-            //    Console.WriteLine($"ERROR! couldn't parse {filenamepath}");
-            //    Console.WriteLine(e.Message);
-            //    return;
-            //}
-
-
-            // todo - need something new here
-            /*
             FileTokens fileTokens = new FileTokens(filenamepath);
-            if (outputFilenamepath != null && writeFile)
-            {
-                output.SetOutputFile(outputFilenamepath);
-                output.WriteAsHtml(fileTokens.GetAbbreviatedName(), $"{ShortHandName(filenamepath)}");
-                if (disableOutput)
-                {
-                    output.DisableOutput();
-                }
-                shaderFile.datareader.OutputWriter = (x) => { output.sw.Write(x); };
-                // shaderFile.datareader.OutputWriter = (x) => { Console.Write(x); };
-            }
-            shaderFile.PrintByteAnalysis();
-            */
+            string outputFilenamepath = $"{fileTokens.GetServerFilenamepath("bytes", createDirs: true)}";
+            FileWriter fileWriter = new FileWriter(outputFilenamepath, showOutputToConsole: false);
+
+            fileWriter.WriteHtmlHeader(GetShortName(filenamepath), RemoveBaseDir(filenamepath));
+            // new PrintoutSingleFile(filenamepath, fileWriter.GetOutputWriter());
+
+            ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
+            shaderFile.PrintByteAnalysis(outputWriter: fileWriter.GetOutputWriter());
+            fileWriter.CloseStreamWriter();
         }
 
 
-        static void PrintSingleFileScreenOnly()
+
+
+        static void PrintSingleFileToScreen()
         {
             // string filenamepath = $"{V62_EXAMPLES_SOURCE}/test_pcgl_30_ps.vcs";
             // string filenamepath = $"{V62_EXAMPLES_SOURCE}/test_pc_30_vs.vcs";
@@ -143,17 +116,21 @@ namespace MyShaderAnalysis
             // string filenamepath = $"{V62_EXAMPLES_SOURCE}/test_pc_50_hs.vcs";
             // string filenamepath = $"{V62_EXAMPLES_SOURCE}/test_pcgl_40_ps.vcs";
             // string filenamepath = $"{THE_LAB_SOURCE}/downsample_pc_40_features.vcs";
-            string filenamepath = $"{THE_LAB_SOURCE}/downsample_pc_40_ps.vcs";
+            // string filenamepath = $"{THE_LAB_SOURCE}/downsample_pc_40_ps.vcs";
             // string filenamepath = $"{THE_LAB_SOURCE}/fogsprite_pcgl_41_features.vcs";
             // string filenamepath = $"{THE_LAB_SOURCE}/foliage_pc_41_ps.vcs";
             // string filenamepath = $"{THE_LAB_SOURCE}/foliage_pc_41_features.vcs";
 
 
+            // -- using DataReaderVcsByteAnalysis
+            // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs";
+            // DataReaderVcsByteAnalysis testfile = new DataReaderVcsByteAnalysis(filenamepath);
+            // testfile.PrintByteAnalysis();
 
-            DataReaderVcsByteAnalysis testfile = new DataReaderVcsByteAnalysis(filenamepath);
-            testfile.PrintByteAnalysis();
-
-
+            // -- using ShaderFile
+            string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs";
+            ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
+            shaderFile.PrintByteAnalysis();
         }
 
 
@@ -166,9 +143,6 @@ namespace MyShaderAnalysis
 
             GpuSource gpuSource = zframeFile.gpuSources[0];
             // gpuSource.sourcebytes
-
-
-
         }
 
 
@@ -204,7 +178,8 @@ namespace MyShaderAnalysis
                 try
                 {
                     shaderFile = InstantiateShaderFile(filenamepath);
-                } catch (ShaderParserException e)
+                }
+                catch (ShaderParserException e)
                 {
                     Console.WriteLine($"ERROR! couldn't parse {filenamepath}");
                     Console.WriteLine(e);
@@ -364,7 +339,8 @@ namespace MyShaderAnalysis
                 databytesFileWriter.WriteLine($"{GetHtmlFooter()}");
                 databytesFileWriter.Flush();
                 databytesFileWriter.Close();
-            } else
+            }
+            else
             {
                 File.WriteAllBytes(outputFilenamepath, databytes);
             }

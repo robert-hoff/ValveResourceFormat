@@ -275,9 +275,9 @@ namespace ValveResourceFormat.CompiledShader
         private uint zFrameCount;
         const int SKIP_ZFRAMES_IF_MORE_THAN = 10;
 
-        public void PrintByteAnalysis(bool shortenOutput = true, HandleOutputWrite OutputWriter = null)
+        public void PrintByteAnalysis(bool shortenOutput = true, HandleOutputWrite outputWriter = null)
         {
-            datareader.outputWriter = OutputWriter ?? ((x) => { Console.Write(x); });
+            datareader.outputWriter = outputWriter ?? ((x) => { Console.Write(x); });
             datareader.BaseStream.Position = 0;
             if (vcsProgramType == VcsProgramType.Features)
             {
