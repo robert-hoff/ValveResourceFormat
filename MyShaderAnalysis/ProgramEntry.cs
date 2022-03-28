@@ -2,13 +2,14 @@ using System;
 using System.IO;
 using System.Diagnostics;
 using ValveResourceFormat.CompiledShader;
+using System.Collections.Generic;
+using System.Linq;
+using MyShaderAnalysis.utilhelpers;
+using MyShaderAnalysis.utilhelpers.snippetcode;
 using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
 using static MyShaderAnalysis.utilhelpers.FileSystem;
 using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
-using System.Collections.Generic;
-using System.Linq;
-using MyShaderAnalysis.utilhelpers;
 
 
 namespace MyShaderAnalysis
@@ -36,8 +37,8 @@ namespace MyShaderAnalysis
             // Methods for building html printouts
             // -- vcs and zframe byte detail
             // PrintoutsByteAnalysis.RunTrials();
-            // -- formatted zframes
-            // PrintoutsZframes1.RunTrials();
+            // // -- formatted zframes
+            PrintoutsZframes1.RunTrials();
             // -- formatted vcs
             ParseVcsFiles.RunTrials();
 
@@ -84,6 +85,7 @@ namespace MyShaderAnalysis
 
 
             // -- testing code
+            // RegexExamples.RunTrials();
             // TestUtilFunctions.RunTrials();
             // TestBasicParsing.RunTrials();
             // Snippetcode.RunTrials();

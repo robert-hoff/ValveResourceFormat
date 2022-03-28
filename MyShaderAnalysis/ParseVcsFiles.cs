@@ -37,11 +37,13 @@ namespace MyShaderAnalysis
         {
             // PrintAndSaveSingleFilePostProcessResult();
 
+            RunPrintVcsSummaryPostProcess();
+
             // RunPrintVcsByteDetail();
             // RunPrintVcsSummary();
             // RunPrintZFrameSummary();
             // RunPrintZFrameBytes();
-            RunPrintGpuSource();
+            // RunPrintGpuSource();
 
             // RunBatchPrintVcsFiles();
             // RunPrintVcsFile();
@@ -50,23 +52,40 @@ namespace MyShaderAnalysis
         }
 
 
-        // March 2022 - new method to allow using the PrintVcsFileSummary class
-        static void PrintAndSaveSingleFilePostProcessResult()
+        static void RunPrintVcsSummaryPostProcess()
         {
-            string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/spritecard_pcgl_30_vs.vcs";
-            ShaderFile shaderFile = shaderFile = InstantiateShaderFile(filenamepath);
-            FileTokens fileTokens = new FileTokens(filenamepath);
-
-            var buffer = new StringWriter(CultureInfo.InvariantCulture);
-            shaderFile.PrintSummary(buffer.Write, showRichTextBoxLinks: true);
-
-
-            // Console.WriteLine(buffer.ToString());
-
-            new PostProcessVcsFile(fileTokens, buffer.ToString());
-            // new PostProccessVcsFile(buffer);
-
+            // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_features.vcs";
+            // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs";
+            // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_ps.vcs";
+            // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/3dskyboxstencil_pcgl_30_features.vcs";
+            string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/3dskyboxstencil_pcgl_30_ps.vcs";
+            // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/3dskyboxstencil_pcgl_30_vs.vcs";
+            PrintVcsSummaryPostProcess(filenamepath);
         }
+
+
+        static void PrintVcsSummaryPostProcess(string filenamepath)
+        {
+            FileTokens fileTokens = new FileTokens(filenamepath);
+            ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
+            List<string> relatedFiles = GetRelatedFiles2(fileTokens.filenamepath);
+            var buffer = new StringWriter(CultureInfo.InvariantCulture);
+            new PrintVcsFileSummary(shaderFile, buffer.Write, showRichTextBoxLinks: true, relatedFiles);
+
+            string processedData = new PostProcessVcsFile(fileTokens).PostProcessVcsData(buffer.ToString());
+
+            string outputFilenamepath = $"{fileTokens.GetServerFilenamepath("summary2", createDirs: true)}";
+            FileWriter fileWriter = new FileWriter(outputFilenamepath, showOutputToConsole: false);
+            fileWriter.WriteHtmlHeader(fileTokens.GetShortName(), fileTokens.GetBaseName());
+
+
+            fileWriter.GetOutputWriter()(processedData);
+            // fileWriter.GetOutputWriter()(buffer.ToString());
+
+
+            fileWriter.CloseStreamWriter();
+        }
+
 
 
         static void RunPrintVcsSummary()
@@ -80,8 +99,9 @@ namespace MyShaderAnalysis
         static void RunPrintVcsByteDetail()
         {
             // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_features.vcs";
-            string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs";
+            // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs";
             // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_ps.vcs";
+            string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/3dskyboxstencil_pcgl_30_features.vcs";
             PrintVcsByteDetail(filenamepath);
         }
 

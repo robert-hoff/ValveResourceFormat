@@ -6,7 +6,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using MyShaderAnalysis.utilhelpers;
-
+using ValveResourceFormat.CompiledShader;
+using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
 namespace MyShaderAnalysis.vcsanalysis
 {
@@ -35,15 +36,66 @@ namespace MyShaderAnalysis.vcsanalysis
 
         public PostProcessVcsFile(FileTokens fileTokens, string formattedData)
         {
-            Console.WriteLine($"{formattedData}");
+            // Console.WriteLine($"{formattedData}");
             // RegexExample3();
             // RegexExample2();
             // RegexExample1();
-
             // Console.WriteLine(fileTokens.GetServerFileUrl("sdf"));
-
-
         }
+
+        private FileTokens fileTokens;
+
+        public PostProcessVcsFile(FileTokens fileTokens)
+        {
+            this.fileTokens = fileTokens;
+        }
+
+
+
+        public string PostProcessVcsData(string data)
+        {
+            Regex rx = new Regex(@"\\\\([a-z0-9_\.]*)\\([a-z0-9_\.]*)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            MatchEvaluator myEvaluator = new MatchEvaluator(ReplaceVcsDoubleToken);
+            string newData = rx.Replace(data, myEvaluator);
+
+            rx = new Regex(@"\\\\([a-z0-9_\.]*)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            myEvaluator = new MatchEvaluator(ReplaceVcsSingleToken);
+            newData = rx.Replace(newData, myEvaluator);
+
+            return newData;
+        }
+
+
+
+        public string ReplaceVcsDoubleToken(Match m)
+        {
+            GroupCollection groups = m.Groups;
+            switch (groups[2].ToString())
+            {
+                case "bytes":
+                    return $"<a href='{fileTokens.GetServerFileUrl("bytes")}'>{fileTokens.filename}\\bytes</a>";
+
+                default:
+                    throw new ShaderParserException($"Unrecognised link token: {groups[2].ToString()}"); ;
+            }
+        }
+
+        // either a file name or a zframeId
+        public string ReplaceVcsSingleToken(Match m)
+        {
+            GroupCollection groups = m.Groups;
+            VcsProgramType programType = ComputeVcsProgramType(groups[1].ToString());
+            if (programType != VcsProgramType.Undetermined)
+            {
+                return $"<a href='{fileTokens.GetServerFilePath()}/{groups[1].ToString()[..^4]}-summary2.html'>{groups[1]}</a>";
+            } else
+            {
+                long zframeId = Convert.ToInt64(groups[1].ToString(), 16);
+                return fileTokens.GetBestZframesLink(zframeId, noBrackets: true);
+            }
+        }
+
+
 
 
         private void RegexExample3()
@@ -52,19 +104,13 @@ namespace MyShaderAnalysis.vcsanalysis
             Regex rx = new Regex(@"\\\\([a-z0-9_\.]*)\\([a-z0-9_\.]*)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
             MatchEvaluator myEvaluator = new MatchEvaluator(ReplaceDoubleToken);
             sInput = rx.Replace(sInput, myEvaluator);
-
-
-
             Console.WriteLine(sInput);
         }
-
-
         public string ReplaceDoubleToken(Match m)
         {
             // i++;
             // Console.WriteLine($"--");
             // Console.WriteLine($"{m.Value}");
-
             GroupCollection groups = m.Groups;
             return $"[replacing {groups[1]} and {groups[2]}]";
         }

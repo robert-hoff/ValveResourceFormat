@@ -245,14 +245,16 @@ namespace MyShaderAnalysis.utilhelpers
             }
         }
 
-        public string GetBestZframesLink(long zframeId)
+        public string GetBestZframesLink(long zframeId, bool noBrackets = false)
         {
             if (File.Exists(GetZFrameHtmlFilenamepath(zframeId, "summary")))
             {
-                return $"<a href='{GetZFrameLink(zframeId,"summary")}'>Z[{zframeId:x08}]</a>";
+                return noBrackets ?
+                    $"<a href='{GetZFrameLink(zframeId, "summary")}'>{zframeId:x08}</a>" :
+                    $"<a href='{GetZFrameLink(zframeId,"summary")}'>Z[{zframeId:x08}]</a>";
             }
             // no zframe exists return plaintext
-            return $"Z[{zframeId:x08}]";
+            return noBrackets ? $"{zframeId:x08}" : $"Z[{zframeId:x08}]";
         }
 
         public override string ToString()
