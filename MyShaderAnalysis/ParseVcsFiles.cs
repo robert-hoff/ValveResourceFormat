@@ -36,7 +36,7 @@ namespace MyShaderAnalysis
         public static void RunTrials()
         {
 
-            RunPrintZFrameSummaryPostProcess();
+            // RunPrintZFrameSummaryPostProcess();
             // RunPrintVcsSummaryPostProcess();
 
             // RunPrintVcsByteDetail();
@@ -44,11 +44,6 @@ namespace MyShaderAnalysis
             // RunPrintZFrameSummary();
             // RunPrintZFrameBytes();
             // RunPrintGpuSource();
-
-
-            // -- these methods uses largely redundant code, direct parsing to the production code
-            // RunBatchPrintVcsFiles();
-            // RunPrintVcsFile();
 
         }
 
@@ -285,42 +280,6 @@ namespace MyShaderAnalysis
         }
 
 
-
-
-
-        // -- replace these methods
-
-        static void RunBatchPrintVcsFiles()
-        {
-            List<string> vcsFiles = GetVcsFiles(DOTA_GAME_PCGL_SOURCE, VcsProgramType.Undetermined, -1, LIMIT_NR: 20);
-            BatchPrintVcsFiles(vcsFiles);
-        }
-
-        static void BatchPrintVcsFiles(List<string> vcsFiles)
-        {
-            foreach (var filenamepath in vcsFiles)
-            {
-                PrintVcsFile(filenamepath);
-            }
-        }
-        static void RunPrintVcsFile()
-        {
-            // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_features.vcs";
-            // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs";
-            string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_ps.vcs";
-            PrintVcsFile(filenamepath);
-
-
-        }
-        static void PrintVcsFile(string filenamepath)
-        {
-            FileTokens fileTokens = new FileTokens(filenamepath);
-            string outputFilenamepath = $"{fileTokens.GetServerFilenamepath("summary2", createDirs: true)}";
-            FileWriter fileWriter = new FileWriter(outputFilenamepath, showOutputToConsole: false);
-            fileWriter.WriteHtmlHeader(fileTokens.GetShortName(), fileTokens.GetBaseName());
-            new PrintoutSingleFile(filenamepath, fileWriter.GetOutputWriter());
-            fileWriter.CloseStreamWriter();
-        }
 
 
 

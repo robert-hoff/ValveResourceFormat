@@ -9,6 +9,12 @@ using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 using static ValveResourceFormat.CompiledShader.ShaderDataReader;
 
+/*
+ *
+ * Printouts formatted vcs files - replaced by production file PrintVcsFileSummary
+ *
+ *
+ */
 namespace MyShaderAnalysis.vcsanalysis
 {
     public class PrintoutSingleFile

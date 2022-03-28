@@ -11,6 +11,13 @@ using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 using static ValveResourceFormat.CompiledShader.ZFrameFile;
 
 
+/*
+ *
+ * Printouts formatted zframes - replaced by production file PrintZframeSummary
+ *
+ *
+ *
+ */
 namespace MyShaderAnalysis
 {
 

@@ -34,34 +34,24 @@ namespace MyShaderAnalysis
             Console.SetOut(new ToDebugWriter());
 
 
+            // -- revise how files are managed as collections
+            // CreateHtmlServerFiles.RunTrials();
+
+
             // -- process all types through single entry
-            ParseVcsFiles.RunTrials();
-
-
-
-            // Methods for building html printouts
-            // -- vcs and zframe byte detail
-            // PrintoutsByteAnalysis.RunTrials();
-            // // -- formatted zframes
-            // PrintoutsZframes1.RunTrials();
-            // -- formatted vcs
             // ParseVcsFiles.RunTrials();
 
 
 
-            // 23 March 2022
             // DemoCode.RunTrials();
 
             // -- This still produces a file summary overview (particularly for the static variables)
             // StaticAnalysis.RunTrials();
 
 
-            // 18 March 2022
             // -- support for v62 was already written into DataReaderVcsByteAnalysis
             // ParseV62Files.RunTrials();
 
-
-            // 14 March 2022, R: try to read a Vulkan Zframe
             // PrintoutVulkanCode.RunTrials();
             // ParseV65Files.RunTrials();
 
@@ -69,23 +59,8 @@ namespace MyShaderAnalysis
             // ParseDynamicExpression.RunTrials();
 
 
-
-            // before March 2022
-
-            // X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders\vfx\water_dota_pcgl_40_features.vcs
-            // var filenamepath = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders\vfx\water_dota_pcgl_40_features.vcs";
-            // string[] relatedFiles = GetRelatedFiles(filenamepath);
-            // List<string> relatedFiles = GetRelatedFiles2(filenamepath);
-
-
-            // DataReaderV62.RunTrials();
-            // TestMobileShaderFiles.RunTrials();
-            // StaticAnalysisZframes.RunTrials();
-            // StaticAnalysis2.RunTrials();
-            // StaticAnalysis.RunTrials();
-
-
-            // ShaderAnalysis.RunTrials();
+            // -- fall 2021
+            ProgramEntriesOld.RunTrials();
 
 
 
@@ -94,7 +69,6 @@ namespace MyShaderAnalysis
             // TestUtilFunctions.RunTrials();
             // TestBasicParsing.RunTrials();
             // Snippetcode.RunTrials();
-            // LzmaAnalysis.RunTrials();
             // TestStuff.RunTrials();
             // CrcTrialsSha1.RunTrials();
             // CrcTrialsMurmur32.RunTrials();

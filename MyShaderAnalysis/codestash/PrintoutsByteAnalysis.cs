@@ -22,7 +22,7 @@ namespace MyShaderAnalysis
         public static void RunTrials()
         {
             // Trial2();
-            // RunBatchPrintVcsBytes();
+            RunBatchPrintVcsBytes();
             // RunPrintVcsFilesAsBytes();
             // PrintVcsFileToScreen();
             RunBatchPrintZframeBytes();
@@ -33,7 +33,7 @@ namespace MyShaderAnalysis
             // PrintZFrameBytesToScreen()
 
 
-            // PrintGlslAllFiles();
+            PrintGlslAllFiles();
             // PrintGlslSingleFiles();
 
         }
