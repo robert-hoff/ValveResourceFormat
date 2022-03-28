@@ -3,7 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using MyShaderAnalysis.utilhelpers;
 using ValveResourceFormat.CompiledShader;
-using static MyShaderAnalysis.utilhelpers.FileSystem;
+using static MyShaderAnalysis.utilhelpers.FileSystemOld;
 using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
 using MyShaderAnalysis.vcsanalysis;
 
@@ -46,7 +46,7 @@ namespace MyShaderAnalysis.codestash
         }
         static void PrintVcsFile(string filenamepath)
         {
-            FileTokens fileTokens = new FileTokens(filenamepath);
+            FileTokensOld fileTokens = new FileTokensOld(filenamepath);
             string outputFilenamepath = $"{fileTokens.GetServerFilenamepath("summary2", createDirs: true)}";
             FileWriter fileWriter = new FileWriter(outputFilenamepath, showOutputToConsole: false);
             fileWriter.WriteHtmlHeader(fileTokens.GetShortName(), fileTokens.GetBaseName());

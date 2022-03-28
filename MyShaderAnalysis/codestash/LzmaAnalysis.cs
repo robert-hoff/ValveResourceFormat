@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using ValveResourceFormat.ThirdParty;
 using MyShaderAnalysis.utilhelpers;
 using ValveResourceFormat.CompiledShader;
-using static MyShaderAnalysis.utilhelpers.FileSystem;
+using static MyShaderAnalysis.utilhelpers.FileSystemOld;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
 

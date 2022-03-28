@@ -19,10 +19,10 @@ namespace MyShaderAnalysis.vcsanalysis
      */
     class PostProcessZframeFile
     {
-        private FileTokens fileTokens;
+        private FileTokensOld fileTokens;
         private ZFrameFile zframeFile;
 
-        public PostProcessZframeFile(ZFrameFile zframeFile, FileTokens fileTokens)
+        public PostProcessZframeFile(ZFrameFile zframeFile, FileTokensOld fileTokens)
         {
             this.zframeFile = zframeFile;
             this.fileTokens = fileTokens;

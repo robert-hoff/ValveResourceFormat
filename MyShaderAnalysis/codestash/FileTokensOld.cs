@@ -3,7 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using ValveResourceFormat.CompiledShader;
-using static MyShaderAnalysis.utilhelpers.FileSystem;
+using static MyShaderAnalysis.utilhelpers.FileSystemOld;
 
 /*
  *
@@ -29,7 +29,7 @@ using static MyShaderAnalysis.utilhelpers.FileSystem;
 namespace MyShaderAnalysis.utilhelpers
 {
 
-    public class FileTokens
+    public class FileTokensOld
     {
         public string name { get; }          // name without the file extension, e.g. spritecard_pcgl_30_ps
         public string filename { get; }
@@ -47,13 +47,13 @@ namespace MyShaderAnalysis.utilhelpers
         public VcsProgramType vcsProgramType { get; }
 
 
-        public FileTokens(string filenamepath) : this(DetermineArchiveType(filenamepath), filenamepath) { }
+        public FileTokensOld(string filenamepath) : this(DetermineArchiveType(filenamepath), filenamepath) { }
 
         /*
          * this will work passing either the filename or full filenamepath
          *
          */
-        public FileTokens(ARCHIVE archive, string filename)
+        public FileTokensOld(ARCHIVE archive, string filename)
         {
             filename = Path.GetFileName(filename);
             this.filename = filename;

@@ -41,7 +41,7 @@ using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 namespace MyShaderAnalysis.utilhelpers
 {
 
-    public class FileSystem
+    public class FileSystemOld
     {
 
         public const string PROJECT_TESTDIR = "Z:/active/projects/dota2-sourcesdk-modding/shader-analysis-vcs-format/OUTPUT_DUMP";
@@ -190,7 +190,10 @@ namespace MyShaderAnalysis.utilhelpers
         }
 
 
-        // todo - problem here with the backslashes, it's not consistent, if I call this with the consts from FileSystem it will fail
+        // todo - problem here with the backslashes
+        // it's not consistent, because Path.GetDirectory() always returns string with backslashes
+        // I sometimes need to make comparisong with backslashes in the name, in other places I make comparisong
+        // with forward slashes
         public static ARCHIVE DetermineArchiveType(string vcsFileName)
         {
             // the built-in method Path.GetDirectoryName always returns a path containing back-slashes

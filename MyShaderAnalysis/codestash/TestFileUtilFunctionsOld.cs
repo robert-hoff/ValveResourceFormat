@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MyShaderAnalysis.compat;
 using ValveResourceFormat.CompiledShader;
-using static MyShaderAnalysis.utilhelpers.FileSystem;
+using static MyShaderAnalysis.utilhelpers.FileSystemOld;
 using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
 using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
@@ -12,7 +12,7 @@ using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
 namespace MyShaderAnalysis.utilhelpers
 {
-    public class TestUtilFunctions
+    public class TestFileUtilFunctionsOld
     {
 
 
@@ -40,7 +40,7 @@ namespace MyShaderAnalysis.utilhelpers
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             ZFrameFile zframeFile = shaderFile.GetZFrameFile(0);
 
-            FileTokens fileToken = new FileTokens(filenamepath);
+            FileTokensOld fileToken = new FileTokensOld(filenamepath);
 
             Console.WriteLine($"GetServerFileDir()                  {fileToken.GetServerFileDir()}");
             Console.WriteLine($"GetServerFilenamepath(label)        {fileToken.GetServerFilenamepath("label")}");
@@ -77,7 +77,7 @@ namespace MyShaderAnalysis.utilhelpers
 
             foreach (var filenamepath in vcsFiles)
             {
-                FileTokens fileTokens = new FileTokens(filenamepath);
+                FileTokensOld fileTokens = new FileTokensOld(filenamepath);
                 string outputFilenamepath = $"{fileTokens.GetServerFilenamepath("summary2", createDirs: false)}";
 
                 // I really don't remember where these method names came from
@@ -121,7 +121,7 @@ namespace MyShaderAnalysis.utilhelpers
             List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PCGL_SOURCE, null, VcsProgramType.Features, 40);
             foreach (var filenamepath in vcsFiles)
             {
-                FileTokens fileTokens = new FileTokens(filenamepath);
+                FileTokensOld fileTokens = new FileTokensOld(filenamepath);
                 string outputFilenamepath = $"{fileTokens.GetServerFilenamepath("summary2", createDirs: true)}";
 
                 Console.WriteLine($"{filenamepath}");
@@ -141,7 +141,7 @@ namespace MyShaderAnalysis.utilhelpers
         {
             // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/hero_pcgl_30_ps.vcs";
             string filenamepath = $"{DOTA_GAME_PC_SOURCE}/hero_pc_40_ps.vcs";
-            FileTokens fileTokens = new FileTokens(filenamepath);
+            FileTokensOld fileTokens = new FileTokensOld(filenamepath);
             Console.WriteLine($"{fileTokens.GetAbbreviatedName()}");
         }
 
@@ -223,7 +223,7 @@ namespace MyShaderAnalysis.utilhelpers
                 return;
             }
 
-            FileTokens fileTokens = new FileTokens(filenamepath);
+            FileTokensOld fileTokens = new FileTokensOld(filenamepath);
             Console.WriteLine($"{fileTokens.GetGlslHtmlUrl((GlslSource)gpuSource)}");
         }
 
@@ -232,7 +232,7 @@ namespace MyShaderAnalysis.utilhelpers
         static void TestFileTokensForNewGlesArchive()
         {
             string filenamepath = $"{DOTA_DAC_MOBILE_GLES_SOURCE}/spritecard_mobile_gles_30_vs.vcs";
-            FileTokens fileTokens = new FileTokens(filenamepath);
+            FileTokensOld fileTokens = new FileTokensOld(filenamepath);
             // Console.WriteLine($"{fileTokens}");
             Console.WriteLine($"{fileTokens.GetServerFilePath()}"); // /dota-game/gles/spritecard_mobile_gles_30
             Console.WriteLine($"{fileTokens.GetServerFileDir()}"); // Z:/dev/www/vcs.codecreation.dev/dota-game/gles/spritecard_mobile_gles_30
@@ -245,7 +245,7 @@ namespace MyShaderAnalysis.utilhelpers
         {
             // string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/generic_light_pcgl_30_features.vcs";
             string filenamepath = $"{DOTA_GAME_PC_SOURCE}/hero_pc_30_vs.vcs";
-            FileTokens fileTokens = new FileTokens(filenamepath);
+            FileTokensOld fileTokens = new FileTokensOld(filenamepath);
 
             Console.WriteLine($"{fileTokens.GetBestPath().Length == 0}"); // empty string if no path found
             Console.WriteLine($"{fileTokens.GetServerFilePath()}"); // /dota-game/pc/hero_pc_30
@@ -266,7 +266,7 @@ namespace MyShaderAnalysis.utilhelpers
          */
         static void TestFileSystem()
         {
-            FileTokens spritecard = new(ARCHIVE.dotacore_pcgl, "spritecard_pcgl_30_ps.vcs");
+            FileTokensOld spritecard = new(ARCHIVE.dotacore_pcgl, "spritecard_pcgl_30_ps.vcs");
             List<string> filenames = spritecard.GetZFrameListing();
             foreach (var f in filenames)
             {

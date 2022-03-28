@@ -5,7 +5,7 @@ using System.Linq;
 using MyShaderAnalysis.utilhelpers;
 using ValveResourceFormat.CompiledShader;
 using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
-using static MyShaderAnalysis.utilhelpers.FileSystem;
+using static MyShaderAnalysis.utilhelpers.FileSystemOld;
 using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
@@ -374,7 +374,7 @@ namespace MyShaderAnalysis
             {
                 throw new ShaderParserException("need to target either vs or ps file");
             }
-            FileTokens targetFile = targetFileType == VcsProgramType.VertexShader ? fileTriple.vsFile : fileTriple.psFile;
+            FileTokensOld targetFile = targetFileType == VcsProgramType.VertexShader ? fileTriple.vsFile : fileTriple.psFile;
             string htmlTitle = $"{targetFile.namelabel}({targetFile.vcstoken})";
 
 
@@ -846,8 +846,8 @@ namespace MyShaderAnalysis
                 throw new ShaderParserException("need to target either vs or ps file");
             }
 
-            FileTokens ftFile = triple.ftFile;
-            FileTokens targetFile = targetFileType == VcsProgramType.VertexShader ? triple.vsFile : triple.psFile;
+            FileTokensOld ftFile = triple.ftFile;
+            FileTokensOld targetFile = targetFileType == VcsProgramType.VertexShader ? triple.vsFile : triple.psFile;
             if (outputFilenamepath != null && writeFile)
             {
                 ConfigureOutputFile(outputFilenamepath, disableOutput);

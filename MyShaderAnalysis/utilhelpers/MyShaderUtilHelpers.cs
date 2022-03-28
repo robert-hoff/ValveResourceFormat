@@ -211,7 +211,7 @@ namespace MyShaderAnalysis.utilhelpers
                 urlText = Path.GetFileName(vcsFileName);
             }
             // return $"<a href='/vcs-all/{GetCoreOrDotaString(vcsFileName)}/{Path.GetFileName(vcsFileName)[0..^4]}-analysis.html'>{urlText}</a>";
-            FileTokens filetokens = new FileTokens(vcsFileName);
+            FileTokensOld filetokens = new FileTokensOld(vcsFileName);
             return $"<a href='{filetokens.GetServerFileUrl(label)}'>{urlText}</a>";
         }
 

@@ -28,9 +28,9 @@ namespace MyShaderAnalysis.vcsanalysis
      */
     class PostProcessVcsFile
     {
-        private FileTokens fileTokens;
+        private FileTokensOld fileTokens;
 
-        public PostProcessVcsFile(FileTokens fileTokens)
+        public PostProcessVcsFile(FileTokensOld fileTokens)
         {
             this.fileTokens = fileTokens;
         }

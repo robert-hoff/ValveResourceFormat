@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MyShaderAnalysis.utilhelpers;
 using ValveResourceFormat.CompiledShader;
-using static MyShaderAnalysis.utilhelpers.FileSystem;
+using static MyShaderAnalysis.utilhelpers.FileSystemOld;
 using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
 using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
@@ -57,7 +57,7 @@ namespace MyShaderAnalysis
             string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/3dskyboxstencil_pcgl_30_vs.vcs";
 
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
-            FileTokens fileTokens = new FileTokens(filenamepath);
+            FileTokensOld fileTokens = new FileTokensOld(filenamepath);
 
             ZFrameFile zframe0 = shaderFile.GetZFrameFileByIndex(ZFRAME_INDEX0);
             PrintZFrameSummaryPostProcess(shaderFile, zframe0, fileTokens);
@@ -67,11 +67,11 @@ namespace MyShaderAnalysis
 
 
 
-        static void PrintZFrameSummaryPostProcess(ShaderFile shaderFile, ZFrameFile zframeFile, FileTokens fileTokens = null)
+        static void PrintZFrameSummaryPostProcess(ShaderFile shaderFile, ZFrameFile zframeFile, FileTokensOld fileTokens = null)
         {
             if (fileTokens == null)
             {
-                fileTokens = new FileTokens(zframeFile.filenamepath);
+                fileTokens = new FileTokensOld(zframeFile.filenamepath);
             }
 
 
@@ -113,7 +113,7 @@ namespace MyShaderAnalysis
 
         static void PrintVcsSummaryPostProcess(string filenamepath)
         {
-            FileTokens fileTokens = new FileTokens(filenamepath);
+            FileTokensOld fileTokens = new FileTokensOld(filenamepath);
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             List<string> relatedFiles = GetRelatedFiles2(fileTokens.filenamepath);
             var buffer = new StringWriter(CultureInfo.InvariantCulture);
@@ -160,7 +160,7 @@ namespace MyShaderAnalysis
             string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/3dskyboxstencil_pcgl_30_vs.vcs";
 
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
-            FileTokens fileTokens = new FileTokens(filenamepath);
+            FileTokensOld fileTokens = new FileTokensOld(filenamepath);
 
             ZFrameFile zframe0 = shaderFile.GetZFrameFileByIndex(ZFRAME_INDEX0);
             PrintZFrameSummary(shaderFile, zframe0, fileTokens);
@@ -176,7 +176,7 @@ namespace MyShaderAnalysis
             int ZFRAME_INDEX1 = 1;
             string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs";
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
-            FileTokens fileTokens = new FileTokens(filenamepath);
+            FileTokensOld fileTokens = new FileTokensOld(filenamepath);
 
             ZFrameFile zframe0 = shaderFile.GetZFrameFileByIndex(ZFRAME_INDEX0);
             PrintZFrameBytes(zframe0, fileTokens);
@@ -187,7 +187,7 @@ namespace MyShaderAnalysis
 
         static void PrintVcsSummary(string filenamepath)
         {
-            FileTokens fileTokens = new FileTokens(filenamepath);
+            FileTokensOld fileTokens = new FileTokensOld(filenamepath);
             string outputFilenamepath = $"{fileTokens.GetServerFilenamepath("summary2", createDirs: true)}";
             FileWriter fileWriter = new FileWriter(outputFilenamepath, showOutputToConsole: false);
             fileWriter.WriteHtmlHeader(fileTokens.GetShortName(), fileTokens.GetBaseName());
@@ -200,7 +200,7 @@ namespace MyShaderAnalysis
 
         static void PrintVcsByteDetail(string filenamepath)
         {
-            FileTokens fileTokens = new FileTokens(filenamepath);
+            FileTokensOld fileTokens = new FileTokensOld(filenamepath);
             string outputFilenamepath = $"{fileTokens.GetServerFilenamepath("bytes", createDirs: true)}";
 
             FileWriter fileWriter = new FileWriter(outputFilenamepath, showOutputToConsole: false);
@@ -214,11 +214,11 @@ namespace MyShaderAnalysis
         }
 
 
-        static void PrintZFrameSummary(ShaderFile shaderFile, ZFrameFile zframeFile, FileTokens fileTokens = null)
+        static void PrintZFrameSummary(ShaderFile shaderFile, ZFrameFile zframeFile, FileTokensOld fileTokens = null)
         {
             if (fileTokens == null)
             {
-                fileTokens = new FileTokens(zframeFile.filenamepath);
+                fileTokens = new FileTokensOld(zframeFile.filenamepath);
             }
             string outputFilenamepath = fileTokens.GetZFrameHtmlFilenamepath(zframeFile.zframeId, "summary", createDirs: true);
             FileWriter fileWriter = new FileWriter(outputFilenamepath, showOutputToConsole: false);
@@ -235,11 +235,11 @@ namespace MyShaderAnalysis
         }
 
 
-        static void PrintZFrameBytes(ZFrameFile zframeFile, FileTokens fileTokens = null)
+        static void PrintZFrameBytes(ZFrameFile zframeFile, FileTokensOld fileTokens = null)
         {
             if (fileTokens == null)
             {
-                fileTokens = new FileTokens(zframeFile.filenamepath);
+                fileTokens = new FileTokensOld(zframeFile.filenamepath);
             }
             string outputFilenamepath = fileTokens.GetZFrameHtmlFilenamepath(zframeFile.zframeId, "bytes", createDirs: true);
             FileWriter fileWriter = new FileWriter(outputFilenamepath, showOutputToConsole: false);
@@ -259,14 +259,14 @@ namespace MyShaderAnalysis
             int ZFRAME_INDEX1 = 1;
             string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs";
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
-            FileTokens fileTokens = new FileTokens(filenamepath);
+            FileTokensOld fileTokens = new FileTokensOld(filenamepath);
             ZFrameFile zframe0 = shaderFile.GetZFrameFileByIndex(ZFRAME_INDEX0);
             PrintGpuSource(zframe0, 0, fileTokens);
             ZFrameFile zframe1 = shaderFile.GetZFrameFileByIndex(ZFRAME_INDEX1);
             PrintGpuSource(zframe1, 1, fileTokens);
         }
 
-        static void PrintGpuSource(ZFrameFile zframeFile, int sourceId, FileTokens fileTokens = null)
+        static void PrintGpuSource(ZFrameFile zframeFile, int sourceId, FileTokensOld fileTokens = null)
         {
             var glslSource = zframeFile.gpuSources[sourceId];
             string glslServerDir = fileTokens.GetGlslServerDir(createDirs: true);

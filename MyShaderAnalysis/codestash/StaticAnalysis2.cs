@@ -5,7 +5,7 @@ using System.Linq;
 using MyShaderAnalysis.utilhelpers;
 using ValveResourceFormat.CompiledShader;
 using ValveResourceFormat.Serialization.VfxEval;
-using static MyShaderAnalysis.utilhelpers.FileSystem;
+using static MyShaderAnalysis.utilhelpers.FileSystemOld;
 using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
 using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
@@ -357,7 +357,7 @@ namespace MyShaderAnalysis
             foreach (string filenamepath in vcsFiles)
             {
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
-                FileTokens tokens = new(filenamepath);
+                FileTokensOld tokens = new(filenamepath);
                 foreach (var sfBlocks in shaderFile.sfBlocks)
                 {
                     if (sfBlocks.additionalParams.Count > 0)

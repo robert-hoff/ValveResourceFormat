@@ -8,7 +8,7 @@ using ValveResourceFormat.CompiledShader;
 using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
-using static MyShaderAnalysis.utilhelpers.FileSystem;
+
 
 /*
  * 14 March 2022

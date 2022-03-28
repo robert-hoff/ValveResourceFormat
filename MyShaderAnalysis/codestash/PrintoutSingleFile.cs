@@ -21,7 +21,7 @@ namespace MyShaderAnalysis.vcsanalysis
     {
         private OutputFormatterTabulatedData output;
         private string filenamepath;
-        private FileTokens fileTokens;
+        private FileTokensOld fileTokens;
         private ShaderFile shaderFile;
 
 
@@ -41,7 +41,7 @@ namespace MyShaderAnalysis.vcsanalysis
         {
             output = new OutputFormatterTabulatedData(OutputWriter);
             this.filenamepath = filenamepath;
-            fileTokens = new FileTokens(filenamepath);
+            fileTokens = new FileTokensOld(filenamepath);
             try
             {
                 shaderFile = InstantiateShaderFile(filenamepath);
@@ -81,7 +81,7 @@ namespace MyShaderAnalysis.vcsanalysis
                 output.Write("Related files:");
                 foreach (var f in relatedFiles)
                 {
-                    FileTokens fT = new FileTokens(f);
+                    FileTokensOld fT = new FileTokensOld(f);
                     output.Write($" <a href='{fT.GetServerFileUrl("summary2")}'>{fT.filename}</a>");
                 }
                 output.BreakLine();
@@ -140,7 +140,7 @@ namespace MyShaderAnalysis.vcsanalysis
                 output.Write("Related files:");
                 foreach (var f in relatedFiles)
                 {
-                    FileTokens fT = new FileTokens(f);
+                    FileTokensOld fT = new FileTokensOld(f);
                     output.Write($" <a href='{fT.GetServerFileUrl("summary2")}'>{fT.filename}</a>");
                 }
                 output.BreakLine();
@@ -546,7 +546,7 @@ namespace MyShaderAnalysis.vcsanalysis
                 output.BreakLine();
                 return;
             }
-            FileTokens fileTokens = new FileTokens(shaderFile.filenamepath);
+            FileTokensOld fileTokens = new FileTokensOld(shaderFile.filenamepath);
             // print the config headers every 100 frames
             int zframeCount = 0;
             // print the zframes

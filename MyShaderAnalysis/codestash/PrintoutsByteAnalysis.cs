@@ -3,7 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using MyShaderAnalysis.utilhelpers;
 using ValveResourceFormat.CompiledShader;
-using static MyShaderAnalysis.utilhelpers.FileSystem;
+using static MyShaderAnalysis.utilhelpers.FileSystemOld;
 using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
 using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
@@ -89,7 +89,7 @@ namespace MyShaderAnalysis
 
         static void PrintVcsFilesAsBytes(string filenamepath)
         {
-            FileTokens fileTokens = new FileTokens(filenamepath);
+            FileTokensOld fileTokens = new FileTokensOld(filenamepath);
             string outputFilenamepath = $"{fileTokens.GetServerFilenamepath("bytes", createDirs: true)}";
             FileWriter fileWriter = new FileWriter(outputFilenamepath, showOutputToConsole: false);
 
@@ -163,7 +163,7 @@ namespace MyShaderAnalysis
         static void BatchPrintZframeBytes(string filenamepath, int limitZframes)
         {
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
-            FileTokens fileTokens = new FileTokens(filenamepath);
+            FileTokensOld fileTokens = new FileTokensOld(filenamepath);
             int zframesToPrint = Math.Min(shaderFile.GetZFrameCount(), limitZframes);
             for (int i = 0; i < zframesToPrint; i++)
             {
@@ -178,17 +178,17 @@ namespace MyShaderAnalysis
             int ZFRAME_INDEX = 11;
             string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs";
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
-            FileTokens fileTokens = new FileTokens(filenamepath);
+            FileTokensOld fileTokens = new FileTokensOld(filenamepath);
             ZFrameFile zframe = shaderFile.GetZFrameFileByIndex(ZFRAME_INDEX);
             PrintZFrameBytes(zframe, fileTokens);
         }
 
 
-        static void PrintZFrameBytes(ZFrameFile zframe, FileTokens fileTokens = null)
+        static void PrintZFrameBytes(ZFrameFile zframe, FileTokensOld fileTokens = null)
         {
             if (fileTokens == null)
             {
-                fileTokens = new FileTokens(zframe.filenamepath);
+                fileTokens = new FileTokensOld(zframe.filenamepath);
             }
             string outputFilenamepath = fileTokens.GetZFrameHtmlFilenamepath(zframe.zframeId, "bytes", createDirs: true);
             FileWriter fileWriter = new FileWriter(outputFilenamepath, showOutputToConsole: false);
@@ -214,7 +214,7 @@ namespace MyShaderAnalysis
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             ZFrameFile zframe = shaderFile.GetZFrameFileByIndex(zframeIndex);
 
-            FileTokens fileTokens = new FileTokens(filenamepath);
+            FileTokensOld fileTokens = new FileTokensOld(filenamepath);
             string outputFilenamepath = fileTokens.GetZFrameHtmlFilenamepath(zframe.zframeId, "bytes", createDirs: true);
             FileWriter fileWriter = new FileWriter(outputFilenamepath, showOutputToConsole: false);
 
@@ -233,9 +233,9 @@ namespace MyShaderAnalysis
             string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/generic_light_pcgl_30_vs.vcs";
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(0);
-            FileTokens fileTokens = new FileTokens(filenamepath);
+            FileTokensOld fileTokens = new FileTokensOld(filenamepath);
 
-            string outputFilenamepath = $"{FileSystem.GetServerTestDir()}/testfile.html";
+            string outputFilenamepath = $"{FileSystemOld.GetServerTestDir()}/testfile.html";
             FileWriter fileWriter = new FileWriter(outputFilenamepath, showOutputToConsole: false);
 
             string htmlTitle = $"{fileTokens.namelabel}-Z[0x{ZFRAME_ID:x}]";
@@ -251,7 +251,7 @@ namespace MyShaderAnalysis
         static void DemoZframeHeaderAndTitle()
         {
             string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs";
-            FileTokens fileTokens = new FileTokens(filenamepath);
+            FileTokensOld fileTokens = new FileTokensOld(filenamepath);
             int zframeId = 20;
 
             // html title
@@ -295,7 +295,7 @@ namespace MyShaderAnalysis
 
             foreach (var filenamepath in vcsFiles)
             {
-                FileTokens fileTokens = new FileTokens(filenamepath);
+                FileTokensOld fileTokens = new FileTokensOld(filenamepath);
                 if (!fileTokens.sourceType.Equals("glsl") && !fileTokens.sourceType.Equals("gles"))
                 {
                     throw new ShaderParserException("This only makes sense for glsl or gles sources");
@@ -339,7 +339,7 @@ namespace MyShaderAnalysis
             // string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/apply_fog_pcgl_40_ps.vcs";
             string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/bilateral_blur_pcgl_30_ps.vcs";
             // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs";
-            FileTokens fileTokens = new FileTokens(filenamepath);
+            FileTokensOld fileTokens = new FileTokensOld(filenamepath);
             if (!fileTokens.sourceType.Equals("glsl"))
             {
                 throw new ShaderParserException("This only makes sense for glsl sources");

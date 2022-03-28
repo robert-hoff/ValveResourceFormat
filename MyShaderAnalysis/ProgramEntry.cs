@@ -7,7 +7,7 @@ using System.Linq;
 using MyShaderAnalysis.utilhelpers;
 using MyShaderAnalysis.utilhelpers.snippetcode;
 using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
-using static MyShaderAnalysis.utilhelpers.FileSystem;
+using static MyShaderAnalysis.utilhelpers.FileSystemOld;
 using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
@@ -35,7 +35,7 @@ namespace MyShaderAnalysis
 
 
             // -- revise how files are managed as collections
-            // CreateHtmlServerFiles.RunTrials();
+            CreateHtmlServerFiles.RunTrials();
 
 
             // -- process all types through single entry
@@ -60,7 +60,7 @@ namespace MyShaderAnalysis
 
 
             // -- fall 2021
-            ProgramEntriesOld.RunTrials();
+            // ProgramEntriesOld.RunTrials();
 
 
 

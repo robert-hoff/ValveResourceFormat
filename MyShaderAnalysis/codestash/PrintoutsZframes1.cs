@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MyShaderAnalysis.utilhelpers;
 using ValveResourceFormat.CompiledShader;
-using static MyShaderAnalysis.utilhelpers.FileSystem;
+using static MyShaderAnalysis.utilhelpers.FileSystemOld;
 using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
 using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
@@ -136,13 +136,13 @@ namespace MyShaderAnalysis
 
         static void ZFileSummary(ARCHIVE archive, string filename, long zframeId, bool writeFile = false, bool disableOutput = false)
         {
-            FileTokens vcsFile = new(archive, filename);
+            FileTokensOld vcsFile = new(archive, filename);
             ZFileSummary(vcsFile, zframeId, writeFile, disableOutput);
         }
 
 
 
-        static void ZFileSummary(FileTokens vcsFile, long zframeId, bool writeFile = false, bool disableOutput = false)
+        static void ZFileSummary(FileTokensOld vcsFile, long zframeId, bool writeFile = false, bool disableOutput = false)
         {
             // writeFile = false;
             // DisableOutput = true;
@@ -264,7 +264,7 @@ namespace MyShaderAnalysis
 
         static void PrintDataBlocks3(ShaderFile shaderFile, ZFrameFile zframeFile, SortedDictionary<int, int> writeSequences)
         {
-            FileTokens fileTokens = new FileTokens(shaderFile.filenamepath);
+            FileTokensOld fileTokens = new FileTokensOld(shaderFile.filenamepath);
 
             Dictionary<int, GpuSource> blockIdToSource = GetBlockIdToSource(zframeFile);
             string configHeader = $"D-Param configurations ({blockIdToSource.Count})";
@@ -714,11 +714,11 @@ namespace MyShaderAnalysis
                 WriteHtmlFile("Zframes", "Zframes");
             }
 
-            Dictionary<FileTokens, List<long>> zframesFound = new();
+            Dictionary<FileTokensOld, List<long>> zframesFound = new();
             List<string> coreFiles = GetVcsFiles(DOTA_GAME_PCGL_SOURCE, null, VcsProgramType.Undetermined, 30);
             foreach (var filenamepath in coreFiles)
             {
-                FileTokens vcsFile = new(ARCHIVE.dotacore_pcgl, filenamepath);
+                FileTokensOld vcsFile = new(ARCHIVE.dotacore_pcgl, filenamepath);
                 List<long> zframeIds = new();
                 zframesFound.Add(vcsFile, zframeIds);
                 foreach (var item in vcsFile.GetZFrameListing())
@@ -731,7 +731,7 @@ namespace MyShaderAnalysis
             List<string> gameFiles = GetVcsFiles(DOTA_CORE_PCGL_SOURCE, null, VcsProgramType.Undetermined, 30);
             foreach (var filenamepath in gameFiles)
             {
-                FileTokens vcsFile = new(ARCHIVE.dotagame_pcgl, filenamepath);
+                FileTokensOld vcsFile = new(ARCHIVE.dotagame_pcgl, filenamepath);
                 List<long> zframeIds = new();
                 zframesFound.Add(vcsFile, zframeIds);
                 foreach (var item in vcsFile.GetZFrameListing())
@@ -743,7 +743,7 @@ namespace MyShaderAnalysis
 
             foreach (var item in zframesFound)
             {
-                FileTokens vcsFile = item.Key;
+                FileTokensOld vcsFile = item.Key;
                 List<long> zframeIds = item.Value;
 
                 string htmlName = $"[{vcsFile.RemoveBaseDir()}]".PadRight(60);

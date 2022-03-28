@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ValveResourceFormat.CompiledShader;
 using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
-using static MyShaderAnalysis.utilhelpers.FileSystem;
+using static MyShaderAnalysis.utilhelpers.FileSystemOld;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
 
@@ -17,14 +17,14 @@ namespace MyShaderAnalysis.utilhelpers
     {
 
 
-        public FileTokens ftFile { get; }
-        public FileTokens vsFile { get; }
-        public FileTokens psFile { get; }
+        public FileTokensOld ftFile { get; }
+        public FileTokensOld vsFile { get; }
+        public FileTokensOld psFile { get; }
 
 
         public FileTriple(ARCHIVE archive, string ftFileName)
         {
-            ftFile = new FileTokens(archive, ftFileName);
+            ftFile = new FileTokensOld(archive, ftFileName);
             if (ftFile.vcsProgramType != VcsProgramType.Features)
             {
                 throw new System.Exception("not a features file");
@@ -33,8 +33,8 @@ namespace MyShaderAnalysis.utilhelpers
             string psNamepath = $"{ftFile.filenamepath[0..^12]}ps.vcs";
             if (File.Exists(vsNamepath) && File.Exists(psNamepath))
             {
-                vsFile = new FileTokens(archive, vsNamepath);
-                psFile = new FileTokens(archive, psNamepath);
+                vsFile = new FileTokensOld(archive, vsNamepath);
+                psFile = new FileTokensOld(archive, psNamepath);
             } else
             {
                 throw new ShaderParserException($"this features file doesn't have associated vs and ps files {ftFile.GetShortHandName()}");
@@ -44,9 +44,9 @@ namespace MyShaderAnalysis.utilhelpers
 
         public FileTriple(ARCHIVE archive, string ftFileName, string vsFileName, string psFileName)
         {
-            ftFile = new FileTokens(archive, ftFileName);
-            vsFile = new FileTokens(archive, vsFileName);
-            psFile = new FileTokens(archive, psFileName);
+            ftFile = new FileTokensOld(archive, ftFileName);
+            vsFile = new FileTokensOld(archive, vsFileName);
+            psFile = new FileTokensOld(archive, psFileName);
         }
 
 
@@ -54,7 +54,7 @@ namespace MyShaderAnalysis.utilhelpers
         public static FileTriple GetTripleIfExists(ARCHIVE archive, string ftFilename)
         {
             ftFilename = Path.GetFileName(ftFilename);
-            FileTokens ftTokens = new(archive, ftFilename);
+            FileTokensOld ftTokens = new(archive, ftFilename);
             if (!ftFilename.EndsWith("features.vcs"))
             {
                 throw new System.Exception("not a features file");
