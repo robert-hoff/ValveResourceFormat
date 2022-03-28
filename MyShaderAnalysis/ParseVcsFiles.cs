@@ -35,9 +35,9 @@ namespace MyShaderAnalysis
 
         public static void RunTrials()
         {
-            // PrintAndSaveSingleFilePostProcessResult();
 
-            RunPrintVcsSummaryPostProcess();
+            RunPrintZFrameSummaryPostProcess();
+            // RunPrintVcsSummaryPostProcess();
 
             // RunPrintVcsByteDetail();
             // RunPrintVcsSummary();
@@ -45,11 +45,63 @@ namespace MyShaderAnalysis
             // RunPrintZFrameBytes();
             // RunPrintGpuSource();
 
+
+            // -- these methods uses largely redundant code, direct parsing to the production code
             // RunBatchPrintVcsFiles();
             // RunPrintVcsFile();
 
-
         }
+
+
+
+        static void RunPrintZFrameSummaryPostProcess()
+        {
+            int ZFRAME_INDEX0 = 0;
+            int ZFRAME_INDEX1 = 1;
+            // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs";
+            string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/3dskyboxstencil_pcgl_30_vs.vcs";
+
+            ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
+            FileTokens fileTokens = new FileTokens(filenamepath);
+
+            ZFrameFile zframe0 = shaderFile.GetZFrameFileByIndex(ZFRAME_INDEX0);
+            PrintZFrameSummaryPostProcess(shaderFile, zframe0, fileTokens);
+            // ZFrameFile zframe1 = shaderFile.GetZFrameFileByIndex(ZFRAME_INDEX1);
+            // PrintZFrameSummaryPostProcess(shaderFile, zframe1, fileTokens);
+        }
+
+
+
+        static void PrintZFrameSummaryPostProcess(ShaderFile shaderFile, ZFrameFile zframeFile, FileTokens fileTokens = null)
+        {
+            if (fileTokens == null)
+            {
+                fileTokens = new FileTokens(zframeFile.filenamepath);
+            }
+
+
+
+            var buffer = new StringWriter(CultureInfo.InvariantCulture);
+            new PrintZFrameSummary(shaderFile, zframeFile, outputWriter: buffer.Write, showRichTextBoxLinks: true);
+
+            string processedData = new PostProcessZframeFile(zframeFile, fileTokens).PostProcessVcsData(buffer.ToString());
+
+
+            string outputFilenamepath = fileTokens.GetZFrameHtmlFilenamepath(zframeFile.zframeId, "summary", createDirs: true);
+            FileWriter fileWriter = new FileWriter(outputFilenamepath, showOutputToConsole: false);
+
+            // This emulates the zframe name in the VRF viewer - omitting {fileTokens.namelabel} (e.g. '3dskyboxstencil')
+            string htmlTitle = $"{fileTokens.vcstoken}[{zframeFile.zframeId:x}]";
+            string htmlHeader = fileTokens.GetZFrameHtmlFilename(zframeFile.zframeId)[..^5];
+            fileWriter.WriteHtmlHeader(htmlTitle, htmlHeader);
+
+            fileWriter.GetOutputWriter()(processedData);
+            // -- (for testing) write the buffer without any post processing
+            // fileWriter.GetOutputWriter()(buffer.ToString());
+            fileWriter.CloseStreamWriter();
+        }
+
+
 
 
         static void RunPrintVcsSummaryPostProcess()
@@ -77,16 +129,15 @@ namespace MyShaderAnalysis
             string outputFilenamepath = $"{fileTokens.GetServerFilenamepath("summary2", createDirs: true)}";
             FileWriter fileWriter = new FileWriter(outputFilenamepath, showOutputToConsole: false);
             fileWriter.WriteHtmlHeader(fileTokens.GetShortName(), fileTokens.GetBaseName());
-
-
             fileWriter.GetOutputWriter()(processedData);
+            // -- write the buffer without any post processing
             // fileWriter.GetOutputWriter()(buffer.ToString());
-
-
             fileWriter.CloseStreamWriter();
         }
 
 
+
+        // no post-processing performed here (therefore links won't be enabled)
 
         static void RunPrintVcsSummary()
         {
@@ -110,7 +161,9 @@ namespace MyShaderAnalysis
         {
             int ZFRAME_INDEX0 = 0;
             int ZFRAME_INDEX1 = 1;
-            string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs";
+            // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs";
+            string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/3dskyboxstencil_pcgl_30_vs.vcs";
+
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             FileTokens fileTokens = new FileTokens(filenamepath);
 
@@ -119,6 +172,8 @@ namespace MyShaderAnalysis
             ZFrameFile zframe1 = shaderFile.GetZFrameFileByIndex(ZFRAME_INDEX1);
             PrintZFrameSummary(shaderFile, zframe1, fileTokens);
         }
+
+
 
         static void RunPrintZFrameBytes()
         {
@@ -173,7 +228,9 @@ namespace MyShaderAnalysis
             string outputFilenamepath = fileTokens.GetZFrameHtmlFilenamepath(zframeFile.zframeId, "summary", createDirs: true);
             FileWriter fileWriter = new FileWriter(outputFilenamepath, showOutputToConsole: false);
 
-            string htmlTitle = $"{fileTokens.namelabel}-Z[0x{zframeFile.zframeId:x}]";
+            // string htmlTitle = $"{fileTokens.namelabel}-{fileTokens.vcstoken}[{zframeFile.zframeId:x}]";
+            // This emulates the name in the VRF viewer - omitting {fileTokens.namelabel}
+            string htmlTitle = $"{fileTokens.vcstoken}[{zframeFile.zframeId:x}]";
             string htmlHeader = fileTokens.GetZFrameHtmlFilename(zframeFile.zframeId)[..^5];
             fileWriter.WriteHtmlHeader(htmlTitle, htmlHeader);
 

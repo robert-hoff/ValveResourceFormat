@@ -34,13 +34,18 @@ namespace MyShaderAnalysis
             Console.SetOut(new ToDebugWriter());
 
 
+            // -- process all types through single entry
+            ParseVcsFiles.RunTrials();
+
+
+
             // Methods for building html printouts
             // -- vcs and zframe byte detail
             // PrintoutsByteAnalysis.RunTrials();
             // // -- formatted zframes
-            PrintoutsZframes1.RunTrials();
+            // PrintoutsZframes1.RunTrials();
             // -- formatted vcs
-            ParseVcsFiles.RunTrials();
+            // ParseVcsFiles.RunTrials();
 
 
 

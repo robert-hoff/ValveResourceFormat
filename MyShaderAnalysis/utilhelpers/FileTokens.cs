@@ -107,6 +107,7 @@ namespace MyShaderAnalysis.utilhelpers
         }
 
         // applicable to glsl and gles files
+        // todo - this should now be applicable in general (test this)
         public string GetGlslServerDir(bool createDirs = false)
         {
             string serverGlslDir = $"{GetServerFileDir()}/{sourceType}";
@@ -117,16 +118,35 @@ namespace MyShaderAnalysis.utilhelpers
             return serverGlslDir;
         }
 
+        public string GetGlslServerUrl(bool createDirs = false)
+        {
+            return $"{GetServerFilePath()}/{sourceType}";
+        }
+
+
+        // todo - not general, only works for glsl
         public string GetGlslHtmlFilename(GlslSource glslSource)
         {
             return $"{sourceType}-{glslSource.GetEditorRefIdAsString()}.html";
         }
 
+        public string GetGlslHtmlFilenameGeneral(GpuSource gpuSource)
+        {
+            return $"{sourceType}-{gpuSource.GetEditorRefIdAsString()}.html";
+        }
+
+        // todo - not general, only works for glsl
         public string GetGlslHtmlUrl(GlslSource glslSource)
         {
             // sourceType may be either "glsl" or "gles" (which is considered as a GlslSource datablock)
             return $"{GetServerFilePath()}/{sourceType}/{GetGlslHtmlFilename(glslSource)}";
         }
+
+        public string GetGlslHtmlUrlGeneral(GpuSource gpuSource)
+        {
+            return $"{GetServerFilePath()}/{sourceType}/{GetGlslHtmlFilenameGeneral(gpuSource)}";
+        }
+
 
         public string GetZFramesServerDir(bool createDirs = false)
         {

@@ -1,10 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using MyShaderAnalysis.utilhelpers;
 using ValveResourceFormat.CompiledShader;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
@@ -19,7 +14,7 @@ namespace MyShaderAnalysis.vcsanalysis
      *  \\debug_wireframe_2d_vulkan_50_features.vcs\bytes
      *  \\00000000
      *
-     *  -- links from zframe files
+     *  -- links from zframe files (using PostProcessZframeFile.cs for these)
      *  \\debug_wireframe_2d_vulkan_50_vs.vcs-ZFRAME00000000-databytes
      *  \\source\0
      *
@@ -33,23 +28,12 @@ namespace MyShaderAnalysis.vcsanalysis
      */
     class PostProcessVcsFile
     {
-
-        public PostProcessVcsFile(FileTokens fileTokens, string formattedData)
-        {
-            // Console.WriteLine($"{formattedData}");
-            // RegexExample3();
-            // RegexExample2();
-            // RegexExample1();
-            // Console.WriteLine(fileTokens.GetServerFileUrl("sdf"));
-        }
-
         private FileTokens fileTokens;
 
         public PostProcessVcsFile(FileTokens fileTokens)
         {
             this.fileTokens = fileTokens;
         }
-
 
 
         public string PostProcessVcsData(string data)
@@ -66,8 +50,7 @@ namespace MyShaderAnalysis.vcsanalysis
         }
 
 
-
-        public string ReplaceVcsDoubleToken(Match m)
+        private string ReplaceVcsDoubleToken(Match m)
         {
             GroupCollection groups = m.Groups;
             switch (groups[2].ToString())
@@ -81,7 +64,7 @@ namespace MyShaderAnalysis.vcsanalysis
         }
 
         // either a file name or a zframeId
-        public string ReplaceVcsSingleToken(Match m)
+        private string ReplaceVcsSingleToken(Match m)
         {
             GroupCollection groups = m.Groups;
             VcsProgramType programType = ComputeVcsProgramType(groups[1].ToString());
@@ -95,28 +78,6 @@ namespace MyShaderAnalysis.vcsanalysis
             }
         }
 
-
-
-
-        private void RegexExample3()
-        {
-            string sInput = "VertexShader (spritecard_pcgl_30_vs.vcs) (view byte detail \\\\spritecard_pcgl_30_vs.vcs\\bytes)\nhello";
-            Regex rx = new Regex(@"\\\\([a-z0-9_\.]*)\\([a-z0-9_\.]*)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-            MatchEvaluator myEvaluator = new MatchEvaluator(ReplaceDoubleToken);
-            sInput = rx.Replace(sInput, myEvaluator);
-            Console.WriteLine(sInput);
-        }
-        public string ReplaceDoubleToken(Match m)
-        {
-            // i++;
-            // Console.WriteLine($"--");
-            // Console.WriteLine($"{m.Value}");
-            GroupCollection groups = m.Groups;
-            return $"[replacing {groups[1]} and {groups[2]}]";
-        }
-
-
-
-
     }
 }
+
