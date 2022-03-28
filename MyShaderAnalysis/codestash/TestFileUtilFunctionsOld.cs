@@ -36,10 +36,8 @@ namespace MyShaderAnalysis.utilhelpers
         static void ShowFileTokenDetail()
         {
             string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_ps.vcs";
-
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             ZFrameFile zframeFile = shaderFile.GetZFrameFile(0);
-
             FileTokensOld fileToken = new FileTokensOld(filenamepath);
 
             Console.WriteLine($"GetServerFileDir()                  {fileToken.GetServerFileDir()}");

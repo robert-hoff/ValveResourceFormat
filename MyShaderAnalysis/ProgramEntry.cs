@@ -65,8 +65,8 @@ namespace MyShaderAnalysis
 
 
             // -- testing code
+            // TestFileUtilFunctions.RunTrials();
             // RegexExamples.RunTrials();
-            // TestUtilFunctions.RunTrials();
             // TestBasicParsing.RunTrials();
             // Snippetcode.RunTrials();
             // TestStuff.RunTrials();

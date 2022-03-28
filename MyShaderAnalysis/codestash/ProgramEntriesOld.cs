@@ -33,6 +33,8 @@ namespace MyShaderAnalysis
             // StaticAnalysis.RunTrials();
             // LzmaAnalysis.RunTrials();
 
+            // TestUtilFunctionsOld.RunTrials();
+
             // -- truly old code (doesn't work any longer)
             // ShaderAnalysis.RunTrials();
 

@@ -212,13 +212,22 @@ dotnet_style_explicit_tuple_names = true:suggestion
 #
 
 # Newline settings
+# csharp_new_line_before_open_brace = all
+# csharp_new_line_before_else = true:suggestion
+# csharp_new_line_before_catch = true:suggestion
+# csharp_new_line_before_finally = true:suggestion
+# csharp_new_line_before_members_in_object_initializers = true:suggestion
+# csharp_new_line_before_members_in_anonymous_types = true:suggestion
+# csharp_new_line_between_query_expression_clauses = true:suggestion
+
 csharp_new_line_before_open_brace = all
-csharp_new_line_before_else = true:suggestion
-csharp_new_line_before_catch = true:suggestion
-csharp_new_line_before_finally = true:suggestion
-csharp_new_line_before_members_in_object_initializers = true:suggestion
-csharp_new_line_before_members_in_anonymous_types = true:suggestion
-csharp_new_line_between_query_expression_clauses = true:suggestion
+csharp_new_line_before_else = false
+csharp_new_line_before_catch = false
+csharp_new_line_before_finally = false
+csharp_new_line_before_members_in_object_initializers = false
+csharp_new_line_before_members_in_anonymous_types = false
+csharp_new_line_between_query_expression_clauses = false
+
 
 # Indentation preferences
 csharp_indent_block_contents = true:suggestion
