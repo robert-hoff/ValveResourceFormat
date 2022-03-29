@@ -79,7 +79,7 @@ namespace ValveResourceFormat.CompiledShader
 
         private void PrintFrameLeadingArgs()
         {
-            string headerText = "Frame Header";
+            string headerText = "ZFrame Headers";
             OutputWriteLine(headerText);
             OutputWriteLine(new string('-', headerText.Length));
             OutputWrite(zframeFile.ZFrameHeaderStringDescription());
@@ -219,9 +219,9 @@ namespace ValveResourceFormat.CompiledShader
             OutputWriteLine(new string('-', configHeader.Length));
             OutputWriteLine(
                 "Each dynamic parameters has 1 or more defined states. The disabled state (0) is shown as '_'\n" +
-                "All permitted configurations are listed with their matching write sequence and GPU source (there is always\n" +
-                "one of these for each configuration). Purely here to save space, the parameter names (original\n" +
-                "names starting with D_) are shortened to 3-5 length strings (shown in parenthesis).\n");
+                "All permitted configurations are listed with their matching write sequence and GPU source (there is exactly\n" +
+                "one of these for each configuration). To save space, the parameter names (original names starting with D_)\n" +
+                "are shortened to 3-5 length strings (shown in parenthesis).\n");
             PrintAbbreviations();
             List<int> activeBlockIds = GetActiveBlockIds();
             List<string> dParamNames = new();

@@ -8,10 +8,31 @@ using ValveResourceFormat.CompiledShader;
 using static MyShaderAnalysis.utilhelpers.FileArchives;
 using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
 
+/*
+ *
+ *
+ * GetServerFileDir()                  Z:/dev/www/vcs.codecreation.dev/dota-game/pcgl/multiblend_pcgl_30
+ * GetServerFilenamepath(label)        Z:/dev/www/vcs.codecreation.dev/dota-game/pcgl/multiblend_pcgl_30/multiblend_pcgl_30_ps-label.html
+ * GetServerFilePath()                 /dota-game/pcgl/multiblend_pcgl_30
+ * GetServerFileUrl(label)             /dota-game/pcgl/multiblend_pcgl_30/multiblend_pcgl_30_ps-label.html
+ * GetGlslServerDir()                  Z:/dev/www/vcs.codecreation.dev/dota-game/pcgl/multiblend_pcgl_30/glsl
+ * GetGlslHtmlFilename(gpuSource)      glsl-e46ad784246f747dd88a611874194020.html
+ * GetGlslHtmlUrl(gpusource)           /dota-game/pcgl/multiblend_pcgl_30/glsl/glsl-e46ad784246f747dd88a611874194020.html
+ * GetZFramesServerDir()               Z:/dev/www/vcs.codecreation.dev/dota-game/pcgl/multiblend_pcgl_30/zframes
+ * GetZFramesServerPath()              /dota-game/pcgl/multiblend_pcgl_30/zframes
+ * GetZFrameHtmlFilenamepath(id,label) Z:/dev/www/vcs.codecreation.dev/dota-game/pcgl/multiblend_pcgl_30/zframes/multiblend_pcgl_30_ps-ZFRAME00000000-label.html
+ * GetZFrameHtmlFilename(id,label)     multiblend_pcgl_30_ps-ZFRAME00000000-label.html
+ * GetZFrameLink(id,label)             /dota-game/pcgl/multiblend_pcgl_30/zframes/multiblend_pcgl_30_ps-ZFRAME00000000-label.html
+ * GetShortHandName()                  multiblend_pcgl_30_ps (dota)
+ *
+ *
+ *
+ */
 namespace MyShaderAnalysis.utilhelpers
 {
     internal class FileVcsTokens
     {
+        public ARCHIVE archive { get; }
         public string name { get; }          // name without the file extension, e.g. spritecard_pcgl_30_ps
         public string filename { get; }
         public string filenamepath { get; }
@@ -38,7 +59,7 @@ namespace MyShaderAnalysis.utilhelpers
             {
                 throw new ShaderParserException("file doesn't exist");
             }
-
+            this.archive = archive;
             this.filename = filename;
             this.name = filename[0..^4];
             this.foldername = name.Substring(0, name.LastIndexOf('_'));
@@ -59,6 +80,189 @@ namespace MyShaderAnalysis.utilhelpers
         {
             shaderFile ??= InstantiateShaderFile(filenamepath);
             return shaderFile;
+        }
+
+
+        /*
+         * e.g. Z:/dev/www/vcs.codecreation.dev/dota-game/pcgl/spritecard_pcgl_30_ps
+         *
+         */
+        public string GetServerFileDir(bool createDirs = false)
+        {
+            string serverFileDir = $"{serverdir}/{archivename}/{platformType}/{foldername}";
+            if (createDirs)
+            {
+                Directory.CreateDirectory(serverFileDir);
+            }
+            return serverFileDir;
+        }
+
+        public string GetServerFilenamepath(string label, bool createDirs = false)
+        {
+            return $"{GetServerFileDir(createDirs)}/{name}-{label}.html";
+        }
+
+        public string GetServerFilePath()
+        {
+            return $"/{archivename}/{platformType}/{foldername}";
+        }
+        public string GetServerFileUrl(string label)
+        {
+            return $"/{archivename}/{platformType}/{foldername}/{name}-{label}.html";
+        }
+
+        // applicable to glsl and gles files
+        // todo - this should now be applicable in general (test this)
+        public string GetGlslServerDir(bool createDirs = false)
+        {
+            string serverGlslDir = $"{GetServerFileDir()}/{sourceType}";
+            if (createDirs)
+            {
+                Directory.CreateDirectory(serverGlslDir);
+            }
+            return serverGlslDir;
+        }
+
+        public string GetGlslServerUrl(bool createDirs = false)
+        {
+            return $"{GetServerFilePath()}/{sourceType}";
+        }
+
+
+        // todo - not general, only works for glsl
+        public string GetGlslHtmlFilename(GlslSource glslSource)
+        {
+            return $"{sourceType}-{glslSource.GetEditorRefIdAsString()}.html";
+        }
+
+        public string GetGlslHtmlFilenameGeneral(GpuSource gpuSource)
+        {
+            return $"{sourceType}-{gpuSource.GetEditorRefIdAsString()}.html";
+        }
+
+        // todo - not general, only works for glsl
+        public string GetGlslHtmlUrl(GlslSource glslSource)
+        {
+            // sourceType may be either "glsl" or "gles" (which is considered as a GlslSource datablock)
+            return $"{GetServerFilePath()}/{sourceType}/{GetGlslHtmlFilename(glslSource)}";
+        }
+
+        public string GetGlslHtmlUrlGeneral(GpuSource gpuSource)
+        {
+            return $"{GetServerFilePath()}/{sourceType}/{GetGlslHtmlFilenameGeneral(gpuSource)}";
+        }
+
+
+        public string GetZFramesServerDir(bool createDirs = false)
+        {
+            string serverZframesDir = $"{GetServerFileDir()}/zframes";
+            if (createDirs)
+            {
+                Directory.CreateDirectory(serverZframesDir);
+            }
+            return serverZframesDir;
+        }
+
+        public void CreateZFramesDirectory(bool createDirs = true)
+        {
+            GetZFramesServerDir(createDirs);
+        }
+
+        public string GetZFramesServerPath()
+        {
+            return $"{GetServerFilePath()}/zframes";
+        }
+
+        public string GetZFrameHtmlFilenamepath(long zframeId, string label, bool createDirs = true)
+        {
+            return $"{GetZFramesServerDir(createDirs)}/{name}-ZFRAME{zframeId:x08}-{label}.html";
+        }
+
+        public string GetZFrameHtmlFilename(long zframeId, string label = "")
+        {
+            if (label.Length > 0)
+            {
+                label = $"-{label}";
+            }
+            return $"{name}-ZFRAME{zframeId:x08}{label}.html";
+        }
+
+        public string GetZFrameLink(long zframeId, string label)
+        {
+            if (label.Length > 0)
+            {
+                label = $"-{label}";
+            }
+            return $"{GetZFramesServerPath()}/{name}-ZFRAME{zframeId:x08}{label}.html";
+        }
+
+        public List<string> GetZFrameListing()
+        {
+            List<string> zframeFiles = new();
+            if (!Directory.Exists(GetZFramesServerDir()))
+            {
+                return zframeFiles;
+            } else
+            {
+                foreach (var zframeFile in Directory.GetFiles(GetZFramesServerDir()))
+                {
+                    if (Path.GetFileName(zframeFile).StartsWith(name))
+                    {
+                        zframeFiles.Add(zframeFile);
+                    }
+                }
+                return zframeFiles;
+            }
+        }
+
+        // hero_pcgl_30_ps (dota)
+        public string GetShortHandName()
+        {
+            return $"{name} ({archivelabel})";
+        }
+
+        public string GetShortName()
+        {
+            return $"{namelabel}({platformType}-{vcstoken})";
+        }
+
+
+        public string GetBaseName()
+        {
+            return $"/{archivename}/{platformType}/{filename}";
+        }
+
+
+        // hero(pcgl-ps)
+        public string GetAbbreviatedName()
+        {
+            string source_type = platformType;
+            if (platformType.Equals("pc"))
+            {
+                source_type = sourceVersion.Equals("30") ? "dxil" : "dxbc";
+            }
+            return $"{namelabel}({source_type}-{vcstoken})";
+        }
+
+
+        // todo - this is a bit weird
+        public string GetBestZframesLink(long zframeId, bool noBrackets = false)
+        {
+            if (File.Exists(GetZFrameHtmlFilenamepath(zframeId, "summary")))
+            {
+                return noBrackets ?
+                    $"<a href='{GetZFrameLink(zframeId, "summary")}'>{zframeId:x08}</a>" :
+                    $"<a href='{GetZFrameLink(zframeId, "summary")}'>Z[{zframeId:x08}]</a>";
+            }
+            // no zframe exists return plaintext
+            return noBrackets ? $"{zframeId:x08}" : $"Z[{zframeId:x08}]";
+        }
+
+
+
+        public List<string> GetRelatedFiles()
+        {
+            return FileVcsCollection.GetRelatedFiles(archive, foldername);
         }
 
 

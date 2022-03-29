@@ -34,6 +34,12 @@ using System.Globalization;
  * and related zframes, and gpu sources
  *
  *
+ * NOTE NOTE - haven't as yet got round to implement the shaders using this collection idea.
+ *
+ *
+ *
+ *
+ *
  *
  *
  *
@@ -41,36 +47,95 @@ using System.Globalization;
 namespace MyShaderAnalysis
 {
 
-    class CreateHtmlServerFiles
+    public class CreateHtmlServerFiles
     {
 
         public static void RunTrials()
         {
-            new CreateHtmlServerFiles();
 
+            SaveServerSets();
+            // BackgroundExamples();
         }
 
 
-
-
-
-        public CreateHtmlServerFiles()
+        public static void SaveServerSets()
         {
-
-            Console.WriteLine($"CreateHtmlServerFiles");
+            // SaveAllServerFiles(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
+            SaveAllServerFiles(ARCHIVE.dotagame_pcgl, "3dskyboxstencil_pcgl_30_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
         }
+
+
+
+        public static void BackgroundExamples()
+        {
+            SaveAllServerFiles(requestedZframesToPrint: 5, requestedGpuSourcesToPrint: 5);
+            // SaveVcsBytesAndSummary();
+            // SaveZframeSummary(0);
+            // SaveZframeSummaries(20);
+            // SaveGpuSource(zframeId: 0, gpuSourceId: 0);
+            // SaveGpuSources(zframeId: 0, requestedGpuSourceToPrint: 20);
+        }
+
+
+        public static void SaveAllServerFiles(ARCHIVE archive, string filename, int zframesToPrint, int gpuSourcesToPrint)
+        {
+            ParseVcsFile vcsFile = new ParseVcsFile(archive, filename, convertLinksToHtml: true);
+            vcsFile.SaveAllServerFiles(zframesToPrint, gpuSourcesToPrint);
+        }
+
+
+
+        public static void SaveAllServerFiles(int requestedZframesToPrint, int requestedGpuSourcesToPrint)
+        {
+            ParseVcsFile vcsFile = new ParseVcsFile(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_vs.vcs", convertLinksToHtml: true);
+            vcsFile.SaveAllServerFiles(requestedZframesToPrint, requestedGpuSourcesToPrint);
+        }
+
+
+        public static void SaveVcsBytesAndSummary()
+        {
+            ParseVcsFile vcsFile = new ParseVcsFile(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_vs.vcs", convertLinksToHtml: true);
+            vcsFile.SaveVcsByteSummaryToHtml();
+            vcsFile.SaveVcsSummaryToHtml();
+        }
+
+
+        public static void SaveZframeSummary(int zframeId)
+        {
+            ParseVcsFile vcsFile = new ParseVcsFile(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_vs.vcs", convertLinksToHtml: true);
+            vcsFile.SaveZframeByteSummaryToHtml(zframeId);
+            vcsFile.SaveZframeSummaryToHtml(zframeId);
+        }
+
+
+        public static void SaveZframeSummaries(int requestedZframesToPrint)
+        {
+            ParseVcsFile vcsFile = new ParseVcsFile(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_vs.vcs", convertLinksToHtml: true);
+            // vcsFile.SaveZframeByteSummaries(requestedZframesToPrint);
+            vcsFile.SaveZframeSummaries(requestedZframesToPrint);
+        }
+
+
+        public static void SaveGpuSource(int zframeId, int gpuSourceId)
+        {
+            ParseVcsFile vcsFile = new ParseVcsFile(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_vs.vcs", convertLinksToHtml: true);
+            vcsFile.SaveGpuSourceToHtml(zframeId, gpuSourceId);
+        }
+
+
+        public static void SaveGpuSources(int zframeId, int requestedGpuSourcesToPrint)
+        {
+            ParseVcsFile vcsFile = new ParseVcsFile(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_vs.vcs", convertLinksToHtml: true);
+            vcsFile.SaveGpuSources(zframeId, requestedGpuSourcesToPrint);
+        }
+
+
 
 
 
 
     }
-
-
 }
-
-
-
-
 
 
 

@@ -52,7 +52,7 @@ namespace MyShaderAnalysis
             // -- formatted zframes
             PrintoutsZframes1.RunTrials();
             // -- formatted vcs
-            ParseVcsFilesOld.RunTrials();
+            ParseVcsFilesOld1.RunTrials();
         }
 
 

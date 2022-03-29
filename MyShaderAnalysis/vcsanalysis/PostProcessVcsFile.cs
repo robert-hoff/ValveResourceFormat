@@ -28,9 +28,9 @@ namespace MyShaderAnalysis.vcsanalysis
      */
     class PostProcessVcsFile
     {
-        private FileTokensOld fileTokens;
+        private FileVcsTokens fileTokens;
 
-        public PostProcessVcsFile(FileTokensOld fileTokens)
+        public PostProcessVcsFile(FileVcsTokens fileTokens)
         {
             this.fileTokens = fileTokens;
         }
@@ -56,7 +56,7 @@ namespace MyShaderAnalysis.vcsanalysis
             switch (groups[2].ToString())
             {
                 case "bytes":
-                    return $"<a href='{fileTokens.GetServerFileUrl("bytes")}'>{fileTokens.filename}\\bytes</a>";
+                    return $"<a href='{fileTokens.GetServerFileUrl("bytes")}'>{fileTokens.filename}/bytes</a>";
 
                 default:
                     throw new ShaderParserException($"Unrecognised link token: {groups[2].ToString()}"); ;

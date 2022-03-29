@@ -33,6 +33,11 @@ namespace MyShaderAnalysis.utilhelpers
          */
         public static List<string> GetRelatedFiles(ARCHIVE archive, string vcsCollectionName)
         {
+            if (vcsCollectionName.EndsWith(".vcs"))
+            {
+                vcsCollectionName = Path.GetFileName(vcsCollectionName);
+                vcsCollectionName = vcsCollectionName.Substring(0, vcsCollectionName.LastIndexOf('_'));
+            }
             List<string> relatedFiles = new();
             string featuresFile = null;
             foreach (var vcsFile in Directory.GetFiles(GetSourceDir(archive)))

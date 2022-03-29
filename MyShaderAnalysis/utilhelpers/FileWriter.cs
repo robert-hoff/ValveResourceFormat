@@ -12,8 +12,9 @@ namespace MyShaderAnalysis.utilhelpers
     public class FileWriter : IDisposable
     {
         private StreamWriter sw;
-        bool writeToConsole;
+        private bool writeToConsole;
         private bool writeAsHtml = false; // is set to true if html header is written
+        private bool swOpen = true;
 
         public FileWriter(string outputFilenamepath, bool showOutputToConsole = true)
         {
@@ -47,9 +48,9 @@ namespace MyShaderAnalysis.utilhelpers
                 WriteHtmlFooter();
             }
             sw.Close();
+            swOpen = false;
         }
 
-        // make sure to close the sw before disposing
         public void Dispose()
         {
             Dispose(true);
@@ -60,9 +61,19 @@ namespace MyShaderAnalysis.utilhelpers
         {
             if (disposing && sw != null)
             {
+                if (swOpen)
+                {
+                    CloseStreamWriter();
+                }
                 sw.Dispose();
                 sw = null;
             }
+        }
+
+
+        public void WriteData(string text)
+        {
+            sw.WriteLine(text);
         }
 
 

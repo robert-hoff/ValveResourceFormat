@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MyShaderAnalysis.utilhelpers;
 using ValveResourceFormat.CompiledShader;
-using static MyShaderAnalysis.utilhelpers.FileSystemOld;
+// using static MyShaderAnalysis.utilhelpers.FileSystemOld;
 using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
 using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
@@ -24,11 +24,17 @@ using System.Globalization;
  *
  *
  *
+ * NOTE - I wrote these methods after the methods ParseVcsFilesOld1.cs
+ * they are relativately new and use the post-processing system for generating html links.
+ * This was refactored and improved into the ParseVcsFile class (Mar 2022).
+ *
+ * There shouldn't be any functionality expressed in these methods that is not expressed in the ParseVcsFile class
+ *
  *
  */
 namespace MyShaderAnalysis
 {
-    public class ParseVcsFiles
+    public class ParseVcsFilesOld2
     {
         // const string OUTPUT_DIR = @"Z:/active/projects/dota2-sourcesdk-modding/shader-analysis-vcs-format/OUTPUT_DUMP";
         // const string SERVER_OUTPUT_DIR = @"Z:/dev/www/vcs.codecreation.dev/GEN-output";
@@ -37,7 +43,7 @@ namespace MyShaderAnalysis
         {
 
             // RunPrintZFrameSummaryPostProcess();
-            // RunPrintVcsSummaryPostProcess();
+            RunPrintVcsSummaryPostProcess();
 
             // RunPrintVcsByteDetail();
             // RunPrintVcsSummary();
@@ -54,10 +60,10 @@ namespace MyShaderAnalysis
             int ZFRAME_INDEX0 = 0;
             int ZFRAME_INDEX1 = 1;
             // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs";
-            string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/3dskyboxstencil_pcgl_30_vs.vcs";
+            string filenamepath = $"{FileSystemOld.DOTA_GAME_PCGL_SOURCE}/3dskyboxstencil_pcgl_30_vs.vcs";
 
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
-            FileTokensOld fileTokens = new FileTokensOld(filenamepath);
+            FileVcsTokens fileTokens = new FileVcsTokens(FileArchives.ARCHIVE.dotagame_pcgl, filenamepath);
 
             ZFrameFile zframe0 = shaderFile.GetZFrameFileByIndex(ZFRAME_INDEX0);
             PrintZFrameSummaryPostProcess(shaderFile, zframe0, fileTokens);
@@ -67,19 +73,18 @@ namespace MyShaderAnalysis
 
 
 
-        static void PrintZFrameSummaryPostProcess(ShaderFile shaderFile, ZFrameFile zframeFile, FileTokensOld fileTokens = null)
+        static void PrintZFrameSummaryPostProcess(ShaderFile shaderFile, ZFrameFile zframeFile, FileVcsTokens fileTokens = null)
         {
-            if (fileTokens == null)
-            {
-                fileTokens = new FileTokensOld(zframeFile.filenamepath);
-            }
-
+            //if (fileTokens == null)
+            //{
+            //    fileTokens = new FileTokensOld(zframeFile.filenamepath);
+            //}
 
 
             var buffer = new StringWriter(CultureInfo.InvariantCulture);
             new PrintZFrameSummary(shaderFile, zframeFile, outputWriter: buffer.Write, showRichTextBoxLinks: true);
 
-            string processedData = new PostProcessZframeFile(zframeFile, fileTokens).PostProcessVcsData(buffer.ToString());
+            string processedData = new PostProcessZframeFile(zframeFile, fileTokens).PostProcessZframeData(buffer.ToString());
 
 
             string outputFilenamepath = fileTokens.GetZFrameHtmlFilenamepath(zframeFile.zframeId, "summary", createDirs: true);
@@ -102,10 +107,10 @@ namespace MyShaderAnalysis
         static void RunPrintVcsSummaryPostProcess()
         {
             // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_features.vcs";
-            // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs";
+            string filenamepath = $"{FileSystemOld.DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs";
             // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_ps.vcs";
             // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/3dskyboxstencil_pcgl_30_features.vcs";
-            string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/3dskyboxstencil_pcgl_30_ps.vcs";
+            // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/3dskyboxstencil_pcgl_30_ps.vcs";
             // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/3dskyboxstencil_pcgl_30_vs.vcs";
             PrintVcsSummaryPostProcess(filenamepath);
         }
@@ -113,9 +118,10 @@ namespace MyShaderAnalysis
 
         static void PrintVcsSummaryPostProcess(string filenamepath)
         {
-            FileTokensOld fileTokens = new FileTokensOld(filenamepath);
+            FileVcsTokens fileTokens = new FileVcsTokens(FileArchives.ARCHIVE.dotagame_pcgl, filenamepath);
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
-            List<string> relatedFiles = GetRelatedFiles2(fileTokens.filenamepath);
+            // List<string> relatedFiles = GetRelatedFiles2(fileTokens.filenamepath);
+            List<string> relatedFiles = FileVcsCollection.GetRelatedFiles(FileArchives.ARCHIVE.dotagame_pcgl, fileTokens.filenamepath);
             var buffer = new StringWriter(CultureInfo.InvariantCulture);
             new PrintVcsFileSummary(shaderFile, buffer.Write, showRichTextBoxLinks: true, relatedFiles);
 
@@ -136,7 +142,7 @@ namespace MyShaderAnalysis
 
         static void RunPrintVcsSummary()
         {
-            string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_features.vcs";
+            string filenamepath = $"{FileSystemOld.DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_features.vcs";
             // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs";
             // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_ps.vcs";
             PrintVcsSummary(filenamepath);
@@ -147,7 +153,7 @@ namespace MyShaderAnalysis
             // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_features.vcs";
             // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs";
             // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_ps.vcs";
-            string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/3dskyboxstencil_pcgl_30_features.vcs";
+            string filenamepath = $"{FileSystemOld.DOTA_GAME_PCGL_SOURCE}/3dskyboxstencil_pcgl_30_features.vcs";
             PrintVcsByteDetail(filenamepath);
         }
 
@@ -157,7 +163,7 @@ namespace MyShaderAnalysis
             int ZFRAME_INDEX0 = 0;
             int ZFRAME_INDEX1 = 1;
             // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs";
-            string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/3dskyboxstencil_pcgl_30_vs.vcs";
+            string filenamepath = $"{FileSystemOld.DOTA_GAME_PCGL_SOURCE}/3dskyboxstencil_pcgl_30_vs.vcs";
 
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             FileTokensOld fileTokens = new FileTokensOld(filenamepath);
@@ -174,7 +180,7 @@ namespace MyShaderAnalysis
         {
             int ZFRAME_INDEX0 = 0;
             int ZFRAME_INDEX1 = 1;
-            string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs";
+            string filenamepath = $"{FileSystemOld.DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs";
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             FileTokensOld fileTokens = new FileTokensOld(filenamepath);
 
@@ -257,7 +263,7 @@ namespace MyShaderAnalysis
         {
             int ZFRAME_INDEX0 = 0;
             int ZFRAME_INDEX1 = 1;
-            string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs";
+            string filenamepath = $"{FileSystemOld.DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs";
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             FileTokensOld fileTokens = new FileTokensOld(filenamepath);
             ZFrameFile zframe0 = shaderFile.GetZFrameFileByIndex(ZFRAME_INDEX0);

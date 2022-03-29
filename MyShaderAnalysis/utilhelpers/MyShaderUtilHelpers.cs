@@ -389,7 +389,13 @@ namespace MyShaderAnalysis.utilhelpers
         }
 
 
-        // not sorted in any way, backslashes not replaced, also includes the input file
+        /*
+         * not sorted in any way, backslashes not replaced, also includes the input file.
+         * Returns filenames only (does not include path)
+         * E.g.
+         * {hero_pcgl_30_features.vcs, hero_pcgl_30_ps.vcs, hero_pcgl_30_psrs.vcs, hero_pcgl_30_vs.vcs}
+         *
+         */
         public static List<string> GetRelatedFiles2(string filenamepath)
         {
             string filename = Path.GetFileName(filenamepath);

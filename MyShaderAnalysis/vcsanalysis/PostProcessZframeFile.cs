@@ -19,16 +19,16 @@ namespace MyShaderAnalysis.vcsanalysis
      */
     class PostProcessZframeFile
     {
-        private FileTokensOld fileTokens;
+        private FileVcsTokens fileTokens;
         private ZFrameFile zframeFile;
 
-        public PostProcessZframeFile(ZFrameFile zframeFile, FileTokensOld fileTokens)
+        public PostProcessZframeFile(ZFrameFile zframeFile, FileVcsTokens fileTokens)
         {
             this.zframeFile = zframeFile;
             this.fileTokens = fileTokens;
         }
 
-        public string PostProcessVcsData(string data)
+        public string PostProcessZframeData(string data)
         {
 
             string newData = getBackLink() + data;
@@ -76,11 +76,11 @@ namespace MyShaderAnalysis.vcsanalysis
             // (but always prints the gpuSourceId == 0 link for reference)
             if (gpuSourceId == 0 || File.Exists($"{fileTokens.GetGlslServerDir()}/{gpuHtmlFilename}"))
             {
-                return $"<a href='{fileTokens.GetGlslServerUrl()}/{gpuHtmlFilename}'>{groups[1]}\\{groups[2]}</a>";
+                return $"<a href='{fileTokens.GetGlslServerUrl()}/{gpuHtmlFilename}'>//{groups[1]}/{groups[2]}</a>";
             }
             else
             {
-                return $"{groups[1]}\\{groups[2]}";
+                return $"//{groups[1]}/{groups[2]}";
             }
         }
 
@@ -95,7 +95,7 @@ namespace MyShaderAnalysis.vcsanalysis
             // but this is how it's done on the GUI)
             long zframeId = Convert.ToInt64(groups[1].ToString().Split('-')[^2][6..], 16);
             string htmlBytesName = fileTokens.GetZFrameLink(zframeId, "bytes");
-            return $"<a href='{htmlBytesName}'>{groups[1]}</a>";
+            return $"<a href='{htmlBytesName}'>//{groups[1]}</a>";
         }
 
 

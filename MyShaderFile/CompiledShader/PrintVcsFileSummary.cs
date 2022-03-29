@@ -50,7 +50,7 @@ namespace ValveResourceFormat.CompiledShader
             {
                 output.BreakLine();
             }
-            if (relatedFiles != null && relatedFiles.Count > 1)
+            if (showRichTextBoxLinks && relatedFiles != null && relatedFiles.Count > 1)
             {
                 output.Write("Related files:");
                 foreach (var relatedFile in relatedFiles)
@@ -115,7 +115,7 @@ namespace ValveResourceFormat.CompiledShader
             {
                 output.BreakLine();
             }
-            if (relatedFiles != null && relatedFiles.Count > 1)
+            if (showRichTextBoxLinks && relatedFiles != null && relatedFiles.Count > 1)
             {
                 output.Write("Related files:");
                 foreach (var relatedFile in relatedFiles)
@@ -544,8 +544,14 @@ namespace ValveResourceFormat.CompiledShader
                     output.WriteLine($"{configHeader}");
                 }
                 int[] configState = configGen.GetConfigState(zframeDesc.Key);
-                // the two backslashes registers the text as a link when viewed in a RichTextBox
-                output.WriteLine($"  Z[\\\\{zframeDesc.Key:x08}] {CombineIntsSpaceSep(configState, 6)}");
+                if (showRichTextBoxLinks)
+                {
+                    // the two backslashes registers the text as a link when viewed in a RichTextBox
+                    output.WriteLine($"  Z[\\\\{zframeDesc.Key:x08}] {CombineIntsSpaceSep(configState, 6)}");
+                } else
+                {
+                    output.WriteLine($"  Z[{zframeDesc.Key:x08}] {CombineIntsSpaceSep(configState, 6)}");
+                }
                 zframeCount++;
             }
         }

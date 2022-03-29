@@ -10,7 +10,7 @@ using MyShaderAnalysis.vcsanalysis;
 
 namespace MyShaderAnalysis.codestash
 {
-    public class ParseVcsFilesOld
+    public class ParseVcsFilesOld1
     {
 
         public static void RunTrials()
