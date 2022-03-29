@@ -193,7 +193,7 @@ namespace GUI.Types.Viewers
                 }
                 else
                 {
-                    shaderFile.PrintByteDetail(OutputWriter: buffer.Write);
+                    shaderFile.PrintByteDetail(outputWriter: buffer.Write);
                 }
                 Font = new Font(FontFamily.GenericMonospace, Font.Size);
                 DetectUrls = true;
