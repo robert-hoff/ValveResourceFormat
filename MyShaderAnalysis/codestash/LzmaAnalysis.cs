@@ -49,7 +49,7 @@ namespace MyShaderAnalysis
             ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
             byte[] zframeDatabytes = shaderFile.GetDecompressedZFrame(zId);
             var vcsFileProperties = ComputeVCSFileName(filenamepath);
-            DataReaderZFrameByteAnalysis datareader = new(zframeDatabytes,
+            DataReaderZFrameBytes datareader = new(zframeDatabytes,
                 vcsFileProperties.Item1, vcsFileProperties.Item2, vcsFileProperties.Item3);
             datareader.PrintByteAnalysis();
 
@@ -60,7 +60,7 @@ namespace MyShaderAnalysis
         static void Trial8()
         {
             string filenamepath = $"{DOTA_GAME_PC_SOURCE}/multiblend_pc_30_vs.vcs";
-            DataReaderVcsByteAnalysis shaderByteAnalysis = new(filenamepath);
+            DataReaderVcsBytes shaderByteAnalysis = new(filenamepath);
             shaderByteAnalysis.SetShortenOutput(false);
             shaderByteAnalysis.PrintByteAnalysis();
         }
@@ -71,7 +71,7 @@ namespace MyShaderAnalysis
             string filenamepath = $"{DOTA_GAME_PC_SOURCE}/multiblend_pc_30_ps.vcs";
             ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
             byte[] zframeDatabytes = shaderFile.GetDecompressedZFrame(0x1a1);
-            DataReaderZFrameByteAnalysis datareader = new(zframeDatabytes, shaderFile.vcsProgramType, shaderFile.vcsPlatformType, shaderFile.vcsShaderModelType);
+            DataReaderZFrameBytes datareader = new(zframeDatabytes, shaderFile.vcsProgramType, shaderFile.vcsPlatformType, shaderFile.vcsShaderModelType);
             datareader.PrintByteAnalysis();
         }
 
@@ -90,7 +90,7 @@ namespace MyShaderAnalysis
         static void Trial3()
         {
             string filenamepath = $"{ARTIFACT_CLASSIC_CORE_PC_SOURCE}/aerial_perspective_pc_30_ps.vcs";
-            DataReaderVcsByteAnalysis reader = new(filenamepath);
+            DataReaderVcsBytes reader = new(filenamepath);
             reader.BaseStream.Position = 9525;
             reader.BaseStream.Position = 10340;
             float num = reader.ReadSingleAtPosition();
@@ -107,7 +107,7 @@ namespace MyShaderAnalysis
         static void Trial2()
         {
             string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/apply_fog_pcgl_40_ps.vcs";
-            DataReaderVcsByteAnalysis reader = new(filenamepath);
+            DataReaderVcsBytes reader = new(filenamepath);
             reader.BaseStream.Position = 2032;
             int num = reader.ReadInt32AtPosition();
             Console.WriteLine($"{num}");
@@ -130,7 +130,7 @@ namespace MyShaderAnalysis
             // ConsoleConsole.WriteLine($"{filenamepath}");
             // ShaderFile shaderfile = new ShaderFile(filenamepath);
 
-            DataReaderVcsByteAnalysis reader = new DataReaderVcsByteAnalysis(filenamepath);
+            DataReaderVcsBytes reader = new DataReaderVcsBytes(filenamepath);
             reader.PrintByteAnalysis();
 
             // reader.ShowBytes(300);

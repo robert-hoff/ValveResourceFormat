@@ -9,14 +9,14 @@ using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 namespace MyShaderAnalysis.utilhelpers
 {
 
-    public class DataReaderVcsByteAnalysis : ShaderDataReader
+    public class DataReaderVcsBytes : ShaderDataReader
     {
 
         const string SERVER_BASEDIR = @"Z:/dev/www/vcs.codecreation.dev";
 
         private VcsProgramType vcsProgramType;
         private string vcsFilename = null;
-        public DataReaderVcsByteAnalysis(string filenamepath) : base(new MemoryStream(File.ReadAllBytes(filenamepath)))
+        public DataReaderVcsBytes(string filenamepath) : base(new MemoryStream(File.ReadAllBytes(filenamepath)))
         {
             this.vcsProgramType = ComputeVCSFileName(filenamepath).Item1;
             this.vcsFilename = filenamepath;

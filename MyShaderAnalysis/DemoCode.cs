@@ -45,7 +45,7 @@ namespace MyShaderAnalysis
 
             // shaderFile.PrintByteAnalysis();
             // new ParseV62Files(filenamepath);
-            new DataReaderVcsByteAnalysis(filenamepath).PrintByteAnalysis();
+            new DataReaderVcsBytes(filenamepath).PrintByteAnalysis();
         }
 
 

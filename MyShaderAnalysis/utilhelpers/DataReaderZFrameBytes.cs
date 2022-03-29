@@ -10,14 +10,14 @@ using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
 namespace MyShaderAnalysis.utilhelpers
 {
 
-    public class DataReaderZFrameByteAnalysis : ShaderDataReader
+    public class DataReaderZFrameBytes : ShaderDataReader
     {
 
         private VcsProgramType vcsProgramType;
         private VcsPlatformType vcsSourceType;
         private VcsShaderModelType vcsModelType;
 
-        public DataReaderZFrameByteAnalysis(byte[] data, VcsProgramType filetype,
+        public DataReaderZFrameBytes(byte[] data, VcsProgramType filetype,
             VcsPlatformType vcsSourceType, VcsShaderModelType vcsModelType) : base(new MemoryStream(data))
         {
             if (filetype == VcsProgramType.Features)

@@ -118,9 +118,9 @@ namespace MyShaderAnalysis
             // string filenamepath = $"{THE_LAB_SOURCE}/foliage_pc_41_features.vcs";
 
 
-            // -- using DataReaderVcsByteAnalysis
+            // -- using DataReaderVcsBytes
             // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs";
-            // DataReaderVcsByteAnalysis testfile = new DataReaderVcsByteAnalysis(filenamepath);
+            // DataReaderVcsBytes testfile = new DataReaderVcsBytes(filenamepath);
             // testfile.PrintByteAnalysis();
 
             // -- using ShaderFile
@@ -264,7 +264,7 @@ namespace MyShaderAnalysis
 
         /*
          * there are two ways to print the zframe bytes
-         * DataReaderZFrameByteAnalysis.cs is used for fixing bugs and analysis version changes
+         * DataReaderZFrameBytes.cs is used for fixing bugs and analysis version changes
          *
          */
         static void PrintZFrameBytesToScreen()
@@ -273,7 +273,7 @@ namespace MyShaderAnalysis
             // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs";
             // ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             // byte[] zframeBytes = shaderFile.GetDecompressedZFrameByIndex(0);
-            // new DataReaderZFrameByteAnalysis(zframeBytes, shaderFile.vcsProgramType, shaderFile.vcsPlatformType, shaderFile.vcsShaderModelType);
+            // new DataReaderZFrameBytes(zframeBytes, shaderFile.vcsProgramType, shaderFile.vcsPlatformType, shaderFile.vcsShaderModelType);
 
             string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs";
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);

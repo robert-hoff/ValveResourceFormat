@@ -12,15 +12,15 @@ using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
 
 /*
- * 
- * This is a close copy of DataReaderVcsByteAnalysis.cs
+ *
+ * This is a close copy of DataReaderVcsBytes.cs
  * only slight modifications required for v65 support
- * 
- * 
- * 
- * 
- * 
- * 
+ *
+ *
+ *
+ *
+ *
+ *
  */
 namespace MyShaderAnalysis
 {

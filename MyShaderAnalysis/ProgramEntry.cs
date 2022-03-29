@@ -48,7 +48,7 @@ namespace MyShaderAnalysis
             // StaticAnalysis.RunTrials();
 
 
-            // -- support for v62 was already written into DataReaderVcsByteAnalysis
+            // -- support for v62 was already written into DataReaderVcsBytes
             // ParseV62Files.RunTrials();
 
             // PrintoutVulkanCode.RunTrials();
