@@ -411,6 +411,43 @@ namespace MyShaderAnalysis.utilhelpers
             return relatedFiles;
         }
 
+        public static string GetSourceType(VcsPlatformType vcsPlatformType, VcsShaderModelType vcsShaderModelType)
+        {
+            if (vcsPlatformType == VcsPlatformType.PC)
+            {
+                switch (vcsShaderModelType)
+                {
+                    case VcsShaderModelType._20:
+                    case VcsShaderModelType._2b:
+                    case VcsShaderModelType._30:
+                    case VcsShaderModelType._31:
+                        return "dxil";
+                    case VcsShaderModelType._40:
+                    case VcsShaderModelType._41:
+                    case VcsShaderModelType._50:
+                    case VcsShaderModelType._60:
+                        return "dxbc";
+                    default:
+                        throw new ShaderParserException($"Unknown or unsupported model type {vcsPlatformType} {vcsShaderModelType}");
+                }
+            } else
+            {
+                switch (vcsPlatformType)
+                {
+                    case VcsPlatformType.PCGL:
+                    case VcsPlatformType.MOBILE_GLES:
+                        return "glsl";
+                    case VcsPlatformType.VULKAN:
+                    case VcsPlatformType.ANDROID_VULKAN:
+                    case VcsPlatformType.IOS_VULKAN:
+                        return "vulkan";
+                    default:
+                        throw new ShaderParserException($"Unknown or unsupported source type {vcsPlatformType}");
+                }
+            }
+        }
+
+
 
 
         public static SortedDictionary<int, int> collectValuesInt = new();

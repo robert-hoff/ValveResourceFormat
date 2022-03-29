@@ -158,8 +158,8 @@ namespace MyShaderAnalysis
         public void SaveGpuSourceToHtml(ZFrameFile zframeFile, int gpuSourceId)
         {
             string gpuSourceDetail = GetGpuSource(zframeFile, gpuSourceId);
-            string glslServerDir = fileTokens.GetGlslServerDir(createDirs: true);
-            string outputFilenamepath = $"{glslServerDir}/{fileTokens.GetGlslHtmlFilenameGeneral(zframeFile.gpuSources[gpuSourceId])}";
+            string glslServerDir = fileTokens.GetGpuServerDir(createDirs: true);
+            string outputFilenamepath = $"{glslServerDir}/{fileTokens.GetGpuHtmlFilename(zframeFile.gpuSources[gpuSourceId])}";
             string htmlTitle = $"{fileTokens.vcstoken}[{zframeFile.zframeId:x}]({gpuSourceId})";
             string htmlHeader = $"{fileTokens.sourceType}[{gpuSourceId}] {Path.GetFileName(outputFilenamepath)[0..^5]}";
             WriteHtmlFile(outputFilenamepath, htmlTitle, htmlHeader, gpuSourceDetail);
@@ -188,7 +188,7 @@ namespace MyShaderAnalysis
             {
                 ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(i);
                 SaveGpuSources(zframeFile, requestedGpuSourcesToPrint);
-                // SaveZframeByteSummaryToHtml(zframeFile);
+                SaveZframeByteSummaryToHtml(zframeFile);
                 SaveZframeSummaryToHtml(zframeFile);
             }
             SaveVcsByteSummaryToHtml();

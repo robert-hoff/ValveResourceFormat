@@ -70,13 +70,13 @@ namespace MyShaderAnalysis.vcsanalysis
                 throw new ShaderParserException($"Unrecognised link \\\\{groups[1]}\\{groups[2]}");
             }
             int gpuSourceId = Convert.ToInt32(groups[2].ToString(), CultureInfo.InvariantCulture);
-            string gpuHtmlFilename = fileTokens.GetGlslHtmlFilenameGeneral(zframeFile.gpuSources[gpuSourceId]);
+            string gpuHtmlFilename = fileTokens.GetGpuHtmlFilename(zframeFile.gpuSources[gpuSourceId]);
 
             // omits printing the link if the source file is not found on the server
             // (but always prints the gpuSourceId == 0 link for reference)
-            if (gpuSourceId == 0 || File.Exists($"{fileTokens.GetGlslServerDir()}/{gpuHtmlFilename}"))
+            if (gpuSourceId == 0 || File.Exists($"{fileTokens.GetGpuServerDir()}/{gpuHtmlFilename}"))
             {
-                return $"<a href='{fileTokens.GetGlslServerUrl()}/{gpuHtmlFilename}'>//{groups[1]}/{groups[2]}</a>";
+                return $"<a href='{fileTokens.GetGpuServerUrl()}/{gpuHtmlFilename}'>//{groups[1]}/{groups[2]}</a>";
             }
             else
             {
@@ -94,7 +94,7 @@ namespace MyShaderAnalysis.vcsanalysis
             // (parsing isn't really necessary because the context is aware of the zframe already
             // but this is how it's done on the GUI)
             long zframeId = Convert.ToInt64(groups[1].ToString().Split('-')[^2][6..], 16);
-            string htmlBytesName = fileTokens.GetZFrameLink(zframeId, "bytes");
+            string htmlBytesName = fileTokens.GetZFrameUrl(zframeId, "bytes");
             return $"<a href='{htmlBytesName}'>//{groups[1]}</a>";
         }
 

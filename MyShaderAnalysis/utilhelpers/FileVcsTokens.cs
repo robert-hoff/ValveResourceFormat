@@ -5,25 +5,26 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ValveResourceFormat.CompiledShader;
-using static MyShaderAnalysis.utilhelpers.FileArchives;
 using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
 
 /*
  *
  *
- * GetServerFileDir()                  Z:/dev/www/vcs.codecreation.dev/dota-game/pcgl/multiblend_pcgl_30
- * GetServerFilenamepath(label)        Z:/dev/www/vcs.codecreation.dev/dota-game/pcgl/multiblend_pcgl_30/multiblend_pcgl_30_ps-label.html
- * GetServerFilePath()                 /dota-game/pcgl/multiblend_pcgl_30
- * GetServerFileUrl(label)             /dota-game/pcgl/multiblend_pcgl_30/multiblend_pcgl_30_ps-label.html
- * GetGlslServerDir()                  Z:/dev/www/vcs.codecreation.dev/dota-game/pcgl/multiblend_pcgl_30/glsl
- * GetGlslHtmlFilename(gpuSource)      glsl-e46ad784246f747dd88a611874194020.html
- * GetGlslHtmlUrl(gpusource)           /dota-game/pcgl/multiblend_pcgl_30/glsl/glsl-e46ad784246f747dd88a611874194020.html
- * GetZFramesServerDir()               Z:/dev/www/vcs.codecreation.dev/dota-game/pcgl/multiblend_pcgl_30/zframes
- * GetZFramesServerPath()              /dota-game/pcgl/multiblend_pcgl_30/zframes
- * GetZFrameHtmlFilenamepath(id,label) Z:/dev/www/vcs.codecreation.dev/dota-game/pcgl/multiblend_pcgl_30/zframes/multiblend_pcgl_30_ps-ZFRAME00000000-label.html
+ * GetServerFileDir()                  Z:/dev/www/vcs.codecreation.dev/dota-game-pcgl-v64/multiblend_pcgl_30
+ * GetServerFilenamepath(label)        Z:/dev/www/vcs.codecreation.dev/dota-game-pcgl-v64/multiblend_pcgl_30/multiblend_pcgl_30_ps-label.html
+ * GetServerFilePath()                 /dota-game-pcgl-v64/multiblend_pcgl_30
+ * GetServerFileUrl(label)             /dota-game-pcgl-v64/multiblend_pcgl_30/multiblend_pcgl_30_ps-label.html
+ * GetGpuServerDir()                   Z:/dev/www/vcs.codecreation.dev/dota-game-pcgl-v64/multiblend_pcgl_30/glsl
+ * GetGpuServerUrl()                   /dota-game-pcgl-v64/multiblend_pcgl_30/glsl
+ * GetGpuHtmlFilename(gpuSource)       glsl-e46ad784246f747dd88a611874194020.html
+ * GetGpuHtmlUrl(gpusource)            /dota-game-pcgl-v64/multiblend_pcgl_30/glsl/glsl-e46ad784246f747dd88a611874194020.html
+ * GetZFramesServerDir()               Z:/dev/www/vcs.codecreation.dev/dota-game-pcgl-v64/multiblend_pcgl_30/zframes
+ * GetZFramesServerPath()              /dota-game-pcgl-v64/multiblend_pcgl_30/zframes
+ * GetZFrameHtmlFilenamepath(id,label) Z:/dev/www/vcs.codecreation.dev/dota-game-pcgl-v64/multiblend_pcgl_30/zframes/multiblend_pcgl_30_ps-ZFRAME00000000-label.html
  * GetZFrameHtmlFilename(id,label)     multiblend_pcgl_30_ps-ZFRAME00000000-label.html
- * GetZFrameLink(id,label)             /dota-game/pcgl/multiblend_pcgl_30/zframes/multiblend_pcgl_30_ps-ZFRAME00000000-label.html
- * GetShortHandName()                  multiblend_pcgl_30_ps (dota)
+ * GetZFrameUrl(id,label)              /dota-game-pcgl-v64/multiblend_pcgl_30/zframes/multiblend_pcgl_30_ps-ZFRAME00000000-label.html
+ * GetShortName()                      multiblend(30-ps)
+ * GetBaseName()                       /dota-game-pcgl-v64/multiblend_pcgl_30_ps.vcs
  *
  *
  *
@@ -32,47 +33,62 @@ namespace MyShaderAnalysis.utilhelpers
 {
     internal class FileVcsTokens
     {
-        public ARCHIVE archive { get; }
-        public string name { get; }          // name without the file extension, e.g. spritecard_pcgl_30_ps
-        public string filename { get; }
-        public string filenamepath { get; }
-        public string foldername { get; }    // name without the type extension, e.g. spritecard_pcgl_30
-        public string namelabel { get; }     // the name upto the first '_' e.g. spritecard (good for html titles)
-        public string vcstoken { get; }      // ft, vs, ps, psrs or gs
-        public string sourcedir { get; }     // full directory path of the source files
-        public string archivename { get; }   // dota-game or dota-core
-        // public string archivelabel { get; }  // dota or core (possibly s&box later). Used for generating names
-        public string platformType { get; }       // pcgl, pc, vulkan
-        public string sourceType { get; }    // glsl, dxil, dxbc, gles, vulkan, android_vulkan, ios_vulkan
+        // used to have this - but isn't actually needed (parser determines this independently)
+        // public string platformType { get; }  // pcgl, pc, vulkan
+
+        public FileArchives.ARCHIVE archive { get; }
+        public string archivename { get; }      // dota-game-pcgl, dota-core-pcgl
+        public string filename { get; }         // multiblend_pcgl_30_ps.vcs
+        public string filenamepath { get; }     // X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders/vfx/multiblend_pcgl_30_ps.vcs
+        public string serverdir { get; }        // Z:/dev/www/vcs.codecreation.dev (base dir of the server)
+        public string name { get; }             // name without the file extension, e.g. spritecard_pcgl_30_ps
+        public string foldername { get; }       // name without the type extension, e.g. spritecard_pcgl_30
+        public string namelabel { get; }        // the name upto the first '_' e.g. spritecard (good for html titles)
         public string sourceVersion { get; }    // 30,40,50,etc
-        public string serverdir { get; }     // full directory path of the server files
-        public VcsProgramType vcsProgramType { get; }
+        public string sourceType { get; }       // glsl, dxil, dxbc or vulkan (names gles, vulkan, android_vulkan, ios_vulkan are not used)
+        public string vcstoken { get; }         // ft, vs, ps, psrs or gs
+
 
         private ShaderFile shaderFile { get; set; } = null;
 
 
-        public FileVcsTokens(ARCHIVE archive, string filename)
+        public FileVcsTokens(FileArchives.ARCHIVE archive, string filename)
         {
+            this.archive = archive;
+            this.archivename = FileArchives.GetArchiveName(archive);
             filename = Path.GetFileName(filename);
-            this.filenamepath = GetFilenamepath(archive, filename);
+            this.filename = filename;
+            this.filenamepath = $"{FileArchives.GetSourceDir(archive)}/{filename}";
             if (!File.Exists(filenamepath))
             {
                 throw new ShaderParserException("file doesn't exist");
             }
-            this.archive = archive;
-            this.filename = filename;
+            this.serverdir = FileArchives.GetServerBaseDir();
             this.name = filename[0..^4];
             this.foldername = name.Substring(0, name.LastIndexOf('_'));
-            this.vcsProgramType = ShaderUtilHelpers.ComputeVCSFileName(filenamepath).Item1;
-            this.sourcedir = GetSourceDir(archive);
-            this.archivename = GetArchiveName(archive);
-            // this.archivelabel = GetArchiveLabel(archive);
-            this.platformType = GetPlatformType(archive);
-            this.sourceType = GetSourceType(archive);
-            this.sourceVersion = filename.Split('_')[^2];
-            this.serverdir = GetServerBaseDir();
             this.namelabel = filename.Split('_')[0];
-            this.vcstoken = GetVcsToken(vcsProgramType);
+
+            (VcsProgramType, VcsPlatformType, VcsShaderModelType) vcsTypes = ShaderUtilHelpers.ComputeVCSFileName(filenamepath);
+            VcsProgramType vcsProgramType = vcsTypes.Item1;
+            VcsPlatformType vcsPlatformType = vcsTypes.Item2;
+            VcsShaderModelType vcsShaderModelType = vcsTypes.Item3;
+
+            this.sourceVersion = filename.Split('_')[^2];
+            this.sourceType = MyShaderUtilHelpers.GetSourceType(vcsPlatformType, vcsShaderModelType);
+
+            this.vcstoken = ShaderUtilHelpers.ComputeVcsProgramType(filenamepath) switch
+            {
+                VcsProgramType.Features => "ft",
+                VcsProgramType.VertexShader => "vs",
+                VcsProgramType.PixelShader => "ps",
+                VcsProgramType.PixelShaderRenderState => "psrs",
+                VcsProgramType.GeometryShader => "cs",
+                VcsProgramType.ComputeShader => "hs",
+                VcsProgramType.HullShader => "ds",
+                VcsProgramType.DomainShader => "gs",
+                VcsProgramType.RaytracingShader => "rtx",
+                _ => throw new ShaderParserException("couldn't determine vcsProgramType")
+            };
         }
 
 
@@ -84,12 +100,12 @@ namespace MyShaderAnalysis.utilhelpers
 
 
         /*
-         * e.g. Z:/dev/www/vcs.codecreation.dev/dota-game/pcgl/spritecard_pcgl_30_ps
+         * Z:/dev/www/vcs.codecreation.dev/dota-game-pcgl-v64/multiblend_pcgl_30
          *
          */
         public string GetServerFileDir(bool createDirs = false)
         {
-            string serverFileDir = $"{serverdir}/{archivename}/{platformType}/{foldername}";
+            string serverFileDir = $"{serverdir}/{archivename}/{foldername}";
             if (createDirs)
             {
                 Directory.CreateDirectory(serverFileDir);
@@ -97,23 +113,35 @@ namespace MyShaderAnalysis.utilhelpers
             return serverFileDir;
         }
 
+        /*
+         * Z:/dev/www/vcs.codecreation.dev/dota-game-pcgl-v64/multiblend_pcgl_30/multiblend_pcgl_30_ps-label.html
+         *
+         */
         public string GetServerFilenamepath(string label, bool createDirs = false)
         {
             return $"{GetServerFileDir(createDirs)}/{name}-{label}.html";
         }
 
+        /*
+         * /dota-game-pcgl-v64/multiblend_pcgl_30
+         */
         public string GetServerFilePath()
         {
-            return $"/{archivename}/{platformType}/{foldername}";
-        }
-        public string GetServerFileUrl(string label)
-        {
-            return $"/{archivename}/{platformType}/{foldername}/{name}-{label}.html";
+            return $"/{archivename}/{foldername}";
         }
 
-        // applicable to glsl and gles files
-        // todo - this should now be applicable in general (test this)
-        public string GetGlslServerDir(bool createDirs = false)
+        /*
+         * /dota-game-pcgl-v64/multiblend_pcgl_30/multiblend_pcgl_30_ps-label.html
+         */
+        public string GetServerFileUrl(string label)
+        {
+            return $"/{archivename}/{foldername}/{name}-{label}.html";
+        }
+
+        /*
+         * Z:/dev/www/vcs.codecreation.dev/dota-game-pcgl-v64/multiblend_pcgl_30/glsl
+         */
+        public string GetGpuServerDir(bool createDirs = false)
         {
             string serverGlslDir = $"{GetServerFileDir()}/{sourceType}";
             if (createDirs)
@@ -123,36 +151,33 @@ namespace MyShaderAnalysis.utilhelpers
             return serverGlslDir;
         }
 
-        public string GetGlslServerUrl(bool createDirs = false)
+        /*
+         * /dota-game-pcgl-v64/multiblend_pcgl_30/glsl
+         */
+        public string GetGpuServerUrl()
         {
             return $"{GetServerFilePath()}/{sourceType}";
         }
 
-
-        // todo - not general, only works for glsl
-        public string GetGlslHtmlFilename(GlslSource glslSource)
-        {
-            return $"{sourceType}-{glslSource.GetEditorRefIdAsString()}.html";
-        }
-
-        public string GetGlslHtmlFilenameGeneral(GpuSource gpuSource)
+        /*
+         * glsl-e46ad784246f747dd88a611874194020.html
+         */
+        public string GetGpuHtmlFilename(GpuSource gpuSource)
         {
             return $"{sourceType}-{gpuSource.GetEditorRefIdAsString()}.html";
         }
 
-        // todo - not general, only works for glsl
-        public string GetGlslHtmlUrl(GlslSource glslSource)
+        /*
+         * /dota-game-pcgl-v64/multiblend_pcgl_30/glsl/glsl-e46ad784246f747dd88a611874194020.html
+         */
+        public string GetGpuHtmlUrl(GpuSource gpuSource)
         {
-            // sourceType may be either "glsl" or "gles" (which is considered as a GlslSource datablock)
-            return $"{GetServerFilePath()}/{sourceType}/{GetGlslHtmlFilename(glslSource)}";
+            return $"{GetServerFilePath()}/{sourceType}/{GetGpuHtmlFilename(gpuSource)}";
         }
 
-        public string GetGlslHtmlUrlGeneral(GpuSource gpuSource)
-        {
-            return $"{GetServerFilePath()}/{sourceType}/{GetGlslHtmlFilenameGeneral(gpuSource)}";
-        }
-
-
+        /*
+         * Z:/dev/www/vcs.codecreation.dev/dota-game-pcgl-v64/multiblend_pcgl_30/zframes
+         */
         public string GetZFramesServerDir(bool createDirs = false)
         {
             string serverZframesDir = $"{GetServerFileDir()}/zframes";
@@ -163,21 +188,25 @@ namespace MyShaderAnalysis.utilhelpers
             return serverZframesDir;
         }
 
-        public void CreateZFramesDirectory(bool createDirs = true)
-        {
-            GetZFramesServerDir(createDirs);
-        }
-
+        /*
+         * /dota-game-pcgl-v64/multiblend_pcgl_30/zframes
+         */
         public string GetZFramesServerPath()
         {
             return $"{GetServerFilePath()}/zframes";
         }
 
+        /*
+         * Z:/dev/www/vcs.codecreation.dev/dota-game-pcgl-v64/multiblend_pcgl_30/zframes/multiblend_pcgl_30_ps-ZFRAME00000000-label.html
+         */
         public string GetZFrameHtmlFilenamepath(long zframeId, string label, bool createDirs = true)
         {
             return $"{GetZFramesServerDir(createDirs)}/{name}-ZFRAME{zframeId:x08}-{label}.html";
         }
 
+        /*
+         * multiblend_pcgl_30_ps-ZFRAME00000000-label.html
+         */
         public string GetZFrameHtmlFilename(long zframeId, string label = "")
         {
             if (label.Length > 0)
@@ -187,7 +216,10 @@ namespace MyShaderAnalysis.utilhelpers
             return $"{name}-ZFRAME{zframeId:x08}{label}.html";
         }
 
-        public string GetZFrameLink(long zframeId, string label)
+        /*
+         * /dota-game-pcgl-v64/multiblend_pcgl_30/zframes/multiblend_pcgl_30_ps-ZFRAME00000000-label.html
+         */
+        public string GetZFrameUrl(long zframeId, string label)
         {
             if (label.Length > 0)
             {
@@ -196,53 +228,26 @@ namespace MyShaderAnalysis.utilhelpers
             return $"{GetZFramesServerPath()}/{name}-ZFRAME{zframeId:x08}{label}.html";
         }
 
-        public List<string> GetZFrameListing()
-        {
-            List<string> zframeFiles = new();
-            if (!Directory.Exists(GetZFramesServerDir()))
-            {
-                return zframeFiles;
-            } else
-            {
-                foreach (var zframeFile in Directory.GetFiles(GetZFramesServerDir()))
-                {
-                    if (Path.GetFileName(zframeFile).StartsWith(name))
-                    {
-                        zframeFiles.Add(zframeFile);
-                    }
-                }
-                return zframeFiles;
-            }
-        }
-
-        // hero_pcgl_30_ps (dota)
-        // todo - verify if this is needed or useful
-        //public string GetShortHandName()
-        //{
-        //    return $"{name} ({archivelabel})";
-        //}
-
+        /*
+         * multiblend(30-ft)
+         * multiblend(30-vs)
+         * multiblend(30-ps)
+         *
+         */
         public string GetShortName()
         {
-            return $"{namelabel}({platformType}-{vcstoken})";
+            return $"{namelabel}({sourceVersion}-{vcstoken})";
         }
 
-
+        /*
+         * /dota-game-pcgl-v64/multiblend_pcgl_30_ps.vcs
+         *
+         * NOTE - this doesn't point to a file, the full path is
+         * /dota-game-pcgl-v64/multiblend_pcgl_30/multiblend_pcgl_30_ps.vcs
+         */
         public string GetBaseName()
         {
-            return $"/{archivename}/{platformType}/{filename}";
-        }
-
-
-        // hero(pcgl-ps)
-        public string GetAbbreviatedName()
-        {
-            string source_type = platformType;
-            if (platformType.Equals("pc"))
-            {
-                source_type = sourceVersion.Equals("30") ? "dxil" : "dxbc";
-            }
-            return $"{namelabel}({source_type}-{vcstoken})";
+            return $"/{archivename}/{filename}";
         }
 
 
@@ -252,23 +257,22 @@ namespace MyShaderAnalysis.utilhelpers
             if (File.Exists(GetZFrameHtmlFilenamepath(zframeId, "summary")))
             {
                 return noBrackets ?
-                    $"<a href='{GetZFrameLink(zframeId, "summary")}'>{zframeId:x08}</a>" :
-                    $"<a href='{GetZFrameLink(zframeId, "summary")}'>Z[{zframeId:x08}]</a>";
+                    $"<a href='{GetZFrameUrl(zframeId, "summary")}'>{zframeId:x08}</a>" :
+                    $"<a href='{GetZFrameUrl(zframeId, "summary")}'>Z[{zframeId:x08}]</a>";
             }
             // no zframe exists return plaintext
             return noBrackets ? $"{zframeId:x08}" : $"Z[{zframeId:x08}]";
         }
 
 
-
+        /*
+         * {multiblend_pcgl_30_features.vcs, multiblend_pcgl_30_vs.vcs, multiblend_pcgl_30_ps.vcs}
+         *
+         */
         public List<string> GetRelatedFiles()
         {
             return FileVcsCollection.GetRelatedFiles(archive, foldername);
         }
-
-
-
-
 
 
     }
