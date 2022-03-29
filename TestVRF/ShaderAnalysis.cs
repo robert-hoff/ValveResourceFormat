@@ -150,7 +150,7 @@ namespace TestVRF {
 
         static void PrintVcsByteAnalysis(string filenamepath) {
             ShaderFileByteAnalysis shaderFile = new(filenamepath);
-            shaderFile.PrintByteAnalysis();
+            shaderFile.PrintByteDetail();
         }
 
         static void WriteVcsByteAnalysisToHtml(string filenamepath) {

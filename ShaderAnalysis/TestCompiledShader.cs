@@ -50,7 +50,7 @@ namespace ShaderAnalysis
             string filenamepath = $"{TEST_SHADERS_DIR}/error_vulkan_40_vs.vcs";
             ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
             ZFrameFile zframeFile = shaderFile.GetZFrameFile(0, omitParsing: true);
-            zframeFile.PrintByteAnalysis();
+            zframeFile.PrintByteDetail();
         }
 
 
@@ -68,7 +68,7 @@ namespace ShaderAnalysis
             // string filenamepath = $"{ALYX_VULKAN_CORE}/brushsplat_vulkan_40_ps.vcs";
             string filenamepath = $"{PC_DIR_CORE}/debugoverlay_wireframe_pc_40_ps.vcs";
             ShaderFile shaderFile  = ReadShaderFile.InstantiateShaderFile(filenamepath);
-            shaderFile.PrintByteAnalysis(shortenOutput: false);
+            shaderFile.PrintByteDetail(shortenOutput: false);
         }
 
         static void Trial3()
@@ -92,10 +92,10 @@ namespace ShaderAnalysis
             ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
 
             // Console.WriteLine($"{shaderFile.GetZFrameCount()}");
-            shaderFile.PrintByteAnalysis(shortenOutput: false);
+            shaderFile.PrintByteDetail(shortenOutput: false);
 
             // Console.WriteLine($"{shaderFile.GetZFrameCount()}");
-            shaderFile.GetZFrameFile(0).PrintByteAnalysis();
+            shaderFile.GetZFrameFile(0).PrintByteDetail();
 
         }
 

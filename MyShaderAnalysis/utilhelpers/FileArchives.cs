@@ -45,6 +45,7 @@ namespace MyShaderAnalysis.utilhelpers
 
         public enum ARCHIVE
         {
+            undetermined,
             dotacore_pcgl, dotagame_pcgl, dotacore_pc, dotagame_pc,
             dotacore_pc_v65, dotagame_pc_v65,
             dotacore_vulkan_v65, dotagame_vulkan_v65,
@@ -121,6 +122,13 @@ namespace MyShaderAnalysis.utilhelpers
             if (archive == ARCHIVE.the_lab_v62) return "the-lab-pc-v62";
             throw new ShaderParserException("unknown archive");
         }
+
+
+        public static string GetFilenamepath(ARCHIVE archive, string filenamepath)
+        {
+            return $"{GetSourceDir(archive)}/{filenamepath}";
+        }
+
 
 
     }

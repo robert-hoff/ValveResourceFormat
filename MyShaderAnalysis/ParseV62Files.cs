@@ -46,7 +46,7 @@ namespace MyShaderAnalysis
             // byte[] zframeDecomp = shaderFile.GetDecompressedZFrame(0);
 
             ZFrameFile zframe = shaderFile.GetZFrameFile(0);
-            zframe.PrintByteAnalysis();
+            zframe.PrintByteDetail();
         }
 
 
@@ -58,7 +58,7 @@ namespace MyShaderAnalysis
             ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
 
 
-            shaderFile.PrintByteAnalysis();
+            shaderFile.PrintByteDetail();
 
 
         }

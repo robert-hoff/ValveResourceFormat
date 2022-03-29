@@ -215,7 +215,7 @@ namespace MyShaderAnalysis
             fileWriter.WriteHtmlHeader(htmlTitle, htmlHeader);
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
 
-            shaderFile.PrintByteAnalysis(outputWriter: fileWriter.GetOutputWriter());
+            shaderFile.PrintByteDetail(outputWriter: fileWriter.GetOutputWriter());
             fileWriter.CloseStreamWriter();
         }
 
@@ -235,7 +235,7 @@ namespace MyShaderAnalysis
             string htmlHeader = fileTokens.GetZFrameHtmlFilename(zframeFile.zframeId)[..^5];
             fileWriter.WriteHtmlHeader(htmlTitle, htmlHeader);
 
-            // zframe.PrintByteAnalysis(outputWriter: fileWriter.GetOutputWriter());
+            // zframe.PrintByteDetail(outputWriter: fileWriter.GetOutputWriter());
             new PrintZFrameSummary(shaderFile, zframeFile, outputWriter: fileWriter.GetOutputWriter(), showRichTextBoxLinks: true);
             fileWriter.CloseStreamWriter();
         }
@@ -254,7 +254,7 @@ namespace MyShaderAnalysis
             string htmlHeader = fileTokens.GetZFrameHtmlFilename(zframeFile.zframeId, "bytes")[..^5];
             fileWriter.WriteHtmlHeader(htmlTitle, htmlHeader);
 
-            zframeFile.PrintByteAnalysis(outputWriter: fileWriter.GetOutputWriter());
+            zframeFile.PrintByteDetail(outputWriter: fileWriter.GetOutputWriter());
             fileWriter.CloseStreamWriter();
         }
 

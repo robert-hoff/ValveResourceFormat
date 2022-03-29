@@ -196,7 +196,7 @@ namespace MyGUI.Types.Viewers {
                 if (!byteVersion) {
                     shaderFile.PrintSummary(buffer.Write, showRichTextBoxLinks: true, relatedfiles: relatedFiles);
                 } else {
-                    shaderFile.PrintByteAnalysis(outputWriter: buffer.Write);
+                    shaderFile.PrintByteDetail(outputWriter: buffer.Write);
                 }
                 Font = new Font(FontFamily.GenericMonospace, Font.Size);
                 DetectUrls = true;
@@ -275,7 +275,7 @@ namespace MyGUI.Types.Viewers {
                 var buffer = new StringWriter(CultureInfo.InvariantCulture);
                 zframeFile = shaderFile.GetZFrameFile(zframeId, outputWriter: buffer.Write);
                 if (byteVersion) {
-                    zframeFile.PrintByteAnalysis();
+                    zframeFile.PrintByteDetail();
                 } else {
                     PrintZFrameSummary zframeSummary = new(shaderFile, zframeFile, buffer.Write, true);
                 }

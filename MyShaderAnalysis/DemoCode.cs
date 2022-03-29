@@ -43,9 +43,9 @@ namespace MyShaderAnalysis
             string filenamepath = @"X:/Steam/steamapps/common/The Lab/RobotRepair/core/shaders/vfx/bilateral_blur_pc_30_ps.vcs";
             ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
 
-            // shaderFile.PrintByteAnalysis();
+            // shaderFile.PrintByteDetail();
             // new ParseV62Files(filenamepath);
-            new DataReaderVcsBytes(filenamepath).PrintByteAnalysis();
+            new DataReaderVcsBytes(filenamepath).PrintByteDetail();
         }
 
 

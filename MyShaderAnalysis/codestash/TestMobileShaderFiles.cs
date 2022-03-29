@@ -30,8 +30,8 @@ namespace MyShaderAnalysis
             // string filenamepath = $"{DOTA_DAC_IOS_VULKAN_SOURCE}/ui_twotexture_ios_vulkan_40_ps.vcs";
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             ZFrameFile zframeFile = shaderFile.GetZFrameFile(0);
-            zframeFile.PrintByteAnalysis();
-            // shaderFile.PrintByteAnalysis();
+            zframeFile.PrintByteDetail();
+            // shaderFile.PrintByteDetail();
         }
 
 
@@ -40,7 +40,7 @@ namespace MyShaderAnalysis
             string filenamepath = $"{DOTA_DAC_MOBILE_GLES_SOURCE}/spritecard_mobile_gles_30_vs.vcs";
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             ZFrameFile zframeFile = shaderFile.GetZFrameFile(0);
-            zframeFile.PrintByteAnalysis();
+            zframeFile.PrintByteDetail();
         }
 
 
@@ -50,7 +50,7 @@ namespace MyShaderAnalysis
         {
             string filenamepath = $"{DOTA_DAC_MOBILE_GLES_SOURCE}/spritecard_mobile_gles_30_vs.vcs";
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
-            shaderFile.PrintByteAnalysis(shortenOutput: false);
+            shaderFile.PrintByteDetail(shortenOutput: false);
         }
 
 

@@ -271,7 +271,7 @@ namespace MyShaderAnalysis
         //    zFrameParser.RequestGlslFileSave(outputdir);
         //    string htmlHeader = GetHtmlHeader(outputFilename, outputFilename[0..^5]);
         //    sw.WriteLine($"{htmlHeader}");
-        //    zFrameParser.PrintByteAnalysis();
+        //    zFrameParser.PrintByteDetail();
         //    sw.WriteLine($"{GetHtmlFooter()}");
         //    sw.Close();
         //}
@@ -303,7 +303,7 @@ namespace MyShaderAnalysis
             //}
             //string htmlHeader = GetHtmlHeader(outputFilename, outputFilename[0..^5]);
             //sw.WriteLine($"{htmlHeader}");
-            //zFrameParser.PrintByteAnalysis();
+            //zFrameParser.PrintByteDetail();
             //sw.WriteLine($"{GetHtmlFooter()}");
             //sw.Close();
         }
@@ -345,7 +345,7 @@ namespace MyShaderAnalysis
             //{
             //    zFrameParser.RequestGlslFileSave(outputdir);
             //}
-            //zFrameParser.PrintByteAnalysis();
+            //zFrameParser.PrintByteDetail();
             //sw.Close();
         }
 
@@ -459,7 +459,7 @@ namespace MyShaderAnalysis
             //{
             //    zFrameParser.ConfigureWriteToFile(sw, disableOutput);
             //}
-            //zFrameParser.PrintByteAnalysis();
+            //zFrameParser.PrintByteDetail();
         }
 
 
@@ -523,7 +523,7 @@ namespace MyShaderAnalysis
             Console.WriteLine($"parsing {RemoveBaseDir(filenamepath)}\n");
             DataReaderVcsBytes shaderByteAnalysis = new(filenamepath);
             shaderByteAnalysis.SetShortenOutput(false);
-            shaderByteAnalysis.PrintByteAnalysis();
+            shaderByteAnalysis.PrintByteDetail();
         }
 
         static void WriteAllVcsFilesToTxt()
@@ -543,7 +543,7 @@ namespace MyShaderAnalysis
             //StreamWriter sw = new(fileoutputNamepath);
             //sw.WriteLine($"parsing {RemoveBaseDir(filenamepath)}\n");
             //shaderByteAnalysis.ConfigureWriteToFile(sw, true);
-            //shaderByteAnalysis.PrintByteAnalysis();
+            //shaderByteAnalysis.PrintByteDetail();
             //sw.Close();
         }
 
@@ -586,7 +586,7 @@ namespace MyShaderAnalysis
             //sw.WriteLine(GetHtmlHeader(Path.GetFileName(filenamepath), RemoveBaseDir(filenamepath)));
             //shaderByteAnalysis.SetWriteHtmlLinks(writeHtmlLinks);
             //shaderByteAnalysis.ConfigureWriteToFile(sw, true);
-            //shaderByteAnalysis.PrintByteAnalysis();
+            //shaderByteAnalysis.PrintByteDetail();
             //sw.Close();
         }
 
@@ -606,7 +606,7 @@ namespace MyShaderAnalysis
             //    DataReaderVcsBytes shaderByteAnalysis = new(filenamepath);
             //    shaderByteAnalysis.SetShortenOutput(false);
             //    shaderByteAnalysis.DisableOutput = true;
-            //    shaderByteAnalysis.PrintByteAnalysis();
+            //    shaderByteAnalysis.PrintByteDetail();
             //    Console.WriteLine($" [SUCCESS]");
             //    typesParsed[(int)GetVcsFileType(filenamepath)]++;
             //    filesParsed++;

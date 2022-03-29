@@ -30,7 +30,7 @@ namespace MyShaderAnalysis.utilhelpers
             shaderFile.Read(filenamepath);
             // ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(0, omitParsing: true);
             ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(0);
-             // zframeFile.PrintByteAnalysis();
+            // zframeFile.PrintByteDetail();
             // zframeFile.PrintGlslSource(0, Console.Write);
             new PrintZFrameSummary(shaderFile, zframeFile);
             // Console.WriteLine($"{zframeFile.gpuSourceCount}");

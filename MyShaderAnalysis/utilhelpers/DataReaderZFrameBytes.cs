@@ -5,7 +5,7 @@ using ValveResourceFormat.ThirdParty;
 using ValveResourceFormat.CompiledShader;
 using ValveResourceFormat.Serialization.VfxEval;
 using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
-// using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
+using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
 namespace MyShaderAnalysis.utilhelpers
 {
@@ -14,51 +14,52 @@ namespace MyShaderAnalysis.utilhelpers
     {
 
         private VcsProgramType vcsProgramType;
-        private VcsPlatformType vcsSourceType;
-        private VcsShaderModelType vcsModelType;
+        private VcsPlatformType vcsPlatformType;
+        private VcsShaderModelType vcsShaderModelType;
 
-        public DataReaderZFrameBytes(byte[] data, VcsProgramType filetype,
-            VcsPlatformType vcsSourceType, VcsShaderModelType vcsModelType) : base(new MemoryStream(data))
+        private bool showStatusMessage;
+
+        public DataReaderZFrameBytes(byte[] data, VcsProgramType vcsProgramType, VcsPlatformType vcsPlatformType,
+            VcsShaderModelType vcsShaderModelType, HandleOutputWrite outputWriter = null, bool showStatusMessage = false) : base(new MemoryStream(data), outputWriter)
         {
-            if (filetype == VcsProgramType.Features)
-            {
-                throw new ShaderParserException("file type cannot be features, as they don't contain any zframes");
-            }
-            this.vcsProgramType = filetype;
-            this.vcsSourceType = vcsSourceType;
-            this.vcsModelType = vcsModelType;
+            this.vcsProgramType = vcsProgramType;
+            this.vcsPlatformType = vcsPlatformType;
+            this.vcsShaderModelType = vcsShaderModelType;
+            this.showStatusMessage = showStatusMessage;
         }
 
-
-        bool writeAsHtml = false;
-        public void SetWriteAsHtml(bool writeAsHtml)
-        {
-            this.writeAsHtml = writeAsHtml;
-        }
-
-        bool saveGlslSources = false;
-        string outputDir = null;
-
-        public void RequestGlslFileSave(string outputDir)
-        {
-            saveGlslSources = true;
-            this.outputDir = outputDir;
-        }
 
         // these are recorded in case save is indicated
         private List<(int, int, string)> glslSources = new();
 
-        public void PrintByteAnalysis()
+        public void PrintByteDetail()
         {
+            BaseStream.Position = 0;
+            if (vcsProgramType == VcsProgramType.Features)
+            {
+                Comment("Zframe byte data (encoding for features files has not been determined)");
+                if (showStatusMessage)
+                {
+                    Console.WriteLine($"Zframe byte data (encoding for features files has not been determined)");
+                }
+                return;
+            }
+
+
             ShowZDataSection(-1);
+
+
+
             ShowZFrameHeader();
+
+
+            ShowBytes(10000);
+            return;
             // this applies only to vs files (ps, gs and psrs files don't have this section)
             if (vcsProgramType == VcsProgramType.VertexShader)
             {
-                // values seen
-                // 1,2,4,5,8,10,12,16,20,40,48,80,120,160
                 int blockCountInput = ReadInt16AtPosition();
-                ShowByteCount("Unknown additional parameters, non 'FF FF' entries point to specific configurations (block IDs)");
+                ShowByteCount("Unknown additional parameters, non 'FF FF' entries point to configurations (block IDs)");
                 ShowBytes(2, breakLine: false);
                 TabComment($"nr of data-blocks ({blockCountInput})");
                 ShowBytes(blockCountInput * 2);
@@ -88,15 +89,16 @@ namespace MyShaderAnalysis.utilhelpers
             ShowBytes(1, "always 0");
             ShowBytes(1, "values seen (0,1)");
             BreakLine();
-            ShowByteCount($"Start of source section, {BaseStream.Position} is the base offset for end-section source pointers");
+            ShowByteCount($"Start of source section, {BaseStream.Position} is " +
+                $"the base offset for end-section source pointers");
             int gpuSourceCount = ReadInt32AtPosition();
-            ShowBytes(4, $"{vcsSourceType} source files ({gpuSourceCount})");
+            ShowBytes(4, $"{vcsPlatformType} source files ({gpuSourceCount})");
             ShowBytes(1, "unknown boolean, values seen 0,1", tabLen: 13);
             BreakLine();
 
-            if (vcsSourceType == VcsPlatformType.PC)
+            if (vcsPlatformType == VcsPlatformType.PC)
             {
-                switch (vcsModelType)
+                switch (vcsShaderModelType)
                 {
                     case VcsShaderModelType._20:
                     case VcsShaderModelType._2b:
@@ -107,26 +109,32 @@ namespace MyShaderAnalysis.utilhelpers
                     case VcsShaderModelType._40:
                     case VcsShaderModelType._41:
                     case VcsShaderModelType._50:
+                    case VcsShaderModelType._60:
                         ShowDxbcSources(gpuSourceCount);
                         break;
                     default:
-                        throw new ShaderParserException($"Unknown or unsupported model type {vcsModelType}");
+                        throw new ShaderParserException($"Unknown or unsupported model type {vcsPlatformType} {vcsShaderModelType}");
                 }
             } else
             {
-                switch (vcsSourceType)
+                switch (vcsPlatformType)
                 {
                     case VcsPlatformType.PCGL:
                     case VcsPlatformType.MOBILE_GLES:
                         ShowGlslSources(gpuSourceCount);
                         break;
+                    case VcsPlatformType.VULKAN:
+                    case VcsPlatformType.ANDROID_VULKAN:
+                    case VcsPlatformType.IOS_VULKAN:
+                        ShowVulkanSources(gpuSourceCount);
+                        break;
                     default:
-                        throw new ShaderParserException($"Unknown or unsupported source type {vcsSourceType}");
+                        throw new ShaderParserException($"Unknown or unsupported source type {vcsPlatformType}");
                 }
             }
 
-            //  End blocks for vs and gs files
-            if (vcsProgramType == VcsProgramType.VertexShader || vcsProgramType == VcsProgramType.GeometryShader)
+            //  End blocks for vs, gs and cs files
+            if (vcsProgramType == VcsProgramType.VertexShader || vcsProgramType == VcsProgramType.GeometryShader || vcsProgramType == VcsProgramType.ComputeShader)
             {
                 ShowZAllEndBlocksTypeVs();
                 BreakLine();
@@ -180,41 +188,14 @@ namespace MyShaderAnalysis.utilhelpers
             }
             ShowEndOfFile();
 
-            // write the gsls source, if indicated
-            if (saveGlslSources && !writeAsHtml)
-            {
 
-                if (vcsSourceType == VcsPlatformType.PC)
-                {
-                    switch (vcsModelType)
-                    {
-                        case VcsShaderModelType._20:
-                        case VcsShaderModelType._2b:
-                        case VcsShaderModelType._30:
-                        case VcsShaderModelType._31:
-                            throw new ShaderParserException($"Source save not implemented for {vcsSourceType} {vcsModelType}");
-                        case VcsShaderModelType._40:
-                        case VcsShaderModelType._41:
-                        case VcsShaderModelType._50:
-                        case VcsShaderModelType._60:
-                            throw new ShaderParserException($"Source save not implemented for {vcsSourceType} {vcsModelType}");
-                        default:
-                            throw new ShaderParserException($"Source save not implemented for {vcsSourceType} {vcsModelType}");
-                    }
-                } else
-                {
-                    switch (vcsSourceType)
-                    {
-                        case VcsPlatformType.PCGL:
-                        case VcsPlatformType.MOBILE_GLES:
-                            SaveGlslSourcestoTxt(glslSources);
-                            break;
-                        default:
-                            throw new ShaderParserException($"glsl save indicated but source is not glsl");
-                    }
-                }
+
+            if (showStatusMessage)
+            {
+                Console.WriteLine($"- OK");
             }
         }
+
 
         private bool prevBlockWasZero = false;
         public void ShowZDataSection(int blockId)
@@ -283,62 +264,41 @@ namespace MyShaderAnalysis.utilhelpers
             for (int i = 0; i < nrArgs; i++)
             {
                 ShowMurmurString();
-                // int headerOperator = databytes[offset];
                 int headerOperator = ReadByteAtPosition();
+                ShowBytes(3, "header-code");
                 if (headerOperator == 0x0e)
                 {
-                    ShowBytes(3);
+                    continue;
+                }
+
+                int dynExpLen = ReadInt32AtPosition();
+                ShowBytes(4, $"dynamic expression length = {dynExpLen}");
+                if (dynExpLen > 0)
+                {
+                    ShowDynamicExpression(dynExpLen);
                     continue;
                 }
                 if (headerOperator == 1)
                 {
-                    int dynExpLen = ReadInt32AtPosition(3);
-                    if (dynExpLen == 0)
-                    {
-                        ShowBytes(8);
-                        continue;
-                    } else
-                    {
-                        ShowBytes(7);
-                        ShowDynamicExpression(dynExpLen);
-                        continue;
-                    }
+                    ShowBytes(4, "header argument");
                 }
                 if (headerOperator == 9)
                 {
-                    int dynExpLen = ReadInt32AtPosition(3);
-                    if (dynExpLen == 0)
-                    {
-                        ShowBytes(8);
-                        continue;
-                    } else
-                    {
-                        ShowBytes(7);
-                        ShowDynamicExpression(dynExpLen);
-                        continue;
-                    }
+                    ShowBytes(1, "header argument");
                 }
                 if (headerOperator == 5)
                 {
-                    int dynExpLen = ReadInt32AtPosition(3);
-                    if (dynExpLen == 0)
-                    {
-                        ShowBytes(11);
-                        continue;
-                    } else
-                    {
-                        ShowBytes(7);
-                        ShowDynamicExpression(dynExpLen);
-                        continue;
-                    }
+                    ShowBytes(4, "header argument");
                 }
             }
+
             if (nrArgs > 0)
             {
                 BreakLine();
             }
         }
-        const int SOURCE_BYTES_TO_SHOW = 100;
+
+        const int SOURCE_BYTES_TO_SHOW = 96;
         private void ShowDxilSources(int dxilSourceCount)
         {
             for (int i = 0; i < dxilSourceCount; i++)
@@ -351,7 +311,8 @@ namespace MyShaderAnalysis.utilhelpers
                 {
                     ShowBytes(4);
                     int unknown_prog_uint16 = (int)ReadUInt16AtPosition(2);
-                    ShowBytes(4, $"({unknown_prog_uint16}) the first ({unknown_prog_uint16} * 4) bytes look like header data that may need to be processed");
+                    ShowBytes(4, $"({unknown_prog_uint16}) the first ({unknown_prog_uint16} * 4) " +
+                        $"bytes look like header data that may need to be processed");
                     BreakLine();
                     ShowByteCount($"DXIL-SOURCE[{i}]");
                     int sourceSize = sourceOffset - 8;
@@ -396,7 +357,7 @@ namespace MyShaderAnalysis.utilhelpers
                 ShowByteCount();
                 ShowBytes(4, $"Source size, {sourceSize} bytes");
                 BreakLine();
-                long endOfSource = BaseStream.Position + sourceSize;
+                int endOfSource = (int)BaseStream.Position + sourceSize;
                 ShowByteCount($"DXBC-SOURCE[{sourceId}]");
                 if (sourceSize == 0)
                 {
@@ -412,13 +373,51 @@ namespace MyShaderAnalysis.utilhelpers
                     ShowBytes(sourceSize);
                 }
                 BaseStream.Position = endOfSource;
-
                 BreakLine();
                 ShowByteCount();
                 ShowBytes(16, "DXBC(hlsl) Editor ref.");
                 BreakLine();
             }
         }
+
+        const int VULKAN_SOURCE_BYTES_TO_SHOW = 192;
+        private void ShowVulkanSources(int vulkanSourceCount)
+        {
+            for (int i = 0; i < vulkanSourceCount; i++)
+            {
+                int offsetToEditorId = ReadInt32AtPosition();
+                if (offsetToEditorId == 0)
+                {
+                    ShowBytes(4);
+                    OutputWriteLine("// no source present");
+                    BreakLine();
+                } else
+                {
+                    ShowByteCount();
+                    ShowBytes(4, $"({offsetToEditorId}) offset to Editor ref. ID ");
+                    int endOfSourceOffset = (int)BaseStream.Position + offsetToEditorId;
+                    int arg0 = ReadInt32AtPosition();
+                    ShowBytes(4, $"({arg0}) values seen for Vulkan sources are (2,3)");
+                    int offset2 = ReadInt32AtPosition();
+                    ShowBytes(4, $"({offset2}) - looks like an offset, unknown significance");
+                    BreakLine();
+                    ShowByteCount($"VULKAN-SOURCE[{i}]");
+                    int sourceSize = offsetToEditorId - 8;
+                    int bytesToShow = VULKAN_SOURCE_BYTES_TO_SHOW > sourceSize ? sourceSize : VULKAN_SOURCE_BYTES_TO_SHOW;
+                    ShowBytes(bytesToShow);
+                    int bytesNotShown = sourceSize - bytesToShow;
+                    if (bytesNotShown > 0)
+                    {
+                        Comment($"... {bytesNotShown} bytes of data not shown)");
+                    }
+                    BreakLine();
+                    BaseStream.Position = endOfSourceOffset;
+                }
+                ShowBytes(16, "Vulkan Editor ref. ID");
+                BreakLine();
+            }
+        }
+
         private void ShowGlslSources(int glslSourceCount)
         {
             for (int sourceId = 0; sourceId < glslSourceCount; sourceId++)
@@ -428,17 +427,10 @@ namespace MyShaderAnalysis.utilhelpers
                 ShowZGlslSourceSummary(sourceId);
                 ShowByteCount();
                 byte[] fileIdBytes = ReadBytes(16);
-                string fileIdStr = ShaderUtilHelpers.BytesToString(fileIdBytes);
-                if (writeAsHtml)
-                {
-                    OutputWrite(GetGlslHtmlLink(fileIdStr));
-                } else
-                {
-                    OutputWrite(fileIdStr);
-                }
+                string fileIdStr = BytesToString(fileIdBytes);
+                OutputWrite(fileIdStr);
                 TabComment($" Editor ref.");
                 BreakLine();
-                glslSources.Add((sourceOffset, sourceSize, fileIdStr));
             }
         }
         public int ShowGlslSourceOffsets()
@@ -460,7 +452,7 @@ namespace MyShaderAnalysis.utilhelpers
         public void ShowZGlslSourceSummary(int sourceId)
         {
             int bytesToRead = ReadInt32AtPosition(-4);
-            long endOfSource = BaseStream.Position + bytesToRead;
+            int endOfSource = (int)BaseStream.Position + bytesToRead;
             ShowByteCount($"GLSL-SOURCE[{sourceId}]");
             if (bytesToRead == 0)
             {
@@ -491,6 +483,7 @@ namespace MyShaderAnalysis.utilhelpers
         }
         private void ShowMurmurString()
         {
+            ShowByteCount();
             string nulltermstr = ReadNullTermStringAtPosition();
             uint murmur32 = ReadUInt32AtPosition(nulltermstr.Length + 1);
             uint murmurCheck = MurmurHash2.Hash(nulltermstr.ToLower(), ShaderFile.PI_MURMURSEED);
@@ -501,6 +494,22 @@ namespace MyShaderAnalysis.utilhelpers
             Comment($"{nulltermstr} | 0x{murmur32:x08}");
             ShowBytes(nulltermstr.Length + 1 + 4);
         }
+        private void ShowDynamicExpression(int dynExpLen)
+        {
+            byte[] dynExpDatabytes = ReadBytesAtPosition(0, dynExpLen);
+            string dynExp = ParseDynamicExpression(dynExpDatabytes);
+            OutputWriteLine($"// {dynExp}");
+            ShowBytes(dynExpLen);
+        }
+
+
+
+
+
+
+
+
+        /*
         private void ShowDynamicExpression(int dynExpLen)
         {
             byte[] dynExpDatabytes = ReadBytesAtPosition(0, dynExpLen);
@@ -518,8 +527,10 @@ namespace MyShaderAnalysis.utilhelpers
                 return "[error in dyn-exp]";
             }
         }
+        */
 
 
+        /*
         private void SaveGlslSourcestoHtml(List<(int, int, string)> glslSources)
         {
             foreach (var glslSourceItem in glslSources)
@@ -563,6 +574,7 @@ namespace MyShaderAnalysis.utilhelpers
                 File.WriteAllBytes(glslFilenamepath, glslSourceContent);
             }
         }
+        */
 
 
 

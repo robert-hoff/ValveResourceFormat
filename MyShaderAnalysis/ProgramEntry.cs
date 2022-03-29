@@ -34,9 +34,11 @@ namespace MyShaderAnalysis
             Console.SetOut(new ToDebugWriter());
 
 
-            // -- revise how files are managed as collections
-            CreateHtmlServerFiles.RunTrials();
+            // -- comprehensive tests against archive names (all files)
+            TestByteParsers.RunTrials();
 
+            // -- revise how files are managed as collections
+            // CreateHtmlServerFiles.RunTrials();
 
             // -- process all types through single entry
             // ParseVcsFiles.RunTrials();

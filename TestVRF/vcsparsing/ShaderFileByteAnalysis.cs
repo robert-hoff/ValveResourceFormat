@@ -64,7 +64,7 @@ namespace TestVRF.vcsparsing {
             return zframeByteAnalysis;
         }
 
-        public void PrintByteAnalysis() {
+        public void PrintByteDetail() {
             DataReaderVcsByteAnalysis vcsByteAnalysis = new(databytes, vcsFiletype);
             Debug.WriteLine($"parsing {RemoveBaseDir(filenamepath)}");
             Debug.WriteLine($"");

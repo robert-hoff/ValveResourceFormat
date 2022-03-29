@@ -11,64 +11,82 @@ namespace MyShaderAnalysis.utilhelpers
 
     public class DataReaderVcsBytes : ShaderDataReader
     {
+        public const uint ZSTD_DELIM = 0xFFFFFFFD;
+        public const uint LZMA_DELIM = 0x414D5A4C;
 
         const string SERVER_BASEDIR = @"Z:/dev/www/vcs.codecreation.dev";
 
         private VcsProgramType vcsProgramType;
         private string vcsFilename = null;
-        public DataReaderVcsBytes(string filenamepath) : base(new MemoryStream(File.ReadAllBytes(filenamepath)))
+        public DataReaderVcsBytes(string filenamepath, HandleOutputWrite outputWriter = null, bool showStatusMessage = false) :
+            base(new MemoryStream(File.ReadAllBytes(filenamepath)), outputWriter)
         {
             this.vcsProgramType = ComputeVCSFileName(filenamepath).Item1;
             this.vcsFilename = filenamepath;
+            this.showStatusMessage = showStatusMessage;
         }
 
-        private bool writeHtmlLinks = false;
-        public void SetWriteHtmlLinks(bool writeHtmlLinks)
-        {
-            this.writeHtmlLinks = writeHtmlLinks;
-        }
-
+        // if shortenOutput = true will limit the number of zframes shown to LIMIT_ZFRAMES
+        // if shortenOutput = false will print all zframes (ignoring the LIMIT_ZFRAMES value)
         private bool shortenOutput = true;
         public void SetShortenOutput(bool shortenOutput)
         {
             this.shortenOutput = shortenOutput;
         }
 
+        // prints a status message to console "parsing file XXX"
+        private bool showStatusMessage;
 
         private uint zFrameCount = 0;
         const int LIMIT_ZFRAMES = 4;
 
-        private int version = 64;
 
-
-        public void PrintByteAnalysis()
+        public void PrintByteDetail(string archiveName = null)
         {
+            BaseStream.Position = 0;
+            if (showStatusMessage)
+            {
+                if (archiveName != null)
+                {
+                    string reportString = $"parsing /{ archiveName}/{ Path.GetFileName(vcsFilename)}";
+                    Console.Write($"{reportString,-100}");
+                } else
+                {
+                    Console.Write($"parsing {vcsFilename}");
+                }
+            }
+
+            int vcsVersion = -1;
             if (vcsProgramType == VcsProgramType.Features)
             {
-                PrintVcsFeaturesHeader();
+                vcsVersion = PrintVcsFeaturesHeader();
             } else if (vcsProgramType == VcsProgramType.VertexShader || vcsProgramType == VcsProgramType.PixelShader
                    || vcsProgramType == VcsProgramType.GeometryShader || vcsProgramType == VcsProgramType.PixelShaderRenderState
                    || vcsProgramType == VcsProgramType.ComputeShader || vcsProgramType == VcsProgramType.HullShader
                    || vcsProgramType == VcsProgramType.DomainShader || vcsProgramType == VcsProgramType.RaytracingShader)
             {
-                version = PrintVsPsHeader();
+                vcsVersion = PrintVsPsHeader();
             } else
             {
-                throw new ShaderParserException($"can't parse this filetype: {vcsProgramType}");
+                throw new ShaderParserException($"Unknown filetype: {vcsProgramType}");
+            }
+            if (vcsVersion != 65 && vcsVersion != 64 && vcsVersion != 62)
+            {
+                if (showStatusMessage)
+                {
+                    Console.WriteLine($"ERROR Unsupported vcs version {vcsVersion}");
+                }
+                return;
             }
             uint blockDelim = ReadUInt32AtPosition();
-            //if (blockDelim != 17)
-            //{
-            //    throw new ShaderParserException($"unexpected block delim value! {blockDelim}");
-            //}
             ShowByteCount();
-            ShowBytes(4, $"block DELIM always 17");
+            ShowBytes(4, $"block DELIM (values seen 14,17)");
             BreakLine();
             PrintAllSfBlocks();
             PrintAllCompatibilityBlocks();
             PrintAllDBlocks();
             PrintAllUknownBlocks();
-            PrintAllParamBlocks();
+            PrintAllParamBlocks(vcsVersion);
             PrintAllMipmapBlocks();
             PrintAllBufferBlocks();
             // for some reason only features and vs files observe symbol blocks
@@ -76,24 +94,29 @@ namespace MyShaderAnalysis.utilhelpers
             {
                 PrintAllSymbolNameBlocks();
             }
-            PrintZframes();
-            if (shortenOutput && zFrameCount > LIMIT_ZFRAMES)
-            {
-                return;
-            }
+            PrintZframes(vcsVersion);
             ShowEndOfFile();
+            if (showStatusMessage)
+            {
+                Console.WriteLine($"OK");
+            }
         }
 
-        private void PrintVcsFeaturesHeader()
+        private int PrintVcsFeaturesHeader()
         {
             ShowByteCount("vcs file");
             ShowBytes(4, "\"vcs2\"");
-            version = ReadInt32AtPosition();
-            ShowBytes(4, $"version {version}");
+            int vcsVersion = ReadInt32AtPosition();
+            ShowBytes(4, $"version {vcsVersion}");
+            if (vcsVersion != 65 && vcsVersion != 64 && vcsVersion != 62)
+            {
+                // unsupported version
+                return vcsVersion;
+            }
             BreakLine();
             ShowByteCount("features header");
             int has_psrs_file = 0;
-            if (version == 64)
+            if (vcsVersion >= 64)
             {
                 has_psrs_file = ReadInt32AtPosition();
                 ShowBytes(4, "has_psrs_file = " + (has_psrs_file > 0 ? "True" : "False"));
@@ -117,7 +140,7 @@ namespace MyShaderAnalysis.utilhelpers
             uint arg4 = ReadUInt32AtPosition(0);
             uint arg5 = ReadUInt32AtPosition(4);
             uint arg6 = ReadUInt32AtPosition(8);
-            if (version==64)
+            if (vcsVersion >= 64)
             {
                 uint arg7 = ReadUInt32AtPosition(12);
                 ShowBytes(16, 4, breakLine: false);
@@ -128,15 +151,13 @@ namespace MyShaderAnalysis.utilhelpers
                 TabComment($"({arg4},{arg5},{arg6})");
             }
 
-
             BreakLine();
             ShowByteCount();
-
             int nr_of_arguments = ReadInt32AtPosition();
             ShowBytes(4, $"nr of arguments {nr_of_arguments}");
             if (has_psrs_file == 1)
             {
-                // NOTE nr_of_arguments is overwritten
+                // nr_of_arguments becomes overwritten
                 nr_of_arguments = ReadInt32AtPosition();
                 ShowBytes(4, $"nr of arguments overriden ({nr_of_arguments})");
             }
@@ -158,58 +179,54 @@ namespace MyShaderAnalysis.utilhelpers
                 }
             }
             BreakLine();
-            ShowByteCount("File IDs");
-            ShowBytes(16, "file ID0");
-            if (writeHtmlLinks)
+            ShowByteCount("Editor/Shader stack for generating the file");
+            ShowBytes(16, "Editor ref. ID0 (produces this file)");
+            ShowBytes(16, breakLine: false);
+            TabComment($"Editor ref. ID1 - usually a ref to the vs file ({VcsProgramType.VertexShader})");
+            ShowBytes(16, breakLine: false);
+            TabComment($"Editor ref. ID2 - usually a ref to the ps file ({VcsProgramType.PixelShader})");
+            ShowBytes(16, "Editor ref. ID3");
+            ShowBytes(16, "Editor ref. ID4");
+            ShowBytes(16, "Editor ref. ID5");
+            ShowBytes(16, "Editor ref. ID6");
+            if (vcsVersion >= 64 && has_psrs_file == 0)
             {
-                OutputWrite($"{GetVsHtmlLink(vcsFilename, ReadBytesAsString(16))}");
-            } else
-            {
-                ShowBytes(16, breakLine: false);
+                ShowBytes(16, "Editor ref. ID7 - common editor reference shared by multiple files");
             }
-            TabComment("file ID1 - ref to vs file");
-            if (writeHtmlLinks)
+            if (vcsVersion >= 64 && has_psrs_file == 1)
             {
-                OutputWrite($"{GetPsHtmlLink(vcsFilename, ReadBytesAsString(16))}");
-            } else
-            {
-                ShowBytes(16, breakLine: false);
-            }
-            TabComment("file ID2 - ref to ps file");
-            ShowBytes(16, "file ID3");
-            ShowBytes(16, "file ID4");
-            ShowBytes(16, "file ID5");
-            ShowBytes(16, "file ID6");
-            if (version==64 && has_psrs_file == 0)
-            {
-                ShowBytes(16, "file ID7 - shared by all Dota2 vcs files");
-            }
-            if (version==64 && has_psrs_file == 1)
-            {
-                ShowBytes(16, "file ID7 - reference to psrs file");
-                ShowBytes(16, "file ID8 - shared by all Dota2 vcs files");
+                ShowBytes(16, $"Editor ref. ID7 - reference to psrs file ({VcsProgramType.PixelShaderRenderState})");
+                ShowBytes(16, "Editor ref. ID7 - common editor reference shared by multiple files");
             }
             BreakLine();
+            return vcsVersion;
         }
 
         private int PrintVsPsHeader()
         {
             ShowByteCount("vcs file");
             ShowBytes(4, "\"vcs2\"");
-            int version = ReadInt32AtPosition();
-            ShowBytes(4, $"version {version}");
+            int vcsVersion = ReadInt32AtPosition();
+            ShowBytes(4, $"version {vcsVersion}");
+            if (vcsVersion != 65 && vcsVersion != 64 && vcsVersion != 62)
+            {
+                // unsupported version
+                return vcsVersion;
+            }
             BreakLine();
             ShowByteCount("ps/vs header");
-            if (version == 64)
+            if (vcsVersion >= 64)
             {
                 int has_psrs_file = ReadInt32AtPosition();
                 ShowBytes(4, $"has_psrs_file = {(has_psrs_file > 0 ? "True" : "False")}");
             }
-            ShowBytes(16, "file ID0");
-            ShowBytes(16, "file ID1 - shared by all Valve v64 vcs files");
             BreakLine();
-            return version;
+            ShowByteCount("Editor/Shader stack for generating the file");
+            ShowBytes(16, "Editor ref. ID0 (produces this file)");
+            ShowBytes(16, "Editor ref. ID1 - common editor reference shared by multiple files");
+            return vcsVersion;
         }
+
 
         private void PrintAllSfBlocks()
         {
@@ -339,7 +356,7 @@ namespace MyShaderAnalysis.utilhelpers
             BreakLine();
         }
 
-        private void PrintAllParamBlocks()
+        private void PrintAllParamBlocks(int vcsVersion)
         {
             ShowByteCount();
             uint paramBlockCount = ReadUInt32AtPosition();
@@ -347,11 +364,11 @@ namespace MyShaderAnalysis.utilhelpers
             BreakLine();
             for (int i = 0; i < paramBlockCount; i++)
             {
-                PrintParameterBlock(i);
+                PrintParameterBlock(i, vcsVersion);
             }
         }
 
-        private void PrintParameterBlock(int paramBlockId)
+        private void PrintParameterBlock(int paramBlockId, int vcsVersion)
         {
             ShowByteCount($"PARAM-BLOCK[{paramBlockId}]");
             string name1 = ReadNullTermStringAtPosition();
@@ -378,15 +395,24 @@ namespace MyShaderAnalysis.utilhelpers
                 int dynLength = ReadInt32AtPosition();
                 ShowBytes(4, breakLine: false);
                 TabComment("dyn-exp len", 1);
-
+                TabComment("dynamic expression");
                 ShowBytes(dynLength);
-                TabComment("dynamic expression", 1);
+            }
+
+            // check to see if this reads 'SBMS' (unknown what this is, instance found in v65 hero_pc_40_features.vcs file)
+            byte[] checkSBMS = ReadBytesAtPosition(0, 4);
+            if (checkSBMS[0] == 0x53 && checkSBMS[1] == 0x42 && checkSBMS[2] == 0x4D && checkSBMS[3] == 0x53)
+            {
+                ShowBytes(4, "SBMS");
+                int dynLength = ReadInt32AtPosition();
+                ShowBytes(4, "dyn-exp len");
+                ShowBytes(dynLength, "dynamic expression", 1);
             }
 
             // 5 or 6 int arguments follow depending on version
             ShowBytes(20, 4);
             // v64,65 has an additional argument
-            if (version >= 64)
+            if (vcsVersion >= 64)
             {
                 ShowBytes(4);
             }
@@ -404,49 +430,49 @@ namespace MyShaderAnalysis.utilhelpers
             int a2 = ReadInt32AtPosition(8);
             int a3 = ReadInt32AtPosition(12);
             ShowBytes(16, breakLine: false);
-            TabComment($"ints   ({Format(a0)},{Format(a1)},{Format(a2)},{Format(a3)})", 10);
+            TabComment($"ints   ({Fmt(a0)},{Fmt(a1)},{Fmt(a2)},{Fmt(a3)})", 10);
             a0 = ReadInt32AtPosition(0);
             a1 = ReadInt32AtPosition(4);
             a2 = ReadInt32AtPosition(8);
             a3 = ReadInt32AtPosition(12);
             ShowBytes(16, breakLine: false);
-            TabComment($"ints   ({Format(a0)},{Format(a1)},{Format(a2)},{Format(a3)})", 10);
+            TabComment($"ints   ({Fmt(a0)},{Fmt(a1)},{Fmt(a2)},{Fmt(a3)})", 10);
             a0 = ReadInt32AtPosition(0);
             a1 = ReadInt32AtPosition(4);
             a2 = ReadInt32AtPosition(8);
             a3 = ReadInt32AtPosition(12);
             ShowBytes(16, breakLine: false);
-            TabComment($"ints   ({Format(a0)},{Format(a1)},{Format(a2)},{Format(a3)})", 10);
+            TabComment($"ints   ({Fmt(a0)},{Fmt(a1)},{Fmt(a2)},{Fmt(a3)})", 10);
             float f0 = ReadSingleAtPosition(0);
             float f1 = ReadSingleAtPosition(4);
             float f2 = ReadSingleAtPosition(8);
             float f3 = ReadSingleAtPosition(12);
             ShowBytes(16, breakLine: false);
-            TabComment($"floats ({Format(f0)},{Format(f1)},{Format(f2)},{Format(f3)})", 10);
+            TabComment($"floats ({Fmt(f0)},{Fmt(f1)},{Fmt(f2)},{Fmt(f3)})", 10);
             f0 = ReadSingleAtPosition(0);
             f1 = ReadSingleAtPosition(4);
             f2 = ReadSingleAtPosition(8);
             f3 = ReadSingleAtPosition(12);
             ShowBytes(16, breakLine: false);
-            TabComment($"floats ({Format(f0)},{Format(f1)},{Format(f2)},{Format(f3)})", 10);
+            TabComment($"floats ({Fmt(f0)},{Fmt(f1)},{Fmt(f2)},{Fmt(f3)})", 10);
             f0 = ReadSingleAtPosition(0);
             f1 = ReadSingleAtPosition(4);
             f2 = ReadSingleAtPosition(8);
             f3 = ReadSingleAtPosition(12);
             ShowBytes(16, breakLine: false);
-            TabComment($"floats ({Format(f0)},{Format(f1)},{Format(f2)},{Format(f3)})", 10);
+            TabComment($"floats ({Fmt(f0)},{Fmt(f1)},{Fmt(f2)},{Fmt(f3)})", 10);
             a0 = ReadInt32AtPosition(0);
             a1 = ReadInt32AtPosition(4);
             a2 = ReadInt32AtPosition(8);
             a3 = ReadInt32AtPosition(12);
             ShowBytes(16, breakLine: false);
-            TabComment($"ints   ({Format(a0)},{Format(a1)},{Format(a2)},{Format(a3)})", 10);
+            TabComment($"ints   ({Fmt(a0)},{Fmt(a1)},{Fmt(a2)},{Fmt(a3)})", 10);
             a0 = ReadInt32AtPosition(0);
             a1 = ReadInt32AtPosition(4);
             a2 = ReadInt32AtPosition(8);
             a3 = ReadInt32AtPosition(12);
             ShowBytes(16, breakLine: false);
-            TabComment($"ints   ({Format(a0)},{Format(a1)},{Format(a2)},{Format(a3)})", 10);
+            TabComment($"ints   ({Fmt(a0)},{Fmt(a1)},{Fmt(a2)},{Fmt(a3)})", 10);
             // a command word, or pair of these
             string name5 = ReadNullTermStringAtPosition();
             if (name5.Length > 0)
@@ -460,10 +486,16 @@ namespace MyShaderAnalysis.utilhelpers
                 OutputWriteLine($"// {name6}");
             }
             ShowBytes(32);
+
+            if (vcsVersion == 65)
+            {
+                ShowBytes(6, "unknown bytes specific to vcs version 65");
+            }
+
             BreakLine();
         }
 
-        private string Format(float val)
+        private string Fmt(float val)
         {
             if (val == -1e9) return "-inf";
             if (val == 1e9) return "inf";
@@ -572,8 +604,24 @@ namespace MyShaderAnalysis.utilhelpers
             if (symbolGroupCount == 0) BreakLine();
         }
 
-        private void PrintZframes()
+
+        private const int SKIP_ZFRAMES_IF_MORE_THAN = 10;
+        private const int MAX_ZFRAME_BYTES_TO_SHOW = 96;
+
+        private void PrintZframes(int vcsVersion)
         {
+            // the zFrameIds and zFrameDataOffsets are listed first, before the data sections
+            // (And during normal operation an application is not expected to parse beyond the zframe id and offset
+            // listings - as data retrieval is expected to be performed as-needed during runtime)
+            //
+            // if `shortenOutput = false` is passed all zframes and data-sections will be parsed regardless of length.
+            // if `shortenOutput = true` the parser returns either directly or shortly after the listings; if there are only a
+            // few zframes (<= SKIP_ZFRAMES_IF_MORE_THAN) they are shown regardless.
+            //
+            //
+            List<uint> zFrameIds = new();
+            List<long> zFrameDataOffsets = new();
+
             ShowByteCount();
             zFrameCount = ReadUInt32AtPosition();
             ShowBytes(4, $"{zFrameCount} zframes");
@@ -582,61 +630,67 @@ namespace MyShaderAnalysis.utilhelpers
             {
                 return;
             }
-            List<uint> zFrameIndexes = new();
             ShowByteCount("zFrame IDs");
             for (int i = 0; i < zFrameCount; i++)
             {
                 uint zframeId = ReadUInt32AtPosition();
                 ShowBytes(8, breakLine: false);
-                TabComment($"{getZFrameIdString(zframeId)}    {Convert.ToString(zframeId, 2).PadLeft(20, '0')}");
-                zFrameIndexes.Add(zframeId);
+                TabComment($"zframe[0x{zframeId:x08}]    {Convert.ToString(zframeId, 2).PadLeft(20, '0')} (bin.)");
+                zFrameIds.Add(zframeId);
             }
+
             BreakLine();
-            if (shortenOutput && zFrameCount > LIMIT_ZFRAMES)
-            {
-                Comment("rest of data contains compressed zframes");
-                BreakLine();
-                return;
-            }
             ShowByteCount("zFrame file offsets");
-            foreach (uint zframeId in zFrameIndexes)
+            foreach (uint zframeId in zFrameIds)
             {
                 uint zframe_offset = ReadUInt32AtPosition();
-                ShowBytes(4, $"{zframe_offset} offset of {getZFrameIdString(zframeId)}");
+                zFrameDataOffsets.Add(zframe_offset);
+                ShowBytes(4, $"{zframe_offset} offset of zframe[0x{zframeId:x08}]");
             }
-            uint total_size = ReadUInt32AtPosition();
-            ShowBytes(4, $"{total_size} - end of file");
-            OutputWriteLine("");
-            foreach (uint zframeId in zFrameIndexes)
+            uint endOfFilePointer = ReadUInt32AtPosition();
+            ShowBytes(4, $"{endOfFilePointer} - end of file");
+            BreakLine();
+
+            if (shortenOutput && zFrameCount > SKIP_ZFRAMES_IF_MORE_THAN)
             {
-                PrintCompressedZFrame(zframeId);
+                BaseStream.Position = endOfFilePointer;
+                return;
+            }
+
+            for (int i = 0; i < zFrameIds.Count; i++)
+            {
+                BaseStream.Position = zFrameDataOffsets[i];
+                PrintCompressedZFrame(zFrameIds[i]);
+            }
+            // in v62 the last zframe doesn't always end at end of file (to pass the end-of-file check must be explicitly set)
+            if (vcsVersion == 62)
+            {
+                BaseStream.Position = endOfFilePointer;
             }
         }
 
 
-        int MAX_ZFRAME_BYTES_SHOWN = 96;
-
         public void PrintCompressedZFrame(uint zframeId)
         {
-            OutputWriteLine($"[{BaseStream.Position}] {getZFrameIdString(zframeId)}");
+            OutputWriteLine($"[{BaseStream.Position}] zframe[0x{zframeId:x08}]");
             bool isLzma = false;
-            uint chuckSizeOrZFrameDelim = ReadUInt32AtPosition();
-            if (chuckSizeOrZFrameDelim == ShaderFile.ZSTD_DELIM)
+            uint zstdDelimOrChunkSize = ReadUInt32AtPosition();
+            if (zstdDelimOrChunkSize == ZSTD_DELIM)
             {
-                ShowBytes(4, $"Zstd delim (0x{ShaderFile.ZSTD_DELIM:x08})");
+                ShowBytes(4, $"Zstd delim (0x{ZSTD_DELIM:x08})");
             } else
             {
-                ShowBytes(4, $"Lzma chunk size {chuckSizeOrZFrameDelim}");
+                ShowBytes(4, $"Chunk size {zstdDelimOrChunkSize}");
                 uint lzmaDelim = ReadUInt32AtPosition();
-                if (lzmaDelim != ShaderFile.LZMA_DELIM)
+                if (lzmaDelim != LZMA_DELIM)
                 {
-                    // throw new ShaderParserException("Unknown compression, neither ZStd nor Lzma found");
-                    Console.WriteLine($"neither zstd or lzma found");
-                    ShowBytes((int) chuckSizeOrZFrameDelim);
+                    Comment($"neither ZStd or Lzma found (frame appears to be uncompressed)");
+                    ShowBytes((int)zstdDelimOrChunkSize);
+                    BreakLine();
                     return;
                 }
                 isLzma = true;
-                ShowBytes(4, $"Lzma delim (0x{ShaderFile.LZMA_DELIM:x08})");
+                ShowBytes(4, $"Lzma delim (0x{LZMA_DELIM:x08})");
             }
             int uncompressed_length = ReadInt32AtPosition();
             ShowBytes(4, $"{uncompressed_length,-8} uncompressed length");
@@ -646,29 +700,15 @@ namespace MyShaderAnalysis.utilhelpers
             {
                 ShowBytes(5, "Decoder properties");
             }
-            ShowBytesAtPosition(0, compressed_length > MAX_ZFRAME_BYTES_SHOWN ? MAX_ZFRAME_BYTES_SHOWN : compressed_length);
-            if (compressed_length > MAX_ZFRAME_BYTES_SHOWN)
+            ShowBytesAtPosition(0, compressed_length > MAX_ZFRAME_BYTES_TO_SHOW ? MAX_ZFRAME_BYTES_TO_SHOW : compressed_length);
+            if (compressed_length > MAX_ZFRAME_BYTES_TO_SHOW)
             {
-                Comment($"... ({compressed_length - MAX_ZFRAME_BYTES_SHOWN} bytes not shown)");
+                Comment($"... ({compressed_length - MAX_ZFRAME_BYTES_TO_SHOW} bytes not shown)");
             }
             BaseStream.Position += compressed_length;
             BreakLine();
         }
 
-        private string getZFrameIdString(uint zframeId)
-        {
-            if (writeHtmlLinks)
-            {
-                // return GetZframeHtmlLink(zframeId, vcsFilename);
-                string serverdir = SERVER_BASEDIR;
-                string basedir = $"/vcs-all/{GetCoreOrDotaString(vcsFilename)}/zsource/";
-
-                return GetZframeHtmlLinkCheckExists(zframeId, vcsFilename, serverdir, basedir);
-            } else
-            {
-                return $"zframe[0x{zframeId:x08}]";
-            }
-        }
 
 
 

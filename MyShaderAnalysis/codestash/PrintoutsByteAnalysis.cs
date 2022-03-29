@@ -97,7 +97,7 @@ namespace MyShaderAnalysis
             // new PrintoutSingleFile(filenamepath, fileWriter.GetOutputWriter());
 
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
-            shaderFile.PrintByteAnalysis(outputWriter: fileWriter.GetOutputWriter());
+            shaderFile.PrintByteDetail(outputWriter: fileWriter.GetOutputWriter());
             fileWriter.CloseStreamWriter();
         }
 
@@ -121,12 +121,12 @@ namespace MyShaderAnalysis
             // -- using DataReaderVcsBytes
             // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs";
             // DataReaderVcsBytes testfile = new DataReaderVcsBytes(filenamepath);
-            // testfile.PrintByteAnalysis();
+            // testfile.PrintByteDetail();
 
             // -- using ShaderFile
             string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs";
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
-            shaderFile.PrintByteAnalysis();
+            shaderFile.PrintByteDetail();
         }
 
 
@@ -197,7 +197,7 @@ namespace MyShaderAnalysis
             string htmlHeader = fileTokens.GetZFrameHtmlFilename(zframe.zframeId, "bytes")[..^5];
             fileWriter.WriteHtmlHeader(htmlTitle, htmlHeader);
 
-            zframe.PrintByteAnalysis(outputWriter: fileWriter.GetOutputWriter());
+            zframe.PrintByteDetail(outputWriter: fileWriter.GetOutputWriter());
             fileWriter.CloseStreamWriter();
         }
 
@@ -222,7 +222,7 @@ namespace MyShaderAnalysis
             string htmlHeader = fileTokens.GetZFrameHtmlFilename(zframe.zframeId, "bytes")[..^5];
             fileWriter.WriteHtmlHeader(htmlTitle, htmlHeader);
 
-            zframe.PrintByteAnalysis(outputWriter: fileWriter.GetOutputWriter());
+            zframe.PrintByteDetail(outputWriter: fileWriter.GetOutputWriter());
             fileWriter.CloseStreamWriter();
         }
 
@@ -242,7 +242,7 @@ namespace MyShaderAnalysis
             string htmlHeader = fileTokens.GetZFrameHtmlFilename(ZFRAME_ID, "bytes")[..^5];
             fileWriter.WriteHtmlHeader(htmlTitle, htmlHeader);
 
-            zframeFile.PrintByteAnalysis(outputWriter: fileWriter.GetOutputWriter());
+            zframeFile.PrintByteDetail(outputWriter: fileWriter.GetOutputWriter());
             fileWriter.CloseStreamWriter();
         }
 
@@ -278,7 +278,7 @@ namespace MyShaderAnalysis
             string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs";
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             ZFrameFile zframe = shaderFile.GetZFrameFileByIndex(0);
-            zframe.PrintByteAnalysis();
+            zframe.PrintByteDetail();
         }
 
 

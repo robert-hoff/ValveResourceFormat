@@ -44,7 +44,7 @@ namespace MyShaderAnalysis
         {
             // Console.WriteLine($"parsing {shaderFile.filenamepath} byte version");
             var buffer = new StringWriter(CultureInfo.InvariantCulture);
-            shaderFile.PrintByteAnalysis(outputWriter: buffer.Write);
+            shaderFile.PrintByteDetail(outputWriter: buffer.Write);
             return buffer.ToString();
         }
 
@@ -58,7 +58,7 @@ namespace MyShaderAnalysis
         public string GetZframeByteSummary(ZFrameFile zframeFile)
         {
             var buffer = new StringWriter(CultureInfo.InvariantCulture);
-            zframeFile.PrintByteAnalysis(outputWriter: buffer.Write);
+            zframeFile.PrintByteDetail(outputWriter: buffer.Write);
             return buffer.ToString();
         }
 
