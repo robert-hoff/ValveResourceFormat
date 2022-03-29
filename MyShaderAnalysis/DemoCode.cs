@@ -17,7 +17,7 @@ namespace MyShaderAnalysis
 
         public static void RunTrials()
         {
-            Trial1();
+            ParseV62File();
             // ManualZFrameDecompression();
             // ShowVcsFilesForGivenArchive();
         }
@@ -37,9 +37,15 @@ namespace MyShaderAnalysis
             // ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
         }
 
-        static void Trial1()
+        // two ways to print the byte analysis
+        static void ParseV62File()
         {
+            string filenamepath = @"X:/Steam/steamapps/common/The Lab/RobotRepair/core/shaders/vfx/bilateral_blur_pc_30_ps.vcs";
+            ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
 
+            // shaderFile.PrintByteAnalysis();
+            // new ParseV62Files(filenamepath);
+            new DataReaderVcsByteAnalysis(filenamepath).PrintByteAnalysis();
         }
 
 

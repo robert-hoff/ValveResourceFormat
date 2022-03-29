@@ -41,7 +41,7 @@ namespace MyShaderAnalysis.utilhelpers
         public string vcstoken { get; }      // ft, vs, ps, psrs or gs
         public string sourcedir { get; }     // full directory path of the source files
         public string archivename { get; }   // dota-game or dota-core
-        public string archivelabel { get; }  // dota or core (possibly s&box later). Used for generating names
+        // public string archivelabel { get; }  // dota or core (possibly s&box later). Used for generating names
         public string platformType { get; }       // pcgl, pc, vulkan
         public string sourceType { get; }    // glsl, dxil, dxbc, gles, vulkan, android_vulkan, ios_vulkan
         public string sourceVersion { get; }    // 30,40,50,etc
@@ -66,8 +66,8 @@ namespace MyShaderAnalysis.utilhelpers
             this.vcsProgramType = ShaderUtilHelpers.ComputeVCSFileName(filenamepath).Item1;
             this.sourcedir = GetSourceDir(archive);
             this.archivename = GetArchiveName(archive);
-            this.archivelabel = GetArchiveLabel(archive);
-            this.platformType = GetGpuType(archive);
+            // this.archivelabel = GetArchiveLabel(archive);
+            this.platformType = GetPlatformType(archive);
             this.sourceType = GetSourceType(archive);
             this.sourceVersion = filename.Split('_')[^2];
             this.serverdir = GetServerBaseDir();
@@ -216,10 +216,11 @@ namespace MyShaderAnalysis.utilhelpers
         }
 
         // hero_pcgl_30_ps (dota)
-        public string GetShortHandName()
-        {
-            return $"{name} ({archivelabel})";
-        }
+        // todo - verify if this is needed or useful
+        //public string GetShortHandName()
+        //{
+        //    return $"{name} ({archivelabel})";
+        //}
 
         public string GetShortName()
         {

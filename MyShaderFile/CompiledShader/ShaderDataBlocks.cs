@@ -739,9 +739,14 @@ namespace ValveResourceFormat.CompiledShader
                 datareader.ShowBytes(dynLength, "dynamic expression", 1);
             }
 
+            // 5 or 6 int arguments follow depending on version
+            datareader.ShowBytes(20, 4);
+            // v64,65 has an additional argument
+            if (vcsVersion >= 64)
+            {
+                datareader.ShowBytes(4);
+            }
 
-            // 6 int parameters follow here
-            datareader.ShowBytes(24, 4);
             // a rarely seen file reference
             string name4 = datareader.ReadNullTermStringAtPosition();
             if (name4.Length > 0)

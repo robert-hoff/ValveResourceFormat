@@ -41,8 +41,7 @@ namespace MyShaderAnalysis
             // -- process all types through single entry
             // ParseVcsFiles.RunTrials();
 
-
-
+            // -- test v62 parsers here,
             // DemoCode.RunTrials();
 
             // -- This still produces a file summary overview (particularly for the static variables)

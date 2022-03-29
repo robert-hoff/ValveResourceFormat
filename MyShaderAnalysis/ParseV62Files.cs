@@ -468,19 +468,13 @@ namespace MyShaderAnalysis
                 ShowBytes(dynLength, "dynamic expression", 1);
             }
 
-
-
-            // 6 int parameters follow the dynamic expression
-            if (version == 64 || version == 65)
+            // 5 or 6 int arguments follow depending on version
+            ShowBytes(20, 4);
+            // v64,65 has an additional argument
+            if (version >= 64)
             {
-                ShowBytes(24, 4);
+                ShowBytes(4);
             }
-            else
-            {
-                ShowBytes(20, 4);
-            }
-
-
 
             // a rarely seen file reference
             string name4 = ReadNullTermStringAtPosition();

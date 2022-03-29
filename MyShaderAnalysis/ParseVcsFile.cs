@@ -42,6 +42,7 @@ namespace MyShaderAnalysis
 
         public string GetVcsByteSummary()
         {
+            // Console.WriteLine($"parsing {shaderFile.filenamepath} byte version");
             var buffer = new StringWriter(CultureInfo.InvariantCulture);
             shaderFile.PrintByteAnalysis(outputWriter: buffer.Write);
             return buffer.ToString();
@@ -187,7 +188,7 @@ namespace MyShaderAnalysis
             {
                 ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(i);
                 SaveGpuSources(zframeFile, requestedGpuSourcesToPrint);
-                SaveZframeByteSummaryToHtml(zframeFile);
+                // SaveZframeByteSummaryToHtml(zframeFile);
                 SaveZframeSummaryToHtml(zframeFile);
             }
             SaveVcsByteSummaryToHtml();
