@@ -364,6 +364,7 @@ namespace MyGUI.Types.Viewers {
                 {
                     bv.SetBytes(input);
                 }));
+                // bv.sets
                 return bvTab;
             }
         }

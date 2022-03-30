@@ -11,7 +11,8 @@ namespace ValveTrials
 {
     class Program
     {
-        public class ToDebugWriter : StringWriter {
+        public class ToDebugWriter : StringWriter
+        {
             public override void WriteLine(string str0)
             {
                 Debug.WriteLine(str0);
@@ -27,14 +28,32 @@ namespace ValveTrials
         {
             Console.SetOut(new ToDebugWriter());
 
-            //Application.EnableVisualStyles();
-            //Application.SetCompatibleTextRenderingDefault(false);
-            //Form1 window = new();
-            //Application.Run(window);
 
-            ApplicationConfiguration.Initialize();
-            Application.Run(new ByteViewerForm());
+            // RunNewTestApp();
+            RunByteViewerApp();
+            // RunSimplifiedGuiApp();
 
         }
+
+        static void RunNewTestApp()
+        {
+            Form2 window = new();
+            Application.Run(window);
+        }
+
+        static void RunByteViewerApp()
+        {
+            ApplicationConfiguration.Initialize();
+            Application.Run(new ByteViewerForm());
+        }
+
+        static void RunSimplifiedGuiApp()
+        {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Form1 window = new();
+            Application.Run(window);
+        }
+
     }
 }
