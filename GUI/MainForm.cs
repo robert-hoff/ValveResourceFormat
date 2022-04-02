@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -37,10 +38,7 @@ namespace GUI
 
             mainTabs.SelectedIndexChanged += (o, e) =>
             {
-                if (mainTabs.SelectedTab != null)
-                {
-                    findToolStripButton.Enabled = mainTabs.SelectedTab.Controls["TreeViewWithSearchResults"] is TreeViewWithSearchResults;
-                }
+                ShowHideSearch();
             };
 
             mainTabs.TabPages.Add(ConsoleTab.CreateTab());
@@ -60,6 +58,61 @@ namespace GUI
                     OpenFile(file);
                 }
             }
+        }
+
+        protected override void OnShown(EventArgs e)
+        {
+            var savedWindowDimensionsAreValid = IsOnScreen(new Rectangle(
+                Settings.Config.WindowLeft,
+                Settings.Config.WindowTop,
+                Settings.Config.WindowWidth,
+                Settings.Config.WindowHeight));
+
+            if (savedWindowDimensionsAreValid)
+            {
+                Left = Settings.Config.WindowLeft;
+                Top = Settings.Config.WindowTop;
+                Height = Settings.Config.WindowHeight;
+                Width = Settings.Config.WindowWidth;
+
+                var newState = (FormWindowState)Settings.Config.WindowState;
+
+                if (newState == FormWindowState.Maximized || newState == FormWindowState.Normal)
+                {
+                    WindowState = newState;
+                }
+            }
+
+            base.OnShown(e);
+        }
+
+        // checks if the Rectangle is within bounds of one of the user's screen
+        public bool IsOnScreen(Rectangle formRectangle)
+        {
+            if (formRectangle.Width < MinimumSize.Width || formRectangle.Height < MinimumSize.Height)
+            {
+                return false;
+            }
+
+            return Screen.AllScreens.Any(screen => screen.WorkingArea.IntersectsWith(formRectangle));
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            // save the application window size, position and state (if maximized)
+            (Settings.Config.WindowLeft, Settings.Config.WindowTop, Settings.Config.WindowWidth, Settings.Config.WindowHeight, Settings.Config.WindowState) = WindowState switch
+            {
+                FormWindowState.Normal => (Left, Top, Width, Height, (int)FormWindowState.Normal),
+                // will restore window to maximized
+                FormWindowState.Maximized => (RestoreBounds.Left, RestoreBounds.Top, RestoreBounds.Width, RestoreBounds.Height, (int)FormWindowState.Maximized),
+                // if minimized restore to Normal instead, using RestoreBound values
+                FormWindowState.Minimized => (RestoreBounds.Left, RestoreBounds.Top, RestoreBounds.Width, RestoreBounds.Height, (int)FormWindowState.Normal),
+                // the default switch should never happen (FormWindowState only takes the values Normal, Maximized, Minimized)
+                _ => (0, 0, 0, 0, (int)FormWindowState.Normal),
+            };
+
+            Settings.Save();
+            base.OnClosing(e);
         }
 
         private void MainForm_Load(object sender, EventArgs e)
@@ -94,13 +147,15 @@ namespace GUI
         private void ShowHideSearch()
         {
             // enable/disable the search button as necessary
-            if (mainTabs.TabCount > 0 && mainTabs.SelectedTab != null)
+            if (mainTabs.SelectedTab != null && mainTabs.SelectedTab.Controls["TreeViewWithSearchResults"] is TreeViewWithSearchResults package)
             {
-                findToolStripButton.Enabled = mainTabs.SelectedTab.Controls["TreeViewWithSearchResults"] is TreeViewWithSearchResults;
+                findToolStripButton.Enabled = true;
+                recoverDeletedToolStripMenuItem.Enabled = !package.DeletedFilesRecovered;
             }
             else
             {
                 findToolStripButton.Enabled = false;
+                recoverDeletedToolStripMenuItem.Enabled = false;
             }
         }
 
@@ -235,8 +290,8 @@ namespace GUI
                 closeToolStripMenuItem.Visible = tabIndex != 0;
 
                 //Show context menu at the mouse position
-                contextMenuStrip1.Tag = e.Location;
-                contextMenuStrip1.Show((Control)sender, e.Location);
+                tabContextMenuStrip.Tag = e.Location;
+                tabContextMenuStrip.Show((Control)sender, e.Location);
             }
         }
 
@@ -336,6 +391,8 @@ namespace GUI
                     {
                         tab.Controls.Add(c);
                     }
+
+                    ShowHideSearch();
                 },
                 CancellationToken.None,
                 TaskContinuationOptions.OnlyOnRanToCompletion,
@@ -376,9 +433,6 @@ namespace GUI
                 {
                     ImageList = ImageList, // TODO: Move this directly into Package
                 }.Create(vrfGuiContext, input);
-
-                // since we're in a separate thread, invoke to update the UI
-                Invoke((MethodInvoker)(() => findToolStripButton.Enabled = true));
 
                 return tab;
             }
@@ -506,7 +560,7 @@ namespace GUI
             if (selectedNode.Tag is PackageEntry file)
             {
                 var package = selectedNode.TreeView.Tag as TreeViewWithSearchResults.TreeViewPackageTag;
-                package.Package.ReadEntry(file, out var output);
+                package.Package.ReadEntry(file, out var output, validateCrc: file.CRC32 > 0);
 
                 var tempPath = $"{Path.GetTempPath()}VRF - {Path.GetFileName(package.Package.FileName)} - {file.GetFileName()}";
                 using (var stream = new FileStream(tempPath, FileMode.Create))
@@ -561,7 +615,7 @@ namespace GUI
                 var file = selectedNode.Tag as PackageEntry;
                 var fileName = file.GetFileName();
 
-                package.Package.ReadEntry(file, out var output);
+                package.Package.ReadEntry(file, out var output, validateCrc: file.CRC32 > 0);
 
                 if (decompile && fileName.EndsWith("_c", StringComparison.Ordinal))
                 {
@@ -630,6 +684,14 @@ namespace GUI
                     treeView.SearchAndFillResults(searchText, searchForm.SelectedSearchType);
                 }
             }
+        }
+
+        private void RecoverDeletedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            recoverDeletedToolStripMenuItem.Enabled = false;
+
+            var treeView = mainTabs.SelectedTab.Controls["TreeViewWithSearchResults"] as TreeViewWithSearchResults;
+            treeView.RecoverDeletedFiles();
         }
     }
 }

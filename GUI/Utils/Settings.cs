@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
 using Microsoft.Win32;
 using ValveKeyValue;
 
@@ -18,6 +19,11 @@ namespace GUI.Utils
             public string OpenDirectory { get; set; } = string.Empty;
             public string SaveDirectory { get; set; } = string.Empty;
             public Dictionary<string, float[]> SavedCameras { get; set; } = new Dictionary<string, float[]>();
+            public int WindowTop { get; set; }
+            public int WindowLeft { get; set; }
+            public int WindowWidth { get; set; }
+            public int WindowHeight { get; set; }
+            public int WindowState { get; set; } = (int)FormWindowState.Normal;
         }
 
         private static string SettingsFilePath;
@@ -36,9 +42,29 @@ namespace GUI.Utils
                 return;
             }
 
-            using (var stream = new FileStream(SettingsFilePath, FileMode.Open, FileAccess.Read))
+            try
             {
+                using var stream = new FileStream(SettingsFilePath, FileMode.Open, FileAccess.Read);
                 Config = KVSerializer.Create(KVSerializationFormat.KeyValues1Text).Deserialize<AppConfig>(stream, KVSerializerOptions.DefaultOptions);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Failed to parse '{SettingsFilePath}', is it corrupted?");
+                Console.WriteLine(e);
+
+                try
+                {
+                    var corruptedPath = Path.ChangeExtension(SettingsFilePath, $".corrupted-{DateTimeOffset.Now.ToUnixTimeSeconds()}.txt");
+                    File.Move(SettingsFilePath, corruptedPath);
+
+                    Console.WriteLine($"Corrupted '{Path.GetFileName(SettingsFilePath)}' has been renamed to '{Path.GetFileName(corruptedPath)}'.");
+
+                    Save();
+                }
+                catch
+                {
+                    //
+                }
             }
 
             BackgroundColor = ColorTranslator.FromHtml(Config.BackgroundColor);

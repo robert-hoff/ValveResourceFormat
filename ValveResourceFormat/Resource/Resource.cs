@@ -4,7 +4,9 @@ using System.IO;
 using System.Text;
 using ValveResourceFormat.Blocks;
 using ValveResourceFormat.Blocks.ResourceEditInfoStructs;
+using ValveResourceFormat.CompiledShader;
 using ValveResourceFormat.ResourceTypes;
+using ValveResourceFormat.Utils;
 
 namespace ValveResourceFormat
 {
@@ -105,6 +107,33 @@ namespace ValveResourceFormat
         }
 
         /// <summary>
+        /// Resource files have a FileSize in the metadata, however
+        /// certain file types such as sounds have streaming audio data come
+        /// after the resource file, and the size is specified within the DATA block.
+        /// This property attemps to return the correct size.
+        /// </summary>
+        public uint FullFileSize
+        {
+            get
+            {
+                var size = FileSize;
+
+                if (ResourceType == ResourceType.Sound)
+                {
+                    var data = (Sound)DataBlock;
+                    size += data.StreamingDataSize;
+                }
+                else if (ResourceType == ResourceType.Texture)
+                {
+                    var data = (Texture)DataBlock;
+                    size += (uint)data.CalculateTextureDataSize();
+                }
+
+                return size;
+            }
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Resource"/> class.
         /// </summary>
         public Resource()
@@ -157,7 +186,8 @@ namespace ValveResourceFormat
         /// Reads the given <see cref="Stream"/>.
         /// </summary>
         /// <param name="input">The input <see cref="Stream"/> to read from.</param>
-        public void Read(Stream input)
+        /// <param name="verifyFileSize">Whether to verify that the stream was correctly consumed.</param>
+        public void Read(Stream input, bool verifyFileSize = true)
         {
             Reader = new BinaryReader(input);
 
@@ -168,22 +198,21 @@ namespace ValveResourceFormat
                 throw new InvalidDataException("Use ValvePak library to parse VPK files.\nSee https://github.com/SteamDatabase/ValvePak");
             }
 
-            if (FileSize == CompiledShader.MAGIC)
+            if (FileSize == ShaderFile.MAGIC)
             {
                 throw new InvalidDataException("Use CompiledShader() class to parse compiled shader files.");
-            }
-
-            // TODO: Some real files seem to have different file size
-            if (FileSize != Reader.BaseStream.Length)
-            {
-                //throw new Exception(string.Format("File size does not match size specified in file. {0} != {1}", FileSize, Reader.BaseStream.Length));
             }
 
             HeaderVersion = Reader.ReadUInt16();
 
             if (HeaderVersion != KnownHeaderVersion)
             {
-                throw new InvalidDataException(string.Format("Bad header version. ({0} != expected {1})", HeaderVersion, KnownHeaderVersion));
+                throw new UnexpectedMagicException($"Unexpected header (expected {KnownHeaderVersion})", HeaderVersion, nameof(HeaderVersion));
+            }
+
+            if (FileName != null)
+            {
+                ResourceType = DetermineResourceTypeByFileExtension();
             }
 
             Version = Reader.ReadUInt16();
@@ -242,13 +271,24 @@ namespace ValveResourceFormat
                         EditInfo = (ResourceEditInfo)block;
 
                         // Try to determine resource type by looking at first compiler indentifier
-                        if (ResourceType == ResourceType.Unknown && EditInfo.Structs.ContainsKey(ResourceEditInfo.REDIStruct.SpecialDependencies))
+                        if (ResourceType == ResourceType.Unknown && EditInfo.Structs.TryGetValue(ResourceEditInfo.REDIStruct.SpecialDependencies, out var specialBlock))
                         {
-                            var specialDeps = (SpecialDependencies)EditInfo.Structs[ResourceEditInfo.REDIStruct.SpecialDependencies];
+                            var specialDeps = (SpecialDependencies)specialBlock;
 
                             if (specialDeps.List.Count > 0)
                             {
                                 ResourceType = DetermineResourceTypeByCompilerIdentifier(specialDeps.List[0]);
+                            }
+                        }
+
+                        // Try to determine resource type by looking at the input dependency if there is only one
+                        if (ResourceType == ResourceType.Unknown && EditInfo.Structs.TryGetValue(ResourceEditInfo.REDIStruct.InputDependencies, out var inputBlock))
+                        {
+                            var inputDeps = (InputDependencies)inputBlock;
+
+                            if (inputDeps.List.Count == 1)
+                            {
+                                ResourceType = DetermineResourceTypeByFileExtension(Path.GetExtension(inputDeps.List[0].ContentRelativeFilename));
                             }
                         }
 
@@ -277,17 +317,29 @@ namespace ValveResourceFormat
                 Reader.BaseStream.Position = position + 8;
             }
 
-            if (ResourceType == ResourceType.Unknown && FileName != null)
-            {
-                ResourceType = DetermineResourceTypeByFileExtension();
-            }
-
             foreach (var block in Blocks)
             {
                 if (block.Type is not BlockType.REDI and not BlockType.RED2 and not BlockType.NTRO)
                 {
                     block.Read(Reader, this);
                 }
+            }
+
+            if (verifyFileSize && Reader.BaseStream.Length != FullFileSize)
+            {
+                if (ResourceType == ResourceType.Texture)
+                {
+                    var data = (Texture)DataBlock;
+
+                    // TODO: We do not currently have a way of calculating buffer size for these types
+                    // Texture.GenerateBitmap also just reads until end of the buffer
+                    if (data.Format == VTexFormat.JPEG_DXT5 || data.Format == VTexFormat.JPEG_RGBA8888)
+                    {
+                        return;
+                    }
+                }
+
+                throw new InvalidDataException($"File size ({Reader.BaseStream.Length}) does not match size specified in file ({FullFileSize}) ({ResourceType}).");
             }
         }
 
@@ -323,6 +375,7 @@ namespace ValveResourceFormat
                 nameof(BlockType.MDAT) => new BinaryKV3(BlockType.MDAT),
                 nameof(BlockType.INSG) => new BinaryKV3(BlockType.INSG),
                 nameof(BlockType.SrMa) => new BinaryKV3(BlockType.SrMa), // SourceMap
+                nameof(BlockType.LaCo) => new BinaryKV3(BlockType.LaCo), // vxml ast
                 nameof(BlockType.MRPH) => new KeyValuesOrNTRO(BlockType.MRPH, "MorphSetData_t"),
                 nameof(BlockType.ANIM) => new KeyValuesOrNTRO(BlockType.ANIM, "AnimationResourceData_t"),
                 nameof(BlockType.ASEQ) => new KeyValuesOrNTRO(BlockType.ASEQ, "SequenceGroupResourceData_t"),
@@ -337,12 +390,16 @@ namespace ValveResourceFormat
             switch (ResourceType)
             {
                 case ResourceType.Panorama:
-                case ResourceType.PanoramaStyle:
                 case ResourceType.PanoramaScript:
-                case ResourceType.PanoramaLayout:
                 case ResourceType.PanoramaDynamicImages:
                 case ResourceType.PanoramaVectorGraphic:
                     return new Panorama();
+
+                case ResourceType.PanoramaStyle:
+                    return new PanoramaStyle();
+
+                case ResourceType.PanoramaLayout:
+                    return new PanoramaLayout();
 
                 case ResourceType.Sound:
                     return new Sound();
@@ -401,9 +458,15 @@ namespace ValveResourceFormat
             return new ResourceData();
         }
 
-        private ResourceType DetermineResourceTypeByFileExtension()
+        private ResourceType DetermineResourceTypeByFileExtension(string extension = null)
         {
-            var extension = Path.GetExtension(FileName) ?? string.Empty;
+            extension ??= Path.GetExtension(FileName);
+
+            if (string.IsNullOrEmpty(extension))
+            {
+                return ResourceType.Unknown;
+            }
+
             extension = extension.EndsWith("_c", StringComparison.Ordinal) ? extension[1..^2] : extension[1..];
 
             foreach (ResourceType typeValue in Enum.GetValues(typeof(ResourceType)))
@@ -452,12 +515,16 @@ namespace ValveResourceFormat
                     return ResourceType.ParticleSnapshot;
                 case "AnimGroup":
                     return ResourceType.AnimationGroup;
+                case "Animgraph":
+                    return ResourceType.AnimationGraph;
                 case "VPhysXData":
                     return ResourceType.PhysicsCollisionMesh;
                 case "Font":
                     return ResourceType.BitmapFont;
                 case "RenderMesh":
                     return ResourceType.Mesh;
+                case "ChoreoSceneFileData":
+                    return ResourceType.ChoreoSceneFileData;
                 case "Panorama":
                     switch (input.String)
                     {
@@ -474,6 +541,8 @@ namespace ValveResourceFormat
                     return ResourceType.Panorama;
                 case "VectorGraphic":
                     return ResourceType.PanoramaVectorGraphic;
+                case "VData":
+                    return ResourceType.VData;
                 case "DotaItem":
                     return ResourceType.ArtifactItem;
                 case "SBData":

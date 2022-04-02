@@ -6,6 +6,8 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,6 +15,7 @@ using McMaster.Extensions.CommandLineUtils;
 using SteamDatabase.ValvePak;
 using ValveResourceFormat;
 using ValveResourceFormat.Blocks;
+using ValveResourceFormat.CompiledShader;
 using ValveResourceFormat.IO;
 using ValveResourceFormat.ResourceTypes;
 using ValveResourceFormat.ToolsAssetInfo;
@@ -23,9 +26,6 @@ namespace Decompiler
     [VersionOptionFromMember(MemberName = nameof(GetVersion))]
     public class Decompiler
     {
-        private static string GetVersion() => typeof(Decompiler).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
-
-        private readonly Dictionary<string, uint> OldPakManifest = new();
         private readonly Dictionary<string, ResourceStat> stats = new();
         private readonly Dictionary<string, string> uniqueSpecialDependancies = new();
 
@@ -39,6 +39,9 @@ namespace Decompiler
 
         [Option("--recursive", "If specified and given input is a folder, all sub directories will be scanned too.", CommandOptionType.NoValue)]
         public bool RecursiveSearch { get; private set; }
+
+        [Option("--recursive_vpk", "If specified along with --recursive, will also recurse into VPK archives.", CommandOptionType.NoValue)]
+        public bool RecursiveSearchArchives { get; private set; }
 
         [Option("-o|--output", "Writes DATA output to file.", CommandOptionType.SingleValue)]
         public string OutputFile { get; private set; }
@@ -137,11 +140,34 @@ namespace Decompiler
 
                 var dirs = Directory
                     .EnumerateFiles(InputFile, "*.*", RecursiveSearch ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly)
-                    .Where(s => s.EndsWith("_c", StringComparison.Ordinal) || s.EndsWith(".vcs", StringComparison.Ordinal))
+                    .Where(s =>
+                    {
+                        if (ExtFilterList != null)
+                        {
+                            foreach (var ext in ExtFilterList)
+                            {
+                                if (s.EndsWith(ext, StringComparison.Ordinal))
+                                {
+                                    return true;
+                                }
+                            }
+
+                            return false;
+                        }
+
+                        return s.EndsWith("_c", StringComparison.Ordinal) || s.EndsWith(".vcs", StringComparison.Ordinal);
+                    })
                     .ToList();
 
-                if (RecursiveSearch && CollectStats)
+                if (RecursiveSearchArchives)
                 {
+                    if (!RecursiveSearch)
+                    {
+                        Console.Error.WriteLine("Option --recursive_vpk must be specified with --recursive.");
+
+                        return 1;
+                    }
+
                     var vpkRegex = new Regex(@"_[0-9]{3}\.vpk$");
                     var vpks = Directory
                         .EnumerateFiles(InputFile, "*.vpk", SearchOption.AllDirectories)
@@ -155,7 +181,7 @@ namespace Decompiler
                     Console.Error.WriteLine(
                         "Unable to find any \"_c\" compiled files in \"{0}\" folder.{1}",
                         InputFile,
-                        RecursiveSearch ? " Did you mean to include --recursive parameter?" : string.Empty);
+                        RecursiveSearch ? " Did you mean to include --recursive option?" : string.Empty);
 
                     return 1;
                 }
@@ -167,6 +193,14 @@ namespace Decompiler
                 if (RecursiveSearch)
                 {
                     Console.Error.WriteLine("File passed in with --recursive option. Either pass in a folder or remove --recursive.");
+
+                    return 1;
+                }
+
+                // TODO: Support recursing vpks inside of vpk?
+                if (RecursiveSearchArchives)
+                {
+                    Console.Error.WriteLine("File passed in with --recursive_vpk option, this is not supported.");
 
                     return 1;
                 }
@@ -250,34 +284,38 @@ namespace Decompiler
         private void ProcessFile(string path)
         {
             using var fs = new FileStream(path, FileMode.Open, FileAccess.Read);
+            ProcessFile(path, fs);
+        }
 
+        private void ProcessFile(string path, Stream stream, string originalPath = null)
+        {
             var magicData = new byte[4];
 
             int bytesRead;
             var totalRead = 0;
-            while ((bytesRead = fs.Read(magicData, totalRead, magicData.Length - totalRead)) != 0)
+            while ((bytesRead = stream.Read(magicData, totalRead, magicData.Length - totalRead)) != 0)
             {
                 totalRead += bytesRead;
             }
 
-            fs.Seek(0, SeekOrigin.Begin);
+            stream.Seek(-totalRead, SeekOrigin.Current);
 
             var magic = BitConverter.ToUInt32(magicData, 0);
 
             switch (magic)
             {
-                case Package.MAGIC: ParseVPK(path, fs); return;
-                case CompiledShader.MAGIC: ParseVCS(path, fs); return;
+                case Package.MAGIC: ParseVPK(path, stream); return;
+                case ShaderFile.MAGIC: ParseVCS(path, stream); return;
                 case ToolsAssetInfo.MAGIC2:
-                case ToolsAssetInfo.MAGIC: ParseToolsAssetInfo(path, fs); return;
+                case ToolsAssetInfo.MAGIC: ParseToolsAssetInfo(path, stream); return;
                 case BinaryKV3.MAGIC3:
                 case BinaryKV3.MAGIC2:
-                case BinaryKV3.MAGIC: ParseKV3(fs); return;
+                case BinaryKV3.MAGIC: ParseKV3(path, stream); return;
             }
 
-            var extension = Path.GetExtension(path);
+            var pathExtension = Path.GetExtension(path);
 
-            if (extension == ".vfont")
+            if (pathExtension == ".vfont")
             {
                 ParseVFont(path);
 
@@ -291,11 +329,6 @@ namespace Decompiler
                 Console.ResetColor();
             }
 
-            ProcessFile(path, fs);
-        }
-
-        private void ProcessFile(string path, Stream stream, string originalPath = null)
-        {
             var resource = new Resource
             {
                 FileName = path,
@@ -327,12 +360,17 @@ namespace Decompiler
                         case ResourceType.Texture:
                             var texture = (Texture)resource.DataBlock;
                             info = texture.Format.ToString();
-                            texture.GenerateBitmap();
                             break;
 
                         case ResourceType.Sound:
                             info = ((Sound)resource.DataBlock).SoundType.ToString();
                             break;
+                    }
+
+                    if (OutputFile == null)
+                    {
+                        // Test extraction code flow while collecting stats
+                        FileExtract.Extract(resource);
                     }
 
                     if (!string.IsNullOrEmpty(info))
@@ -378,38 +416,12 @@ namespace Decompiler
 
                     var filePath = Path.ChangeExtension(path, extension);
 
-                    if (IsInputFolder)
-                    {
-                        // I bet this is prone to breaking, is there a better way?
-                        filePath = filePath.Remove(0, InputFile.TrimEnd(Path.DirectorySeparatorChar).Length + 1);
-                    }
-                    else
-                    {
-                        filePath = Path.GetFileName(filePath);
-                    }
-
-                    DumpFile(filePath, data, !IsInputFolder);
+                    DumpFile(filePath, data);
                 }
             }
             catch (Exception e)
             {
-                var exceptionsFileName = CollectStats ? $"exceptions{Path.GetExtension(path)}.txt" : "exceptions.txt";
-
-                lock (ConsoleWriterLock)
-                {
-                    if (originalPath == null)
-                    {
-                        File.AppendAllText(exceptionsFileName, $"---------------\nFile: {path}\nException: {e}\n\n");
-                    }
-                    else
-                    {
-                        File.AppendAllText(exceptionsFileName, $"---------------\nParent file: {originalPath}\nFile: {path}\nException: {e}\n\n");
-                    }
-
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    Console.WriteLine(e);
-                    Console.ResetColor();
-                }
+                LogException(e, path, originalPath);
             }
 
             if (CollectStats)
@@ -492,10 +504,9 @@ namespace Decompiler
 
                 if (OutputFile != null)
                 {
-                    var fileName = Path.GetFileName(path);
-                    fileName = Path.ChangeExtension(fileName, "txt");
+                    path = Path.ChangeExtension(path, "txt");
 
-                    DumpFile(fileName, assetsInfo.ToString(), true);
+                    DumpFile(path, Encoding.UTF8.GetBytes(assetsInfo.ToString()));
                 }
                 else
                 {
@@ -504,12 +515,7 @@ namespace Decompiler
             }
             catch (Exception e)
             {
-                lock (ConsoleWriterLock)
-                {
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    Console.WriteLine(e);
-                    Console.ResetColor();
-                }
+                LogException(e, path);
             }
         }
 
@@ -522,26 +528,26 @@ namespace Decompiler
                 Console.ResetColor();
             }
 
-            var shader = new CompiledShader();
+            var shader = new ShaderFile();
 
             try
             {
                 shader.Read(path, stream);
+
+                if (!CollectStats)
+                {
+                    shader.PrintSummary();
+                }
             }
             catch (Exception e)
             {
-                lock (ConsoleWriterLock)
-                {
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    Console.WriteLine(e);
-                    Console.ResetColor();
-                }
+                LogException(e, path);
             }
 
             shader.Dispose();
         }
 
-        private void ParseVFont(string path)
+        private void ParseVFont(string path) // TODO: Accept Stream
         {
             lock (ConsoleWriterLock)
             {
@@ -558,24 +564,18 @@ namespace Decompiler
 
                 if (OutputFile != null)
                 {
-                    var fileName = Path.GetFileName(path);
-                    fileName = Path.ChangeExtension(fileName, "ttf");
+                    path = Path.ChangeExtension(path, "ttf");
 
-                    DumpFile(fileName, output, true);
+                    DumpFile(path, output);
                 }
             }
             catch (Exception e)
             {
-                lock (ConsoleWriterLock)
-                {
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    Console.WriteLine(e);
-                    Console.ResetColor();
-                }
+                LogException(e, path);
             }
         }
 
-        private void ParseKV3(Stream stream)
+        private void ParseKV3(string path, Stream stream)
         {
             var kv3 = new BinaryKV3();
 
@@ -591,12 +591,7 @@ namespace Decompiler
             }
             catch (Exception e)
             {
-                lock (ConsoleWriterLock)
-                {
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    Console.WriteLine(e);
-                    Console.ResetColor();
-                }
+                LogException(e, path);
             }
         }
 
@@ -618,12 +613,9 @@ namespace Decompiler
             }
             catch (Exception e)
             {
-                lock (ConsoleWriterLock)
-                {
-                    Console.ForegroundColor = ConsoleColor.Cyan;
-                    Console.WriteLine(e);
-                    Console.ResetColor();
-                }
+                LogException(e, path);
+
+                return;
             }
 
             if (VerifyVPKChecksums)
@@ -636,13 +628,7 @@ namespace Decompiler
                 }
                 catch (Exception e)
                 {
-                    lock (ConsoleWriterLock)
-                    {
-                        Console.WriteLine("Failed to verify checksums and signature of given VPK:");
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine(e.Message);
-                        Console.ResetColor();
-                    }
+                    LogException(e, path);
                 }
 
                 return;
@@ -657,6 +643,10 @@ namespace Decompiler
                 if (ExtFilterList != null)
                 {
                     orderedEntries = orderedEntries.Where(x => ExtFilterList.Contains(x.Key)).ToList();
+                }
+                else if (CollectStats)
+                {
+                    orderedEntries = orderedEntries.Where(x => x.Key.EndsWith("_c", StringComparison.Ordinal)).ToList();
                 }
 
                 if (ListResources)
@@ -676,26 +666,17 @@ namespace Decompiler
 
                 if (CollectStats)
                 {
-                    TotalFiles += orderedEntries
-                        .Where(entry => entry.Key.EndsWith("_c", StringComparison.Ordinal))
-                        .Sum(x => x.Value.Count);
+                    TotalFiles += orderedEntries.Sum(x => x.Value.Count);
                 }
 
                 foreach (var entry in orderedEntries)
                 {
                     Console.WriteLine("\t{0}: {1} files", entry.Key, entry.Value.Count);
 
-                    if (CollectStats && entry.Key.EndsWith("_c", StringComparison.Ordinal))
+                    if (CollectStats)
                     {
                         foreach (var file in entry.Value)
                         {
-                            lock (ConsoleWriterLock)
-                            {
-                                Console.ForegroundColor = ConsoleColor.Green;
-                                Console.WriteLine("[{0}/{1}] {2}", ++CurrentFile, TotalFiles, file.GetFullPath());
-                                Console.ResetColor();
-                            }
-
                             package.ReadEntry(file, out var output);
 
                             using var entryStream = new MemoryStream(output);
@@ -709,6 +690,7 @@ namespace Decompiler
                 Console.WriteLine("--- Dumping decompiled files...");
 
                 var manifestPath = string.Concat(path, ".manifest.txt");
+                var manifestData = new Dictionary<string, uint>();
 
                 if (CachedManifest && File.Exists(manifestPath))
                 {
@@ -721,7 +703,7 @@ namespace Decompiler
 
                         if (split.Length == 2)
                         {
-                            OldPakManifest.Add(split[1], uint.Parse(split[0], CultureInfo.InvariantCulture));
+                            manifestData.Add(split[1], uint.Parse(split[0], CultureInfo.InvariantCulture));
                         }
                     }
 
@@ -730,14 +712,14 @@ namespace Decompiler
 
                 foreach (var type in package.Entries)
                 {
-                    DumpVPK(package, type.Key);
+                    DumpVPK(path, package, type.Key, manifestData);
                 }
 
                 if (CachedManifest)
                 {
                     using var file = new StreamWriter(manifestPath);
 
-                    foreach (var hash in OldPakManifest)
+                    foreach (var hash in manifestData)
                     {
                         if (package.FindEntry(hash.Key) == null)
                         {
@@ -761,7 +743,7 @@ namespace Decompiler
             }
         }
 
-        private void DumpVPK(Package package, string type)
+        private void DumpVPK(string parentPath, Package package, string type, Dictionary<string, uint> manifestData)
         {
             if (ExtFilterList != null && !ExtFilterList.Contains(type))
             {
@@ -788,14 +770,14 @@ namespace Decompiler
                     continue;
                 }
 
-                if (OutputFile != null)
+                if (OutputFile != null && CachedManifest)
                 {
-                    if (CachedManifest && OldPakManifest.TryGetValue(filePath, out var oldCrc32) && oldCrc32 == file.CRC32)
+                    if (manifestData.TryGetValue(filePath, out var oldCrc32) && oldCrc32 == file.CRC32)
                     {
                         continue;
                     }
 
-                    OldPakManifest[filePath] = file.CRC32;
+                    manifestData[filePath] = file.CRC32;
                 }
 
                 Console.WriteLine("\t[archive index: {0:D3}] {1}", file.ArchiveIndex, filePath);
@@ -847,51 +829,78 @@ namespace Decompiler
                     }
                     catch (Exception e)
                     {
-                        var exceptionsFileName = CollectStats ? $"exceptions.{file.TypeName}.txt" : "exceptions.txt";
-
-                        lock (ConsoleWriterLock)
-                        {
-                            File.AppendAllText(exceptionsFileName, $"---------------\nFile: {filePath}\nException: {e}\n\n");
-
-                            Console.ForegroundColor = ConsoleColor.DarkRed;
-                            Console.WriteLine("\t" + e.Message + " on resource type " + type + ", extracting as-is");
-                            Console.ResetColor();
-                        }
+                        LogException(e, filePath, package.FileName);
                     }
                 }
 
                 if (OutputFile != null)
                 {
+                    if (RecursiveSearchArchives)
+                    {
+                        filePath = Path.Combine(parentPath, filePath);
+                    }
+
                     if (type != extension)
                     {
                         filePath = Path.ChangeExtension(filePath, extension);
                     }
 
-                    DumpFile(filePath, output);
+                    DumpFile(filePath, output, useOutputAsDirectory: true);
                 }
             }
         }
 
-        private void DumpFile(string path, Span<byte> data, bool useOutputAsFullPath = false)
+        private void DumpFile(string path, ReadOnlySpan<byte> data, bool useOutputAsDirectory = false)
         {
-            var outputFile = useOutputAsFullPath ? Path.GetFullPath(OutputFile) : Path.Combine(OutputFile, path);
+            if (IsInputFolder)
+            {
+                if (!path.StartsWith(InputFile))
+                {
+                    throw new Exception($"Path '{path}' does not start with '{InputFile}', is this a bug?");
+                }
 
-            Directory.CreateDirectory(Path.GetDirectoryName(outputFile));
+                path = path.Remove(0, InputFile.Length);
+                path = Path.Combine(OutputFile, path);
+            }
+            else if (useOutputAsDirectory)
+            {
+                path = Path.Combine(OutputFile, path);
+            }
+            else
+            {
+                path = Path.GetFullPath(OutputFile);
+            }
 
-            File.WriteAllBytes(outputFile, data.ToArray());
+            Directory.CreateDirectory(Path.GetDirectoryName(path));
 
-            Console.WriteLine("--- Dump written to \"{0}\"", outputFile);
+            File.WriteAllBytes(path, data.ToArray());
+
+            Console.WriteLine("--- Dump written to \"{0}\"", path);
         }
 
-        private void DumpFile(string path, string data, bool useOutputAsFullPath = false)
+        private void LogException(Exception e, string path, string parentPath = null)
         {
-            var outputFile = useOutputAsFullPath ? Path.GetFullPath(OutputFile) : Path.Combine(OutputFile, path);
+            var exceptionsFileName = CollectStats ? $"exceptions{Path.GetExtension(path)}.txt" : "exceptions.txt";
 
-            Directory.CreateDirectory(Path.GetDirectoryName(outputFile));
+            lock (ConsoleWriterLock)
+            {
+                Console.ForegroundColor = ConsoleColor.Cyan;
 
-            File.WriteAllText(outputFile, data);
+                if (parentPath == null)
+                {
+                    Console.Error.WriteLine($"File: {path}\n{e}");
 
-            Console.WriteLine("--- Dump written to \"{0}\"", outputFile);
+                    File.AppendAllText(exceptionsFileName, $"---------------\nFile: {path}\nException: {e}\n\n");
+                }
+                else
+                {
+                    Console.Error.WriteLine($"File: {path} (parent: {parentPath})\n{e}");
+
+                    File.AppendAllText(exceptionsFileName, $"---------------\nParent file: {parentPath}\nFile: {path}\nException: {e}\n\n");
+                }
+
+                Console.ResetColor();
+            }
         }
 
         private static string FixPathSlashes(string path)
@@ -904,6 +913,20 @@ namespace Decompiler
             }
 
             return path;
+        }
+
+        private static string GetVersion()
+        {
+            var info = new StringBuilder();
+            info.Append("VRF Version: ");
+            info.AppendLine(typeof(Decompiler).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion);
+            info.Append("Runtime: ");
+            info.AppendLine(RuntimeInformation.FrameworkDescription);
+            info.Append("OS: ");
+            info.AppendLine(RuntimeInformation.OSDescription);
+            info.AppendLine("Website: https://vrf.steamdb.info");
+            info.Append("GitHub: https://github.com/SteamDatabase/ValveResourceFormat");
+            return info.ToString();
         }
     }
 }

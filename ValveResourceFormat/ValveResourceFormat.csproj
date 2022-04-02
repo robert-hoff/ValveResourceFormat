@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <Description>Library to decompile Valve Source 2 files</Description>
     <PackageReleaseNotes>View release notes at https://github.com/SteamDatabase/ValveResourceFormat/releases</PackageReleaseNotes>
     <PackageIcon>vrf_library.png</PackageIcon>
@@ -8,12 +8,12 @@
     <NoWarn>$(NoWarn);NU5104</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="K4os.Compression.LZ4" Version="1.2.12" />
-    <PackageReference Include="SharpGLTF.Toolkit" Version="1.0.0-alpha0023" />
-    <PackageReference Include="SkiaSharp" Version="2.80.3" />
-    <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="2.80.3" />
-    <PackageReference Include="ValveKeyValue" Version="0.5.0.4" />
-    <PackageReference Include="ZstdSharp.Port" Version="0.5.0" />
+    <PackageReference Include="K4os.Compression.LZ4" Version="1.2.16" />
+    <PackageReference Include="SharpGLTF.Toolkit" Version="1.0.0-alpha0025" />
+    <PackageReference Include="SkiaSharp" Version="2.88.0-preview.179" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="2.88.0-preview.179" />
+    <PackageReference Include="ValveKeyValue" Version="0.8.0.139" />
+    <PackageReference Include="ZstdSharp.Port" Version="0.6.1" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Icons\vrf_library.png">

@@ -448,6 +448,11 @@ namespace ValveResourceFormat.IO
             var totalSize = exportedModel.LogicalBuffers.Sum(buffer => (long)buffer.Content.Length);
             settings.MergeBuffers = totalSize <= 1_074_000_000;
 
+            if (!settings.MergeBuffers)
+            {
+                throw new NotSupportedException("VRF does not properly support big model (>1GiB) exports yet due to glTF limitations. See https://github.com/SteamDatabase/ValveResourceFormat/issues/379");
+            }
+
             exportedModel.Save(filePath, settings);
         }
 
@@ -544,6 +549,12 @@ namespace ValveResourceFormat.IO
                         if (attribute.SemanticName == "TEXCOORD" && numComponents != 2)
                         {
                             // We are ignoring some data, but non-2-component UVs cause failures in gltf consumers
+                            continue;
+                        }
+
+                        if (attribute.SemanticName == "BLENDWEIGHT" && numComponents != 4)
+                        {
+                            Console.Error.WriteLine($"This model has {attribute.SemanticName} with {numComponents} components, which in unsupported.");
                             continue;
                         }
 
@@ -848,7 +859,7 @@ namespace ValveResourceFormat.IO
                     case "g_tMasks2":
                     // example: brewmaster_color,materials/models/heroes/brewmaster/brewmaster_base_specmask_psd_63e9fb90.vtex
                     default:
-                        Console.WriteLine($"Warning: Unsupported Texture Type {renderTexture.Key}");
+                        Console.Error.WriteLine($"Warning: Unsupported Texture Type {renderTexture.Key}");
                         break;
                 }
             }
