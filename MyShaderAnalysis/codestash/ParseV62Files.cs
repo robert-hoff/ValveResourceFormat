@@ -9,6 +9,11 @@ using static MyShaderAnalysis.utilhelpers.FileSystemOld;
 using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
+/*
+ * Almost identical to DataReaderVcsBytes - all relevant changes were written into DataReaderVcsBytes since
+ *
+ *
+ */
 namespace MyShaderAnalysis
 {
     class ParseV62Files : ShaderDataReader

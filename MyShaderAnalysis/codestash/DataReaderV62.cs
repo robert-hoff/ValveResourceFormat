@@ -9,6 +9,12 @@ using static MyShaderAnalysis.utilhelpers.FileSystemOld;
 using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
+/*
+ *
+ * This works as a nice example on how to use the datareader on new (or raw) data
+ *
+ *
+ */
 namespace MyShaderAnalysis.utilhelpers
 {
     public class DataReaderV62 : ShaderDataReader
