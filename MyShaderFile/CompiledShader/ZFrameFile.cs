@@ -246,7 +246,7 @@ namespace ValveResourceFormat.CompiledShader
             public int dynExpLen { get; } = -1;
             public byte[] dynExpression { get; }
             public string dynExpEvaluated { get; }
-            public bool hasOperatorVal { get; } = false;
+            public bool hasOperatorVal { get; }
             public int operatorVal { get; }
 
             public ZFrameParam(ShaderDataReader datareader)
