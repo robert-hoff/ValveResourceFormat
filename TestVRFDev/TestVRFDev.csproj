@@ -5,6 +5,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <ApplicationIcon />
     <StartupObject />
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -22,6 +23,12 @@
   <ItemGroup>
     <ProjectReference Include="..\Decompiler\Decompiler.csproj" />
     <ProjectReference Include="..\ValveResourceFormat\ValveResourceFormat.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="MyCSharpLib">
+      <HintPath>Z:\dev\dll\MyCSharpLib\MyCSharpLib\bin\Debug\MyCSharpLib.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
