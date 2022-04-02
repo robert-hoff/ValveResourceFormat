@@ -125,11 +125,10 @@ namespace ValveResourceFormat.CompiledShader
             nrEndBlocks = datareader.ReadInt32();
             for (int i = 0; i < nrEndBlocks; i++)
             {
-                if (vcsProgramType == VcsProgramType.VertexShader || vcsProgramType == VcsProgramType.GeometryShader ||
-                    vcsProgramType == VcsProgramType.ComputeShader || vcsProgramType == VcsProgramType.DomainShader ||
-                    vcsProgramType == VcsProgramType.HullShader)
+                if (this.vcsProgramType == VcsProgramType.VertexShader ||
+                    this.vcsProgramType == VcsProgramType.GeometryShader || this.vcsProgramType == VcsProgramType.ComputeShader)
                 {
-                    VsEndBlock vsEndBlock = new(datareader, hullShader: vcsProgramType == VcsProgramType.HullShader);
+                    VsEndBlock vsEndBlock = new(datareader);
                     vsEndBlocks.Add(vsEndBlock);
                 } else
                 {
@@ -214,7 +213,7 @@ namespace ValveResourceFormat.CompiledShader
          */
         public void PrintGpuSource(int sourceId, HandleOutputWrite outputWriter = null)
         {
-            outputWriter ??= (x) => { Console.Write(x); };
+            outputWriter ??= ((x) => { Console.Write(x); });
 
             if (gpuSources[sourceId] is GlslSource)
             {
@@ -311,18 +310,13 @@ namespace ValveResourceFormat.CompiledShader
             public int arg0 { get; }
             public int sourceRef { get; }
             public int sourcePointer { get; }
-            public int hullShaderArg { get; } = -1;
-            public VsEndBlock(ShaderDataReader datareader, bool hullShader = false)
+            public VsEndBlock(ShaderDataReader datareader)
             {
-                databytes = datareader.ReadBytesAtPosition(0, 16 + (hullShader ? 1 : 0));
+                databytes = datareader.ReadBytesAtPosition(0, 16);
                 blockIdRef = datareader.ReadInt32();
                 arg0 = datareader.ReadInt32();
                 sourceRef = datareader.ReadInt32();
                 sourcePointer = datareader.ReadInt32();
-                if (hullShader)
-                {
-                    hullShaderArg = datareader.ReadByte();
-                }
             }
         }
 
@@ -424,7 +418,7 @@ namespace ValveResourceFormat.CompiledShader
             datareader.ShowByteCount($"Start of source section, {datareader.BaseStream.Position} is " +
                 $"the base offset for end-section source pointers");
             int gpuSourceCount = datareader.ReadInt32AtPosition();
-            datareader.ShowBytes(4, $"gpu source files ({gpuSourceCount})");
+            datareader.ShowBytes(4, $"{vcsPlatformType} source files ({gpuSourceCount})");
             datareader.ShowBytes(1, "unknown boolean, values seen 0,1", tabLen: 13);
             datareader.BreakLine();
 
@@ -462,16 +456,14 @@ namespace ValveResourceFormat.CompiledShader
                         ShowVulkanSources(gpuSourceCount);
                         break;
                     default:
-                        throw new ShaderParserException($"Unknown or unsupported platform type {vcsPlatformType}");
+                        throw new ShaderParserException($"Unknown or unsupported source type {vcsPlatformType}");
                 }
             }
 
-            //  End blocks for vs, gs, cs, ds and hs files
-            if (vcsProgramType == VcsProgramType.VertexShader || vcsProgramType == VcsProgramType.GeometryShader ||
-                vcsProgramType == VcsProgramType.ComputeShader || vcsProgramType == VcsProgramType.DomainShader ||
-                vcsProgramType == VcsProgramType.HullShader)
+            //  End blocks for vs, gs and cs files
+            if (vcsProgramType == VcsProgramType.VertexShader || vcsProgramType == VcsProgramType.GeometryShader || vcsProgramType == VcsProgramType.ComputeShader)
             {
-                ShowZAllEndBlocksTypeVs(hullShader: vcsProgramType == VcsProgramType.HullShader);
+                ShowZAllEndBlocksTypeVs();
                 datareader.BreakLine();
             }
             //  End blocks for ps and psrs files
@@ -803,7 +795,7 @@ namespace ValveResourceFormat.CompiledShader
             datareader.BaseStream.Position = endOfSource;
             datareader.BreakLine();
         }
-        public void ShowZAllEndBlocksTypeVs(bool hullShader = false)
+        public void ShowZAllEndBlocksTypeVs()
         {
             datareader.ShowByteCount();
             int nr_end_blocks = datareader.ReadInt32AtPosition();
@@ -812,7 +804,7 @@ namespace ValveResourceFormat.CompiledShader
             datareader.BreakLine();
             for (int i = 0; i < nr_end_blocks; i++)
             {
-                datareader.ShowBytes(16 + (hullShader ? 1 : 0));
+                datareader.ShowBytes(16);
             }
         }
         private void ShowMurmurString()
