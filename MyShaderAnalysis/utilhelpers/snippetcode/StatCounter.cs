@@ -80,10 +80,10 @@ namespace MyShaderAnalysis.utilhelpers.snippetcode
                 VcsProgramType.VertexShader => "vs.vcs",
                 VcsProgramType.PixelShader => "ps.vcs",
                 VcsProgramType.PixelShaderRenderState => "psrs.vcs",
-                VcsProgramType.GeometryShader => "cs.vcs",
-                VcsProgramType.ComputeShader => "hs.vcs",
-                VcsProgramType.HullShader => "ds.vcs",
-                VcsProgramType.DomainShader => "gs.vcs",
+                VcsProgramType.GeometryShader => "gs.vcs",
+                VcsProgramType.ComputeShader => "cs.vcs",
+                VcsProgramType.HullShader => "hs.vcs",
+                VcsProgramType.DomainShader => "ds.vcs",
                 VcsProgramType.RaytracingShader => "rtx.vcs",
                 _ => throw new ShaderParserException("not possible")
             };

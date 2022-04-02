@@ -47,14 +47,12 @@ namespace MyShaderAnalysis.utilhelpers
 
 
             ShowZDataSection(-1);
-
-
-
             ShowZFrameHeader();
 
+            // ShowBytes(10000);
+            // return;
 
-            ShowBytes(10000);
-            return;
+
             // this applies only to vs files (ps, gs and psrs files don't have this section)
             if (vcsProgramType == VcsProgramType.VertexShader)
             {
@@ -92,7 +90,7 @@ namespace MyShaderAnalysis.utilhelpers
             ShowByteCount($"Start of source section, {BaseStream.Position} is " +
                 $"the base offset for end-section source pointers");
             int gpuSourceCount = ReadInt32AtPosition();
-            ShowBytes(4, $"{vcsPlatformType} source files ({gpuSourceCount})");
+            ShowBytes(4, $"gpu source files ({gpuSourceCount})");
             ShowBytes(1, "unknown boolean, values seen 0,1", tabLen: 13);
             BreakLine();
 
@@ -133,14 +131,17 @@ namespace MyShaderAnalysis.utilhelpers
                 }
             }
 
-            //  End blocks for vs, gs and cs files
-            if (vcsProgramType == VcsProgramType.VertexShader || vcsProgramType == VcsProgramType.GeometryShader || vcsProgramType == VcsProgramType.ComputeShader)
+            //  End blocks for vs, gs, cs and ds files
+            if (vcsProgramType == VcsProgramType.VertexShader || vcsProgramType == VcsProgramType.GeometryShader ||
+                vcsProgramType == VcsProgramType.ComputeShader || vcsProgramType == VcsProgramType.DomainShader)
             {
                 ShowZAllEndBlocksTypeVs();
-                BreakLine();
+            } else if (vcsProgramType == VcsProgramType.HullShader)
+            {
+                ShowZAllEndBlocksTypeHs();
             }
             //  End blocks for ps and psrs files
-            if (vcsProgramType == VcsProgramType.PixelShader || vcsProgramType == VcsProgramType.PixelShaderRenderState)
+            else if (vcsProgramType == VcsProgramType.PixelShader || vcsProgramType == VcsProgramType.PixelShaderRenderState)
             {
                 ShowByteCount();
                 int nrEndBlocks = ReadInt32AtPosition();
@@ -183,12 +184,16 @@ namespace MyShaderAnalysis.utilhelpers
                         ShowBytes(8);
                         ShowBytes(64, 32);
                     }
-                    OutputWriteLine("");
                 }
+            } else
+            {
+                throw new ShaderParserException($"Unknown or unsupported ProgramType {vcsProgramType}");
             }
+            // ShowBytes(1000);
+
+
+            BreakLine();
             ShowEndOfFile();
-
-
 
             if (showStatusMessage)
             {
@@ -474,13 +479,27 @@ namespace MyShaderAnalysis.utilhelpers
             ShowByteCount();
             int nr_end_blocks = ReadInt32AtPosition();
             ShowBytes(4, breakLine: false);
-            TabComment($"nr end blocks ({nr_end_blocks})");
+            TabComment($"nr of end blocks ({nr_end_blocks})");
             BreakLine();
             for (int i = 0; i < nr_end_blocks; i++)
             {
                 ShowBytes(16);
             }
         }
+
+        public void ShowZAllEndBlocksTypeHs()
+        {
+            ShowByteCount();
+            int nr_end_blocks = ReadInt32AtPosition();
+            ShowBytes(4, breakLine: false);
+            TabComment($"nr of end blocks ({nr_end_blocks})");
+            BreakLine();
+            for (int i = 0; i < nr_end_blocks; i++)
+            {
+                ShowBytes(17);
+            }
+        }
+
         private void ShowMurmurString()
         {
             ShowByteCount();

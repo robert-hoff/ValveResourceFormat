@@ -17,10 +17,11 @@ namespace MyShaderAnalysis.utilhelpers
 
 
             // ShowFileTokenDetail2();
-            ShowFileTokenDetail1();
+            // ShowFileTokenDetail1();
             // ShowRelatedFilesInVcsCollection(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30");
             // ShowRelatedFilesInVcsCollection(ARCHIVE.dotagame_pcgl, "hero_pcgl_30");
             // TestShaderInstantiation();
+            TestFileRetrievalHelper();
 
         }
 
@@ -75,6 +76,21 @@ namespace MyShaderAnalysis.utilhelpers
             Console.WriteLine($"spritecard_ps has {shaderFile.GetZFrameCount()} zframes");
         }
 
+
+
+
+
+        static void TestFileRetrievalHelper()
+        {
+            List<string> vcsFiles = MyShaderUtilHelpers.GetVcsFiles(FileArchives.GetSourceDir(ARCHIVE.alyx_hlvr_vulkan), VcsProgramType.Undetermined);
+            foreach (var f in vcsFiles)
+            {
+                Console.WriteLine($"{f}");
+            }
+
+
+
+        }
 
 
     }

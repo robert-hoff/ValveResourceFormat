@@ -51,6 +51,7 @@ namespace MyShaderAnalysis.utilhelpers
             dotacore_vulkan_v65, dotagame_vulkan_v65,
             dota_core_gles, dota_dac_gles,
             dota_core_android_vulkan, dota_dac_android_vulkan,
+            dota_core_ios_vulkan, dota_dac_ios_vulkan,
             artifact_classiccore_pc, artifact_classicdcg_pc,
             alyx_core_vulkan, alyx_hlvr_vulkan,
             v62_examples, the_lab_v62
@@ -81,6 +82,8 @@ namespace MyShaderAnalysis.utilhelpers
             if (archive == ARCHIVE.dota_dac_gles) return DOTA_DAC_MOBILE_GLES_SOURCE;
             if (archive == ARCHIVE.dota_core_android_vulkan) return DOTA_CORE_ANDROID_VULKAN_SOURCE;
             if (archive == ARCHIVE.dota_dac_android_vulkan) return DOTA_DAC_ANDROID_VULKAN_SOURCE;
+            if (archive == ARCHIVE.dota_core_ios_vulkan) return DOTA_CORE_IOS_VULKAN_SOURCE;
+            if (archive == ARCHIVE.dota_dac_ios_vulkan) return DOTA_DAC_IOS_VULKAN_SOURCE;
             if (archive == ARCHIVE.artifact_classiccore_pc) return ARTIFACT_CLASSIC_CORE_PC_SOURCE;
             if (archive == ARCHIVE.artifact_classicdcg_pc) return ARTIFACT_CLASSIC_DCG_PC_SOURCE;
             if (archive == ARCHIVE.alyx_hlvr_vulkan) return HLALYX_HLVR_VULKAN_SOURCE;
@@ -106,14 +109,16 @@ namespace MyShaderAnalysis.utilhelpers
             if (archive == ARCHIVE.dotagame_pcgl) return "dota-game-pcgl-v64";
             if (archive == ARCHIVE.dotacore_pc) return "dota-core-pc-v64";
             if (archive == ARCHIVE.dotagame_pc) return "dota-game-pc-v64";
-            if (archive == ARCHIVE.dotacore_pc_v65) return "dota-core-pcgl-v65";
-            if (archive == ARCHIVE.dotagame_pc_v65) return "dota-game-pcgl-v65";
+            if (archive == ARCHIVE.dotacore_pc_v65) return "dota-core-pc-v65";
+            if (archive == ARCHIVE.dotagame_pc_v65) return "dota-game-pc-v65";
             if (archive == ARCHIVE.dotacore_vulkan_v65) return "dota-core-vulkan-v65";
             if (archive == ARCHIVE.dotagame_vulkan_v65) return "dota-game-vulkan-v65";
             if (archive == ARCHIVE.dota_core_gles) return "dota-core-mobile-gles-v64";
             if (archive == ARCHIVE.dota_dac_gles) return "dota-game-mobile-gles-v64";
             if (archive == ARCHIVE.dota_core_android_vulkan) return "dota-core-android-vulkan-v64";
             if (archive == ARCHIVE.dota_dac_android_vulkan) return "dota-dac-android-vulkan-v64";
+            if (archive == ARCHIVE.dota_core_ios_vulkan) return "dota-core-ios-vulkan-v64";
+            if (archive == ARCHIVE.dota_dac_ios_vulkan) return "dota-dac-ios-vulkan-v64";
             if (archive == ARCHIVE.artifact_classiccore_pc) return "aclassic-core-pc-v64";
             if (archive == ARCHIVE.artifact_classicdcg_pc) return "aclassic-dcg-pc-v64";
             if (archive == ARCHIVE.alyx_hlvr_vulkan) return "alyx-hlvr-vulkan-v64";

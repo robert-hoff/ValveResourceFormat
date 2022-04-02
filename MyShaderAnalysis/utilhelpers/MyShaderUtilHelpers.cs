@@ -51,6 +51,24 @@ namespace MyShaderAnalysis.utilhelpers
                 filesFound.AddRange(GetAllFilesWithEnding(dir1, endsWith));
                 filesFound.AddRange(GetAllFilesWithEnding(dir2, endsWith));
             }
+            if (fileType == VcsProgramType.DomainShader || fileType == VcsProgramType.Undetermined)
+            {
+                string endsWith = numEnding > -1 ? $"{numEnding}_ds.vcs" : "ds.vcs";
+                filesFound.AddRange(GetAllFilesWithEnding(dir1, endsWith));
+                filesFound.AddRange(GetAllFilesWithEnding(dir2, endsWith));
+            }
+            if (fileType == VcsProgramType.HullShader || fileType == VcsProgramType.Undetermined)
+            {
+                string endsWith = numEnding > -1 ? $"{numEnding}_hs.vcs" : "hs.vcs";
+                filesFound.AddRange(GetAllFilesWithEnding(dir1, endsWith));
+                filesFound.AddRange(GetAllFilesWithEnding(dir2, endsWith));
+            }
+            if (fileType == VcsProgramType.RaytracingShader || fileType == VcsProgramType.Undetermined)
+            {
+                string endsWith = numEnding > -1 ? $"{numEnding}_rtx.vcs" : "rtx.vcs";
+                filesFound.AddRange(GetAllFilesWithEnding(dir1, endsWith));
+                filesFound.AddRange(GetAllFilesWithEnding(dir2, endsWith));
+            }
             if (sortFiles)
             {
                 filesFound.Sort();

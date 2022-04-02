@@ -20,7 +20,7 @@ namespace MyShaderAnalysis
             // RunTestSingleShaderFile();
             // RunTestSingleFileBytes();
 
-            // RunTestZframeBytesByArchive();
+            RunTestZframeBytesByArchive();
             // RunTestSingleZframeBytesSilent();
             // RunTestSingleZframeBytes();
             // RunTestSingleZframeBytesSingleId();
@@ -28,10 +28,9 @@ namespace MyShaderAnalysis
             // RunTestSingleZframeParser();
 
 
-            // TestArchivesZFrames();
             // TestArchivesShaderFile();
             // TestArchivesShaderFileSummarize();
-            TestArchivesBytes();
+            // TestArchivesBytes();
         }
 
 
@@ -70,31 +69,34 @@ namespace MyShaderAnalysis
 
         public static void RunTestZframeBytesByArchive()
         {
-            //TestZframeBytesByArchive(ARCHIVE.dotagame_pc_v65);
-            //TestZframeBytesByArchive(ARCHIVE.dotacore_pc_v65);
-            //TestZframeBytesByArchive(ARCHIVE.dotacore_vulkan_v65);
-            //TestZframeBytesByArchive(ARCHIVE.dotagame_vulkan_v65);
-            //TestZframeBytesByArchive(ARCHIVE.dotagame_pcgl);
-            //TestZframeBytesByArchive(ARCHIVE.dotacore_pcgl);
-            //TestZframeBytesByArchive(ARCHIVE.dotagame_pc);
-            //TestZframeBytesByArchive(ARCHIVE.dotacore_pc);
-            //TestZframeBytesByArchive(ARCHIVE.dota_core_gles);
-            //TestZframeBytesByArchive(ARCHIVE.dota_dac_gles);
-            //TestZframeBytesByArchive(ARCHIVE.dota_core_android_vulkan);
-            //TestZframeBytesByArchive(ARCHIVE.dota_dac_android_vulkan);
-            //TestZframeBytesByArchive(ARCHIVE.artifact_classiccore_pc);
-            //TestZframeBytesByArchive(ARCHIVE.artifact_classicdcg_pc);
-            //TestZframeBytesByArchive(ARCHIVE.alyx_core_vulkan);
+            TestZframeBytesByArchive(ARCHIVE.dotagame_pc_v65);
+            TestZframeBytesByArchive(ARCHIVE.dotacore_pc_v65);
+            TestZframeBytesByArchive(ARCHIVE.dotacore_vulkan_v65);
+            TestZframeBytesByArchive(ARCHIVE.dotagame_vulkan_v65);
+            TestZframeBytesByArchive(ARCHIVE.dotagame_pcgl);
+            TestZframeBytesByArchive(ARCHIVE.dotacore_pcgl);
+            TestZframeBytesByArchive(ARCHIVE.dotagame_pc);
+            TestZframeBytesByArchive(ARCHIVE.dotacore_pc);
+            TestZframeBytesByArchive(ARCHIVE.dota_core_gles);
+            TestZframeBytesByArchive(ARCHIVE.dota_dac_gles);
+            TestZframeBytesByArchive(ARCHIVE.dota_core_android_vulkan);
+            TestZframeBytesByArchive(ARCHIVE.dota_dac_android_vulkan);
+            TestZframeBytesByArchive(ARCHIVE.artifact_classiccore_pc);
+            TestZframeBytesByArchive(ARCHIVE.artifact_classicdcg_pc);
+            TestZframeBytesByArchive(ARCHIVE.alyx_core_vulkan);
             TestZframeBytesByArchive(ARCHIVE.alyx_hlvr_vulkan);
-            //TestZframeBytesByArchive(ARCHIVE.v62_examples);
-            //TestZframeBytesByArchive(ARCHIVE.the_lab_v62);
+            TestZframeBytesByArchive(ARCHIVE.alyx_hlvr_vulkan);
+            TestZframeBytesByArchive(ARCHIVE.v62_examples);
+            TestZframeBytesByArchive(ARCHIVE.the_lab_v62);
         }
 
 
-        public static void TestZframeBytesByArchive(ARCHIVE archive)
+        // public static void TestZframeBytesByArchive(ARCHIVE archive, VcsProgramType vcsProgramType = VcsProgramType.DomainShader)
+        // public static void TestZframeBytesByArchive(ARCHIVE archive, VcsProgramType vcsProgramType = VcsProgramType.HullShader)
+        public static void TestZframeBytesByArchive(ARCHIVE archive, VcsProgramType vcsProgramType = VcsProgramType.Undetermined)
         {
             string archiveName = FileArchives.GetArchiveName(archive);
-            List<string> vcsFiles = MyShaderUtilHelpers.GetVcsFiles(FileArchives.GetSourceDir(archive), VcsProgramType.Undetermined);
+            List<string> vcsFiles = MyShaderUtilHelpers.GetVcsFiles(FileArchives.GetSourceDir(archive), vcsProgramType);
             string headerText = $"Parsing zframes for vcs archive {archiveName}";
             Console.WriteLine(headerText);
             Console.WriteLine(new string('-', headerText.Length));
@@ -120,7 +122,7 @@ namespace MyShaderAnalysis
         }
 
 
-        static int LIMIT_ZFRAME_COUNT = 1000;
+        static int LIMIT_ZFRAME_COUNT = 100;
 
         public static void RunTestSingleZframeBytesSilent()
         {
@@ -172,7 +174,13 @@ namespace MyShaderAnalysis
             // string filenamepath = GetFilenamepath(ARCHIVE.artifact_classiccore_pc, "generic_pc_30_ps.vcs"); int zframeIndex = 74;
 
             // X:/hl2alyx-export/alyx-vulkan-hlvr/vr_projected_decals_vulkan_50_ps.vcs
-            string filenamepath = GetFilenamepath(ARCHIVE.alyx_hlvr_vulkan, "vr_projected_decals_vulkan_50_ps.vcs"); int zframeIndex = 0;
+            // string filenamepath = GetFilenamepath(ARCHIVE.alyx_hlvr_vulkan, "vr_projected_decals_vulkan_50_ps.vcs"); int zframeIndex = 0;
+            // string filenamepath = GetFilenamepath(ARCHIVE.alyx_hlvr_vulkan, "vr_ice_surface_vulkan_50_ds.vcs"); int zframeIndex = 0;
+            // string filenamepath = GetFilenamepath(ARCHIVE.alyx_hlvr_vulkan, "vr_ice_surface_vulkan_50_hs.vcs"); int zframeIndex = 0;
+            // string filenamepath = GetFilenamepath(ARCHIVE.alyx_core_vulkan, "test_vulkan_50_hs.vcs"); int zframeIndex = 1;
+            // string filenamepath = GetFilenamepath(ARCHIVE.the_lab_v62, "test_pcgl_50_hs.vcs"); int zframeIndex = 0;
+            string filenamepath = GetFilenamepath(ARCHIVE.the_lab_v62, "test_pcgl_50_ds.vcs"); int zframeIndex = 1;
+
             ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
             TestSingleZframeBytes(shaderFile, zframeIndex);
         }
@@ -184,7 +192,7 @@ namespace MyShaderAnalysis
             // Console.WriteLine($"{zframeBytes.Length}");
 
             DataReaderZFrameBytes dataReaderZframe = new DataReaderZFrameBytes(zframeBytes,
-                shaderFile.vcsProgramType, shaderFile.vcsPlatformType, shaderFile.vcsShaderModelType, showStatusMessage: true,
+                shaderFile.vcsProgramType, shaderFile.vcsPlatformType, shaderFile.vcsShaderModelType, showStatusMessage: false,
                 // outputWriter: (x) => { });
                 outputWriter: null);
 
@@ -222,7 +230,8 @@ namespace MyShaderAnalysis
         public static void TestZframeParserArchive(ARCHIVE archive)
         {
             string archiveName = FileArchives.GetArchiveName(archive);
-            List<string> vcsFiles = MyShaderUtilHelpers.GetVcsFiles(FileArchives.GetSourceDir(archive), VcsProgramType.Undetermined);
+            // List<string> vcsFiles = MyShaderUtilHelpers.GetVcsFiles(FileArchives.GetSourceDir(archive), VcsProgramType.Undetermined);
+            List<string> vcsFiles = MyShaderUtilHelpers.GetVcsFiles(FileArchives.GetSourceDir(archive), VcsProgramType.HullShader);
             string headerText = $"Parsing zframes for vcs archive {archiveName}";
             Console.WriteLine(headerText);
             Console.WriteLine(new string('-', headerText.Length));
@@ -249,7 +258,14 @@ namespace MyShaderAnalysis
 
         public static void RunTestSingleZframeParser()
         {
-            string filenamepath = GetFilenamepath(ARCHIVE.alyx_hlvr_vulkan, "vr_projected_decals_vulkan_50_ps.vcs"); int zframeIndex = 0;
+            // string filenamepath = GetFilenamepath(ARCHIVE.alyx_hlvr_vulkan, "vr_projected_decals_vulkan_50_ps.vcs"); int zframeIndex = 0;
+            // string filenamepath = GetFilenamepath(ARCHIVE.alyx_hlvr_vulkan, "vr_ice_surface_vulkan_50_ds.vcs"); int zframeIndex = 0;
+            // string filenamepath = GetFilenamepath(ARCHIVE.alyx_hlvr_vulkan, "vr_ice_surface_vulkan_50_hs.vcs"); int zframeIndex = 0;
+            // string filenamepath = GetFilenamepath(ARCHIVE.alyx_core_vulkan, "test_vulkan_50_hs.vcs"); int zframeIndex = 1;
+            string filenamepath = GetFilenamepath(ARCHIVE.the_lab_v62, "test_pcgl_50_hs.vcs"); int zframeIndex = 0;
+            // string filenamepath = GetFilenamepath(ARCHIVE.the_lab_v62, "test_pcgl_50_ds.vcs"); int zframeIndex = 0;
+            // string filenamepath = GetFilenamepath(ARCHIVE.the_lab_v62, "test_pcgl_50_ds.vcs"); int zframeIndex = 1;
+
             ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
             TestSingleZframeParser(shaderFile, zframeIndex);
         }
@@ -263,9 +279,8 @@ namespace MyShaderAnalysis
             } catch (Exception e)
             {
                 long zframeId = shaderFile.GetZFrameIdByIndex(zFrameIndex);
-                Console.WriteLine($"ERROR in Z[0x{zframeId:x08}] zframeIndex={zFrameIndex} {e.Message}");
+                Console.WriteLine($"ERROR in Z[0x{zframeId:x08}] zframeIndex={zFrameIndex} {e.GetType()} {e.Message}");
             }
-
         }
 
 
@@ -393,6 +408,8 @@ namespace MyShaderAnalysis
             TestArchiveShaderFileSummarise(ARCHIVE.dota_dac_gles);
             TestArchiveShaderFileSummarise(ARCHIVE.dota_core_android_vulkan);
             TestArchiveShaderFileSummarise(ARCHIVE.dota_dac_android_vulkan);
+            TestArchiveShaderFileSummarise(ARCHIVE.dota_core_ios_vulkan);
+            TestArchiveShaderFileSummarise(ARCHIVE.dota_dac_ios_vulkan);
             TestArchiveShaderFileSummarise(ARCHIVE.artifact_classiccore_pc);
             TestArchiveShaderFileSummarise(ARCHIVE.artifact_classicdcg_pc);
             TestArchiveShaderFileSummarise(ARCHIVE.alyx_core_vulkan);
@@ -402,7 +419,7 @@ namespace MyShaderAnalysis
         }
 
 
-        public static void TestArchiveShaderFileSummarise(ARCHIVE archive)
+        public static void TestArchiveShaderFileSummarise(ARCHIVE archive, bool showSuccesses = false)
         {
             string archiveName = FileArchives.GetArchiveName(archive);
             List<string> vcsFiles = MyShaderUtilHelpers.GetVcsFiles(FileArchives.GetSourceDir(archive), VcsProgramType.Undetermined);
@@ -416,11 +433,14 @@ namespace MyShaderAnalysis
             foreach (var f in vcsFiles)
             {
                 VcsProgramType vcsProgType = ComputeVcsProgramType(f);
-                // string reportString = $"     /{archiveName}/{Path.GetFileName(f)}".PadRight(100);
+                string reportString = $"     /{archiveName}/{Path.GetFileName(f)}".PadRight(100);
                 try
                 {
                     ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(f);
-                    // Console.WriteLine($"{reportString} OK");
+                    if (showSuccesses)
+                    {
+                        Console.WriteLine($"{reportString} OK");
+                    }
                     statCounter.recPassed(vcsProgType);
                 } catch (Exception e)
                 {
