@@ -533,7 +533,11 @@ namespace Decompiler
             try
             {
                 shader.Read(path, stream);
-                shader.PrintSummary();
+
+                if (!CollectStats)
+                {
+                    shader.PrintSummary();
+                }
             }
             catch (Exception e)
             {
@@ -543,7 +547,7 @@ namespace Decompiler
             shader.Dispose();
         }
 
-        private void ParseVFont(string path)
+        private void ParseVFont(string path) // TODO: Accept Stream
         {
             lock (ConsoleWriterLock)
             {
