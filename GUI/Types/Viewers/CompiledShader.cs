@@ -310,7 +310,7 @@ namespace GUI.Types.Viewers
                 // (the sourceId is not the same as the zframeId - a single zframe may contain more than 1 source,
                 // they are enumerated in each zframe file starting from 0)
                 int gpuSourceId = Convert.ToInt32(linkTokens[1], CultureInfo.InvariantCulture);
-                string gpuSourceLabel = $"{shaderFile.filenamepath.Split('_')[^1][..^4]}[{zframeFile.zframeId:x}]({gpuSourceId})";
+                string gpuSourceTabTitle = $"{shaderFile.filenamepath.Split('_')[^1][..^4]}[{zframeFile.zframeId:x}]({gpuSourceId})";
 
                 TabPage gpuSourceTab = null;
                 switch (zframeFile.gpuSources[gpuSourceId])
@@ -318,7 +318,7 @@ namespace GUI.Types.Viewers
                     case GlslSource:
                         var buffer = new StringWriter(CultureInfo.InvariantCulture);
                         zframeFile.PrintGpuSource(gpuSourceId, buffer.Write);
-                        gpuSourceTab = new TabPage(gpuSourceLabel);
+                        gpuSourceTab = new TabPage(gpuSourceTabTitle);
                         var gpuSourceRichTextBox = new RichTextBox
                         {
                             Font = new Font(FontFamily.GenericMonospace, Font.Size),
@@ -336,7 +336,9 @@ namespace GUI.Types.Viewers
                     case DxbcSource:
                     case DxilSource:
                     case VulkanSource:
-                        gpuSourceTab = CreateByteViewerTab(zframeFile.gpuSources[gpuSourceId].sourcebytes, gpuSourceLabel);
+                        byte[] input = zframeFile.gpuSources[gpuSourceId].sourcebytes;
+                        gpuSourceTab = new ByteViewer().Create(null, null);
+                        gpuSourceTab.Text = gpuSourceTabTitle;
                         break;
 
                     default:
@@ -348,21 +350,6 @@ namespace GUI.Types.Viewers
                 {
                     tabControl.SelectedTab = gpuSourceTab;
                 }
-            }
-
-            private static TabPage CreateByteViewerTab(byte[] input, string tabName)
-            {
-                var bvTab = new TabPage(tabName);
-                var bv = new System.ComponentModel.Design.ByteViewer
-                {
-                    Dock = DockStyle.Fill,
-                };
-                bvTab.Controls.Add(bv);
-                Program.MainForm.Invoke((MethodInvoker)(() =>
-                {
-                    bv.SetBytes(input);
-                }));
-                return bvTab;
             }
         }
     }

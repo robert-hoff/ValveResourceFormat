@@ -1,5 +1,7 @@
+using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using GUI.Utils;
 
@@ -26,33 +28,44 @@ namespace GUI.Types.Viewers
             bvTab.Controls.Add(bv);
             resTabs.TabPages.Add(bvTab);
 
-            if (input == null)
-            {
-                input = File.ReadAllBytes(vrfGuiContext.FileName);
-            }
+            input ??= File.ReadAllBytes(vrfGuiContext.FileName);
 
-            if (!input.Contains<byte>(0x00))
+            string textContent = !input.Contains<byte>(0x00) ? System.Text.Encoding.UTF8.GetString(input) : BytesAsHexString(input);
+            var textTab = new TabPage(!input.Contains<byte>(0x00) ? "Text" : "Bytes");
+            var textBox = new System.Windows.Forms.RichTextBox
             {
-                var textTab = new TabPage("Text");
-                var text = new TextBox
-                {
-                    Dock = DockStyle.Fill,
-                    ScrollBars = ScrollBars.Vertical,
-                    Multiline = true,
-                    ReadOnly = true,
-                    Text = Utils.Utils.NormalizeLineEndings(System.Text.Encoding.UTF8.GetString(input)),
-                };
-                textTab.Controls.Add(text);
-                resTabs.TabPages.Add(textTab);
-                resTabs.SelectedTab = textTab;
-            }
+                Dock = DockStyle.Fill,
+                ScrollBars = RichTextBoxScrollBars.Both,
+                Multiline = true,
+                ReadOnly = true,
+                WordWrap = false,
+                Text = textContent,
+            };
+            textBox.Font = new Font(FontFamily.GenericMonospace, textBox.Font.Size);
+            textTab.Controls.Add(textBox);
+            resTabs.TabPages.Add(textTab);
+            resTabs.SelectedTab = textTab;
 
-            Program.MainForm.Invoke((MethodInvoker)(() =>
-            {
-                bv.SetBytes(input);
-            }));
+            Program.MainForm.Invoke((MethodInvoker)(
+                () => bv.SetBytes(input)
+            ));
 
             return tab;
+        }
+
+        private static string BytesAsHexString(byte[] databytes)
+        {
+            int BREAKLEN = 32;
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < databytes.Length; i++)
+            {
+                if (i > 0 && i % BREAKLEN == 0)
+                {
+                    sb.Append('\n');
+                }
+                sb.Append($"{databytes[i]:X02} ");
+            }
+            return sb.ToString();
         }
     }
 }
