@@ -62,7 +62,9 @@ namespace MyShaderAnalysis
         public static void SaveServerSets()
         {
             // SaveAllServerFiles(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
-            // SaveAllServerFiles(ARCHIVE.dotagame_pcgl, "3dskyboxstencil_pcgl_30_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
+            SaveAllServerFiles(ARCHIVE.dotagame_pcgl, "3dskyboxstencil_pcgl_30_features.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
+            SaveAllServerFiles(ARCHIVE.dotagame_pcgl, "3dskyboxstencil_pcgl_30_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
+            SaveAllServerFiles(ARCHIVE.dotagame_pcgl, "3dskyboxstencil_pcgl_30_ps.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
             // SaveAllServerFiles(ARCHIVE.dotagame_pc, "3dskyboxstencil_pc_30_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
             // SaveAllServerFiles(ARCHIVE.dotagame_pc, "3dskyboxstencil_pc_40_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
             // SaveAllServerFiles(ARCHIVE.dotagame_pc, "multiblend_pc_40_vs.vcs", zframesToPrint: 20, gpuSourcesToPrint: 5);
@@ -75,7 +77,7 @@ namespace MyShaderAnalysis
             // SaveAllServerFiles(ARCHIVE.dotagame_vulkan_v65, "multiblend_vulkan_40_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
             // SaveAllServerFiles(ARCHIVE.the_lab_v62, "bilateral_blur_pc_30_ps.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
             // SaveAllServerFiles(ARCHIVE.the_lab_v62, "bilateral_blur_pc_30_features.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
-            SaveAllServerFiles(ARCHIVE.the_lab_v62, "blend_pc_41_features.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
+            // SaveAllServerFiles(ARCHIVE.the_lab_v62, "blend_pc_41_features.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
             // SaveAllServerFiles(ARCHIVE.the_lab_v62, "aerial_perspective_pc_30_ps.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
             // SaveAllServerFiles(ARCHIVE.the_lab_v62, "aerial_perspective_pc_30_features.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
             // SaveAllServerFiles(ARCHIVE.the_lab_v62, "aerial_perspective_pc_30_ps.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);

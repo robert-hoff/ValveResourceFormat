@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ValveResourceFormat.CompiledShader;
+using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
 
 
 namespace MyShaderAnalysis.utilhelpers.snippetcode
@@ -16,11 +17,160 @@ namespace MyShaderAnalysis.utilhelpers.snippetcode
 
         public static void RunTrials()
         {
+
+            // DumbTest6();
+            // GettingGsDataOut5();
+            // GettingGsDataOut4();
+            // GettingGsDataOut3();
+            // GettingGsDataOut2();
+            // GettingGsDataOut1();
+            // AddTwoNumbers();
+            // ConvertIntToByteString();
+            // DumbTest();
+            // DumbTest2();
             // TestDictionaryStats();
             ConvertHexMapToString();
             // PrintByteCounter();
             // TestDictionaryLookups();
             // ZframeLabel();
+        }
+
+
+
+        static void DumbTest()
+        {
+            string filenamepath = "debugoverlay_wireframe_pc_40_gs.vcs";
+
+
+            // MyShaderUtilHelpers.ComputeVCSFileName((out VcsProgramType prog1, out VcsPlatformType prog2, out VcsShaderModelType prog4), filenamepath);
+            // MyShaderUtilHelpers.ComputeVCSFileName(filenamepath, out (VcsProgramType p1, VcsPlatformType p2, VcsShaderModelType p3));
+            // VcsProgramType vcsProgramType = vcsTypes.Item1;
+            // VcsPlatformType vcsPlatformType = vcsTypes.Item2;
+            // VcsShaderModelType vcsShaderModelType = vcsTypes.Item3;
+            // Console.WriteLine($"{vcsTypes.p1}");
+
+
+
+        }
+
+
+        static void DumbTest6()
+        {
+            string filenamepath = "debugoverlay_wireframe_pc_40_gs.vcs";
+
+            // (filenamepath, out (VcsProgramType, VcsPlatformType, VcsShaderModelType) vcsprog)) => { vcsprog = ComputeVCSFileName(filenamepath); }
+            //
+
+
+            var add = (int x, int y) => x + y;
+            Console.WriteLine($"{add(10, 20)}");
+
+
+        }
+
+
+
+        static void GettingGsDataOut5()
+        {
+            string filenamepath = "debugoverlay_wireframe_pc_40_gs.vcs";
+            var fetch = (string a, out VcsProgramType p1, out VcsPlatformType p2, out VcsShaderModelType p3) =>
+            {
+                p1 = ComputeVCSFileName(a).Item1; p2 = ComputeVCSFileName(a).Item2; p3 = ComputeVCSFileName(a).Item3;
+            };
+            fetch(filenamepath, out VcsProgramType p1, out VcsPlatformType p2, out VcsShaderModelType p3);
+            Console.WriteLine($"{p1}");
+            Console.WriteLine($"{p2}");
+            Console.WriteLine($"{p3}");
+        }
+
+
+
+
+        static void GettingGsDataOut4()
+        {
+            string filenamepath = "debugoverlay_wireframe_pc_40_gs.vcs";
+            var fetch = (string a, out VcsProgramType p1, out VcsPlatformType p2, out VcsShaderModelType p3) =>
+            {
+                var items = ComputeVCSFileName(a); p1 = items.Item1; p2 = items.Item2; p3 = items.Item3;
+            };
+            fetch(filenamepath, out VcsProgramType p1, out VcsPlatformType p2, out VcsShaderModelType p3);
+            Console.WriteLine($"{p1}");
+            Console.WriteLine($"{p2}");
+            Console.WriteLine($"{p3}");
+        }
+
+
+        static void GettingGsDataOut3()
+        {
+            string filenamepath = "debugoverlay_wireframe_pc_40_gs.vcs";
+            var vcsProg = (string a, out (VcsProgramType, VcsPlatformType, VcsShaderModelType) vpg) => { vpg = ComputeVCSFileName(a); };
+            vcsProg(filenamepath, out (VcsProgramType p1, VcsPlatformType p2, VcsShaderModelType p3) pp);
+            Console.WriteLine($"{pp.p1}");
+            Console.WriteLine($"{pp.p2}");
+            Console.WriteLine($"{pp.p3}");
+        }
+
+
+        static void GettingGsDataOut2()
+        {
+            string filenamepath = "debugoverlay_wireframe_pc_40_gs.vcs";
+            var vcsProg = (string a) => ComputeVCSFileName(a);
+            var res = vcsProg(filenamepath);
+            Console.WriteLine($"{res.Item1}");
+        }
+
+        static void GettingGsDataOut1()
+        {
+            string filenamepath = "debugoverlay_wireframe_pc_40_gs.vcs";
+            ComputeVCSFileNameFetch1(filenamepath, out (VcsProgramType p1, VcsPlatformType p2, VcsShaderModelType p3) vcsprog);
+            Console.WriteLine($"{vcsprog.p1}");
+            Console.WriteLine($"{vcsprog.p2}");
+            Console.WriteLine($"{vcsprog.p3}");
+        }
+
+        private static void ComputeVCSFileNameFetch1(string filenamepath,
+            out (VcsProgramType, VcsPlatformType, VcsShaderModelType) vcsprog)
+        {
+            vcsprog = ComputeVCSFileName(filenamepath);
+        }
+
+
+        static void AddTwoNumbers()
+        {
+            var add = (int x, int y) => x + y;
+            Console.WriteLine($"{add(10, 20)}");
+        }
+
+
+        static void ConvertIntToByteString()
+        {
+            var toByteString = (byte[] b) => $"{b[0]:x02} {b[1]:x02} {b[2]:x02} {b[3]:x02}";
+            string byteString = toByteString(BitConverter.GetBytes(1010));
+            Console.WriteLine($"{byteString}");
+        }
+
+
+
+        static void DumbTest2()
+        {
+            dict = new Dictionary<int, (bool, DateTime)>();
+            dict.Add(0, (true, DateTime.Now));
+            SomeMethod(1);
+            SomeMethod(0);
+        }
+
+
+        private static Dictionary<int, (bool, DateTime)> dict;
+
+        public static void SomeMethod(int number)
+        {
+            if (dict.TryGetValue(number, out (bool isTrue, DateTime timestamp) booltime))
+            {
+                Console.WriteLine($"Found it: {booltime.isTrue}, {booltime.timestamp}");
+            } else
+            {
+                Console.WriteLine($"{number} Not Found");
+            }
         }
 
 
@@ -84,10 +234,25 @@ namespace MyShaderAnalysis.utilhelpers.snippetcode
             "6F 66 74 20 28 52 29 20 48 4C 53 4C 20 53 68 61 64 65 72 20 43 6F 6D 70 69 6C 65 72 20 39 2E 32 " +
             "39 2E 39 35 32 2E 33 31 31 31 00 AB";
 
+            string input3 =
+            "2E 00 00 00 00 00 00 00 00 00 00 00 09 00 12 00 15 00 03 00 05 00 11 00 13 00 07 00 02 00 08 00 " +
+            "10 00 6D 00 23 00 1B 00 1C 00 1D 00 22 00 27 00 29 00 2A 00 31 00 32 00 33 00 34 00 35 00 36 00 " +
+            "1F 00 24 00 30 00 4D 00 25 00 26 00 2C 00 2F 00 2E 00 62 00 67 00 50 00 51 00 7A 00 7B 00 17 00 " +
+            "19 00 1E 00 21 00 2D 00 08 00 44 65 70 74 68 50 61 73 73 42 61 74 63 68 49 44 00 05 51 5B 2C 05 " +
+            "FF FF 00 00 00 00 01 00 00 00 42 61 73 65 43 6F 6C 6F 72 54 65 78 74 75 72 65 00 92 A9 2A 88 0E " +
+            "6D 00 52 65 70 72 65 73 65 6E 74 61 74 69 76 65 54 65 78 74 75 72 65 00 11 04 70 5D 0E 6D 00 53 " +
+            "75 70 70 6F 72 74 73 4D 61 70 70 69 6E 67 44 69 6D 65 6E 73 69 6F 6E 73 00 6D 0E 46 89 09 FF FF " +
+            "00 00 00 00 01 74 72 61 6E 73 6C 75 63 65 6E 74 00 06 68 DB 4A 09 FF FF 12 00 00 00 1A 01 04 07 " +
+            "00 0F 00 07 00 00 80 3F 02 11 00 1A 03 00 61 6C 70 68 61 74 65 73 74 00 33 4E 5A F2 09 FF FF 03 " +
+            "00 00 00 1A 02 00 46 6F 72 77 61 72 64 4C 61 79 65 72 4F 6E 6C 79 00 C4 29 CF 2B 09 FF FF 00 00 " +
+            "00 00 01 4E 6F 72 6D 61 6C 4D 61 70 54 65 78 74 75 72 65 00 2E 56 C6 1C 0E 7A 00 01 00 00 00";
+
+
+
 
             string assembleString = "";
             int count = 0;
-            foreach (var hexcode in input2.Split(' '))
+            foreach (var hexcode in input3.Split(' '))
             {
                 int hexChar = Convert.ToInt32(hexcode, 16);
                 if (hexChar >= 32 && hexChar <= 126)

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-namespace MyShaderAnalysis
+namespace MyShaderAnalysis.compat
 {
 
     public class CompatRules3

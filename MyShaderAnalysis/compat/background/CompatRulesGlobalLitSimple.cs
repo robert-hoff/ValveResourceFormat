@@ -8,7 +8,7 @@ using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
 
 
-namespace MyShaderAnalysis
+namespace MyShaderAnalysis.compat
 {
     public class CompatRulesGlobalLitSimple
     {

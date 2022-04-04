@@ -1,11 +1,16 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
-using System.Linq;
-using ValveResourceFormat.CompiledShader;
-using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
+
+using VcsProgramType = ValveResourceFormat.CompiledShader.VcsProgramType;
+using ShaderFile = ValveResourceFormat.CompiledShader.ShaderFile;
+using ZFrameFile = ValveResourceFormat.CompiledShader.ZFrameFile;
+using ZFrameDataDescription = ValveResourceFormat.CompiledShader.ZFrameDataDescription;
+
 using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
-using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
+
+
+
 
 namespace MyShaderAnalysis.utilhelpers.snippetcode
 {
@@ -29,7 +34,7 @@ namespace MyShaderAnalysis.utilhelpers.snippetcode
         // search for small glsl sources
         static void SearchForSmallGlsl()
         {
-            List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsProgramType.Undetermined, -1);
+            List<string> vcsFiles = MyShaderUtilHelpers.GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsProgramType.Undetermined, -1);
             foreach (var filenamepath in vcsFiles)
             {
                 ShaderFile shaderfile = InstantiateShaderFile(filenamepath);
@@ -320,6 +325,23 @@ namespace MyShaderAnalysis.utilhelpers.snippetcode
                 }
             }
             return matchLen;
+        }
+
+
+        private static string RemoveBaseDir(string filenamepath)
+        {
+            string dirname = Path.GetDirectoryName(filenamepath).Replace("\\", "/");
+            string filename = Path.GetFileName(filenamepath).Replace("\\", "/");
+            if (dirname.EndsWith(@"/shaders/vfx"))
+            {
+                return @"/shaders/vfx/" + filename;
+            } else if (dirname.EndsWith(@"/shaders-core/vfx"))
+            {
+                return @"/shaders-core/vfx/" + filename;
+            } else
+            {
+                return filenamepath;
+            }
         }
 
 

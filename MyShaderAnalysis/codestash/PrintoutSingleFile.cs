@@ -1,13 +1,19 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
-using System.Linq;
-using MyShaderAnalysis.utilhelpers;
-using ValveResourceFormat.CompiledShader;
-using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
-using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
-using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
-using static ValveResourceFormat.CompiledShader.ShaderDataReader;
+
+using HandleOutputWrite = MyShaderAnalysis.utilhelpers.MyTrashUtilHelpers.MyHandleOutputWrite;
+
+using ShaderFile = ValveResourceFormat.CompiledShader.ShaderFile;
+using VcsProgramType = ValveResourceFormat.CompiledShader.VcsProgramType;
+using DBlock = ValveResourceFormat.CompiledShader.DBlock;
+using ConfigMappingSParams = ValveResourceFormat.CompiledShader.ConfigMappingSParams;
+using DConstraintsBlock = ValveResourceFormat.CompiledShader.DConstraintsBlock;
+using SfConstraintsBlock = ValveResourceFormat.CompiledShader.SfConstraintsBlock;
+using ShaderParserException = ValveResourceFormat.CompiledShader.ShaderParserException;
+
+using static MyShaderAnalysis.utilhelpers.MyTrashUtilHelpers;
+
 
 /*
  *
@@ -15,7 +21,7 @@ using static ValveResourceFormat.CompiledShader.ShaderDataReader;
  *
  *
  */
-namespace MyShaderAnalysis.vcsanalysis
+namespace MyShaderAnalysis.utilhelpers
 {
     public class PrintoutSingleFile
     {
@@ -45,9 +51,9 @@ namespace MyShaderAnalysis.vcsanalysis
             try
             {
                 shaderFile = InstantiateShaderFile(filenamepath);
-            } catch (Exception)
+            } catch (Exception e)
             {
-                Console.WriteLine($"ERROR! couldn't parse this file {filenamepath}");
+                Console.WriteLine($"ERROR! couldn't parse this file {filenamepath} {e.Message}");
                 return;
             }
             if (shaderFile.vcsProgramType == VcsProgramType.Features)

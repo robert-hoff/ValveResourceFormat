@@ -1,11 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using MyShaderAnalysis.codestash;
-using MyShaderAnalysis.utilhelpers;
-using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
+using static MyShaderAnalysis.utilhelpers.MyTrashUtilHelpers;
+
+
 
 /*
  *
@@ -16,21 +13,23 @@ using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
  *
  *
  */
-namespace MyShaderAnalysis
+namespace MyShaderAnalysis.utilhelpers
 {
     class ProgramEntriesOld
     {
 
+
+
         public static void RunTrials()
         {
-            ProduceServerSet();
+            // ProduceServerSet();
 
             // -- fall 2021
             // DataReaderV62.RunTrials();
             // TestMobileShaderFiles.RunTrials();
             // StaticAnalysisZframes.RunTrials();
             // StaticAnalysis2.RunTrials();
-            // StaticAnalysis.RunTrials();
+            StaticAnalysis.RunTrials();
             // LzmaAnalysis.RunTrials();
 
             // TestUtilFunctionsOld.RunTrials();

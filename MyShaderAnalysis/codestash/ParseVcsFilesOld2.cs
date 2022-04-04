@@ -1,17 +1,17 @@
-using System;
 using System.IO;
 using System.Collections.Generic;
-using System.Linq;
-using MyShaderAnalysis.utilhelpers;
-using ValveResourceFormat.CompiledShader;
-// using static MyShaderAnalysis.utilhelpers.FileSystemOld;
-using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
-using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
-using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
-using MyShaderAnalysis.vcsanalysis;
-using static ValveResourceFormat.CompiledShader.ShaderDataReader;
-using System.Diagnostics;
 using System.Globalization;
+
+using PostProcessVcsFile = MyShaderAnalysis.vcsanalysis.PostProcessVcsFile;
+using PostProcessZframeFile = MyShaderAnalysis.vcsanalysis.PostProcessZframeFile;
+
+using ShaderFile = ValveResourceFormat.CompiledShader.ShaderFile;
+using ZFrameFile = ValveResourceFormat.CompiledShader.ZFrameFile;
+using PrintVcsFileSummary = ValveResourceFormat.CompiledShader.PrintVcsFileSummary;
+using PrintZFrameSummary = ValveResourceFormat.CompiledShader.PrintZFrameSummary;
+
+using static MyShaderAnalysis.utilhelpers.MyTrashUtilHelpers;
+
 
 /*
  *
@@ -32,7 +32,7 @@ using System.Globalization;
  *
  *
  */
-namespace MyShaderAnalysis
+namespace MyShaderAnalysis.utilhelpers
 {
     public class ParseVcsFilesOld2
     {
@@ -276,7 +276,7 @@ namespace MyShaderAnalysis
         {
             var glslSource = zframeFile.gpuSources[sourceId];
             string glslServerDir = fileTokens.GetGlslServerDir(createDirs: true);
-            string outputFilenamepath = $"{glslServerDir}/{fileTokens.GetGlslHtmlFilename((GlslSource)glslSource)}";
+            string outputFilenamepath = $"{glslServerDir}/{fileTokens.GetGlslHtmlFilename(glslSource.GetEditorRefIdAsString())}";
 
             FileWriter fileWriter = new FileWriter(outputFilenamepath, showOutputToConsole: false);
             string htmlTitleAndHeader = Path.GetFileName(outputFilenamepath)[0..^5];

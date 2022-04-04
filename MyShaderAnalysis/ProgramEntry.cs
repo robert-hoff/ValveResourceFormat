@@ -35,40 +35,28 @@ namespace MyShaderAnalysis
 
 
             // -- comprehensive tests against archive names (all files)
-            TestByteParsers.RunTrials();
+            // TestBatchParsing.RunTrials();
+            // TestSingleFileParsing.RunTrials();
 
             // -- revise how files are managed as collections
             // CreateHtmlServerFiles.RunTrials();
 
-            // -- process all types through single entry
-            // ParseVcsFiles.RunTrials();
 
-            // -- test v62 parsers here,
-            // DemoCode.RunTrials();
-
-            // -- This still produces a file summary overview (particularly for the static variables)
-            // StaticAnalysis.RunTrials();
-
-
-            // -- support for v62 was already written into DataReaderVcsBytes
-            // ParseV62Files.RunTrials();
-
+            DemoCode.RunTrials();
             // PrintoutVulkanCode.RunTrials();
-            // ParseV65Files.RunTrials();
+            // -- Looking at dynamic expressions
+            // ParseDynamicExpression.RunTrials();s
 
-            // Looking at a dynamic expression
-            // ParseDynamicExpression.RunTrials();
 
 
             // -- fall 2021
+            // there is variously still some useful code among these files ..
             // ProgramEntriesOld.RunTrials();
-
 
 
             // -- testing code
             // TestFileUtilFunctions.RunTrials();
             // RegexExamples.RunTrials();
-            // TestBasicParsing.RunTrials();
             // Snippetcode.RunTrials();
             // TestStuff.RunTrials();
             // CrcTrialsSha1.RunTrials();

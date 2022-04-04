@@ -1,14 +1,15 @@
 using System;
-using System.IO;
-using System.Collections.Generic;
-using ValveResourceFormat.ThirdParty;
-using MyShaderAnalysis.utilhelpers;
-using ValveResourceFormat.CompiledShader;
+
+using ShaderFile = ValveResourceFormat.CompiledShader.ShaderFile;
+using ZFrameFile = ValveResourceFormat.CompiledShader.ZFrameFile;
+using ShaderParserException = ValveResourceFormat.CompiledShader.ShaderParserException;
+
 using static MyShaderAnalysis.utilhelpers.FileSystemOld;
-using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
+using static MyShaderAnalysis.utilhelpers.MyTrashUtilHelpers;
 
 
-namespace MyShaderAnalysis
+
+namespace MyShaderAnalysis.utilhelpers
 {
 
 
@@ -32,7 +33,7 @@ namespace MyShaderAnalysis
         static void Trial11()
         {
             string filenamepath = $"{ARTIFACT_CLASSIC_CORE_PC_SOURCE}/aerial_perspective_pc_30_vs.vcs"; long zId = 0;
-            ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
+            ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             ZFrameFile zframeFile = shaderFile.GetZFrameFile(zId);
 
         }
@@ -46,7 +47,7 @@ namespace MyShaderAnalysis
             string filenamepath = $"{ARTIFACT_CLASSIC_CORE_PC_SOURCE}/aerial_perspective_pc_30_vs.vcs"; long zId = 0;
             // string filenamepath = $"{ARTIFACT_CLASSIC_DCG_PC_SOURCE}/bloom_dota_pc_40_vs.vcs"; long zId = 0;
             // string filenamepath = $"{ARTIFACT_CLASSIC_DCG_PC_SOURCE}/visualize_physics_pc_30_ps.vcs"; long zId = 0x10;
-            ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
+            ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             byte[] zframeDatabytes = shaderFile.GetDecompressedZFrame(zId);
             var vcsFileProperties = ComputeVCSFileName(filenamepath);
             DataReaderZFrameBytes datareader = new(zframeDatabytes,
@@ -69,7 +70,7 @@ namespace MyShaderAnalysis
         static void Trial6()
         {
             string filenamepath = $"{DOTA_GAME_PC_SOURCE}/multiblend_pc_30_ps.vcs";
-            ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
+            ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             byte[] zframeDatabytes = shaderFile.GetDecompressedZFrame(0x1a1);
             DataReaderZFrameBytes datareader = new(zframeDatabytes, shaderFile.vcsProgramType, shaderFile.vcsPlatformType, shaderFile.vcsShaderModelType);
             datareader.PrintByteDetail();

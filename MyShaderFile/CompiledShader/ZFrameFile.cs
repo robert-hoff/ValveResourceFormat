@@ -380,7 +380,7 @@ namespace ValveResourceFormat.CompiledShader
             datareader.BaseStream.Position = 0;
             if (vcsProgramType == VcsProgramType.Features)
             {
-                datareader.Comment("Zframe byte data (encoding for features files has not been determined)");
+                datareader.Comment("ZFrame byte data (encoding for features files has not been determined)");
                 datareader.ShowBytes((int)datareader.BaseStream.Length);
                 return;
             }

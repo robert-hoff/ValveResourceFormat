@@ -1,22 +1,18 @@
-using System;
 using System.IO;
 using System.Collections.Generic;
-using System.Linq;
-using ValveResourceFormat.CompiledShader;
-using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
-using static MyShaderAnalysis.utilhelpers.FileSystemOld;
-using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
+using ShaderParserException = ValveResourceFormat.CompiledShader.ShaderParserException;
+using VcsProgramType = ValveResourceFormat.CompiledShader.VcsProgramType;
+
+using static MyShaderAnalysis.utilhelpers.MyTrashUtilHelpers;
+using static MyShaderAnalysis.utilhelpers.FileSystemOld;
 
 
 namespace MyShaderAnalysis.utilhelpers
 {
 
-
     public class FileTriple
     {
-
-
         public FileTokensOld ftFile { get; }
         public FileTokensOld vsFile { get; }
         public FileTokensOld psFile { get; }

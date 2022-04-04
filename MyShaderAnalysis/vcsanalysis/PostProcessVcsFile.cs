@@ -2,7 +2,7 @@ using System;
 using System.Text.RegularExpressions;
 using MyShaderAnalysis.utilhelpers;
 using ValveResourceFormat.CompiledShader;
-using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
+using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
 
 namespace MyShaderAnalysis.vcsanalysis
 {

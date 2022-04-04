@@ -1,9 +1,9 @@
-using System;
 using System.IO;
-using System.Collections.Generic;
-using System.Linq;
-using ValveResourceFormat.CompiledShader;
-using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
+
+using VcsProgramType = ValveResourceFormat.CompiledShader.VcsProgramType;
+using ShaderParserException = ValveResourceFormat.CompiledShader.ShaderParserException;
+
+
 
 /*
  * NOTE - use forward slashes in ALL cases because this is what HTML wants,

@@ -1,16 +1,18 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
-using System.Linq;
-using ValveResourceFormat.CompiledShader;
-using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
-using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
-using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
-using MyShaderAnalysis.utilhelpers;
 
-namespace MyShaderAnalysis
+using ShaderFile = ValveResourceFormat.CompiledShader.ShaderFile;
+using ZFrameFile = ValveResourceFormat.CompiledShader.ZFrameFile;
+using ZDataBlock = ValveResourceFormat.CompiledShader.ZDataBlock;
+using VcsProgramType = ValveResourceFormat.CompiledShader.VcsProgramType;
+using ConfigMappingSParams = ValveResourceFormat.CompiledShader.ConfigMappingSParams;
+
+using static MyShaderAnalysis.utilhelpers.MyTrashUtilHelpers;
+
+
+namespace MyShaderAnalysis.utilhelpers
 {
-
 
     public class StaticAnalysisZframes
     {

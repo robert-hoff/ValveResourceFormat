@@ -1,11 +1,42 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ValveResourceFormat.CompiledShader;
+using System.Collections.Generic;
+
+using ShaderFile = ValveResourceFormat.CompiledShader.ShaderFile;
+using VcsPlatformType = ValveResourceFormat.CompiledShader.VcsPlatformType;
+using VcsProgramType = ValveResourceFormat.CompiledShader.VcsProgramType;
+using VcsShaderModelType = ValveResourceFormat.CompiledShader.VcsShaderModelType;
+using ShaderParserException = ValveResourceFormat.CompiledShader.ShaderParserException;
+
 using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
+
+
+// R: I'm not sure I  like this very much (something to think about)
+// it's for use of ShaderUtilHelpers.ComputeVCSFileName
+// it doesn't feel right to use the utility founctions across project folders. It's ok to use the interfaces and enums,
+// but not the utility functions, I feel .. (but can't quite nail exactly why right now ..)
+//
+// It's to do with refactoring and when inspecting and understanding code.
+// If I'm looking to optimise my shader-parser and I go about it by looking at code in the production ShaderUtilHelpers,
+// it doesn't help me to have 10 references leading into some function in ShaderUtilHelpers that comes from places
+// that have nothing to do with the public interface.
+//
+// Come to think of this more, having general 'utility' functions that do a wide assortment of weird tasks and that are
+// all grouped into one file that tons of different archives refer to is clearly bad practise.
+//
+// There is also some idea here about "who's providing a service to who"?
+// One must not have one archive requiring service from another, and then have the another archive require services from one
+// in a different context (this isn't actually happening though)
+//
+//
+//
+//
+//
+// using ShaderUtilHelpers = ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
+//
+//
+//
+
 
 /*
  *
@@ -49,9 +80,6 @@ namespace MyShaderAnalysis.utilhelpers
         public string vcstoken { get; }         // ft, vs, ps, psrs or gs
 
 
-        private ShaderFile shaderFile { get; set; } = null;
-
-
         public FileVcsTokens(FileArchives.ARCHIVE archive, string filename)
         {
             this.archive = archive;
@@ -68,7 +96,7 @@ namespace MyShaderAnalysis.utilhelpers
             this.foldername = name.Substring(0, name.LastIndexOf('_'));
             this.namelabel = filename.Split('_')[0];
 
-            (VcsProgramType, VcsPlatformType, VcsShaderModelType) vcsTypes = ShaderUtilHelpers.ComputeVCSFileName(filenamepath);
+            (VcsProgramType asdf, VcsPlatformType, VcsShaderModelType) vcsTypes = MyShaderUtilHelpers.ComputeVCSFileName(filenamepath);
             VcsProgramType vcsProgramType = vcsTypes.Item1;
             VcsPlatformType vcsPlatformType = vcsTypes.Item2;
             VcsShaderModelType vcsShaderModelType = vcsTypes.Item3;
@@ -76,7 +104,7 @@ namespace MyShaderAnalysis.utilhelpers
             this.sourceVersion = filename.Split('_')[^2];
             this.sourceType = MyShaderUtilHelpers.GetSourceType(vcsPlatformType, vcsShaderModelType);
 
-            this.vcstoken = ShaderUtilHelpers.ComputeVcsProgramType(filenamepath) switch
+            this.vcstoken = MyShaderUtilHelpers.ComputeVcsProgramType(filenamepath) switch
             {
                 VcsProgramType.Features => "ft",
                 VcsProgramType.VertexShader => "vs",
@@ -91,6 +119,9 @@ namespace MyShaderAnalysis.utilhelpers
             };
         }
 
+
+
+        private ShaderFile shaderFile { get; set; } = null;
 
         public ShaderFile GetShaderFile()
         {
@@ -162,17 +193,18 @@ namespace MyShaderAnalysis.utilhelpers
         /*
          * glsl-e46ad784246f747dd88a611874194020.html
          */
-        public string GetGpuHtmlFilename(GpuSource gpuSource)
+        // public string GetGpuHtmlFilename(GpuSource gpuSource)
+        public string GetGpuHtmlFilename(String labelOrRefId)
         {
-            return $"{sourceType}-{gpuSource.GetEditorRefIdAsString()}.html";
+            return $"{sourceType}-{labelOrRefId}.html";
         }
 
         /*
          * /dota-game-pcgl-v64/multiblend_pcgl_30/glsl/glsl-e46ad784246f747dd88a611874194020.html
          */
-        public string GetGpuHtmlUrl(GpuSource gpuSource)
+        public string GetGpuHtmlUrl(String labelOrRefId)
         {
-            return $"{GetServerFilePath()}/{sourceType}/{GetGpuHtmlFilename(gpuSource)}";
+            return $"{GetServerFilePath()}/{sourceType}/{GetGpuHtmlFilename(labelOrRefId)}";
         }
 
         /*

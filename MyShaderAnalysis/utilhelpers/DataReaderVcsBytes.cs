@@ -3,7 +3,6 @@ using System.IO;
 using System.Collections.Generic;
 using ValveResourceFormat.CompiledShader;
 using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
-using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
 
 namespace MyShaderAnalysis.utilhelpers
@@ -75,9 +74,14 @@ namespace MyShaderAnalysis.utilhelpers
                 if (showStatusMessage)
                 {
                     Console.WriteLine($"ERROR Unsupported vcs version {vcsVersion}");
+                    return;
+                } else
+                {
+                    throw new ShaderParserException($"ERROR Unsupported vcs version {vcsVersion}");
                 }
-                return;
             }
+
+
             uint blockDelim = ReadUInt32AtPosition();
             ShowByteCount();
             ShowBytes(4, $"block DELIM (values seen 14,17)");

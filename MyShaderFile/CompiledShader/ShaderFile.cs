@@ -83,7 +83,7 @@ namespace ValveResourceFormat.CompiledShader
         public List<BufferBlock> bufferBlocks { get; private set; } = new();
         public List<VertexSymbolsBlock> symbolBlocks { get; private set; } = new();
 
-        // Zframe data assigned to the ZFrameDataDescription class are key pieces of
+        // ZFrame data assigned to the ZFrameDataDescription class are key pieces of
         // information needed to decompress and retrieve zframes (to save processing zframes are only
         // decompressed on request). This information is organised in zframesLookup by their zframeId's.
         // Because the zframes appear in the file in ascending order, storing their data in a
@@ -206,19 +206,19 @@ namespace ValveResourceFormat.CompiledShader
             foreach (var item in zframeIdsAndOffsets)
             {
                 long zframeId = item.Item1;
-                int offsetToZframeHeader = item.Item2;
-                datareader.BaseStream.Position = offsetToZframeHeader;
-                uint chunkSizeOrZframeDelim = datareader.ReadUInt32();
-                int compressionType = chunkSizeOrZframeDelim == ZSTD_DELIM ? ZSTD_COMPRESSION : LZMA_COMPRESSION;
+                int offsetToZFrameHeader = item.Item2;
+                datareader.BaseStream.Position = offsetToZFrameHeader;
+                uint chunkSizeOrZFrameDelim = datareader.ReadUInt32();
+                int compressionType = chunkSizeOrZFrameDelim == ZSTD_DELIM ? ZSTD_COMPRESSION : LZMA_COMPRESSION;
 
                 int uncompressedLength = 0;
                 int compressedLength = 0;
-                if (chunkSizeOrZframeDelim != ZSTD_DELIM)
+                if (chunkSizeOrZFrameDelim != ZSTD_DELIM)
                 {
                     uint lzmaDelimOrStartOfData = datareader.ReadUInt32();
                     if (lzmaDelimOrStartOfData != LZMA_DELIM)
                     {
-                        uncompressedLength = (int)chunkSizeOrZframeDelim;
+                        uncompressedLength = (int)chunkSizeOrZFrameDelim;
                         compressionType = UNCOMPRESSED;
                     }
                 }
@@ -229,7 +229,7 @@ namespace ValveResourceFormat.CompiledShader
                     compressedLength = datareader.ReadInt32();
                 }
 
-                ZFrameDataDescription zframeDataDesc = new ZFrameDataDescription(zframeId, offsetToZframeHeader,
+                ZFrameDataDescription zframeDataDesc = new ZFrameDataDescription(zframeId, offsetToZFrameHeader,
                     compressionType, uncompressedLength, compressedLength, datareader);
                 zframesLookup.Add(zframeId, zframeDataDesc);
             }
@@ -364,7 +364,7 @@ namespace ValveResourceFormat.CompiledShader
                 datareader.BreakLine();
             }
 
-            PrintZframes(shortenOutput);
+            PrintZFrames(shortenOutput);
             if (shortenOutput && zFrameCount > SKIP_ZFRAMES_IF_MORE_THAN)
             {
                 datareader.Comment("rest of data contains compressed zframes");
@@ -382,7 +382,7 @@ namespace ValveResourceFormat.CompiledShader
         private const int SKIP_ZFRAMES_IF_MORE_THAN = 10;
         private const int MAX_ZFRAME_BYTES_TO_SHOW = 96;
 
-        private void PrintZframes(bool shortenOutput)
+        private void PrintZFrames(bool shortenOutput)
         {
             //
             // The zFrameIds and zFrameDataOffsets are read as two separate lists before the data section starts
@@ -545,9 +545,9 @@ namespace ValveResourceFormat.CompiledShader
                     using (var zstdDecoder = new Decompressor())
                     {
                         datareader.BaseStream.Position += 12;
-                        byte[] compressedZframe = datareader.ReadBytes(compressedLength);
+                        byte[] compressedZFrame = datareader.ReadBytes(compressedLength);
                         zstdDecoder.LoadDictionary(ZstdDictionary.GetDictionary());
-                        Span<byte> zframeUncompressed = zstdDecoder.Unwrap(compressedZframe);
+                        Span<byte> zframeUncompressed = zstdDecoder.Unwrap(compressedZFrame);
                         if (zframeUncompressed.Length != uncompressedLength)
                         {
                             throw new ShaderParserException("Decompressed zframe doesn't match expected size");

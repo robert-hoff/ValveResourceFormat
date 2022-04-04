@@ -1,21 +1,23 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
-using ValveResourceFormat.ThirdParty;
-using ValveResourceFormat.CompiledShader;
-using ValveResourceFormat.Serialization.VfxEval;
-using MyShaderAnalysis.utilhelpers;
-using static MyShaderAnalysis.utilhelpers.FileSystemOld;
-using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
-using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
+using ShaderDataReader = ValveResourceFormat.CompiledShader.ShaderDataReader;
+using ShaderFile = ValveResourceFormat.CompiledShader.ShaderFile;
+using ShaderParserException = ValveResourceFormat.CompiledShader.ShaderParserException;
+using VcsPlatformType = ValveResourceFormat.CompiledShader.VcsPlatformType;
+using VcsProgramType = ValveResourceFormat.CompiledShader.VcsProgramType;
+using VcsShaderModelType = ValveResourceFormat.CompiledShader.VcsShaderModelType;
+
+using static MyShaderAnalysis.utilhelpers.FileSystemOld;
+using static MyShaderAnalysis.utilhelpers.MyTrashUtilHelpers;
 
 /*
  * Almost identical to DataReaderVcsBytes - all relevant changes were written into DataReaderVcsBytes since
  *
  *
  */
-namespace MyShaderAnalysis
+namespace MyShaderAnalysis.utilhelpers
 {
     class ParseV65Files : ShaderDataReader
     {

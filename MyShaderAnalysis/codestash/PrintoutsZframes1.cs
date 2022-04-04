@@ -1,14 +1,20 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
-using System.Linq;
-using MyShaderAnalysis.utilhelpers;
-using ValveResourceFormat.CompiledShader;
+
+using ConfigMappingSParams = ValveResourceFormat.CompiledShader.ConfigMappingSParams;
+using DBlock = ValveResourceFormat.CompiledShader.DBlock;
+using GlslSource = ValveResourceFormat.CompiledShader.GlslSource;
+using GpuSource = ValveResourceFormat.CompiledShader.GpuSource;
+using PrintZFrameSummary = ValveResourceFormat.CompiledShader.PrintZFrameSummary;
+using ShaderFile = ValveResourceFormat.CompiledShader.ShaderFile;
+using ShaderParserException = ValveResourceFormat.CompiledShader.ShaderParserException;
+using VcsProgramType = ValveResourceFormat.CompiledShader.VcsProgramType;
+using ZDataBlock = ValveResourceFormat.CompiledShader.ZDataBlock;
+using ZFrameFile = ValveResourceFormat.CompiledShader.ZFrameFile;
+
 using static MyShaderAnalysis.utilhelpers.FileSystemOld;
-using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
-using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
-using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
-using static ValveResourceFormat.CompiledShader.ZFrameFile;
+using static MyShaderAnalysis.utilhelpers.MyTrashUtilHelpers;
 
 
 /*
@@ -18,7 +24,7 @@ using static ValveResourceFormat.CompiledShader.ZFrameFile;
  *
  *
  */
-namespace MyShaderAnalysis
+namespace MyShaderAnalysis.utilhelpers
 {
 
 
@@ -186,13 +192,13 @@ namespace MyShaderAnalysis
             Dictionary<int, GpuSource> blockIdToSource = new();
             if (zframeFile.vcsProgramType == VcsProgramType.VertexShader || zframeFile.vcsProgramType == VcsProgramType.GeometryShader)
             {
-                foreach (VsEndBlock vsEndBlock in zframeFile.vsEndBlocks)
+                foreach (ZFrameFile.VsEndBlock vsEndBlock in zframeFile.vsEndBlocks)
                 {
                     blockIdToSource.Add(vsEndBlock.blockIdRef, zframeFile.gpuSources[vsEndBlock.sourceRef]);
                 }
             } else
             {
-                foreach (PsEndBlock psEndBlock in zframeFile.psEndBlocks)
+                foreach (ZFrameFile.PsEndBlock psEndBlock in zframeFile.psEndBlocks)
                 {
                     blockIdToSource.Add(psEndBlock.blockIdRef, zframeFile.gpuSources[psEndBlock.sourceRef]);
                 }
@@ -304,7 +310,7 @@ namespace MyShaderAnalysis
                 if (blockSource is GlslSource source)
                 {
                     string urlText = $"source[{blockSource.GetEditorRefIdAsString()}]";
-                    string sourceLink = $"<a href='{fileTokens.GetGlslHtmlUrl((GlslSource) blockSource)}'>{urlText}</a>";
+                    string sourceLink = $"<a href='{fileTokens.GetGlslHtmlUrl(blockSource.GetEditorRefIdAsString())}'>{urlText}</a>";
                     OutputWriteLine($"    {sourceLink} {blockSource.sourcebytes.Length,12}  (bytes)");
                 } else
                 {
@@ -323,13 +329,13 @@ namespace MyShaderAnalysis
             List<int> blockIds = new();
             if (zframeFile.vcsProgramType == VcsProgramType.VertexShader || zframeFile.vcsProgramType == VcsProgramType.GeometryShader)
             {
-                foreach (VsEndBlock vsEndBlock in zframeFile.vsEndBlocks)
+                foreach (ZFrameFile.VsEndBlock vsEndBlock in zframeFile.vsEndBlocks)
                 {
                     blockIds.Add(vsEndBlock.blockIdRef);
                 }
             } else
             {
-                foreach (PsEndBlock psEndBlock in zframeFile.psEndBlocks)
+                foreach (ZFrameFile.PsEndBlock psEndBlock in zframeFile.psEndBlocks)
                 {
                     blockIds.Add(psEndBlock.blockIdRef);
                 }
@@ -432,7 +438,7 @@ namespace MyShaderAnalysis
 
 
             string seqName = $"WRITESEQ[{lastseq}] (default)";
-            ZDataBlock leadData = zframeFile.leadingData;
+            ValveResourceFormat.CompiledShader.ZDataBlock leadData = zframeFile.leadingData;
             PrintParamWriteSequence(shaderFile, leadData.dataload, leadData.h0, leadData.h1, leadData.h2, seqName: seqName);
             OutputWriteLine("");
             foreach (var item in writeSequences)
@@ -655,7 +661,7 @@ namespace MyShaderAnalysis
             {
                 OutputWriteLine($"{zframeFile.vsEndBlocks.Count:X02} 00 00 00   // end blocks ({zframeFile.vsEndBlocks.Count})");
                 OutputWriteLine("");
-                foreach (VsEndBlock vsEndBlock in zframeFile.vsEndBlocks)
+                foreach (ZFrameFile.VsEndBlock vsEndBlock in zframeFile.vsEndBlocks)
                 {
                     OutputWriteLine($"block-ref         {vsEndBlock.blockIdRef}");
                     OutputWriteLine($"arg0              {vsEndBlock.arg0}");
@@ -668,7 +674,7 @@ namespace MyShaderAnalysis
             {
                 OutputWriteLine($"{zframeFile.psEndBlocks.Count:X02} 00 00 00   // end blocks ({zframeFile.psEndBlocks.Count})");
                 OutputWriteLine("");
-                foreach (PsEndBlock psEndBlock in zframeFile.psEndBlocks)
+                foreach (ZFrameFile.PsEndBlock psEndBlock in zframeFile.psEndBlocks)
                 {
                     OutputWriteLine($"block-ref         {psEndBlock.blockIdRef}");
                     OutputWriteLine($"arg0              {psEndBlock.arg0}");
@@ -778,10 +784,6 @@ namespace MyShaderAnalysis
                 OutputWriteLine("");
             }
         }
-
-
-
-
 
 
 

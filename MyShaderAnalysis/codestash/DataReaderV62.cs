@@ -1,13 +1,12 @@
-using System;
 using System.IO;
-using System.Collections.Generic;
-using ValveResourceFormat.ThirdParty;
-using ValveResourceFormat.CompiledShader;
-using ValveResourceFormat.Serialization.VfxEval;
-using MyShaderAnalysis.utilhelpers;
-using static MyShaderAnalysis.utilhelpers.FileSystemOld;
-using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
-using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
+
+using VcsPlatformType = ValveResourceFormat.CompiledShader.VcsPlatformType;
+using VcsProgramType = ValveResourceFormat.CompiledShader.VcsProgramType;
+using VcsShaderModelType = ValveResourceFormat.CompiledShader.VcsShaderModelType;
+using ShaderDataReader = ValveResourceFormat.CompiledShader.ShaderDataReader;
+
+using static MyShaderAnalysis.utilhelpers.MyTrashUtilHelpers;
+
 
 /*
  *

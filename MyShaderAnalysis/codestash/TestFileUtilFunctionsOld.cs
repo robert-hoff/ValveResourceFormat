@@ -1,13 +1,15 @@
 using System;
-using System.IO;
 using System.Collections.Generic;
-using System.Linq;
-using MyShaderAnalysis.compat;
-using ValveResourceFormat.CompiledShader;
+
+using GlslSource = ValveResourceFormat.CompiledShader.GlslSource;
+using GpuSource = ValveResourceFormat.CompiledShader.GpuSource;
+using ShaderFile = ValveResourceFormat.CompiledShader.ShaderFile;
+using VcsPlatformType = ValveResourceFormat.CompiledShader.VcsPlatformType;
+using VcsProgramType = ValveResourceFormat.CompiledShader.VcsProgramType;
+using ZFrameFile = ValveResourceFormat.CompiledShader.ZFrameFile;
+
 using static MyShaderAnalysis.utilhelpers.FileSystemOld;
-using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
-using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
-using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
+using static MyShaderAnalysis.utilhelpers.MyTrashUtilHelpers;
 
 
 namespace MyShaderAnalysis.utilhelpers
@@ -45,8 +47,8 @@ namespace MyShaderAnalysis.utilhelpers
             Console.WriteLine($"GetServerFilePath()                 {fileToken.GetServerFilePath()}");
             Console.WriteLine($"GetServerFileUrl(label)             {fileToken.GetServerFileUrl("label")}");
             Console.WriteLine($"GetGlslServerDir()                  {fileToken.GetGlslServerDir()}");
-            Console.WriteLine($"GetGlslHtmlFilename(gpuSource)      {fileToken.GetGlslHtmlFilename(zframeFile.gpuSources[0] as GlslSource)}");
-            Console.WriteLine($"GetGlslHtmlUrl(gpusource)           {fileToken.GetGlslHtmlUrl(zframeFile.gpuSources[0] as GlslSource)}");
+            Console.WriteLine($"GetGlslHtmlFilename(gpuSource) {fileToken.GetGlslHtmlFilename(zframeFile.gpuSources[0].GetEditorRefIdAsString())}");
+            Console.WriteLine($"GetGlslHtmlUrl(gpusource)      {fileToken.GetGlslHtmlUrl(zframeFile.gpuSources[0].GetEditorRefIdAsString())}");
 
 
             Console.WriteLine($"GetZFramesServerDir()               {fileToken.GetZFramesServerDir()}");
@@ -222,7 +224,7 @@ namespace MyShaderAnalysis.utilhelpers
             }
 
             FileTokensOld fileTokens = new FileTokensOld(filenamepath);
-            Console.WriteLine($"{fileTokens.GetGlslHtmlUrl((GlslSource)gpuSource)}");
+            Console.WriteLine($"{fileTokens.GetGlslHtmlUrl(gpuSource.GetEditorRefIdAsString())}");
         }
 
 

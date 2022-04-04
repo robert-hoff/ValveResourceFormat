@@ -10,7 +10,7 @@ using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
 namespace MyShaderAnalysis.utilhelpers
 {
-    public class TestBasicParsing
+    public class TestSingleFileParsing
     {
 
         public static void RunTrials()

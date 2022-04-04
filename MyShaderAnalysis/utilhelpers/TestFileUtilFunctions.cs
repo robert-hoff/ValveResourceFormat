@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ValveResourceFormat.CompiledShader;
 using static MyShaderAnalysis.utilhelpers.FileArchives;
+using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
 
 namespace MyShaderAnalysis.utilhelpers
@@ -21,9 +22,14 @@ namespace MyShaderAnalysis.utilhelpers
             // ShowRelatedFilesInVcsCollection(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30");
             // ShowRelatedFilesInVcsCollection(ARCHIVE.dotagame_pcgl, "hero_pcgl_30");
             // TestShaderInstantiation();
-            TestFileRetrievalHelper();
+            // TestFileRetrievalHelper();
 
         }
+
+        static void TestComputeVcsFilename() {
+            ComputeVCSFileName("sadf");
+        }
+
 
         static void ShowFileTokenDetail2()
         {
@@ -44,8 +50,8 @@ namespace MyShaderAnalysis.utilhelpers
             Console.WriteLine($" * GetServerFileUrl(label)             {fileTokens.GetServerFileUrl("label")}");
             Console.WriteLine($" * GetGpuServerDir()                   {fileTokens.GetGpuServerDir()}");
             Console.WriteLine($" * GetGpuServerUrl()                   {fileTokens.GetGpuServerUrl()}");
-            Console.WriteLine($" * GetGpuHtmlFilename(gpuSource)       {fileTokens.GetGpuHtmlFilename(zframeFile.gpuSources[0])}");
-            Console.WriteLine($" * GetGpuHtmlUrl(gpusource)            {fileTokens.GetGpuHtmlUrl(zframeFile.gpuSources[0])}");
+            Console.WriteLine($" * GetGpuHtmlFilename(refid) {fileTokens.GetGpuHtmlFilename(zframeFile.gpuSources[0].GetEditorRefIdAsString())}");
+            Console.WriteLine($" * GetGpuHtmlUrl(refid)      {fileTokens.GetGpuHtmlUrl(zframeFile.gpuSources[0].GetEditorRefIdAsString())}");
 
             Console.WriteLine($" * GetZFramesServerDir()               {fileTokens.GetZFramesServerDir()}");
             Console.WriteLine($" * GetZFramesServerPath()              {fileTokens.GetZFramesServerPath()}");

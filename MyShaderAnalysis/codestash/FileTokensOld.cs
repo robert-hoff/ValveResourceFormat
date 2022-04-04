@@ -1,9 +1,14 @@
-using System;
 using System.IO;
 using System.Collections.Generic;
-using System.Linq;
-using ValveResourceFormat.CompiledShader;
+
+using ShaderParserException = ValveResourceFormat.CompiledShader.ShaderParserException;
+using VcsProgramType = ValveResourceFormat.CompiledShader.VcsProgramType;
+
 using static MyShaderAnalysis.utilhelpers.FileSystemOld;
+using static MyShaderAnalysis.utilhelpers.MyTrashUtilHelpers;
+
+
+
 
 /*
  *
@@ -60,7 +65,7 @@ namespace MyShaderAnalysis.utilhelpers
             this.name = filename[0..^4];
             this.foldername = name.Substring(0, name.LastIndexOf('_'));
             this.filenamepath = GetFilenamepath(archive, filename);
-            this.vcsProgramType = ShaderUtilHelpers.ComputeVCSFileName(filenamepath).Item1;
+            this.vcsProgramType = ComputeVCSFileName(filenamepath).Item1;
             this.sourcedir = GetSourceDir(archive);
             this.archivename = GetArchiveName(archive);
             this.archivelabel = GetArchiveLabel(archive);
@@ -124,27 +129,27 @@ namespace MyShaderAnalysis.utilhelpers
         }
 
 
-        // todo - not general, only works for glsl
-        public string GetGlslHtmlFilename(GlslSource glslSource)
+        // -todo - not general, only works for glsl
+        public string GetGlslHtmlFilename(string glslLabelOrRef)
         {
-            return $"{sourceType}-{glslSource.GetEditorRefIdAsString()}.html";
+            return $"{sourceType}-{glslLabelOrRef}.html";
         }
 
-        public string GetGlslHtmlFilenameGeneral(GpuSource gpuSource)
+        public string GetGlslHtmlFilenameGeneral(string glslLabelOrRef)
         {
-            return $"{sourceType}-{gpuSource.GetEditorRefIdAsString()}.html";
+            return $"{sourceType}-{glslLabelOrRef}.html";
         }
 
-        // todo - not general, only works for glsl
-        public string GetGlslHtmlUrl(GlslSource glslSource)
+        // -todo not general, only works for glsl
+        public string GetGlslHtmlUrl(string glslLabelOrRef)
         {
             // sourceType may be either "glsl" or "gles" (which is considered as a GlslSource datablock)
-            return $"{GetServerFilePath()}/{sourceType}/{GetGlslHtmlFilename(glslSource)}";
+            return $"{GetServerFilePath()}/{sourceType}/{GetGlslHtmlFilename(glslLabelOrRef)}";
         }
 
-        public string GetGlslHtmlUrlGeneral(GpuSource gpuSource)
+        public string GetGlslHtmlUrlGeneral(string glslLabelOrRef)
         {
-            return $"{GetServerFilePath()}/{sourceType}/{GetGlslHtmlFilenameGeneral(gpuSource)}";
+            return $"{GetServerFilePath()}/{sourceType}/{GetGlslHtmlFilenameGeneral(glslLabelOrRef)}";
         }
 
 
@@ -242,7 +247,7 @@ namespace MyShaderAnalysis.utilhelpers
         // todo - this one is a bit weird, clean up any calling references
         public string RemoveBaseDir()
         {
-            return MyShaderUtilHelpers.RemoveBaseDir(filenamepath);
+            return MyTrashUtilHelpers.RemoveBaseDir(filenamepath);
         }
 
         // todo - this can be replaced by getPath() and label

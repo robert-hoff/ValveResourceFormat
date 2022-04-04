@@ -4,7 +4,7 @@ using System.Linq;
 using MyShaderAnalysis.utilhelpers;
 using ValveResourceFormat.CompiledShader;
 using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
-using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
+using ValveResourceFormat.CompiledShader;
 
 
 
@@ -50,7 +50,7 @@ namespace MyShaderAnalysis.compat
             }
             foreach (var item in map)
             {
-                Console.WriteLine($"{item.Key,-60} {ShortenShaderParam(item.Key)}");
+                Console.WriteLine($"{item.Key,-60} {ShaderUtilHelpers.ShortenShaderParam(item.Key)}");
             }
         }
 
@@ -150,7 +150,7 @@ namespace MyShaderAnalysis.compat
                 }
 
                 // Console.WriteLine($"{i}");
-                string parmDisplayName = $"{ShortenShaderParam(shaderFile.sfBlocks[i].name0)}{paramLayer}";
+                string parmDisplayName = $"{ShaderUtilHelpers.ShortenShaderParam(shaderFile.sfBlocks[i].name0)}{paramLayer}";
                 // nameList += parmDisplayName.PadRight(7);
                 nameList += parmDisplayName.ToLower() + ", ";
             }

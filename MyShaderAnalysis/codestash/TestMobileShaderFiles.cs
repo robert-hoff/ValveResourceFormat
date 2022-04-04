@@ -1,26 +1,24 @@
 using System;
 using System.IO;
-using System.Collections.Generic;
-using System.Linq;
-using ValveResourceFormat.CompiledShader;
-using static MyShaderAnalysis.utilhelpers.FileSystemOld;
-using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
-using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
-namespace MyShaderAnalysis
+using ShaderFile = ValveResourceFormat.CompiledShader.ShaderFile;
+using ZFrameFile = ValveResourceFormat.CompiledShader.ZFrameFile;
+
+using static MyShaderAnalysis.utilhelpers.MyTrashUtilHelpers;
+using static MyShaderAnalysis.utilhelpers.FileSystemOld;
+
+
+
+namespace MyShaderAnalysis.utilhelpers
 {
     public class TestMobileShaderFiles
     {
-
-
         public static void RunTrials()
         {
             // Trial1();
             // Trial2();
             Trial3();
         }
-
-
 
         static void Trial3()
         {

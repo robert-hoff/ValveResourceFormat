@@ -1,15 +1,18 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
-using MyShaderAnalysis.utilhelpers;
-using ValveResourceFormat.CompiledShader;
-using static MyShaderAnalysis.utilhelpers.FileSystemOld;
-using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
-using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
-using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
-using System.Diagnostics;
 
-namespace MyShaderAnalysis
+using VcsProgramType = ValveResourceFormat.CompiledShader.VcsProgramType;
+using ShaderParserException = ValveResourceFormat.CompiledShader.ShaderParserException;
+using ShaderFile = ValveResourceFormat.CompiledShader.ShaderFile;
+using ZFrameFile = ValveResourceFormat.CompiledShader.ZFrameFile;
+using GpuSource = ValveResourceFormat.CompiledShader.GpuSource;
+
+using static MyShaderAnalysis.utilhelpers.FileSystemOld;
+using static MyShaderAnalysis.utilhelpers.MyTrashUtilHelpers;
+
+
+namespace MyShaderAnalysis.utilhelpers
 {
     public class PrintoutsByteAnalysis
     {
@@ -235,7 +238,7 @@ namespace MyShaderAnalysis
             ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(0);
             FileTokensOld fileTokens = new FileTokensOld(filenamepath);
 
-            string outputFilenamepath = $"{FileSystemOld.GetServerTestDir()}/testfile.html";
+            string outputFilenamepath = $"{GetServerTestDir()}/testfile.html";
             FileWriter fileWriter = new FileWriter(outputFilenamepath, showOutputToConsole: false);
 
             string htmlTitle = $"{fileTokens.namelabel}-Z[0x{ZFRAME_ID:x}]";
@@ -310,7 +313,7 @@ namespace MyShaderAnalysis
                     for (int j = 0; j < gpuSourceToPrint; j++)
                     {
                         var glslSource = zframeFile.gpuSources[j];
-                        string outputFilenamepath = $"{glslServerDir}/{fileTokens.GetGlslHtmlFilename((GlslSource)glslSource)}";
+                        string outputFilenamepath = $"{glslServerDir}/{fileTokens.GetGlslHtmlFilename(glslSource.GetEditorRefIdAsString())}";
                         WriteBytesToFile(glslSource.sourcebytes, outputFilenamepath);
                     }
 
@@ -355,7 +358,7 @@ namespace MyShaderAnalysis
                 for (int j = 0; j < gpuSourceToPrint; j++)
                 {
                     var glslSource = zframeFile.gpuSources[j];
-                    string outputFilenamepath = $"{glslServerDir}/{fileTokens.GetGlslHtmlFilename((GlslSource)glslSource)}";
+                    string outputFilenamepath = $"{glslServerDir}/{fileTokens.GetGlslHtmlFilename(glslSource.GetEditorRefIdAsString())}";
                     WriteBytesToFile(glslSource.sourcebytes, outputFilenamepath);
                 }
 

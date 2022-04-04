@@ -159,7 +159,7 @@ namespace MyShaderAnalysis
         {
             string gpuSourceDetail = GetGpuSource(zframeFile, gpuSourceId);
             string glslServerDir = fileTokens.GetGpuServerDir(createDirs: true);
-            string outputFilenamepath = $"{glslServerDir}/{fileTokens.GetGpuHtmlFilename(zframeFile.gpuSources[gpuSourceId])}";
+            string outputFilenamepath = $"{glslServerDir}/{fileTokens.GetGpuHtmlFilename(zframeFile.gpuSources[gpuSourceId].GetEditorRefIdAsString())}";
             string htmlTitle = $"{fileTokens.vcstoken}[{zframeFile.zframeId:x}]({gpuSourceId})";
             string htmlHeader = $"{fileTokens.sourceType}[{gpuSourceId}] {Path.GetFileName(outputFilenamepath)[0..^5]}";
             WriteHtmlFile(outputFilenamepath, htmlTitle, htmlHeader, gpuSourceDetail);

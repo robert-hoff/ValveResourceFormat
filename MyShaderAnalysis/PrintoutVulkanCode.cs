@@ -31,9 +31,10 @@ namespace MyShaderAnalysis
         public static void RunTrials()
         {
 
-            PrintZframeToHtml();
+
 
         }
+
 
 
 
@@ -45,30 +46,17 @@ namespace MyShaderAnalysis
 
             ShaderFile shaderFile = InstantiateShaderFile(vcsTestFile);
             ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(0);
-
             StreamWriter sw = new StreamWriter("Z:/dev/www/vcs.codecreation.dev/testfile.html");
-            sw.WriteLine(GetHtmlHeader("Zframe testing", "Zframe testing"));
-            zframeFile.PrintGpuSource(0, (x) => { sw.Write(x); });
-            sw.WriteLine(GetHtmlFooter());
-            sw.Close();
+
+            // METHODS DROPPED!
+            //sw.WriteLine(GetHtmlHeader("Zframe testing", "Zframe testing"));
+            //zframeFile.PrintGpuSource(0, (x) => { sw.Write(x); });
+            //sw.WriteLine(GetHtmlFooter());
+            //sw.Close();
         }
 
 
-        /*
-         * very useful method for working on presentation
-         *
-         */
-        static void PrintZframeToHtml()
-        {
-            StreamWriter sw = new StreamWriter("Z:/dev/www/vcs.codecreation.dev/testfile.html");
-            sw.WriteLine(GetHtmlHeader("Zframe testing", "Zframe testing"));
-            string vcsTestFile = HLALYX_HLVR_VULKAN_SOURCE + "/solidcolor_vulkan_50_vs.vcs";
-            ShaderFile shaderFile = InstantiateShaderFile(vcsTestFile);
-            ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(0);
-            new PrintZFrameSummary(shaderFile, zframeFile, (x) => { sw.Write(x); }, showRichTextBoxLinks: true);
-            sw.WriteLine(GetHtmlFooter());
-            sw.Close();
-        }
+
 
 
         static void PrintAZframeToConsole()

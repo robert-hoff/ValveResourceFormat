@@ -5,7 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static ValveResourceFormat.CompiledShader.ShaderDataReader;
+using HandleOutputWrite = ValveResourceFormat.CompiledShader.HandleOutputWrite;
+using ShaderDataReader = ValveResourceFormat.CompiledShader.ShaderDataReader;
+
 
 namespace MyShaderAnalysis.utilhelpers
 {
@@ -41,6 +43,7 @@ namespace MyShaderAnalysis.utilhelpers
                 };
             }
         }
+
         public void CloseStreamWriter()
         {
             if (writeAsHtml)

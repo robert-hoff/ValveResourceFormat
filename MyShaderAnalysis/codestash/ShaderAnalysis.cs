@@ -1,13 +1,16 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
-using MyShaderAnalysis.utilhelpers;
-using ValveResourceFormat.CompiledShader;
-using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
-using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
-using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
-namespace MyShaderAnalysis
+using ShaderFile = ValveResourceFormat.CompiledShader.ShaderFile;
+using VcsProgramType = ValveResourceFormat.CompiledShader.VcsProgramType;
+using VcsPlatformType = ValveResourceFormat.CompiledShader.VcsPlatformType;
+using ShaderParserException = ValveResourceFormat.CompiledShader.ShaderParserException;
+
+using static MyShaderAnalysis.utilhelpers.MyTrashUtilHelpers;
+
+
+namespace MyShaderAnalysis.utilhelpers
 {
 
 
@@ -122,7 +125,7 @@ namespace MyShaderAnalysis
             {
                 // string filenamepath = @$"{directoryToUse}/{filename}";
                 WriteVcsByteAnalysisToHtml(filenamepath, writeHtmlLinks: true);
-                ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
+                ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
                 int zFrameCount = shaderFile.GetZFrameCount();
                 for (int i = 0; i < zFrameCount; i++)
                 {
@@ -164,7 +167,7 @@ namespace MyShaderAnalysis
                 string token = GetCoreOrDotaString(filenamepath);
                 string outputdir = @$"Z:/dev/www/vcs.codecreation.dev/vcs-all/{token}/zsource";
 
-                ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
+                ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
                 //int zframesToWrite = 100;
                 //if (shaderFile.GetZFrameCount() < zframesToWrite) {
                 //    zframesToWrite = shaderFile.GetZFrameCount();
@@ -233,7 +236,7 @@ namespace MyShaderAnalysis
                     outputdir = @$"Z:/dev/www/vcs.codecreation.dev/vcs-all/{token}/zsource";
                 }
 
-                ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
+                ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
                 int zframesToWrite = ZFRAME_FILES_TO_WRITE;
                 if (shaderFile.GetZFrameCount() < zframesToWrite)
                 {
@@ -359,7 +362,7 @@ namespace MyShaderAnalysis
             List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsProgramType.PixelShader, 30);
             foreach (string vcsFile in vcsFiles)
             {
-                ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(vcsFile);
+                ShaderFile shaderFile = InstantiateShaderFile(vcsFile);
                 if (shaderFile.GetZFrameCount() == 0)
                 {
                     continue;
@@ -381,7 +384,7 @@ namespace MyShaderAnalysis
             List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsProgramType.Undetermined, -1);
             foreach (string vcsFile in vcsFiles)
             {
-                ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(vcsFile);
+                ShaderFile shaderFile = InstantiateShaderFile(vcsFile);
                 int zcount = shaderFile.GetZFrameCount();
                 int nrToParse = zcount > 100 ? 100 : zcount;
                 if (nrToParse == 0)
@@ -401,7 +404,7 @@ namespace MyShaderAnalysis
 
         static void WriteZFrameToFileByZframeId(string filenamepath, long zframeId)
         {
-            ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
+            ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             byte[] zframeDatabytes = shaderFile.GetDecompressedZFrame(zframeId);
             string outputFilenamepath = @$"{OUTPUT_DIR}/{GetZframeTxtFilename((uint)zframeId, filenamepath)}";
             StreamWriter sw = new(outputFilenamepath);
@@ -416,7 +419,7 @@ namespace MyShaderAnalysis
         // THIS OUTPUTS FUCKING txt (which can be good!)
         static void WriteZFrameToFile(string filenamepath, int zframeIndex)
         {
-            ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
+            ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             byte[] zframeDatabytes = shaderFile.GetDecompressedZFrameByIndex(zframeIndex);
             string outputFilenamepath = @$"{OUTPUT_DIR}/{GetZframeTxtFilename((uint)shaderFile.GetZFrameIdByIndex(zframeIndex), filenamepath)}";
             StreamWriter sw = new(outputFilenamepath);
@@ -445,7 +448,7 @@ namespace MyShaderAnalysis
 
         static void PrintZFrame(string filenamepath, int zframeIndex, bool disableOutput = false)
         {
-            ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
+            ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             byte[] zframeDatabytes = shaderFile.GetDecompressedZFrameByIndex(zframeIndex);
             PrintZFrame(zframeDatabytes, shaderFile.vcsProgramType, shaderFile.vcsPlatformType, disableOutput);
         }
@@ -472,7 +475,7 @@ namespace MyShaderAnalysis
             foreach (string filenamepath in vcsFiles)
             {
                 Console.Write($"parsing {RemoveBaseDir(filenamepath)}");
-                ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
+                ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
                 Console.WriteLine($"{shaderFile.GetZFrameCount()}");
             }
         }
@@ -486,7 +489,7 @@ namespace MyShaderAnalysis
             // string filenamepath = PCGL_DIR_CORE + @"/apply_fog_pcgl_40_features.vcs";
             // string filenamepath = ARTIFACT_CLASSIC_CORE_PC_SOURCE + @"/aerial_perspective_pc_30_ps.vcs";
             // string filenamepath = ARTIFACT_CLASSIC_CORE_PC_SOURCE + @"/bilateral_blur_pc_30_vs.vcs";
-            ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
+            ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
 
 
         }

@@ -1,13 +1,19 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
-using System.Linq;
-using MyShaderAnalysis.utilhelpers;
-using ValveResourceFormat.CompiledShader;
-using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
+
+using ConfigMappingSParams = ValveResourceFormat.CompiledShader.ConfigMappingSParams;
+using DBlock = ValveResourceFormat.CompiledShader.DBlock;
+using DConstraintsBlock = ValveResourceFormat.CompiledShader.DConstraintsBlock;
+using FeaturesHeaderBlock = ValveResourceFormat.CompiledShader.FeaturesHeaderBlock;
+using SfBlock = ValveResourceFormat.CompiledShader.SfBlock;
+using SfConstraintsBlock = ValveResourceFormat.CompiledShader.SfConstraintsBlock;
+using ShaderFile = ValveResourceFormat.CompiledShader.ShaderFile;
+using ShaderParserException = ValveResourceFormat.CompiledShader.ShaderParserException;
+using VcsProgramType = ValveResourceFormat.CompiledShader.VcsProgramType;
+
 using static MyShaderAnalysis.utilhelpers.FileSystemOld;
-using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
-using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
+using static MyShaderAnalysis.utilhelpers.MyTrashUtilHelpers;
 
 
 /*
@@ -20,7 +26,7 @@ using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
  *
  *
  */
-namespace MyShaderAnalysis
+namespace MyShaderAnalysis.utilhelpers
 {
 
 
@@ -148,7 +154,7 @@ namespace MyShaderAnalysis
             // List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, null, FILETYPE.any, 30);
             foreach (string vcsFilenamepath in allVcsFiles)
             {
-                ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(vcsFilenamepath);
+                ShaderFile shaderFile = InstantiateShaderFile(vcsFilenamepath);
                 foreach (DConstraintsBlock uknBlock in shaderFile.dConstraintsBlocks)
                 {
 
@@ -381,7 +387,7 @@ namespace MyShaderAnalysis
             string outputNamepath = targetFile.GetServerFilenamepath("summary", createDirs: true);
 
             // NOTE NOTE - overriding target output file
-            outputNamepath = "Z:/dev/www/vcs.codecreation.dev/testfile2.html";
+            outputNamepath = "Z:/dev/www/vcs.codecreation.dev/GEN-output/testfile2.html";
 
 
 
@@ -2039,6 +2045,7 @@ namespace MyShaderAnalysis
 
 
 }
+
 
 
 
