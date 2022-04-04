@@ -313,11 +313,11 @@ namespace GUI.Types.Viewers
                 string gpuSourceTabTitle = $"{shaderFile.filenamepath.Split('_')[^1][..^4]}[{zframeFile.zframeId:x}]({gpuSourceId})";
 
                 TabPage gpuSourceTab = null;
+                var buffer = new StringWriter(CultureInfo.InvariantCulture);
+                zframeFile.PrintGpuSource(gpuSourceId, buffer.Write);
                 switch (zframeFile.gpuSources[gpuSourceId])
                 {
                     case GlslSource:
-                        var buffer = new StringWriter(CultureInfo.InvariantCulture);
-                        zframeFile.PrintGpuSource(gpuSourceId, buffer.Write);
                         gpuSourceTab = new TabPage(gpuSourceTabTitle);
                         var gpuSourceRichTextBox = new RichTextBox
                         {
@@ -337,7 +337,7 @@ namespace GUI.Types.Viewers
                     case DxilSource:
                     case VulkanSource:
                         byte[] input = zframeFile.gpuSources[gpuSourceId].sourcebytes;
-                        gpuSourceTab = new ByteViewer().Create(null, null);
+                        gpuSourceTab = CreateByteViewerTab(input, buffer.ToString());
                         gpuSourceTab.Text = gpuSourceTabTitle;
                         break;
 
@@ -350,6 +350,41 @@ namespace GUI.Types.Viewers
                 {
                     tabControl.SelectedTab = gpuSourceTab;
                 }
+            }
+
+            private static TabPage CreateByteViewerTab(byte[] databytes, string dataFormatted)
+            {
+                var tab = new TabPage();
+                var resTabs = new TabControl
+                {
+                    Dock = DockStyle.Fill,
+                };
+                tab.Controls.Add(resTabs);
+                var bvTab = new TabPage("Hex");
+                var bv = new System.ComponentModel.Design.ByteViewer
+                {
+                    Dock = DockStyle.Fill,
+                };
+                bvTab.Controls.Add(bv);
+                resTabs.TabPages.Add(bvTab);
+                var textTab = new TabPage("Bytes");
+                var textBox = new System.Windows.Forms.RichTextBox
+                {
+                    Dock = DockStyle.Fill,
+                    ScrollBars = RichTextBoxScrollBars.Both,
+                    Multiline = true,
+                    ReadOnly = true,
+                    WordWrap = false,
+                    Text = dataFormatted,
+                };
+                textBox.Font = new Font(FontFamily.GenericMonospace, textBox.Font.Size);
+                textTab.Controls.Add(textBox);
+                resTabs.TabPages.Add(textTab);
+                resTabs.SelectedTab = textTab;
+                Program.MainForm.Invoke((MethodInvoker)(
+                    () => bv.SetBytes(databytes)
+                ));
+                return tab;
             }
         }
     }

@@ -215,7 +215,11 @@ namespace ValveResourceFormat.CompiledShader
         public void PrintGpuSource(int sourceId, HandleOutputWrite outputWriter = null)
         {
             outputWriter ??= (x) => { Console.Write(x); };
-
+            string sourceHeader =
+                $"// {Path.GetFileName(filenamepath)} zframe[0x{zframeId:x}]\n" +
+                $"// {gpuSources[sourceId].GetBlockName()}[{sourceId}] source bytes " +
+                $"({gpuSources[sourceId].sourcebytes.Length}) source-id={gpuSources[sourceId].GetEditorRefIdAsString()}\n";
+            outputWriter(sourceHeader);
             if (gpuSources[sourceId] is GlslSource)
             {
                 GlslSource glslSource = gpuSources[sourceId] as GlslSource;
@@ -231,9 +235,7 @@ namespace ValveResourceFormat.CompiledShader
             }
             else
             {
-                outputWriter($"// {gpuSources[sourceId].GetBlockName()}[{sourceId}] source bytes (" +
-                    $"{gpuSources[sourceId].sourcebytes.Length}) ref={gpuSources[sourceId].GetEditorRefIdAsString()}\n");
-                outputWriter(BytesToString(gpuSources[sourceId].sourcebytes)+"\n");
+                outputWriter(BytesToString(gpuSources[sourceId].sourcebytes) + "\n");
             }
         }
 

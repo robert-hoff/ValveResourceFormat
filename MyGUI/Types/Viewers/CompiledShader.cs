@@ -13,8 +13,7 @@ using VrfPackage = SteamDatabase.ValvePak.Package;
 
 
 namespace MyGUI.Types.Viewers {
-    public class CompiledShader : IDisposable, IViewer
-    {
+    public class CompiledShader : IDisposable, IViewer {
 
         public static bool IsAccepted(uint magic) {
             return magic == ShaderFile.MAGIC;
@@ -156,20 +155,16 @@ namespace MyGUI.Types.Viewers {
             return -1;
         }
 
-        public void Dispose()
-        {
+        public void Dispose() {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing && tabControl != null)
-            {
+        protected virtual void Dispose(bool disposing) {
+            if (disposing && tabControl != null) {
                 tabControl.Dispose();
                 tabControl = null;
             }
-            if (disposing && shaderFile != null)
-            {
+            if (disposing && shaderFile != null) {
                 shaderFile.Dispose();
                 tabControl = null;
             }
@@ -317,14 +312,12 @@ namespace MyGUI.Types.Viewers {
                 string gpuSourceTabTitle = $"{shaderFile.filenamepath.Split('_')[^1][..^4]}[{zframeFile.zframeId:x}]({gpuSourceId})";
 
                 TabPage gpuSourceTab = null;
-                switch (zframeFile.gpuSources[gpuSourceId])
-                {
+                var buffer = new StringWriter(CultureInfo.InvariantCulture);
+                zframeFile.PrintGpuSource(gpuSourceId, buffer.Write);
+                switch (zframeFile.gpuSources[gpuSourceId]) {
                     case GlslSource:
-                        var buffer = new StringWriter(CultureInfo.InvariantCulture);
-                        zframeFile.PrintGpuSource(gpuSourceId, buffer.Write);
                         gpuSourceTab = new TabPage(gpuSourceTabTitle);
-                        var glslRichTextBox = new RichTextBox
-                        {
+                        var glslRichTextBox = new RichTextBox {
                             Font = new Font(FontFamily.GenericMonospace, Font.Size),
                             DetectUrls = true,
                             Dock = DockStyle.Fill,
@@ -340,12 +333,8 @@ namespace MyGUI.Types.Viewers {
                     case DxbcSource:
                     case DxilSource:
                     case VulkanSource:
-                        // gpuSourceTab = CreateByteViewerTab(zframeFile.gpuSources[gpuSourceId].sourcebytes, gpuSourceLabel);
-                        // gpuSourceTab = new Types.Viewers.ByteViewer().Create(vrfGuiContext, input);
-                        // gpuSourceTab = new ByteViewer().Create(vrfGuiContext, zframeFile.gpuSources[gpuSourceId].sourcebytes);
-
                         byte[] input = zframeFile.gpuSources[gpuSourceId].sourcebytes;
-                        gpuSourceTab = new ByteViewer().Create(null, null);
+                        gpuSourceTab = CreateByteViewerTab(input, buffer.ToString());
                         gpuSourceTab.Text = gpuSourceTabTitle;
                         break;
 
@@ -359,21 +348,36 @@ namespace MyGUI.Types.Viewers {
                 }
             }
 
-            //private static TabPage CreateByteViewerTab(byte[] input, string tabName)
-            //{
-            //    var bvTab = new TabPage(tabName);
-            //    var bv = new System.ComponentModel.Design.ByteViewer
-            //    {
-            //        Dock = DockStyle.Fill,
-            //    };
-            //    bvTab.Controls.Add(bv);
-            //    Program.MainForm.Invoke((MethodInvoker)(() =>
-            //    {
-            //        bv.SetBytes(input);
-            //    }));
-            //    // bv.sets
-            //    return bvTab;
-            //}
+            private static TabPage CreateByteViewerTab(byte[] databytes, string dataFormatted) {
+                var tab = new TabPage();
+                var resTabs = new TabControl {
+                    Dock = DockStyle.Fill,
+                };
+                tab.Controls.Add(resTabs);
+                var bvTab = new TabPage("Hex");
+                var bv = new System.ComponentModel.Design.ByteViewer {
+                    Dock = DockStyle.Fill,
+                };
+                bvTab.Controls.Add(bv);
+                resTabs.TabPages.Add(bvTab);
+                var textTab = new TabPage("Bytes");
+                var textBox = new System.Windows.Forms.RichTextBox {
+                    Dock = DockStyle.Fill,
+                    ScrollBars = RichTextBoxScrollBars.Both,
+                    Multiline = true,
+                    ReadOnly = true,
+                    WordWrap = false,
+                    Text = dataFormatted,
+                };
+                textBox.Font = new Font(FontFamily.GenericMonospace, textBox.Font.Size);
+                textTab.Controls.Add(textBox);
+                resTabs.TabPages.Add(textTab);
+                resTabs.SelectedTab = textTab;
+                Program.MainForm.Invoke((MethodInvoker)(
+                    () => bv.SetBytes(databytes)
+                ));
+                return tab;
+            }
         }
     }
 }
