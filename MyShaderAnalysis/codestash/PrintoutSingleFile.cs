@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 
-using HandleOutputWrite = MyShaderAnalysis.utilhelpers.MyTrashUtilHelpers.MyHandleOutputWrite;
+using HandleOutputWrite = MyShaderAnalysis.codestash.MyTrashUtilHelpers.MyHandleOutputWrite;
 
 using ShaderFile = ValveResourceFormat.CompiledShader.ShaderFile;
 using VcsProgramType = ValveResourceFormat.CompiledShader.VcsProgramType;
@@ -12,7 +12,7 @@ using DConstraintsBlock = ValveResourceFormat.CompiledShader.DConstraintsBlock;
 using SfConstraintsBlock = ValveResourceFormat.CompiledShader.SfConstraintsBlock;
 using ShaderParserException = ValveResourceFormat.CompiledShader.ShaderParserException;
 
-using static MyShaderAnalysis.utilhelpers.MyTrashUtilHelpers;
+using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
 
 
 /*
@@ -21,7 +21,7 @@ using static MyShaderAnalysis.utilhelpers.MyTrashUtilHelpers;
  *
  *
  */
-namespace MyShaderAnalysis.utilhelpers
+namespace MyShaderAnalysis.codestash
 {
     public class PrintoutSingleFile
     {

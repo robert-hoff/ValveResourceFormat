@@ -38,7 +38,7 @@ using ShaderParserException = ValveResourceFormat.CompiledShader.ShaderParserExc
  *
  *
  */
-namespace MyShaderAnalysis.utilhelpers
+namespace MyShaderAnalysis.codestash
 {
 
     public class FileSystemOld

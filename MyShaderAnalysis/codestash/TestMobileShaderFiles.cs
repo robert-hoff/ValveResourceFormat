@@ -4,12 +4,12 @@ using System.IO;
 using ShaderFile = ValveResourceFormat.CompiledShader.ShaderFile;
 using ZFrameFile = ValveResourceFormat.CompiledShader.ZFrameFile;
 
-using static MyShaderAnalysis.utilhelpers.MyTrashUtilHelpers;
-using static MyShaderAnalysis.utilhelpers.FileSystemOld;
+using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
+using static MyShaderAnalysis.codestash.FileSystemOld;
 
 
 
-namespace MyShaderAnalysis.utilhelpers
+namespace MyShaderAnalysis.codestash
 {
     public class TestMobileShaderFiles
     {

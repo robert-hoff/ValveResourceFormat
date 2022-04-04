@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyShaderAnalysis.utilhelpers.snippetcode
+namespace MyShaderAnalysis.codestash.snippetcode
 {
 
     class CrcTrialsMurmur32

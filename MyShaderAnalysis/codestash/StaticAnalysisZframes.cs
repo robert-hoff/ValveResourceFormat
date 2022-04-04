@@ -8,10 +8,10 @@ using ZDataBlock = ValveResourceFormat.CompiledShader.ZDataBlock;
 using VcsProgramType = ValveResourceFormat.CompiledShader.VcsProgramType;
 using ConfigMappingSParams = ValveResourceFormat.CompiledShader.ConfigMappingSParams;
 
-using static MyShaderAnalysis.utilhelpers.MyTrashUtilHelpers;
+using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
 
 
-namespace MyShaderAnalysis.utilhelpers
+namespace MyShaderAnalysis.codestash
 {
 
     public class StaticAnalysisZframes

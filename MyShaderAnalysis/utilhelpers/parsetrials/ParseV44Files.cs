@@ -9,15 +9,15 @@ using ShaderFile = ValveResourceFormat.CompiledShader.ShaderFile;
 using ShaderDataReader = ValveResourceFormat.CompiledShader.ShaderDataReader;
 using ShaderParserException = ValveResourceFormat.CompiledShader.ShaderParserException;
 
-using static MyShaderAnalysis.utilhelpers.FileSystemOld;
-using static MyShaderAnalysis.utilhelpers.MyTrashUtilHelpers;
+using static MyShaderAnalysis.codestash.FileSystemOld;
+using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
 
 /*
  * Almost identical to DataReaderVcsBytes - all relevant changes were written into DataReaderVcsBytes since
  *
  *
  */
-namespace MyShaderAnalysis.utilhelpers
+namespace MyShaderAnalysis.parsetrials
 {
     class ParseV44Files : ShaderDataReader
     {

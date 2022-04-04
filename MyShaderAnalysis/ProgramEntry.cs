@@ -4,11 +4,11 @@ using System.Diagnostics;
 using ValveResourceFormat.CompiledShader;
 using System.Collections.Generic;
 using System.Linq;
-using MyShaderAnalysis.utilhelpers;
-using MyShaderAnalysis.utilhelpers.snippetcode;
-using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
-using static MyShaderAnalysis.utilhelpers.FileSystemOld;
-using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
+using MyShaderAnalysis.codestash;
+using MyShaderAnalysis.codestash.snippetcode;
+using static MyShaderAnalysis.codestash.MyShaderUtilHelpers;
+using static MyShaderAnalysis.codestash.FileSystemOld;
+using static MyShaderAnalysis.codestash.ReadShaderFile;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
 
@@ -36,13 +36,13 @@ namespace MyShaderAnalysis
 
             // -- comprehensive tests against archive names (all files)
             // TestBatchParsing.RunTrials();
-            // TestSingleFileParsing.RunTrials();
+            TestSingleFileParsing.RunTrials();
 
             // -- revise how files are managed as collections
             // CreateHtmlServerFiles.RunTrials();
 
 
-            DemoCode.RunTrials();
+            // DemoCode.RunTrials();
             // PrintoutVulkanCode.RunTrials();
             // -- Looking at dynamic expressions
             // ParseDynamicExpression.RunTrials();s

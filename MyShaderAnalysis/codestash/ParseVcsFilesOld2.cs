@@ -10,7 +10,7 @@ using ZFrameFile = ValveResourceFormat.CompiledShader.ZFrameFile;
 using PrintVcsFileSummary = ValveResourceFormat.CompiledShader.PrintVcsFileSummary;
 using PrintZFrameSummary = ValveResourceFormat.CompiledShader.PrintZFrameSummary;
 
-using static MyShaderAnalysis.utilhelpers.MyTrashUtilHelpers;
+using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
 
 
 /*
@@ -32,7 +32,7 @@ using static MyShaderAnalysis.utilhelpers.MyTrashUtilHelpers;
  *
  *
  */
-namespace MyShaderAnalysis.utilhelpers
+namespace MyShaderAnalysis.codestash
 {
     public class ParseVcsFilesOld2
     {

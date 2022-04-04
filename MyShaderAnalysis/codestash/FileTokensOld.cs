@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using ShaderParserException = ValveResourceFormat.CompiledShader.ShaderParserException;
 using VcsProgramType = ValveResourceFormat.CompiledShader.VcsProgramType;
 
-using static MyShaderAnalysis.utilhelpers.FileSystemOld;
-using static MyShaderAnalysis.utilhelpers.MyTrashUtilHelpers;
+using static MyShaderAnalysis.codestash.FileSystemOld;
+using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
 
 
 
@@ -31,7 +31,7 @@ using static MyShaderAnalysis.utilhelpers.MyTrashUtilHelpers;
  *
  */
 // todo - get rid of  GetShortName(string vcsFileName) from MyShaderUtilHelpers (and others)
-namespace MyShaderAnalysis.utilhelpers
+namespace MyShaderAnalysis.codestash
 {
 
     public class FileTokensOld

@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ValveResourceFormat.CompiledShader;
-using static MyShaderAnalysis.utilhelpers.FileArchives;
+using static MyShaderAnalysis.codestash.FileArchives;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
 
-namespace MyShaderAnalysis.utilhelpers
+namespace MyShaderAnalysis.codestash
 {
     public class TestFileUtilFunctions
     {

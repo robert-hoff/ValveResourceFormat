@@ -7,10 +7,10 @@ using VcsProgramType = ValveResourceFormat.CompiledShader.VcsProgramType;
 using VcsPlatformType = ValveResourceFormat.CompiledShader.VcsPlatformType;
 using ShaderParserException = ValveResourceFormat.CompiledShader.ShaderParserException;
 
-using static MyShaderAnalysis.utilhelpers.MyTrashUtilHelpers;
+using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
 
 
-namespace MyShaderAnalysis.utilhelpers
+namespace MyShaderAnalysis.codestash
 {
 
 

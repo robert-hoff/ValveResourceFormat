@@ -8,11 +8,11 @@ using VcsPlatformType = ValveResourceFormat.CompiledShader.VcsPlatformType;
 using VcsProgramType = ValveResourceFormat.CompiledShader.VcsProgramType;
 using ZFrameFile = ValveResourceFormat.CompiledShader.ZFrameFile;
 
-using static MyShaderAnalysis.utilhelpers.FileSystemOld;
-using static MyShaderAnalysis.utilhelpers.MyTrashUtilHelpers;
+using static MyShaderAnalysis.codestash.FileSystemOld;
+using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
 
 
-namespace MyShaderAnalysis.utilhelpers
+namespace MyShaderAnalysis.codestash
 {
     public class TestFileUtilFunctionsOld
     {

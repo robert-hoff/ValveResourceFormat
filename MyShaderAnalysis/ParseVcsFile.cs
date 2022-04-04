@@ -1,4 +1,4 @@
-using MyShaderAnalysis.utilhelpers;
+using MyShaderAnalysis.codestash;
 using MyShaderAnalysis.vcsanalysis;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ValveResourceFormat.CompiledShader;
-using static MyShaderAnalysis.utilhelpers.FileArchives;
+using static MyShaderAnalysis.codestash.FileArchives;
 
 
 namespace MyShaderAnalysis

@@ -4,14 +4,15 @@ using System.Collections.Generic;
 using ValveResourceFormat.ThirdParty;
 using ValveResourceFormat.CompiledShader;
 using ValveResourceFormat.Serialization.VfxEval;
-using MyShaderAnalysis.utilhelpers;
+using MyShaderAnalysis.codestash;
 // using ZstdSharp;
 // using static MyShaderAnalysis.utilhelpers.FileSystemOld;
-using static MyShaderAnalysis.utilhelpers.FileArchives;
-using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
-using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
+using static MyShaderAnalysis.codestash.FileArchives;
+using static MyShaderAnalysis.codestash.MyShaderUtilHelpers;
+using static MyShaderAnalysis.codestash.ReadShaderFile;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
-using MyShaderAnalysis.utilhelpers.snippetcode;
+using MyShaderAnalysis.codestash.snippetcode;
+using MyShaderAnalysis.parsetrials;
 
 namespace MyShaderAnalysis
 {

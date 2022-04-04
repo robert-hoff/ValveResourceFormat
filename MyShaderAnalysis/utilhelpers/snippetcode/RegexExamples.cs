@@ -13,7 +13,7 @@ using System.Threading.Tasks;
  *
  *
  */
-namespace MyShaderAnalysis.utilhelpers.snippetcode
+namespace MyShaderAnalysis.codestash.snippetcode
 {
     class RegexExamples
     {

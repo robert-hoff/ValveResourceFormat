@@ -9,7 +9,7 @@ using HandleOutputWrite = ValveResourceFormat.CompiledShader.HandleOutputWrite;
 using ShaderDataReader = ValveResourceFormat.CompiledShader.ShaderDataReader;
 
 
-namespace MyShaderAnalysis.utilhelpers
+namespace MyShaderAnalysis.codestash
 {
     public class FileWriter : IDisposable
     {

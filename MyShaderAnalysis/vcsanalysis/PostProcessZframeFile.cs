@@ -3,7 +3,7 @@ using System.IO;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using ValveResourceFormat.CompiledShader;
-using MyShaderAnalysis.utilhelpers;
+using MyShaderAnalysis.codestash;
 
 
 namespace MyShaderAnalysis.vcsanalysis

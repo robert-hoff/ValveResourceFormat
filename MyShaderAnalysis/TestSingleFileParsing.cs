@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using MyShaderAnalysis.compat;
 using ValveResourceFormat.CompiledShader;
-using static MyShaderAnalysis.utilhelpers.FileArchives;
-using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
+using static MyShaderAnalysis.codestash.FileArchives;
+using static MyShaderAnalysis.codestash.ReadShaderFile;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
-namespace MyShaderAnalysis.utilhelpers
+namespace MyShaderAnalysis.codestash
 {
     public class TestSingleFileParsing
     {
@@ -21,8 +21,10 @@ namespace MyShaderAnalysis.utilhelpers
             // RunTestZFrameBytePrintout2();
             // ShowZFrameCount();
 
-            RunZframeBytesSetExample2();
+            // RunZframeBytesSetExample2();
             // RunZframeBytesSetExample1();
+
+            RunTestZFrameBytePrintoutV62();
         }
 
 
@@ -87,14 +89,6 @@ namespace MyShaderAnalysis.utilhelpers
             TestZFrameFilePrintout(filenamepath, zframeIndex);
         }
 
-        static void RunTestZFrameBytePrintout1()
-        {
-            // string filenamepath = GetFilenamepath(ARCHIVE.the_lab_v62, "test_pcgl_50_ds.vcs"); int zframeIndex = 0;
-            // string filenamepath = GetFilenamepath(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_vs.vcs"); int zframeIndex = 0;
-            string filenamepath = GetFilenamepath(ARCHIVE.dotagame_pc, "multiblend_pc_30_vs.vcs"); int zframeIndex = 0;
-            TestZFrameFilePrintout(filenamepath, zframeIndex);
-        }
-
         static void RunTestZFrameBytePrintout2()
         {
             // string filenamepath = GetFilenamepath(ARCHIVE.the_lab_v62, "test_pcgl_50_ds.vcs"); int zframeIndex = 0;
@@ -120,6 +114,14 @@ namespace MyShaderAnalysis.utilhelpers
         }
 
 
+        static void RunTestZFrameBytePrintout1()
+        {
+            // string filenamepath = GetFilenamepath(ARCHIVE.the_lab_v62, "test_pcgl_50_ds.vcs"); int zframeIndex = 0;
+            // string filenamepath = GetFilenamepath(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_vs.vcs"); int zframeIndex = 0;
+            string filenamepath = GetFilenamepath(ARCHIVE.dotagame_pc, "multiblend_pc_30_vs.vcs"); int zframeIndex = 0;
+            TestZFrameFilePrintout(filenamepath, zframeIndex);
+        }
+
         static void TestZFrameBytePrintout1(string filenamepath, int zframeIndex)
         {
             ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath); ;
@@ -127,11 +129,24 @@ namespace MyShaderAnalysis.utilhelpers
             byte[] zframeBytes = shaderFile.GetDecompressedZFrameByIndex(zframeIndex);
             DataReaderZFrameBytes dataReaderZframe = new DataReaderZFrameBytes(zframeBytes,
                 shaderFile.vcsProgramType, shaderFile.vcsPlatformType, shaderFile.vcsShaderModelType);
-
             long zframeId = shaderFile.GetZFrameIdByIndex(zframeIndex);
             Console.Write($"parsing zframe[0x{zframeId:x08}]");
             dataReaderZframe.PrintByteDetail();
         }
+
+
+
+        static void RunTestZFrameBytePrintoutV62()
+        {
+            string filenamepath = GetFilenamepath(ARCHIVE.dotagame_pcgl_v62, "bloom_dota_pcgl_30_features.vcs"); int zframeIndex = 0;
+            ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath); ;
+            byte[] zframeBytes = shaderFile.GetDecompressedZFrameByIndex(zframeIndex);
+
+            ParseV62ZFrame zframeParser = new ParseV62ZFrame(zframeBytes, shaderFile);
+            zframeParser.PrintByteDetail();
+
+        }
+
 
 
         static void TestZFrameFilePrintout(string filenamepath, int zframeIndex)

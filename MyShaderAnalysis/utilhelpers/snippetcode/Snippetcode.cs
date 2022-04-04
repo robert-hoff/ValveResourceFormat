@@ -5,10 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ValveResourceFormat.CompiledShader;
-using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
+using static MyShaderAnalysis.codestash.MyShaderUtilHelpers;
 
 
-namespace MyShaderAnalysis.utilhelpers.snippetcode
+namespace MyShaderAnalysis.codestash.snippetcode
 {
 
     class Snippetcode

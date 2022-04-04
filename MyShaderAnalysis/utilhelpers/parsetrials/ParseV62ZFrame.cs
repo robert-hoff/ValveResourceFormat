@@ -10,196 +10,69 @@ using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 namespace MyShaderAnalysis.codestash
 {
 
-    public class DataReaderZFrameBytes : ShaderDataReader
+    public class ParseV62ZFrame : ShaderDataReader
     {
 
+        private ShaderFile shaderFile;
         private VcsProgramType vcsProgramType;
         private VcsPlatformType vcsPlatformType;
         private VcsShaderModelType vcsShaderModelType;
 
         private bool showStatusMessage;
 
-        public DataReaderZFrameBytes(byte[] data, VcsProgramType vcsProgramType, VcsPlatformType vcsPlatformType,
-            VcsShaderModelType vcsShaderModelType, HandleOutputWrite outputWriter = null, bool showStatusMessage = false) : base(new MemoryStream(data), outputWriter)
+        public ParseV62ZFrame(byte[] data, ShaderFile shaderFile, HandleOutputWrite outputWriter = null) : base(new MemoryStream(data), outputWriter)
         {
-            this.vcsProgramType = vcsProgramType;
-            this.vcsPlatformType = vcsPlatformType;
-            this.vcsShaderModelType = vcsShaderModelType;
-            this.showStatusMessage = showStatusMessage;
+            this.shaderFile = shaderFile;
+            this.vcsProgramType = shaderFile.vcsProgramType;
+            this.vcsPlatformType = shaderFile.vcsPlatformType;
+            this.vcsShaderModelType = shaderFile.vcsShaderModelType;
         }
 
-
-        // these are recorded in case save is indicated
-        // private List<(int, int, string)> glslSources = new();
 
         public void PrintByteDetail()
         {
             BaseStream.Position = 0;
-            if (vcsProgramType == VcsProgramType.Features)
-            {
-                Comment("Zframe byte data (encoding for features files has not been determined)");
-                if (showStatusMessage)
-                {
-                    Console.WriteLine($"Zframe byte data (encoding for features files has not been determined)");
-                }
-                return;
-            }
 
 
-            ShowZDataSection(-1);
-            ShowZFrameHeader();
-
-            // ShowBytes(10000);
-            // return;
+            ShowBytes(1000);
+            return;
 
 
-            // this applies only to vs files (ps, gs and psrs files don't have this section)
-            if (vcsProgramType == VcsProgramType.VertexShader)
-            {
-                int blockCountInput = ReadInt16AtPosition();
-                ShowByteCount("Unknown additional parameters, non 'FF FF' entries point to configurations (block IDs)");
-                ShowBytes(2, breakLine: false);
-                TabComment($"nr of data-blocks ({blockCountInput})");
-                ShowBytes(blockCountInput * 2);
-                OutputWriteLine("");
-            }
-            int blockCount = ReadInt16AtPosition();
-            ShowByteCount("Data blocks");
-            ShowBytes(2, breakLine: false);
-            TabComment($"nr of data-blocks ({blockCount})");
-            OutputWriteLine("");
-            for (int i = 0; i < blockCount; i++)
-            {
-                ShowZDataSection(i);
-            }
-            BreakLine();
-            ShowByteCount("Unknown additional parameters, non 'FF FF' entries point to active block IDs");
-            int blockCountOutput = ReadInt16AtPosition();
-            ShowBytes(2, breakLine: false);
-            TabComment($"nr of data-blocks ({blockCountOutput})", 1);
-            ShowBytes(blockCountOutput * 2);
-            BreakLine();
-            ShowByteCount();
-            byte flagbyte = ReadByteAtPosition();
-            ShowBytes(1, $"possible control byte ({flagbyte}) or flags ({Convert.ToString(flagbyte, 2).PadLeft(8, '0')})");
-            ShowBytes(1, "values seen (0,1,2)");
-            ShowBytes(1, "always 0");
-            ShowBytes(1, "always 0");
-            ShowBytes(1, "values seen (0,1)");
-            BreakLine();
-            ShowByteCount($"Start of source section, {BaseStream.Position} is " +
-                $"the base offset for end-section source pointers");
-            int gpuSourceCount = ReadInt32AtPosition();
-            ShowBytes(4, $"gpu source files ({gpuSourceCount})");
-            ShowBytes(1, "unknown boolean, values seen 0,1", tabLen: 13);
-            BreakLine();
-
-            if (vcsPlatformType == VcsPlatformType.PC)
-            {
-                switch (vcsShaderModelType)
-                {
-                    case VcsShaderModelType._20:
-                    case VcsShaderModelType._2b:
-                    case VcsShaderModelType._30:
-                    case VcsShaderModelType._31:
-                        ShowDxilSources(gpuSourceCount);
-                        break;
-                    case VcsShaderModelType._40:
-                    case VcsShaderModelType._41:
-                    case VcsShaderModelType._50:
-                    case VcsShaderModelType._60:
-                        ShowDxbcSources(gpuSourceCount);
-                        break;
-                    default:
-                        throw new ShaderParserException($"Unknown or unsupported model type {vcsPlatformType} {vcsShaderModelType}");
-                }
-            } else
-            {
-                switch (vcsPlatformType)
-                {
-                    case VcsPlatformType.PCGL:
-                    case VcsPlatformType.MOBILE_GLES:
-                        ShowGlslSources(gpuSourceCount);
-                        break;
-                    case VcsPlatformType.VULKAN:
-                    case VcsPlatformType.ANDROID_VULKAN:
-                    case VcsPlatformType.IOS_VULKAN:
-                        ShowVulkanSources(gpuSourceCount);
-                        break;
-                    default:
-                        throw new ShaderParserException($"Unknown or unsupported source type {vcsPlatformType}");
-                }
-            }
-
-            //  End blocks for vs, gs, cs and ds files
-            if (vcsProgramType == VcsProgramType.VertexShader || vcsProgramType == VcsProgramType.GeometryShader ||
-                vcsProgramType == VcsProgramType.ComputeShader || vcsProgramType == VcsProgramType.DomainShader)
-            {
-                ShowZAllEndBlocksTypeVs();
-            } else if (vcsProgramType == VcsProgramType.HullShader)
-            {
-                ShowZAllEndBlocksTypeHs();
-            }
-            //  End blocks for ps and psrs files
-            else if (vcsProgramType == VcsProgramType.PixelShader || vcsProgramType == VcsProgramType.PixelShaderRenderState)
-            {
-                ShowByteCount();
-                int nrEndBlocks = ReadInt32AtPosition();
-                ShowBytes(4, breakLine: false);
-                TabComment($"nr of end blocks ({nrEndBlocks})");
-                OutputWriteLine("");
-                for (int i = 0; i < nrEndBlocks; i++)
-                {
-                    ShowByteCount($"End-block[{i}]");
-                    int blockId = ReadInt16AtPosition();
-                    ShowBytes(4, breakLine: false);
-                    TabComment($"blockId ref ({blockId})");
-                    ShowBytes(4, breakLine: false);
-                    TabComment("always 0");
-                    int sourceReference = ReadInt16AtPosition();
-                    ShowBytes(4, breakLine: false);
-                    TabComment($"source ref ({sourceReference})");
-                    uint glslPointer = ReadUInt32AtPosition();
-                    ShowBytes(4, breakLine: false);
-                    TabComment($"glsl source pointer ({glslPointer})");
-                    bool hasData0 = ReadByteAtPosition(0) == 0;
-                    bool hasData1 = ReadByteAtPosition(1) == 0;
-                    bool hasData2 = ReadByteAtPosition(2) == 0;
-                    ShowBytes(3, breakLine: false);
-                    TabComment($"(data0={hasData0}, data1={hasData1}, data2={hasData2})", 7);
-                    if (hasData0)
-                    {
-                        OutputWriteLine("// data-section 0");
-                        ShowBytes(16);
-                    }
-                    if (hasData1)
-                    {
-                        OutputWriteLine("// data-section 1");
-                        ShowBytes(20);
-                    }
-                    if (hasData2)
-                    {
-                        OutputWriteLine("// data-section 2");
-                        ShowBytes(3);
-                        ShowBytes(8);
-                        ShowBytes(64, 32);
-                    }
-                }
-            } else
-            {
-                throw new ShaderParserException($"Unknown or unsupported ProgramType {vcsProgramType}");
-            }
-            // ShowBytes(1000);
 
 
-            BreakLine();
-            ShowEndOfFile();
+            //ShowZDataSection(-1);
+            //ShowZFrameHeader();
+            //if (vcsProgramType == VcsProgramType.VertexShader) {
+            //    int blockCountInput = ReadInt16AtPosition();
+            //    ShowByteCount("Unknown additional parameters, non 'FF FF' entries point to configurations (block IDs)");
+            //    ShowBytes(2, breakLine: false);
+            //    TabComment($"nr of data-blocks ({blockCountInput})");
+            //    ShowBytes(blockCountInput * 2);
+            //    OutputWriteLine("");
+            //}
+            //int blockCount = ReadInt16AtPosition();
+            //ShowByteCount("Data blocks");
+            //ShowBytes(2, breakLine: false);
+            //TabComment($"nr of data-blocks ({blockCount})");
+            //OutputWriteLine("");
+            //for (int i = 0; i < blockCount; i++) {
+            //    ShowZDataSection(i);
+            //}
+            //BreakLine();
+            //ShowByteCount("Unknown additional parameters, non 'FF FF' entries point to active block IDs");
+            //int blockCountOutput = ReadInt16AtPosition();
+            //ShowBytes(2, breakLine: false);
+            //TabComment($"nr of data-blocks ({blockCountOutput})", 1);
+            //ShowBytes(blockCountOutput * 2);
+            //BreakLine();
+            //ShowByteCount();
 
-            if (showStatusMessage)
-            {
-                Console.WriteLine($"- OK");
-            }
+
+
         }
+
+
+
 
 
         private bool prevBlockWasZero = false;

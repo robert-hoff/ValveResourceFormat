@@ -4,11 +4,11 @@ using System.Collections.Generic;
 
 using VcsProgramType = ValveResourceFormat.CompiledShader.VcsProgramType;
 
-using static MyShaderAnalysis.utilhelpers.FileSystemOld;
-using static MyShaderAnalysis.utilhelpers.MyTrashUtilHelpers;
+using static MyShaderAnalysis.codestash.FileSystemOld;
+using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
 
 
-namespace MyShaderAnalysis.utilhelpers
+namespace MyShaderAnalysis.codestash
 {
     public class ParseVcsFilesOld1
     {

@@ -14,7 +14,7 @@ using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
  *
  *
  */
-namespace MyShaderAnalysis.utilhelpers
+namespace MyShaderAnalysis.codestash
 {
     public class FileArchives
     {
@@ -39,6 +39,8 @@ namespace MyShaderAnalysis.utilhelpers
         private const string ARTIFACT_CLASSIC_DCG_PC_SOURCE_V64 = "X:/artifact-classic-exports/artifact-shaders-pc-dcg";
         private const string HLALYX_CORE_VULKAN_SOURCE_V64 = "X:/hl2alyx-export/alyx-vulkan-core";
         private const string HLALYX_HLVR_VULKAN_SOURCE_V64 = "X:/hl2alyx-export/alyx-vulkan-hlvr";
+        private const string DOTA_CORE_PCGL_SOURCE_V62 = "X:/dota-2-VRF-exports/manifest-20150907-pcgl-shader-v62/core";
+        private const string DOTA_GAME_PCGL_SOURCE_V62 = "X:/dota-2-VRF-exports/manifest-20150907-pcgl-shader-v62/dota";
         private const string V62_EXAMPLES_SOURCE = "X:/v62shaders-from-xpaw";
         private const string THE_LAB_SOURCE_V62 = "X:/Steam/steamapps/common/The Lab/RobotRepair/core/shaders/vfx";
 
@@ -54,6 +56,7 @@ namespace MyShaderAnalysis.utilhelpers
             dota_core_ios_vulkan, dota_dac_ios_vulkan,
             artifact_classiccore_pc, artifact_classicdcg_pc,
             alyx_core_vulkan, alyx_hlvr_vulkan,
+            dotacore_pcgl_v62, dotagame_pcgl_v62,
             v62_examples, the_lab_v62
         };
 
@@ -88,6 +91,8 @@ namespace MyShaderAnalysis.utilhelpers
             if (archive == ARCHIVE.artifact_classicdcg_pc) return ARTIFACT_CLASSIC_DCG_PC_SOURCE_V64;
             if (archive == ARCHIVE.alyx_hlvr_vulkan) return HLALYX_HLVR_VULKAN_SOURCE_V64;
             if (archive == ARCHIVE.alyx_core_vulkan) return HLALYX_CORE_VULKAN_SOURCE_V64;
+            if (archive == ARCHIVE.dotacore_pcgl_v62) return DOTA_CORE_PCGL_SOURCE_V62;
+            if (archive == ARCHIVE.dotagame_pcgl_v62) return DOTA_GAME_PCGL_SOURCE_V62;
             if (archive == ARCHIVE.v62_examples) return V62_EXAMPLES_SOURCE;
             if (archive == ARCHIVE.the_lab_v62) return THE_LAB_SOURCE_V62;
             throw new ShaderParserException("unknown archive");
@@ -123,6 +128,8 @@ namespace MyShaderAnalysis.utilhelpers
             if (archive == ARCHIVE.artifact_classicdcg_pc) return "aclassic-dcg-pc-v64";
             if (archive == ARCHIVE.alyx_hlvr_vulkan) return "alyx-hlvr-vulkan-v64";
             if (archive == ARCHIVE.alyx_core_vulkan) return "alyx-core-vulkan-v64";
+            if (archive == ARCHIVE.dotacore_pcgl_v62) return "dota-core-pcgl-v62";
+            if (archive == ARCHIVE.dotagame_pcgl_v62) return "dota-game-pcgl-v62";
             if (archive == ARCHIVE.v62_examples) return "exampleset-pc-v62";
             if (archive == ARCHIVE.the_lab_v62) return "the-lab-pc-v62";
             throw new ShaderParserException("unknown archive");

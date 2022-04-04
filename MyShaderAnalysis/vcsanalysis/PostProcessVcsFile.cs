@@ -1,8 +1,8 @@
 using System;
 using System.Text.RegularExpressions;
-using MyShaderAnalysis.utilhelpers;
+using MyShaderAnalysis.codestash;
 using ValveResourceFormat.CompiledShader;
-using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
+using static MyShaderAnalysis.codestash.MyShaderUtilHelpers;
 
 namespace MyShaderAnalysis.vcsanalysis
 {

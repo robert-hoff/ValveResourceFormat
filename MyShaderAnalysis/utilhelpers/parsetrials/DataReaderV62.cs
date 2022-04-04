@@ -5,7 +5,7 @@ using VcsProgramType = ValveResourceFormat.CompiledShader.VcsProgramType;
 using VcsShaderModelType = ValveResourceFormat.CompiledShader.VcsShaderModelType;
 using ShaderDataReader = ValveResourceFormat.CompiledShader.ShaderDataReader;
 
-using static MyShaderAnalysis.utilhelpers.MyTrashUtilHelpers;
+using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
 
 
 /*
@@ -14,7 +14,7 @@ using static MyShaderAnalysis.utilhelpers.MyTrashUtilHelpers;
  *
  *
  */
-namespace MyShaderAnalysis.utilhelpers
+namespace MyShaderAnalysis.parsetrials
 {
     public class DataReaderV62 : ShaderDataReader
     {

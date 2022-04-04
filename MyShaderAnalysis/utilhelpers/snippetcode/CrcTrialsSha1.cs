@@ -7,12 +7,12 @@ using ShaderFile = ValveResourceFormat.CompiledShader.ShaderFile;
 using ZFrameFile = ValveResourceFormat.CompiledShader.ZFrameFile;
 using ZFrameDataDescription = ValveResourceFormat.CompiledShader.ZFrameDataDescription;
 
-using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
+using static MyShaderAnalysis.codestash.ReadShaderFile;
 
 
 
 
-namespace MyShaderAnalysis.utilhelpers.snippetcode
+namespace MyShaderAnalysis.codestash.snippetcode
 {
 
 

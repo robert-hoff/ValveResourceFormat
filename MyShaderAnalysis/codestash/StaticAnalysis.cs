@@ -12,8 +12,8 @@ using ShaderFile = ValveResourceFormat.CompiledShader.ShaderFile;
 using ShaderParserException = ValveResourceFormat.CompiledShader.ShaderParserException;
 using VcsProgramType = ValveResourceFormat.CompiledShader.VcsProgramType;
 
-using static MyShaderAnalysis.utilhelpers.FileSystemOld;
-using static MyShaderAnalysis.utilhelpers.MyTrashUtilHelpers;
+using static MyShaderAnalysis.codestash.FileSystemOld;
+using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
 
 
 /*
@@ -26,7 +26,7 @@ using static MyShaderAnalysis.utilhelpers.MyTrashUtilHelpers;
  *
  *
  */
-namespace MyShaderAnalysis.utilhelpers
+namespace MyShaderAnalysis.codestash
 {
 
 

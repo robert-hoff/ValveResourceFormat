@@ -8,11 +8,11 @@ using ShaderParserException = ValveResourceFormat.CompiledShader.ShaderParserExc
 using VcsProgramType = ValveResourceFormat.CompiledShader.VcsProgramType;
 using ValveResourceFormat.Serialization.VfxEval;
 
-using static MyShaderAnalysis.utilhelpers.MyTrashUtilHelpers;
+using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
 
 
 
-namespace MyShaderAnalysis.utilhelpers
+namespace MyShaderAnalysis.codestash
 {
 
     public class StaticAnalysis2

@@ -4,10 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static MyShaderAnalysis.utilhelpers.FileArchives;
+using static MyShaderAnalysis.codestash.FileArchives;
 
 
-namespace MyShaderAnalysis.utilhelpers
+namespace MyShaderAnalysis.codestash
 {
     class FileVcsCollection
     {

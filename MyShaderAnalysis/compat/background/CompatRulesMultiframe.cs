@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using MyShaderAnalysis.utilhelpers;
+using MyShaderAnalysis.codestash;
 using ValveResourceFormat.CompiledShader;
-using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
+using static MyShaderAnalysis.codestash.MyShaderUtilHelpers;
 using ValveResourceFormat.CompiledShader;
 
 

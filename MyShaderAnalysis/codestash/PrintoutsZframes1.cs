@@ -13,8 +13,8 @@ using VcsProgramType = ValveResourceFormat.CompiledShader.VcsProgramType;
 using ZDataBlock = ValveResourceFormat.CompiledShader.ZDataBlock;
 using ZFrameFile = ValveResourceFormat.CompiledShader.ZFrameFile;
 
-using static MyShaderAnalysis.utilhelpers.FileSystemOld;
-using static MyShaderAnalysis.utilhelpers.MyTrashUtilHelpers;
+using static MyShaderAnalysis.codestash.FileSystemOld;
+using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
 
 
 /*
@@ -24,7 +24,7 @@ using static MyShaderAnalysis.utilhelpers.MyTrashUtilHelpers;
  *
  *
  */
-namespace MyShaderAnalysis.utilhelpers
+namespace MyShaderAnalysis.codestash
 {
 
 
