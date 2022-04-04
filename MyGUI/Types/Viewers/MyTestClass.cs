@@ -1,9 +1,9 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace MyNamespace
+namespace MyGUI
 {
-    public class MyClass
+    public class MyTestClass
     {
         public void Create()
         {
@@ -15,8 +15,7 @@ namespace MyNamespace
         }
 
 
-
-        private class MyRichTextBox : RichTextBox
+        public class MyRichTextBox : RichTextBox
         {
             public MyRichTextBox()
             {
@@ -25,3 +24,4 @@ namespace MyNamespace
         }
     }
 }
+

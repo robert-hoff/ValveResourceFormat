@@ -61,7 +61,7 @@ namespace MyGUI.Types.Viewers
             {
                 if (i > 0 && i % BREAKLEN == 0)
                 {
-                    sb.Append($"\n");
+                    sb.Append('\n');
                 }
                 sb.Append($"{databytes[i]:X02} ");
             }
