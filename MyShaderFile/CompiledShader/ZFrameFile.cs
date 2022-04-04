@@ -105,7 +105,8 @@ namespace ValveResourceFormat.CompiledShader
                     default:
                         throw new ShaderParserException($"Unknown or unsupported model type {vcsPlatformType} {vcsShaderModelType}");
                 }
-            } else
+            }
+            else
             {
                 switch (vcsPlatformType)
                 {
@@ -131,7 +132,8 @@ namespace ValveResourceFormat.CompiledShader
                 {
                     VsEndBlock vsEndBlock = new(datareader, hullShader: vcsProgramType == VcsProgramType.HullShader);
                     vsEndBlocks.Add(vsEndBlock);
-                } else
+                }
+                else
                 {
                     PsEndBlock psEndBlock = new(datareader);
                     psEndBlocks.Add(psEndBlock);
@@ -215,33 +217,30 @@ namespace ValveResourceFormat.CompiledShader
         public void PrintGpuSource(int sourceId, HandleOutputWrite outputWriter = null)
         {
             outputWriter ??= (x) => { Console.Write(x); };
-            string sourceHeader =
-                $"// {Path.GetFileName(filenamepath)} zframe[0x{zframeId:x}]\n" +
+            string sourceDetails =
                 $"// {gpuSources[sourceId].GetBlockName()}[{sourceId}] source bytes " +
-                $"({gpuSources[sourceId].sourcebytes.Length}) source-id={gpuSources[sourceId].GetEditorRefIdAsString()}\n";
-            outputWriter(sourceHeader);
+                $"({gpuSources[sourceId].sourcebytes.Length}) ref={gpuSources[sourceId].GetEditorRefIdAsString()}\n";
+            if (gpuSources[sourceId].sourcebytes.Length == 0)
+            {
+                outputWriter(sourceDetails);
+                outputWriter("[empty source]");
+                return;
+            }
             if (gpuSources[sourceId] is GlslSource)
             {
-                GlslSource glslSource = gpuSources[sourceId] as GlslSource;
-                string result = Encoding.UTF8.GetString(glslSource.sourcebytes);
-                if (result.Length == 0)
-                {
-                    outputWriter("[empty source]");
-                }
-                else
-                {
-                    outputWriter(result);
-                }
+                string glslSourceFile = Encoding.UTF8.GetString(gpuSources[sourceId].sourcebytes);
+                outputWriter(glslSourceFile);
             }
             else
             {
+                outputWriter(sourceDetails);
                 outputWriter(BytesToString(gpuSources[sourceId].sourcebytes) + "\n");
             }
         }
 
         public class ZFrameParam
         {
-            public  string name0 { get; }
+            public string name0 { get; }
             public uint murmur32 { get; }
             public byte headerOperator { get; }
             public byte[] headerCode { get; }
@@ -282,7 +281,8 @@ namespace ValveResourceFormat.CompiledShader
                     operatorVal = datareader.ReadByte();
                     hasOperatorVal = true;
                 }
-                else {
+                else
+                {
                     throw new ShaderParserException($"Unknown header operator {headerOperator}");
                 }
             }
@@ -382,7 +382,7 @@ namespace ValveResourceFormat.CompiledShader
             datareader.BaseStream.Position = 0;
             if (vcsProgramType == VcsProgramType.Features)
             {
-                datareader.Comment("ZFrame byte data (encoding for features files has not been determined)");
+                datareader.Comment("Zframe byte data (encoding for features files has not been determined)");
                 datareader.ShowBytes((int)datareader.BaseStream.Length);
                 return;
             }
