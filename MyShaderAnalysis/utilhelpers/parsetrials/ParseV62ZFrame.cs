@@ -34,7 +34,63 @@ namespace MyShaderAnalysis.codestash
             BaseStream.Position = 0;
 
 
-            ShowBytes(1000);
+            int h0 = ReadInt32AtPosition();
+            int h1 = ReadInt32AtPosition(4);
+            int h2 = ReadInt32AtPosition(8);
+
+            if (h1 != 0)
+            {
+                throw new ShaderParserException($"unexpected data {h1}");
+            }
+            if (h2 != 0)
+            {
+                throw new ShaderParserException($"unexpected data {h2}");
+            }
+
+            ShowByteCount();
+            ShowBytes(4, $"{h0}");
+            ShowBytes(4, $"{h1}");
+            ShowBytes(4, $"{h2}");
+            BreakLine();
+            Comment($"{h0} 2-length arguments follow");
+            ShowByteCount();
+            for (int i = 0; i < h0; i++)
+            {
+                // the second byte is always zero, it may be because the parameter length is never long enough
+                //byte secondByte = ReadByteAtPosition(1);
+                //if (secondByte != 0)
+                //{
+                //    throw new ShaderParserException("unexpected data");
+                //}
+                uint paramId = ReadUInt16AtPosition();
+                ShowBytes(2, $"{paramId,3}   {shaderFile.paramBlocks[(int) paramId].name0}");
+            }
+            BreakLine();
+            // uint nrHeaders = ReadUInt16AtPosition();
+            ShowZFrameHeader();
+
+
+            uint end_arg0 = ReadUInt16AtPosition(); // always 1
+            uint end_arg1 = ReadUInt16AtPosition(2); // values seen [0,7]
+
+            if (end_arg0 != 1)
+            {
+                throw new ShaderParserException($"unexpected data {end_arg0}");
+            }
+            // not really a safe check
+            //if (end_arg1 > 7)
+            //{
+            //    throw new ShaderParserException($"unexpected data {end_arg1}");
+            //}
+
+            // Console.WriteLine($"{end_arg1}");
+
+            ShowBytes(2, $"end_arg0 = {end_arg0}");
+            ShowBytes(2, $"end_arg1 = {end_arg1}");
+
+            BreakLine();
+            ShowEndOfFile();
+
             return;
 
 

@@ -24,6 +24,11 @@ namespace MyShaderAnalysis
             var testBytes = ParseString("1A 04 00");
 
 
+            // -- not a dynamic expressions (it's a common header pattern in the zframes)
+            // var testBytes = ParseString("0E 71 00");
+
+
+
             // string dynExpResult = new VfxEval(testBytes, omitReturnStatement: true).DynamicExpressionResult;
             string dynExpResult = new VfxEval(testBytes).DynamicExpressionResult;
 

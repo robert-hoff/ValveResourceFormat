@@ -45,7 +45,7 @@ namespace MyShaderAnalysis
             // DemoCode.RunTrials();
             // PrintoutVulkanCode.RunTrials();
             // -- Looking at dynamic expressions
-            // ParseDynamicExpression.RunTrials();s
+            // ParseDynamicExpression.RunTrials();
 
 
 

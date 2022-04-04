@@ -24,6 +24,9 @@ namespace MyShaderAnalysis.codestash
             // RunZframeBytesSetExample2();
             // RunZframeBytesSetExample1();
 
+            // RunBatchTestZFramesSuppressOutput();
+            // RunTestZFrameBytePrintoutV62BatchSuppressOutput();
+            // RunTestZFrameBytePrintoutV62Batch();
             RunTestZFrameBytePrintoutV62();
         }
 
@@ -136,9 +139,95 @@ namespace MyShaderAnalysis.codestash
 
 
 
+        static void RunTestZFrameBytePrintoutV62BatchSuppressOutput()
+        {
+            // string filenamepath = GetFilenamepath(ARCHIVE.dotagame_pcgl_v62, "multiblend_pcgl_30_features.vcs");
+            string filenamepath = GetFilenamepath(ARCHIVE.dotacore_pcgl_v62, "depth_only_pcgl_30_features.vcs");
+            ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath); ;
+            int MAX_ZFRAMES = 100;
+            for (int i = 0; i < Math.Min(shaderFile.GetZFrameCount(), MAX_ZFRAMES); i++)
+            {
+                byte[] zframeBytes = shaderFile.GetDecompressedZFrameByIndex(i);
+                ParseV62ZFrame zframeParser = new ParseV62ZFrame(zframeBytes, shaderFile, outputWriter: (x) => { });
+                zframeParser.PrintByteDetail();
+                // Console.WriteLine(new String('_', 40));
+                // Console.WriteLine($"");
+                // Console.WriteLine($"");
+            }
+        }
+
+
+        static void RunBatchTestZFramesSuppressOutput()
+        {
+
+            // ARCHIVE archive = ARCHIVE.dotagame_pcgl_v62;
+            ARCHIVE archive = ARCHIVE.dotacore_pcgl_v62;
+            // ARCHIVE archive = ARCHIVE.the_lab_v62;
+            List<string> vcsFiles = MyShaderUtilHelpers.GetVcsFiles(FileArchives.GetSourceDir(archive), VcsProgramType.Features);
+            foreach (var filenamepath in vcsFiles)
+            {
+                Console.WriteLine($"{filenamepath}");
+
+                ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
+                BatchTestZFramesSuppressOutput(shaderFile);
+
+                //try
+                //{
+                //    ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
+                //    BatchTestZFramesSuppressOutput(shaderFile);
+                //} catch (Exception) {}
+            }
+        }
+
+
+        static void BatchTestZFramesSuppressOutput(ShaderFile shaderFile)
+        {
+            int MAX_ZFRAMES = 100;
+            for (int i = 0; i < Math.Min(shaderFile.GetZFrameCount(), MAX_ZFRAMES); i++)
+            {
+                Console.WriteLine($"parsing {shaderFile.filenamepath} zframeIndex = {i}");
+                byte[] zframeBytes = shaderFile.GetDecompressedZFrameByIndex(i);
+                Console.WriteLine($"zframe size {zframeBytes.Length}");
+                ParseV62ZFrame zframeParser = new ParseV62ZFrame(zframeBytes, shaderFile, outputWriter: (x) => { });
+                zframeParser.PrintByteDetail();
+                // Console.WriteLine(new String('_', 40));
+                // Console.WriteLine($"");
+                // Console.WriteLine($"");
+            }
+        }
+
+
+        static void RunTestZFrameBytePrintoutV62Batch()
+        {
+            string filenamepath = GetFilenamepath(ARCHIVE.dotagame_pcgl_v62, "multiblend_pcgl_30_features.vcs");
+            ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath); ;
+            // ParseV62ZFrame zframeParser = new ParseV62ZFrame(zframeBytes, shaderFile);
+            // zframeParser.PrintByteDetail();
+
+            int MAX_ZFRAMES = 10;
+            for (int i = 0; i < Math.Min(shaderFile.GetZFrameCount(), MAX_ZFRAMES); i++)
+            {
+                byte[] zframeBytes = shaderFile.GetDecompressedZFrameByIndex(i);
+                ParseV62ZFrame zframeParser = new ParseV62ZFrame(zframeBytes, shaderFile);
+                zframeParser.PrintByteDetail();
+                Console.WriteLine(new String('_', 40));
+                Console.WriteLine($"");
+                Console.WriteLine($"");
+            }
+        }
+
+
         static void RunTestZFrameBytePrintoutV62()
         {
-            string filenamepath = GetFilenamepath(ARCHIVE.dotagame_pcgl_v62, "bloom_dota_pcgl_30_features.vcs"); int zframeIndex = 0;
+            // string filenamepath = GetFilenamepath(ARCHIVE.dotagame_pcgl_v62, "bloom_dota_pcgl_30_features.vcs"); int zframeIndex = 0;
+            // string filenamepath = GetFilenamepath(ARCHIVE.dotagame_pcgl_v62, "multiblend_pcgl_30_features.vcs"); int zframeIndex = 0;
+            string filenamepath = GetFilenamepath(ARCHIVE.dotagame_pcgl_v62, "hero_pcgl_30_features.vcs"); int zframeIndex = 15;
+            // string filenamepath = GetFilenamepath(ARCHIVE.dotagame_pcgl_v62, "hero_pcgl_30_features.vcs"); int zframeIndex = 100;
+            // string filenamepath = GetFilenamepath(ARCHIVE.dotacore_pcgl_v62, "visualize_physics_pcgl_40_features.vcs"); int zframeIndex = 0;
+            // string filenamepath = GetFilenamepath(ARCHIVE.dotacore_pcgl_v62, "depth_only_pcgl_30_features.vcs"); int zframeIndex = 6;
+            // string filenamepath = GetFilenamepath(ARCHIVE.dotacore_pcgl_v62, "depth_only_pcgl_30_features.vcs"); int zframeIndex = 7;
+
+
             ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath); ;
             byte[] zframeBytes = shaderFile.GetDecompressedZFrameByIndex(zframeIndex);
 
