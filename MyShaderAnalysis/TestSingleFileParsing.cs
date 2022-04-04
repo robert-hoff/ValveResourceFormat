@@ -15,7 +15,7 @@ namespace MyShaderAnalysis.codestash
 
         public static void RunTrials()
         {
-            // RunTestSingleFilePrintout();
+            RunTestSingleFilePrintout();
             // RunTestZFrameFilePrintout();
             // RunTestZFrameBytePrintout1();
             // RunTestZFrameBytePrintout2();
@@ -27,7 +27,7 @@ namespace MyShaderAnalysis.codestash
             // RunBatchTestZFramesSuppressOutput();
             // RunTestZFrameBytePrintoutV62BatchSuppressOutput();
             // RunTestZFrameBytePrintoutV62Batch();
-            RunTestZFrameBytePrintoutV62();
+            // RunTestZFrameBytePrintoutV62();
         }
 
 
@@ -80,6 +80,10 @@ namespace MyShaderAnalysis.codestash
             // string filenamepath = GetFilenamepath(ARCHIVE.dotacore_pcgl, "spritecard_pcgl_30_vs.vcs");
             // strange file that doesn't contain any data
             string filenamepath = GetFilenamepath(ARCHIVE.dotacore_pcgl, "msaa_resolve_cs_pcgl_50_features.vcs");
+
+            // v44 file (will throw)
+            // string filenamepath = GetFilenamepath(ARCHIVE.the_lab_v62, "debugoverlay_wireframe_pc_40_gs.vcs");
+
             TestSingleFilePrintout(filenamepath);
         }
 
@@ -228,6 +232,7 @@ namespace MyShaderAnalysis.codestash
             // string filenamepath = GetFilenamepath(ARCHIVE.dotacore_pcgl_v62, "depth_only_pcgl_30_features.vcs"); int zframeIndex = 7;
 
 
+            Console.WriteLine($"{filenamepath} zframeIndex = {zframeIndex}\n");
             ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath); ;
             byte[] zframeBytes = shaderFile.GetDecompressedZFrameByIndex(zframeIndex);
 

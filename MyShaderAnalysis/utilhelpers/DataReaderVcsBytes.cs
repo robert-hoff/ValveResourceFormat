@@ -69,6 +69,7 @@ namespace MyShaderAnalysis.codestash
             {
                 throw new ShaderParserException($"Unknown filetype: {vcsProgramType}");
             }
+
             if (vcsVersion != 65 && vcsVersion != 64 && vcsVersion != 62)
             {
                 if (showStatusMessage)
@@ -80,6 +81,7 @@ namespace MyShaderAnalysis.codestash
                     throw new ShaderParserException($"ERROR Unsupported vcs version {vcsVersion}");
                 }
             }
+
 
 
             uint blockDelim = ReadUInt32AtPosition();

@@ -1,5 +1,6 @@
 using MyShaderAnalysis.codestash;
 using MyShaderAnalysis.codestash.snippetcode;
+using MyShaderAnalysis.parsetrials;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,9 +19,9 @@ namespace MyShaderAnalysis
         public static void RunTrials()
         {
             // RunTestSingleShaderFile();
-            // RunTestSingleFileBytes();
+            RunTestSingleFileBytes();
 
-            RunTestZframeBytesByArchive();
+            // RunTestZframeBytesByArchive();
             // RunTestSingleZframeBytesSilent();
             // RunTestSingleZframeBytes();
             // RunTestSingleZframeBytesSingleId();
@@ -56,6 +57,11 @@ namespace MyShaderAnalysis
         {
             // string filenamepath = GetFilenamepath(ARCHIVE.the_lab_v62, "bilateral_blur_pc_30_features.vcs");
             string filenamepath = GetFilenamepath(ARCHIVE.dotagame_pcgl, "spring_meteor_pcgl_30_ps.vcs");
+
+            // v44 file (will throw)
+            // string filenamepath = GetFilenamepath(ARCHIVE.the_lab_v62, "debugoverlay_wireframe_pc_40_gs.vcs");
+
+
             TestSingleFileBytes(filenamepath);
         }
 
@@ -63,6 +69,7 @@ namespace MyShaderAnalysis
         public static void TestSingleFileBytes(string filenamepath)
         {
             new DataReaderVcsBytes(filenamepath, showStatusMessage: true).PrintByteDetail();
+            // new ParseV44Files(filenamepath);
         }
 
 

@@ -54,6 +54,9 @@ namespace MyShaderAnalysis.parsetrials
             PrintAllDBlocks();
             PrintAllUknownBlocks();
             PrintAllParamBlocks();
+
+            // return;
+
             PrintAllMipmapBlocks();
             PrintAllBufferBlocks();
 
@@ -408,19 +411,29 @@ namespace MyShaderAnalysis.parsetrials
 
             // 5 or 6 int arguments follow depending on version
             ShowBytes(20, 4);
+
             // v64,65 has an additional argument
             if (version >= 64)
             {
                 ShowBytes(4);
             }
+            if (version >= 44)
+            {
+                ShowBytes(16, 4);
+            }
 
             // a rarely seen file reference
-            string name4 = ReadNullTermStringAtPosition();
-            if (name4.Length > 0)
-            {
-                OutputWriteLine($"// {name4}");
-            }
-            ShowBytes(64);
+            // took this out for v44, the parameter section seems to break at the right point
+            // but there is some unusual data following
+
+            //string name4 = ReadNullTermStringAtPosition();
+            //if (name4.Length > 0)
+            //{
+            //    OutputWriteLine($"// {name4}");
+            //}
+            //ShowBytes(64);
+
+
             // float or int arguments
             int a0 = ReadInt32AtPosition(0);
             int a1 = ReadInt32AtPosition(4);
