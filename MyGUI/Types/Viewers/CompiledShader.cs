@@ -253,6 +253,7 @@ namespace MyGUI.Types.Viewers {
                 }
                 long zframeId = Convert.ToInt64(linkText, 16);
                 var zframeTab = new TabPage($"{shaderFile.filenamepath.Split('_')[^1][..^4]}[{zframeId:x}]");
+                // var zframeRichTextBox = new ZFrameRichTextBox(tabControl, shaderFile, vrfGuiContext, zframeId);
                 var zframeRichTextBox = new ZFrameRichTextBox(tabControl, shaderFile, zframeId);
                 zframeRichTextBox.MouseEnter += new EventHandler(MouseEnterHandler);
                 zframeTab.Controls.Add(zframeRichTextBox);
@@ -313,7 +314,7 @@ namespace MyGUI.Types.Viewers {
                 // (the sourceId is not the same as the zframeId - a single zframe may contain more than 1 source,
                 // they are enumerated in each zframe file starting from 0)
                 int gpuSourceId = Convert.ToInt32(linkTokens[1], CultureInfo.InvariantCulture);
-                string gpuSourceLabel = $"{shaderFile.filenamepath.Split('_')[^1][..^4]}[{zframeFile.zframeId:x}]({gpuSourceId})";
+                string gpuSourceTabTitle = $"{shaderFile.filenamepath.Split('_')[^1][..^4]}[{zframeFile.zframeId:x}]({gpuSourceId})";
 
                 TabPage gpuSourceTab = null;
                 switch (zframeFile.gpuSources[gpuSourceId])
@@ -321,7 +322,7 @@ namespace MyGUI.Types.Viewers {
                     case GlslSource:
                         var buffer = new StringWriter(CultureInfo.InvariantCulture);
                         zframeFile.PrintGpuSource(gpuSourceId, buffer.Write);
-                        gpuSourceTab = new TabPage(gpuSourceLabel);
+                        gpuSourceTab = new TabPage(gpuSourceTabTitle);
                         var glslRichTextBox = new RichTextBox
                         {
                             Font = new Font(FontFamily.GenericMonospace, Font.Size),
@@ -339,7 +340,13 @@ namespace MyGUI.Types.Viewers {
                     case DxbcSource:
                     case DxilSource:
                     case VulkanSource:
-                        gpuSourceTab = CreateByteViewerTab(zframeFile.gpuSources[gpuSourceId].sourcebytes, gpuSourceLabel);
+                        // gpuSourceTab = CreateByteViewerTab(zframeFile.gpuSources[gpuSourceId].sourcebytes, gpuSourceLabel);
+                        // gpuSourceTab = new Types.Viewers.ByteViewer().Create(vrfGuiContext, input);
+                        // gpuSourceTab = new ByteViewer().Create(vrfGuiContext, zframeFile.gpuSources[gpuSourceId].sourcebytes);
+
+                        byte[] input = zframeFile.gpuSources[gpuSourceId].sourcebytes;
+                        gpuSourceTab = new ByteViewer().Create(null, null);
+                        gpuSourceTab.Text = gpuSourceTabTitle;
                         break;
 
                     default:
@@ -352,21 +359,21 @@ namespace MyGUI.Types.Viewers {
                 }
             }
 
-            private static TabPage CreateByteViewerTab(byte[] input, string tabName)
-            {
-                var bvTab = new TabPage(tabName);
-                var bv = new System.ComponentModel.Design.ByteViewer
-                {
-                    Dock = DockStyle.Fill,
-                };
-                bvTab.Controls.Add(bv);
-                Program.MainForm.Invoke((MethodInvoker)(() =>
-                {
-                    bv.SetBytes(input);
-                }));
-                // bv.sets
-                return bvTab;
-            }
+            //private static TabPage CreateByteViewerTab(byte[] input, string tabName)
+            //{
+            //    var bvTab = new TabPage(tabName);
+            //    var bv = new System.ComponentModel.Design.ByteViewer
+            //    {
+            //        Dock = DockStyle.Fill,
+            //    };
+            //    bvTab.Controls.Add(bv);
+            //    Program.MainForm.Invoke((MethodInvoker)(() =>
+            //    {
+            //        bv.SetBytes(input);
+            //    }));
+            //    // bv.sets
+            //    return bvTab;
+            //}
         }
     }
 }

@@ -35,7 +35,7 @@ namespace MyShaderAnalysis
 
 
             // -- comprehensive tests against archive names (all files)
-            TestBatchParsing.RunTrials();
+            // TestBatchParsing.RunTrials();
             // TestSingleFileParsing.RunTrials();
 
             // -- revise how files are managed as collections
@@ -57,7 +57,7 @@ namespace MyShaderAnalysis
             // -- testing code
             // TestFileUtilFunctions.RunTrials();
             // RegexExamples.RunTrials();
-            // Snippetcode.RunTrials();
+            Snippetcode.RunTrials();
             // TestStuff.RunTrials();
             // CrcTrialsSha1.RunTrials();
             // CrcTrialsMurmur32.RunTrials();

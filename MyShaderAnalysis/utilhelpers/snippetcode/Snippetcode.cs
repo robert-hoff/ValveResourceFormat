@@ -18,6 +18,8 @@ namespace MyShaderAnalysis.codestash.snippetcode
         public static void RunTrials()
         {
 
+            BytesToString();
+            // ByteCheck();
             // DumbTest6();
             // GettingGsDataOut5();
             // GettingGsDataOut4();
@@ -29,7 +31,7 @@ namespace MyShaderAnalysis.codestash.snippetcode
             // DumbTest();
             // DumbTest2();
             // TestDictionaryStats();
-            ConvertHexMapToString();
+            // ConvertHexMapToString();
             // PrintByteCounter();
             // TestDictionaryLookups();
             // ZframeLabel();
@@ -37,35 +39,71 @@ namespace MyShaderAnalysis.codestash.snippetcode
 
 
 
-        static void DumbTest()
+        static void BytesToString()
         {
-            string filenamepath = "debugoverlay_wireframe_pc_40_gs.vcs";
-
-
-            // MyShaderUtilHelpers.ComputeVCSFileName((out VcsProgramType prog1, out VcsPlatformType prog2, out VcsShaderModelType prog4), filenamepath);
-            // MyShaderUtilHelpers.ComputeVCSFileName(filenamepath, out (VcsProgramType p1, VcsPlatformType p2, VcsShaderModelType p3));
-            // VcsProgramType vcsProgramType = vcsTypes.Item1;
-            // VcsPlatformType vcsPlatformType = vcsTypes.Item2;
-            // VcsShaderModelType vcsShaderModelType = vcsTypes.Item3;
-            // Console.WriteLine($"{vcsTypes.p1}");
-
-
-
+            // int BREAKLEN = 32;
+            int BREAKLEN = 12;
+            byte[] databytes = { 1, 2, 3, 40, 5, 6, 7, 8, 9, 10, 11, 12, 13 };
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < databytes.Length; i++)
+            {
+                if (i > 0 && i % BREAKLEN == 0)
+                {
+                    sb.Append($"\n");
+                }
+                sb.Append($"{databytes[i]:X02} ");
+            }
+            Console.WriteLine($"{sb.ToString()}");
         }
+
+
+        public static string BytesToString(byte[] databytes, int breakLen = 32)
+        {
+            if (databytes == null || databytes.Length == 0)
+            {
+                return "";
+            }
+            if (breakLen == -1)
+            {
+                breakLen = int.MaxValue;
+            }
+            int count = 0;
+            string bytestring = "";
+            for (int i = 0; i < databytes.Length; i++)
+            {
+                bytestring += $"{databytes[i]:X02} ";
+                if (++count % breakLen == 0)
+                {
+                    bytestring += "\n";
+                }
+            }
+            return bytestring.Trim();
+        }
+
+
+        static void ByteCheck()
+        {
+            Console.WriteLine($"byte check");
+
+
+            // byte[] input = Array.Empty<byte>();
+            // byte[] input = { 1, 2, 3, 4 };
+            byte[] input = { 1, 2, 3, 0 };
+
+            // if the byte array contains any instane of 0 this will not trigger
+            if (!input.Contains<byte>(0x00))
+            {
+                Console.WriteLine($"hello");
+            }
+        }
+
+
 
 
         static void DumbTest6()
         {
-            string filenamepath = "debugoverlay_wireframe_pc_40_gs.vcs";
-
-            // (filenamepath, out (VcsProgramType, VcsPlatformType, VcsShaderModelType) vcsprog)) => { vcsprog = ComputeVCSFileName(filenamepath); }
-            //
-
-
             var add = (int x, int y) => x + y;
             Console.WriteLine($"{add(10, 20)}");
-
-
         }
 
 
