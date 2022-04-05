@@ -5,12 +5,11 @@ using ValveResourceFormat.CompiledShader;
 using System.Collections.Generic;
 using System.Linq;
 using MyShaderAnalysis.codestash;
-using MyShaderAnalysis.codestash.snippetcode;
 using static MyShaderAnalysis.codestash.MyShaderUtilHelpers;
 using static MyShaderAnalysis.codestash.FileSystemOld;
 using static MyShaderAnalysis.codestash.ReadShaderFile;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
-
+using MyShaderAnalysis.utilhelpers.snippetcode;
 
 namespace MyShaderAnalysis
 {
@@ -39,7 +38,7 @@ namespace MyShaderAnalysis
             // TestSingleFileParsing.RunTrials();
 
             // -- revise how files are managed as collections
-            // CreateHtmlServerFiles.RunTrials();
+            CreateHtmlServerFiles.RunTrials();
 
 
             // DemoCode.RunTrials();
@@ -57,7 +56,7 @@ namespace MyShaderAnalysis
             // -- testing code
             // TestFileUtilFunctions.RunTrials();
             // RegexExamples.RunTrials();
-            Snippetcode.RunTrials();
+            // Snippetcode.RunTrials();
             // TestStuff.RunTrials();
             // CrcTrialsSha1.RunTrials();
             // CrcTrialsMurmur32.RunTrials();

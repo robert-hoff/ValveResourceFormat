@@ -62,9 +62,9 @@ namespace MyShaderAnalysis
         public static void SaveServerSets()
         {
             // SaveAllServerFiles(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
-            SaveAllServerFiles(ARCHIVE.dotagame_pcgl, "3dskyboxstencil_pcgl_30_features.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
-            SaveAllServerFiles(ARCHIVE.dotagame_pcgl, "3dskyboxstencil_pcgl_30_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
-            SaveAllServerFiles(ARCHIVE.dotagame_pcgl, "3dskyboxstencil_pcgl_30_ps.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
+            SaveAllServerFiles(ARCHIVE.dota_game_pcgl_v64, "3dskyboxstencil_pcgl_30_features.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
+            SaveAllServerFiles(ARCHIVE.dota_game_pcgl_v64, "3dskyboxstencil_pcgl_30_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
+            SaveAllServerFiles(ARCHIVE.dota_game_pcgl_v64, "3dskyboxstencil_pcgl_30_ps.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
             // SaveAllServerFiles(ARCHIVE.dotagame_pc, "3dskyboxstencil_pc_30_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
             // SaveAllServerFiles(ARCHIVE.dotagame_pc, "3dskyboxstencil_pc_40_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
             // SaveAllServerFiles(ARCHIVE.dotagame_pc, "multiblend_pc_40_vs.vcs", zframesToPrint: 20, gpuSourcesToPrint: 5);
@@ -94,7 +94,7 @@ namespace MyShaderAnalysis
         public static void SingleFileExamples2()
         {
             // ParseVcsFile vcsFile = GetVcsFile(ARCHIVE.dotagame_pc, "multiblend_pc_30_vs.vcs");
-            ParseVcsFile vcsFile = GetVcsFile(ARCHIVE.the_lab_v62, "bilateral_blur_pc_30_features.vcs");
+            ParseVcsFile vcsFile = GetVcsFile(ARCHIVE.the_lab_pc_v62, "bilateral_blur_pc_30_features.vcs");
             // vcsFile.SaveVcsSummaryToHtml();
             vcsFile.SaveVcsByteSummaryToHtml();
         }
@@ -106,7 +106,7 @@ namespace MyShaderAnalysis
             // SaveZframeSummary(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_vs.vcs", zframeId: 0);
             // SaveZframeSummaries(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_vs.vcs", zframesToPrint: 20);
             // SaveGpuSource(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_vs.vcs", zframeId: 0, gpuSourceId: 0);
-            SaveGpuSources(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_vs.vcs", zframeId: 0, gpuSourcesToPrint: 20);
+            SaveGpuSources(ARCHIVE.dota_game_pcgl_v64, "multiblend_pcgl_30_vs.vcs", zframeId: 0, gpuSourcesToPrint: 20);
         }
 
 

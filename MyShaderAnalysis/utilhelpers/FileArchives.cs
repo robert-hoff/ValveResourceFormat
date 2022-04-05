@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ValveResourceFormat.CompiledShader;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
+using System.Reflection;
 
 /*
  *
@@ -21,44 +22,6 @@ namespace MyShaderAnalysis.codestash
         // private const string PROJECT_TESTDIR = "Z:/active/projects/dota2-sourcesdk-modding/shader-analysis-vcs-format/OUTPUT_DUMP";
         private const string SERVER_BASEDIR = "Z:/dev/www/vcs.codecreation.dev";
         private const string SERVER_TESTPATH = "/GEN-output";
-        private const string DOTA_CORE_PC_SOURCE_V65 = "X:/dota-2-VRF-exports/dota2-export-shaders-pc-V65/shaders-core/vfx";
-        private const string DOTA_GAME_PC_SOURCE_V65 = "X:/dota-2-VRF-exports/dota2-export-shaders-pc-V65/shaders/vfx";
-        private const string DOTA_CORE_VULKAN_SOURCE_V65 = "X:/dota-2-VRF-exports/dota2-export-shaders-vulkan-V65/shaders-core/vfx";
-        private const string DOTA_GAME_VULKAN_SOURCE_V65 = "X:/dota-2-VRF-exports/dota2-export-shaders-vulkan-V65/shaders-game/vfx";
-        private const string DOTA_CORE_PCGL_SOURCE_V64 = "X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders-core/vfx";
-        private const string DOTA_GAME_PCGL_SOURCE_V64 = "X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders/vfx";
-        private const string DOTA_CORE_PC_SOURCE_V64 = "X:/dota-2-VRF-exports/dota2-export-shaders-pc/shaders-core/vfx";
-        private const string DOTA_GAME_PC_SOURCE_V64 = "X:/dota-2-VRF-exports/dota2-export-shaders-pc/shaders/vfx";
-        private const string DOTA_CORE_MOBILE_GLES_SOURCE_V64 = "X:/dota-2-VRF-exports/dota2-shaders-mobile-gles/core";
-        private const string DOTA_DAC_MOBILE_GLES_SOURCE_V64 = "X:/dota-2-VRF-exports/dota2-shaders-mobile-gles/dac";
-        private const string DOTA_CORE_ANDROID_VULKAN_SOURCE_V64 = "X:/dota-2-VRF-exports/dota2-shaders-android-vulkan/core";
-        private const string DOTA_DAC_ANDROID_VULKAN_SOURCE_V64 = "X:/dota-2-VRF-exports/dota2-shaders-android-vulkan/dac";
-        private const string DOTA_CORE_IOS_VULKAN_SOURCE_V64 = "X:/dota-2-VRF-exports/dota2-shaders-ios-vulkan/core";
-        private const string DOTA_DAC_IOS_VULKAN_SOURCE_V64 = "X:/dota-2-VRF-exports/dota2-shaders-ios-vulkan/dac";
-        private const string ARTIFACT_CLASSIC_CORE_PC_SOURCE_V64 = "X:/artifact-classic-exports/artifact-shaders-pc-core";
-        private const string ARTIFACT_CLASSIC_DCG_PC_SOURCE_V64 = "X:/artifact-classic-exports/artifact-shaders-pc-dcg";
-        private const string HLALYX_CORE_VULKAN_SOURCE_V64 = "X:/hl2alyx-export/alyx-vulkan-core";
-        private const string HLALYX_HLVR_VULKAN_SOURCE_V64 = "X:/hl2alyx-export/alyx-vulkan-hlvr";
-        private const string DOTA_CORE_PCGL_SOURCE_V62 = "X:/dota-2-VRF-exports/manifest-20150907-pcgl-shader-v62/core";
-        private const string DOTA_GAME_PCGL_SOURCE_V62 = "X:/dota-2-VRF-exports/manifest-20150907-pcgl-shader-v62/dota";
-        private const string V62_EXAMPLES_SOURCE = "X:/v62shaders-from-xpaw";
-        private const string THE_LAB_SOURCE_V62 = "X:/Steam/steamapps/common/The Lab/RobotRepair/core/shaders/vfx";
-
-
-        public enum ARCHIVE
-        {
-            undetermined,
-            dotacore_pcgl, dotagame_pcgl, dotacore_pc, dotagame_pc,
-            dotacore_pc_v65, dotagame_pc_v65,
-            dotacore_vulkan_v65, dotagame_vulkan_v65,
-            dota_core_gles, dota_dac_gles,
-            dota_core_android_vulkan, dota_dac_android_vulkan,
-            dota_core_ios_vulkan, dota_dac_ios_vulkan,
-            artifact_classiccore_pc, artifact_classicdcg_pc,
-            alyx_core_vulkan, alyx_hlvr_vulkan,
-            dotacore_pcgl_v62, dotagame_pcgl_v62,
-            v62_examples, the_lab_v62
-        };
 
 
         public static string GetServerBaseDir()
@@ -71,32 +34,18 @@ namespace MyShaderAnalysis.codestash
             return $"{SERVER_BASEDIR}{SERVER_TESTPATH}"; ;
         }
 
-        public static string GetSourceDir(ARCHIVE archive)
+        /*
+         * Returns directory of the vcs source files. E.g.
+         * X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders/vfx
+         *
+         */
+        public static string GetArchiveDir(ARCHIVE archive)
         {
-            if (archive == ARCHIVE.dotacore_pcgl) return DOTA_CORE_PCGL_SOURCE_V64;
-            if (archive == ARCHIVE.dotagame_pcgl) return DOTA_GAME_PCGL_SOURCE_V64;
-            if (archive == ARCHIVE.dotacore_pc) return DOTA_CORE_PC_SOURCE_V64;
-            if (archive == ARCHIVE.dotagame_pc) return DOTA_GAME_PC_SOURCE_V64;
-            if (archive == ARCHIVE.dotacore_pc_v65) return DOTA_CORE_PC_SOURCE_V65;
-            if (archive == ARCHIVE.dotagame_pc_v65) return DOTA_GAME_PC_SOURCE_V65;
-            if (archive == ARCHIVE.dotacore_vulkan_v65) return DOTA_CORE_VULKAN_SOURCE_V65;
-            if (archive == ARCHIVE.dotagame_vulkan_v65) return DOTA_GAME_VULKAN_SOURCE_V65;
-            if (archive == ARCHIVE.dota_core_gles) return DOTA_CORE_MOBILE_GLES_SOURCE_V64;
-            if (archive == ARCHIVE.dota_dac_gles) return DOTA_DAC_MOBILE_GLES_SOURCE_V64;
-            if (archive == ARCHIVE.dota_core_android_vulkan) return DOTA_CORE_ANDROID_VULKAN_SOURCE_V64;
-            if (archive == ARCHIVE.dota_dac_android_vulkan) return DOTA_DAC_ANDROID_VULKAN_SOURCE_V64;
-            if (archive == ARCHIVE.dota_core_ios_vulkan) return DOTA_CORE_IOS_VULKAN_SOURCE_V64;
-            if (archive == ARCHIVE.dota_dac_ios_vulkan) return DOTA_DAC_IOS_VULKAN_SOURCE_V64;
-            if (archive == ARCHIVE.artifact_classiccore_pc) return ARTIFACT_CLASSIC_CORE_PC_SOURCE_V64;
-            if (archive == ARCHIVE.artifact_classicdcg_pc) return ARTIFACT_CLASSIC_DCG_PC_SOURCE_V64;
-            if (archive == ARCHIVE.alyx_hlvr_vulkan) return HLALYX_HLVR_VULKAN_SOURCE_V64;
-            if (archive == ARCHIVE.alyx_core_vulkan) return HLALYX_CORE_VULKAN_SOURCE_V64;
-            if (archive == ARCHIVE.dotacore_pcgl_v62) return DOTA_CORE_PCGL_SOURCE_V62;
-            if (archive == ARCHIVE.dotagame_pcgl_v62) return DOTA_GAME_PCGL_SOURCE_V62;
-            if (archive == ARCHIVE.v62_examples) return V62_EXAMPLES_SOURCE;
-            if (archive == ARCHIVE.the_lab_v62) return THE_LAB_SOURCE_V62;
-            throw new ShaderParserException("unknown archive");
+            FieldInfo fieldInfo = typeof(ARCHIVE).GetField(archive.ToString());
+            object[] attributes = fieldInfo.GetCustomAttributes(typeof(ArchiveDirectoryAttribute), true);
+            return ((ArchiveDirectoryAttribute)attributes[0]).dirName;
         }
+
 
         /*
          * This is used as the base folder name for the given collection
@@ -110,35 +59,13 @@ namespace MyShaderAnalysis.codestash
          */
         public static string GetArchiveName(ARCHIVE archive)
         {
-            if (archive == ARCHIVE.dotacore_pc_v65) return "dota-core-pc-v65";
-            if (archive == ARCHIVE.dotagame_pc_v65) return "dota-game-pc-v65";
-            if (archive == ARCHIVE.dotacore_vulkan_v65) return "dota-core-vulkan-v65";
-            if (archive == ARCHIVE.dotagame_vulkan_v65) return "dota-game-vulkan-v65";
-            if (archive == ARCHIVE.dotacore_pcgl) return "dota-core-pcgl-v64";
-            if (archive == ARCHIVE.dotagame_pcgl) return "dota-game-pcgl-v64";
-            if (archive == ARCHIVE.dotacore_pc) return "dota-core-pc-v64";
-            if (archive == ARCHIVE.dotagame_pc) return "dota-game-pc-v64";
-            if (archive == ARCHIVE.dota_core_gles) return "dota-core-mobile-gles-v64";
-            if (archive == ARCHIVE.dota_dac_gles) return "dota-game-mobile-gles-v64";
-            if (archive == ARCHIVE.dota_core_android_vulkan) return "dota-core-android-vulkan-v64";
-            if (archive == ARCHIVE.dota_dac_android_vulkan) return "dota-dac-android-vulkan-v64";
-            if (archive == ARCHIVE.dota_core_ios_vulkan) return "dota-core-ios-vulkan-v64";
-            if (archive == ARCHIVE.dota_dac_ios_vulkan) return "dota-dac-ios-vulkan-v64";
-            if (archive == ARCHIVE.artifact_classiccore_pc) return "aclassic-core-pc-v64";
-            if (archive == ARCHIVE.artifact_classicdcg_pc) return "aclassic-dcg-pc-v64";
-            if (archive == ARCHIVE.alyx_hlvr_vulkan) return "alyx-hlvr-vulkan-v64";
-            if (archive == ARCHIVE.alyx_core_vulkan) return "alyx-core-vulkan-v64";
-            if (archive == ARCHIVE.dotacore_pcgl_v62) return "dota-core-pcgl-v62";
-            if (archive == ARCHIVE.dotagame_pcgl_v62) return "dota-game-pcgl-v62";
-            if (archive == ARCHIVE.v62_examples) return "exampleset-pc-v62";
-            if (archive == ARCHIVE.the_lab_v62) return "the-lab-pc-v62";
-            throw new ShaderParserException("unknown archive");
+            return archive.ToString();
         }
 
 
-        public static string GetFilenamepath(ARCHIVE archive, string filenamepath)
+        public static string GetFilenamepath(ARCHIVE archive, string filename)
         {
-            return $"{GetSourceDir(archive)}/{filenamepath}";
+            return $"{GetArchiveDir(archive)}/{filename}";
         }
 
 

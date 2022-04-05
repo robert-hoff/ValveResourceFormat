@@ -266,7 +266,7 @@ namespace MyShaderAnalysis.codestash
          */
         static void TestFileSystem()
         {
-            FileTokensOld spritecard = new(ARCHIVE.dotacore_pcgl, "spritecard_pcgl_30_ps.vcs");
+            FileTokensOld spritecard = new(ARCHIVE_OLD.dotacore_pcgl, "spritecard_pcgl_30_ps.vcs");
             List<string> filenames = spritecard.GetZFrameListing();
             foreach (var f in filenames)
             {

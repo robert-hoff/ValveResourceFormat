@@ -34,7 +34,7 @@ namespace MyShaderAnalysis.codestash
 
         static void RunZframeBytesSetExample2()
         {
-            string filenamepath = GetFilenamepath(ARCHIVE.the_lab_v62, "test_pcgl_50_hs.vcs"); int zframeIndex = 0;
+            string filenamepath = GetFilenamepath(ARCHIVE.the_lab_pc_v62, "test_pcgl_50_hs.vcs"); int zframeIndex = 0;
             // string filenamepath = GetFilenamepath(ARCHIVE.alyx_core_vulkan, "test_vulkan_50_hs.vcs"); int zframeIndex = 1;
             // TestZFrameFilePrintout(filenamepath, zframeIndex);
             // TestZFrameBytePrintout1(filenamepath, zframeIndex);
@@ -44,7 +44,7 @@ namespace MyShaderAnalysis.codestash
 
         static void RunZframeBytesSetExample1()
         {
-            string filenamepath = GetFilenamepath(ARCHIVE.the_lab_v62, "test_pcgl_50_ds.vcs"); int zframeIndex = 0;
+            string filenamepath = GetFilenamepath(ARCHIVE.the_lab_pc_v62, "test_pcgl_50_ds.vcs"); int zframeIndex = 0;
             TestZFrameFilePrintout(filenamepath, zframeIndex);
             Console.WriteLine($"");
             Console.WriteLine($"");
@@ -58,28 +58,28 @@ namespace MyShaderAnalysis.codestash
 
         static void RunTestSingleFilePrintout()
         {
-            // string filenamepath = GetFilenamepath(ARCHIVE.dotacore_pcgl, "cs_compress_dxt5_pcgl_30_features.vcs");
-            // string filenamepath = GetFilenamepath(ARCHIVE.dotagame_pcgl, "hero_pcgl_30_features.vcs");
-            // string filenamepath = GetFilenamepath(ARCHIVE.dotagame_pcgl, "hero_pcgl_30_vs.vcs");
-            // string filenamepath = GetFilenamepath(ARCHIVE.dotagame_pcgl, "hero_pcgl_30_ps.vcs");
-            // string filenamepath = GetFilenamepath(ARCHIVE.dotagame_pcgl, "hero_pcgl_30_psrs.vcs");
-            // string filenamepath = GetFilenamepath(ARCHIVE.dotagame_pc, "hero_pc_30_vs.vcs");
-            // string filenamepath = GetFilenamepath(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_features.vcs");
-            // string filenamepath = GetFilenamepath(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_vs.vcs");
-            // string filenamepath = GetFilenamepath(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_ps.vcs");
-            // string filenamepath = GetFilenamepath(ARCHIVE.dotagame_pc, "multiblend_pc_30_features.vcs");
-            // string filenamepath = GetFilenamepath(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_vs.vcs");
-            // string filenamepath = GetFilenamepath(ARCHIVE.dotagame_pc, "multiblend_pc_30_ps.vcs");
-            // string filenamepath = GetFilenamepath(ARCHIVE.dotacore_pcgl, "generic_light_pcgl_30_features.vcs");
-            // string filenamepath = GetFilenamepath(ARCHIVE.dotacore_pcgl, "generic_light_pcgl_30_vs.vcs");
-            // string filenamepath = GetFilenamepath(ARCHIVE.dotacore_pc, "generic_light_pc_30_features.vcs");
-            // string filenamepath = GetFilenamepath(ARCHIVE.dotacore_pc, "generic_light_pc_30_vs.vcs");
-            // string filenamepath = GetFilenamepath(ARCHIVE.dotacore_pcgl, "generic_light_pcgl_30_ps.vcs");
-            // string filenamepath = GetFilenamepath(ARCHIVE.dotacore_pcgl, "spritecard_pcgl_30_features.vcs");
-            // string filenamepath = GetFilenamepath(ARCHIVE.dotacore_pcgl, "spritecard_pcgl_30_ps.vcs");
-            // string filenamepath = GetFilenamepath(ARCHIVE.dotacore_pcgl, "spritecard_pcgl_30_vs.vcs");
+            // string filenamepath = GetFilenamepath(ARCHIVE.dota_core_pcgl_v64, "cs_compress_dxt5_pcgl_30_features.vcs");
+            // string filenamepath = GetFilenamepath(ARCHIVE.dota_core_pcgl_v64, "hero_pcgl_30_features.vcs");
+            // string filenamepath = GetFilenamepath(ARCHIVE.dota_core_pcgl_v64, "hero_pcgl_30_vs.vcs");
+            // string filenamepath = GetFilenamepath(ARCHIVE.dota_core_pcgl_v64, "hero_pcgl_30_ps.vcs");
+            // string filenamepath = GetFilenamepath(ARCHIVE.dota_core_pcgl_v64, "hero_pcgl_30_psrs.vcs");
+            // string filenamepath = GetFilenamepath(ARCHIVE.dota_game_pc_v64, "hero_pc_30_vs.vcs");
+            // string filenamepath = GetFilenamepath(ARCHIVE.dota_core_pcgl_v64, "multiblend_pcgl_30_features.vcs");
+            // string filenamepath = GetFilenamepath(ARCHIVE.dota_core_pcgl_v64, "multiblend_pcgl_30_vs.vcs");
+            // string filenamepath = GetFilenamepath(ARCHIVE.dota_core_pcgl_v64, "multiblend_pcgl_30_ps.vcs");
+            // string filenamepath = GetFilenamepath(ARCHIVE.dota_game_pc_v64, "multiblend_pc_30_features.vcs");
+            // string filenamepath = GetFilenamepath(ARCHIVE.dota_core_pcgl_v64, "multiblend_pcgl_30_vs.vcs");
+            // string filenamepath = GetFilenamepath(ARCHIVE.dota_game_pc_v64, "multiblend_pc_30_ps.vcs");
+            // string filenamepath = GetFilenamepath(ARCHIVE.dota_core_pcgl_v64, "generic_light_pcgl_30_features.vcs");
+            // string filenamepath = GetFilenamepath(ARCHIVE.dota_core_pcgl_v64, "generic_light_pcgl_30_vs.vcs");
+            // string filenamepath = GetFilenamepath(ARCHIVE.dota_core_pc_v64, "generic_light_pc_30_features.vcs");
+            // string filenamepath = GetFilenamepath(ARCHIVE.dota_core_pc_v64, "generic_light_pc_30_vs.vcs");
+            // string filenamepath = GetFilenamepath(ARCHIVE.dota_core_pcgl_v64, "generic_light_pcgl_30_ps.vcs");
+            // string filenamepath = GetFilenamepath(ARCHIVE.dota_core_pcgl_v64, "spritecard_pcgl_30_features.vcs");
+            // string filenamepath = GetFilenamepath(ARCHIVE.dota_core_pcgl_v64, "spritecard_pcgl_30_ps.vcs");
+            // string filenamepath = GetFilenamepath(ARCHIVE.dota_core_pcgl_v64, "spritecard_pcgl_30_vs.vcs");
             // strange file that doesn't contain any data
-            string filenamepath = GetFilenamepath(ARCHIVE.dotacore_pcgl, "msaa_resolve_cs_pcgl_50_features.vcs");
+            string filenamepath = GetFilenamepath(ARCHIVE.dota_core_pcgl_v64, "msaa_resolve_cs_pcgl_50_features.vcs");
 
             // v44 file (will throw)
             // string filenamepath = GetFilenamepath(ARCHIVE.the_lab_v62, "debugoverlay_wireframe_pc_40_gs.vcs");
@@ -91,15 +91,15 @@ namespace MyShaderAnalysis.codestash
         {
             // string filenamepath = GetFilenamepath(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_vs.vcs"); int zframeIndex = 0;
             // string filenamepath = GetFilenamepath(ARCHIVE.alyx_hlvr_vulkan, "cs_surface_interactions_vulkan_50_cs.vcs"); int zframeIndex = 0;
-            string filenamepath = GetFilenamepath(ARCHIVE.the_lab_v62, "test_pcgl_50_ds.vcs"); int zframeIndex = 0;
-            // string filenamepath = GetFilenamepath(ARCHIVE.the_lab_v62, "test_pcgl_50_ds.vcs"); int zframeIndex = 1;
+            string filenamepath = GetFilenamepath(ARCHIVE.the_lab_pc_v62, "test_pcgl_50_ds.vcs"); int zframeIndex = 0;
+            // string filenamepath = GetFilenamepath(ARCHIVE.the_lab_pc_v62, "test_pcgl_50_ds.vcs"); int zframeIndex = 1;
             TestZFrameFilePrintout(filenamepath, zframeIndex);
         }
 
         static void RunTestZFrameBytePrintout2()
         {
-            // string filenamepath = GetFilenamepath(ARCHIVE.the_lab_v62, "test_pcgl_50_ds.vcs"); int zframeIndex = 0;
-            string filenamepath = GetFilenamepath(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_vs.vcs"); int zframeIndex = 0;
+            // string filenamepath = GetFilenamepath(ARCHIVE.the_lab_pc_v62, "test_pcgl_50_ds.vcs"); int zframeIndex = 0;
+            string filenamepath = GetFilenamepath(ARCHIVE.dota_core_pcgl_v64, "multiblend_pcgl_30_vs.vcs"); int zframeIndex = 0;
             TestZFrameFilePrintout(filenamepath, zframeIndex);
         }
 
@@ -124,8 +124,8 @@ namespace MyShaderAnalysis.codestash
         static void RunTestZFrameBytePrintout1()
         {
             // string filenamepath = GetFilenamepath(ARCHIVE.the_lab_v62, "test_pcgl_50_ds.vcs"); int zframeIndex = 0;
-            // string filenamepath = GetFilenamepath(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_vs.vcs"); int zframeIndex = 0;
-            string filenamepath = GetFilenamepath(ARCHIVE.dotagame_pc, "multiblend_pc_30_vs.vcs"); int zframeIndex = 0;
+            // string filenamepath = GetFilenamepath(ARCHIVE.dota_game_pcgl_v64, "multiblend_pcgl_30_vs.vcs"); int zframeIndex = 0;
+            string filenamepath = GetFilenamepath(ARCHIVE.dota_core_pc_v64, "multiblend_pc_30_vs.vcs"); int zframeIndex = 0;
             TestZFrameFilePrintout(filenamepath, zframeIndex);
         }
 
@@ -145,8 +145,8 @@ namespace MyShaderAnalysis.codestash
 
         static void RunTestZFrameBytePrintoutV62BatchSuppressOutput()
         {
-            // string filenamepath = GetFilenamepath(ARCHIVE.dotagame_pcgl_v62, "multiblend_pcgl_30_features.vcs");
-            string filenamepath = GetFilenamepath(ARCHIVE.dotacore_pcgl_v62, "depth_only_pcgl_30_features.vcs");
+            // string filenamepath = GetFilenamepath(ARCHIVE.dota_game_pcgl_v62, "multiblend_pcgl_30_features.vcs");
+            string filenamepath = GetFilenamepath(ARCHIVE.dota_core_pcgl_v62, "depth_only_pcgl_30_features.vcs");
             ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath); ;
             int MAX_ZFRAMES = 100;
             for (int i = 0; i < Math.Min(shaderFile.GetZFrameCount(), MAX_ZFRAMES); i++)
@@ -165,9 +165,9 @@ namespace MyShaderAnalysis.codestash
         {
 
             // ARCHIVE archive = ARCHIVE.dotagame_pcgl_v62;
-            ARCHIVE archive = ARCHIVE.dotacore_pcgl_v62;
+            ARCHIVE archive = ARCHIVE.dota_core_pcgl_v62;
             // ARCHIVE archive = ARCHIVE.the_lab_v62;
-            List<string> vcsFiles = MyShaderUtilHelpers.GetVcsFiles(FileArchives.GetSourceDir(archive), VcsProgramType.Features);
+            List<string> vcsFiles = MyShaderUtilHelpers.GetVcsFiles(FileArchives.GetArchiveDir(archive), VcsProgramType.Features);
             foreach (var filenamepath in vcsFiles)
             {
                 Console.WriteLine($"{filenamepath}");
@@ -203,7 +203,7 @@ namespace MyShaderAnalysis.codestash
 
         static void RunTestZFrameBytePrintoutV62Batch()
         {
-            string filenamepath = GetFilenamepath(ARCHIVE.dotagame_pcgl_v62, "multiblend_pcgl_30_features.vcs");
+            string filenamepath = GetFilenamepath(ARCHIVE.dota_game_pcgl_v62, "multiblend_pcgl_30_features.vcs");
             ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath); ;
             // ParseV62ZFrame zframeParser = new ParseV62ZFrame(zframeBytes, shaderFile);
             // zframeParser.PrintByteDetail();
@@ -223,13 +223,13 @@ namespace MyShaderAnalysis.codestash
 
         static void RunTestZFrameBytePrintoutV62()
         {
-            // string filenamepath = GetFilenamepath(ARCHIVE.dotagame_pcgl_v62, "bloom_dota_pcgl_30_features.vcs"); int zframeIndex = 0;
-            // string filenamepath = GetFilenamepath(ARCHIVE.dotagame_pcgl_v62, "multiblend_pcgl_30_features.vcs"); int zframeIndex = 0;
-            string filenamepath = GetFilenamepath(ARCHIVE.dotagame_pcgl_v62, "hero_pcgl_30_features.vcs"); int zframeIndex = 15;
-            // string filenamepath = GetFilenamepath(ARCHIVE.dotagame_pcgl_v62, "hero_pcgl_30_features.vcs"); int zframeIndex = 100;
-            // string filenamepath = GetFilenamepath(ARCHIVE.dotacore_pcgl_v62, "visualize_physics_pcgl_40_features.vcs"); int zframeIndex = 0;
-            // string filenamepath = GetFilenamepath(ARCHIVE.dotacore_pcgl_v62, "depth_only_pcgl_30_features.vcs"); int zframeIndex = 6;
-            // string filenamepath = GetFilenamepath(ARCHIVE.dotacore_pcgl_v62, "depth_only_pcgl_30_features.vcs"); int zframeIndex = 7;
+            // string filenamepath = GetFilenamepath(ARCHIVE.dota_game_pcgl_v62, "bloom_dota_pcgl_30_features.vcs"); int zframeIndex = 0;
+            // string filenamepath = GetFilenamepath(ARCHIVE.dota_game_pcgl_v62, "multiblend_pcgl_30_features.vcs"); int zframeIndex = 0;
+            string filenamepath = GetFilenamepath(ARCHIVE.dota_game_pcgl_v62, "hero_pcgl_30_features.vcs"); int zframeIndex = 15;
+            // string filenamepath = GetFilenamepath(ARCHIVE.dota_game_pcgl_v62, "hero_pcgl_30_features.vcs"); int zframeIndex = 100;
+            // string filenamepath = GetFilenamepath(ARCHIVE.dota_core_pcgl_v62, "visualize_physics_pcgl_40_features.vcs"); int zframeIndex = 0;
+            // string filenamepath = GetFilenamepath(ARCHIVE.dota_core_pcgl_v62, "depth_only_pcgl_30_features.vcs"); int zframeIndex = 6;
+            // string filenamepath = GetFilenamepath(ARCHIVE.dota_core_pcgl_v62, "depth_only_pcgl_30_features.vcs"); int zframeIndex = 7;
 
 
             Console.WriteLine($"{filenamepath} zframeIndex = {zframeIndex}\n");
@@ -258,7 +258,7 @@ namespace MyShaderAnalysis.codestash
 
         static void ShowZFrameCount()
         {
-            string filenamepath = GetFilenamepath(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_vs.vcs");
+            string filenamepath = GetFilenamepath(ARCHIVE.dota_core_pcgl_v64, "multiblend_pcgl_30_vs.vcs");
             Console.WriteLine($"{filenamepath}");
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             Console.WriteLine($"{shaderFile.GetZFrameCount()} zframes");

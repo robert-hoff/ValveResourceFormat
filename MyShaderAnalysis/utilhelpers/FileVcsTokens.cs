@@ -67,7 +67,7 @@ namespace MyShaderAnalysis.codestash
         // used to have this - but isn't actually needed (parser determines this independently)
         // public string platformType { get; }  // pcgl, pc, vulkan
 
-        public FileArchives.ARCHIVE archive { get; }
+        public ARCHIVE archive { get; }
         public string archivename { get; }      // dota-game-pcgl, dota-core-pcgl
         public string filename { get; }         // multiblend_pcgl_30_ps.vcs
         public string filenamepath { get; }     // X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders/vfx/multiblend_pcgl_30_ps.vcs
@@ -80,13 +80,13 @@ namespace MyShaderAnalysis.codestash
         public string vcstoken { get; }         // ft, vs, ps, psrs or gs
 
 
-        public FileVcsTokens(FileArchives.ARCHIVE archive, string filename)
+        public FileVcsTokens(ARCHIVE archive, string filename)
         {
             this.archive = archive;
             this.archivename = FileArchives.GetArchiveName(archive);
             filename = Path.GetFileName(filename);
             this.filename = filename;
-            this.filenamepath = $"{FileArchives.GetSourceDir(archive)}/{filename}";
+            this.filenamepath = $"{FileArchives.GetArchiveDir(archive)}/{filename}";
             if (!File.Exists(filenamepath))
             {
                 throw new ShaderParserException("file doesn't exist");

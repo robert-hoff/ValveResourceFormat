@@ -74,7 +74,7 @@ namespace MyShaderAnalysis.codestash
         public const string THE_LAB_SOURCE = "X:/Steam/steamapps/common/The Lab/RobotRepair/core/shaders/vfx";
 
 
-        public enum ARCHIVE
+        public enum ARCHIVE_OLD
         {
             dotacore_pcgl, dotagame_pcgl, dotacore_pc, dotagame_pc,
             dota_core_gles, dota_dac_gles,
@@ -84,7 +84,7 @@ namespace MyShaderAnalysis.codestash
 
 
 
-        public static string GetFilenamepath(ARCHIVE archive, string filename)
+        public static string GetFilenamepath(ARCHIVE_OLD archive, string filename)
         {
             return $"{GetSourceDir(archive)}/{filename}";
         }
@@ -101,77 +101,77 @@ namespace MyShaderAnalysis.codestash
 
 
         // todo - it may be possible to write all of this into the enums
-        public static string GetSourceDir(ARCHIVE archive)
+        public static string GetSourceDir(ARCHIVE_OLD archive)
         {
-            if (archive == ARCHIVE.dotacore_pcgl) return DOTA_CORE_PCGL_SOURCE;
-            if (archive == ARCHIVE.dotagame_pcgl) return DOTA_GAME_PCGL_SOURCE;
-            if (archive == ARCHIVE.dotacore_pc) return DOTA_CORE_PC_SOURCE;
-            if (archive == ARCHIVE.dotagame_pc) return DOTA_GAME_PC_SOURCE;
-            if (archive == ARCHIVE.dota_core_gles) return DOTA_CORE_MOBILE_GLES_SOURCE;
-            if (archive == ARCHIVE.dota_dac_gles) return DOTA_DAC_MOBILE_GLES_SOURCE;
-            if (archive == ARCHIVE.artifact_classiccore_pc) return ARTIFACT_CLASSIC_CORE_PC_SOURCE;
-            if (archive == ARCHIVE.artifact_classicdcg_pc) return ARTIFACT_CLASSIC_DCG_PC_SOURCE;
-            if (archive == ARCHIVE.hl_hlvr_vulkan) return HLALYX_HLVR_VULKAN_SOURCE;
+            if (archive == ARCHIVE_OLD.dotacore_pcgl) return DOTA_CORE_PCGL_SOURCE;
+            if (archive == ARCHIVE_OLD.dotagame_pcgl) return DOTA_GAME_PCGL_SOURCE;
+            if (archive == ARCHIVE_OLD.dotacore_pc) return DOTA_CORE_PC_SOURCE;
+            if (archive == ARCHIVE_OLD.dotagame_pc) return DOTA_GAME_PC_SOURCE;
+            if (archive == ARCHIVE_OLD.dota_core_gles) return DOTA_CORE_MOBILE_GLES_SOURCE;
+            if (archive == ARCHIVE_OLD.dota_dac_gles) return DOTA_DAC_MOBILE_GLES_SOURCE;
+            if (archive == ARCHIVE_OLD.artifact_classiccore_pc) return ARTIFACT_CLASSIC_CORE_PC_SOURCE;
+            if (archive == ARCHIVE_OLD.artifact_classicdcg_pc) return ARTIFACT_CLASSIC_DCG_PC_SOURCE;
+            if (archive == ARCHIVE_OLD.hl_hlvr_vulkan) return HLALYX_HLVR_VULKAN_SOURCE;
             throw new ShaderParserException("unknown archive");
         }
 
-        public static string GetArchiveName(ARCHIVE archive)
+        public static string GetArchiveName(ARCHIVE_OLD archive)
         {
-            if (archive == ARCHIVE.dotacore_pcgl) return "dota-core";
-            if (archive == ARCHIVE.dotagame_pcgl) return "dota-game";
-            if (archive == ARCHIVE.dotacore_pc) return "dota-core"; // fine to use the same name here, but need to use platform type in path names
-            if (archive == ARCHIVE.dotagame_pc) return "dota-game";
-            if (archive == ARCHIVE.dota_core_gles) return "dota-core";
-            if (archive == ARCHIVE.dota_dac_gles) return "dota-game";
-            if (archive == ARCHIVE.artifact_classiccore_pc) return "aclassic-core";
-            if (archive == ARCHIVE.artifact_classicdcg_pc) return "aclassic-dcg";
-            if (archive == ARCHIVE.hl_hlvr_vulkan) return "hlvr-vulkan";
+            if (archive == ARCHIVE_OLD.dotacore_pcgl) return "dota-core";
+            if (archive == ARCHIVE_OLD.dotagame_pcgl) return "dota-game";
+            if (archive == ARCHIVE_OLD.dotacore_pc) return "dota-core"; // fine to use the same name here, but need to use platform type in path names
+            if (archive == ARCHIVE_OLD.dotagame_pc) return "dota-game";
+            if (archive == ARCHIVE_OLD.dota_core_gles) return "dota-core";
+            if (archive == ARCHIVE_OLD.dota_dac_gles) return "dota-game";
+            if (archive == ARCHIVE_OLD.artifact_classiccore_pc) return "aclassic-core";
+            if (archive == ARCHIVE_OLD.artifact_classicdcg_pc) return "aclassic-dcg";
+            if (archive == ARCHIVE_OLD.hl_hlvr_vulkan) return "hlvr-vulkan";
             throw new ShaderParserException("unknown archive");
         }
 
-        public static string GetArchiveLabel(ARCHIVE archive)
+        public static string GetArchiveLabel(ARCHIVE_OLD archive)
         {
-            if (archive == ARCHIVE.dotacore_pcgl) return "core";
-            if (archive == ARCHIVE.dotagame_pcgl) return "dota";
+            if (archive == ARCHIVE_OLD.dotacore_pcgl) return "core";
+            if (archive == ARCHIVE_OLD.dotagame_pcgl) return "dota";
             // todo - fix this, don't use archive-label as part of pathname
-            if (archive == ARCHIVE.dotacore_pc) return "core-pc"; // the archive-labels need to be distinct because I'm using them as part
+            if (archive == ARCHIVE_OLD.dotacore_pc) return "core-pc"; // the archive-labels need to be distinct because I'm using them as part
                                                                   // of the byte-dump paths
-            if (archive == ARCHIVE.dotagame_pc) return "dota-pc";
-            if (archive == ARCHIVE.dota_core_gles) return "core-gles";
-            if (archive == ARCHIVE.dota_dac_gles) return "dac-gles";
-            if (archive == ARCHIVE.artifact_classiccore_pc) return "artifact-core";
-            if (archive == ARCHIVE.artifact_classicdcg_pc) return "artifact-dcg";
-            if (archive == ARCHIVE.hl_hlvr_vulkan) return "hlvr-vulkan";
+            if (archive == ARCHIVE_OLD.dotagame_pc) return "dota-pc";
+            if (archive == ARCHIVE_OLD.dota_core_gles) return "core-gles";
+            if (archive == ARCHIVE_OLD.dota_dac_gles) return "dac-gles";
+            if (archive == ARCHIVE_OLD.artifact_classiccore_pc) return "artifact-core";
+            if (archive == ARCHIVE_OLD.artifact_classicdcg_pc) return "artifact-dcg";
+            if (archive == ARCHIVE_OLD.hl_hlvr_vulkan) return "hlvr-vulkan";
             throw new ShaderParserException("unknown archive");
         }
 
         // todo - may want to change this to 'platform'
-        public static string GetGpuType(ARCHIVE archive)
+        public static string GetGpuType(ARCHIVE_OLD archive)
         {
-            if (archive == ARCHIVE.dotacore_pcgl) return "pcgl";
-            if (archive == ARCHIVE.dotagame_pcgl) return "pcgl";
-            if (archive == ARCHIVE.dotacore_pc) return "pc";
-            if (archive == ARCHIVE.dotagame_pc) return "pc";
-            if (archive == ARCHIVE.dota_core_gles) return "gles";
-            if (archive == ARCHIVE.dota_dac_gles) return "gles";
-            if (archive == ARCHIVE.artifact_classiccore_pc) return "pc";
-            if (archive == ARCHIVE.artifact_classicdcg_pc) return "pc";
-            if (archive == ARCHIVE.hl_hlvr_vulkan) return "vulkan";
+            if (archive == ARCHIVE_OLD.dotacore_pcgl) return "pcgl";
+            if (archive == ARCHIVE_OLD.dotagame_pcgl) return "pcgl";
+            if (archive == ARCHIVE_OLD.dotacore_pc) return "pc";
+            if (archive == ARCHIVE_OLD.dotagame_pc) return "pc";
+            if (archive == ARCHIVE_OLD.dota_core_gles) return "gles";
+            if (archive == ARCHIVE_OLD.dota_dac_gles) return "gles";
+            if (archive == ARCHIVE_OLD.artifact_classiccore_pc) return "pc";
+            if (archive == ARCHIVE_OLD.artifact_classicdcg_pc) return "pc";
+            if (archive == ARCHIVE_OLD.hl_hlvr_vulkan) return "vulkan";
             throw new ShaderParserException("unknown archive");
         }
 
         // todo - start using defined enums
-        public static string GetSourceType(ARCHIVE archive)
+        public static string GetSourceType(ARCHIVE_OLD archive)
         {
-            if (archive == ARCHIVE.dotacore_pcgl) return "glsl";
-            if (archive == ARCHIVE.dotagame_pcgl) return "glsl";
-            if (archive == ARCHIVE.dotacore_pc) return "pc";
-            if (archive == ARCHIVE.dotagame_pc) return "pc";
-            if (archive == ARCHIVE.dota_core_gles) return "gles";
-            if (archive == ARCHIVE.dota_dac_gles) return "gles";
-            if (archive == ARCHIVE.artifact_classiccore_pc) return "pc"; // todo - I want dxil and dxbc here
-            if (archive == ARCHIVE.artifact_classicdcg_pc) return "pc";
-            if (archive == ARCHIVE.hl_hlvr_vulkan) return "vulkan";
+            if (archive == ARCHIVE_OLD.dotacore_pcgl) return "glsl";
+            if (archive == ARCHIVE_OLD.dotagame_pcgl) return "glsl";
+            if (archive == ARCHIVE_OLD.dotacore_pc) return "pc";
+            if (archive == ARCHIVE_OLD.dotagame_pc) return "pc";
+            if (archive == ARCHIVE_OLD.dota_core_gles) return "gles";
+            if (archive == ARCHIVE_OLD.dota_dac_gles) return "gles";
+            if (archive == ARCHIVE_OLD.artifact_classiccore_pc) return "pc"; // todo - I want dxil and dxbc here
+            if (archive == ARCHIVE_OLD.artifact_classicdcg_pc) return "pc";
+            if (archive == ARCHIVE_OLD.hl_hlvr_vulkan) return "vulkan";
             throw new ShaderParserException("unknown archive");
         }
 
@@ -194,44 +194,44 @@ namespace MyShaderAnalysis.codestash
         // it's not consistent, because Path.GetDirectory() always returns string with backslashes
         // I sometimes need to make comparisong with backslashes in the name, in other places I make comparisong
         // with forward slashes
-        public static ARCHIVE DetermineArchiveType(string vcsFileName)
+        public static ARCHIVE_OLD DetermineArchiveType(string vcsFileName)
         {
             // the built-in method Path.GetDirectoryName always returns a path containing back-slashes
             if (Path.GetDirectoryName(vcsFileName).EndsWith("shaders\\vfx") && vcsFileName.Contains("_pcgl_"))
             {
-                return ARCHIVE.dotagame_pcgl;
+                return ARCHIVE_OLD.dotagame_pcgl;
             }
             if (Path.GetDirectoryName(vcsFileName).EndsWith("shaders-core\\vfx") && vcsFileName.Contains("_pcgl_"))
             {
-                return ARCHIVE.dotacore_pcgl;
+                return ARCHIVE_OLD.dotacore_pcgl;
             }
             if (Path.GetDirectoryName(vcsFileName).EndsWith("shaders\\vfx") && vcsFileName.Contains("_pc_"))
             {
-                return ARCHIVE.dotagame_pc;
+                return ARCHIVE_OLD.dotagame_pc;
             }
             if (Path.GetDirectoryName(vcsFileName).EndsWith("shaders-core\\vfx") && vcsFileName.Contains("_pc_"))
             {
-                return ARCHIVE.dotacore_pc;
+                return ARCHIVE_OLD.dotacore_pc;
             }
             if (vcsFileName.Contains("dota2-shaders-mobile-gles/core"))
             {
-                return ARCHIVE.dota_core_gles;
+                return ARCHIVE_OLD.dota_core_gles;
             }
             if (vcsFileName.Contains("dota2-shaders-mobile-gles/dac"))
             {
-                return ARCHIVE.dota_dac_gles;
+                return ARCHIVE_OLD.dota_dac_gles;
             }
             if (Path.GetDirectoryName(vcsFileName).EndsWith("artifact-shaders-pc-core"))
             {
-                return ARCHIVE.artifact_classiccore_pc;
+                return ARCHIVE_OLD.artifact_classiccore_pc;
             }
             if (Path.GetDirectoryName(vcsFileName).EndsWith("artifact-shaders-pc-dcg"))
             {
-                return ARCHIVE.artifact_classicdcg_pc;
+                return ARCHIVE_OLD.artifact_classicdcg_pc;
             }
             if (Path.GetDirectoryName(vcsFileName).EndsWith("alyx-vulkan-hlvr"))
             {
-                return ARCHIVE.hl_hlvr_vulkan;
+                return ARCHIVE_OLD.hl_hlvr_vulkan;
             }
             throw new ShaderParserException("don't know where this file belongs");
         }

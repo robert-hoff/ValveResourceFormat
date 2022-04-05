@@ -2,13 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using ValveResourceFormat.CompiledShader;
+using static MyShaderAnalysis.codestash.FileArchives;
 using static MyShaderAnalysis.codestash.MyShaderUtilHelpers;
 
 
-namespace MyShaderAnalysis.codestash.snippetcode
+namespace MyShaderAnalysis.utilhelpers.snippetcode
 {
 
     class Snippetcode
@@ -17,8 +19,7 @@ namespace MyShaderAnalysis.codestash.snippetcode
 
         public static void RunTrials()
         {
-
-            BytesToString();
+            // BytesToString();
             // ByteCheck();
             // DumbTest6();
             // GettingGsDataOut5();

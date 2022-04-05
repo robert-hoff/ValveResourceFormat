@@ -58,7 +58,7 @@ namespace MyShaderAnalysis.codestash
          * this will work passing either the filename or full filenamepath
          *
          */
-        public FileTokensOld(ARCHIVE archive, string filename)
+        public FileTokensOld(ARCHIVE_OLD archive, string filename)
         {
             filename = Path.GetFileName(filename);
             this.filename = filename;

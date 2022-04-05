@@ -57,31 +57,31 @@ namespace MyShaderAnalysis.codestash
         static void PrintSingleFileSummary()
         {
 
-            // ZFileSummary(ARCHIVE.dotacore_pcgl, "bilateral_blur_pcgl_30_vs.vcs", 0x0, writeFile: true);
-            // ZFileSummary(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_ps.vcs", 0x2, writeFile: true);
-            // ZFileSummary(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_ps.vcs", 0xa9, writeFile: true);
-            // ZFileSummary(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_ps.vcs", 0xc9, writeFile: true);
-            // ZFileSummary(ARCHIVE.dotagame_pcgl, "hero_pcgl_30_ps.vcs", 0x0, writeFile: true);
-            // ZFileSummary(ARCHIVE.dotacore_pcgl, "depth_only_pcgl_30_vs.vcs", 0x68, writeFile: true);
-            // ZFileSummary(ARCHIVE.dotagame_pcgl, "refract_pcgl_30_ps.vcs", 0x0, writeFile: true);
-            // ZFileSummary(ARCHIVE.dotacore_pcgl, "visualize_cloth_pcgl_40_ps.vcs", 0x10, writeFile: true);
-            // ZFileSummary(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_vs.vcs", 0xab, writeFile: true);
-            // ZFileSummary(ARCHIVE.dotacore_pcgl, "panorama_fancyquad_pcgl_30_ps.vcs", 0x0, writeFile: true);
-            // ZFileSummary(ARCHIVE.dotacore_pcgl, "blur_pcgl_30_ps.vcs", 0x1, writeFile: true);
-            // ZFileSummary(ARCHIVE.dotacore_pcgl, "copytexture_pcgl_30_vs.vcs", 0x1, writeFile: true);
-            // ZFileSummary(ARCHIVE.dotacore_pcgl, "copytexture_pcgl_30_vs.vcs", 0x0, writeFile: true);
-            // ZFileSummary(ARCHIVE.artifact_classiccore_pc, "generic_pc_30_ps.vcs", 0x10, writeFile: true);
-            // ZFileSummary(ARCHIVE.dota_core_gles, "copytexture_mobile_gles_30_ps.vcs", 0x0, writeFile: true);
-            // ZFileSummary(ARCHIVE.artifact_classiccore_pc, "depth_only_pc_40_vs.vcs", 0x0, writeFile: true, disableOutput: true);
+            // ZFileSummary(ARCHIVE_OLD.dotacore_pcgl, "bilateral_blur_pcgl_30_vs.vcs", 0x0, writeFile: true);
+            // ZFileSummary(ARCHIVE_OLD.dotagame_pcgl, "multiblend_pcgl_30_ps.vcs", 0x2, writeFile: true);
+            // ZFileSummary(ARCHIVE_OLD.dotagame_pcgl, "multiblend_pcgl_30_ps.vcs", 0xa9, writeFile: true);
+            // ZFileSummary(ARCHIVE_OLD.dotagame_pcgl, "multiblend_pcgl_30_ps.vcs", 0xc9, writeFile: true);
+            // ZFileSummary(ARCHIVE_OLD.dotagame_pcgl, "hero_pcgl_30_ps.vcs", 0x0, writeFile: true);
+            // ZFileSummary(ARCHIVE_OLD.dotacore_pcgl, "depth_only_pcgl_30_vs.vcs", 0x68, writeFile: true);
+            // ZFileSummary(ARCHIVE_OLD.dotagame_pcgl, "refract_pcgl_30_ps.vcs", 0x0, writeFile: true);
+            // ZFileSummary(ARCHIVE_OLD.dotacore_pcgl, "visualize_cloth_pcgl_40_ps.vcs", 0x10, writeFile: true);
+            // ZFileSummary(ARCHIVE_OLD.dotagame_pcgl, "multiblend_pcgl_30_vs.vcs", 0xab, writeFile: true);
+            // ZFileSummary(ARCHIVE_OLD.dotacore_pcgl, "panorama_fancyquad_pcgl_30_ps.vcs", 0x0, writeFile: true);
+            // ZFileSummary(ARCHIVE_OLD.dotacore_pcgl, "blur_pcgl_30_ps.vcs", 0x1, writeFile: true);
+            // ZFileSummary(ARCHIVE_OLD.dotacore_pcgl, "copytexture_pcgl_30_vs.vcs", 0x1, writeFile: true);
+            // ZFileSummary(ARCHIVE_OLD.dotacore_pcgl, "copytexture_pcgl_30_vs.vcs", 0x0, writeFile: true);
+            // ZFileSummary(ARCHIVE_OLD.artifact_classiccore_pc, "generic_pc_30_ps.vcs", 0x10, writeFile: true);
+            // ZFileSummary(ARCHIVE_OLD.dota_core_gles, "copytexture_mobile_gles_30_ps.vcs", 0x0, writeFile: true);
+            // ZFileSummary(ARCHIVE_OLD.artifact_classiccore_pc, "depth_only_pc_40_vs.vcs", 0x0, writeFile: true, disableOutput: true);
             // WriteBunchOfZframes();
 
 
 
-            // ZFileSummary(ARCHIVE.dotagame_pcgl, "visualize_physics_pcgl_40_gs.vcs", 0x0, writeFile: true);
+            // ZFileSummary(ARCHIVE_OLD.dotagame_pcgl, "visualize_physics_pcgl_40_gs.vcs", 0x0, writeFile: true);
 
 
-            ZFileSummary(ARCHIVE.dotacore_pcgl, "visualize_physics_pcgl_40_gs.vcs", 0x0, writeFile: true);
-            // ZFileSummary(ARCHIVE.dotacore_pcgl, "debug_show_texture_pcgl_30_vs.vcs", 0x0, writeFile: true);
+            ZFileSummary(ARCHIVE_OLD.dotacore_pcgl, "visualize_physics_pcgl_40_gs.vcs", 0x0, writeFile: true);
+            // ZFileSummary(ARCHIVE_OLD.dotacore_pcgl, "debug_show_texture_pcgl_30_vs.vcs", 0x0, writeFile: true);
 
 
 
@@ -140,7 +140,7 @@ namespace MyShaderAnalysis.codestash
         }
 
 
-        static void ZFileSummary(ARCHIVE archive, string filename, long zframeId, bool writeFile = false, bool disableOutput = false)
+        static void ZFileSummary(ARCHIVE_OLD archive, string filename, long zframeId, bool writeFile = false, bool disableOutput = false)
         {
             FileTokensOld vcsFile = new(archive, filename);
             ZFileSummary(vcsFile, zframeId, writeFile, disableOutput);
@@ -724,7 +724,7 @@ namespace MyShaderAnalysis.codestash
             List<string> coreFiles = GetVcsFiles(DOTA_GAME_PCGL_SOURCE, null, VcsProgramType.Undetermined, 30);
             foreach (var filenamepath in coreFiles)
             {
-                FileTokensOld vcsFile = new(ARCHIVE.dotacore_pcgl, filenamepath);
+                FileTokensOld vcsFile = new(ARCHIVE_OLD.dotacore_pcgl, filenamepath);
                 List<long> zframeIds = new();
                 zframesFound.Add(vcsFile, zframeIds);
                 foreach (var item in vcsFile.GetZFrameListing())
@@ -737,7 +737,7 @@ namespace MyShaderAnalysis.codestash
             List<string> gameFiles = GetVcsFiles(DOTA_CORE_PCGL_SOURCE, null, VcsProgramType.Undetermined, 30);
             foreach (var filenamepath in gameFiles)
             {
-                FileTokensOld vcsFile = new(ARCHIVE.dotagame_pcgl, filenamepath);
+                FileTokensOld vcsFile = new(ARCHIVE_OLD.dotagame_pcgl, filenamepath);
                 List<long> zframeIds = new();
                 zframesFound.Add(vcsFile, zframeIds);
                 foreach (var item in vcsFile.GetZFrameListing())

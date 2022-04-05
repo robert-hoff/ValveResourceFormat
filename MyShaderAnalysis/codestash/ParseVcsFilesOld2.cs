@@ -63,7 +63,7 @@ namespace MyShaderAnalysis.codestash
             string filenamepath = $"{FileSystemOld.DOTA_GAME_PCGL_SOURCE}/3dskyboxstencil_pcgl_30_vs.vcs";
 
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
-            FileVcsTokens fileTokens = new FileVcsTokens(FileArchives.ARCHIVE.dotagame_pcgl, filenamepath);
+            FileVcsTokens fileTokens = new FileVcsTokens(ARCHIVE.dota_game_pcgl_v64, filenamepath);
 
             ZFrameFile zframe0 = shaderFile.GetZFrameFileByIndex(ZFRAME_INDEX0);
             PrintZFrameSummaryPostProcess(shaderFile, zframe0, fileTokens);
@@ -118,10 +118,10 @@ namespace MyShaderAnalysis.codestash
 
         static void PrintVcsSummaryPostProcess(string filenamepath)
         {
-            FileVcsTokens fileTokens = new FileVcsTokens(FileArchives.ARCHIVE.dotagame_pcgl, filenamepath);
+            FileVcsTokens fileTokens = new FileVcsTokens(ARCHIVE.dota_game_pcgl_v64, filenamepath);
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             // List<string> relatedFiles = GetRelatedFiles2(fileTokens.filenamepath);
-            List<string> relatedFiles = FileVcsCollection.GetRelatedFiles(FileArchives.ARCHIVE.dotagame_pcgl, fileTokens.filenamepath);
+            List<string> relatedFiles = FileVcsCollection.GetRelatedFiles(ARCHIVE.dota_game_pcgl_v64, fileTokens.filenamepath);
             var buffer = new StringWriter(CultureInfo.InvariantCulture);
             new PrintVcsFileSummary(shaderFile, buffer.Write, showRichTextBoxLinks: true, relatedFiles);
 

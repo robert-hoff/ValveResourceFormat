@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ValveResourceFormat.CompiledShader;
 
-namespace MyShaderAnalysis.codestash.snippetcode
+namespace MyShaderAnalysis.utilhelpers.snippetcode
 {
     public class StatCounter
     {

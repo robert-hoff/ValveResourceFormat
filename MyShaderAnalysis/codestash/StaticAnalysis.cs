@@ -309,7 +309,7 @@ namespace MyShaderAnalysis.codestash
             VcsProgramType vcsFiletype = ComputeVCSFileName(filenamepath).Item1;
             if (vcsFiletype == VcsProgramType.VertexShader || vcsFiletype == VcsProgramType.PixelShader)
             {
-                ARCHIVE archive = DetermineArchiveType(filenamepath);
+                ARCHIVE_OLD archive = DetermineArchiveType(filenamepath);
                 FileTriple fileTriple = FileTriple.GetTripleIfExists(archive, $"{filenamepath[0..^6]}features.vcs");
                 if (fileTriple == null)
                 {
@@ -333,22 +333,22 @@ namespace MyShaderAnalysis.codestash
         static void FileSummarySingleFile()
         {
             // List<(string, string, string)> triples = new();
-            // FileTriple triple = new(ARCHIVE.dotagame_pcgl, "hero_pcgl_30_features.vcs");
-            // FileTriple triple = new(ARCHIVE.dotacore_pcgl, "visualize_cloth_pcgl_40_features.vcs");
-            // FileTriple triple = new(ARCHIVE.dotacore_pcgl, "depth_only_pcgl_40_features.vcs");
-            // FileTriple triple = new(ARCHIVE.dotacore_pcgl, "convolve_environment_map_pcgl_41_features.vcs");
-            // FileTriple triple = new(ARCHIVE.dotacore_pcgl, "apply_fog_pcgl_40_features.vcs");
-            // FileTriple triple = new(ARCHIVE.dotacore_pcgl, "blur_pcgl_30_features.vcs");
-            // FileTriple triple = new(ARCHIVE.dotagame_pcgl, "water_dota_pcgl_30_features.vcs");
-            // FileTriple triple = new(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_features.vcs");
-            // FileTriple triple = new(ARCHIVE.dotacore_pcgl, "spritecard_pcgl_30_features.vcs");
-            // FileTriple triple = new(ARCHIVE.dotagame_pcgl, "spritecard_pcgl_30_features.vcs");
-            // FileTriple triple = new(ARCHIVE.dota_core_gles, "copytexture_mobile_gles_30_features.vcs");
-            FileTriple triple = new(ARCHIVE.hl_hlvr_vulkan, "solidcolor_vulkan_50_features.vcs");
+            // FileTriple triple = new(ARCHIVE_OLD.dotagame_pcgl, "hero_pcgl_30_features.vcs");
+            // FileTriple triple = new(ARCHIVE_OLD.dotacore_pcgl, "visualize_cloth_pcgl_40_features.vcs");
+            // FileTriple triple = new(ARCHIVE_OLD.dotacore_pcgl, "depth_only_pcgl_40_features.vcs");
+            // FileTriple triple = new(ARCHIVE_OLD.dotacore_pcgl, "convolve_environment_map_pcgl_41_features.vcs");
+            // FileTriple triple = new(ARCHIVE_OLD.dotacore_pcgl, "apply_fog_pcgl_40_features.vcs");
+            // FileTriple triple = new(ARCHIVE_OLD.dotacore_pcgl, "blur_pcgl_30_features.vcs");
+            // FileTriple triple = new(ARCHIVE_OLD.dotagame_pcgl, "water_dota_pcgl_30_features.vcs");
+            // FileTriple triple = new(ARCHIVE_OLD.dotagame_pcgl, "multiblend_pcgl_30_features.vcs");
+            // FileTriple triple = new(ARCHIVE_OLD.dotacore_pcgl, "spritecard_pcgl_30_features.vcs");
+            // FileTriple triple = new(ARCHIVE_OLD.dotagame_pcgl, "spritecard_pcgl_30_features.vcs");
+            // FileTriple triple = new(ARCHIVE_OLD.dota_core_gles, "copytexture_mobile_gles_30_features.vcs");
+            FileTriple triple = new(ARCHIVE_OLD.hl_hlvr_vulkan, "solidcolor_vulkan_50_features.vcs");
 
 
 
-            // FileTriple triple = new(ARCHIVE.artifact_classiccore_pc, "aerial_perspective_pc_30_features.vcs");
+            // FileTriple triple = new(ARCHIVE_OLD.artifact_classiccore_pc, "aerial_perspective_pc_30_features.vcs");
 
             WriteVsPsFileSummary(triple, VcsProgramType.PixelShader, disableOutput: true);
         }
@@ -933,7 +933,7 @@ namespace MyShaderAnalysis.codestash
             string featuresfile = @$"{PCGL_DIR_NOT_CORE}/multiblend_pcgl_30_features.vcs";
             string outputFilenamepath = $@"{SERVER_BASEDIR}/dota-game/pcgl/multiblend_pcgl_30/multiblend_pcgl_30_ps-summary.html";
             bool writeFile = true;
-            FileTriple triple = FileTriple.GetTripleIfExists(ARCHIVE.dotagame_pcgl, featuresfile);
+            FileTriple triple = FileTriple.GetTripleIfExists(ARCHIVE_OLD.dotagame_pcgl, featuresfile);
 
 
             string multiBlendPsFile = featuresfile[0..^12] + "ps.vcs";

@@ -18,7 +18,7 @@ namespace MyShaderAnalysis.codestash
         public FileTokensOld psFile { get; }
 
 
-        public FileTriple(ARCHIVE archive, string ftFileName)
+        public FileTriple(ARCHIVE_OLD archive, string ftFileName)
         {
             ftFile = new FileTokensOld(archive, ftFileName);
             if (ftFile.vcsProgramType != VcsProgramType.Features)
@@ -38,7 +38,7 @@ namespace MyShaderAnalysis.codestash
         }
 
 
-        public FileTriple(ARCHIVE archive, string ftFileName, string vsFileName, string psFileName)
+        public FileTriple(ARCHIVE_OLD archive, string ftFileName, string vsFileName, string psFileName)
         {
             ftFile = new FileTokensOld(archive, ftFileName);
             vsFile = new FileTokensOld(archive, vsFileName);
@@ -47,7 +47,7 @@ namespace MyShaderAnalysis.codestash
 
 
 
-        public static FileTriple GetTripleIfExists(ARCHIVE archive, string ftFilename)
+        public static FileTriple GetTripleIfExists(ARCHIVE_OLD archive, string ftFilename)
         {
             ftFilename = Path.GetFileName(ftFilename);
             FileTokensOld ftTokens = new(archive, ftFilename);
@@ -85,8 +85,8 @@ namespace MyShaderAnalysis.codestash
             foreach (string ftFilenamepath in validFeaturesFiles)
             {
 
-                // ARCHIVE archive = GetCoreOrDotaString(ftFilenamepath).Equals("core") ? ARCHIVE.dotacore_pcgl : ARCHIVE.dotagame_pcgl;
-                ARCHIVE archive = DetermineArchiveType(ftFilenamepath);
+                // ARCHIVE_OLD archive = GetCoreOrDotaString(ftFilenamepath).Equals("core") ? ARCHIVE.dotacore_pcgl : ARCHIVE.dotagame_pcgl;
+                ARCHIVE_OLD archive = DetermineArchiveType(ftFilenamepath);
                 fileTriples.Add(new FileTriple(archive, ftFilenamepath));
             }
             return fileTriples;
@@ -121,7 +121,7 @@ namespace MyShaderAnalysis.codestash
             {
 
                 // ARCHIVE archive = GetCoreOrDotaString(ftFilenamepath).Equals("core") ? ARCHIVE.dotacore_pcgl : ARCHIVE.dotagame_pcgl;
-                ARCHIVE archive = DetermineArchiveType(ftFilenamepath);
+                ARCHIVE_OLD archive = DetermineArchiveType(ftFilenamepath);
                 fileTriples.Add(new FileTriple(archive, ftFilenamepath));
             }
             return fileTriples;

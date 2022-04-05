@@ -33,14 +33,14 @@ namespace MyShaderAnalysis.codestash
 
         static void ShowFileTokenDetail2()
         {
-            FileVcsTokens fileTokens = new FileVcsTokens(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_ps.vcs");
+            FileVcsTokens fileTokens = new FileVcsTokens(ARCHIVE.dota_game_pcgl_v64, "multiblend_pcgl_30_ps.vcs");
             // Console.WriteLine($"{fileTokens.sourcedir}");
         }
 
 
         static void ShowFileTokenDetail1()
         {
-            FileVcsTokens fileTokens = new FileVcsTokens(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_ps.vcs");
+            FileVcsTokens fileTokens = new FileVcsTokens(ARCHIVE.dota_game_pcgl_v64, "multiblend_pcgl_30_ps.vcs");
             ShaderFile shaderFile = fileTokens.GetShaderFile();
             ZFrameFile zframeFile = shaderFile.GetZFrameFile(0);
 
@@ -76,7 +76,7 @@ namespace MyShaderAnalysis.codestash
 
         static void TestShaderInstantiation()
         {
-            FileVcsTokens spritecard_ps = new(ARCHIVE.dotagame_pcgl, "spritecard_pcgl_30_ps.vcs");
+            FileVcsTokens spritecard_ps = new(ARCHIVE.dota_game_pcgl_v64, "spritecard_pcgl_30_ps.vcs");
             ShaderFile shaderFile = spritecard_ps.GetShaderFile();
             // shows the spritecard_ps file has 22560 zframes (quite a lot)
             Console.WriteLine($"spritecard_ps has {shaderFile.GetZFrameCount()} zframes");
@@ -88,7 +88,7 @@ namespace MyShaderAnalysis.codestash
 
         static void TestFileRetrievalHelper()
         {
-            List<string> vcsFiles = MyShaderUtilHelpers.GetVcsFiles(FileArchives.GetSourceDir(ARCHIVE.alyx_hlvr_vulkan), VcsProgramType.Undetermined);
+            List<string> vcsFiles = MyShaderUtilHelpers.GetVcsFiles(FileArchives.GetArchiveDir(ARCHIVE.alyx_hlvr_vulkan_v64), VcsProgramType.Undetermined);
             foreach (var f in vcsFiles)
             {
                 Console.WriteLine($"{f}");
