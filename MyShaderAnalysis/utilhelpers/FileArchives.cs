@@ -21,7 +21,7 @@ namespace MyShaderAnalysis.codestash
     {
         // private const string PROJECT_TESTDIR = "Z:/active/projects/dota2-sourcesdk-modding/shader-analysis-vcs-format/OUTPUT_DUMP";
         private const string SERVER_BASEDIR = "Z:/dev/www/vcs.codecreation.dev";
-        private const string SERVER_TESTPATH = "/GEN-output";
+        private const string SERVER_TESTPATH = SERVER_BASEDIR + "/GEN-output";
 
 
         public static string GetServerBaseDir()
@@ -31,8 +31,15 @@ namespace MyShaderAnalysis.codestash
 
         public static string GetServerTestDir()
         {
-            return $"{SERVER_BASEDIR}{SERVER_TESTPATH}"; ;
+            return SERVER_TESTPATH;
         }
+
+        public static string GetServerTestFile ()
+        {
+            return SERVER_TESTPATH + "/testfile.html";
+        }
+
+
 
         /*
          * Returns directory of the vcs source files. E.g.
@@ -46,21 +53,6 @@ namespace MyShaderAnalysis.codestash
             return ((ArchiveDirectoryAttribute)attributes[0]).dirName;
         }
 
-
-        /*
-         * This is used as the base folder name for the given collection
-         * As long as each of these are unique the naming doesn't matter so much, stil, using the convention
-         *
-         *      {name}-{platform}-{version}
-         *
-         * Note simplified platform name. For example
-         * VULKAN, ANDROID-VULKAN and IOS-VULKAN all map to 'vulkan'
-         *
-         */
-        public static string GetArchiveName(ARCHIVE archive)
-        {
-            return archive.ToString();
-        }
 
 
         public static string GetFilenamepath(ARCHIVE archive, string filename)

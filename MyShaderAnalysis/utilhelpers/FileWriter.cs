@@ -74,7 +74,7 @@ namespace MyShaderAnalysis.codestash
         }
 
 
-        public void WriteData(string text)
+        public void WriteText(string text)
         {
             sw.WriteLine(text);
         }

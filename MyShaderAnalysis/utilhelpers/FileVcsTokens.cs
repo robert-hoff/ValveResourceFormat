@@ -83,7 +83,7 @@ namespace MyShaderAnalysis.codestash
         public FileVcsTokens(ARCHIVE archive, string filename)
         {
             this.archive = archive;
-            this.archivename = FileArchives.GetArchiveName(archive);
+            this.archivename = archive.ToString();
             filename = Path.GetFileName(filename);
             this.filename = filename;
             this.filenamepath = $"{FileArchives.GetArchiveDir(archive)}/{filename}";

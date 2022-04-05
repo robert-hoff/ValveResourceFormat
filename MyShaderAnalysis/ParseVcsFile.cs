@@ -202,7 +202,7 @@ namespace MyShaderAnalysis
         {
             FileWriter fileWriter = new FileWriter(outputFilenamepath, showOutputToConsole: false);
             fileWriter.WriteHtmlHeader(htmlTitle, htmlHeader);
-            fileWriter.WriteData(htmlBody);
+            fileWriter.WriteText(htmlBody);
             fileWriter.CloseStreamWriter();
             fileWriter.Dispose();
         }

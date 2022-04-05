@@ -15,11 +15,6 @@ namespace MyShaderAnalysis.compat
     public class CompatRulesMultiframe
     {
 
-
-        const string PCGL_DIR_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders-core/vfx";
-        const string PCGL_DIR_NOT_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders/vfx";
-
-
         public static void RunTrials()
         {
 
@@ -30,12 +25,14 @@ namespace MyShaderAnalysis.compat
 
 
 
-
         static void TestShadernameShorten()
         {
             SortedDictionary<string, int> map = new();
 
-            List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsProgramType.Undetermined, -1);
+            string dir_game = FileArchives.GetArchiveDir(ARCHIVE.dota_game_pcgl_v64);
+            string dir_core = FileArchives.GetArchiveDir(ARCHIVE.dota_core_pcgl_v64);
+
+            List<string> allVcsFiles = GetVcsFiles(dir_game, dir_core, VcsProgramType.Undetermined, -1);
             foreach (string filenamepath in allVcsFiles)
             {
                 ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
@@ -61,8 +58,8 @@ namespace MyShaderAnalysis.compat
 
         public static void Trial1()
         {
-
-            string vcsFilenamepath = @$"{PCGL_DIR_NOT_CORE}/multiblend_pcgl_30_ps.vcs";
+            string dir_game = FileArchives.GetArchiveDir(ARCHIVE.dota_game_pcgl_v64);
+            string vcsFilenamepath = @$"{dir_game}/multiblend_pcgl_30_ps.vcs";
             ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(vcsFilenamepath);
 
             offset = new int[shaderFile.sfBlocks.Count];
@@ -108,6 +105,7 @@ namespace MyShaderAnalysis.compat
             AddInclusion(16, 4);           // compat[22]
             AddInclusion(11, 10);          // compat[25]
 
+            FileWriter fw = GetFileWriterHtml("compat test", "compat test multiblend_pcgl_30");
 
             string htmlBasedir = "/multiblend_pcgl_30/";
             for (int zframeId = 0; zframeId < offset[17] * 2; zframeId++)
@@ -120,11 +118,23 @@ namespace MyShaderAnalysis.compat
                     // string stateList = GetStateString(thisState);
                     // StaticAnalysis.OutputWriteLine($"zframe[{i:x08}]   {Convert.ToString(i, 2).PadLeft(20, '0')}    {sfNameList}");
                     // StaticAnalysis.OutputWriteLine($"zframe[{i:x08}]  {sfNameList}");
-                    StaticAnalysis.OutputWriteLine($"{GetZframeHtmlLink((uint)zframeId, vcsFilenamepath, htmlBasedir)}  {sfNameList}");
+                    fw.WriteText($"Zframe[0x{zframeId:x08}]  {sfNameList}");
                 }
             }
-
+            fw.CloseStreamWriter();
         }
+
+
+        private static FileWriter GetFileWriterHtml(string htmltitle, string htmlHeader)
+        {
+            string outputFilenamepath = FileArchives.GetServerTestFile();
+            FileWriter fw = new FileWriter(outputFilenamepath);
+            fw.WriteHtmlHeader(htmltitle, htmlHeader);
+            return fw;
+        }
+
+
+
 
 
         static string getSfNameList(ShaderFile shaderFile, int[] thisState)

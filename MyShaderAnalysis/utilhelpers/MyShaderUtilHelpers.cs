@@ -114,22 +114,6 @@ namespace MyShaderAnalysis.codestash
 
 
 
-        public static string GetZframeHtmlFilename(long zframeId, string label, string vcsFilename)
-        {
-            if (label.Length > 0)
-            {
-                label = $"-{label}";
-            }
-            return $"{Path.GetFileName(vcsFilename)[0..^4]}-ZFRAME{zframeId:x08}{label}.html";
-        }
-
-        public static string GetZframeHtmlLink(long zframeId, string label, string vcsFilenamepath, string basepath = "")
-        {
-            return $"<a href='{basepath}{GetZframeHtmlFilename(zframeId, label, Path.GetFileName(vcsFilenamepath))}'>zframe[0x{zframeId:x08}]</a>";
-        }
-
-
-
 
         // todo - duplicates from MyShaderFile.CompiledShader.ShaderUtilHelpers, but it's better to have these separated
         public static (VcsProgramType p1, VcsPlatformType p2, VcsShaderModelType p3) ComputeVCSFileName(string filenamepath)

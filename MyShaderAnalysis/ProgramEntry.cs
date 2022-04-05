@@ -10,6 +10,7 @@ using static MyShaderAnalysis.codestash.FileSystemOld;
 using static MyShaderAnalysis.codestash.ReadShaderFile;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 using MyShaderAnalysis.utilhelpers.snippetcode;
+using MyShaderAnalysis.compat;
 
 namespace MyShaderAnalysis
 {
@@ -34,11 +35,11 @@ namespace MyShaderAnalysis
 
 
             // -- comprehensive tests against archive names (all files)
-            // TestBatchParsing.RunTrials();
+            TestBatchParsing.RunTrials();
             // TestSingleFileParsing.RunTrials();
 
             // -- revise how files are managed as collections
-            CreateHtmlServerFiles.RunTrials();
+            // CreateHtmlServerFiles.RunTrials();
 
 
             // DemoCode.RunTrials();

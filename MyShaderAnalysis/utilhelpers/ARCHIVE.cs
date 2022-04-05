@@ -2,6 +2,14 @@ using System;
 
 namespace MyShaderAnalysis
 {
+
+    /*
+     * The name of the enum can be used as the base folder for exporting any given archive
+     *
+     *      {name}-{platform}-{version}
+     *
+     */
+
     public enum ARCHIVE
     {
         [ArchiveDirectory("X:/dota-2-VRF-exports/dota2-export-shaders-pc-V65/shaders/vfx")]
