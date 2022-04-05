@@ -4,10 +4,9 @@ using System.Collections.Generic;
 using ValveResourceFormat.ThirdParty;
 using ValveResourceFormat.CompiledShader;
 using ValveResourceFormat.Serialization.VfxEval;
-using static MyShaderAnalysis.codestash.MyShaderUtilHelpers;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
-namespace MyShaderAnalysis.codestash
+namespace MyShaderAnalysis.utilhelpers
 {
 
     public class DataReaderZFrameBytes : ShaderDataReader

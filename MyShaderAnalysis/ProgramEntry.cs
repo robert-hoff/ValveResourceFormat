@@ -5,12 +5,10 @@ using ValveResourceFormat.CompiledShader;
 using System.Collections.Generic;
 using System.Linq;
 using MyShaderAnalysis.codestash;
-using static MyShaderAnalysis.codestash.MyShaderUtilHelpers;
-using static MyShaderAnalysis.codestash.FileSystemOld;
-using static MyShaderAnalysis.codestash.ReadShaderFile;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 using MyShaderAnalysis.utilhelpers.snippetcode;
 using MyShaderAnalysis.compat;
+using MyShaderAnalysis.utilhelpers;
 
 namespace MyShaderAnalysis
 {
@@ -35,7 +33,8 @@ namespace MyShaderAnalysis
 
 
             // -- comprehensive tests against archive names (all files)
-            TestBatchParsing.RunTrials();
+            TestFileArchive.RunTrials();
+            // TestBatchParsing.RunTrials();
             // TestSingleFileParsing.RunTrials();
 
             // -- revise how files are managed as collections

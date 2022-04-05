@@ -8,7 +8,7 @@ using VcsProgramType = ValveResourceFormat.CompiledShader.VcsProgramType;
 using VcsShaderModelType = ValveResourceFormat.CompiledShader.VcsShaderModelType;
 using ShaderParserException = ValveResourceFormat.CompiledShader.ShaderParserException;
 
-using static MyShaderAnalysis.codestash.ReadShaderFile;
+using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
 
 
 // R: I'm not sure I  like this very much (something to think about)
@@ -60,7 +60,7 @@ using static MyShaderAnalysis.codestash.ReadShaderFile;
  *
  *
  */
-namespace MyShaderAnalysis.codestash
+namespace MyShaderAnalysis.utilhelpers
 {
     internal class FileVcsTokens
     {

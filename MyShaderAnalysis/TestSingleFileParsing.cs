@@ -4,9 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using MyShaderAnalysis.compat;
 using ValveResourceFormat.CompiledShader;
-using static MyShaderAnalysis.codestash.FileArchives;
-using static MyShaderAnalysis.codestash.ReadShaderFile;
+using static MyShaderAnalysis.utilhelpers.FileArchives;
+using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
+using MyShaderAnalysis.utilhelpers;
+using MyShaderAnalysis.parsetrials;
 
 namespace MyShaderAnalysis.codestash
 {

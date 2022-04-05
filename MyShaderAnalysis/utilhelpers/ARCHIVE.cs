@@ -1,6 +1,6 @@
 using System;
 
-namespace MyShaderAnalysis
+namespace MyShaderAnalysis.utilhelpers
 {
 
     /*

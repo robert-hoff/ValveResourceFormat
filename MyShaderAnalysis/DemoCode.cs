@@ -5,12 +5,13 @@ using ValveResourceFormat.ThirdParty;
 using ValveResourceFormat.CompiledShader;
 using ValveResourceFormat.Serialization.VfxEval;
 using MyShaderAnalysis.codestash;
-using static MyShaderAnalysis.codestash.FileArchives;
-using static MyShaderAnalysis.codestash.MyShaderUtilHelpers;
-using static MyShaderAnalysis.codestash.ReadShaderFile;
+using static MyShaderAnalysis.utilhelpers.FileArchives;
+using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
+using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 using MyShaderAnalysis.utilhelpers.snippetcode;
 using MyShaderAnalysis.parsetrials;
+using MyShaderAnalysis.utilhelpers;
 
 namespace MyShaderAnalysis
 {

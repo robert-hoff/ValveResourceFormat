@@ -4,10 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static MyShaderAnalysis.codestash.FileArchives;
 
 
-namespace MyShaderAnalysis.codestash
+namespace MyShaderAnalysis.utilhelpers
 {
     class FileVcsCollection
     {
@@ -40,7 +39,7 @@ namespace MyShaderAnalysis.codestash
             }
             List<string> relatedFiles = new();
             string featuresFile = null;
-            foreach (var vcsFile in Directory.GetFiles(GetArchiveDir(archive)))
+            foreach (var vcsFile in Directory.GetFiles(FileArchives.GetArchiveDir(archive)))
             {
                 if (Path.GetFileName(vcsFile).StartsWith(vcsCollectionName))
                 {

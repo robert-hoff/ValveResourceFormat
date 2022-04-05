@@ -12,7 +12,7 @@ using ShaderParserException = ValveResourceFormat.CompiledShader.ShaderParserExc
 
 
 
-namespace MyShaderAnalysis.codestash
+namespace MyShaderAnalysis.utilhelpers
 {
     class MyShaderUtilHelpers
     {

@@ -15,7 +15,7 @@ using System.Reflection;
  *
  *
  */
-namespace MyShaderAnalysis.codestash
+namespace MyShaderAnalysis.utilhelpers
 {
     public class FileArchives
     {
@@ -34,12 +34,10 @@ namespace MyShaderAnalysis.codestash
             return SERVER_TESTPATH;
         }
 
-        public static string GetServerTestFile ()
+        public static string GetServerTestFile(int num = 0)
         {
-            return SERVER_TESTPATH + "/testfile.html";
+            return SERVER_TESTPATH + $"/testfile{(num > 0 ? num : "")}.html";
         }
-
-
 
         /*
          * Returns directory of the vcs source files. E.g.
@@ -52,7 +50,6 @@ namespace MyShaderAnalysis.codestash
             object[] attributes = fieldInfo.GetCustomAttributes(typeof(ArchiveDirectoryAttribute), true);
             return ((ArchiveDirectoryAttribute)attributes[0]).dirName;
         }
-
 
 
         public static string GetFilenamepath(ARCHIVE archive, string filename)

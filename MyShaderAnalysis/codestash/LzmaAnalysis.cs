@@ -6,8 +6,7 @@ using ShaderParserException = ValveResourceFormat.CompiledShader.ShaderParserExc
 
 using static MyShaderAnalysis.codestash.FileSystemOld;
 using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
-
-
+using MyShaderAnalysis.utilhelpers;
 
 namespace MyShaderAnalysis.codestash
 {

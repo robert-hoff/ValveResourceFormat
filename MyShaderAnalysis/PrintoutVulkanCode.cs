@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ValveResourceFormat.CompiledShader;
-using static MyShaderAnalysis.codestash.ReadShaderFile;
+using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
-using static MyShaderAnalysis.codestash.MyShaderUtilHelpers;
+using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
 
 
 /*

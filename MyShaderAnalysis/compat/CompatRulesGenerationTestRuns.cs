@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MyShaderAnalysis.codestash;
+using MyShaderAnalysis.utilhelpers;
 using ValveResourceFormat.CompiledShader;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
@@ -30,7 +31,7 @@ namespace MyShaderAnalysis.compat
             string vcsFilenamepath = @$"{PCGL_DIR_NOT_CORE}/refract_pcgl_30_ps.vcs";
             // string vcsFilenamepath = @$"{PCGL_DIR_NOT_CORE}/water_dota_pcgl_30_ps.vcs";
 
-            ShaderFile shaderFile =ReadShaderFile.InstantiateShaderFile(vcsFilenamepath);
+            ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(vcsFilenamepath);
             ConfigMappingSParams configGen = new(shaderFile);
             // zframeGen.ShowOffsetAndLayersArrays();
 

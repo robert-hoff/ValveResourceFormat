@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -6,8 +7,8 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using ValveResourceFormat.CompiledShader;
-using static MyShaderAnalysis.codestash.FileArchives;
-using static MyShaderAnalysis.codestash.MyShaderUtilHelpers;
+using static MyShaderAnalysis.utilhelpers.FileArchives;
+using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
 
 
 namespace MyShaderAnalysis.utilhelpers.snippetcode
@@ -19,6 +20,7 @@ namespace MyShaderAnalysis.utilhelpers.snippetcode
 
         public static void RunTrials()
         {
+            IteratorExample();
             // BytesToString();
             // ByteCheck();
             // DumbTest6();
@@ -36,6 +38,24 @@ namespace MyShaderAnalysis.utilhelpers.snippetcode
             // PrintByteCounter();
             // TestDictionaryLookups();
             // ZframeLabel();
+        }
+
+
+        public static void IteratorExample()
+        {
+            foreach (int number in MyIterator())
+            {
+                Console.WriteLine($"{number}");
+            }
+        }
+
+        public static IEnumerable MyIterator()
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                Console.WriteLine($"returning double {i}");
+                yield return i*2;
+            }
         }
 
 

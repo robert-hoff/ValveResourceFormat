@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using ValveResourceFormat.CompiledShader;
 using MyShaderAnalysis.codestash;
-
+using MyShaderAnalysis.utilhelpers;
 
 namespace MyShaderAnalysis.vcsanalysis
 {

@@ -10,6 +10,7 @@ using ZFrameFile = ValveResourceFormat.CompiledShader.ZFrameFile;
 using PrintVcsFileSummary = ValveResourceFormat.CompiledShader.PrintVcsFileSummary;
 using PrintZFrameSummary = ValveResourceFormat.CompiledShader.PrintZFrameSummary;
 
+using MyShaderAnalysis.utilhelpers;
 using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
 
 

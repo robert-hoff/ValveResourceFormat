@@ -2,10 +2,11 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using ValveResourceFormat.CompiledShader;
-using static MyShaderAnalysis.codestash.MyShaderUtilHelpers;
+
+using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
 
 
-namespace MyShaderAnalysis.codestash
+namespace MyShaderAnalysis.utilhelpers
 {
 
     public class DataReaderVcsBytes : ShaderDataReader

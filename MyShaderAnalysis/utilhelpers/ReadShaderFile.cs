@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using ValveResourceFormat.CompiledShader;
 
-namespace MyShaderAnalysis.codestash
+namespace MyShaderAnalysis.utilhelpers
 {
     // public class ReadShaderFile : IDisposable
     public class ReadShaderFile
