@@ -36,7 +36,7 @@ namespace MyShaderAnalysis.utilhelpers
         private uint zFrameCount = 0;
 
 
-        public void PrintByteDetail(string archiveName = null)
+        public void PrintByteDetail()
         {
             BaseStream.Position = 0;
 
@@ -65,6 +65,11 @@ namespace MyShaderAnalysis.utilhelpers
             uint blockDelim = ReadUInt32AtPosition();
             ShowByteCount();
             ShowBytes(4, $"block DELIM (values seen 14,17)");
+
+            // ShowBytes(4);
+            // ShowBytes(4);
+
+
             BreakLine();
             PrintAllSfBlocks();
             PrintAllCompatibilityBlocks();
@@ -187,6 +192,7 @@ namespace MyShaderAnalysis.utilhelpers
             ShowByteCount("vcs file");
             ShowBytes(4, "\"vcs2\"");
             int vcsVersion = ReadInt32AtPosition();
+            vcsVersion = 64;
             ShowBytes(4, $"version {vcsVersion}");
             if (vcsVersion != 65 && vcsVersion != 64 && vcsVersion != 62)
             {

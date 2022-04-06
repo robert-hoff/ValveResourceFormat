@@ -55,7 +55,14 @@ namespace MyShaderAnalysis.utilhelpers
         [ArchiveDirectory("X:/v62shaders-from-xpaw")]
         exampleset_pc_v62,
         [ArchiveDirectory("X:/Steam/steamapps/common/The Lab/RobotRepair/core/shaders/vfx")]
-        the_lab_pc_v62
+        the_lab_pc_v62,
+        [ArchiveDirectory("X:/dota-2-VRF-exports/dota2-reduced-test-archive-pcgl-v64")]
+        dota_testset_pcgl_v64,
+
+        // -- experimental s&box shader, the versioning is set to 65 on the file I got while it is actually v64
+        // [ArchiveDirectory("X:/s&box-shader-examples")]
+        // sbox_shaders,
+
     }
 
     [AttributeUsage(AttributeTargets.Field)]

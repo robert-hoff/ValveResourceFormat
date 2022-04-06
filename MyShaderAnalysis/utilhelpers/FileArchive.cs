@@ -60,12 +60,21 @@ namespace MyShaderAnalysis.utilhelpers
             return reducedFiles;
         }
 
+        public IEnumerable GetFileVcsTokens()
+        {
+            foreach (var vcsFile in ReduceFileListing())
+            {
+                yield return vcsFile;
+            }
+        }
+
+
 
         /*
          * Attempt to parse the files into ShaderFile. Returns them if successful or reports error.
          *
          */
-        public IEnumerable ShaderFiles()
+        public IEnumerable GetShaderFiles()
         {
             foreach (var vcsFile in ReduceFileListing())
             {
@@ -89,15 +98,15 @@ namespace MyShaderAnalysis.utilhelpers
          * Returns the byte content of the vcs files only as byte[]
          *
          */
-        public IEnumerable ShaderFileBytes()
-        {
-            foreach (var vcsFile in ReduceFileListing())
-            {
+        //public IEnumerable ShaderFileBytes()
+        //{
+        //    foreach (var vcsFile in ReduceFileListing())
+        //    {
 
 
-                yield return null;
-            }
-        }
+        //        yield return null;
+        //    }
+        //}
 
 
 
