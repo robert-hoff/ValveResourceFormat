@@ -55,11 +55,8 @@ namespace MyShaderAnalysis
         {
             // string filenamepath = GetFilenamepath(ARCHIVE.the_lab_v62, "bilateral_blur_pc_30_features.vcs");
             string filenamepath = GetFilenamepath(ARCHIVE.dota_game_pcgl_v64, "spring_meteor_pcgl_30_ps.vcs");
-
             // v44 file (will throw)
             // string filenamepath = GetFilenamepath(ARCHIVE.the_lab_v62, "debugoverlay_wireframe_pc_40_gs.vcs");
-
-
 
             new DataReaderVcsBytes(filenamepath, showStatusMessage: true).PrintByteDetail();
             // new ParseV44Files(filenamepath);

@@ -68,6 +68,9 @@ namespace MyShaderAnalysis.utilhelpers
         // public string platformType { get; }  // pcgl, pc, vulkan
 
         public ARCHIVE archive { get; }
+        public VcsProgramType programType;
+        public VcsShaderModelType shaderModelType;
+        public VcsPlatformType platformType;
         public string archivename { get; }      // dota-game-pcgl, dota-core-pcgl
         public string filename { get; }         // multiblend_pcgl_30_ps.vcs
         public string filenamepath { get; }     // X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders/vfx/multiblend_pcgl_30_ps.vcs
@@ -96,13 +99,13 @@ namespace MyShaderAnalysis.utilhelpers
             this.foldername = name.Substring(0, name.LastIndexOf('_'));
             this.namelabel = filename.Split('_')[0];
 
-            (VcsProgramType asdf, VcsPlatformType, VcsShaderModelType) vcsTypes = MyShaderUtilHelpers.ComputeVCSFileName(filenamepath);
-            VcsProgramType vcsProgramType = vcsTypes.Item1;
-            VcsPlatformType vcsPlatformType = vcsTypes.Item2;
-            VcsShaderModelType vcsShaderModelType = vcsTypes.Item3;
+            (VcsProgramType, VcsPlatformType, VcsShaderModelType) vcsTypes = MyShaderUtilHelpers.ComputeVCSFileName(filenamepath);
+            programType = vcsTypes.Item1;
+            platformType = vcsTypes.Item2;
+            shaderModelType = vcsTypes.Item3;
 
             this.sourceVersion = filename.Split('_')[^2];
-            this.sourceType = MyShaderUtilHelpers.GetSourceType(vcsPlatformType, vcsShaderModelType);
+            this.sourceType = MyShaderUtilHelpers.GetSourceType(platformType, shaderModelType);
 
             this.vcstoken = MyShaderUtilHelpers.ComputeVcsProgramType(filenamepath) switch
             {
@@ -305,6 +308,13 @@ namespace MyShaderAnalysis.utilhelpers
         {
             return FileVcsCollection.GetRelatedFiles(archive, foldername);
         }
+
+
+        public override string ToString()
+        {
+            return $"{filename}";
+        }
+
 
 
     }

@@ -1,19 +1,12 @@
-using MyShaderAnalysis.codestash;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using ValveResourceFormat.CompiledShader;
 
 /*
  *
  * Manage shaderFile lookups through here
- *
- * Do we need to return file listings? Possibly good .. but the important part is to return objects
- *
- * Maybe, return an iterator?
  *
  *
  *
@@ -24,26 +17,56 @@ namespace MyShaderAnalysis.utilhelpers
     public class FileArchive
     {
         private ARCHIVE archive;
-        private List<string> vcsFiles = new();
+        private List<FileVcsTokens> vcsFiles = new();
 
-        public FileArchive(ARCHIVE archive)
+        private VcsProgramType programType = VcsProgramType.Undetermined;
+        private VcsShaderModelType shaderModelType = VcsShaderModelType.Undetermined;
+
+        public FileArchive(ARCHIVE archive,
+            VcsProgramType programType = VcsProgramType.Undetermined,
+            VcsShaderModelType shaderModelType = VcsShaderModelType.Undetermined)
         {
             this.archive = archive;
+            this.programType = programType;
+            this.shaderModelType = shaderModelType;
             foreach (string filenamepath in Directory.GetFiles(FileArchives.GetArchiveDir(archive)))
             {
                 if (filenamepath.EndsWith("vcs"))
                 {
-                    vcsFiles.Add(filenamepath.Replace("\\", "/"));
+                    vcsFiles.Add(new FileVcsTokens(archive, Path.GetFileName(filenamepath)));
                 }
             }
         }
 
-
-        public IEnumerable MyIterator()
+        private List<FileVcsTokens> ReduceFileListing()
         {
-            foreach (var item in vcsFiles)
+            List<FileVcsTokens> reducedFiles = new();
+            foreach (FileVcsTokens vcsFile in vcsFiles)
             {
-                yield return item;
+                if ((programType == VcsProgramType.Undetermined || programType == vcsFile.programType) &&
+                    (shaderModelType == VcsShaderModelType.Undetermined || shaderModelType == vcsFile.shaderModelType))
+                {
+                    reducedFiles.Add(vcsFile);
+                }
+            }
+            return reducedFiles;
+        }
+
+
+        public IEnumerable ShaderFiles()
+        {
+            foreach (var vcsFile in ReduceFileListing())
+            {
+                ShaderFile shaderFile = null;
+                try
+                {
+                    shaderFile = vcsFile.GetShaderFile();
+                } catch (ShaderParserException e)
+                {
+                    Console.WriteLine($"Error couldn't parse {vcsFile.filename} {e.Message}");
+                    continue;
+                }
+                yield return shaderFile;
             }
         }
 
