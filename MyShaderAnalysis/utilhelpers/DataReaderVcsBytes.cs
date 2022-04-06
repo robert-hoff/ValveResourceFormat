@@ -18,43 +18,27 @@ namespace MyShaderAnalysis.utilhelpers
 
         private VcsProgramType vcsProgramType;
         private string vcsFilename = null;
-        public DataReaderVcsBytes(string filenamepath, HandleOutputWrite outputWriter = null, bool showStatusMessage = false) :
+        public DataReaderVcsBytes(string filenamepath, HandleOutputWrite outputWriter = null) :
             base(new MemoryStream(File.ReadAllBytes(filenamepath)), outputWriter)
         {
             this.vcsProgramType = ComputeVCSFileName(filenamepath).Item1;
             this.vcsFilename = filenamepath;
-            this.showStatusMessage = showStatusMessage;
         }
 
-        // if shortenOutput = true will limit the number of zframes shown to LIMIT_ZFRAMES
-        // if shortenOutput = false will print all zframes (ignoring the LIMIT_ZFRAMES value)
+        // if shortenOutput = true will only print the zframes if they are less than SKIP_ZFRAMES_IF_MORE_THAN
+        // if shortenOutput = false will print all zframes (ignoring the SKIP_ZFRAMES_IF_MORE_THAN value)
         private bool shortenOutput = true;
         public void SetShortenOutput(bool shortenOutput)
         {
             this.shortenOutput = shortenOutput;
         }
 
-        // prints a status message to console "parsing file XXX"
-        private bool showStatusMessage;
-
         private uint zFrameCount = 0;
-        const int LIMIT_ZFRAMES = 4;
 
 
         public void PrintByteDetail(string archiveName = null)
         {
             BaseStream.Position = 0;
-            if (showStatusMessage)
-            {
-                if (archiveName != null)
-                {
-                    string reportString = $"parsing /{ archiveName}/{ Path.GetFileName(vcsFilename)}";
-                    Console.Write($"{reportString,-100}");
-                } else
-                {
-                    Console.Write($"parsing {vcsFilename}");
-                }
-            }
 
             int vcsVersion = -1;
             if (vcsProgramType == VcsProgramType.Features)
@@ -73,14 +57,7 @@ namespace MyShaderAnalysis.utilhelpers
 
             if (vcsVersion != 65 && vcsVersion != 64 && vcsVersion != 62)
             {
-                if (showStatusMessage)
-                {
-                    Console.WriteLine($"ERROR Unsupported vcs version {vcsVersion}");
-                    return;
-                } else
-                {
-                    throw new ShaderParserException($"ERROR Unsupported vcs version {vcsVersion}");
-                }
+                throw new ShaderParserException($"ERROR Unsupported vcs version {vcsVersion}");
             }
 
 
@@ -103,10 +80,6 @@ namespace MyShaderAnalysis.utilhelpers
             }
             PrintZframes(vcsVersion);
             ShowEndOfFile();
-            if (showStatusMessage)
-            {
-                Console.WriteLine($"OK");
-            }
         }
 
         private int PrintVcsFeaturesHeader()

@@ -58,7 +58,7 @@ namespace MyShaderAnalysis
             // v44 file (will throw)
             // string filenamepath = GetFilenamepath(ARCHIVE.the_lab_v62, "debugoverlay_wireframe_pc_40_gs.vcs");
 
-            new DataReaderVcsBytes(filenamepath, showStatusMessage: true).PrintByteDetail();
+            new DataReaderVcsBytes(filenamepath).PrintByteDetail();
             // new ParseV44Files(filenamepath);
         }
 
@@ -420,6 +420,12 @@ namespace MyShaderAnalysis
         }
 
 
+        /*
+         * This test depends on the shaderFile parsing correctly first,
+         * then it will attempt to use the inbuilt PrintByteDetail() method, which parses the bytes again
+         *
+         *
+         */
         public static void TestArchiveBytes(ARCHIVE archive)
         {
             string archiveName = archive.ToString();

@@ -22,6 +22,14 @@ namespace MyShaderAnalysis.utilhelpers
         private VcsProgramType programType = VcsProgramType.Undetermined;
         private VcsShaderModelType shaderModelType = VcsShaderModelType.Undetermined;
 
+        /*
+         * Collects all the vcs files in the given archive as FileVcsTokens
+         * It will fail if the vcs files don't observe the expected naming convention
+         *
+         *  {name}_{platform}_{shadermodel}_{programtype}.vcs
+         *
+         *
+         */
         public FileArchive(ARCHIVE archive,
             VcsProgramType programType = VcsProgramType.Undetermined,
             VcsShaderModelType shaderModelType = VcsShaderModelType.Undetermined)
@@ -53,6 +61,10 @@ namespace MyShaderAnalysis.utilhelpers
         }
 
 
+        /*
+         * Attempt to parse the files into ShaderFile. Returns them if successful or reports error.
+         *
+         */
         public IEnumerable ShaderFiles()
         {
             foreach (var vcsFile in ReduceFileListing())
@@ -61,12 +73,29 @@ namespace MyShaderAnalysis.utilhelpers
                 try
                 {
                     shaderFile = vcsFile.GetShaderFile();
-                } catch (ShaderParserException e)
+                }
+                // may throw ShaderParserException or UnexpectedMagicException
+                catch (Exception e)
                 {
                     Console.WriteLine($"Error couldn't parse {vcsFile.filename} {e.Message}");
                     continue;
                 }
                 yield return shaderFile;
+            }
+        }
+
+
+        /*
+         * Returns the byte content of the vcs files only as byte[]
+         *
+         */
+        public IEnumerable ShaderFileBytes()
+        {
+            foreach (var vcsFile in ReduceFileListing())
+            {
+
+
+                yield return null;
             }
         }
 
