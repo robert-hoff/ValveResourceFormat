@@ -13,7 +13,7 @@ using ValveResourceFormat.CompiledShader;
 using static MyShaderAnalysis.utilhelpers.FileArchives;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
-namespace MyShaderAnalysis
+namespace MyShaderAnalysis.vcstesting
 {
     public class TestBatchParsing
     {

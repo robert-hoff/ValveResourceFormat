@@ -1,3 +1,4 @@
+using MyShaderAnalysis.utilhelpers;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ValveResourceFormat.CompiledShader;
 
-namespace MyShaderAnalysis.utilhelpers
+namespace MyShaderAnalysis.vcstesting
 {
     public class TestFileArchive
     {
@@ -24,7 +25,8 @@ namespace MyShaderAnalysis.utilhelpers
         }
 
 
-        public static void Trial1() {
+        public static void Trial1()
+        {
 
         }
 

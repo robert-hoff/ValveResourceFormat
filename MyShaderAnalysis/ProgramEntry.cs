@@ -8,7 +8,7 @@ using MyShaderAnalysis.codestash;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 using MyShaderAnalysis.utilhelpers.snippetcode;
 using MyShaderAnalysis.compat;
-using MyShaderAnalysis.utilhelpers;
+using MyShaderAnalysis.vcstesting;
 
 namespace MyShaderAnalysis
 {

@@ -5,12 +5,11 @@ using System.Linq;
 using MyShaderAnalysis.compat;
 using ValveResourceFormat.CompiledShader;
 using static MyShaderAnalysis.utilhelpers.FileArchives;
-using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 using MyShaderAnalysis.utilhelpers;
 using MyShaderAnalysis.parsetrials;
 
-namespace MyShaderAnalysis.codestash
+namespace MyShaderAnalysis.vcstesting
 {
     public class TestSingleFileParsing
     {
@@ -110,7 +109,7 @@ namespace MyShaderAnalysis.codestash
 
         static void TestSingleFilePrintout(string filenamepath)
         {
-            ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
+            ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
             new PrintVcsFileSummary(shaderFile);
         }
 
@@ -169,7 +168,7 @@ namespace MyShaderAnalysis.codestash
             // ARCHIVE archive = ARCHIVE.dotagame_pcgl_v62;
             ARCHIVE archive = ARCHIVE.dota_core_pcgl_v62;
             // ARCHIVE archive = ARCHIVE.the_lab_v62;
-            List<string> vcsFiles = MyShaderUtilHelpers.GetVcsFiles(FileArchives.GetArchiveDir(archive), VcsProgramType.Features);
+            List<string> vcsFiles = MyShaderUtilHelpers.GetVcsFiles(GetArchiveDir(archive), VcsProgramType.Features);
             foreach (var filenamepath in vcsFiles)
             {
                 Console.WriteLine($"{filenamepath}");
@@ -216,7 +215,7 @@ namespace MyShaderAnalysis.codestash
                 byte[] zframeBytes = shaderFile.GetDecompressedZFrameByIndex(i);
                 ParseV62ZFrame zframeParser = new ParseV62ZFrame(zframeBytes, shaderFile);
                 zframeParser.PrintByteDetail();
-                Console.WriteLine(new String('_', 40));
+                Console.WriteLine(new string('_', 40));
                 Console.WriteLine($"");
                 Console.WriteLine($"");
             }
@@ -262,7 +261,7 @@ namespace MyShaderAnalysis.codestash
         {
             string filenamepath = GetFilenamepath(ARCHIVE.dota_core_pcgl_v64, "multiblend_pcgl_30_vs.vcs");
             Console.WriteLine($"{filenamepath}");
-            ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
+            ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
             Console.WriteLine($"{shaderFile.GetZFrameCount()} zframes");
         }
 
