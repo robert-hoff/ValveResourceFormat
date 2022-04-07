@@ -60,6 +60,7 @@ namespace MyShaderAnalysis
             // TestStuff.RunTrials();
             // CrcTrialsSha1.RunTrials();
             // CrcTrialsMurmur32.RunTrials();
+            // EncodeZstdDictAsString.RunTrials();
 
 
             // CompatRulesGenerationTestRuns.RunTrials();
