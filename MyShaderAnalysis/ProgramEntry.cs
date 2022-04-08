@@ -32,8 +32,10 @@ namespace MyShaderAnalysis
             Console.SetOut(new ToDebugWriter());
 
 
+            TestSpirvDll.RunTrials();
+
             // -- comprehensive tests against archive names (all files)
-            TestFileArchive.RunTrials();
+            // TestFileArchive.RunTrials();
             // TestBatchParsing.RunTrials();
             // TestSingleFileParsing.RunTrials();
 

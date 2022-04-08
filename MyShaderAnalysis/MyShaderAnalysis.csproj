@@ -28,4 +28,10 @@
     <ProjectReference Include="..\MyShaderFile\MyShaderFile.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="SpirvCrossDll">
+      <HintPath>..\MyGUI\SpirvCrossDll.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>
