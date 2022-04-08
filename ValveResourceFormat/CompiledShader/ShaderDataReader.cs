@@ -3,16 +3,29 @@ using System.IO;
 
 namespace ValveResourceFormat.CompiledShader
 {
+    public delegate void HandleOutputWrite(string s);
+
     public class ShaderDataReader : BinaryReader
     {
+        /*
+         * Pass a HandleOutputWrite delegate to redirect output
+         *
+         * Examples:
+         * Console.Write (default), same as (x)=>{Console.Write(x);}
+         * sw.Write (a StreamWriter), buffer.Write (a StringBuffer), (x)=>{} (disable output)
+         *
+         */
         public HandleOutputWrite outputWriter { get; set; }
-        public delegate void HandleOutputWrite(string s);
 
-        // pass an OutputWriter to direct output somewhere else, Console.Write is assigned by default
         public ShaderDataReader(Stream input, HandleOutputWrite outputWriter = null) : base(input)
         {
-            this.outputWriter = outputWriter ?? ((x) => { Console.Write(x); });
+            this.outputWriter = outputWriter ?? Console.Write;
         }
+        public ShaderDataReader(string filenamepath, HandleOutputWrite outputWriter = null) : base(new MemoryStream(File.ReadAllBytes(filenamepath)))
+        {
+            this.outputWriter = outputWriter ?? Console.Write;
+        }
+
 
         public byte ReadByteAtPosition(long ind = 0, bool rel = true)
         {
@@ -104,6 +117,7 @@ namespace ValveResourceFormat.CompiledShader
             return str;
         }
 
+        // check end of file is reached
         public void ShowEndOfFile()
         {
             if (BaseStream.Position != BaseStream.Length)
@@ -115,11 +129,12 @@ namespace ValveResourceFormat.CompiledShader
             BreakLine();
         }
 
+        // Shows an Int32 together with its 4 bytes read,  e.g. `00 00 01 0F    // 271`
         public void ShowBytesWithIntValue()
         {
-            int intval = ReadInt32AtPosition();
+            int intVal = ReadInt32AtPosition();
             ShowBytes(4, breakLine: false);
-            TabComment(intval.ToString());
+            TabComment(intVal.ToString());
         }
 
         public void ShowByteCount(string message = null)

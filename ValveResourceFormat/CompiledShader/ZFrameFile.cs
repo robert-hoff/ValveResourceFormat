@@ -217,12 +217,9 @@ namespace ValveResourceFormat.CompiledShader
         public void PrintGpuSource(int sourceId, HandleOutputWrite outputWriter = null)
         {
             outputWriter ??= (x) => { Console.Write(x); };
-            string sourceDetails =
-                $"// {gpuSources[sourceId].GetBlockName()}[{sourceId}] source bytes " +
-                $"({gpuSources[sourceId].sourcebytes.Length}) ref={gpuSources[sourceId].GetEditorRefIdAsString()}\n";
             if (gpuSources[sourceId].sourcebytes.Length == 0)
             {
-                outputWriter(sourceDetails);
+                outputWriter($"{gpuSources[sourceId].GetSourceDetails()}\n");
                 outputWriter("[empty source]");
                 return;
             }
@@ -231,10 +228,21 @@ namespace ValveResourceFormat.CompiledShader
                 string glslSourceFile = Encoding.UTF8.GetString(gpuSources[sourceId].sourcebytes);
                 outputWriter(glslSourceFile);
             }
+            else if (gpuSources[sourceId] is VulkanSource)
+            {
+                VulkanSource vulkanSource = (VulkanSource)gpuSources[sourceId];
+                outputWriter($"{vulkanSource.GetSourceDetails()}\n");
+                outputWriter($"// Spirv bytecode ({vulkanSource.metadataOffset})\n");
+                outputWriter($"[0]\n");
+                outputWriter($"{BytesToString(vulkanSource.GetSpirvBytes())}\n\n");
+                outputWriter($"// Source metadata (unknown encoding) ({vulkanSource.metadataLength})\n");
+                outputWriter($"[{vulkanSource.metadataOffset}]\n");
+                outputWriter($"{BytesToString(vulkanSource.GetMetadataBytes())}");
+            }
             else
             {
-                outputWriter(sourceDetails);
-                outputWriter(BytesToString(gpuSources[sourceId].sourcebytes) + "\n");
+                outputWriter($"{gpuSources[sourceId].GetSourceDetails()}\n");
+                outputWriter($"{BytesToString(gpuSources[sourceId].sourcebytes)}");
             }
         }
 
@@ -748,6 +756,7 @@ namespace ValveResourceFormat.CompiledShader
                     datareader.BreakLine();
                     datareader.BaseStream.Position = endOfSourceOffset;
                 }
+                datareader.ShowByteCount();
                 datareader.ShowBytes(16, "Vulkan Editor ref. ID");
                 datareader.BreakLine();
             }
