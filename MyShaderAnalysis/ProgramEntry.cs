@@ -32,12 +32,12 @@ namespace MyShaderAnalysis
             Console.SetOut(new ToDebugWriter());
 
 
-            TestSpirvDll.RunTrials();
+            // TestSpirvDll.RunTrials();
 
             // -- comprehensive tests against archive names (all files)
             // TestFileArchive.RunTrials();
             // TestBatchParsing.RunTrials();
-            // TestSingleFileParsing.RunTrials();
+            TestSingleFileParsing.RunTrials();
 
             // -- revise how files are managed as collections
             // CreateHtmlServerFiles.RunTrials();

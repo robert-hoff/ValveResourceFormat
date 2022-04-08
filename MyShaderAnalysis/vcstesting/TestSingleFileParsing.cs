@@ -1,14 +1,11 @@
 using System;
-using System.IO;
 using System.Collections.Generic;
-using System.Linq;
 
 using ValveResourceFormat.CompiledShader;
-using MyShaderAnalysis.compat;
 using MyShaderAnalysis.utilhelpers;
 using MyShaderAnalysis.utilhelpers.parsetrials;
 using static MyShaderAnalysis.utilhelpers.FileArchives;
-using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
+
 
 namespace MyShaderAnalysis.vcstesting
 {
@@ -17,7 +14,7 @@ namespace MyShaderAnalysis.vcstesting
 
         public static void RunTrials()
         {
-            RunTestSingleFilePrintout();
+            // RunTestSingleFilePrintout();
             // RunTestZFrameFilePrintout();
             // RunTestZFrameBytePrintout1();
             // RunTestZFrameBytePrintout2();
@@ -30,6 +27,9 @@ namespace MyShaderAnalysis.vcstesting
             // RunTestZFrameBytePrintoutV62BatchSuppressOutput();
             // RunTestZFrameBytePrintoutV62Batch();
             // RunTestZFrameBytePrintoutV62();
+
+
+            ShowGpuSource();
         }
 
 
@@ -266,6 +266,32 @@ namespace MyShaderAnalysis.vcstesting
             Console.WriteLine($"{shaderFile.GetZFrameCount()} zframes");
         }
 
+
+
+
+
+
+        static void ShowGpuSource()
+        {
+            // GetFilenamepath(ARCHIVE.alyx_core_vulkan_v64, "debug_wireframe_2d_vulkan_50_ps.vcs");
+            // FileVcsTokens fileTokens = new FileVcsTokens(ARCHIVE.alyx_hlvr_vulkan_v64, "debug_wireframe_2d_vulkan_50_vs.vcs");
+            // FileVcsTokens fileTokens = new FileVcsTokens(ARCHIVE.alyx_hlvr_vulkan_v64, "debug_wireframe_2d_vulkan_50_ps.vcs");
+            // FileVcsTokens fileTokens = new FileVcsTokens(ARCHIVE.alyx_hlvr_vulkan_v64, "solidcolor_vulkan_50_vs.vcs");
+            // FileVcsTokens fileTokens = new FileVcsTokens(ARCHIVE.alyx_hlvr_vulkan_v64, "msaa_resolve_cs_vulkan_50_cs.vcs");
+            // FileVcsTokens fileTokens = new FileVcsTokens(ARCHIVE.alyx_hlvr_vulkan_v64, "visualize_cloth_vulkan_50_ps.vcs");
+            FileVcsTokens fileTokens = new FileVcsTokens(ARCHIVE.alyx_core_vulkan_v64, "blend_vulkan_41_ps.vcs");
+
+            ZFrameFile zframeFile = fileTokens.GetZframeFileByIndex(0);
+
+
+            // zframeFile.PrintByteDetail();
+
+
+            VulkanSource vulkanSource = (VulkanSource)zframeFile.gpuSources[2];
+            ParseVulkanSource vulkanParser = new ParseVulkanSource(vulkanSource);
+            // vulkanParser.PrintByteDetailSpirvReflection();
+            vulkanParser.PrintByteDetail();
+        }
 
 
     }

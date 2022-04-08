@@ -18,8 +18,8 @@ namespace MyShaderAnalysis
 
         public static void RunTrials()
         {
-            Snippetcode.RunTrials();
 
+            DecompileVulkanSource();
 
             // ParseV44FileIntoHtml();
             // ParseV44FileToConsole();
@@ -36,6 +36,14 @@ namespace MyShaderAnalysis
         }
 
 
+
+        static void DecompileVulkanSource()
+        {
+            byte[] databytes = File.ReadAllBytes(@"../../../files_samples/source0.spv");
+            // byte[] databytes = File.ReadAllBytes(@"../../../files_samples/source1.spv");
+            string sourceRefection = DecompileSpirvDll.DecompileVulkan(databytes);
+            Console.WriteLine($"{sourceRefection}");
+        }
 
 
         static void ParseV44FileIntoHtml()

@@ -1,4 +1,5 @@
 using MyShaderAnalysis.utilhelpers;
+using MyShaderAnalysis.utilhelpers.parsetrials;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -15,7 +16,8 @@ namespace MyShaderAnalysis.vcstesting
 
         public static void RunTrials()
         {
-            RunTestShaderFilesSelectedArchives();
+            TestGpuFiles();
+            // RunTestShaderFilesSelectedArchives();
             // RunTestShaderFilesAllArchives();
             // TestShaderFiles();
             // TestShaderFilesBytes2();
@@ -25,9 +27,32 @@ namespace MyShaderAnalysis.vcstesting
         }
 
 
-        public static void Trial1()
+        public static void TestGpuFiles()
         {
+            int LIMIT_ZFRAMES = 20;
+            int LIMIT_GPU_SOURCES = 20;
 
+            // FileArchive vcsArchive = new FileArchive(ARCHIVE.alyx_hlvr_vulkan_v64, LIMIT_NR: 20000);
+            FileArchive vcsArchive = new FileArchive(ARCHIVE.alyx_core_vulkan_v64, LIMIT_NR: 20000);
+            foreach (ShaderFile shaderFile in vcsArchive.GetShaderFiles())
+            {
+                for (int zi = 0; zi < Math.Min(shaderFile.GetZFrameCount(), LIMIT_ZFRAMES); zi++)
+                {
+                    ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(zi);
+                    for (int i = 0; i < Math.Min(zframeFile.gpuSourceCount, LIMIT_GPU_SOURCES); i++)
+                    {
+                        Console.WriteLine($"{shaderFile.filenamepath} zi={zi} gpu={i}");
+                        VulkanSource vulkanSource = (VulkanSource)zframeFile.gpuSources[i];
+                        try
+                        {
+                            new ParseVulkanSource(vulkanSource, outputWriter: (x) => { }).PrintByteDetailSpirvReflection();
+                        } catch (Exception e)
+                        {
+                            Console.WriteLine($"Error {e.Message}");
+                        }
+                    }
+                }
+            }
         }
 
 

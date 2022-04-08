@@ -32,13 +32,18 @@ namespace MyShaderAnalysis.utilhelpers
          */
         public FileArchive(ARCHIVE archive,
             VcsProgramType programType = VcsProgramType.Undetermined,
-            VcsShaderModelType shaderModelType = VcsShaderModelType.Undetermined)
+            VcsShaderModelType shaderModelType = VcsShaderModelType.Undetermined, int LIMIT_NR = 10000)
         {
             this.archive = archive;
             this.programType = programType;
             this.shaderModelType = shaderModelType;
+            int count = 0;
             foreach (string filenamepath in Directory.GetFiles(FileArchives.GetArchiveDir(archive)))
             {
+                if (count++ > LIMIT_NR)
+                {
+                    break;
+                }
                 if (filenamepath.EndsWith("vcs"))
                 {
                     vcsFiles.Add(new FileVcsTokens(archive, Path.GetFileName(filenamepath)));

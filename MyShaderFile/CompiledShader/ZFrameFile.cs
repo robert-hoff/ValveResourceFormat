@@ -748,6 +748,7 @@ namespace ValveResourceFormat.CompiledShader
                     datareader.BreakLine();
                     datareader.BaseStream.Position = endOfSourceOffset;
                 }
+                datareader.ShowByteCount();
                 datareader.ShowBytes(16, "Vulkan Editor ref. ID");
                 datareader.BreakLine();
             }

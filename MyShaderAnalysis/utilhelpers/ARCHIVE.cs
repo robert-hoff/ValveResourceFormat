@@ -1,5 +1,6 @@
 using System;
 
+#pragma warning disable CA1813 // Avoid unsealed attributes
 namespace MyShaderAnalysis.utilhelpers
 {
 
@@ -12,6 +13,7 @@ namespace MyShaderAnalysis.utilhelpers
 
     public enum ARCHIVE
     {
+
         [ArchiveDirectory("X:/dota-2-VRF-exports/dota2-export-shaders-pc-V65/shaders/vfx")]
         dota_game_pc_v65,
         [ArchiveDirectory("X:/dota-2-VRF-exports/dota2-export-shaders-pc-V65/shaders-core/vfx")]
@@ -68,7 +70,7 @@ namespace MyShaderAnalysis.utilhelpers
     [AttributeUsage(AttributeTargets.Field)]
     public class ArchiveDirectoryAttribute : System.Attribute
     {
-        public readonly string dirName;
+        public string dirName { get; }
         public ArchiveDirectoryAttribute(string dirName)
         {
             this.dirName = dirName;
@@ -77,4 +79,5 @@ namespace MyShaderAnalysis.utilhelpers
 
 
 }
+#pragma warning restore CA1813
 

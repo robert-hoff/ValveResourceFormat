@@ -3,6 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 
 using ShaderFile = ValveResourceFormat.CompiledShader.ShaderFile;
+using ZFrameFile = ValveResourceFormat.CompiledShader.ZFrameFile;
 using VcsPlatformType = ValveResourceFormat.CompiledShader.VcsPlatformType;
 using VcsProgramType = ValveResourceFormat.CompiledShader.VcsProgramType;
 using VcsShaderModelType = ValveResourceFormat.CompiledShader.VcsShaderModelType;
@@ -131,6 +132,20 @@ namespace MyShaderAnalysis.utilhelpers
             shaderFile ??= InstantiateShaderFile(filenamepath);
             return shaderFile;
         }
+
+
+        public ZFrameFile GetZframeFile(long zframeId)
+        {
+            ShaderFile shaderFile = GetShaderFile();
+            return shaderFile.GetZFrameFile(zframeId);
+        }
+
+        public ZFrameFile GetZframeFileByIndex(int zframeIndex)
+        {
+            ShaderFile shaderFile = GetShaderFile();
+            return shaderFile.GetZFrameFileByIndex(zframeIndex);
+        }
+
 
 
         /*
