@@ -7,7 +7,7 @@ using ValveResourceFormat.Serialization.VfxEval;
 using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
-namespace MyShaderAnalysis.parsetrials
+namespace MyShaderAnalysis.utilhelpers.parsetrials
 {
 
     public class ParseV62ZFrame : ShaderDataReader
@@ -63,7 +63,7 @@ namespace MyShaderAnalysis.parsetrials
                 //    throw new ShaderParserException("unexpected data");
                 //}
                 uint paramId = ReadUInt16AtPosition();
-                ShowBytes(2, $"{paramId,3}   {shaderFile.paramBlocks[(int) paramId].name0}");
+                ShowBytes(2, $"{paramId,3}   {shaderFile.paramBlocks[(int)paramId].name0}");
             }
             BreakLine();
             // uint nrHeaders = ReadUInt16AtPosition();

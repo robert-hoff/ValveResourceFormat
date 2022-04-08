@@ -5,6 +5,7 @@ using VcsProgramType = ValveResourceFormat.CompiledShader.VcsProgramType;
 using VcsShaderModelType = ValveResourceFormat.CompiledShader.VcsShaderModelType;
 using ShaderDataReader = ValveResourceFormat.CompiledShader.ShaderDataReader;
 
+using static MyShaderAnalysis.utilhelpers.FileArchives;
 using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
 
 
@@ -14,7 +15,7 @@ using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
  *
  *
  */
-namespace MyShaderAnalysis.parsetrials
+namespace MyShaderAnalysis.utilhelpers.parsetrials
 {
     public class DataReaderV62 : ShaderDataReader
     {
@@ -24,17 +25,11 @@ namespace MyShaderAnalysis.parsetrials
             Trial1();
         }
 
-        public const string V62_EXAMPLES_SOURCE = "X:/v62shaders-from-xpaw";
-
-
         static void Trial1()
         {
-            // string filenamepath = $"{V62_EXAMPLES_SOURCE}/test_pc_30_ps.vcs";
-            string filenamepath = $"{V62_EXAMPLES_SOURCE}/test_pcgl_30_ps.vcs";
+            string filenamepath = GetFilenamepath(ARCHIVE.the_lab_pc_v62, "test_pc_30_ps.vcs");
             new DataReaderV62(filenamepath);
         }
-
-
 
 
         private VcsProgramType vcsProgramType;

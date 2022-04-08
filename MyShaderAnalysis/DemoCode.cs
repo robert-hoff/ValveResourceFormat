@@ -1,17 +1,15 @@
 using System;
-using System.IO;
 using System.Collections.Generic;
-using ValveResourceFormat.ThirdParty;
+using System.IO;
 using ValveResourceFormat.CompiledShader;
-using ValveResourceFormat.Serialization.VfxEval;
 using MyShaderAnalysis.codestash;
+using MyShaderAnalysis.utilhelpers;
+using MyShaderAnalysis.utilhelpers.parsetrials;
+using MyShaderAnalysis.utilhelpers.snippetcode;
 using static MyShaderAnalysis.utilhelpers.FileArchives;
 using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
 using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
-using MyShaderAnalysis.utilhelpers.snippetcode;
-using MyShaderAnalysis.parsetrials;
-using MyShaderAnalysis.utilhelpers;
 
 namespace MyShaderAnalysis
 {

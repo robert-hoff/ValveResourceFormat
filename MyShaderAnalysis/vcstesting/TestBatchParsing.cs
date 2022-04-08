@@ -1,15 +1,10 @@
-using MyShaderAnalysis.codestash;
-using MyShaderAnalysis.codestash.snippetcode;
-using MyShaderAnalysis.parsetrials;
-using MyShaderAnalysis.utilhelpers;
-using MyShaderAnalysis.utilhelpers.snippetcode;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using ValveResourceFormat.CompiledShader;
+using MyShaderAnalysis.utilhelpers;
+using MyShaderAnalysis.utilhelpers.snippetcode;
 using static MyShaderAnalysis.utilhelpers.FileArchives;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 

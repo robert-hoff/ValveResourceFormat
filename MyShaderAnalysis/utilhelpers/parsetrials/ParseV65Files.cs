@@ -9,26 +9,19 @@ using VcsPlatformType = ValveResourceFormat.CompiledShader.VcsPlatformType;
 using VcsProgramType = ValveResourceFormat.CompiledShader.VcsProgramType;
 using VcsShaderModelType = ValveResourceFormat.CompiledShader.VcsShaderModelType;
 
-using static MyShaderAnalysis.codestash.FileSystemOld;
 using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
+using static MyShaderAnalysis.utilhelpers.FileArchives;
+
 
 /*
  * Almost identical to DataReaderVcsBytes - all relevant changes were written into DataReaderVcsBytes since
  *
  *
  */
-namespace MyShaderAnalysis.parsetrials
+namespace MyShaderAnalysis.utilhelpers.parsetrials
 {
     class ParseV65Files : ShaderDataReader
     {
-
-        // public static void RunTrials()
-        // {
-            // Console.WriteLine("parse those suckers!");
-            // string vcsTestFile = "X:/v65shaders-testcases/cables_pc_40_features.vcs";
-            // ShaderFile shaderFile = InstantiateShaderFile(vcsTestFile);
-        // }
-
 
         public static void RunTrials()
         {
@@ -36,15 +29,12 @@ namespace MyShaderAnalysis.parsetrials
         }
 
 
-
-        public const string V65_EXAMPLES_SOURCE = "X:/v65shaders-testcases";
-
         static void Trial1()
         {
-            // string filenamepath = $"{V65_EXAMPLES_SOURCE}/cables_pc_40_features.vcs";
-            // string filenamepath = $"{V65_EXAMPLES_SOURCE}/cables_pc_40_ps.vcs";
-            // string filenamepath = $"{V65_EXAMPLES_SOURCE}/cables_pc_40_vs.vcs";
-            string filenamepath = $"{V65_EXAMPLES_SOURCE}/hero_pc_40_features.vcs";
+            // string filenamepath = GetFilenamepath(ARCHIVE.dota_game_pc_v65, "cables_pc_40_features.vcs");
+            // string filenamepath = GetFilenamepath(ARCHIVE.dota_game_pc_v65, "cables_pc_40_ps.vcs");
+            // string filenamepath = GetFilenamepath(ARCHIVE.dota_game_pc_v65, "hero_pc_40_vs.vcs");
+            string filenamepath = GetFilenamepath(ARCHIVE.dota_game_pc_v65, "hero_pc_40_features.vcs");
             new ParseV65Files(filenamepath);
         }
 
@@ -150,7 +140,7 @@ namespace MyShaderAnalysis.parsetrials
             uint arg5 = ReadUInt32AtPosition(0);
             uint arg6 = ReadUInt32AtPosition(4);
             uint arg7 = ReadUInt32AtPosition(8);
-            if (version==64 || version == 65)
+            if (version == 64 || version == 65)
             {
                 uint arg8 = ReadUInt32AtPosition(12);
                 ShowBytes(16, 4, breakLine: false);
@@ -213,11 +203,11 @@ namespace MyShaderAnalysis.parsetrials
             ShowBytes(16, "file ID4");
             ShowBytes(16, "file ID5");
             ShowBytes(16, "file ID6");
-            if ((version==64 || version==65) && has_psrs_file == 0)
+            if ((version == 64 || version == 65) && has_psrs_file == 0)
             {
                 ShowBytes(16, "file ID7 - shared by all Dota2 vcs files");
             }
-            if ((version==64 || version==65)  && has_psrs_file == 1)
+            if ((version == 64 || version == 65) && has_psrs_file == 1)
             {
                 ShowBytes(16, "file ID7 - reference to psrs file");
                 ShowBytes(16, "file ID8 - shared by all Dota2 vcs files");
@@ -694,7 +684,7 @@ namespace MyShaderAnalysis.parsetrials
                 {
                     // throw new ShaderParserException("Unknown compression, neither ZStd nor Lzma found");
                     Console.WriteLine($"neither zstd or lzma found");
-                    ShowBytes((int) zstdDelimOrChunkSize);
+                    ShowBytes((int)zstdDelimOrChunkSize);
                     return;
                 }
                 isLzma = true;
@@ -722,7 +712,7 @@ namespace MyShaderAnalysis.parsetrials
             if (writeHtmlLinks)
             {
                 // return GetZframeHtmlLink(zframeId, vcsFilename);
-                string serverdir = SERVER_BASEDIR;
+                string serverdir = GetServerBaseDir();
                 string basedir = $"/vcs-all/{GetCoreOrDotaString(vcsFilename)}/zsource/";
 
                 return GetZframeHtmlLinkCheckExists(zframeId, vcsFilename, serverdir, basedir);

@@ -17,7 +17,7 @@ using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
  *
  *
  */
-namespace MyShaderAnalysis.parsetrials
+namespace MyShaderAnalysis.utilhelpers.parsetrials
 {
     class ParseV44Files : ShaderDataReader
     {

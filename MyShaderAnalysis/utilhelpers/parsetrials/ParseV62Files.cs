@@ -19,7 +19,7 @@ using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
  *
  *
  */
-namespace MyShaderAnalysis.parsetrials
+namespace MyShaderAnalysis.utilhelpers.parsetrials
 {
     class ParseV62Files : ShaderDataReader
     {
@@ -38,12 +38,6 @@ namespace MyShaderAnalysis.parsetrials
             Trial2InstantiateShaderFile();
             // V62UncompressedZFrames();
         }
-
-
-
-        public const string V65_EXAMPLES_SOURCE = "X:/v65shaders-testcases";
-        public const string V62_EXAMPLES_SOURCE = "X:/v62shaders-from-xpaw";
-        public const string THE_LAB_SOURCE = "X:/Steam/steamapps/common/The Lab/RobotRepair/core/shaders/vfx";
 
 
         static void V62UncompressedZFrames()
@@ -100,15 +94,13 @@ namespace MyShaderAnalysis.parsetrials
             if (vcsProgramType == VcsProgramType.Features)
             {
                 PrintVcsFeaturesHeader();
-            }
-            else if (vcsProgramType == VcsProgramType.VertexShader || vcsProgramType == VcsProgramType.PixelShader
-                 || vcsProgramType == VcsProgramType.GeometryShader || vcsProgramType == VcsProgramType.PixelShaderRenderState
-                 || vcsProgramType == VcsProgramType.ComputeShader || vcsProgramType == VcsProgramType.HullShader
-                 || vcsProgramType == VcsProgramType.DomainShader || vcsProgramType == VcsProgramType.RaytracingShader)
+            } else if (vcsProgramType == VcsProgramType.VertexShader || vcsProgramType == VcsProgramType.PixelShader
+                   || vcsProgramType == VcsProgramType.GeometryShader || vcsProgramType == VcsProgramType.PixelShaderRenderState
+                   || vcsProgramType == VcsProgramType.ComputeShader || vcsProgramType == VcsProgramType.HullShader
+                   || vcsProgramType == VcsProgramType.DomainShader || vcsProgramType == VcsProgramType.RaytracingShader)
             {
                 version = PrintVsPsHeader();
-            }
-            else
+            } else
             {
                 throw new ShaderParserException($"can't parse this filetype: {vcsProgramType}");
             }
@@ -196,8 +188,7 @@ namespace MyShaderAnalysis.parsetrials
                 uint arg7 = ReadUInt32AtPosition(12);
                 ShowBytes(16, 4, breakLine: false);
                 TabComment($"({arg4},{arg5},{arg6},{arg7})");
-            }
-            else
+            } else
             {
                 ShowBytes(12, 4, breakLine: false);
                 TabComment($"({arg4},{arg5},{arg6})");
@@ -238,8 +229,7 @@ namespace MyShaderAnalysis.parsetrials
             if (writeHtmlLinks)
             {
                 OutputWrite($"{GetVsHtmlLink(vcsFilename, ReadBytesAsString(16))}");
-            }
-            else
+            } else
             {
                 ShowBytes(16, breakLine: false);
             }
@@ -247,8 +237,7 @@ namespace MyShaderAnalysis.parsetrials
             if (writeHtmlLinks)
             {
                 OutputWrite($"{GetPsHtmlLink(vcsFilename, ReadBytesAsString(16))}");
-            }
-            else
+            } else
             {
                 ShowBytes(16, breakLine: false);
             }
@@ -725,8 +714,7 @@ namespace MyShaderAnalysis.parsetrials
             if (zstdDelimOrChunkSize == ShaderFile.ZSTD_DELIM)
             {
                 ShowBytes(4, $"Zstd delim (0x{ShaderFile.ZSTD_DELIM:x08})");
-            }
-            else
+            } else
             {
                 ShowBytes(4, $"Lzma chunk size {zstdDelimOrChunkSize}");
                 uint lzmaDelim = ReadUInt32AtPosition();
@@ -766,8 +754,7 @@ namespace MyShaderAnalysis.parsetrials
                 string basedir = $"/vcs-all/{GetCoreOrDotaString(vcsFilename)}/zsource/";
 
                 return GetZframeHtmlLinkCheckExists(zframeId, vcsFilename, serverdir, basedir);
-            }
-            else
+            } else
             {
                 return $"zframe[0x{zframeId:x08}]";
             }

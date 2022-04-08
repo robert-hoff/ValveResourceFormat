@@ -179,6 +179,8 @@ dotnet_diagnostic.CA2214.severity = none
 # CA5394: Do not use insecure randomness
 dotnet_diagnostic.CA5394.severity = suggestion
 
+
+
 #
 # Dotnet code style settings:
 #
@@ -189,10 +191,11 @@ dotnet_diagnostic.IDE0055.severity = none
 # Sort using and Import directives with System.* appearing first
 dotnet_separate_import_directive_groups = false:suggestion
 # Avoid "this." and "Me." if not necessary
-dotnet_style_qualification_for_field = false:suggestion
-dotnet_style_qualification_for_property = false:suggestion
-dotnet_style_qualification_for_method = false:suggestion
-dotnet_style_qualification_for_event = false:suggestion
+# R: setting these to none doesn't stop the refactoring, maybe a bug?
+# dotnet_style_qualification_for_field = false:none
+# dotnet_style_qualification_for_property = false:none
+# dotnet_style_qualification_for_method = false:none
+# dotnet_style_qualification_for_event = false:none
 
 # Use language keywords instead of framework type names for type references
 dotnet_style_predefined_type_for_locals_parameters_members = true:suggestion
