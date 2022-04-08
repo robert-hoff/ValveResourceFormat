@@ -234,7 +234,7 @@ namespace ValveResourceFormat.CompiledShader
                 outputWriter($"{vulkanSource.GetSourceDetails()}\n");
                 outputWriter($"// Spirv bytecode ({vulkanSource.metadataOffset})\n");
                 outputWriter($"[0]\n");
-                outputWriter($"{BytesToString(vulkanSource.GetSpirvBytes())}\n");
+                outputWriter($"{BytesToString(vulkanSource.GetSpirvBytes())}\n\n");
                 outputWriter($"// Source metadata (unknown encoding) ({vulkanSource.metadataLength})\n");
                 outputWriter($"[{vulkanSource.metadataOffset}]\n");
                 outputWriter($"{BytesToString(vulkanSource.GetMetadataBytes())}");

@@ -4,6 +4,8 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
 using System.Windows.Forms;
 using MyGUI.Utils;
 using SteamDatabase.ValvePak;
@@ -311,32 +313,49 @@ namespace MyGUI.Types.Viewers {
                 int gpuSourceId = Convert.ToInt32(linkTokens[1], CultureInfo.InvariantCulture);
                 string gpuSourceTabTitle = $"{shaderFile.filenamepath.Split('_')[^1][..^4]}[{zframeFile.zframeId:x}]({gpuSourceId})";
 
+                var buffer  = new StringWriter(CultureInfo.InvariantCulture);
                 TabPage gpuSourceTab = null;
-                var buffer = new StringWriter(CultureInfo.InvariantCulture);
-                zframeFile.PrintGpuSource(gpuSourceId, buffer.Write);
                 switch (zframeFile.gpuSources[gpuSourceId]) {
-                    case GlslSource:
-                        gpuSourceTab = new TabPage(gpuSourceTabTitle);
-                        var glslRichTextBox = new RichTextBox {
-                            Font = new Font(FontFamily.GenericMonospace, Font.Size),
-                            DetectUrls = true,
-                            Dock = DockStyle.Fill,
-                            Multiline = true,
-                            ReadOnly = true,
-                            WordWrap = false,
-                            Text = Utils.Utils.NormalizeLineEndings(buffer.ToString()),
-                            ScrollBars = RichTextBoxScrollBars.Both
-                        };
-                        gpuSourceTab.Controls.Add(glslRichTextBox);
-                        break;
+                    case GlslSource: {
+                            zframeFile.PrintGpuSource(gpuSourceId, buffer.Write);
+                            gpuSourceTab = new TabPage(gpuSourceTabTitle);
+                            var glslRichTextBox = CreateRichTextBox(buffer.ToString());
+                            gpuSourceTab.Controls.Add(glslRichTextBox);
+                            break;
+                        }
 
                     case DxbcSource:
-                    case DxilSource:
-                    case VulkanSource:
-                        byte[] input = zframeFile.gpuSources[gpuSourceId].sourcebytes;
-                        gpuSourceTab = CreateByteViewerTab(input, buffer.ToString());
-                        gpuSourceTab.Text = gpuSourceTabTitle;
-                        break;
+                    case DxilSource: {
+                            zframeFile.PrintGpuSource(gpuSourceId, buffer.Write);
+                            byte[] sourceBytes = zframeFile.gpuSources[gpuSourceId].sourcebytes;
+                            gpuSourceTab = CreateByteViewerTab(sourceBytes, buffer.ToString());
+                            gpuSourceTab.Text = gpuSourceTabTitle;
+                            break;
+                        }
+
+                    case VulkanSource: {
+                            VulkanSource vulkanSource = (VulkanSource)zframeFile.gpuSources[gpuSourceId];
+                            // attempt spirv reflection
+                            try {
+                                string reflectedSpirv = DecompileSpirv(vulkanSource.GetSpirvBytes());
+                                buffer.WriteLine(vulkanSource.GetSourceDetails());
+                                buffer.WriteLine($"// Spirv source ({vulkanSource.metadataOffset}), reflection performed with SPIRV-Cross, KhronosGroup\n");
+                                buffer.WriteLine(reflectedSpirv);
+                                buffer.WriteLine($"// Source metadata (unknown encoding) ({vulkanSource.metadataLength})");
+                                buffer.WriteLine($"[{vulkanSource.metadataOffset}]");
+                                buffer.WriteLine($"{BytesToString(vulkanSource.GetMetadataBytes())}");
+                                gpuSourceTab = new TabPage(gpuSourceTabTitle);
+                                var glslRichTextBox = CreateRichTextBox(buffer.ToString());
+                                gpuSourceTab.Controls.Add(glslRichTextBox);
+                            } catch (Exception) {
+                                buffer.WriteLine("// Spirv reflection failed, showing source bytes\n");
+                                zframeFile.PrintGpuSource(gpuSourceId, buffer.Write);
+                                gpuSourceTab = new TabPage(gpuSourceTabTitle);
+                                var glslRichTextBox = CreateRichTextBox(buffer.ToString());
+                                gpuSourceTab.Controls.Add(glslRichTextBox);
+                            }
+                            break;
+                        }
 
                     default:
                         throw new InvalidDataException($"Unimplemented GPU source type {zframeFile.gpuSources[gpuSourceId].GetType()}");
@@ -346,6 +365,20 @@ namespace MyGUI.Types.Viewers {
                 if ((ModifierKeys & Keys.Control) == Keys.Control) {
                     tabControl.SelectedTab = gpuSourceTab;
                 }
+            }
+
+            private static RichTextBox CreateRichTextBox(string content) {
+                RichTextBox richTextBox = new RichTextBox {
+                    DetectUrls = true,
+                    Dock = DockStyle.Fill,
+                    Multiline = true,
+                    ReadOnly = true,
+                    WordWrap = false,
+                    Text = Utils.Utils.NormalizeLineEndings(content),
+                    ScrollBars = RichTextBoxScrollBars.Both
+                };
+                richTextBox.Font = new Font(FontFamily.GenericMonospace, richTextBox.Font.Size);
+                return richTextBox;
             }
 
             private static TabPage CreateByteViewerTab(byte[] databytes, string dataFormatted) {
@@ -377,6 +410,45 @@ namespace MyGUI.Types.Viewers {
                     () => bv.SetBytes(databytes)
                 ));
                 return tab;
+            }
+
+#pragma warning disable CA1813 // Avoid unsealed attributes
+#pragma warning disable CA5392 // Use DefaultDllImportSearchPaths attribute for P/Invokes
+            [DllImport("SpirvCrossDll.dll")]
+            private static extern IntPtr CreateSpirvDecompiler();
+
+            [DllImport("SpirvCrossDll.dll")]
+            private static extern int PushUInt32(IntPtr decompiler, UInt32 val);
+
+            [DllImport("SpirvCrossDll.dll")]
+            private static extern char Parse(IntPtr decompiler);
+
+            [DllImport("SpirvCrossDll.dll")]
+            private static extern int GetDataLength(IntPtr decompiler);
+
+            [DllImport("SpirvCrossDll.dll")]
+            private static extern char GetChar(IntPtr decompiler, int i);
+#pragma warning restore CA1813
+#pragma warning restore CA5392
+
+            private static string DecompileSpirv(byte[] databytes) {
+                IntPtr decompiler = CreateSpirvDecompiler();
+                for (int i = 0; i < databytes.Length; i += 4) {
+                    uint b0 = (uint)databytes[i + 0];
+                    uint b1 = (uint)databytes[i + 1];
+                    uint b2 = (uint)databytes[i + 2];
+                    uint b3 = (uint)databytes[i + 3];
+                    uint nextUInt32 = b3 + (b2 << 8) + (b1 << 16) + (b0 << 24);
+                    PushUInt32(decompiler, nextUInt32);
+                }
+                Parse(decompiler);
+                int len = GetDataLength(decompiler);
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < len; i++) {
+                    char c = GetChar(decompiler, i);
+                    sb.Append(c);
+                }
+                return sb.ToString();
             }
         }
     }

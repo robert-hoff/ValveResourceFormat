@@ -28,8 +28,8 @@ namespace MyShaderAnalysis
 
         public static void RunTrials()
         {
-            ShowSourceCodeSpirvReflection();
-            // ShowSourceCode();
+            // ShowSourceCodeSpirvReflection();
+            ShowSourceCode();
             // PrintAZframeToConsole();
             // Trial2();
             // Trial1();
