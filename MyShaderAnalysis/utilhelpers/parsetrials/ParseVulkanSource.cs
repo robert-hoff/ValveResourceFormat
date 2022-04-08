@@ -28,12 +28,12 @@ namespace MyShaderAnalysis.utilhelpers.parsetrials
             outputWriter($"{vulkanSource.offset,-4} offset\n");
             outputWriter($"{vulkanSource.offset2,-4} offset2\n");
 
+            // -- use this to write to file
+            // byte[] databytes = ReadBytes(vulkanSource.offset2);
+            // File.WriteAllBytes("X:/checkouts/SPIRV-Cross/vcs_vulkan_samples/source4.spv", databytes);
 
-            byte[] databytes = ReadBytes(vulkanSource.offset2);
-            File.WriteAllBytes("X:/checkouts/SPIRV-Cross/vcs_vulkan_samples/source4.spv", databytes);
-
-
-            // ShowBytes(vulkanSource.offset2);
+            Comment("spirv part");
+            ShowBytes(vulkanSource.offset2);
             BreakLine();
             ShowBytes(4000);
         }

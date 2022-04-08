@@ -1,15 +1,10 @@
-using MyShaderAnalysis.codestash;
-using MyShaderAnalysis.utilhelpers;
-using MyShaderAnalysis.vcsanalysis;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using ValveResourceFormat.CompiledShader;
-using static MyShaderAnalysis.utilhelpers.FileArchives;
+using MyShaderAnalysis.utilhelpers;
+using MyShaderAnalysis.vcsanalysis;
 
 
 namespace MyShaderAnalysis

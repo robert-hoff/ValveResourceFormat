@@ -16,7 +16,7 @@ namespace MyShaderAnalysis.vcstesting
 
         public static void RunTrials()
         {
-            TestGpuFiles();
+            TestVulkanGpuSources();
             // RunTestShaderFilesSelectedArchives();
             // RunTestShaderFilesAllArchives();
             // TestShaderFiles();
@@ -27,7 +27,7 @@ namespace MyShaderAnalysis.vcstesting
         }
 
 
-        public static void TestGpuFiles()
+        public static void TestVulkanGpuSources()
         {
             int LIMIT_ZFRAMES = 20;
             int LIMIT_GPU_SOURCES = 20;

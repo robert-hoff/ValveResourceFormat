@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using ValveResourceFormat.CompiledShader;
-using MyShaderAnalysis.codestash;
 using MyShaderAnalysis.utilhelpers;
 using MyShaderAnalysis.utilhelpers.parsetrials;
 using MyShaderAnalysis.utilhelpers.snippetcode;

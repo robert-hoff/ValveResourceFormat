@@ -37,14 +37,14 @@ namespace MyShaderAnalysis
             // -- comprehensive tests against archive names (all files)
             // TestFileArchive.RunTrials();
             // TestBatchParsing.RunTrials();
-            TestSingleFileParsing.RunTrials();
+            // TestSingleFileParsing.RunTrials();
 
             // -- revise how files are managed as collections
             // CreateHtmlServerFiles.RunTrials();
 
 
             // DemoCode.RunTrials();
-            // PrintoutVulkanCode.RunTrials();
+            PrintoutVulkanCode.RunTrials();
             // -- Looking at dynamic expressions
             // ParseDynamicExpression.RunTrials();
 
