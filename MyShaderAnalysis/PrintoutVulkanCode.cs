@@ -28,28 +28,55 @@ namespace MyShaderAnalysis
 
         public static void RunTrials()
         {
+            ShowSourceCodeSpirvReflection();
             // ShowSourceCode();
             // PrintAZframeToConsole();
             // Trial2();
-            Trial1();
+            // Trial1();
 
         }
 
 
 
+        static void ShowSourceCodeSpirvReflection()
+        {
+            FileVcsTokens fileTokens = new FileVcsTokens(ARCHIVE.alyx_hlvr_vulkan_v64, "solidcolor_vulkan_50_vs.vcs"); int gpuIndex = 1;
+            // FileVcsTokens fileTokens = new FileVcsTokens(ARCHIVE.dota_game_pcgl_v64, "blur_pcgl_40_ps.vcs"); int gpuIndex = 0;
+            // FileVcsTokens fileTokens = new FileVcsTokens(ARCHIVE.dota_game_pc_v64, "3dskyboxstencil_pc_40_vs.vcs"); int gpuIndex = 0;
+
+            ShaderFile shaderFile = fileTokens.GetShaderFile();
+            ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(0);
+
+
+            VulkanSource vulkanSource = (VulkanSource)zframeFile.gpuSources[gpuIndex];
+            string reflectedSpirv = DecompileSpirvDll.DecompileVulkan(vulkanSource.GetSpirvBytes());
+
+
+            FileWriter fw = new FileWriter(FileArchives.GetServerTestFile());
+            fw.WriteHtmlHeader("Spirv reflection", "Spirv reflection");
+            fw.WriteText(vulkanSource.GetSourceDetails());
+            fw.WriteText($"// Spirv source ({vulkanSource.metadataOffset}), reflection performed with SPIRV-Cross, KhronosGroup\n");
+            fw.WriteText($"{reflectedSpirv}");
+            fw.WriteText($"// Source metadata (unknown encoding) ({vulkanSource.metadataLength})");
+            fw.WriteText($"[{vulkanSource.metadataOffset}]");
+            fw.WriteText($"{BytesToString(vulkanSource.GetMetadataBytes())}");
+            fw.CloseStreamWriter();
+        }
+
+
 
         static void ShowSourceCode()
         {
-            FileVcsTokens fileTokens = new FileVcsTokens(ARCHIVE.alyx_hlvr_vulkan_v64, "solidcolor_vulkan_50_vs.vcs");
-            // FileVcsTokens fileTokens = new FileVcsTokens(ARCHIVE.dota_game_pcgl_v64, "blur_pcgl_40_ps.vcs");
-            // FileVcsTokens fileTokens = new FileVcsTokens(ARCHIVE.dota_game_pc_v64, "3dskyboxstencil_pc_40_vs.vcs");
+            FileVcsTokens fileTokens = new FileVcsTokens(ARCHIVE.alyx_hlvr_vulkan_v64, "solidcolor_vulkan_50_vs.vcs"); int gpuIndex = 1;
+            // FileVcsTokens fileTokens = new FileVcsTokens(ARCHIVE.dota_game_pcgl_v64, "blur_pcgl_40_ps.vcs"); int gpuIndex = 0;
+            // FileVcsTokens fileTokens = new FileVcsTokens(ARCHIVE.dota_game_pc_v64, "3dskyboxstencil_pc_40_vs.vcs"); int gpuIndex = 0;
 
             ShaderFile shaderFile = fileTokens.GetShaderFile();
             ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(0);
 
             FileWriter fw = new FileWriter(FileArchives.GetServerTestFile());
             fw.WriteHtmlHeader("Zframe testing", "Zframe testing");
-            zframeFile.PrintGpuSource(0, fw.GetOutputWriter());
+            zframeFile.PrintGpuSource(gpuIndex, fw.GetOutputWriter());
             fw.CloseStreamWriter();
         }
 

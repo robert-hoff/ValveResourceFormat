@@ -38,6 +38,10 @@ namespace ValveResourceFormat.CompiledShader
             stringId = stringId.Replace(" ", "").ToLower();
             return stringId;
         }
+        public string GetSourceDetails()
+        {
+            return $"// {GetBlockName()}[{sourceId}] source bytes ({sourcebytes.Length}) ref={GetEditorRefIdAsString()}";
+        }
         public abstract string GetBlockName();
     }
 
@@ -117,16 +121,18 @@ namespace ValveResourceFormat.CompiledShader
     public class VulkanSource : GpuSource
     {
         public int arg0 { get; } = -1;
-        public int offset2 { get; } = -1;
+        public int metadataOffset { get; } = -1;
+        public int metadataLength { get; }
 
         public VulkanSource(ShaderDataReader datareader, int sourceId) : base(datareader, sourceId)
         {
             this.offset = datareader.ReadInt32();
             if (offset > 0)
             {
-                this.arg0 = datareader.ReadInt32();
-                this.offset2 = datareader.ReadInt32();
+                arg0 = datareader.ReadInt32();
+                metadataOffset = datareader.ReadInt32();
                 sourcebytes = datareader.ReadBytes(offset - 8);
+                metadataLength = sourcebytes.Length - metadataOffset;
             }
             editorRefId = datareader.ReadBytes(16);
         }
@@ -134,6 +140,15 @@ namespace ValveResourceFormat.CompiledShader
         {
             return $"VULKAN";
         }
+        public byte[] GetSpirvBytes()
+        {
+            return sourcebytes[0..metadataOffset];
+        }
+        public byte[] GetMetadataBytes()
+        {
+            return sourcebytes[metadataOffset..];
+        }
+
     }
 
 }
