@@ -9,6 +9,15 @@ trim_trailing_whitespace = true
 
 [*.cs]
 
+# AssetRipper Spirv
+dotnet_diagnostic.CA1716.severity = none
+dotnet_diagnostic.CA1715.severity = none
+dotnet_diagnostic.CA1069.severity = none
+dotnet_diagnostic.CA1028.severity = none
+
+
+
+
 # R: my additions
 # Some uselss simplication tip
 dotnet_diagnostic.IDE0003.severity = none
