@@ -40,11 +40,11 @@ namespace MyShaderAnalysis
             // TestSingleFileParsing.RunTrials();
 
             // -- revise how files are managed as collections
-            // CreateHtmlServerFiles.RunTrials();
+            CreateHtmlServerFiles.RunTrials();
 
 
             // DemoCode.RunTrials();
-            PrintoutVulkanCode.RunTrials();
+            // PrintoutVulkanCode.RunTrials();
             // -- Looking at dynamic expressions
             // ParseDynamicExpression.RunTrials();
 

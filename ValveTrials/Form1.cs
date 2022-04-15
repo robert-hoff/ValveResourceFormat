@@ -113,6 +113,9 @@ namespace ValveTrials
                 delta = ((DateTimeOffset)DateTime.Now).ToUnixTimeMilliseconds() - startTime;
                 // Debug.WriteLine($"{symbol,4} {delta/10,8} {(delta-prev_delta)/10,8}");
                 Debug.WriteLine($"{symbol,4} {(delta-prev_delta)/10,8}");
+
+                // -- this prints into the GUI control
+                // Console.WriteLine($"{symbol,4} {(delta-prev_delta)/10,8}");
                 prev_delta = delta;
             }
 

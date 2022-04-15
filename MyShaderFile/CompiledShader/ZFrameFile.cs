@@ -5,6 +5,7 @@ using System.Text;
 using ValveResourceFormat.ThirdParty;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 using static ValveResourceFormat.CompiledShader.ShaderDataReader;
+using System.Runtime.InteropServices;
 
 namespace ValveResourceFormat.CompiledShader
 {
@@ -207,6 +208,7 @@ namespace ValveResourceFormat.CompiledShader
             }
         }
 
+
         /*
          * Prints the GPU source as text (GLSL) or bytes (DXIL, DXBC, Vulkan)
          *
@@ -231,13 +233,28 @@ namespace ValveResourceFormat.CompiledShader
             else if (gpuSources[sourceId] is VulkanSource)
             {
                 VulkanSource vulkanSource = (VulkanSource)gpuSources[sourceId];
-                outputWriter($"{vulkanSource.GetSourceDetails()}\n");
-                outputWriter($"// Spirv bytecode ({vulkanSource.metadataOffset})\n");
-                outputWriter($"[0]\n");
-                outputWriter($"{BytesToString(vulkanSource.GetSpirvBytes())}\n\n");
-                outputWriter($"// Source metadata (unknown encoding) ({vulkanSource.metadataLength})\n");
-                outputWriter($"[{vulkanSource.metadataOffset}]\n");
-                outputWriter($"{BytesToString(vulkanSource.GetMetadataBytes())}");
+
+
+                try
+                {
+                    string reflectedSpirv = DecompileSpirvDll.DecompileVulkan(vulkanSource.GetSpirvBytes());
+                    outputWriter(vulkanSource.GetSourceDetails()+"\n");
+                    outputWriter($"// Spirv source ({vulkanSource.metadataOffset}), reflection performed with SPIRV-Cross, KhronosGroup\n\n");
+                    outputWriter(reflectedSpirv);
+                    outputWriter($"// Source metadata (unknown encoding) ({vulkanSource.metadataLength})\n");
+                    outputWriter($"[{vulkanSource.metadataOffset}]\n");
+                    outputWriter($"{BytesToString(vulkanSource.GetMetadataBytes())}");
+                }
+                catch (Exception)
+                {
+                    outputWriter($"{vulkanSource.GetSourceDetails()}\n");
+                    outputWriter($"// Spirv bytecode ({vulkanSource.metadataOffset})\n");
+                    outputWriter($"[0]\n");
+                    outputWriter($"{BytesToString(vulkanSource.GetSpirvBytes())}\n\n");
+                    outputWriter($"// Source metadata (unknown encoding) ({vulkanSource.metadataLength})\n");
+                    outputWriter($"[{vulkanSource.metadataOffset}]\n");
+                    outputWriter($"{BytesToString(vulkanSource.GetMetadataBytes())}");
+                }
             }
             else
             {
@@ -245,6 +262,10 @@ namespace ValveResourceFormat.CompiledShader
                 outputWriter($"{BytesToString(gpuSources[sourceId].sourcebytes)}");
             }
         }
+
+
+
+
 
         public class ZFrameParam
         {

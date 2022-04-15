@@ -30,8 +30,8 @@ namespace ValveTrials
 
 
             // RunNewTestApp();
-            RunByteViewerApp();
-            // RunSimplifiedGuiApp();
+            // RunByteViewerApp();
+            RunSimplifiedGuiApp();
 
         }
 

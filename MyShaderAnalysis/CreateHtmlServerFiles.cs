@@ -63,9 +63,9 @@ namespace MyShaderAnalysis
         public static void SaveServerSets()
         {
             // SaveAllServerFiles(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
-            SaveAllServerFiles(ARCHIVE.dota_game_pcgl_v64, "3dskyboxstencil_pcgl_30_features.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
-            SaveAllServerFiles(ARCHIVE.dota_game_pcgl_v64, "3dskyboxstencil_pcgl_30_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
-            SaveAllServerFiles(ARCHIVE.dota_game_pcgl_v64, "3dskyboxstencil_pcgl_30_ps.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
+            // SaveAllServerFiles(ARCHIVE.dota_game_pcgl_v64, "3dskyboxstencil_pcgl_30_features.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
+            // SaveAllServerFiles(ARCHIVE.dota_game_pcgl_v64, "3dskyboxstencil_pcgl_30_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
+            // SaveAllServerFiles(ARCHIVE.dota_game_pcgl_v64, "3dskyboxstencil_pcgl_30_ps.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
             // SaveAllServerFiles(ARCHIVE.dotagame_pc, "3dskyboxstencil_pc_30_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
             // SaveAllServerFiles(ARCHIVE.dotagame_pc, "3dskyboxstencil_pc_40_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
             // SaveAllServerFiles(ARCHIVE.dotagame_pc, "multiblend_pc_40_vs.vcs", zframesToPrint: 20, gpuSourcesToPrint: 5);
@@ -83,6 +83,18 @@ namespace MyShaderAnalysis
             // SaveAllServerFiles(ARCHIVE.the_lab_v62, "aerial_perspective_pc_30_features.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
             // SaveAllServerFiles(ARCHIVE.the_lab_v62, "aerial_perspective_pc_30_ps.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
             // SaveAllServerFiles(ARCHIVE.the_lab_v62, "aerial_perspective_pc_30_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
+
+
+            // SaveAllServerFiles(ARCHIVE.dota_game_pcgl_v64, "multiblend_pcgl_40_features.vcs", zframesToPrint: 30, gpuSourcesToPrint: 30);
+            // SaveAllServerFiles(ARCHIVE.dota_game_pcgl_v64, "multiblend_pcgl_40_vs.vcs", zframesToPrint: 30, gpuSourcesToPrint: 30);
+            // SaveAllServerFiles(ARCHIVE.dota_game_pcgl_v64, "multiblend_pcgl_40_ps.vcs", zframesToPrint: 30, gpuSourcesToPrint: 30);
+
+            // SaveAllServerFiles(ARCHIVE.dota_game_vulkan_v65, "multiblend_vulkan_40_features.vcs", zframesToPrint: 30, gpuSourcesToPrint: 30);
+            // SaveAllServerFiles(ARCHIVE.dota_game_vulkan_v65, "multiblend_vulkan_40_vs.vcs", zframesToPrint: 30, gpuSourcesToPrint: 30);
+            SaveAllServerFiles(ARCHIVE.dota_game_vulkan_v65, "multiblend_vulkan_40_ps.vcs", zframesToPrint: 30, gpuSourcesToPrint: 30);
+
+
+
         }
 
         public static void SaveAllServerFiles(ARCHIVE archive, string filename, int zframesToPrint, int gpuSourcesToPrint)
