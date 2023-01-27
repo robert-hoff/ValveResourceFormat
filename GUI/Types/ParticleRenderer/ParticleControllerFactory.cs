@@ -15,14 +15,15 @@ namespace GUI.Types.ParticleRenderer
         private static readonly IDictionary<string, Func<IKeyValueCollection, IKeyValueCollection, IParticleEmitter>> EmitterDictionary
             = new Dictionary<string, Func<IKeyValueCollection, IKeyValueCollection, IParticleEmitter>>
             {
-                ["C_OP_InstantaneousEmitter"] = (baseProperties, emitterInfo) => new InstantaneousEmitter(baseProperties, emitterInfo),
-                ["C_OP_ContinuousEmitter"] = (baseProperties, emitterInfo) => new ContinuousEmitter(baseProperties, emitterInfo),
+                ["C_OP_InstantaneousEmitter"] = (baseProperties, emitterInfo) => new InstantaneousEmitter(emitterInfo),
+                ["C_OP_ContinuousEmitter"] = (baseProperties, emitterInfo) => new ContinuousEmitter(emitterInfo),
             };
 
         // Register particle initializers
         private static readonly IDictionary<string, Func<IKeyValueCollection, IParticleInitializer>> InitializerDictionary
             = new Dictionary<string, Func<IKeyValueCollection, IParticleInitializer>>
             {
+                ["C_INIT_InitFloat"] = initializerInfo => new InitFloat(initializerInfo),
                 ["C_INIT_CreateWithinSphere"] = initializerInfo => new CreateWithinSphere(initializerInfo),
                 ["C_INIT_InitialVelocityNoise"] = initializerInfo => new InitialVelocityNoise(initializerInfo),
                 ["C_INIT_OffsetVectorToVector"] = initializerInfo => new OffsetVectorToVector(initializerInfo),
@@ -43,15 +44,16 @@ namespace GUI.Types.ParticleRenderer
         private static readonly IDictionary<string, Func<IKeyValueCollection, IParticleOperator>> OperatorDictionary
             = new Dictionary<string, Func<IKeyValueCollection, IParticleOperator>>
             {
-                ["C_OP_Decay"] = operatorInfo => new Decay(operatorInfo),
+                ["C_OP_Decay"] = operatorInfo => new Decay(),
                 ["C_OP_BasicMovement"] = operatorInfo => new BasicMovement(operatorInfo),
                 ["C_OP_ColorInterpolate"] = operatorInfo => new ColorInterpolate(operatorInfo),
                 ["C_OP_InterpolateRadius"] = operatorInfo => new InterpolateRadius(operatorInfo),
                 ["C_OP_FadeAndKill"] = operatorInfo => new FadeAndKill(operatorInfo),
+                ["C_OP_FadeAndKillForTracers"] = operatorInfo => new FadeAndKill(operatorInfo), // alias to C_OP_FadeAndKill
                 ["C_OP_FadeInSimple"] = operatorInfo => new FadeInSimple(operatorInfo),
                 ["C_OP_FadeOutSimple"] = operatorInfo => new FadeOutSimple(operatorInfo),
                 ["C_OP_OscillateScalar"] = operatorInfo => new OscillateScalar(operatorInfo),
-                ["C_OP_SpinUpdate"] = operatorInfo => new SpinUpdate(operatorInfo),
+                ["C_OP_SpinUpdate"] = operatorInfo => new SpinUpdate(),
             };
 
         // Register particle renderers

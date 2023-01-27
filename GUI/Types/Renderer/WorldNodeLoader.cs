@@ -1,7 +1,6 @@
 using System;
 using System.Numerics;
 using GUI.Utils;
-using ValveResourceFormat;
 using ValveResourceFormat.ResourceTypes;
 using ValveResourceFormat.Serialization;
 
@@ -73,6 +72,7 @@ namespace GUI.Types.Renderer
                         Transform = matrix,
                         Tint = tintColor,
                         LayerName = layerIndex > -1 ? worldLayers[layerIndex] : "No layer",
+                        Name = renderableModel,
                     };
 
                     scene.Add(modelNode, false);
@@ -80,7 +80,7 @@ namespace GUI.Types.Renderer
 
                 var renderable = sceneObject.GetProperty<string>("m_renderable");
 
-                if (renderable != null)
+                if (!string.IsNullOrEmpty(renderable))
                 {
                     var newResource = guiContext.LoadFileByAnyMeansNecessary(renderable + "_c");
 
@@ -89,14 +89,46 @@ namespace GUI.Types.Renderer
                         continue;
                     }
 
-                    var meshNode = new MeshSceneNode(scene, new Mesh(newResource))
+                    var meshNode = new MeshSceneNode(scene, (Mesh)newResource.DataBlock, 0)
                     {
                         Transform = matrix,
                         Tint = tintColor,
                         LayerName = layerIndex > -1 ? worldLayers[layerIndex] : "No layer",
+                        Name = renderable,
                     };
 
                     scene.Add(meshNode, false);
+                }
+            }
+
+            if (!data.ContainsKey("m_aggregateSceneObjects"))
+            {
+                return;
+            }
+
+            var aggregateSceneObjects = data.GetArray("m_aggregateSceneObjects");
+
+            foreach (var sceneObject in aggregateSceneObjects)
+            {
+                var renderableModel = sceneObject.GetProperty<string>("m_renderableModel");
+
+                if (renderableModel != null)
+                {
+                    var newResource = guiContext.LoadFileByAnyMeansNecessary(renderableModel + "_c");
+
+                    if (newResource == null)
+                    {
+                        continue;
+                    }
+
+                    var layerIndex = sceneObject.GetIntegerProperty("m_nLayer");
+                    var modelNode = new ModelSceneNode(scene, (Model)newResource.DataBlock, null, false)
+                    {
+                        LayerName = worldLayers[layerIndex],
+                        Name = renderableModel,
+                    };
+
+                    scene.Add(modelNode, false);
                 }
             }
         }

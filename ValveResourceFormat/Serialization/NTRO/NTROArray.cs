@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using ValveResourceFormat.Serialization.KeyValues;
 
 namespace ValveResourceFormat.Serialization.NTRO
 {
@@ -11,7 +12,7 @@ namespace ValveResourceFormat.Serialization.NTRO
 
         public override object ValueObject => contents;
 
-        public NTROArray(DataType type, int count, bool pointer = false, bool isIndirection = false)
+        public NTROArray(SchemaFieldType type, int count, bool pointer = false, bool isIndirection = false)
         {
             Type = type; // from NTROValue
             Pointer = pointer; // from NTROValue
@@ -108,6 +109,32 @@ namespace ValveResourceFormat.Serialization.NTRO
             }
 
             return array;
+        }
+
+        public override KVValue ToKVValue()
+        {
+            // Merge colors into an aggregate binary blob
+            if (Type is SchemaFieldType.Color)
+            {
+                var blob = new byte[Count * 4];
+                for (var i = 0; i < Count; i++)
+                {
+                    blob[i * 4 + 0] = (this[i] as NTROValue<NTROStruct>).Value.GetProperty<byte>("0");
+                    blob[i * 4 + 1] = (this[i] as NTROValue<NTROStruct>).Value.GetProperty<byte>("1");
+                    blob[i * 4 + 2] = (this[i] as NTROValue<NTROStruct>).Value.GetProperty<byte>("2");
+                    blob[i * 4 + 3] = (this[i] as NTROValue<NTROStruct>).Value.GetProperty<byte>("3");
+                }
+
+                return new KVValue(KVType.BINARY_BLOB, blob);
+            }
+
+            var arrayObject = new KVObject($"{Type}[{Count}]", true);
+            foreach (var entry in this)
+            {
+                arrayObject.AddProperty(null, entry.ToKVValue());
+            }
+
+            return new KVValue(KVType.ARRAY, arrayObject);
         }
     }
 }

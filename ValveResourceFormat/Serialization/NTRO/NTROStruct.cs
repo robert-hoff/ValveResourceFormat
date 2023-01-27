@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using ValveResourceFormat.Serialization.KeyValues;
 
 namespace ValveResourceFormat.Serialization.NTRO
 {
@@ -21,7 +23,7 @@ namespace ValveResourceFormat.Serialization.NTRO
             Contents = new Dictionary<string, NTROValue>();
             for (var i = 0; i < values.Length; i++)
             {
-                Contents.Add(i.ToString(), values[i]);
+                Contents.Add(i.ToString(CultureInfo.InvariantCulture), values[i]);
             }
         }
 
@@ -33,15 +35,12 @@ namespace ValveResourceFormat.Serialization.NTRO
 
             foreach (var entry in Contents)
             {
-                var array = entry.Value as NTROArray;
-                var byteArray = (entry.Value as NTROValue<byte[]>)?.Value;
-
                 if (entry.Value.Pointer)
                 {
                     writer.Write("{0} {1}* = (ptr) ->", ValveDataType(entry.Value.Type), entry.Key);
                     entry.Value.WriteText(writer);
                 }
-                else if (array != null)
+                else if (entry.Value is NTROArray array)
                 {
                     writer.WriteLine("{0} {1}[{2}] =", ValveDataType(array.Type), entry.Key, array.Count);
 
@@ -56,13 +55,13 @@ namespace ValveResourceFormat.Serialization.NTRO
                     writer.Indent--;
                     writer.WriteLine("]");
                 }
-                else if (byteArray != null)
+                else if (entry.Value is NTROValue<byte[]> byteArray && byteArray?.Value != null)
                 {
-                    writer.WriteLine("{0}[{2}] {1} =", ValveDataType(entry.Value.Type), entry.Key, byteArray.Length);
+                    writer.WriteLine("{0}[{2}] {1} =", ValveDataType(entry.Value.Type), entry.Key, byteArray.Value.Length);
                     writer.WriteLine("[");
                     writer.Indent++;
 
-                    foreach (var val in byteArray)
+                    foreach (var val in byteArray.Value)
                     {
                         writer.WriteLine("{0:X2}", val);
                     }
@@ -84,34 +83,31 @@ namespace ValveResourceFormat.Serialization.NTRO
 
         public override string ToString()
         {
-            using (var writer = new IndentedTextWriter())
-            {
-                WriteText(writer);
+            using var writer = new IndentedTextWriter();
+            WriteText(writer);
 
-                return writer.ToString();
-            }
+            return writer.ToString();
         }
 
-        private static string ValveDataType(DataType type)
+        private static string ValveDataType(SchemaFieldType type)
         {
-            switch (type)
+            return type switch
             {
-                case DataType.SByte: return "int8";
-                case DataType.Byte: return "uint8";
-                case DataType.Int16: return "int16";
-                case DataType.UInt16: return "uint16";
-                case DataType.Int32: return "int32";
-                case DataType.UInt32: return "uint32";
-                case DataType.Int64: return "int64";
-                case DataType.UInt64: return "uint64";
-                case DataType.Float: return "float32";
-                case DataType.String: return "CResourceString";
-                case DataType.Boolean: return "bool";
-                case DataType.Fltx4: return "fltx4";
-                case DataType.Matrix3x4a: return "matrix3x4a_t";
-            }
-
-            return type.ToString();
+                SchemaFieldType.SByte => "int8",
+                SchemaFieldType.Byte => "uint8",
+                SchemaFieldType.Int16 => "int16",
+                SchemaFieldType.UInt16 => "uint16",
+                SchemaFieldType.Int32 => "int32",
+                SchemaFieldType.UInt32 => "uint32",
+                SchemaFieldType.Int64 => "int64",
+                SchemaFieldType.UInt64 => "uint64",
+                SchemaFieldType.Float => "float32",
+                SchemaFieldType.ResourceString => "CResourceString",
+                SchemaFieldType.Boolean => "bool",
+                SchemaFieldType.Fltx4 => "fltx4",
+                SchemaFieldType.Matrix3x4a => "matrix3x4a_t",
+                _ => type.ToString(),
+            };
         }
 
         public NTROValue this[string key]
@@ -181,7 +177,7 @@ namespace ValveResourceFormat.Serialization.NTRO
         {
             if (Contents.TryGetValue(name, out var value))
             {
-                if (value.Type == DataType.Byte)
+                if (value.Type == SchemaFieldType.Byte)
                 {
                     //special case for byte arrays for faster access
                     if (typeof(T) == typeof(byte))
@@ -201,7 +197,7 @@ namespace ValveResourceFormat.Serialization.NTRO
             }
             else
             {
-                return default(T[]);
+                return default;
             }
         }
 
@@ -213,7 +209,7 @@ namespace ValveResourceFormat.Serialization.NTRO
             }
             else
             {
-                return default(T);
+                return default;
             }
         }
 
@@ -221,5 +217,16 @@ namespace ValveResourceFormat.Serialization.NTRO
             => Contents
                 .Select(p => new KeyValuePair<string, object>(p.Key, p.Value.ValueObject))
                 .GetEnumerator();
+
+        public KVObject ToKVObject()
+        {
+            var kv = new KVObject(Name);
+            foreach (var entry in Contents)
+            {
+                kv.AddProperty(entry.Key, entry.Value.ToKVValue());
+            }
+
+            return kv;
+        }
     }
 }

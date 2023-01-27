@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
-using OpenTK.Graphics.OpenGL;
+using System.Globalization;
+using System.Linq;
+using System.Numerics;
 using GUI.Utils;
+using OpenTK.Graphics.OpenGL;
 using ValveResourceFormat.ResourceTypes;
 using ValveResourceFormat.Serialization;
-using System.Numerics;
-using System.Linq;
+using ValveResourceFormat.Serialization.KeyValues;
 using ValveResourceFormat.Serialization.NTRO;
 
 namespace GUI.Types.Renderer
@@ -14,24 +16,22 @@ namespace GUI.Types.Renderer
     {
         public bool Enabled { get; set; }
         public bool IsTrigger { get; set; }
-        PhysAggregateData phys;
-        Shader shader;
-        int indexCount;
-        int vboHandle;
-        int iboHandle;
-        int vaoHandle;
+
+        readonly Shader shader;
+        readonly int indexCount;
+        readonly int vboHandle;
+        readonly int iboHandle;
+        readonly int vaoHandle;
 
         public PhysSceneNode(Scene scene, PhysAggregateData phys)
             : base(scene)
         {
-            this.phys = phys;
-
             var verts = new List<float>();
             var inds = new List<int>();
 
             var bindPose = phys.Data.GetArray("m_bindPose")
                  .Select(v => Matrix4x4FromArray(v
-                    .Select(m => Convert.ToSingle(m.Value))
+                    .Select(m => Convert.ToSingle(m.Value, CultureInfo.InvariantCulture))
                     .ToArray()))
                  .ToArray();
 
@@ -41,10 +41,10 @@ namespace GUI.Types.Renderer
             }
             //m_boneParents
 
-            bool firstBbox = true;
+            var firstBbox = true;
 
             var parts = phys.Data.GetArray("m_parts");
-            for (int p = 0; p < parts.Length; p++)
+            for (var p = 0; p < parts.Length; p++)
             {
                 var shape = parts[p].GetSubCollection("m_rnShape");
 
@@ -56,11 +56,13 @@ namespace GUI.Types.Renderer
                     var radius = sphere.GetFloatProperty("m_flRadius");
 
                     if (bindPose.Any())
+                    {
                         center = Vector3.Transform(center, bindPose[p]);
+                    }
 
                     AddSphere(verts, inds, center, radius);
 
-                    AABB bbox = new AABB(center + new Vector3(radius),
+                    var bbox = new AABB(center + new Vector3(radius),
                                          center - new Vector3(radius));
                     LocalBoundingBox = firstBbox ? bbox : LocalBoundingBox.Union(bbox);
                     firstBbox = false;
@@ -79,7 +81,7 @@ namespace GUI.Types.Renderer
                     AddCapsule(verts, inds, center[0], center[1], radius);
                     foreach (var cn in center)
                     {
-                        AABB bbox = new AABB(cn + new Vector3(radius),
+                        var bbox = new AABB(cn + new Vector3(radius),
                                              cn - new Vector3(radius));
                         LocalBoundingBox = firstBbox ? bbox : LocalBoundingBox.Union(bbox);
                         firstBbox = false;
@@ -89,16 +91,33 @@ namespace GUI.Types.Renderer
                 foreach (var h in hulls)
                 {
                     var hull = h.GetSubCollection("m_Hull");
+
                     //m_vCentroid
                     //m_flMaxAngularRadius
                     //m_Vertices
-                    var vertices = hull.GetArray("m_Vertices");
+                    IEnumerable<Vector3> vertices = null;
+                    if (hull is NTROStruct || ((KVObject)hull).Properties["m_Vertices"].Type == KVType.ARRAY)
+                    {
+                        var verticesArr = hull.GetArray("m_Vertices");
+                        vertices = verticesArr.Select(v => v.ToVector3());
+                    }
+                    else
+                    {
+                        var verticesBlob = hull.GetArray<byte>("m_Vertices");
+                        vertices = Enumerable.Range(0, verticesBlob.Length / 12)
+                            .Select(i => new Vector3(BitConverter.ToSingle(verticesBlob, i * 12),
+                                BitConverter.ToSingle(verticesBlob, (i * 12) + 4),
+                                BitConverter.ToSingle(verticesBlob, (i * 12) + 8)));
+                    }
                     var vertOffset = verts.Count / 7;
                     foreach (var v in vertices)
                     {
-                        var vec = v.ToVector3();
+                        var vec = v;
                         if (bindPose.Any())
+                        {
                             vec = Vector3.Transform(vec, bindPose[p]);
+                        }
+
                         verts.Add(vec.X);
                         verts.Add(vec.Y);
                         verts.Add(vec.Z);
@@ -109,16 +128,31 @@ namespace GUI.Types.Renderer
                         verts.Add(1);
                     }
                     //m_Planes
-                    var edges = hull.GetArray("m_Edges");
+                    (int origin, int next)[] edges = null;
+                    if (hull is NTROStruct || ((KVObject)hull).Properties["m_Edges"].Type == KVType.ARRAY)
+                    {
+                        var edgesArr = hull.GetArray("m_Edges");
+                        edges = edgesArr
+                            .Select(e => (e.GetInt32Property("m_nOrigin"), e.GetInt32Property("m_nNext")))
+                            .ToArray();
+                    }
+                    else
+                    {
+                        // 0 - m_nNext, 1 - m_nTwin, 2 - m_nOrigin, 3 - m_nFace
+                        var edgesBlob = hull.GetArray<byte>("m_Edges");
+                        edges = Enumerable.Range(0, edgesBlob.Length / 4)
+                            .Select(i => ((int)edgesBlob[i * 4 + 2], (int)edgesBlob[i * 4 + 1]))
+                            .ToArray();
+                    }
                     foreach (var e in edges)
                     {
-                        inds.Add((int)(vertOffset + e.GetIntegerProperty("m_nOrigin")));
-                        var next = edges[e.GetIntegerProperty("m_nNext")];
-                        inds.Add((int)(vertOffset + next.GetIntegerProperty("m_nOrigin")));
+                        inds.Add(vertOffset + e.origin);
+                        var next = edges[e.next];
+                        inds.Add(vertOffset + next.origin);
                     }
                     //m_Faces
                     var bounds = hull.GetSubCollection("m_Bounds");
-                    AABB bbox = new AABB(bounds.GetSubCollection("m_vMinBounds").ToVector3(),
+                    var bbox = new AABB(bounds.GetSubCollection("m_vMinBounds").ToVector3(),
                                          bounds.GetSubCollection("m_vMaxBounds").ToVector3());
 
                     LocalBoundingBox = firstBbox ? bbox : LocalBoundingBox.Union(bbox);
@@ -132,7 +166,7 @@ namespace GUI.Types.Renderer
 
                     var vertOffset = verts.Count / 7;
                     Vector3[] vertices = null;
-                    if (mesh is NTROStruct)
+                    if (mesh is NTROStruct || ((KVObject)mesh).Properties["m_Vertices"].Type == KVType.ARRAY)
                     {
                         //NTRO has vertices as array of structs
                         var verticesArr = mesh.GetArray("m_Vertices");
@@ -153,7 +187,10 @@ namespace GUI.Types.Renderer
                     {
                         var v = vec;
                         if (bindPose.Any())
+                        {
                             v = Vector3.Transform(vec, bindPose[p]);
+                        }
+
                         verts.Add(v.X);
                         verts.Add(v.Y);
                         verts.Add(v.Z);
@@ -165,7 +202,7 @@ namespace GUI.Types.Renderer
                     }
 
                     int[] triangles = null;
-                    if (mesh is NTROStruct)
+                    if (mesh is NTROStruct || ((KVObject)mesh).Properties["m_Triangles"].Type == KVType.ARRAY)
                     {
                         //NTRO and SOME KV3 has triangles as array of structs
                         var trianglesArr = mesh.GetArray("m_Triangles");
@@ -180,7 +217,7 @@ namespace GUI.Types.Renderer
                         System.Buffer.BlockCopy(trianglesBlob, 0, triangles, 0, trianglesBlob.Length);
                     }
 
-                    for (int i = 0; i < triangles.Length; i += 3)
+                    for (var i = 0; i < triangles.Length; i += 3)
                     {
                         inds.Add(vertOffset + triangles[i]);
                         inds.Add(vertOffset + triangles[i + 1]);
@@ -190,7 +227,7 @@ namespace GUI.Types.Renderer
                         inds.Add(vertOffset + triangles[i]);
                     }
 
-                    AABB bbox = new AABB(mesh.GetSubCollection("m_vMin").ToVector3(),
+                    var bbox = new AABB(mesh.GetSubCollection("m_vMin").ToVector3(),
                                          mesh.GetSubCollection("m_vMax").ToVector3());
                     LocalBoundingBox = firstBbox ? bbox : LocalBoundingBox.Union(bbox);
                     firstBbox = false;
@@ -237,21 +274,21 @@ namespace GUI.Types.Renderer
 
         private static void AddCapsule(List<float> verts, List<int> inds, Vector3 c0, Vector3 c1, float radius)
         {
-            Matrix4x4 mtx = Matrix4x4.CreateLookAt(c0, c1, Vector3.UnitY);
+            var mtx = Matrix4x4.CreateLookAt(c0, c1, Vector3.UnitY);
             mtx.Translation = Vector3.Zero;
             AddSphere(verts, inds, c0, radius);
             AddSphere(verts, inds, c1, radius);
 
             var vertOffset = verts.Count / 7;
 
-            for (int i = 0; i < 4; i++)
+            for (var i = 0; i < 4; i++)
             {
-                Vector3 vr = new Vector3(
+                var vr = new Vector3(
                     MathF.Cos(i * MathF.PI / 2) * radius,
                     MathF.Sin(i * MathF.PI / 2) * radius,
                     0);
                 vr = Vector3.Transform(vr, mtx);
-                Vector3 v = vr + c0;
+                var v = vr + c0;
 
                 verts.Add(v.X);
                 verts.Add(v.Y);
@@ -288,9 +325,9 @@ namespace GUI.Types.Renderer
         private static void AddCircle(List<float> verts, List<int> inds, Vector3 center, float radius, Matrix4x4 mtx)
         {
             var vertOffset = verts.Count / 7;
-            for (int i = 0; i < 16; i++)
+            for (var i = 0; i < 16; i++)
             {
-                Vector3 v = new Vector3(
+                var v = new Vector3(
                     MathF.Cos(i * MathF.PI / 8) * radius,
                     MathF.Sin(i * MathF.PI / 8) * radius,
                     0);
@@ -313,7 +350,9 @@ namespace GUI.Types.Renderer
         public override void Render(Scene.RenderContext context)
         {
             if (!Enabled)
+            {
                 return;
+            }
 
             var viewProjectionMatrix = (Transform * context.Camera.ViewProjectionMatrix).ToOpenTK();
 

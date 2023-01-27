@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Numerics;
-using ValveKeyValue;
 using ValveResourceFormat.Blocks;
 using ValveResourceFormat.Blocks.ResourceEditInfoStructs;
 using ValveResourceFormat.Serialization;
@@ -71,7 +70,7 @@ namespace ValveResourceFormat.ResourceTypes
 
             foreach (var kvp in Data.GetArray("m_stringAttributes"))
             {
-                StringAttributes[kvp.GetProperty<string>("m_name")] = kvp.GetProperty<string>("m_pValue");
+                StringAttributes[kvp.GetProperty<string>("m_name")] = kvp.GetProperty<string>("m_value");
             }
 
             // This is zero-length for all vmat files in Dota2 and HL archives
@@ -118,8 +117,8 @@ namespace ValveResourceFormat.ResourceTypes
             }
 
             var specialDeps = (SpecialDependencies)Resource.EditInfo.Structs[ResourceEditInfo.REDIStruct.SpecialDependencies];
-            bool hemiOctIsoRoughness_RG_B = specialDeps.List.Any(dependancy => dependancy.CompilerIdentifier == "CompileTexture" && dependancy.String == "Texture Compiler Version Mip HemiOctIsoRoughness_RG_B");
-            bool invert = specialDeps.List.Any(dependancy => dependancy.CompilerIdentifier == "CompileTexture" && dependancy.String == "Texture Compiler Version LegacySource1InvertNormals");
+            var hemiOctIsoRoughness_RG_B = specialDeps.List.Any(dependancy => dependancy.CompilerIdentifier == "CompileTexture" && dependancy.String == "Texture Compiler Version Mip HemiOctIsoRoughness_RG_B");
+            var invert = specialDeps.List.Any(dependancy => dependancy.CompilerIdentifier == "CompileTexture" && dependancy.String == "Texture Compiler Version LegacySource1InvertNormals");
             if (hemiOctIsoRoughness_RG_B)
             {
                 arguments.Add("HemiOctIsoRoughness_RG_B", true);
@@ -130,73 +129,12 @@ namespace ValveResourceFormat.ResourceTypes
                 arguments.Add("LegacySource1InvertNormals", true);
             }
 
+            if (ShaderName == "vr_glass.vfx")
+            {
+                arguments.Add("F_GLASS", true);
+            }
+
             return arguments;
-        }
-
-        public byte[] ToValveMaterial()
-        {
-            var root = new KVObject("Layer0", new List<KVObject>());
-
-            root.Add(new KVObject("shader", ShaderName));
-
-            foreach (var (key, value) in IntParams)
-            {
-                root.Add(new KVObject(key, value));
-            }
-
-            foreach (var (key, value) in FloatParams)
-            {
-                root.Add(new KVObject(key, value));
-            }
-
-            foreach (var (key, value) in VectorParams)
-            {
-                root.Add(new KVObject(key, $"[{value.X} {value.Y} {value.Z} {value.W}]"));
-            }
-
-            foreach (var (key, value) in TextureParams)
-            {
-                root.Add(new KVObject(key, value));
-            }
-
-            foreach (var (key, value) in IntAttributes)
-            {
-                root.Add(new KVObject(key, value));
-            }
-
-            foreach (var (key, value) in FloatAttributes)
-            {
-                root.Add(new KVObject(key, value));
-            }
-
-            foreach (var (key, value) in FloatAttributes)
-            {
-                root.Add(new KVObject(key, value));
-            }
-
-            foreach (var (key, value) in VectorAttributes)
-            {
-                root.Add(new KVObject(key, $"[{value.X} {value.Y} {value.Z} {value.W}]"));
-            }
-
-            foreach (var (key, value) in StringAttributes)
-            {
-                root.Add(new KVObject(key, value ?? string.Empty));
-            }
-
-            if (DynamicExpressions.Count > 0)
-            {
-                var dynamicExpressionsNode = new KVObject("DynamicParams", new List<KVObject>());
-                root.Add(dynamicExpressionsNode);
-                foreach (var (key, value) in DynamicExpressions)
-                {
-                    dynamicExpressionsNode.Add(new KVObject(key, value));
-                }
-            }
-
-            using var ms = new MemoryStream();
-            KVSerializer.Create(KVSerializationFormat.KeyValues1Text).Serialize(ms, root);
-            return ms.ToArray();
         }
     }
 }

@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using ValveResourceFormat.Blocks;
 using ValveResourceFormat.Serialization;
@@ -7,12 +6,13 @@ namespace ValveResourceFormat.ResourceTypes
 {
     public class KeyValuesOrNTRO : ResourceData
     {
-        private string IntrospectionStructName;
-        private BlockType KVBlockType;
+        private readonly string IntrospectionStructName;
+        private readonly BlockType KVBlockType;
         public override BlockType Type => KVBlockType;
 
         protected Resource Resource { get; private set; }
         public IKeyValueCollection Data { get; private set; }
+        public bool UpgradeToKV3 { get; private set; }
 
         private ResourceData BackingData;
 
@@ -21,17 +21,20 @@ namespace ValveResourceFormat.ResourceTypes
             KVBlockType = BlockType.DATA;
         }
 
-        public KeyValuesOrNTRO(BlockType type, string introspectionStructName)
+        public KeyValuesOrNTRO(BlockType type, string introspectionStructName, bool upgradeToKV3 = false)
         {
             KVBlockType = type;
             IntrospectionStructName = introspectionStructName;
+            UpgradeToKV3 = upgradeToKV3;
         }
 
         public override void Read(BinaryReader reader, Resource resource)
         {
             Resource = resource;
 
-            if (!resource.ContainsBlockType(BlockType.NTRO))
+            // It is possible to have MDAT block with NTRO in a file, but it will be KV3 anyway.
+            // TODO: The whole KeyValuesOrNTRO needs a cleanup to more elegantly handle upconverting NTRO into KV3.
+            if (!resource.ContainsBlockType(BlockType.NTRO) || KVBlockType == BlockType.MDAT)
             {
                 var kv3 = new BinaryKV3(KVBlockType)
                 {
@@ -51,7 +54,7 @@ namespace ValveResourceFormat.ResourceTypes
                     Size = Size,
                 };
                 ntro.Read(reader, resource);
-                Data = ntro.Output;
+                Data = UpgradeToKV3 ? ntro.Output.ToKVObject() : ntro.Output;
                 BackingData = ntro;
             }
         }

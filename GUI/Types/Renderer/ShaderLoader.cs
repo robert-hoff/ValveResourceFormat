@@ -9,18 +9,22 @@ using System.Text.RegularExpressions;
 using OpenTK.Graphics.OpenGL;
 using ValveResourceFormat.ThirdParty;
 
+#if DEBUG_SHADERS
+#pragma warning disable
+#endif
+
 namespace GUI.Types.Renderer
 {
     public class ShaderLoader
     {
         private const string ShaderDirectory = "GUI.Types.Renderer.Shaders.";
         private const int ShaderSeed = 0x13141516;
-        private static Regex RegexInclude = new Regex(@"^#include ""(?<IncludeName>[^""]+)""", RegexOptions.Multiline);
-        private static Regex RegexDefine = new Regex(@"^#define param_(?<ParamName>\S+) (?<DefaultValue>\S+)", RegexOptions.Multiline);
+        private static readonly Regex RegexInclude = new(@"^#include ""(?<IncludeName>[^""]+)""\r?$", RegexOptions.Multiline);
+        private static readonly Regex RegexDefine = new(@"^#define param_(?<ParamName>\S+) (?<DefaultValue>\S+)", RegexOptions.Multiline);
 
 #if !DEBUG_SHADERS || !DEBUG
-        private readonly Dictionary<uint, Shader> CachedShaders = new Dictionary<uint, Shader>();
-        private readonly Dictionary<string, List<string>> ShaderDefines = new Dictionary<string, List<string>>();
+        private readonly Dictionary<uint, Shader> CachedShaders = new();
+        private readonly Dictionary<string, List<string>> ShaderDefines = new();
 #endif
 
         public Shader LoadShader(string shaderName, IDictionary<string, bool> arguments)
@@ -101,8 +105,8 @@ namespace GUI.Types.Renderer
 
             const string renderMode = "renderMode_";
             var renderModes = defines
-                .Where(k => k.StartsWith(renderMode))
-                .Select(k => k.Substring(renderMode.Length))
+                .Where(k => k.StartsWith(renderMode, StringComparison.InvariantCulture))
+                .Select(k => k[renderMode.Length..])
                 .ToList();
 
             var shader = new Shader
@@ -145,7 +149,7 @@ namespace GUI.Types.Renderer
 
             CachedShaders[newShaderCacheHash] = shader;
 
-            Console.WriteLine($"Shader {newShaderCacheHash} ({shaderName}) ({string.Join(", ", arguments.Keys)}) compiled and linked succesfully");
+            Console.WriteLine($"Shader {newShaderCacheHash} ('{shaderName}' as '{shaderFileName}') ({string.Join(", ", arguments.Keys)}) compiled and linked succesfully");
 #endif
 
             return shader;
@@ -169,7 +173,7 @@ namespace GUI.Types.Renderer
             //Find all #define param_(paramName) (paramValue) using regex
             var defines = RegexDefine.Matches(source);
 
-            foreach (Match define in defines)
+            foreach (var define in defines.Cast<Match>())
             {
                 //Check if this parameter is in the arguments
                 if (!arguments.TryGetValue(define.Groups["ParamName"].Value, out var value))
@@ -196,24 +200,22 @@ namespace GUI.Types.Renderer
 
             var includes = RegexInclude.Matches(source);
 
-            foreach (Match define in includes)
+            foreach (var define in includes.Cast<Match>())
             {
                 //Read included code
-#if DEBUG_SHADERS  && DEBUG
-                using (var stream = File.Open(GetShaderDiskPath(define.Groups["IncludeName"].Value), FileMode.Open))
+#if DEBUG_SHADERS && DEBUG
+                using var stream = File.Open(GetShaderDiskPath(define.Groups["IncludeName"].Value), FileMode.Open);
 #else
-                using (var stream = assembly.GetManifestResourceStream($"{ShaderDirectory}{define.Groups["IncludeName"].Value}"))
+                using var stream = assembly.GetManifestResourceStream($"{ShaderDirectory}{define.Groups["IncludeName"].Value}");
 #endif
-                using (var reader = new StreamReader(stream))
-                {
-                    var includedCode = reader.ReadToEnd();
+                using var reader = new StreamReader(stream);
+                var includedCode = reader.ReadToEnd();
 
-                    //Recursively resolve includes in the included code. (Watch out for cyclic dependencies!)
-                    includedCode = ResolveIncludes(includedCode);
+                //Recursively resolve includes in the included code. (Watch out for cyclic dependencies!)
+                includedCode = ResolveIncludes(includedCode);
 
-                    //Replace the include with the code
-                    source = source.Replace(define.Value, includedCode);
-                }
+                //Replace the include with the code
+                source = source.Replace(define.Value, includedCode, StringComparison.InvariantCulture);
             }
 
             return source;
@@ -225,7 +227,7 @@ namespace GUI.Types.Renderer
             return defines.Select(match => match.Groups["ParamName"].Value).ToList();
         }
 
-        // Map shader names to shader files
+        // Map Valve's shader names to shader files VRF has
         private static string GetShaderFileByName(string shaderName)
         {
             switch (shaderName)
@@ -234,13 +236,18 @@ namespace GUI.Types.Renderer
                     return "error";
                 case "vrf.grid":
                     return "debug_grid";
+                case "vrf.picking":
+                    return "picking";
                 case "vrf.particle.sprite":
                     return "particle_sprite";
                 case "vrf.particle.trail":
                     return "particle_trail";
+                case "tools_sprite.vfx":
+                    return "sprite";
                 case "vr_unlit.vfx":
-                case "vr_black_unlit.vfx":
                     return "vr_unlit";
+                case "vr_black_unlit.vfx":
+                    return "vr_black_unlit";
                 case "water_dota.vfx":
                     return "water";
                 case "hero.vfx":
@@ -249,14 +256,6 @@ namespace GUI.Types.Renderer
                 case "multiblend.vfx":
                     return "multiblend";
                 default:
-                    if (shaderName.StartsWith("vr_"))
-                    {
-                        return "vr_standard";
-                    }
-
-                    //Console.WriteLine($"Unknown shader {shaderName}, defaulting to simple.");
-                    //Shader names that are supposed to use this:
-                    //vr_simple.vfx
                     return "simple";
             }
         }
@@ -283,7 +282,14 @@ namespace GUI.Types.Renderer
         // Reload shaders at runtime
         private static string GetShaderDiskPath(string name)
         {
-            return Path.Combine(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule?.FileName), "../../../", ShaderDirectory.Replace('.', '/'), name);
+            var guiFolderRoot = Path.GetDirectoryName(System.Diagnostics.Process.GetCurrentProcess().MainModule?.FileName);
+
+            while (Path.GetFileName(guiFolderRoot) != "GUI")
+            {
+                guiFolderRoot = Path.GetDirectoryName(guiFolderRoot);
+            }
+
+            return Path.Combine(Path.GetDirectoryName(guiFolderRoot), ShaderDirectory.Replace('.', '/'), name);
         }
 #endif
     }

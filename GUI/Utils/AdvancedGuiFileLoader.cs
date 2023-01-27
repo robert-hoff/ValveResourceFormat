@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.MemoryMappedFiles;
 using System.Linq;
 using SteamDatabase.ValvePak;
 using ValveKeyValue;
@@ -11,18 +12,47 @@ using ValveResourceFormat.IO;
 
 namespace GUI.Utils
 {
-    public class AdvancedGuiFileLoader : IFileLoader
+    public class AdvancedGuiFileLoader : IFileLoader, IDisposable
     {
-        private static readonly Dictionary<string, Package> CachedPackages = new Dictionary<string, Package>();
-        private readonly HashSet<string> CurrentGameSearchPaths = new HashSet<string>();
-        private readonly List<Package> CurrentGamePackages = new List<Package>();
-        private readonly Dictionary<string, Resource> CachedResources = new Dictionary<string, Resource>();
+        private static readonly Dictionary<string, Package> CachedPackages = new();
+        private readonly HashSet<string> CurrentGameSearchPaths = new();
+        private readonly List<Package> CurrentGamePackages = new();
+        private readonly Dictionary<string, Resource> CachedResources = new();
         private readonly VrfGuiContext GuiContext;
+        private readonly string[] modIdentifiers = new[] { "gameinfo.gi", "addoninfo.txt", ".addon" };
         private bool GamePackagesScanned;
 
         public AdvancedGuiFileLoader(VrfGuiContext guiContext)
         {
             GuiContext = guiContext;
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                ClearCache();
+
+                foreach (var package in CachedPackages.Values)
+                {
+                    package.Dispose();
+                }
+
+                CachedPackages.Clear();
+
+                foreach (var package in CurrentGamePackages)
+                {
+                    package.Dispose();
+                }
+
+                CurrentGamePackages.Clear();
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
 
         public void ClearCache()
@@ -35,19 +65,38 @@ namespace GUI.Utils
             CachedResources.Clear();
         }
 
-        public Resource LoadFile(string file)
+        public (VrfGuiContext Context, PackageEntry PackageEntry) FindFileWithContext(string file)
         {
-            // TODO: Might conflict where same file name is available in different paths
-            if (CachedResources.TryGetValue(file, out var resource) && resource.Reader != null)
+            var foundFile = FindFile(file);
+
+            if (foundFile.PackageEntry == null && foundFile.PathOnDisk == null)
             {
-                return resource;
+                return (null, null);
             }
 
-            resource = new Resource
-            {
-                FileName = file,
-            };
+            VrfGuiContext newContext = null;
 
+            if (foundFile.PathOnDisk != null)
+            {
+                newContext = new VrfGuiContext(foundFile.PathOnDisk, null);
+            }
+
+            if (foundFile.Package != null)
+            {
+                var parentContext = foundFile.Context?.ParentGuiContext;
+                parentContext ??= new VrfGuiContext(foundFile.Package.FileName, null)
+                {
+                    CurrentPackage = foundFile.Package
+                };
+
+                newContext = new VrfGuiContext(foundFile.PackageEntry.GetFullPath(), parentContext);
+            }
+
+            return (newContext, foundFile.PackageEntry);
+        }
+
+        public (string PathOnDisk, VrfGuiContext Context, Package Package, PackageEntry PackageEntry) FindFile(string file)
+        {
             var entry = GuiContext.CurrentPackage?.FindEntry(file);
 
             if (entry != null)
@@ -56,16 +105,12 @@ namespace GUI.Utils
                 Console.WriteLine($"Loaded \"{file}\" from current vpk");
 #endif
 
-                GuiContext.CurrentPackage.ReadEntry(entry, out var output, false);
-                resource.Read(new MemoryStream(output));
-                CachedResources[file] = resource;
-
-                return resource;
+                return (null, GuiContext, GuiContext.CurrentPackage, entry);
             }
 
-            if (GuiContext.ParentFileLoader != null)
+            if (GuiContext.ParentGuiContext != null)
             {
-                return GuiContext.ParentFileLoader.LoadFile(file);
+                return GuiContext.ParentGuiContext.FileLoader.FindFile(file);
             }
 
             if (!GamePackagesScanned)
@@ -77,7 +122,7 @@ namespace GUI.Utils
             var paths = Settings.Config.GameSearchPaths.ToList();
             var packages = CurrentGamePackages.ToList();
 
-            foreach (var searchPath in paths.Where(searchPath => searchPath.EndsWith(".vpk")).ToList())
+            foreach (var searchPath in paths.Where(searchPath => searchPath.EndsWith(".vpk", StringComparison.InvariantCulture)).ToList())
             {
                 paths.Remove(searchPath);
 
@@ -99,13 +144,12 @@ namespace GUI.Utils
                 {
                     if (!CachedPackages.TryGetValue(searchPath.GetFileName(), out var package))
                     {
-                        Console.WriteLine($"Preloading vpk from parent vpk \"{searchPath}\"");
+                        Console.WriteLine($"Preloading vpk \"{searchPath.GetFullPath()}\" from parent vpk");
 
-                        GuiContext.CurrentPackage.ReadEntry(searchPath, out var vpk, false);
-                        var ms = new MemoryStream(vpk);
+                        var stream = GetPackageEntryStream(GuiContext.CurrentPackage, searchPath);
                         package = new Package();
                         package.SetFileName(searchPath.GetFileName());
-                        package.Read(ms);
+                        package.Read(stream);
                         CachedPackages[searchPath.GetFileName()] = package;
                     }
 
@@ -123,42 +167,69 @@ namespace GUI.Utils
                     Console.WriteLine($"Loaded \"{file}\" from preloaded vpk \"{package.FileName}\"");
 #endif
 
-                    package.ReadEntry(entry, out var output, false);
-                    resource.Read(new MemoryStream(output));
-                    CachedResources[file] = resource;
-
-                    return resource;
+                    return (null, null, package, entry);
                 }
             }
 
             var path = FindResourcePath(paths.Concat(CurrentGameSearchPaths).ToList(), file, GuiContext.FileName);
 
-            if (path == null)
+            if (path != null)
             {
-                Console.Error.WriteLine($"Failed to load \"{file}\". Did you configure VPK paths in settings correctly?");
-
-                return null;
+                return (path, null, null, null);
             }
 
-            resource.Read(path);
-            CachedResources[file] = resource;
+            Console.Error.WriteLine($"Failed to load \"{file}\". Did you configure VPK paths in settings correctly?");
 
-            return resource;
+            if (string.IsNullOrEmpty(file) || file == "_c")
+            {
+                Console.Error.WriteLine($"Empty string passed to file loader here: {Environment.StackTrace}");
+            }
+
+            return (null, null, null, null);
         }
 
-        private void FindAndLoadSearchPaths()
+        public Resource LoadFile(string file)
         {
-            var gameinfoPath = GetCurrentGameInfoPath();
-
-            if (gameinfoPath == null)
+            // TODO: Might conflict where same file name is available in different paths
+            if (CachedResources.TryGetValue(file, out var resource) && resource.Reader != null)
             {
-                return;
+                return resource;
             }
 
-            var folders = new List<string>();
-            var rootFolder = Path.GetDirectoryName(Path.GetDirectoryName(gameinfoPath));
-            KVObject gameInfo;
+            resource = new Resource
+            {
+                FileName = file,
+            };
 
+            var foundFile = FindFile(file);
+
+            if (foundFile.PathOnDisk != null)
+            {
+                resource.Read(foundFile.PathOnDisk);
+                CachedResources[file] = resource;
+
+                return resource;
+            }
+            else if (foundFile.PackageEntry != null)
+            {
+                var stream = GetPackageEntryStream(foundFile.Package, foundFile.PackageEntry);
+                resource.Read(stream);
+                CachedResources[file] = resource;
+
+                return resource;
+            }
+
+            return null;
+        }
+
+        public void AddPackageToSearch(Package package)
+        {
+            CurrentGamePackages.Add(package);
+        }
+
+        private static void HandleGameInfo(List<string> folders, string gameRoot, string gameinfoPath)
+        {
+            KVObject gameInfo;
             using (var stream = new FileStream(gameinfoPath, FileMode.Open, FileAccess.Read))
             {
                 try
@@ -181,7 +252,40 @@ namespace GUI.Utils
                     continue;
                 }
 
-                folders.Add(Path.Combine(rootFolder, searchPath.Value.ToString()));
+                folders.Add(Path.Combine(gameRoot, searchPath.Value.ToString()));
+            }
+        }
+
+        private void FindAndLoadSearchPaths()
+        {
+            var modIdentifierPath = GetModIdentifierFile();
+
+            if (modIdentifierPath == null)
+            {
+                return;
+            }
+
+            var folders = new List<string>();
+            var rootFolder = Path.GetDirectoryName(modIdentifierPath);
+            var assumedGameRoot = Path.GetDirectoryName(rootFolder);
+
+            if (modIdentifierPath.EndsWith("gameinfo.gi", StringComparison.InvariantCultureIgnoreCase))
+            {
+                HandleGameInfo(folders, assumedGameRoot, modIdentifierPath);
+            }
+            else
+            {
+                var addonsSuffix = "_addons";
+                if (assumedGameRoot.EndsWith(addonsSuffix, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    var mainGameDir = assumedGameRoot[..^addonsSuffix.Length];
+                    if (Directory.Exists(mainGameDir))
+                    {
+                        folders.Add(mainGameDir);
+                    }
+                }
+
+                folders.Add(rootFolder);
             }
 
             foreach (var folder in folders)
@@ -225,13 +329,11 @@ namespace GUI.Utils
                     Console.WriteLine($"Added folder \"{folder}\" to game search paths");
 
                     CurrentGameSearchPaths.Add(folder);
-
-                    continue;
                 }
             }
         }
 
-        private string GetCurrentGameInfoPath()
+        private string GetModIdentifierFile()
         {
             var directory = GuiContext.FileName;
             var i = 10;
@@ -249,11 +351,13 @@ namespace GUI.Utils
                     return null;
                 }
 
-                var gameinfoPath = Path.Combine(directory, "gameinfo.gi");
-
-                if (File.Exists(gameinfoPath))
+                foreach (var modIdentifier in modIdentifiers)
                 {
-                    return gameinfoPath;
+                    var path = Path.Combine(directory, modIdentifier);
+                    if (File.Exists(path))
+                    {
+                        return path;
+                    }
                 }
             }
 
@@ -283,6 +387,20 @@ namespace GUI.Utils
             }
 
             return null;
+        }
+
+        public static Stream GetPackageEntryStream(Package package, PackageEntry entry)
+        {
+            // Files in a vpk that isn't split
+            if (!package.IsDirVPK || entry.ArchiveIndex == 32767 || entry.SmallData.Length > 0)
+            {
+                package.ReadEntry(entry, out var output, false);
+                return new MemoryStream(output);
+            }
+
+            var path = $"{package.FileName}_{entry.ArchiveIndex:D3}.vpk";
+            var stream = MemoryMappedFile.CreateFromFile(path, FileMode.Open, null, 0, MemoryMappedFileAccess.Read);
+            return stream.CreateViewStream(entry.Offset, entry.Length, MemoryMappedFileAccess.Read);
         }
     }
 }

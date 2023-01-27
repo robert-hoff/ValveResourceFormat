@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -38,8 +39,11 @@ namespace ValveResourceFormat.Serialization
                 .Select(mapper)
                 .ToArray();
 
+        public static string GetStringProperty(this IKeyValueCollection collection, string name)
+           => collection.GetProperty<string>(name);
+
         public static long GetIntegerProperty(this IKeyValueCollection collection, string name)
-            => Convert.ToInt64(collection.GetProperty<object>(name));
+            => Convert.ToInt64(collection.GetProperty<object>(name), CultureInfo.InvariantCulture);
 
         public static ulong GetUnsignedIntegerProperty(this IKeyValueCollection collection, string name)
         {
@@ -53,46 +57,51 @@ namespace ValveResourceFormat.Serialization
                 }
             }
 
-            return Convert.ToUInt64(value);
+            return Convert.ToUInt64(value, CultureInfo.InvariantCulture);
         }
 
         public static int GetInt32Property(this IKeyValueCollection collection, string name)
-            => Convert.ToInt32(collection.GetProperty<object>(name));
+            => Convert.ToInt32(collection.GetProperty<object>(name), CultureInfo.InvariantCulture);
 
         public static uint GetUInt32Property(this IKeyValueCollection collection, string name)
-            => Convert.ToUInt32(collection.GetProperty<object>(name));
+            => Convert.ToUInt32(collection.GetProperty<object>(name), CultureInfo.InvariantCulture);
 
         public static double GetDoubleProperty(this IKeyValueCollection collection, string name)
-            => Convert.ToDouble(collection.GetProperty<object>(name));
+            => Convert.ToDouble(collection.GetProperty<object>(name), CultureInfo.InvariantCulture);
 
         public static float GetFloatProperty(this IKeyValueCollection collection, string name)
             => (float)GetDoubleProperty(collection, name);
 
         public static long[] GetIntegerArray(this IKeyValueCollection collection, string name)
             => collection.GetArray<object>(name)
-                .Select(Convert.ToInt64)
+                .Select(x => Convert.ToInt64(x, CultureInfo.InvariantCulture))
+                .ToArray();
+
+        public static float[] GetFloatArray(this IKeyValueCollection collection, string name)
+            => collection.GetArray<object>(name)
+                .Select(x => Convert.ToSingle(x, CultureInfo.InvariantCulture))
                 .ToArray();
 
         public static ulong[] GetUnsignedIntegerArray(this IKeyValueCollection collection, string name)
             => collection.GetArray<object>(name)
-                .Select(Convert.ToUInt64)
+                .Select(x => Convert.ToUInt64(x, CultureInfo.InvariantCulture))
                 .ToArray();
 
         public static IKeyValueCollection[] GetArray(this IKeyValueCollection collection, string name)
             => collection.GetArray<IKeyValueCollection>(name);
 
-        public static Vector3 ToVector3(this IKeyValueCollection collection) => new Vector3(
+        public static Vector3 ToVector3(this IKeyValueCollection collection) => new(
             collection.GetFloatProperty("0"),
             collection.GetFloatProperty("1"),
             collection.GetFloatProperty("2"));
 
-        public static Vector4 ToVector4(this IKeyValueCollection collection) => new Vector4(
+        public static Vector4 ToVector4(this IKeyValueCollection collection) => new(
             collection.GetFloatProperty("0"),
             collection.GetFloatProperty("1"),
             collection.GetFloatProperty("2"),
             collection.GetFloatProperty("3"));
 
-        public static Quaternion ToQuaternion(this IKeyValueCollection collection) => new Quaternion(
+        public static Quaternion ToQuaternion(this IKeyValueCollection collection) => new(
             collection.GetFloatProperty("0"),
             collection.GetFloatProperty("1"),
             collection.GetFloatProperty("2"),
@@ -118,13 +127,13 @@ namespace ValveResourceFormat.Serialization
             {
                 if (kvp.Value is IKeyValueCollection nestedCollection)
                 {
-                    stringBuilder.AppendLine($"{space}{kvp.Key} = {{");
+                    stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"{space}{kvp.Key} = {{");
                     stringBuilder.Append(PrintHelper(nestedCollection, indent + 1));
-                    stringBuilder.AppendLine($"{space}}}");
+                    stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"{space}}}");
                 }
                 else
                 {
-                    stringBuilder.AppendLine($"{space}{kvp.Key} = {kvp.Value}");
+                    stringBuilder.AppendLine(CultureInfo.InvariantCulture, $"{space}{kvp.Key} = {kvp.Value}");
                 }
             }
 

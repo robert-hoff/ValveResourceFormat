@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
@@ -130,18 +129,18 @@ namespace ValveResourceFormat.Serialization.VfxEval
 
         public VfxEval(byte[] binaryBlob, bool omitReturnStatement = false)
         {
-            this.OmitReturnStatement = omitReturnStatement;
+            OmitReturnStatement = omitReturnStatement;
             ParseExpression(binaryBlob);
         }
 
         public VfxEval(byte[] binaryBlob, string[] renderAttributesUsed, bool omitReturnStatement = false)
         {
-            this.OmitReturnStatement = omitReturnStatement;
+            OmitReturnStatement = omitReturnStatement;
             uint MURMUR2SEED = 0x31415926; // pi!
 
             foreach (var externalVarName in renderAttributesUsed)
             {
-                var murmur32 = MurmurHash2.Hash(externalVarName.ToLower(), MURMUR2SEED);
+                var murmur32 = MurmurHash2.Hash(externalVarName.ToLowerInvariant(), MURMUR2SEED);
 
                 ExternalVarsReference.AddOrUpdate(murmur32, externalVarName, (k, v) => externalVarName);
             }
@@ -288,9 +287,9 @@ namespace ValveResourceFormat.Serialization.VfxEval
             if (op == OPCODE.FLOAT)
             {
                 var floatVal = dataReader.ReadSingle();
-                var floatLiteral = string.Format("{0:g}", floatVal);
+                var floatLiteral = $"{floatVal:g}";
                 // if a float leads with "0." remove the 0 (as how Valve likes it)
-                if (floatLiteral.Length > 1 && floatLiteral.Substring(0, 2) == "0.")
+                if (floatLiteral.Length > 1 && floatLiteral[..2] == "0.")
                 {
                     floatLiteral = floatLiteral[1..];
                 }
@@ -360,9 +359,9 @@ namespace ValveResourceFormat.Serialization.VfxEval
 
             if (op == OPCODE.EVAL)
             {
-                uint intval = dataReader.ReadUInt32();
+                var intval = dataReader.ReadUInt32();
                 // if this reference exists in the vars-reference, then show it
-                string murmurString = ExternalVarsReference.GetValueOrDefault(intval, $"{intval:x08}");
+                var murmurString = ExternalVarsReference.GetValueOrDefault(intval, $"{intval:x08}");
                 Expressions.Push($"EVAL[{murmurString}]");
                 return;
             }
@@ -395,7 +394,8 @@ namespace ValveResourceFormat.Serialization.VfxEval
                 if (OmitReturnStatement)
                 {
                     DynamicExpressionList.Add(finalExp);
-                } else
+                }
+                else
                 {
                     DynamicExpressionList.Add($"return {finalExp};");
                 }
@@ -471,7 +471,8 @@ namespace ValveResourceFormat.Serialization.VfxEval
             if (varKnownName != null)
             {
                 return varKnownName;
-            } else
+            }
+            else
             {
                 return $"UNKNOWN[{varId:x08}]";
             }

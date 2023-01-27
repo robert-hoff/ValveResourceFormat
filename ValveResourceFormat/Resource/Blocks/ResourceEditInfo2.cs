@@ -1,9 +1,7 @@
-using System;
 using System.IO;
 using ValveResourceFormat.Blocks.ResourceEditInfoStructs;
 using ValveResourceFormat.ResourceTypes;
 using ValveResourceFormat.Serialization;
-using ValveResourceFormat.Serialization.KeyValues;
 
 namespace ValveResourceFormat.Blocks
 {
@@ -15,6 +13,9 @@ namespace ValveResourceFormat.Blocks
         public override BlockType Type => BlockType.RED2;
 
         private BinaryKV3 BackingData;
+
+        //public ? WeakReferenceList { get; private set; }
+        public IKeyValueCollection SearchableUserData { get; private set; }
 
         public ResourceEditInfo2()
         {
@@ -34,6 +35,7 @@ namespace ValveResourceFormat.Blocks
             ConstructSpecialDependencies();
             ConstuctInputDependencies();
 
+            SearchableUserData = kv3.AsKeyValueCollection().GetSubCollection("m_SearchableUserData");
             foreach (var kv in kv3.Data)
             {
                 // TODO: Structs?
@@ -87,6 +89,7 @@ namespace ValveResourceFormat.Blocks
             Structs.Add(REDIStruct.InputDependencies, dependenciesRedi);
         }
 
+        /*
         private static REDIBlock ConstructStruct(string name)
         {
             return name switch
@@ -105,5 +108,6 @@ namespace ValveResourceFormat.Blocks
                 _ => throw new InvalidDataException($"Unknown struct in RED2 block: '{name}'"),
             };
         }
+        */
     }
 }

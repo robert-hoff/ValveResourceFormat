@@ -6,16 +6,14 @@ namespace GUI.Types.ParticleRenderer.Operators
 {
     public class OscillateScalar : IParticleOperator
     {
-        private ParticleField outputField = ParticleField.Alpha;
-        private float rateMin;
-        private float rateMax;
-        private float frequencyMin = 1f;
-        private float frequencyMax = 1f;
-        private float oscillationMultiplier = 2f;
-        private float oscillationOffset = 0.5f;
-        private bool proportional = true;
-
-        private Random random;
+        private readonly ParticleField outputField = ParticleField.Alpha;
+        private readonly float rateMin;
+        private readonly float rateMax;
+        private readonly float frequencyMin = 1f;
+        private readonly float frequencyMax = 1f;
+        private readonly float oscillationMultiplier = 2f;
+        private readonly float oscillationOffset = 0.5f;
+        private readonly bool proportional = true;
 
         public OscillateScalar(IKeyValueCollection keyValues)
         {
@@ -58,8 +56,6 @@ namespace GUI.Types.ParticleRenderer.Operators
             {
                 proportional = keyValues.GetProperty<bool>("m_bProportionalOp");
             }
-
-            random = new Random();
         }
 
         public void Update(Span<Particle> particles, float frameTime, ParticleSystemRenderState particleSystemState)
@@ -73,7 +69,7 @@ namespace GUI.Types.ParticleRenderer.Operators
             }*/
 
             // Update remaining particles
-            for (int i = 0; i < particles.Length; ++i)
+            for (var i = 0; i < particles.Length; ++i)
             {
                 var rate = GetParticleRate(particles[i].ParticleCount);
                 var frequency = GetParticleFrequency(particles[i].ParticleCount);
@@ -99,8 +95,8 @@ namespace GUI.Types.ParticleRenderer.Operators
             }
         }
 
-        private Dictionary<int, float> particleRates = new Dictionary<int, float>();
-        private Dictionary<int, float> particleFrequencies = new Dictionary<int, float>();
+        private readonly Dictionary<int, float> particleRates = new();
+        private readonly Dictionary<int, float> particleFrequencies = new();
 
         private float GetParticleRate(int particleId)
         {
@@ -110,7 +106,7 @@ namespace GUI.Types.ParticleRenderer.Operators
             }
             else
             {
-                var newRate = rateMin + ((float)random.NextDouble() * (rateMax - rateMin));
+                var newRate = rateMin + ((float)Random.Shared.NextDouble() * (rateMax - rateMin));
                 particleRates[particleId] = newRate;
                 return newRate;
             }
@@ -124,7 +120,7 @@ namespace GUI.Types.ParticleRenderer.Operators
             }
             else
             {
-                var newFrequency = frequencyMin + ((float)random.NextDouble() * (frequencyMax - frequencyMin));
+                var newFrequency = frequencyMin + ((float)Random.Shared.NextDouble() * (frequencyMax - frequencyMin));
                 particleFrequencies[particleId] = newFrequency;
                 return newFrequency;
             }

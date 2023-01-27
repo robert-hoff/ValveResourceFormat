@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ValveResourceFormat.Blocks;
+using ValveResourceFormat.IO;
 using ValveResourceFormat.ResourceTypes.ModelAnimation;
 using ValveResourceFormat.Serialization;
 
@@ -9,28 +10,83 @@ namespace ValveResourceFormat.ResourceTypes
 {
     public class Model : KeyValuesOrNTRO
     {
-        private List<Animation> CachedEmbeddedAnimations;
-
-        public Skeleton GetSkeleton(int meshIndex)
+        public Skeleton Skeleton
         {
-            return Skeleton.FromModelData(Data, meshIndex);
+            get
+            {
+                if (cachedSkeleton == null)
+                {
+                    cachedSkeleton = Skeleton.FromModelData(Data);
+                }
+                return cachedSkeleton;
+            }
+        }
+        private List<Animation> CachedAnimations;
+        private Skeleton cachedSkeleton { get; set; }
+        private readonly IDictionary<(VBIB VBIB, int MeshIndex), VBIB> remappedVBIBCache = new Dictionary<(VBIB VBIB, int MeshIndex), VBIB>();
+
+        public int[] GetRemapTable(int meshIndex)
+        {
+            var remapTableStarts = Data.GetIntegerArray("m_remappingTableStarts");
+
+            if (remapTableStarts.Length <= meshIndex)
+            {
+                return null;
+            }
+
+            // Get the remap table and invert it for our construction method
+            var remapTable = Data.GetIntegerArray("m_remappingTable").Select(i => (int)i);
+
+            var start = (int)remapTableStarts[meshIndex];
+            return remapTable
+                .Skip(start)
+                .Take(Skeleton.LocalRemapTable.Length)
+                .ToArray();
         }
 
-        public IEnumerable<string> GetRefMeshes()
-            => Data.GetArray<string>("m_refMeshes");
-
-        public IEnumerable<string> GetReferencedMeshNames()
-            => GetRefMeshes().Where(m => m != null);
-
-        public IEnumerable<(string MeshName, long LoDMask)> GetReferenceMeshNamesAndLoD()
-            => GetReferencedMeshNames().Zip(Data.GetIntegerArray("m_refLODGroupMasks"), (l, r) => (l, r)).Where(m => m.l.Length > 0);
-
-        public IEnumerable<(Mesh Mesh, long LoDMask)> GetEmbeddedMeshesAndLoD()
-            => GetEmbeddedMeshes().Zip(Data.GetIntegerArray("m_refLODGroupMasks"), (l, r) => (l, r));
-
-        public IEnumerable<Mesh> GetEmbeddedMeshes()
+        public VBIB RemapBoneIndices(VBIB vbib, int meshIndex)
         {
-            var meshes = new List<Mesh>();
+            if (Skeleton.Bones.Length == 0)
+            {
+                return vbib;
+            }
+            if (remappedVBIBCache.TryGetValue((vbib, meshIndex), out var res))
+            {
+                return res;
+            }
+            res = vbib.RemapBoneIndices(VBIB.CombineRemapTables(new int[][] {
+                GetRemapTable(meshIndex),
+                Skeleton.LocalRemapTable,
+            }));
+            remappedVBIBCache.Add((vbib, meshIndex), res);
+            return res;
+        }
+
+        public IEnumerable<(int MeshIndex, string MeshName, long LoDMask)> GetReferenceMeshNamesAndLoD()
+        {
+            var refLODGroupMasks = Data.GetIntegerArray("m_refLODGroupMasks");
+            var refMeshes = Data.GetArray<string>("m_refMeshes");
+            var result = new List<(int MeshIndex, string MeshName, long LoDMask)>();
+
+            for (var meshIndex = 0; meshIndex < refMeshes.Length; meshIndex++)
+            {
+                var refMesh = refMeshes[meshIndex];
+
+                if (!String.IsNullOrEmpty(refMesh))
+                {
+                    result.Add((meshIndex, refMesh, refLODGroupMasks[meshIndex]));
+                }
+            }
+
+            return result;
+        }
+
+        public IEnumerable<(Mesh Mesh, int MeshIndex, string Name, long LoDMask)> GetEmbeddedMeshesAndLoD()
+            => GetEmbeddedMeshes().Zip(Data.GetIntegerArray("m_refLODGroupMasks"), (l, r) => (l.Mesh, l.MeshIndex, l.Name, r));
+
+        public IEnumerable<(Mesh Mesh, int MeshIndex, string Name)> GetEmbeddedMeshes()
+        {
+            var meshes = new List<(Mesh Mesh, int MeshIndex, string Name)>();
 
             if (Resource.ContainsBlockType(BlockType.CTRL))
             {
@@ -44,10 +100,21 @@ namespace ValveResourceFormat.ResourceTypes
 
                 foreach (var embeddedMesh in embeddedMeshes)
                 {
+                    var name = embeddedMesh.GetStringProperty("name");
+                    var meshIndex = (int)embeddedMesh.GetIntegerProperty("mesh_index");
                     var dataBlockIndex = (int)embeddedMesh.GetIntegerProperty("data_block");
                     var vbibBlockIndex = (int)embeddedMesh.GetIntegerProperty("vbib_block");
 
-                    meshes.Add(new Mesh(Resource.GetBlockByIndex(dataBlockIndex) as ResourceData, Resource.GetBlockByIndex(vbibBlockIndex) as VBIB));
+                    var mesh = Resource.GetBlockByIndex(dataBlockIndex) as Mesh;
+                    mesh.VBIB = Resource.GetBlockByIndex(vbibBlockIndex) as VBIB;
+
+                    var morphBlockIndex = (int)embeddedMesh.GetIntegerProperty("morph_block");
+                    if (morphBlockIndex >= 0)
+                    {
+                        mesh.MorphData = Resource.GetBlockByIndex(morphBlockIndex) as Morph;
+                    }
+
+                    meshes.Add((mesh, meshIndex, name));
                 }
             }
 
@@ -70,7 +137,7 @@ namespace ValveResourceFormat.ResourceTypes
             }
 
             var physBlockIndex = (int)embeddedPhys.GetIntegerProperty("phys_data_block");
-            return ((PhysAggregateData)Resource.GetBlockByIndex(physBlockIndex));
+            return (PhysAggregateData)Resource.GetBlockByIndex(physBlockIndex);
         }
 
         public IEnumerable<string> GetReferencedPhysNames()
@@ -81,35 +148,55 @@ namespace ValveResourceFormat.ResourceTypes
 
         public IEnumerable<Animation> GetEmbeddedAnimations()
         {
-            if (CachedEmbeddedAnimations != null)
+            var embeddedAnimations = new List<Animation>();
+
+            if (!Resource.ContainsBlockType(BlockType.CTRL))
             {
-                return CachedEmbeddedAnimations;
+                return embeddedAnimations;
             }
 
-            CachedEmbeddedAnimations = new List<Animation>();
+            var ctrl = Resource.GetBlockByType(BlockType.CTRL) as BinaryKV3;
+            var embeddedAnimation = ctrl.Data.GetSubCollection("embedded_animation");
 
-            if (Resource.ContainsBlockType(BlockType.CTRL))
+            if (embeddedAnimation == null)
             {
-                var ctrl = Resource.GetBlockByType(BlockType.CTRL) as BinaryKV3;
-                var embeddedAnimation = ctrl.Data.GetSubCollection("embedded_animation");
+                return embeddedAnimations;
+            }
 
-                if (embeddedAnimation == null)
+            var groupDataBlockIndex = (int)embeddedAnimation.GetIntegerProperty("group_data_block");
+            var animDataBlockIndex = (int)embeddedAnimation.GetIntegerProperty("anim_data_block");
+
+            var animationGroup = Resource.GetBlockByIndex(groupDataBlockIndex) as KeyValuesOrNTRO;
+            var decodeKey = animationGroup.Data.GetSubCollection("m_decodeKey");
+
+            var animationDataBlock = Resource.GetBlockByIndex(animDataBlockIndex) as KeyValuesOrNTRO;
+
+            return Animation.FromData(animationDataBlock.Data, decodeKey, Skeleton);
+        }
+
+        public IEnumerable<Animation> GetAllAnimations(IFileLoader fileLoader)
+        {
+            if (CachedAnimations != null)
+            {
+                return CachedAnimations;
+            }
+
+            var animGroupPaths = GetReferencedAnimationGroupNames();
+            var animations = GetEmbeddedAnimations().ToList();
+
+            // Load animations from referenced animation groups
+            foreach (var animGroupPath in animGroupPaths)
+            {
+                var animGroup = fileLoader.LoadFile(animGroupPath + "_c");
+                if (animGroup != default)
                 {
-                    return CachedEmbeddedAnimations;
+                    animations.AddRange(AnimationGroupLoader.LoadAnimationGroup(animGroup, fileLoader, Skeleton));
                 }
-
-                var groupDataBlockIndex = (int)embeddedAnimation.GetIntegerProperty("group_data_block");
-                var animDataBlockIndex = (int)embeddedAnimation.GetIntegerProperty("anim_data_block");
-
-                var animationGroup = Resource.GetBlockByIndex(groupDataBlockIndex) as KeyValuesOrNTRO;
-                var decodeKey = animationGroup.Data.GetSubCollection("m_decodeKey");
-
-                var animationDataBlock = Resource.GetBlockByIndex(animDataBlockIndex) as KeyValuesOrNTRO;
-
-                CachedEmbeddedAnimations.AddRange(Animation.FromData(animationDataBlock.Data, decodeKey));
             }
 
-            return CachedEmbeddedAnimations;
+            CachedAnimations = animations.ToList();
+
+            return CachedAnimations;
         }
 
         public IEnumerable<string> GetMeshGroups()

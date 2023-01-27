@@ -1,106 +1,159 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
+using GUI.Controls;
 using GUI.Forms;
 using GUI.Utils;
-using ValveResourceFormat;
+using SteamDatabase.ValvePak;
 using ValveResourceFormat.IO;
-using ValveResourceFormat.ResourceTypes;
+using Resource = ValveResourceFormat.Resource;
 
 namespace GUI.Types.Exporter
 {
     public static class ExportFile
     {
-        static ISet<ResourceType> ResourceTypesThatAreGltfExportable = new HashSet<ResourceType>()
-        { ResourceType.Mesh, ResourceType.Model, ResourceType.WorldNode, ResourceType.World };
-
-        public static void Export(string fileName, ExportData exportData)
+        public static void ExtractFileFromPackageEntry(PackageEntry file, VrfGuiContext vrfGuiContext, bool decompile)
         {
-            var resource = exportData.Resource;
-            var extension = FileExtract.GetExtension(resource);
+            var stream = AdvancedGuiFileLoader.GetPackageEntryStream(vrfGuiContext.CurrentPackage, file);
 
-            if (extension == null)
+            ExtractFileFromStream(file.GetFileName(), stream, vrfGuiContext, decompile);
+        }
+
+        public static void ExtractFileFromStream(string fileName, Stream stream, VrfGuiContext vrfGuiContext, bool decompile)
+        {
+            if (decompile && fileName.EndsWith("_c", StringComparison.Ordinal))
             {
-                Console.WriteLine($"Export for \"{fileName}\" has no suitable extension");
-                return;
-            }
-
-            var filter = $"{extension} file|*.{extension}";
-
-            if (ResourceTypesThatAreGltfExportable.Contains(resource.ResourceType))
-            {
-                if (exportData.FileType == ExportFileType.GLB)
+                var exportData = new ExportData
                 {
-                    extension = "glb";
-                    filter = $"GLB file|*.glb|{filter}";
+                    VrfGuiContext = new VrfGuiContext(null, vrfGuiContext),
+                };
+
+                var resource = new Resource
+                {
+                    FileName = fileName,
+                };
+                resource.Read(stream);
+
+                var extension = FileExtract.GetExtension(resource);
+
+                if (extension == null)
+                {
+                    stream.Dispose();
+                    Console.WriteLine($"Export for \"{fileName}\" has no suitable extension");
+                    return;
                 }
-                else
+
+                var filter = $"{extension} file|*.{extension}";
+
+                if (GltfModelExporter.CanExport(resource))
                 {
-                    extension = "gltf";
-                    filter = $"glTF file|*.gltf|{filter}";
+                    var gltfFilter = "glTF|*.gltf";
+                    var glbFilter = "glTF Binary|*.glb";
+
+                    filter = $"{gltfFilter}|{glbFilter}|{filter}";
                 }
-            }
 
-            var dialog = new SaveFileDialog
-            {
-                FileName = Path.GetFileName(Path.ChangeExtension(fileName, extension)),
-                InitialDirectory = Settings.Config.SaveDirectory,
-                DefaultExt = extension,
-                Filter = filter,
-            };
-
-            var result = dialog.ShowDialog();
-
-            if (result != DialogResult.OK)
-            {
-                Console.WriteLine($"Export for \"{fileName}\" cancelled");
-                return;
-            }
-
-            Console.WriteLine($"Export for \"{fileName}\" started to \"{extension}\"");
-
-            Settings.Config.SaveDirectory = Path.GetDirectoryName(dialog.FileName);
-            Settings.Save();
-
-            var extractDialog = new GenericProgressForm();
-            extractDialog.OnProcess += (_, __) =>
-            {
-                if (dialog.FilterIndex == 1 && ResourceTypesThatAreGltfExportable.Contains(resource.ResourceType))
+                using var dialog = new SaveFileDialog
                 {
-                    var exporter = new GltfModelExporter
+                    FileName = Path.GetFileNameWithoutExtension(fileName),
+                    InitialDirectory = Settings.Config.SaveDirectory,
+                    DefaultExt = extension,
+                    Filter = filter,
+                };
+
+                var result = dialog.ShowDialog();
+
+                if (result != DialogResult.OK)
+                {
+                    stream.Dispose();
+                    return;
+                }
+
+                var directory = Path.GetDirectoryName(dialog.FileName);
+                Settings.Config.SaveDirectory = directory;
+                Settings.Save();
+
+                var extractDialog = new ExtractProgressForm(exportData, directory, true)
+                {
+                    ShownCallback = (form, cancellationToken) =>
                     {
-                        ProgressReporter = new Progress<string>(extractDialog.SetProgress),
-                        FileLoader = exportData.VrfGuiContext.FileLoader,
-                    };
-                    switch(resource.ResourceType)
-                    {
-                        case ResourceType.Mesh:
-                            exporter.ExportToFile(fileName, dialog.FileName, new Mesh(resource));
-                            break;
-                        case ResourceType.Model:
-                            exporter.ExportToFile(fileName, dialog.FileName, (Model)resource.DataBlock);
-                            break;
-                        case ResourceType.WorldNode:
-                            exporter.ExportToFile(fileName, dialog.FileName, (WorldNode)resource.DataBlock);
-                            break;
-                        case ResourceType.World:
-                            exporter.ExportToFile(fileName, dialog.FileName, (World)resource.DataBlock);
-                            break;
-                        default:
-                            break;
+                        form.SetProgress($"Extracting {fileName} to \"{Path.GetFileName(dialog.FileName)}\"");
+
+                        Task.Run(async () =>
+                        {
+                            await form.ExtractFile(resource, fileName, dialog.FileName, true).ConfigureAwait(false);
+                        }, cancellationToken).ContinueWith(t =>
+                        {
+                            stream.Dispose();
+                            resource.Dispose();
+
+                            form.ExportContinueWith(t);
+                        }, CancellationToken.None);
                     }
-                }
-                else
+                };
+                extractDialog.ShowDialog();
+            }
+            else
+            {
+                var dialog = new SaveFileDialog
                 {
-                    var data = FileExtract.Extract(resource).ToArray();
-                    using var stream = dialog.OpenFile();
-                    stream.Write(data, 0, data.Length);
+                    InitialDirectory = Settings.Config.SaveDirectory,
+                    Filter = "All files (*.*)|*.*",
+                    FileName = fileName,
+                };
+                var userOK = dialog.ShowDialog();
+
+                if (userOK == DialogResult.OK)
+                {
+                    Settings.Config.SaveDirectory = Path.GetDirectoryName(dialog.FileName);
+                    Settings.Save();
+
+                    Console.WriteLine($"Saved \"{Path.GetFileName(dialog.FileName)}\"");
+
+                    using var streamOutput = dialog.OpenFile();
+                    stream.CopyTo(streamOutput);
                 }
 
-                Console.WriteLine($"Export for \"{fileName}\" completed");
-            };
-            extractDialog.ShowDialog();
+                stream.Dispose();
+            }
+        }
+
+        public static void ExtractFilesFromTreeNode(TreeNode selectedNode, VrfGuiContext vrfGuiContext, bool decompile)
+        {
+            var data = (VrfTreeViewData)selectedNode.Tag;
+            if (!data.IsFolder)
+            {
+                var file = data.PackageEntry;
+                // We are a file
+                ExtractFileFromPackageEntry(file, vrfGuiContext, decompile);
+            }
+            else
+            {
+                // We are a folder
+                using var dialog = new FolderBrowserDialog
+                {
+                    InitialDirectory = Settings.Config.SaveDirectory,
+                };
+
+                if (dialog.ShowDialog() != DialogResult.OK)
+                {
+                    return;
+                }
+
+                Settings.Config.SaveDirectory = dialog.SelectedPath;
+                Settings.Save();
+
+                var exportData = new ExportData
+                {
+                    VrfGuiContext = vrfGuiContext,
+                };
+
+                var extractDialog = new ExtractProgressForm(exportData, dialog.SelectedPath, decompile);
+                extractDialog.QueueFiles(selectedNode);
+                extractDialog.ShowDialog();
+            }
         }
     }
 }

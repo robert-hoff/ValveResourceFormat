@@ -11,9 +11,11 @@ namespace GUI.Types.ParticleRenderer.Renderers
 {
     internal class RenderSprites : IParticleRenderer
     {
+        private const string ShaderName = "vrf.particle.sprite";
         private const int VertexSize = 9;
 
-        private readonly Shader shader;
+        private Shader shader;
+        private readonly VrfGuiContext guiContext;
         private readonly int quadVao;
         private readonly int glTexture;
 
@@ -21,24 +23,42 @@ namespace GUI.Types.ParticleRenderer.Renderers
         private readonly float animationRate = 0.1f;
 
         private readonly bool additive;
-        private readonly float overbrightFactor = 1;
+        private readonly INumberProvider overbrightFactor = new LiteralNumberProvider(1);
         private readonly long orientationType;
 
         private float[] rawVertices;
-        private QuadIndexBuffer quadIndices;
+        private readonly QuadIndexBuffer quadIndices;
         private int vertexBufferHandle;
 
         public RenderSprites(IKeyValueCollection keyValues, VrfGuiContext vrfGuiContext)
         {
-            shader = vrfGuiContext.ShaderLoader.LoadShader("vrf.particle.sprite", new Dictionary<string, bool>());
+            guiContext = vrfGuiContext;
+            shader = vrfGuiContext.ShaderLoader.LoadShader(ShaderName, new Dictionary<string, bool>());
             quadIndices = vrfGuiContext.QuadIndices;
 
             // The same quad is reused for all particles
             quadVao = SetupQuadBuffer();
 
+            string textureName = null;
+
             if (keyValues.ContainsKey("m_hTexture"))
             {
-                var textureSetup = LoadTexture(keyValues.GetProperty<string>("m_hTexture"), vrfGuiContext);
+                textureName = keyValues.GetProperty<string>("m_hTexture");
+            }
+            else if (keyValues.ContainsKey("m_vecTexturesInput"))
+            {
+                var textures = keyValues.GetArray("m_vecTexturesInput");
+
+                if (textures.Length > 0)
+                {
+                    // TODO: Support more than one texture
+                    textureName = textures[0].GetProperty<string>("m_hTexture");
+                }
+            }
+
+            if (textureName != null)
+            {
+                var textureSetup = LoadTexture(textureName, vrfGuiContext);
                 glTexture = textureSetup.TextureIndex;
                 spriteSheetData = textureSetup.TextureData?.GetSpriteSheetData();
             }
@@ -50,11 +70,18 @@ namespace GUI.Types.ParticleRenderer.Renderers
             additive = keyValues.GetProperty<bool>("m_bAdditive");
             if (keyValues.ContainsKey("m_flOverbrightFactor"))
             {
-                overbrightFactor = keyValues.GetFloatProperty("m_flOverbrightFactor");
+                overbrightFactor = keyValues.GetNumberProvider("m_flOverbrightFactor");
             }
 
             if (keyValues.ContainsKey("m_nOrientationType"))
             {
+                /* TODO: Support strings here
+                PARTICLE_ORIENTATION_SCREEN_ALIGNED
+                PARTICLE_ORIENTATION_SCREEN_Z_ALIGNED
+                PARTICLE_ORIENTATION_WORLD_Z_ALIGNED
+                PARTICLE_ORIENTATION_ALIGN_TO_PARTICLE_NORMAL
+                PARTICLE_ORIENTATION_SCREENALIGN_TO_PARTICLE_NORMAL
+                */
                 orientationType = keyValues.GetIntegerProperty("m_nOrientationType");
             }
 
@@ -75,7 +102,7 @@ namespace GUI.Types.ParticleRenderer.Renderers
             vertexBufferHandle = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ArrayBuffer, vertexBufferHandle);
 
-            int stride = sizeof(float) * VertexSize;
+            var stride = sizeof(float) * VertexSize;
             var positionAttributeLocation = GL.GetAttribLocation(shader.Program, "aVertexPosition");
             GL.VertexAttribPointer(positionAttributeLocation, 3, VertexAttribPointerType.Float, false, stride, 0);
             var colorAttributeLocation = GL.GetAttribLocation(shader.Program, "aVertexColor");
@@ -106,7 +133,7 @@ namespace GUI.Types.ParticleRenderer.Renderers
 
         private void EnsureSpaceForVertices(int count)
         {
-            int numFloats = count * VertexSize;
+            var numFloats = count * VertexSize;
 
             if (rawVertices == null)
             {
@@ -114,7 +141,7 @@ namespace GUI.Types.ParticleRenderer.Renderers
             }
             else if (rawVertices.Length < numFloats)
             {
-                int nextSize = (((count / 64) + 1) * 64) * VertexSize;
+                var nextSize = ((count / 64) + 1) * 64 * VertexSize;
                 Array.Resize(ref rawVertices, nextSize);
             }
         }
@@ -124,13 +151,13 @@ namespace GUI.Types.ParticleRenderer.Renderers
             var particles = particleBag.LiveParticles;
 
             // Create billboarding rotation (always facing camera)
-            Matrix4x4.Decompose(modelViewMatrix, out _, out Quaternion modelViewRotation, out _);
+            Matrix4x4.Decompose(modelViewMatrix, out _, out var modelViewRotation, out _);
             modelViewRotation = Quaternion.Inverse(modelViewRotation);
             var billboardMatrix = Matrix4x4.CreateFromQuaternion(modelViewRotation);
 
             // Update vertex buffer
             EnsureSpaceForVertices(particleBag.Count * 4);
-            for (int i = 0; i < particleBag.Count; ++i)
+            for (var i = 0; i < particleBag.Count; ++i)
             {
                 // Positions
                 var modelMatrix = orientationType == 0
@@ -142,7 +169,7 @@ namespace GUI.Types.ParticleRenderer.Renderers
                 var br = Vector4.Transform(new Vector4(1, 1, 0, 1), modelMatrix);
                 var tr = Vector4.Transform(new Vector4(1, -1, 0, 1), modelMatrix);
 
-                int quadStart = i * VertexSize * 4;
+                var quadStart = i * VertexSize * 4;
                 rawVertices[quadStart + 0] = tl.X;
                 rawVertices[quadStart + 1] = tl.Y;
                 rawVertices[quadStart + 2] = tl.Z;
@@ -157,7 +184,7 @@ namespace GUI.Types.ParticleRenderer.Renderers
                 rawVertices[quadStart + (VertexSize * 3) + 2] = tr.Z;
 
                 // Colors
-                for (int j = 0; j < 4; ++j)
+                for (var j = 0; j < 4; ++j)
                 {
                     rawVertices[quadStart + (VertexSize * j) + 3] = particles[i].Color.X;
                     rawVertices[quadStart + (VertexSize * j) + 4] = particles[i].Color.Y;
@@ -174,12 +201,13 @@ namespace GUI.Types.ParticleRenderer.Renderers
                     var frame = particleTime * sequence.FramesPerSecond * animationRate;
 
                     var currentFrame = sequence.Frames[(int)Math.Floor(frame) % sequence.Frames.Length];
+                    var currentImage = currentFrame.Images[0]; // TODO: Support more than one image per frame?
 
                     // Lerp frame coords and size
                     var subFrameTime = frame % 1.0f;
-                    var offset = (currentFrame.StartMins * (1 - subFrameTime)) + (currentFrame.EndMins * subFrameTime);
-                    var scale = ((currentFrame.StartMaxs - currentFrame.StartMins) * (1 - subFrameTime))
-                            + ((currentFrame.EndMaxs - currentFrame.EndMins) * subFrameTime);
+                    var offset = (currentImage.CroppedMin * (1 - subFrameTime)) + (currentImage.UncroppedMin * subFrameTime);
+                    var scale = ((currentImage.CroppedMax - currentImage.CroppedMin) * (1 - subFrameTime))
+                            + ((currentImage.UncroppedMax - currentImage.UncroppedMin) * subFrameTime);
 
                     rawVertices[quadStart + (VertexSize * 0) + 7] = offset.X + (scale.X * 0);
                     rawVertices[quadStart + (VertexSize * 0) + 8] = offset.Y + (scale.Y * 1);
@@ -244,7 +272,7 @@ namespace GUI.Types.ParticleRenderer.Renderers
             GL.UniformMatrix4(shader.GetUniformLocation("uProjectionViewMatrix"), false, ref otkProjection);
 
             // TODO: This formula is a guess but still seems too bright compared to valve particles
-            GL.Uniform1(shader.GetUniformLocation("uOverbrightFactor"), overbrightFactor);
+            GL.Uniform1(shader.GetUniformLocation("uOverbrightFactor"), overbrightFactor.NextNumber());
 
             GL.Disable(EnableCap.CullFace);
             GL.Enable(EnableCap.DepthTest);
@@ -268,6 +296,20 @@ namespace GUI.Types.ParticleRenderer.Renderers
             }
 
             GL.Disable(EnableCap.Blend);
+        }
+
+        public IEnumerable<string> GetSupportedRenderModes() => shader.RenderModes;
+
+        public void SetRenderMode(string renderMode)
+        {
+            var parameters = new Dictionary<string, bool>();
+
+            if (renderMode != null && shader.RenderModes.Contains(renderMode))
+            {
+                parameters.Add($"renderMode_{renderMode}", true);
+            }
+
+            shader = guiContext.ShaderLoader.LoadShader(ShaderName, parameters);
         }
     }
 }

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using GUI.Utils;
+using ValveResourceFormat;
 using ValveResourceFormat.ResourceTypes;
 using ValveResourceFormat.Utils;
 
@@ -37,6 +38,7 @@ namespace GUI.Types.Renderer
         public LoadResult Load(Scene scene)
         {
             var result = new LoadResult();
+            result.DefaultEnabledLayers.Add("Entities");
 
             // Output is World_t we need to iterate m_worldNodes inside it.
             var worldNodes = world.GetWorldNodeNames();
@@ -111,8 +113,6 @@ namespace GUI.Types.Renderer
                     {
                         result.DefaultEnabledLayers.Add(layername);
                     }
-
-                    continue;
                 }
                 else if (classname == "skybox_reference")
                 {
@@ -121,6 +121,24 @@ namespace GUI.Types.Renderer
 
                     var skyboxWorldPath = $"maps/{Path.GetFileNameWithoutExtension(targetmapname)}/world.vwrld_c";
                     var skyboxPackage = guiContext.LoadFileByAnyMeansNecessary(skyboxWorldPath);
+
+                    if (skyboxPackage == null && guiContext.ParentGuiContext != null)
+                    {
+                        var mapName = Path.GetFileNameWithoutExtension(guiContext.ParentGuiContext.FileName);
+                        var mapsFolder = Path.GetDirectoryName(guiContext.ParentGuiContext.FileName);
+                        var skyboxVpk = Path.Join(mapsFolder, mapName, $"{Path.GetFileNameWithoutExtension(targetmapname)}.vpk");
+
+                        if (File.Exists(skyboxVpk))
+                        {
+                            var skyboxNewPackage = new SteamDatabase.ValvePak.Package();
+                            skyboxNewPackage.Read(skyboxVpk);
+
+                            guiContext.ParentGuiContext.FileLoader.AddPackageToSearch(skyboxNewPackage);
+
+                            skyboxWorldPath = $"maps/{mapName}/{Path.GetFileNameWithoutExtension(targetmapname)}/world.vwrld_c";
+                            skyboxPackage = guiContext.LoadFileByAnyMeansNecessary(skyboxWorldPath);
+                        }
+                    }
 
                     if (skyboxPackage != null)
                     {
@@ -134,21 +152,20 @@ namespace GUI.Types.Renderer
                 var model = entity.GetProperty<string>("model");
                 var skin = entity.GetProperty<string>("skin");
                 var particle = entity.GetProperty<string>("effect_name");
-                //var animation = entity.GetProperty<string>("defaultanim");
-                string animation = null;
+                var animation = entity.GetProperty<string>("defaultanim");
 
                 if (scale == null || position == null || angles == null)
                 {
                     continue;
                 }
 
-                var isGlobalLight = classname == "env_global_light";
+                var isGlobalLight = classname == "env_global_light" || classname == "light_environment";
                 var isCamera =
                     classname == "sky_camera" ||
                     classname == "point_devshot_camera" ||
                     classname == "point_camera";
                 var isTrigger =
-                    classname.Contains("trigger") ||
+                    classname.Contains("trigger", StringComparison.InvariantCulture) ||
                     classname == "post_processing_volume";
 
                 var positionVector = EntityTransformHelper.ParseVector(position);
@@ -181,7 +198,7 @@ namespace GUI.Types.Renderer
                         }
                         catch (Exception e)
                         {
-                            Console.Error.WriteLine($"Failed to setup particle '{particle}': {e.Message}");
+                            Console.Error.WriteLine($"Failed to setup particle '{particle}': {e}");
                         }
                     }
 
@@ -196,18 +213,10 @@ namespace GUI.Types.Renderer
                         : name;
 
                     result.CameraMatrices.Add(cameraName, transformationMatrix);
-
-                    continue;
                 }
                 else if (isGlobalLight)
                 {
                     result.GlobalLightPosition = positionVector;
-
-                    continue;
-                }
-                else if (model == null)
-                {
-                    continue;
                 }
 
                 var objColor = Vector4.One;
@@ -216,14 +225,19 @@ namespace GUI.Types.Renderer
                 var colour = entity.GetProperty("rendercolor");
 
                 // HL Alyx has an entity that puts rendercolor as a string instead of color255
-                // TODO: Make an enum for these types
-                if (colour != default && colour.Type == 0x09)
+                if (colour != default && colour.Type == EntityFieldType.Color32)
                 {
                     var colourBytes = (byte[])colour.Data;
                     objColor.X = colourBytes[0] / 255.0f;
                     objColor.Y = colourBytes[1] / 255.0f;
                     objColor.Z = colourBytes[2] / 255.0f;
                     objColor.W = colourBytes[3] / 255.0f;
+                }
+
+                if (!isTrigger && model == null)
+                {
+                    AddToolModel(scene, classname, transformationMatrix, positionVector);
+                    continue;
                 }
 
                 var newEntity = guiContext.LoadFileByAnyMeansNecessary(model + "_c");
@@ -252,20 +266,26 @@ namespace GUI.Types.Renderer
                     Transform = transformationMatrix,
                     Tint = objColor,
                     LayerName = layerName,
+                    Name = model,
                 };
 
                 if (animation != default)
                 {
-                    modelNode.LoadAnimation(animation); // Load only this animation
+                    modelNode.LoadAnimations();
                     modelNode.SetAnimation(animation);
+
+                    if (entity.GetProperty<bool>("holdanimation"))
+                    {
+                        modelNode.AnimationController.PauseLastFrame();
+                    }
                 }
 
-                var bodyHash = EntityLumpKeyLookup.Get("body");
+                var bodyHash = StringToken.Get("body");
                 if (entity.Properties.ContainsKey(bodyHash))
                 {
                     var groups = modelNode.GetMeshGroups();
                     var body = entity.Properties[bodyHash].Data;
-                    int bodyGroup = -1;
+                    var bodyGroup = -1;
 
                     if (body is ulong bodyGroupLong)
                     {
@@ -282,7 +302,7 @@ namespace GUI.Types.Renderer
                     modelNode.SetActiveMeshGroups(groups.Skip(bodyGroup).Take(1));
                 }
 
-                scene.Add(modelNode, false);
+                scene.Add(modelNode, animation != default);
 
                 var phys = newModel.GetEmbeddedPhys();
                 if (phys == null)
@@ -308,6 +328,45 @@ namespace GUI.Types.Renderer
                     };
                     scene.Add(physSceneNode, false);
                 }
+            }
+        }
+
+        private void AddToolModel(Scene scene, string classname, Matrix4x4 transformationMatrix, Vector3 position)
+        {
+            var filename = HammerEntities.GetToolModel(classname);
+            var resource = guiContext.LoadFileByAnyMeansNecessary(filename + "_c");
+
+            if (resource == null)
+            {
+                // TODO: Create a 16x16x16 box to emulate how Hammer draws them
+                resource = guiContext.LoadFileByAnyMeansNecessary("materials/editor/obsolete.vmat_c");
+
+                if (resource == null)
+                {
+                    return;
+                }
+            }
+
+            if (resource.ResourceType == ResourceType.Model)
+            {
+                var modelNode = new ModelSceneNode(scene, (Model)resource.DataBlock, null, false)
+                {
+                    Transform = transformationMatrix,
+                    LayerName = "Entities",
+                };
+                scene.Add(modelNode, false);
+            }
+            else if (resource.ResourceType == ResourceType.Material)
+            {
+                var spriteNode = new SpriteSceneNode(scene, guiContext, resource, position)
+                {
+                    LayerName = "Entities",
+                };
+                scene.Add(spriteNode, false);
+            }
+            else
+            {
+                throw new InvalidDataException($"Got resource {resource.ResourceType} for class \"{classname}\"");
             }
         }
     }

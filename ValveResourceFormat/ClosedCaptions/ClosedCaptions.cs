@@ -45,12 +45,12 @@ namespace ValveResourceFormat.ClosedCaptions
         /// <param name="input">The input <see cref="Stream"/> to read from.</param>
         public void Read(string filename, Stream input)
         {
-            if (!filename.StartsWith("subtitles_"))
+            if (!filename.StartsWith("subtitles_", StringComparison.Ordinal))
             {
                 // TODO: Throw warning?
             }
 
-            var reader = new BinaryReader(input);
+            using var reader = new BinaryReader(input, Encoding.UTF8, true);
             Captions = new List<ClosedCaption>();
 
             if (reader.ReadUInt32() != MAGIC)

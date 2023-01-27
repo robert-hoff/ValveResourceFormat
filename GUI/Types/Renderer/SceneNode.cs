@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -29,6 +28,9 @@ namespace GUI.Types.Renderer
                 BoundingBox = LocalBoundingBox.Transform(transform);
             }
         }
+
+        public string Name { get; set; }
+        public uint Id { get; set; }
 
         public Scene Scene { get; }
 

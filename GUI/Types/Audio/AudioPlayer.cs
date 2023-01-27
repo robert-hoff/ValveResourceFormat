@@ -5,6 +5,7 @@ using NAudio.Wave;
 using NLayer.NAudioSupport;
 using ValveResourceFormat;
 using ValveResourceFormat.ResourceTypes;
+using ValveResourceFormat.Utils;
 
 namespace GUI.Types.Audio
 {
@@ -17,16 +18,13 @@ namespace GUI.Types.Audio
 
             try
             {
-                WaveStream waveStream;
-
-                switch (soundData.SoundType)
+                WaveStream waveStream = soundData.SoundType switch
                 {
-                    case Sound.AudioFileType.WAV: waveStream = new WaveFileReader(stream); break;
-                    case Sound.AudioFileType.MP3: waveStream = new Mp3FileReaderBase(stream, wf => new Mp3FrameDecompressor(wf)); break;
-                    case Sound.AudioFileType.AAC: waveStream = new StreamMediaFoundationReader(stream); break;
-                    default: throw new Exception($"Dont know how to play {soundData.SoundType}");
-                }
-
+                    Sound.AudioFileType.WAV => new WaveFileReader(stream),
+                    Sound.AudioFileType.MP3 => new Mp3FileReaderBase(stream, wf => new Mp3FrameDecompressor(wf)),
+                    Sound.AudioFileType.AAC => new StreamMediaFoundationReader(stream),
+                    _ => throw new UnexpectedMagicException("Dont know how to play", (int)soundData.SoundType, nameof(soundData.SoundType)),
+                };
                 var audio = new AudioPlaybackPanel(waveStream);
 
                 tab.Controls.Add(audio);
@@ -37,7 +35,7 @@ namespace GUI.Types.Audio
 
                 var msg = new Label
                 {
-                    Text = $"NAudio Exception: {e.Message}",
+                    Text = $"NAudio Exception: {e}",
                     Dock = DockStyle.Fill,
                 };
 

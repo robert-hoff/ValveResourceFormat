@@ -1,22 +1,24 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Numerics;
 using ValveResourceFormat.ResourceTypes.ModelAnimation;
 
 namespace GUI.Types.Renderer
 {
     public class AnimationController
     {
-        private Action<Animation, int> updateHandler;
+        private readonly AnimationFrameCache animationFrameCache;
+        private Action<Animation, int> updateHandler = (_, __) => { };
         private Animation activeAnimation;
+        private float Time;
+        private bool shouldUpdate;
 
-        public float Time { get; private set; }
+        public Animation ActiveAnimation => activeAnimation;
         public bool IsPaused { get; set; }
         public int Frame
         {
             get
             {
-                if (activeAnimation != null)
+                if (activeAnimation != null && activeAnimation.FrameCount != 0)
                 {
                     return (int)Math.Round(Time * activeAnimation.Fps) % activeAnimation.FrameCount;
                 }
@@ -26,25 +28,61 @@ namespace GUI.Types.Renderer
             {
                 if (activeAnimation != null)
                 {
-                    Time = value / activeAnimation.Fps;
+                    Time = activeAnimation.Fps != 0
+                        ? value / activeAnimation.Fps
+                        : 0f;
+                    shouldUpdate = true;
                 }
             }
         }
 
-        public void Update(float timeStep)
+        public AnimationController(Skeleton skeleton)
         {
-            if (!IsPaused)
+            animationFrameCache = new(skeleton);
+        }
+
+        public bool Update(float timeStep)
+        {
+            if (activeAnimation == null)
             {
-                Time += timeStep;
-                updateHandler(activeAnimation, Frame);
+                return false;
             }
+
+            if (IsPaused)
+            {
+                var res = shouldUpdate;
+                shouldUpdate = false;
+                return res;
+            }
+
+            Time += timeStep;
+            updateHandler(activeAnimation, Frame);
+            shouldUpdate = false;
+            return true;
         }
 
         public void SetAnimation(Animation animation)
         {
+            animationFrameCache.Clear();
             activeAnimation = animation;
             Time = 0f;
-            updateHandler(activeAnimation, Frame);
+            updateHandler(activeAnimation, -1);
+        }
+
+        public void PauseLastFrame()
+        {
+            IsPaused = true;
+            Frame = activeAnimation == null ? 0 : activeAnimation.FrameCount - 1;
+        }
+
+        public Matrix4x4[] GetAnimationMatrices(Skeleton skeleton)
+        {
+            if (IsPaused)
+            {
+                return activeAnimation.GetAnimationMatrices(animationFrameCache, Frame, skeleton);
+            }
+
+            return activeAnimation.GetAnimationMatrices(animationFrameCache, Time, skeleton);
         }
 
         public void RegisterUpdateHandler(Action<Animation, int> handler)

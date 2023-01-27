@@ -11,16 +11,20 @@ using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
+using WinFormsMouseEventArgs = System.Windows.Forms.MouseEventArgs;
+using static GUI.Types.Renderer.PickingTexture;
 
 namespace GUI.Controls
 {
     internal partial class GLViewerControl : UserControl
     {
-        public GLControl GLControl { get; }
+        private const long TicksPerSecond = 10_000_000;
+        private static readonly float TickFrequency = TicksPerSecond / Stopwatch.Frequency;
 
-        private readonly List<Label> labels = new List<Label>();
-        private readonly List<UserControl> selectionBoxes = new List<UserControl>();
-        private readonly List<Control> otherControls = new List<Control>();
+        public GLControl GLControl { get; }
+        public IGLViewer GLViewer { get; }
+
+        private int currentControlsHeight = 35;
 
         public class RenderEventArgs
         {
@@ -32,31 +36,38 @@ namespace GUI.Controls
 
         public event EventHandler<RenderEventArgs> GLPaint;
         public event EventHandler GLLoad;
-
-        private readonly Stopwatch stopwatch;
-
+        public Action<GLViewerControl> GLPostLoad { get; set; }
         private static bool hasCheckedOpenGL;
 
-        public GLViewerControl()
+        long lastFpsUpdate;
+        long lastUpdate;
+        int frames;
+
+        Vector2 initialMousePosition;
+
+        public GLViewerControl(IGLViewer glViewer)
         {
             InitializeComponent();
             Dock = DockStyle.Fill;
 
+            GLViewer = glViewer;
             Camera = new Camera();
 
-            stopwatch = new Stopwatch();
-
             // Initialize GL control
+            var flags = GraphicsContextFlags.ForwardCompatible;
+
 #if DEBUG
-            GLControl = new GLControl(new GraphicsMode(32, 24, 0, 8), 3, 3, GraphicsContextFlags.Debug);
-#else
-            GLControl = new GLControl(new GraphicsMode(32, 24, 0, 8), 3, 3, GraphicsContextFlags.Default);
+            flags |= GraphicsContextFlags.Debug;
 #endif
+
+            GLControl = new GLControl(new GraphicsMode(32, 24, 0, 8), 3, 3, flags);
             GLControl.Load += OnLoad;
             GLControl.Paint += OnPaint;
             GLControl.Resize += OnResize;
             GLControl.MouseEnter += OnMouseEnter;
             GLControl.MouseLeave += OnMouseLeave;
+            GLControl.MouseUp += OnMouseUp;
+            GLControl.MouseDown += OnMouseDown;
             GLControl.GotFocus += OnGotFocus;
             GLControl.VisibleChanged += OnVisibleChanged;
             GLControl.Disposed += OnDisposed;
@@ -65,31 +76,15 @@ namespace GUI.Controls
             glControlContainer.Controls.Add(GLControl);
         }
 
-        private void SetFps(double fps)
+        private void SetFps(int fps)
         {
-            fpsLabel.Text = $"FPS: {Math.Round(fps).ToString(CultureInfo.InvariantCulture)}";
-        }
-
-        public Label AddLabel(string text)
-        {
-            var label = new Label();
-            label.Text = text;
-            label.AutoSize = true;
-
-            controlsPanel.Controls.Add(label);
-
-            labels.Add(label);
-
-            RecalculatePositions();
-
-            return label;
+            fpsLabel.Text = fps.ToString(CultureInfo.InvariantCulture);
         }
 
         public void AddControl(Control control)
         {
             controlsPanel.Controls.Add(control);
-            otherControls.Add(control);
-            RecalculatePositions();
+            SetControlLocation(control);
         }
 
         public CheckBox AddCheckBox(string name, bool defaultChecked, Action<bool> changeCallback)
@@ -103,9 +98,8 @@ namespace GUI.Controls
             };
 
             controlsPanel.Controls.Add(checkbox);
-            otherControls.Add(checkbox);
 
-            RecalculatePositions();
+            SetControlLocation(checkbox);
 
             return checkbox.CheckBox;
         }
@@ -115,13 +109,10 @@ namespace GUI.Controls
             var selectionControl = new GLViewerSelectionControl(name);
 
             controlsPanel.Controls.Add(selectionControl);
-            selectionBoxes.Add(selectionControl);
 
-            selectionControl.PerformAutoScale();
+            SetControlLocation(selectionControl);
 
-            RecalculatePositions();
-
-            selectionControl.ComboBox.SelectionChangeCommitted += (_, __) =>
+            selectionControl.ComboBox.SelectedIndexChanged += (_, __) =>
             {
                 selectionControl.Refresh();
                 changeCallback(selectionControl.ComboBox.SelectedItem as string, selectionControl.ComboBox.SelectedIndex);
@@ -132,16 +123,18 @@ namespace GUI.Controls
             return selectionControl.ComboBox;
         }
 
-        public CheckedListBox AddMultiSelection(string name, Action<IEnumerable<string>> changeCallback)
+        public CheckedListBox AddMultiSelection(string name, Action<CheckedListBox> initializeCallback, Action<IEnumerable<string>> changeCallback)
         {
             var selectionControl = new GLViewerMultiSelectionControl(name);
 
+            if (initializeCallback != null)
+            {
+                initializeCallback(selectionControl.CheckedListBox);
+            }
+
             controlsPanel.Controls.Add(selectionControl);
-            selectionBoxes.Add(selectionControl);
 
-            selectionControl.PerformAutoScale();
-
-            RecalculatePositions();
+            SetControlLocation(selectionControl);
 
             selectionControl.CheckedListBox.ItemCheck += (_, __) =>
             {
@@ -158,50 +151,25 @@ namespace GUI.Controls
             return selectionControl.CheckedListBox;
         }
 
-        public GLViewerTrackBarControl AddTrackBar(string name, Action<int> changeCallback)
+        public GLViewerTrackBarControl AddTrackBar(Action<int> changeCallback)
         {
-            var trackBar = new GLViewerTrackBarControl(name);
-            trackBar.TrackBar.ValueChanged += (_, __) =>
+            var trackBar = new GLViewerTrackBarControl();
+            trackBar.TrackBar.Scroll += (_, __) =>
             {
-                if (trackBar.IgnoreValueChanged)
-                {
-                    return;
-                }
                 changeCallback(trackBar.TrackBar.Value);
-
-                GLControl.Focus();
             };
 
             controlsPanel.Controls.Add(trackBar);
-            otherControls.Add(trackBar);
 
-            RecalculatePositions();
+            SetControlLocation(trackBar);
 
             return trackBar;
         }
 
-        public void RecalculatePositions()
+        public void SetControlLocation(Control control)
         {
-            var y = 25;
-
-            foreach (var label in labels)
-            {
-                label.Location = new Point(0, y);
-                y += label.Height;
-            }
-
-            foreach (var selection in selectionBoxes)
-            {
-                selection.Location = new Point(0, y);
-                y += selection.Height;
-            }
-
-            foreach (var control in otherControls)
-            {
-                control.Location = new Point(0, y);
-                control.Width = glControlContainer.Location.X;
-                y += control.Height;
-            }
+            control.Location = new Point(0, currentControlsHeight);
+            currentControlsHeight += control.Height;
         }
 
         private void OnDisposed(object sender, EventArgs e)
@@ -211,6 +179,8 @@ namespace GUI.Controls
             GLControl.Resize -= OnResize;
             GLControl.MouseEnter -= OnMouseEnter;
             GLControl.MouseLeave -= OnMouseLeave;
+            GLControl.MouseUp -= OnMouseUp;
+            GLControl.MouseDown -= OnMouseDown;
             GLControl.GotFocus -= OnGotFocus;
             GLControl.VisibleChanged -= OnVisibleChanged;
             GLControl.Disposed -= OnDisposed;
@@ -235,17 +205,55 @@ namespace GUI.Controls
             Camera.MouseOverRenderArea = true;
         }
 
+        private void OnMouseDown(object sender, WinFormsMouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                initialMousePosition = new Vector2(e.X, e.Y);
+                if (e.Clicks == 2)
+                {
+                    Camera.Picker?.Request.NextFrame(e.X, e.Y, PickingIntent.Open);
+                }
+            }
+        }
+
+        private void OnMouseUp(object sender, WinFormsMouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Left || initialMousePosition != new Vector2(e.X, e.Y))
+            {
+                return;
+            }
+
+            Camera.Picker?.Request.NextFrame(e.X, e.Y, PickingIntent.Select);
+        }
+
         private void OnLoad(object sender, EventArgs e)
         {
             GLControl.MakeCurrent();
 
             CheckOpenGL();
 
-            stopwatch.Start();
+            try
+            {
+                GLLoad?.Invoke(this, e);
+            }
+            catch (Exception exception)
+            {
+                var control = new MonospaceTextBox
+                {
+                    Text = exception.ToString(),
+                    Dock = DockStyle.Fill
+                };
 
-            GLLoad?.Invoke(this, e);
+                glControlContainer.Controls.Clear();
+                glControlContainer.Controls.Add(control);
+
+                throw;
+            }
 
             HandleResize();
+            GLPostLoad?.Invoke(this);
+            GLPostLoad = null;
             Draw();
         }
 
@@ -261,9 +269,11 @@ namespace GUI.Controls
                 return;
             }
 
-            var elapsed = stopwatch.ElapsedMilliseconds;
+            var currentTime = Stopwatch.GetTimestamp();
+            var elapsed = currentTime - lastUpdate;
+            lastUpdate = currentTime;
 
-            if (elapsed < 1)
+            if (elapsed <= TickFrequency)
             {
                 GLControl.SwapBuffers();
                 GLControl.Invalidate();
@@ -271,13 +281,10 @@ namespace GUI.Controls
                 return;
             }
 
-            var frameTime = elapsed / 1000f;
-            stopwatch.Restart();
+            var frameTime = elapsed * TickFrequency / TicksPerSecond;
 
             Camera.Tick(frameTime);
             Camera.HandleInput(Mouse.GetState(), Keyboard.GetState());
-
-            SetFps(1f / frameTime);
 
             GL.ClearColor(Settings.BackgroundColor);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
@@ -286,6 +293,17 @@ namespace GUI.Controls
 
             GLControl.SwapBuffers();
             GLControl.Invalidate();
+
+            frames++;
+
+            var fpsElapsed = (currentTime - lastFpsUpdate) * TickFrequency;
+
+            if (fpsElapsed >= TicksPerSecond)
+            {
+                SetFps(frames);
+                lastFpsUpdate = currentTime;
+                frames = 0;
+            }
         }
 
         private void OnResize(object sender, EventArgs e)
@@ -297,7 +315,6 @@ namespace GUI.Controls
         private void HandleResize()
         {
             Camera.SetViewportSize(GLControl.Width, GLControl.Height);
-            RecalculatePositions();
         }
 
         private void OnGotFocus(object sender, EventArgs e)

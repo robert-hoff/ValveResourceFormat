@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -39,7 +38,7 @@ namespace ValveResourceFormat.ToolsAssetInfo
         /// <param name="input">The input <see cref="Stream"/> to read from.</param>
         public void Read(Stream input)
         {
-            var reader = new BinaryReader(input);
+            using var reader = new BinaryReader(input, Encoding.UTF8, true);
             var magic = reader.ReadUInt32();
 
             // TODO: Versioning

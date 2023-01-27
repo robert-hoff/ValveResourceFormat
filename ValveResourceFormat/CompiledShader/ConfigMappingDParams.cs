@@ -5,11 +5,8 @@ namespace ValveResourceFormat.CompiledShader
 {
     public class ConfigMappingDParams
     {
-        private ShaderFile shaderfile;
-
         public ConfigMappingDParams(ShaderFile shaderfile)
         {
-            this.shaderfile = shaderfile;
             GenerateOffsetAndStateLookups(shaderfile);
         }
 
@@ -18,32 +15,32 @@ namespace ValveResourceFormat.CompiledShader
 
         private void GenerateOffsetAndStateLookups(ShaderFile shaderFile)
         {
-            if (shaderFile.dBlocks.Count == 0)
+            if (shaderFile.DBlocks.Count == 0)
             {
                 offsets = Array.Empty<int>();
                 nr_states = Array.Empty<int>();
                 return;
             }
 
-            offsets = new int[shaderFile.dBlocks.Count];
-            nr_states = new int[shaderFile.dBlocks.Count];
+            offsets = new int[shaderFile.DBlocks.Count];
+            nr_states = new int[shaderFile.DBlocks.Count];
 
             offsets[0] = 1;
-            nr_states[0] = shaderFile.dBlocks[0].arg2 + 1;
+            nr_states[0] = shaderFile.DBlocks[0].Arg2 + 1;
 
-            for (int i = 1; i < shaderFile.dBlocks.Count; i++)
+            for (var i = 1; i < shaderFile.DBlocks.Count; i++)
             {
-                nr_states[i] = shaderFile.dBlocks[i].arg2 + 1;
+                nr_states[i] = shaderFile.DBlocks[i].Arg2 + 1;
                 offsets[i] = offsets[i - 1] * nr_states[i - 1];
             }
         }
 
         public int[] GetConfigState(long zframeId)
         {
-            int[] state = new int[nr_states.Length];
-            for (int i = 0; i < nr_states.Length; i++)
+            var state = new int[nr_states.Length];
+            for (var i = 0; i < nr_states.Length; i++)
             {
-                state[i] = (int)(zframeId / offsets[i]) % (nr_states[i]);
+                state[i] = (int)(zframeId / offsets[i]) % nr_states[i];
             }
             return state;
         }

@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using ValveResourceFormat.Serialization;
 
 namespace GUI.Types.ParticleRenderer
@@ -8,7 +9,7 @@ namespace GUI.Types.ParticleRenderer
         double NextNumber();
     }
 
-    public class LiteralNumberProvider : INumberProvider
+    public readonly struct LiteralNumberProvider : INumberProvider
     {
         private readonly double value;
 
@@ -18,6 +19,20 @@ namespace GUI.Types.ParticleRenderer
         }
 
         public double NextNumber() => value;
+    }
+
+    public readonly struct RandomNumberProvider : INumberProvider
+    {
+        private readonly double min;
+        private readonly double max;
+
+        public RandomNumberProvider(double min, double max)
+        {
+            this.min = min;
+            this.max = max;
+        }
+
+        public double NextNumber() => min + (Random.Shared.NextDouble() * (max - min));
     }
 
     public static class INumberProviderExtensions
@@ -33,6 +48,18 @@ namespace GUI.Types.ParticleRenderer
                 {
                     case "PF_TYPE_LITERAL":
                         return new LiteralNumberProvider(numberProviderParameters.GetDoubleProperty("m_flLiteralValue"));
+
+                    case "PF_TYPE_RANDOM_UNIFORM":
+                        if (numberProviderParameters.GetStringProperty("m_nRandomMode") != "PF_RANDOM_MODE_CONSTANT")
+                        {
+                            Console.Error.WriteLine($"Unsupported random number provider with random mode {numberProviderParameters.GetStringProperty("m_nRandomMode")}");
+                        }
+
+                        return new RandomNumberProvider(
+                            numberProviderParameters.GetDoubleProperty("m_flRandomMin"),
+                            numberProviderParameters.GetDoubleProperty("m_flRandomMax")
+                        );
+
                     default:
                         if (numberProviderParameters.ContainsKey("m_flLiteralValue"))
                         {
@@ -45,7 +72,7 @@ namespace GUI.Types.ParticleRenderer
             }
             else
             {
-                return new LiteralNumberProvider(Convert.ToDouble(property));
+                return new LiteralNumberProvider(Convert.ToDouble(property, CultureInfo.InvariantCulture));
             }
         }
 

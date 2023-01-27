@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using GUI.Controls;
 using GUI.Utils;
@@ -16,11 +18,11 @@ namespace GUI.Types.Renderer
         private readonly Model model;
         private readonly Mesh mesh;
         private PhysAggregateData phys;
-        private ComboBox animationComboBox;
+        public ComboBox animationComboBox { get; private set; }
         private CheckBox animationPlayPause;
         private GLViewerTrackBarControl animationTrackBar;
-        private CheckedListBox meshGroupListBox;
-        private ComboBox materialGroupListBox;
+        public CheckedListBox meshGroupListBox { get; private set; }
+        public ComboBox materialGroupListBox { get; private set; }
         private ModelSceneNode modelSceneNode;
         private MeshSceneNode meshSceneNode;
         private PhysSceneNode physSceneNode;
@@ -58,7 +60,7 @@ namespace GUI.Types.Renderer
                     modelSceneNode.AnimationController.IsPaused = !isChecked;
                 }
             });
-            animationTrackBar = ViewerControl.AddTrackBar("Animation Frame", frame =>
+            animationTrackBar = ViewerControl.AddTrackBar(frame =>
             {
                 if (modelSceneNode != null)
                 {
@@ -67,6 +69,17 @@ namespace GUI.Types.Renderer
             });
             animationPlayPause.Enabled = false;
             animationTrackBar.Enabled = false;
+
+            var previousPaused = false;
+            animationTrackBar.TrackBar.MouseDown += (_, __) =>
+            {
+                previousPaused = modelSceneNode.AnimationController.IsPaused;
+                modelSceneNode.AnimationController.IsPaused = true;
+            };
+            animationTrackBar.TrackBar.MouseUp += (_, __) =>
+            {
+                modelSceneNode.AnimationController.IsPaused = previousPaused;
+            };
         }
 
         protected override void LoadScene()
@@ -75,7 +88,7 @@ namespace GUI.Types.Renderer
             {
                 modelSceneNode = new ModelSceneNode(Scene, model);
                 SetAvailableAnimations(modelSceneNode.GetSupportedAnimationNames());
-                Scene.Add(modelSceneNode, false);
+                Scene.Add(modelSceneNode, true);
 
                 phys = model.GetEmbeddedPhys();
                 if (phys == null)
@@ -102,16 +115,17 @@ namespace GUI.Types.Renderer
 
                 if (meshGroups.Count() > 1)
                 {
-                    meshGroupListBox = ViewerControl.AddMultiSelection("Mesh Group", selectedGroups =>
+                    meshGroupListBox = ViewerControl.AddMultiSelection("Mesh Group", listBox =>
+                    {
+                        listBox.Items.AddRange(modelSceneNode.GetMeshGroups().ToArray<object>());
+                        foreach (var group in modelSceneNode.GetActiveMeshGroups())
+                        {
+                            listBox.SetItemChecked(listBox.FindStringExact(group), true);
+                        }
+                    }, selectedGroups =>
                     {
                         modelSceneNode.SetActiveMeshGroups(selectedGroups);
                     });
-
-                    meshGroupListBox.Items.AddRange(modelSceneNode.GetMeshGroups().ToArray<object>());
-                    foreach (var group in modelSceneNode.GetActiveMeshGroups())
-                    {
-                        meshGroupListBox.SetItemChecked(meshGroupListBox.FindStringExact(group), true);
-                    }
                 }
 
                 var materialGroups = model.GetMaterialGroups();
@@ -129,27 +143,38 @@ namespace GUI.Types.Renderer
 
                 modelSceneNode.AnimationController.RegisterUpdateHandler((animation, frame) =>
                 {
-                    if (animationTrackBar.TrackBar.Value != frame)
+                    if (frame == -1)
                     {
-                        animationTrackBar.UpdateValueSilently(frame);
+                        var maximum = animation == null ? 1 : animation.FrameCount - 1;
+                        if (maximum < 0)
+                        {
+                            maximum = 0;
+                        }
+                        if (animationTrackBar.TrackBar.Maximum != maximum)
+                        {
+                            animationTrackBar.TrackBar.Maximum = maximum;
+                            animationTrackBar.TrackBar.TickFrequency = maximum / 10;
+                        }
+                        animationTrackBar.Enabled = animation != null;
+                        animationPlayPause.Enabled = animation != null;
+
+                        frame = 0;
                     }
-                    var maximum = animation == null ? 1 : animation.FrameCount - 1;
-                    if (animationTrackBar.TrackBar.Maximum != maximum)
+                    else if (animationTrackBar.TrackBar.Value != frame)
                     {
-                        animationTrackBar.TrackBar.Maximum = maximum;
+                        animationTrackBar.TrackBar.Value = frame;
                     }
-                    animationTrackBar.Enabled = animation != null;
-                    animationPlayPause.Enabled = animation != null;
                 });
             }
             else
             {
                 SetAvailableAnimations(Enumerable.Empty<string>());
+                ViewerControl.Camera.Picker.OnPicked -= OnPickerDoubleClick;
             }
 
             if (mesh != null)
             {
-                meshSceneNode = new MeshSceneNode(Scene, mesh);
+                meshSceneNode = new MeshSceneNode(Scene, mesh, 0);
                 Scene.Add(meshSceneNode, false);
             }
 
@@ -159,10 +184,58 @@ namespace GUI.Types.Renderer
                 Scene.Add(physSceneNode, false);
 
                 //disabled by default. Enable if viewing only phys or model without meshes
-                physSceneNode.Enabled = (modelSceneNode == null || !modelSceneNode.RenderableMeshes.Any());
+                physSceneNode.Enabled = modelSceneNode == null || !modelSceneNode.RenderableMeshes.Any();
 
                 ViewerControl.AddCheckBox("Show Physics", physSceneNode.Enabled, (v) => { physSceneNode.Enabled = v; });
             }
+        }
+
+        protected override void OnPickerDoubleClick(object sender, PickingTexture.PickingResponse pickingResponse)
+        {
+            if (modelSceneNode == null)
+            {
+                return;
+            }
+
+            // Void
+            if (pickingResponse.PixelInfo.ObjectId == 0)
+            {
+                return;
+            }
+
+            if (pickingResponse.Intent == PickingTexture.PickingIntent.Select)
+            {
+                Console.WriteLine("Selected mesh with index " + pickingResponse.PixelInfo.MeshId);
+                return;
+            }
+
+            if (pickingResponse.Intent == PickingTexture.PickingIntent.Open)
+            {
+                var refMesh = modelSceneNode.GetLod1RefMeshes().FirstOrDefault(x => x.MeshIndex == pickingResponse.PixelInfo.MeshId);
+                if (refMesh.MeshName != null)
+                {
+                    var foundFile = GuiContext.FileLoader.FindFileWithContext(refMesh.MeshName + "_c");
+                    if (foundFile.Context != null)
+                    {
+                        var task = Program.MainForm.OpenFile(foundFile.Context, foundFile.PackageEntry);
+                        task.ContinueWith(
+                            t =>
+                            {
+                                var glViewer = t.Result.Controls.OfType<TabControl>().FirstOrDefault()?
+                                    .Controls.OfType<TabPage>().First(tab => tab.Controls.OfType<GLViewerControl>() is not null)?
+                                    .Controls.OfType<GLViewerControl>().First();
+                                if (glViewer is not null)
+                                {
+                                    glViewer.GLPostLoad = (viewerControl) => viewerControl.Camera.CopyFrom(Scene.MainCamera);
+                                }
+                            },
+                        CancellationToken.None,
+                        TaskContinuationOptions.OnlyOnRanToCompletion,
+                        TaskScheduler.Default);
+                    }
+                }
+            }
+
         }
 
         private void SetAvailableAnimations(IEnumerable<string> animations)

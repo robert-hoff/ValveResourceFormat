@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
 using GUI.Controls;
@@ -14,7 +15,7 @@ namespace GUI.Types.Renderer
     /// Renders a list of ParticleRenderers.
     /// </summary>
 #pragma warning disable CA1001 // Types that own disposable fields should be disposable
-    internal class GLParticleViewer
+    internal class GLParticleViewer : IGLViewer
 #pragma warning restore CA1001 // Types that own disposable fields should be disposable
     {
         private ICollection<ParticleRenderer.ParticleRenderer> Renderers { get; } = new HashSet<ParticleRenderer.ParticleRenderer>();
@@ -23,6 +24,7 @@ namespace GUI.Types.Renderer
 
         public Control Control => viewerControl;
 
+        private ComboBox renderModeComboBox;
         private readonly GLViewerControl viewerControl;
         private readonly VrfGuiContext vrfGuiContext;
 
@@ -32,7 +34,9 @@ namespace GUI.Types.Renderer
         {
             vrfGuiContext = guiContext;
 
-            viewerControl = new GLViewerControl();
+            viewerControl = new GLViewerControl(this);
+
+            renderModeComboBox = viewerControl.AddSelection("Render Mode", (renderMode, _) => SetRenderMode(renderMode));
 
             viewerControl.GLLoad += OnLoad;
         }
@@ -46,6 +50,11 @@ namespace GUI.Types.Renderer
             viewerControl.Camera.LookAt(new Vector3(0));
 
             Load?.Invoke(this, e);
+
+            var supportedRenderModes = Renderers
+                    .SelectMany(r => r.GetSupportedRenderModes())
+                    .Distinct();
+            SetAvailableRenderModes(supportedRenderModes);
 
             viewerControl.GLPaint += OnPaint;
         }
@@ -65,6 +74,23 @@ namespace GUI.Types.Renderer
         public void AddRenderer(ParticleRenderer.ParticleRenderer renderer)
         {
             Renderers.Add(renderer);
+        }
+
+        private void SetAvailableRenderModes(IEnumerable<string> renderModes)
+        {
+            renderModeComboBox.Items.Clear();
+            renderModeComboBox.Enabled = true;
+            renderModeComboBox.Items.Add("Default Render Mode");
+            renderModeComboBox.Items.AddRange(renderModes.ToArray());
+            renderModeComboBox.SelectedIndex = 0;
+        }
+
+        private void SetRenderMode(string renderMode)
+        {
+            foreach (var renderer in Renderers)
+            {
+                renderer.SetRenderMode(renderMode);
+            }
         }
     }
 }

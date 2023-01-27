@@ -1,6 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using GUI.Utils;
 
 namespace GUI.Types.Renderer
@@ -19,25 +19,25 @@ namespace GUI.Types.Renderer
 
         public class RenderContext
         {
-            public Camera Camera { get; }
-            public RenderPass RenderPass { get; }
-
-            public RenderContext(Camera camera, RenderPass renderPass)
-            {
-                Camera = camera;
-                RenderPass = renderPass;
-            }
+            public Camera Camera { get; init; }
+            public Vector3? LightPosition { get; init; }
+            public RenderPass RenderPass { get; set; }
+            public Shader ReplacementShader { get; set; }
+            public bool RenderToolsMaterials { get; init; }
         }
 
         public Camera MainCamera { get; set; }
+        public Vector3? LightPosition { get; set; }
         public VrfGuiContext GuiContext { get; }
         public Octree<SceneNode> StaticOctree { get; }
         public Octree<SceneNode> DynamicOctree { get; }
 
+        public bool ShowToolsMaterials { get; set; } = true;
+
         public IEnumerable<SceneNode> AllNodes => staticNodes.Concat(dynamicNodes);
 
-        private readonly List<SceneNode> staticNodes = new List<SceneNode>();
-        private readonly List<SceneNode> dynamicNodes = new List<SceneNode>();
+        private readonly List<SceneNode> staticNodes = new();
+        private readonly List<SceneNode> dynamicNodes = new();
 
         public Scene(VrfGuiContext context, float sizeHint = 32768)
         {
@@ -52,11 +52,44 @@ namespace GUI.Types.Renderer
             {
                 dynamicNodes.Add(node);
                 DynamicOctree.Insert(node, node.BoundingBox);
+                node.Id = (uint)dynamicNodes.Count * 2 - 1;
             }
             else
             {
                 staticNodes.Add(node);
                 StaticOctree.Insert(node, node.BoundingBox);
+                node.Id = (uint)staticNodes.Count * 2;
+            }
+        }
+
+        public SceneNode Find(uint id)
+        {
+            if (id == 0)
+            {
+                return null;
+            }
+
+            if (id % 2 == 1)
+            {
+                var index = ((int)id + 1) / 2 - 1;
+
+                if (index >= dynamicNodes.Count)
+                {
+                    return null;
+                }
+
+                return dynamicNodes[index];
+            }
+            else
+            {
+                var index = (int)id / 2 - 1;
+
+                if (index >= staticNodes.Count)
+                {
+                    return null;
+                }
+
+                return staticNodes[index];
             }
         }
 
@@ -99,6 +132,8 @@ namespace GUI.Types.Renderer
                                 Mesh = mesh,
                                 Call = call,
                                 DistanceFromCamera = (node.BoundingBox.Center - camera.Location).LengthSquared(),
+                                NodeId = node.Id,
+                                MeshId = (uint)mesh.MeshIndex,
                             });
                         }
 
@@ -110,6 +145,8 @@ namespace GUI.Types.Renderer
                                 Mesh = mesh,
                                 Call = call,
                                 DistanceFromCamera = (node.BoundingBox.Center - camera.Location).LengthSquared(),
+                                NodeId = node.Id,
+                                MeshId = (uint)mesh.MeshIndex,
                             });
                         }
                     }
@@ -129,21 +166,46 @@ namespace GUI.Types.Renderer
             });
 
             // Opaque render pass
-            var opaqueRenderContext = new RenderContext(camera, RenderPass.Opaque);
+            var renderContext = new RenderContext
+            {
+                Camera = camera,
+                LightPosition = LightPosition,
+                RenderPass = RenderPass.Opaque,
+                RenderToolsMaterials = ShowToolsMaterials,
+            };
 
-            MeshBatchRenderer.Render(opaqueDrawCalls, opaqueRenderContext);
+            if (camera.Picker is not null)
+            {
+                if (camera.Picker.IsActive)
+                {
+                    camera.Picker.Render();
+                    renderContext.ReplacementShader = camera.Picker.shader;
+                }
+                else if (camera.Picker.Debug)
+                {
+                    renderContext.ReplacementShader = camera.Picker.debugShader;
+                }
+            }
+
+            MeshBatchRenderer.Render(opaqueDrawCalls, renderContext);
             foreach (var node in looseNodes)
             {
-                node.Render(opaqueRenderContext);
+                node.Render(renderContext);
             }
 
             // Translucent render pass, back to front for loose nodes
-            var translucentRenderContext = new RenderContext(camera, RenderPass.Translucent);
+            renderContext.RenderPass = RenderPass.Translucent;
 
-            MeshBatchRenderer.Render(translucentDrawCalls, translucentRenderContext);
+            MeshBatchRenderer.Render(translucentDrawCalls, renderContext);
             foreach (var node in Enumerable.Reverse(looseNodes))
             {
-                node.Render(translucentRenderContext);
+                node.Render(renderContext);
+            }
+
+            if (camera.Picker is not null && camera.Picker.IsActive)
+            {
+                camera.Picker.Finish();
+                RenderWithCamera(camera, cullFrustum);
             }
         }
 

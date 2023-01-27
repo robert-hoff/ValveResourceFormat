@@ -252,10 +252,7 @@ namespace ValveResourceFormat
                     Reader.BaseStream.Position = position;
                 }
 
-                if (block == null)
-                {
-                    block = ConstructFromType(blockType);
-                }
+                block ??= ConstructFromType(blockType);
 
                 block.Offset = offset;
                 block.Size = size;
@@ -325,7 +322,9 @@ namespace ValveResourceFormat
                 }
             }
 
-            if (verifyFileSize && Reader.BaseStream.Length != FullFileSize)
+            var fullFileSize = FullFileSize;
+
+            if (verifyFileSize && Reader.BaseStream.Length != fullFileSize)
             {
                 if (ResourceType == ResourceType.Texture)
                 {
@@ -337,9 +336,19 @@ namespace ValveResourceFormat
                     {
                         return;
                     }
+
+                    // TODO: Valve added null bytes after the png for whatever reason,
+                    // so assume we have the full file if the buffer is bigger than the size we calculated
+                    if (data.Format == VTexFormat.PNG_DXT5 || data.Format == VTexFormat.PNG_RGBA8888)
+                    {
+                        if (Reader.BaseStream.Length > fullFileSize)
+                        {
+                            return;
+                        }
+                    }
                 }
 
-                throw new InvalidDataException($"File size ({Reader.BaseStream.Length}) does not match size specified in file ({FullFileSize}) ({ResourceType}).");
+                throw new InvalidDataException($"File size ({Reader.BaseStream.Length}) does not match size specified in file ({fullFileSize}) ({ResourceType}).");
             }
         }
 
@@ -372,11 +381,11 @@ namespace ValveResourceFormat
                 nameof(BlockType.SNAP) => new SNAP(),
                 nameof(BlockType.MBUF) => new MBUF(),
                 nameof(BlockType.CTRL) => new BinaryKV3(BlockType.CTRL),
-                nameof(BlockType.MDAT) => new BinaryKV3(BlockType.MDAT),
+                nameof(BlockType.MDAT) => new Mesh(BlockType.MDAT),
                 nameof(BlockType.INSG) => new BinaryKV3(BlockType.INSG),
                 nameof(BlockType.SrMa) => new BinaryKV3(BlockType.SrMa), // SourceMap
                 nameof(BlockType.LaCo) => new BinaryKV3(BlockType.LaCo), // vxml ast
-                nameof(BlockType.MRPH) => new KeyValuesOrNTRO(BlockType.MRPH, "MorphSetData_t"),
+                nameof(BlockType.MRPH) => new Morph(BlockType.MRPH),
                 nameof(BlockType.ANIM) => new KeyValuesOrNTRO(BlockType.ANIM, "AnimationResourceData_t"),
                 nameof(BlockType.ASEQ) => new KeyValuesOrNTRO(BlockType.ASEQ, "SequenceGroupResourceData_t"),
                 nameof(BlockType.AGRP) => new KeyValuesOrNTRO(BlockType.AGRP, "AnimationGroupResourceData_t"),
@@ -391,6 +400,7 @@ namespace ValveResourceFormat
             {
                 case ResourceType.Panorama:
                 case ResourceType.PanoramaScript:
+                case ResourceType.PanoramaTypescript:
                 case ResourceType.PanoramaDynamicImages:
                 case ResourceType.PanoramaVectorGraphic:
                     return new Panorama();
@@ -409,6 +419,9 @@ namespace ValveResourceFormat
 
                 case ResourceType.Model:
                     return new Model();
+
+                case ResourceType.Morph:
+                    return new Morph(BlockType.DATA);
 
                 case ResourceType.World:
                     return new World();
@@ -431,10 +444,13 @@ namespace ValveResourceFormat
                 case ResourceType.Particle:
                     return new ParticleSystem();
 
+                case ResourceType.PostProcessing:
+                    return new PostProcessing();
+
                 case ResourceType.ResourceManifest:
                     return new ResourceManifest();
 
-                case ResourceType.SboxData:
+                case ResourceType.SboxManagedResource:
                 case ResourceType.ArtifactItem:
                     return new Plaintext();
 
@@ -442,12 +458,7 @@ namespace ValveResourceFormat
                     return new PhysAggregateData();
 
                 case ResourceType.Mesh:
-                    if (Version == 0)
-                    {
-                        break;
-                    }
-
-                    return new BinaryKV3();
+                    return new Mesh(BlockType.DATA);
             }
 
             if (ContainsBlockType(BlockType.NTRO))
@@ -491,12 +502,15 @@ namespace ValveResourceFormat
         private static bool IsHandledResourceType(ResourceType type)
         {
             return type == ResourceType.Model
+                   || type == ResourceType.Mesh
                    || type == ResourceType.World
                    || type == ResourceType.WorldNode
                    || type == ResourceType.Particle
                    || type == ResourceType.Material
                    || type == ResourceType.EntityLump
-                   || type == ResourceType.PhysicsCollisionMesh;
+                   || type == ResourceType.PhysicsCollisionMesh
+                   || type == ResourceType.Morph
+                   || type == ResourceType.PostProcessing;
         }
 
         private static ResourceType DetermineResourceTypeByCompilerIdentifier(SpecialDependencies.SpecialDependency input)
@@ -526,19 +540,14 @@ namespace ValveResourceFormat
                 case "ChoreoSceneFileData":
                     return ResourceType.ChoreoSceneFileData;
                 case "Panorama":
-                    switch (input.String)
+                    return input.String switch
                     {
-                        case "Panorama Style Compiler Version":
-                            return ResourceType.PanoramaStyle;
-                        case "Panorama Script Compiler Version":
-                            return ResourceType.PanoramaScript;
-                        case "Panorama Layout Compiler Version":
-                            return ResourceType.PanoramaLayout;
-                        case "Panorama Dynamic Images Compiler Version":
-                            return ResourceType.PanoramaDynamicImages;
-                    }
-
-                    return ResourceType.Panorama;
+                        "Panorama Style Compiler Version" => ResourceType.PanoramaStyle,
+                        "Panorama Script Compiler Version" => ResourceType.PanoramaScript,
+                        "Panorama Layout Compiler Version" => ResourceType.PanoramaLayout,
+                        "Panorama Dynamic Images Compiler Version" => ResourceType.PanoramaDynamicImages,
+                        _ => ResourceType.Panorama,
+                    };
                 case "VectorGraphic":
                     return ResourceType.PanoramaVectorGraphic;
                 case "VData":
@@ -546,7 +555,8 @@ namespace ValveResourceFormat
                 case "DotaItem":
                     return ResourceType.ArtifactItem;
                 case "SBData":
-                    return ResourceType.SboxData;
+                case "ManagedResourceCompiler": // This is without the "Compile" prefix
+                    return ResourceType.SboxManagedResource;
             }
 
             if (Enum.TryParse(identifier, false, out ResourceType resourceType))

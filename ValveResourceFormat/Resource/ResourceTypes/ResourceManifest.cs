@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -39,7 +38,7 @@ namespace ValveResourceFormat.ResourceTypes
             {
                 throw new UnexpectedMagicException("Unknown version", version, nameof(version));
             }
-            
+
             Resources = new List<List<string>>();
 
             var blockCount = reader.ReadInt32();

@@ -1,11 +1,11 @@
-using System;
+using System.Collections.Generic;
 using ValveResourceFormat.ResourceTypes;
 
 namespace GUI.Types.Renderer
 {
     internal class ParticleSceneNode : SceneNode
     {
-        private ParticleRenderer.ParticleRenderer particleRenderer;
+        private readonly ParticleRenderer.ParticleRenderer particleRenderer;
 
         public ParticleSceneNode(Scene scene, ParticleSystem particleSystem)
             : base(scene)
@@ -26,5 +26,7 @@ namespace GUI.Types.Renderer
         {
             particleRenderer.Render(context.Camera, context.RenderPass);
         }
+
+        public override IEnumerable<string> GetSupportedRenderModes() => particleRenderer.GetSupportedRenderModes();
     }
 }

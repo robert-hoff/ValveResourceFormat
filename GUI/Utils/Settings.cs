@@ -84,21 +84,19 @@ namespace GUI.Utils
         {
             Config.BackgroundColor = ColorTranslator.ToHtml(BackgroundColor);
 
-            using (var stream = new FileStream(SettingsFilePath, FileMode.Create, FileAccess.Write, FileShare.None))
-            {
-                KVSerializer.Create(KVSerializationFormat.KeyValues1Text).Serialize(stream, Config, nameof(ValveResourceFormat));
-            }
+            using var stream = new FileStream(SettingsFilePath, FileMode.Create, FileAccess.Write, FileShare.None);
+            KVSerializer.Create(KVSerializationFormat.KeyValues1Text).Serialize(stream, Config, nameof(ValveResourceFormat));
         }
 
         private static string GetSteamPath()
         {
             try
             {
-                var key = Registry.CurrentUser.OpenSubKey("SOFTWARE\\Valve\\Steam") ??
-                          RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64)
-                              .OpenSubKey("SOFTWARE\\Valve\\Steam");
+                using var key =
+                    Registry.CurrentUser.OpenSubKey("SOFTWARE\\Valve\\Steam") ??
+                    Registry.LocalMachine.OpenSubKey("SOFTWARE\\Valve\\Steam");
 
-                if (key != null && key.GetValue("SteamPath") is string steamPath)
+                if (key?.GetValue("SteamPath") is string steamPath)
                 {
                     return Path.GetFullPath(Path.Combine(steamPath, "steamapps", "common"));
                 }

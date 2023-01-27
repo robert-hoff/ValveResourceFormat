@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using GUI.Forms;
@@ -154,9 +153,8 @@ namespace GUI.Controls
         /// </summary>
         /// <param name="currentNode">Root node.</param>
         /// <param name="file">File entry.</param>
-        /// <param name="vpkFileName">Name of the current vpk file.</param>
         /// <param name="skipDeletedRootFolder">If true, ignore root folder for recovered deleted files.</param>
-        public void AddFileNode(TreeNode currentNode, PackageEntry file, string vpkFileName, bool skipDeletedRootFolder = false)
+        public void AddFileNode(TreeNode currentNode, PackageEntry file, bool skipDeletedRootFolder = false)
         {
             if (!string.IsNullOrWhiteSpace(file.DirectoryName))
             {
@@ -169,8 +167,25 @@ namespace GUI.Controls
                         continue;
                     }
 
-                    currentNode = currentNode.Nodes[subPath] ?? currentNode.Nodes.Add(subPath, subPath, "_folder", "_folder");
-                    currentNode.Tag = new TreeViewFolder(currentNode.Nodes.Count + 1);
+                    var subNode = currentNode.Nodes[subPath];
+
+                    if (subNode == null)
+                    {
+                        var toAdd = new TreeNode(subPath)
+                        {
+                            Name = subPath,
+                            ImageKey = "_folder",
+                            SelectedImageKey = "_folder",
+                            Tag = VrfTreeViewData.MakeFolder(1)
+                        };
+                        currentNode.Nodes.Add(toAdd);
+                        currentNode = toAdd;
+                    }
+                    else
+                    {
+                        currentNode = subNode;
+                        ((VrfTreeViewData)subNode.Tag).ItemCount++;
+                    }
                 }
             }
 
@@ -181,25 +196,16 @@ namespace GUI.Controls
                 ext = "_default";
             }
 
-            currentNode = currentNode.Nodes.Add(fileName, fileName, ext, ext);
-            currentNode.Tag = file; //so we can use it later
-
-            var tooltip = new StringBuilder();
-            tooltip.AppendLine($"Path: {file.GetFullPath()}");
-            tooltip.AppendLine($"Offset: {file.Offset}");
-            tooltip.AppendLine($"Size: {file.TotalLength}");
-
-            if (file.SmallData.Length > 0)
+            var newNode = new TreeNode(fileName)
             {
-                tooltip.AppendLine($"Small data length: {file.SmallData.Length}");
-            }
+                Name = fileName,
+                ImageKey = ext,
+                SelectedImageKey = ext,
+                Tag = VrfTreeViewData.MakeFile(file) //so we can use it later
+            };
 
-            if (file.ArchiveIndex != 0x7FFF)
-            {
-                tooltip.AppendLine($"Archive: {vpkFileName}_{file.ArchiveIndex:000}.vpk");
-            }
-
-            currentNode.ToolTipText = tooltip.ToString();
+            currentNode.Nodes.Add(newNode);
+            currentNode = newNode;
         }
     }
 }

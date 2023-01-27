@@ -11,7 +11,10 @@ namespace GUI.Types.ParticleRenderer.Renderers
 {
     internal class RenderTrails : IParticleRenderer
     {
-        private readonly Shader shader;
+        private const string ShaderName = "vrf.particle.trail";
+
+        private Shader shader;
+        private readonly VrfGuiContext guiContext;
         private readonly int quadVao;
         private readonly int glTexture;
 
@@ -19,7 +22,7 @@ namespace GUI.Types.ParticleRenderer.Renderers
         private readonly float animationRate = 0.1f;
 
         private readonly bool additive;
-        private readonly float overbrightFactor = 1;
+        private readonly INumberProvider overbrightFactor = new LiteralNumberProvider(1);
         private readonly long orientationType;
 
         private readonly float finalTextureScaleU = 1f;
@@ -30,14 +33,32 @@ namespace GUI.Types.ParticleRenderer.Renderers
 
         public RenderTrails(IKeyValueCollection keyValues, VrfGuiContext vrfGuiContext)
         {
-            shader = vrfGuiContext.ShaderLoader.LoadShader("vrf.particle.trail", new Dictionary<string, bool>());
+            guiContext = vrfGuiContext;
+            shader = vrfGuiContext.ShaderLoader.LoadShader(ShaderName, new Dictionary<string, bool>());
 
             // The same quad is reused for all particles
             quadVao = SetupQuadBuffer();
 
+            string textureName = null;
+
             if (keyValues.ContainsKey("m_hTexture"))
             {
-                var textureSetup = LoadTexture(keyValues.GetProperty<string>("m_hTexture"), vrfGuiContext);
+                textureName = keyValues.GetProperty<string>("m_hTexture");
+            }
+            else if (keyValues.ContainsKey("m_vecTexturesInput"))
+            {
+                var textures = keyValues.GetArray("m_vecTexturesInput");
+
+                if (textures.Length > 0)
+                {
+                    // TODO: Support more than one texture
+                    textureName = textures[0].GetProperty<string>("m_hTexture");
+                }
+            }
+
+            if (textureName != null)
+            {
+                var textureSetup = LoadTexture(textureName, vrfGuiContext);
                 glTexture = textureSetup.TextureIndex;
                 spriteSheetData = textureSetup.TextureData?.GetSpriteSheetData();
             }
@@ -49,7 +70,7 @@ namespace GUI.Types.ParticleRenderer.Renderers
             additive = keyValues.GetProperty<bool>("m_bAdditive");
             if (keyValues.ContainsKey("m_flOverbrightFactor"))
             {
-                overbrightFactor = keyValues.GetFloatProperty("m_flOverbrightFactor");
+                overbrightFactor = keyValues.GetNumberProvider("m_flOverbrightFactor");
             }
 
             if (keyValues.ContainsKey("m_nOrientationType"))
@@ -154,7 +175,7 @@ namespace GUI.Types.ParticleRenderer.Renderers
             GL.UniformMatrix4(shader.GetUniformLocation("uProjectionViewMatrix"), false, ref otkProjection);
 
             // TODO: This formula is a guess but still seems too bright compared to valve particles
-            GL.Uniform1(shader.GetUniformLocation("uOverbrightFactor"), overbrightFactor);
+            GL.Uniform1(shader.GetUniformLocation("uOverbrightFactor"), overbrightFactor.NextNumber());
 
             var modelMatrixLocation = shader.GetUniformLocation("uModelMatrix");
             var colorLocation = shader.GetUniformLocation("uColor");
@@ -163,11 +184,11 @@ namespace GUI.Types.ParticleRenderer.Renderers
             var uvScaleLocation = shader.GetUniformLocation("uUvScale");
 
             // Create billboarding rotation (always facing camera)
-            Matrix4x4.Decompose(modelViewMatrix, out _, out Quaternion modelViewRotation, out _);
+            Matrix4x4.Decompose(modelViewMatrix, out _, out var modelViewRotation, out _);
             modelViewRotation = Quaternion.Inverse(modelViewRotation);
             var billboardMatrix = Matrix4x4.CreateFromQuaternion(modelViewRotation);
 
-            for (int i = 0; i < particles.Length; ++i)
+            for (var i = 0; i < particles.Length; ++i)
             {
                 var position = new Vector3(particles[i].Position.X, particles[i].Position.Y, particles[i].Position.Z);
                 var previousPosition = new Vector3(particles[i].PositionPrevious.X, particles[i].PositionPrevious.Y, particles[i].PositionPrevious.Z);
@@ -210,12 +231,13 @@ namespace GUI.Types.ParticleRenderer.Renderers
                     var frame = particleTime * sequence.FramesPerSecond * animationRate;
 
                     var currentFrame = sequence.Frames[(int)Math.Floor(frame) % sequence.Frames.Length];
+                    var currentImage = currentFrame.Images[0]; // TODO: Support more than one image per frame?
 
                     // Lerp frame coords and size
                     var subFrameTime = frame % 1.0f;
-                    var offset = (currentFrame.StartMins * (1 - subFrameTime)) + (currentFrame.EndMins * subFrameTime);
-                    var scale = ((currentFrame.StartMaxs - currentFrame.StartMins) * (1 - subFrameTime))
-                            + ((currentFrame.EndMaxs - currentFrame.EndMins) * subFrameTime);
+                    var offset = (currentImage.CroppedMin * (1 - subFrameTime)) + (currentImage.UncroppedMin * subFrameTime);
+                    var scale = ((currentImage.CroppedMax - currentImage.CroppedMin) * (1 - subFrameTime))
+                            + ((currentImage.UncroppedMax - currentImage.UncroppedMin) * subFrameTime);
 
                     GL.Uniform2(uvOffsetLocation, offset.X, offset.Y);
                     GL.Uniform2(uvScaleLocation, scale.X * finalTextureScaleU, scale.Y * finalTextureScaleV);
@@ -243,6 +265,20 @@ namespace GUI.Types.ParticleRenderer.Renderers
             }
 
             GL.Disable(EnableCap.Blend);
+        }
+
+        public IEnumerable<string> GetSupportedRenderModes() => shader.RenderModes;
+
+        public void SetRenderMode(string renderMode)
+        {
+            var parameters = new Dictionary<string, bool>();
+
+            if (renderMode != null && shader.RenderModes.Contains(renderMode))
+            {
+                parameters.Add($"renderMode_{renderMode}", true);
+            }
+
+            shader = guiContext.ShaderLoader.LoadShader(ShaderName, parameters);
         }
     }
 }

@@ -48,7 +48,7 @@ uniform float g_flSpecularExponent = 100.0;
 vec3 calculateWorldNormal()
 {
     //Get the noral from the texture map -- Normal map seems broken
-    vec4 bumpNormal = texture2D(g_tNormal, vTexCoordOut);
+    vec4 bumpNormal = texture(g_tNormal, vTexCoordOut);
 
     //Reconstruct the tangent vector from the map
     vec2 temp = vec2(bumpNormal.w, bumpNormal.y) * 2 - 1;
@@ -75,28 +75,28 @@ void main()
     vec3 viewDirection = normalize(vEyePosition - vFragPosition);
 
     //Read textures
-    vec4 color = texture2D(g_tColor, vTexCoordOut);
+    vec4 color = texture(g_tColor, vTexCoordOut);
 
 #if param_F_ALPHA_TEST == 1
-	if (color.a < g_flAlphaTestReference)
+    if (color.a < g_flAlphaTestReference)
     {
        discard;
     }
 #endif
 
 #if param_F_MASKS_1
-    vec4 mask1 = texture2D(g_tMasks1, vTexCoordOut);
+    vec4 mask1 = texture(g_tMasks1, vTexCoordOut);
 #endif
 
 #if param_F_MASKS_2
-    vec4 mask2 = texture2D(g_tMasks2, vTexCoordOut);
+    vec4 mask2 = texture(g_tMasks2, vTexCoordOut);
 #endif
 
-	//Get the world normal for this fragment
+    //Get the world normal for this fragment
     vec3 worldNormal = calculateWorldNormal();
 
-	//Get shadow and light color
-    //vec3 shadowColor = texture2D(g_tDiffuseWarp, vec2(0, mask1.g)).rgb;
+    //Get shadow and light color
+    //vec3 shadowColor = texture(g_tDiffuseWarp, vec2(0, mask1.g)).rgb;
 
 #if param_renderMode_FullBright == 1
     float illumination = 1.0;
@@ -122,7 +122,7 @@ void main()
     float metalness = 0.0;
 #endif
 
-	//Calculate Blinn specular based on reflected light
+    //Calculate Blinn specular based on reflected light
     vec3 halfDir = normalize(lightDirection + viewDirection);
     float specularAngle = max(dot(halfDir, worldNormal), 0.0);
 
@@ -139,7 +139,7 @@ void main()
     float specular = 0.0;
 #endif
 
-	//Calculate rim light
+    //Calculate rim light
     float rimLight = 1.0 - abs(dot(worldNormal, viewDirection));
     rimLight = pow(rimLight, 2);
 
@@ -148,57 +148,57 @@ void main()
     rimLight = rimLight * mask2.g;
 #endif
 
-	//Final color
+    //Final color
     vec3 finalColor = ambientColor * mix(1.0, 0.5, metalness) + specularColor * specular + color.rgb * rimLight;
 
     //Simply multiply the color from the color texture with the illumination
     outputColor = vec4(finalColor, color.a);
 
-	// == End of shader
+    // == End of shader
 
-	// Different render mode definitions
+    // Different render mode definitions
 #if param_renderMode_Color == 1
-	outputColor = vec4(color.rgb, 1.0);
+    outputColor = vec4(color.rgb, 1.0);
 #endif
 
 #if param_renderMode_Illumination == 1
-	outputColor = vec4(illumination, 0.0, 0.0, 1.0);
+    outputColor = vec4(illumination, 0.0, 0.0, 1.0);
 #endif
 
 #if param_renderMode_Mask1 == 1 && param_F_MASKS_1
-	outputColor = vec4(mask1.rgb, 1.0);
+    outputColor = vec4(mask1.rgb, 1.0);
 #endif
 
 #if param_renderMode_Mask2 == 1 && param_F_MASKS_2
-	outputColor = vec4(mask2.rgb, 1.0);
+    outputColor = vec4(mask2.rgb, 1.0);
 #endif
 
 #if param_renderMode_BumpMap == 1
-	outputColor = texture2D(g_tNormal, vTexCoordOut);
+    outputColor = texture(g_tNormal, vTexCoordOut);
 #endif
 
 #if param_renderMode_Tangents == 1
-	outputColor = vec4(vTangentOut.xyz * vec3(0.5) + vec3(0.5), 1.0);
+    outputColor = vec4(vTangentOut.xyz * vec3(0.5) + vec3(0.5), 1.0);
 #endif
 
 #if param_renderMode_Normals == 1
-	outputColor = vec4(vNormalOut * vec3(0.5) + vec3(0.5), 1.0);
+    outputColor = vec4(vNormalOut * vec3(0.5) + vec3(0.5), 1.0);
 #endif
 
 #if param_renderMode_BumpNormals == 1
-	outputColor = vec4(worldNormal * vec3(0.5) + vec3(0.5), 1.0);
+    outputColor = vec4(worldNormal * vec3(0.5) + vec3(0.5), 1.0);
 #endif
 
 #if param_renderMode_Metalness == 1
-	outputColor = vec4(metalness, metalness, metalness, 1.0);
+    outputColor = vec4(metalness, metalness, metalness, 1.0);
 #endif
 
 #if param_renderMode_Specular == 1
-	outputColor = vec4(specularColor * specular, 1.0);
+    outputColor = vec4(specularColor * specular, 1.0);
 #endif
 
 #if param_renderMode_RimLight == 1
-	outputColor = vec4(color.rgb * rimLight, 1.0);
+    outputColor = vec4(color.rgb * rimLight, 1.0);
 #endif
 }
 

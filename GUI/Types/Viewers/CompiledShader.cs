@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using GUI.Utils;
-using SteamDatabase.ValvePak;
 using ValveResourceFormat.CompiledShader;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 using VrfPackage = SteamDatabase.ValvePak.Package;
@@ -28,7 +27,7 @@ namespace GUI.Types.Viewers
                 base.OnKeyDown(ke);
                 if (ke.KeyData == Keys.Escape)
                 {
-                    int tabIndex = SelectedIndex;
+                    var tabIndex = SelectedIndex;
                     if (tabIndex > 0)
                     {
                         TabPages.RemoveAt(tabIndex);
@@ -46,7 +45,7 @@ namespace GUI.Types.Viewers
         {
 
             shaderCollection = GetShaderCollection(vrfGuiContext.FileName, vrfGuiContext.CurrentPackage);
-            string filename = Path.GetFileName(vrfGuiContext.FileName);
+            var filename = Path.GetFileName(vrfGuiContext.FileName);
             shaderFile = shaderCollection[(ComputeVcsProgramType(filename), filename)];
             var tab = new TabPage();
             tabControl = new ShaderTabControl
@@ -61,7 +60,7 @@ namespace GUI.Types.Viewers
             tabControl.Controls.Add(mainFileTab);
             tab.Controls.Add(tabControl);
             shaderRichTextBox.MouseEnter += new EventHandler(MouseEnterHandler);
-            string helpText = "[ctrl+click to open and focus links, ESC or right-click on tabs to close]\n\n";
+            var helpText = "[ctrl+click to open and focus links, ESC or right-click on tabs to close]\n\n";
             shaderRichTextBox.Text = $"{helpText}{shaderRichTextBox.Text}";
             return tab;
         }
@@ -72,14 +71,15 @@ namespace GUI.Types.Viewers
             if (vrfPackage != null)
             {
                 // search the package
-                string vcsCollectionName = targetFilename.Substring(0, targetFilename.LastIndexOf('_')); // in the form water_dota_pcgl_40
-                List<PackageEntry> vcsEntries = vrfPackage.Entries["vcs"];
+                var filename = Path.GetFileName(targetFilename);
+                var vcsCollectionName = filename[..filename.LastIndexOf('_')]; // in the form water_dota_pcgl_40
+                var vcsEntries = vrfPackage.Entries["vcs"];
                 // vcsEntry.FileName is in the form bloom_dota_pcgl_30_ps (without vcs extension)
                 foreach (var vcsEntry in vcsEntries)
                 {
-                    if (vcsEntry.FileName.StartsWith(vcsCollectionName))
+                    if (vcsEntry.FileName.StartsWith(vcsCollectionName, StringComparison.InvariantCulture))
                     {
-                        VcsProgramType programType = ComputeVcsProgramType($"{vcsEntry.FileName}.vcs");
+                        var programType = ComputeVcsProgramType($"{vcsEntry.FileName}.vcs");
                         vrfPackage.ReadEntry(vcsEntry, out var shaderDatabytes);
                         ShaderFile relatedShaderFile = new();
                         relatedShaderFile.Read($"{vcsEntry.FileName}.vcs", new MemoryStream(shaderDatabytes));
@@ -90,13 +90,13 @@ namespace GUI.Types.Viewers
             else
             {
                 // search file-system
-                string filename = Path.GetFileName(targetFilename);
-                string vcsCollectionName = filename.Substring(0, filename.LastIndexOf('_'));
+                var filename = Path.GetFileName(targetFilename);
+                var vcsCollectionName = filename[..filename.LastIndexOf('_')];
                 foreach (var vcsFile in Directory.GetFiles(Path.GetDirectoryName(targetFilename)))
                 {
-                    if (Path.GetFileName(vcsFile).StartsWith(vcsCollectionName))
+                    if (Path.GetFileName(vcsFile).StartsWith(vcsCollectionName, StringComparison.InvariantCulture))
                     {
-                        VcsProgramType programType = ComputeVcsProgramType(vcsFile);
+                        var programType = ComputeVcsProgramType(vcsFile);
                         ShaderFile relatedShaderFile = new();
                         relatedShaderFile.Read(vcsFile);
                         shaderCollection.Add((programType, Path.GetFileName(vcsFile)), relatedShaderFile);
@@ -108,7 +108,7 @@ namespace GUI.Types.Viewers
 
         private static void MouseEnterHandler(object sender, EventArgs e)
         {
-            RichTextBox shaderRTB = sender as RichTextBox;
+            var shaderRTB = sender as RichTextBox;
             shaderRTB.Focus();
         }
 
@@ -117,8 +117,8 @@ namespace GUI.Types.Viewers
         {
             var tabControl = sender as TabControl;
             var tabs = tabControl.TabPages;
-            TabPage thisTab = tabs.Cast<TabPage>().Where((t, i) => tabControl.GetTabRect(i).Contains(e.Location)).First();
-            if (e.Button == MouseButtons.Right)
+            var thisTab = tabs.Cast<TabPage>().Where((t, i) => tabControl.GetTabRect(i).Contains(e.Location)).First();
+            if (e.Button == MouseButtons.Right || e.Button == MouseButtons.Middle)
             {
                 var tabIndex = GetTabIndex(thisTab);
                 // don't close the main tab
@@ -137,7 +137,7 @@ namespace GUI.Types.Viewers
 
         private int GetTabIndex(TabPage tab)
         {
-            for (int i = 0; i < tabControl.TabPages.Count; i++)
+            for (var i = 0; i < tabControl.TabPages.Count; i++)
             {
                 if (tabControl.TabPages[i] == tab)
                 {
@@ -155,24 +155,27 @@ namespace GUI.Types.Viewers
 
         protected virtual void Dispose(bool disposing)
         {
-            if (disposing && tabControl != null)
+            if (disposing)
             {
-                tabControl.Dispose();
-                tabControl = null;
-            }
-            if (disposing && shaderFile != null)
-            {
-                shaderFile.Dispose();
-                tabControl = null;
+                if (tabControl != null)
+                {
+                    tabControl.Dispose();
+                    tabControl = null;
+                }
+
+                foreach (var shader in shaderCollection.Values)
+                {
+                    shader.Dispose();
+                }
             }
         }
 
         private class ShaderRichTextBox : RichTextBox
         {
-            private ShaderFile shaderFile;
-            SortedDictionary<(VcsProgramType, string), ShaderFile> shaderCollection;
-            private ShaderTabControl tabControl;
-            private List<string> relatedFiles = new();
+            private readonly ShaderFile shaderFile;
+            readonly SortedDictionary<(VcsProgramType, string), ShaderFile> shaderCollection;
+            private readonly ShaderTabControl tabControl;
+            private readonly List<string> relatedFiles = new();
             public ShaderRichTextBox(ShaderFile shaderFile, ShaderTabControl tabControl,
                 SortedDictionary<(VcsProgramType, string), ShaderFile> shaderCollection = null, bool byteVersion = false) : base()
             {
@@ -208,14 +211,14 @@ namespace GUI.Types.Viewers
 
             private void ShaderRichTextBoxLinkClicked(object sender, LinkClickedEventArgs evt)
             {
-                string linkText = evt.LinkText[2..]; // remove two starting backslahses
-                string[] linkTokens = linkText.Split("\\");
+                var linkText = evt.LinkText[2..]; // remove two starting backslahses
+                var linkTokens = linkText.Split("\\");
                 // linkTokens[0] is sometimes a zframe id, in those cases programType equals 'undetermined'
                 // where linkTokens[0] is a filename VcsProgramType should be defined
-                VcsProgramType programType = ComputeVcsProgramType(linkTokens[0]);
+                var programType = ComputeVcsProgramType(linkTokens[0]);
                 if (programType != VcsProgramType.Undetermined)
                 {
-                    ShaderFile shaderFile = shaderCollection[(programType, linkTokens[0])];
+                    var shaderFile = shaderCollection[(programType, linkTokens[0])];
                     TabPage newShaderTab = null;
                     if (linkTokens.Length > 1 && linkTokens[1].Equals("bytes", StringComparison.Ordinal))
                     {
@@ -239,8 +242,8 @@ namespace GUI.Types.Viewers
                     }
                     return;
                 }
-                long zframeId = Convert.ToInt64(linkText, 16);
-                var zframeTab = new TabPage($"{shaderFile.filenamepath.Split('_')[^1][..^4]}[{zframeId:x}]");
+                var zframeId = Convert.ToInt64(linkText, 16);
+                var zframeTab = new TabPage($"{shaderFile.FilenamePath.Split('_')[^1][..^4]}[{zframeId:x}]");
                 var zframeRichTextBox = new ZFrameRichTextBox(tabControl, shaderFile, zframeId);
                 zframeRichTextBox.MouseEnter += new EventHandler(MouseEnterHandler);
                 zframeTab.Controls.Add(zframeRichTextBox);
@@ -253,10 +256,10 @@ namespace GUI.Types.Viewers
         }
 
 
-        private class ZFrameRichTextBox : RichTextBox
+        private class ZFrameRichTextBox : RichTextBox, IDisposable
         {
-            private TabControl tabControl;
-            private ShaderFile shaderFile;
+            private readonly TabControl tabControl;
+            private readonly ShaderFile shaderFile;
             private ZFrameFile zframeFile;
 
             public ZFrameRichTextBox(TabControl tabControl, ShaderFile shaderFile, long zframeId, bool byteVersion = false) : base()
@@ -284,17 +287,34 @@ namespace GUI.Types.Viewers
                 LinkClicked += new LinkClickedEventHandler(ZFrameRichTextBoxLinkClicked);
             }
 
+            public new void Dispose()
+            {
+                Dispose(true);
+                GC.SuppressFinalize(this);
+            }
+
+            protected new virtual void Dispose(bool disposing)
+            {
+                if (disposing && zframeFile != null)
+                {
+                    zframeFile.Dispose();
+                    zframeFile = null;
+                }
+
+                base.Dispose(disposing);
+            }
+
             private void ZFrameRichTextBoxLinkClicked(object sender, LinkClickedEventArgs evt)
             {
-                string[] linkTokens = evt.LinkText[2..].Split("\\");
+                var linkTokens = evt.LinkText[2..].Split("\\");
                 // if the link contains only one token it is the name of the zframe in the form
                 // blur_pcgl_40_vs.vcs-ZFRAME00000000-databytes
                 if (linkTokens.Length == 1)
                 {
                     // the target id is extracted from the text link, parsing here strictly depends on the chosen format
                     // linkTokens[0].Split('-')[^2] evaluates as ZFRAME00000000, number is read as base 16
-                    long zframeId = Convert.ToInt64(linkTokens[0].Split('-')[^2][6..], 16);
-                    var zframeTab = new TabPage($"{shaderFile.filenamepath.Split('_')[^1][..^4]}[{zframeId:x}] bytes");
+                    var zframeId = Convert.ToInt64(linkTokens[0].Split('-')[^2][6..], 16);
+                    var zframeTab = new TabPage($"{shaderFile.FilenamePath.Split('_')[^1][..^4]}[{zframeId:x}] bytes");
                     var zframeRichTextBox = new ZFrameRichTextBox(tabControl, shaderFile, zframeId, byteVersion: true);
                     zframeRichTextBox.MouseEnter += new EventHandler(MouseEnterHandler);
                     zframeTab.Controls.Add(zframeRichTextBox);
@@ -309,13 +329,13 @@ namespace GUI.Types.Viewers
                 // the sourceId is given in decimals, extracted here from linkTokens[1]
                 // (the sourceId is not the same as the zframeId - a single zframe may contain more than 1 source,
                 // they are enumerated in each zframe file starting from 0)
-                int gpuSourceId = Convert.ToInt32(linkTokens[1], CultureInfo.InvariantCulture);
-                string gpuSourceTabTitle = $"{shaderFile.filenamepath.Split('_')[^1][..^4]}[{zframeFile.zframeId:x}]({gpuSourceId})";
+                var gpuSourceId = Convert.ToInt32(linkTokens[1], CultureInfo.InvariantCulture);
+                var gpuSourceTabTitle = $"{shaderFile.FilenamePath.Split('_')[^1][..^4]}[{zframeFile.ZframeId:x}]({gpuSourceId})";
 
                 TabPage gpuSourceTab = null;
                 var buffer = new StringWriter(CultureInfo.InvariantCulture);
                 zframeFile.PrintGpuSource(gpuSourceId, buffer.Write);
-                switch (zframeFile.gpuSources[gpuSourceId])
+                switch (zframeFile.GpuSources[gpuSourceId])
                 {
                     case GlslSource:
                         gpuSourceTab = new TabPage(gpuSourceTabTitle);
@@ -336,13 +356,13 @@ namespace GUI.Types.Viewers
                     case DxbcSource:
                     case DxilSource:
                     case VulkanSource:
-                        byte[] input = zframeFile.gpuSources[gpuSourceId].sourcebytes;
+                        var input = zframeFile.GpuSources[gpuSourceId].Sourcebytes;
                         gpuSourceTab = CreateByteViewerTab(input, buffer.ToString());
                         gpuSourceTab.Text = gpuSourceTabTitle;
                         break;
 
                     default:
-                        throw new InvalidDataException($"Unimplemented GPU source type {zframeFile.gpuSources[gpuSourceId].GetType()}");
+                        throw new InvalidDataException($"Unimplemented GPU source type {zframeFile.GpuSources[gpuSourceId].GetType()}");
                 }
 
                 tabControl.Controls.Add(gpuSourceTab);

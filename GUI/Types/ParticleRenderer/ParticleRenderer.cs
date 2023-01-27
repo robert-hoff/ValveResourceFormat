@@ -8,6 +8,8 @@ using GUI.Types.ParticleRenderer.Operators;
 using GUI.Types.ParticleRenderer.Renderers;
 using GUI.Types.Renderer;
 using GUI.Utils;
+using SkiaSharp;
+using ValveResourceFormat.Blocks;
 using ValveResourceFormat.ResourceTypes;
 using ValveResourceFormat.Serialization;
 
@@ -42,9 +44,9 @@ namespace GUI.Types.ParticleRenderer
         private readonly VrfGuiContext vrfGuiContext;
         private bool hasStarted;
 
-        private ParticleBag particleBag;
+        private readonly ParticleBag particleBag;
         private int particlesEmitted;
-        private ParticleSystemRenderState systemRenderState;
+        private readonly ParticleSystemRenderState systemRenderState;
 
         // TODO: Passing in position here was for testing, do it properly
         public ParticleRenderer(ParticleSystem particleSystem, VrfGuiContext vrfGuiContext, Vector3 pos = default)
@@ -82,7 +84,7 @@ namespace GUI.Types.ParticleRenderer
 
         private void EmitParticle()
         {
-            int index = particleBag.Add();
+            var index = particleBag.Add();
             if (index < 0)
             {
                 Console.WriteLine("Out of space in particle bag");
@@ -149,6 +151,12 @@ namespace GUI.Types.ParticleRenderer
                 particleOperator.Update(particleBag.LiveParticles, frameTime, systemRenderState);
             }
 
+            // Tick down lifetime of all particles
+            for (var i = 0; i < particleBag.LiveParticles.Length; ++i)
+            {
+                particleBag.LiveParticles[i].Lifetime -= frameTime;
+            }
+
             // Remove all dead particles
             particleBag.PruneExpired();
 
@@ -163,7 +171,7 @@ namespace GUI.Types.ParticleRenderer
                 var maxParticlePos = center;
 
                 var liveParticles = particleBag.LiveParticles;
-                for (int i = 0; i < liveParticles.Length; ++i)
+                for (var i = 0; i < liveParticles.Length; ++i)
                 {
                     var pos = liveParticles[i].Position;
                     var radius = liveParticles[i].Radius;
@@ -210,6 +218,19 @@ namespace GUI.Types.ParticleRenderer
             foreach (var childParticleRenderer in childParticleRenderers)
             {
                 childParticleRenderer.Render(camera, RenderPass.Both);
+            }
+        }
+
+        public IEnumerable<string> GetSupportedRenderModes()
+            => Renderers
+                .SelectMany(renderer => renderer.GetSupportedRenderModes())
+                .Distinct();
+
+        public void SetRenderMode(string renderMode)
+        {
+            foreach (var renderer in Renderers)
+            {
+                renderer.SetRenderMode(renderMode);
             }
         }
 

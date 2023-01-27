@@ -1,9 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using GUI.Utils;
 using OpenTK.Graphics.OpenGL;
-using ValveResourceFormat;
 using ValveResourceFormat.ResourceTypes;
 using ValveResourceFormat.ResourceTypes.ModelAnimation;
 using ValveResourceFormat.Serialization;
@@ -33,24 +32,26 @@ namespace GUI.Types.Renderer
             }
         }
 
-        public AnimationController AnimationController { get; } = new();
+        public readonly AnimationController AnimationController;
         public IEnumerable<RenderableMesh> RenderableMeshes => activeMeshRenderers;
+        public string ActiveSkin { get; private set; }
 
-        private readonly List<RenderableMesh> meshRenderers = new List<RenderableMesh>();
-        private readonly List<Animation> animations = new List<Animation>();
+        private readonly List<RenderableMesh> meshRenderers = new();
+        private readonly List<Animation> animations = new();
         private Dictionary<string, string> skinMaterials;
 
-        private Animation activeAnimation;
-        private int[] animationTextures;
-        private Skeleton[] skeletons;
+        private int animationTexture = -1;
 
         private ICollection<string> activeMeshGroups = new HashSet<string>();
-        private ICollection<RenderableMesh> activeMeshRenderers = new HashSet<RenderableMesh>();
+        private ICollection<RenderableMesh> activeMeshRenderers = new List<RenderableMesh>();
+
+        private bool loadedAnimations;
 
         public ModelSceneNode(Scene scene, Model model, string skin = null, bool loadAnimations = true)
             : base(scene)
         {
             Model = model;
+            AnimationController = new(model.Skeleton);
 
             if (skin != null)
             {
@@ -63,43 +64,41 @@ namespace GUI.Types.Renderer
             // Load required resources
             if (loadAnimations)
             {
-                LoadSkeletons();
                 LoadAnimations();
             }
         }
 
         public override void Update(Scene.UpdateContext context)
         {
-            if (activeAnimation == null)
+            if (!AnimationController.Update(context.Timestep))
             {
                 return;
             }
 
-            AnimationController.Update(context.Timestep);
+            UpdateBoundingBox(); // Reset back to the mesh bbox
 
-            for (var i = 0; i < skeletons.Length; i++)
+            var newBoundingBox = LocalBoundingBox;
+
+            // Update animation matrices
+            var skeleton = Model.Skeleton;
+            var matrices = AnimationController.GetAnimationMatrices(skeleton);
+            var animationMatrices = VectorExtensions.Flatten(matrices);
+
+            // Update animation texture
+            GL.BindTexture(TextureTarget.Texture2D, animationTexture);
+            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba32f, 4, skeleton.Bones.Length, 0,
+                PixelFormat.Rgba, PixelType.Float, animationMatrices);
+            GL.BindTexture(TextureTarget.Texture2D, 0);
+
+            var first = true;
+            foreach (var matrix in matrices)
             {
-                var skeleton = skeletons[i];
-                var animationTexture = animationTextures[i];
-
-                // Update animation matrices
-                var animationMatrices = new float[skeleton.AnimationTextureSize * 16];
-                for (var j = 0; j < skeleton.AnimationTextureSize; j++)
-                {
-                    // Default to identity matrices
-                    animationMatrices[j * 16] = 1.0f;
-                    animationMatrices[(j * 16) + 5] = 1.0f;
-                    animationMatrices[(j * 16) + 10] = 1.0f;
-                    animationMatrices[(j * 16) + 15] = 1.0f;
-                }
-
-                animationMatrices = activeAnimation.GetAnimationMatricesAsArray(AnimationController.Time, skeleton);
-
-                // Update animation texture
-                GL.BindTexture(TextureTarget.Texture2D, animationTexture);
-                GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba32f, 4, skeleton.AnimationTextureSize, 0, PixelFormat.Rgba, PixelType.Float, animationMatrices);
-                GL.BindTexture(TextureTarget.Texture2D, 0);
+                var bbox = LocalBoundingBox.Transform(matrix);
+                newBoundingBox = first ? bbox : newBoundingBox.Union(bbox);
+                first = false;
             }
+
+            LocalBoundingBox = newBoundingBox;
         }
 
         public override void Render(Scene.RenderContext context)
@@ -120,16 +119,15 @@ namespace GUI.Types.Renderer
 
         public void SetSkin(string skin)
         {
+            ActiveSkin = skin;
+
             var materialGroups = Model.Data.GetArray<IKeyValueCollection>("m_materialGroups");
             string[] defaultMaterials = null;
 
             foreach (var materialGroup in materialGroups)
             {
                 // "The first item needs to match the default materials on the model"
-                if (defaultMaterials == null)
-                {
-                    defaultMaterials = materialGroup.GetArray<string>("m_materials");
-                }
+                defaultMaterials ??= materialGroup.GetArray<string>("m_materials");
 
                 if (materialGroup.GetProperty<string>("m_name") == skin)
                 {
@@ -146,12 +144,25 @@ namespace GUI.Types.Renderer
                 }
             }
 
-            if (meshRenderers.Count > 0)
+            foreach (var mesh in meshRenderers)
             {
-                foreach (var mesh in meshRenderers)
-                {
-                    mesh.SetSkin(skinMaterials);
-                }
+                mesh.SetSkin(skinMaterials);
+            }
+        }
+
+        public void LoadAnimations()
+        {
+            if (loadedAnimations)
+            {
+                return;
+            }
+
+            loadedAnimations = true;
+            animations.AddRange(Model.GetAllAnimations(Scene.GuiContext.FileLoader));
+
+            if (animations.Any())
+            {
+                SetupAnimationTextures();
             }
         }
 
@@ -160,12 +171,12 @@ namespace GUI.Types.Renderer
             // Get embedded meshes
             foreach (var embeddedMesh in Model.GetEmbeddedMeshesAndLoD().Where(m => (m.LoDMask & 1) != 0))
             {
-                meshRenderers.Add(new RenderableMesh(embeddedMesh.Mesh, Scene.GuiContext, skinMaterials));
+                meshRenderers.Add(new RenderableMesh(embeddedMesh.Mesh, embeddedMesh.MeshIndex, Scene.GuiContext,
+                    skinMaterials, Model));
             }
 
             // Load referred meshes from file (only load meshes with LoD 1)
-            var referredMeshesAndLoDs = Model.GetReferenceMeshNamesAndLoD();
-            foreach (var refMesh in referredMeshesAndLoDs.Where(m => (m.LoDMask & 1) != 0))
+            foreach (var refMesh in GetLod1RefMeshes())
             {
                 var newResource = Scene.GuiContext.LoadFileByAnyMeansNecessary(refMesh.MeshName + "_c");
                 if (newResource == null)
@@ -173,102 +184,29 @@ namespace GUI.Types.Renderer
                     continue;
                 }
 
-                meshRenderers.Add(new RenderableMesh(new Mesh(newResource), Scene.GuiContext, skinMaterials));
+                meshRenderers.Add(new RenderableMesh((Mesh)newResource.DataBlock, refMesh.MeshIndex, Scene.GuiContext,
+                    skinMaterials, Model));
             }
 
             // Set active meshes to default
             SetActiveMeshGroups(Model.GetDefaultMeshGroups());
         }
 
-        private void LoadSkeletons()
-        {
-            skeletons = meshRenderers.Select((_, i) => Model.GetSkeleton(i)).ToArray();
-        }
-
         private void SetupAnimationTextures()
         {
-            if (animationTextures == default)
+            if (animationTexture == -1)
             {
-                // Create animation texture for each mesh
-                animationTextures = new int[meshRenderers.Count];
-                for (var i = 0; i < meshRenderers.Count; i++)
-                {
-                    var animationTexture = GL.GenTexture();
-                    GL.BindTexture(TextureTarget.Texture2D, animationTexture);
-                    // Set clamping to edges
-                    GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
-                    GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
-                    // Set nearest-neighbor sampling since we don't want to interpolate matrix rows
-                    GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
-                    GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMinFilter.Nearest);
-                    //Unbind texture again
-                    GL.BindTexture(TextureTarget.Texture2D, 0);
-
-                    animationTextures[i] = animationTexture;
-                }
-            }
-        }
-
-        private void LoadAnimations()
-        {
-            var animGroupPaths = Model.GetReferencedAnimationGroupNames();
-            var emebeddedAnims = Model.GetEmbeddedAnimations();
-
-            if (!animGroupPaths.Any() && !emebeddedAnims.Any())
-            {
-                return;
-            }
-
-            SetupAnimationTextures();
-
-            // Load animations from referenced animation groups
-            foreach (var animGroupPath in animGroupPaths)
-            {
-                var animGroup = Scene.GuiContext.LoadFileByAnyMeansNecessary(animGroupPath + "_c");
-                if (animGroup != default)
-                {
-                    animations.AddRange(AnimationGroupLoader.LoadAnimationGroup(animGroup, Scene.GuiContext));
-                }
-            }
-
-            // Get embedded animations
-            animations.AddRange(emebeddedAnims);
-        }
-
-        public void LoadAnimation(string animationName)
-        {
-            var animGroupPaths = Model.GetReferencedAnimationGroupNames();
-            var embeddedAnims = Model.GetEmbeddedAnimations();
-
-            if (!animGroupPaths.Any() && !embeddedAnims.Any())
-            {
-                return;
-            }
-
-            if (skeletons == default)
-            {
-                LoadSkeletons();
-                SetupAnimationTextures();
-            }
-
-            // Get embedded animations
-            var embeddedAnim = embeddedAnims.FirstOrDefault(a => a.Name == animationName);
-            if (embeddedAnim != default)
-            {
-                animations.Add(embeddedAnim);
-                return;
-            }
-
-            // Load animations from referenced animation groups
-            foreach (var animGroupPath in animGroupPaths)
-            {
-                var animGroup = Scene.GuiContext.LoadFileByAnyMeansNecessary(animGroupPath + "_c");
-                var foundAnimations = AnimationGroupLoader.TryLoadSingleAnimationFileFromGroup(animGroup, animationName, Scene.GuiContext);
-                if (foundAnimations != default)
-                {
-                    animations.AddRange(foundAnimations);
-                    return;
-                }
+                // Create animation texture
+                animationTexture = GL.GenTexture();
+                GL.BindTexture(TextureTarget.Texture2D, animationTexture);
+                // Set clamping to edges
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
+                // Set nearest-neighbor sampling since we don't want to interpolate matrix rows
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
+                GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMinFilter.Nearest);
+                //Unbind texture again
+                GL.BindTexture(TextureTarget.Texture2D, 0);
             }
         }
 
@@ -277,14 +215,15 @@ namespace GUI.Types.Renderer
 
         public void SetAnimation(string animationName)
         {
-            activeAnimation = animations.FirstOrDefault(a => a.Name == animationName);
+            var activeAnimation = animations.FirstOrDefault(a => a.Name == animationName);
             AnimationController.SetAnimation(activeAnimation);
+            UpdateBoundingBox();
 
             if (activeAnimation != default)
             {
                 for (var i = 0; i < meshRenderers.Count; i++)
                 {
-                    meshRenderers[i].SetAnimationTexture(animationTextures[i], skeletons[i].AnimationTextureSize);
+                    meshRenderers[i].SetAnimationTexture(animationTexture, Model.Skeleton.Bones.Length);
                 }
             }
             else
@@ -295,6 +234,9 @@ namespace GUI.Types.Renderer
                 }
             }
         }
+
+        public IEnumerable<(int MeshIndex, string MeshName, long LoDMask)> GetLod1RefMeshes()
+            => Model.GetReferenceMeshNamesAndLoD().Where(m => (m.LoDMask & 1) != 0);
 
         public IEnumerable<string> GetMeshGroups()
             => Model.GetMeshGroups();
@@ -313,24 +255,25 @@ namespace GUI.Types.Renderer
                 foreach (var group in activeMeshGroups)
                 {
                     var meshMask = Model.GetActiveMeshMaskForGroup(group).ToArray();
-                    for (var meshIndex = 0; meshIndex < meshRenderers.Count; meshIndex++)
+
+                    foreach (var meshRenderer in meshRenderers)
                     {
-                        if (meshMask[meshIndex] && !activeMeshRenderers.Contains(meshRenderers[meshIndex]))
+                        if (meshMask[meshRenderer.MeshIndex])
                         {
-                            activeMeshRenderers.Add(meshRenderers[meshIndex]);
+                            activeMeshRenderers.Add(meshRenderer);
                         }
                     }
                 }
             }
             else
             {
-                activeMeshRenderers = new HashSet<RenderableMesh>(meshRenderers);
+                activeMeshRenderers = new List<RenderableMesh>(meshRenderers);
             }
         }
 
         private void UpdateBoundingBox()
         {
-            bool first = true;
+            var first = true;
             foreach (var mesh in meshRenderers)
             {
                 LocalBoundingBox = first ? mesh.BoundingBox : BoundingBox.Union(mesh.BoundingBox);

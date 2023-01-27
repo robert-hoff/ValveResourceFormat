@@ -22,7 +22,7 @@ namespace ValveResourceFormat.ResourceTypes
                 // sound is VSoundEvent_t
                 var sound = ((NTROValue<NTROStruct>)entry).Value;
                 var soundName = ((NTROValue<string>)sound["m_SoundName"]).Value;
-                var soundValue = ((NTROValue<string>)sound["m_OperatorsKV"]).Value.Replace("\n", Environment.NewLine); // make sure we have new lines
+                var soundValue = ((NTROValue<string>)sound["m_OperatorsKV"]).Value.Replace("\n", Environment.NewLine, StringComparison.InvariantCulture); // make sure we have new lines
 
                 if (SoundEventScriptValue.ContainsKey(soundName))
                 {
@@ -36,22 +36,20 @@ namespace ValveResourceFormat.ResourceTypes
 
         public override string ToString()
         {
-            using (var writer = new IndentedTextWriter())
+            using var writer = new IndentedTextWriter();
+            foreach (var entry in SoundEventScriptValue)
             {
-                foreach (var entry in SoundEventScriptValue)
-                {
-                    writer.WriteLine("\"" + entry.Key + "\"");
-                    writer.WriteLine("{");
-                    writer.Indent++;
-                    // m_OperatorsKV wont be indented, so we manually indent it here, removing the last indent so we can close brackets later correctly.
-                    writer.Write(entry.Value.Replace(Environment.NewLine, Environment.NewLine + "\t").TrimEnd('\t'));
-                    writer.Indent--;
-                    writer.WriteLine("}");
-                    writer.WriteLine(string.Empty); // There is an empty line after every entry (including the last)
-                }
-
-                return writer.ToString();
+                writer.WriteLine("\"" + entry.Key + "\"");
+                writer.WriteLine("{");
+                writer.Indent++;
+                // m_OperatorsKV wont be indented, so we manually indent it here, removing the last indent so we can close brackets later correctly.
+                writer.Write(entry.Value.Replace(Environment.NewLine, Environment.NewLine + "\t", StringComparison.InvariantCulture).TrimEnd('\t'));
+                writer.Indent--;
+                writer.WriteLine("}");
+                writer.WriteLine(string.Empty); // There is an empty line after every entry (including the last)
             }
+
+            return writer.ToString();
         }
     }
 }

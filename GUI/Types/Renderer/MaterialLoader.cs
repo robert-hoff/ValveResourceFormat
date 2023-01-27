@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Numerics;
 using GUI.Utils;
@@ -11,7 +12,7 @@ namespace GUI.Types.Renderer
 {
     public class MaterialLoader
     {
-        private readonly Dictionary<string, RenderMaterial> Materials = new Dictionary<string, RenderMaterial>();
+        private readonly Dictionary<string, RenderMaterial> Materials = new();
         private readonly VrfGuiContext VrfGuiContext;
         private int ErrorTextureID;
         public static int MaxTextureMaxAnisotropy { get; set; }
@@ -123,10 +124,6 @@ namespace GUI.Types.Renderer
             var id = GL.GenTexture();
 
             GL.BindTexture(TextureTarget.Texture2D, id);
-
-            var textureReader = textureResource.Reader;
-            textureReader.BaseStream.Position = tex.Offset + tex.Size;
-
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMaxLevel, tex.NumMipLevels - 1);
 
             var internalFormat = GetPixelInternalFormat(tex.Format);
@@ -138,23 +135,28 @@ namespace GUI.Types.Renderer
                 return GetErrorTexture();
             }
 
-            for (var i = tex.NumMipLevels - 1; i >= 0; i--)
+            var buffer = ArrayPool<byte>.Shared.Rent(tex.GetBiggestBufferSize());
+
+            try
             {
-                var width = tex.Width >> i;
-                var height = tex.Height >> i;
-                var bytes = tex.GetDecompressedTextureAtMipLevel(i);
-
-                if (internalFormat.HasValue)
+                foreach (var (i, width, height, bufferSize) in tex.GetEveryMipLevelTexture(buffer))
                 {
-                    var pixelFormat = GetPixelFormat(tex.Format);
-                    var pixelType = GetPixelType(tex.Format);
+                    if (internalFormat.HasValue)
+                    {
+                        var pixelFormat = GetPixelFormat(tex.Format);
+                        var pixelType = GetPixelType(tex.Format);
 
-                    GL.TexImage2D(TextureTarget.Texture2D, i, internalFormat.Value, width, height, 0, pixelFormat, pixelType, bytes);
+                        GL.TexImage2D(TextureTarget.Texture2D, i, internalFormat.Value, width, height, 0, pixelFormat, pixelType, buffer);
+                    }
+                    else
+                    {
+                        GL.CompressedTexImage2D(TextureTarget.Texture2D, i, format.Value, width, height, 0, bufferSize, buffer);
+                    }
                 }
-                else
-                {
-                    GL.CompressedTexImage2D(TextureTarget.Texture2D, i, format.Value, width, height, 0, bytes.Length, bytes);
-                }
+            }
+            finally
+            {
+                ArrayPool<byte>.Shared.Return(buffer);
             }
 
             // Dispose texture otherwise we run out of memory
@@ -235,7 +237,7 @@ namespace GUI.Types.Renderer
                 _ => PixelType.UnsignedByte
             };
 
-        
+
         public RenderMaterial GetErrorMaterial()
         {
             var errorMat = new RenderMaterial(new VrfMaterial());

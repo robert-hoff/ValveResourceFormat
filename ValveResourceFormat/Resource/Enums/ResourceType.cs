@@ -1,11 +1,8 @@
-using System;
-
 namespace ValveResourceFormat
 {
     // Friendly names are used
     public enum ResourceType
     {
-#pragma warning disable 1591
         Unknown = 0,
 
         [Extension("vanim")]
@@ -71,6 +68,9 @@ namespace ValveResourceFormat
         [Extension("vsndevts")]
         SoundEventScript,
 
+        [Extension("vmix")]
+        VMix,
+
         [Extension("vsndstck")]
         SoundStackScript,
 
@@ -100,6 +100,9 @@ namespace ValveResourceFormat
         [Extension("vjs")]
         PanoramaScript,
 
+        [Extension("vts")]
+        PanoramaTypescript,
+
         [Extension("vsvg")]
         PanoramaVectorGraphic,
 
@@ -109,14 +112,16 @@ namespace ValveResourceFormat
         [Extension("vmap")]
         Map,
 
+        [Extension("vpost")]
+        PostProcessing,
+
         [Extension("vdata")]
         VData,
 
         [Extension("item")]
         ArtifactItem,
 
-        [Extension("sbox")] // TODO: Specify each type individually when sbox ships (sound, decal, surface, etc)
-        SboxData,
-#pragma warning restore 1591
+        [Extension("sbox")] // TODO: Managed resources can have any extension
+        SboxManagedResource,
     }
 }

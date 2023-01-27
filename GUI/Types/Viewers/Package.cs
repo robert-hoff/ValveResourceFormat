@@ -7,7 +7,6 @@ using GUI.Controls;
 using GUI.Utils;
 using SteamDatabase.ValvePak;
 using ValveResourceFormat;
-using ValveResourceFormat.ResourceTypes;
 
 namespace GUI.Types.Viewers
 {
@@ -36,13 +35,11 @@ namespace GUI.Types.Viewers
                 package.Read(vrfGuiContext.FileName);
             }
 
+            vrfGuiContext.CurrentPackage = package;
+
             // create a TreeView with search capabilities, register its events, and add it to the tab
             var treeViewWithSearch = new TreeViewWithSearchResults(ImageList);
-            treeViewWithSearch.InitializeTreeViewFromPackage(vrfGuiContext.FileName, new TreeViewWithSearchResults.TreeViewPackageTag
-            {
-                Package = package,
-                ParentFileLoader = vrfGuiContext.FileLoader,
-            });
+            treeViewWithSearch.InitializeTreeViewFromPackage(vrfGuiContext);
             treeViewWithSearch.TreeNodeMouseDoubleClick += VPK_OpenFile;
             treeViewWithSearch.TreeNodeRightClick += VPK_OnClick;
             treeViewWithSearch.ListViewItemDoubleClick += VPK_OpenFile;
@@ -131,7 +128,7 @@ namespace GUI.Types.Viewers
                             {
                                 if (fileSize > length)
                                 {
-                                    throw new Exception("Resource filesize is bigger than the gap length we found");
+                                    throw new InvalidDataException("Resource filesize is bigger than the gap length we found");
                                 }
 
                                 newEntry.Length = fileSize;
@@ -210,13 +207,14 @@ namespace GUI.Types.Viewers
         private static void OpenFileFromNode(TreeNode node)
         {
             //Make sure we aren't a directory!
-            if (node.Tag.GetType() == typeof(PackageEntry))
+            var data = (VrfTreeViewData)node.Tag;
+            if (!data.IsFolder)
             {
-                var package = node.TreeView.Tag as TreeViewWithSearchResults.TreeViewPackageTag;
-                var file = node.Tag as PackageEntry;
-                package.Package.ReadEntry(file, out var output, validateCrc: file.CRC32 > 0);
+                var parentGuiContext = (VrfGuiContext)node.TreeView.Tag;
+                var file = data.PackageEntry;
 
-                Program.MainForm.OpenFile(file.GetFileName(), output, package);
+                var vrfGuiContext = new VrfGuiContext(file.GetFullPath(), parentGuiContext);
+                Program.MainForm.OpenFile(vrfGuiContext, file);
             }
         }
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using System.Windows.Forms;
@@ -11,7 +12,7 @@ using static GUI.Controls.GLViewerControl;
 
 namespace GUI.Types.Renderer
 {
-    internal abstract class GLSceneViewer
+    internal abstract class GLSceneViewer : IGLViewer
     {
         public Scene Scene { get; }
         public Scene SkyboxScene { get; protected set; }
@@ -26,18 +27,20 @@ namespace GUI.Types.Renderer
 
         private bool showStaticOctree;
         private bool showDynamicOctree;
+        private bool showToolsMaterials = true;
         private Frustum lockedCullFrustum;
 
         private ComboBox renderModeComboBox;
         private ParticleGrid baseGrid;
-        private Camera skyboxCamera = new Camera();
+        private readonly Camera skyboxCamera = new();
         private OctreeDebugRenderer<SceneNode> staticOctreeRenderer;
         private OctreeDebugRenderer<SceneNode> dynamicOctreeRenderer;
+        protected SelectedNodeRenderer selectedNodeRenderer;
 
         protected GLSceneViewer(VrfGuiContext guiContext, Frustum cullFrustum)
         {
             Scene = new Scene(guiContext);
-            ViewerControl = new GLViewerControl();
+            ViewerControl = new GLViewerControl(this);
             lockedCullFrustum = cullFrustum;
 
             InitializeControl();
@@ -50,11 +53,28 @@ namespace GUI.Types.Renderer
         protected GLSceneViewer(VrfGuiContext guiContext)
         {
             Scene = new Scene(guiContext);
-            ViewerControl = new GLViewerControl();
+            ViewerControl = new GLViewerControl(this);
 
             InitializeControl();
-            ViewerControl.AddCheckBox("Show Static Octree", showStaticOctree, (v) => showStaticOctree = v);
+            ViewerControl.AddCheckBox("Show Static Octree", showStaticOctree, (v) =>
+            {
+                showStaticOctree = v;
+
+                if (showStaticOctree)
+                {
+                    staticOctreeRenderer.StaticBuild();
+                }
+            });
             ViewerControl.AddCheckBox("Show Dynamic Octree", showDynamicOctree, (v) => showDynamicOctree = v);
+            ViewerControl.AddCheckBox("Show Tools Materials", showToolsMaterials, (v) =>
+            {
+                Scene.ShowToolsMaterials = v;
+
+                if (SkyboxScene != null)
+                {
+                    SkyboxScene.ShowToolsMaterials = v;
+                }
+            });
             ViewerControl.AddCheckBox("Lock Cull Frustum", false, (v) =>
             {
                 if (v)
@@ -74,15 +94,24 @@ namespace GUI.Types.Renderer
 
         protected abstract void LoadScene();
 
+        protected abstract void OnPickerDoubleClick(object sender, PickingTexture.PickingResponse pixelInfo);
+
         private void OnLoad(object sender, EventArgs e)
         {
             baseGrid = new ParticleGrid(20, 5, GuiContext);
+            selectedNodeRenderer = new(GuiContext);
 
             ViewerControl.Camera.SetViewportSize(ViewerControl.GLControl.Width, ViewerControl.GLControl.Height);
             ViewerControl.Camera.SetLocation(new Vector3(256));
             ViewerControl.Camera.LookAt(new Vector3(0));
 
+            ViewerControl.Camera.Picker = new PickingTexture(Scene.GuiContext, OnPickerDoubleClick);
+
+            var timer = new Stopwatch();
+            timer.Start();
             LoadScene();
+            timer.Stop();
+            Console.WriteLine($"Loading scene time: {timer.Elapsed}");
 
             if (Scene.AllNodes.Any())
             {
@@ -116,6 +145,8 @@ namespace GUI.Types.Renderer
             Scene.MainCamera = e.Camera;
             Scene.Update(e.FrameTime);
 
+            GL.Enable(EnableCap.CullFace);
+
             if (ShowBaseGrid)
             {
                 baseGrid.Render(e.Camera, RenderPass.Both);
@@ -136,6 +167,8 @@ namespace GUI.Types.Renderer
 
             Scene.RenderWithCamera(e.Camera, lockedCullFrustum);
 
+            selectedNodeRenderer.Render(e.Camera, RenderPass.Both);
+
             if (showStaticOctree)
             {
                 staticOctreeRenderer.Render(e.Camera, RenderPass.Both);
@@ -149,24 +182,27 @@ namespace GUI.Types.Renderer
 
         protected void AddRenderModeSelectionControl()
         {
-            if (renderModeComboBox == null)
+#if DEBUG
+            var button = new Button
             {
-                renderModeComboBox = ViewerControl.AddSelection("Render Mode", (renderMode, _) =>
+                Text = "Reload shaders",
+                AutoSize = true,
+            };
+            button.Click += (s, e) =>
+            {
+                if (ViewerControl.Camera.Picker is not null)
                 {
-                    foreach (var node in Scene.AllNodes)
-                    {
-                        node.SetRenderMode(renderMode);
-                    }
+                    ViewerControl.Camera.Picker.Dispose();
+                    ViewerControl.Camera.Picker = new PickingTexture(Scene.GuiContext, OnPickerDoubleClick);
+                    ViewerControl.Camera.Picker.Resize(ViewerControl.GLControl.Width, ViewerControl.GLControl.Height);
+                }
 
-                    if (SkyboxScene != null)
-                    {
-                        foreach (var node in SkyboxScene.AllNodes)
-                        {
-                            node.SetRenderMode(renderMode);
-                        }
-                    }
-                });
-            }
+                SetRenderMode(renderModeComboBox?.SelectedItem as string);
+            };
+            ViewerControl.AddControl(button);
+#endif
+
+            renderModeComboBox ??= ViewerControl.AddSelection("Render Mode", (renderMode, _) => SetRenderMode(renderMode));
         }
 
         private void SetAvailableRenderModes(IEnumerable<string> renderModes)
@@ -177,6 +213,7 @@ namespace GUI.Types.Renderer
                 renderModeComboBox.Enabled = true;
                 renderModeComboBox.Items.Add("Default Render Mode");
                 renderModeComboBox.Items.AddRange(renderModes.ToArray());
+                renderModeComboBox.Items.Add("Object Id");
                 renderModeComboBox.SelectedIndex = 0;
             }
             else
@@ -191,6 +228,33 @@ namespace GUI.Types.Renderer
         {
             Scene.SetEnabledLayers(layers);
             staticOctreeRenderer = new OctreeDebugRenderer<SceneNode>(Scene.StaticOctree, Scene.GuiContext, false);
+        }
+
+        private void SetRenderMode(string renderMode)
+        {
+            if (ViewerControl.Camera is not null)
+            {
+                if (renderMode == "Object Id")
+                {
+                    ViewerControl.Camera.Picker.Debug = true;
+                    return;
+                }
+
+                ViewerControl.Camera.Picker.Debug = false;
+            }
+
+            foreach (var node in Scene.AllNodes)
+            {
+                node.SetRenderMode(renderMode);
+            }
+
+            if (SkyboxScene != null)
+            {
+                foreach (var node in SkyboxScene.AllNodes)
+                {
+                    node.SetRenderMode(renderMode);
+                }
+            }
         }
     }
 }
