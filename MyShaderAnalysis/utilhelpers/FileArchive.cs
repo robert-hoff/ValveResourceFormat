@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using ValveResourceFormat.CompiledShader;
 
@@ -18,25 +19,26 @@ namespace MyShaderAnalysis.utilhelpers
     {
         private ARCHIVE archive;
         private List<FileVcsTokens> vcsFiles = new();
-
-        private VcsProgramType programType = VcsProgramType.Undetermined;
-        private VcsShaderModelType shaderModelType = VcsShaderModelType.Undetermined;
+        private ShaderFileDetail[] cachedShaderFileDetail;
+        private Boolean useModularLookup;
 
         /*
          * Collects all the vcs files in the given archive as FileVcsTokens
-         * It will fail if the vcs files don't observe the expected naming convention
+         * vcs files must follow the expected naming convention
+         * (should always be case when reading shaders from vpk archives)
          *
          *  {name}_{platform}_{shadermodel}_{programtype}.vcs
          *
          *
          */
         public FileArchive(ARCHIVE archive,
-            VcsProgramType programType = VcsProgramType.Undetermined,
-            VcsShaderModelType shaderModelType = VcsShaderModelType.Undetermined, int LIMIT_NR = 10000)
+            VcsProgramType programType1 = VcsProgramType.Undetermined,
+            VcsProgramType programType2 = VcsProgramType.Undetermined,
+            VcsShaderModelType shaderModelType = VcsShaderModelType.Undetermined,
+            bool useModularLookup = false,
+            int LIMIT_NR = 10000)
         {
             this.archive = archive;
-            this.programType = programType;
-            this.shaderModelType = shaderModelType;
             int count = 0;
             foreach (string filenamepath in Directory.GetFiles(FileArchives.GetArchiveDir(archive)))
             {
@@ -49,31 +51,111 @@ namespace MyShaderAnalysis.utilhelpers
                     vcsFiles.Add(new FileVcsTokens(archive, Path.GetFileName(filenamepath)));
                 }
             }
+
+            // filter the list based on passed criteria
+            Select(programType1, programType2);
+            Select(shaderModelType);
         }
 
-        private List<FileVcsTokens> ReduceFileListing()
+
+        public FileArchive Select(
+            VcsProgramType programType1,
+            VcsProgramType programType2 = VcsProgramType.Undetermined)
         {
+            cachedShaderFileDetail = null;
+            if (programType1 == VcsProgramType.Undetermined)
+            {
+                return this;
+            }
+            if (programType2 == VcsProgramType.Undetermined)
+            {
+                programType2 = programType1;
+            }
             List<FileVcsTokens> reducedFiles = new();
             foreach (FileVcsTokens vcsFile in vcsFiles)
             {
-                if ((programType == VcsProgramType.Undetermined ||
-                     programType == vcsFile.programType) &&
-                    (shaderModelType == VcsShaderModelType.Undetermined ||
-                     shaderModelType == vcsFile.shaderModelType))
+                if (vcsFile.programType == programType1 || vcsFile.programType == programType2)
                 {
                     reducedFiles.Add(vcsFile);
                 }
             }
-            return reducedFiles;
+            vcsFiles = reducedFiles;
+            return this;
         }
+
+        public FileArchive Select(VcsShaderModelType shaderModelType1)
+        {
+            if (shaderModelType1 == VcsShaderModelType.Undetermined)
+            {
+                return this;
+            }
+            List<FileVcsTokens> reducedFiles = new();
+            foreach (FileVcsTokens vcsFile in vcsFiles)
+            {
+                if (vcsFile.shaderModelType == shaderModelType1)
+                {
+                    reducedFiles.Add(vcsFile);
+                }
+            }
+            vcsFiles = reducedFiles;
+            return this;
+        }
+
+        public void UseModularLookup(Boolean useModularLookup)
+        {
+            this.useModularLookup = useModularLookup;
+        }
+
+
         public IEnumerable GetFileVcsTokens()
         {
-            foreach (var vcsFile in ReduceFileListing())
+            foreach (var vcsFile in vcsFiles)
             {
                 yield return vcsFile;
             }
         }
 
+
+
+
+
+        /*
+        private int GetFileIndex(int queryIndex)
+        {
+            if (vcsFiles.Count == 0)
+            {
+                throw new ShaderParserException($"FileArchive.GetFileIndex; archive is empty! queryIndex = {queryIndex}");
+            }
+            if (!useModularLookup && queryIndex >= vcsFiles.Count)
+            {
+                throw new ShaderParserException($"FileArchive.GetFileIndex; Index out of range {fileIndex}");
+            }
+            int fileIndex = queryIndex % vcsFiles.Count;
+            return fileIndex;
+        }
+        */
+
+        private ShaderFileDetail GetShaderFileDetail(int queryIndex)
+        {
+            if (vcsFiles.Count == 0)
+            {
+                throw new ShaderParserException($"FileArchive.GetFileIndex; archive is empty! queryIndex = {queryIndex}");
+            }
+            if (!useModularLookup && queryIndex >= vcsFiles.Count)
+            {
+                throw new ShaderParserException($"FileArchive.GetFileIndex; Index out of range {queryIndex}");
+            }
+            int fileIndex = queryIndex % vcsFiles.Count;
+            if (cachedShaderFileDetail[fileIndex] == null)
+            {
+                cachedShaderFileDetail = new ShaderFileDetail[vcsFiles.Count];
+            }
+            if (cachedShaderFileDetail[fileIndex] == null)
+            {
+                cachedShaderFileDetail[fileIndex] = new ShaderFileDetail(vcsFiles[fileIndex]);
+            }
+            return cachedShaderFileDetail[fileIndex];
+        }
 
 
         /*
@@ -82,37 +164,54 @@ namespace MyShaderAnalysis.utilhelpers
          */
         public IEnumerable GetShaderFiles()
         {
-            foreach (var vcsFile in ReduceFileListing())
+            for (int i = 0; i < vcsFiles.Count; i++)
             {
-                ShaderFile shaderFile = null;
-                try
-                {
-                    shaderFile = vcsFile.GetShaderFile();
-                }
-                // may throw ShaderParserException or UnexpectedMagicException
-                catch (Exception e)
-                {
-                    Console.WriteLine($"Error couldn't parse {vcsFile.filename} {e.Message}");
-                    continue;
-                }
-                yield return shaderFile;
+                yield return GetShaderFile(i);
             }
         }
 
 
+        public ShaderFile GetShaderFile(int queryIndex)
+        {
+
+
+            return null;
+        }
+
         /*
-         * Returns the byte content of the vcs files only as byte[]
          *
-         */
-        //public IEnumerable ShaderFileBytes()
-        //{
-        //    foreach (var vcsFile in ReduceFileListing())
-        //    {
+
+                        try
+                        {
+                            shaderFile = vcsFile.GetShaderFile();
+                        }
+                        // may throw ShaderParserException or UnexpectedMagicException
+                        catch (Exception e)
+                        {
+                            Console.WriteLine($"Error couldn't parse {vcsFile.filename} {e.Message}");
+                            continue;
+                        }
 
 
-        //        yield return null;
-        //    }
-        //}
+        */
+
+
+
+        private class ShaderFileDetail
+        {
+            public FileVcsTokens fileVcsTokens;
+            public string fileName;
+            public ShaderFile shaderFile;
+            public int zframeCount;
+
+            public ShaderFileDetail(FileVcsTokens fileVcsTokens)
+            {
+                this.fileVcsTokens = fileVcsTokens;
+                this.fileName = fileVcsTokens.filename;
+                this.shaderFile = fileVcsTokens.GetShaderFile();
+                this.zframeCount = shaderFile.GetZFrameCount();
+            }
+        }
 
 
 

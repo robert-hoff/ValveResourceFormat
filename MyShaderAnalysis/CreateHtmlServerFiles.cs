@@ -73,7 +73,14 @@ namespace MyShaderAnalysis
             // SaveAllServerFiles(ARCHIVE.dota_dac_gles, "citycrawl_building_anim_mobile_gles_30_ps.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
             // SaveAllServerFiles(ARCHIVE.dota_core_android_vulkan, "sky_model_android_vulkan_40_ps.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
             // SaveAllServerFiles(ARCHIVE.dota_dac_android_vulkan, "global_lit_simple_android_vulkan_40_ps.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
-            SaveAllServerFiles(ARCHIVE.alyx_hlvr_vulkan_v64, "cables_vulkan_50_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
+            // SaveAllServerFiles(ARCHIVE.alyx_hlvr_vulkan_v64, "cables_vulkan_50_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
+
+
+            SaveAllServerFiles(ARCHIVE.dota_game_vulkan_v65, "hero_vulkan_40_features.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
+            // SaveAllServerFiles(ARCHIVE.dota_game_vulkan_v65, "hero_vulkan_40_features.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
+            // SaveAllServerFiles(ARCHIVE.dota_game_vulkan_v65, "hero_vulkan_40_features.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
+            // SaveAllServerFiles(ARCHIVE.dota_game_vulkan_v65, "hero_vulkan_40_features.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
+
             // SaveAllServerFiles(ARCHIVE.dotagame_vulkan_v65, "multiblend_vulkan_40_ps.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
             // SaveAllServerFiles(ARCHIVE.dotagame_vulkan_v65, "multiblend_vulkan_40_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
             // SaveAllServerFiles(ARCHIVE.the_lab_v62, "bilateral_blur_pc_30_ps.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);

@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ValveResourceFormat.CompiledShader;
 
 namespace MyShaderAnalysis.batchtesting
 {
@@ -22,11 +23,13 @@ namespace MyShaderAnalysis.batchtesting
             // Console.WriteLine($"{ARCHIVE.alyx_hlvr_vulkan_v64}");
 
 
-            FileArchive fileArchive = new(ARCHIVE.alyx_hlvr_vulkan_v64);
-            foreach (var item in fileArchive.GetFileVcsTokens())
-            {
-                Debug.WriteLine($"{item}");
-            }
+            FileArchive fileArchive = new(ARCHIVE.alyx_hlvr_vulkan_v64,
+                VcsProgramType.VertexShader, VcsProgramType.PixelShader, useModularLookup: true);
+
+
+
+
+
 
 
         }

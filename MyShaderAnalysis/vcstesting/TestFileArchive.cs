@@ -63,7 +63,7 @@ namespace MyShaderAnalysis.vcstesting
             foreach (ARCHIVE archive in archives)
             {
                 // FileArchive vcsArchive = new FileArchive(archive, VcsProgramType.Features, VcsShaderModelType._30);
-                FileArchive vcsArchive = new FileArchive(archive, VcsProgramType.Features, VcsShaderModelType.Undetermined);
+                FileArchive vcsArchive = new FileArchive(archive, VcsProgramType.Features, VcsProgramType.Undetermined, VcsShaderModelType.Undetermined);
                 TestShaderFiles(vcsArchive);
             }
         }
@@ -74,7 +74,7 @@ namespace MyShaderAnalysis.vcstesting
             var archives = Enum.GetValues(typeof(ARCHIVE));
             foreach (ARCHIVE archive in archives)
             {
-                FileArchive vcsArchive = new FileArchive(archive, VcsProgramType.Undetermined, VcsShaderModelType.Undetermined);
+                FileArchive vcsArchive = new FileArchive(archive, VcsProgramType.Undetermined, VcsProgramType.Undetermined, VcsShaderModelType.Undetermined);
                 TestShaderFiles(vcsArchive);
             }
         }

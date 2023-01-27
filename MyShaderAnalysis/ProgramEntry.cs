@@ -34,30 +34,40 @@ namespace MyShaderAnalysis
             Console.SetOut(new ToDebugWriter());
 
             // Jan 2023
-            // TestCode.Run();
-
+            // BatchProcessFiles();
 
             // Earlier
-            //-----------
+            // BatchTesting1()
+            BatchProcessHtmlServerFiles();
+            // ParserSnippets();
+
+        }
+
+
+        public static void BatchProcessFiles()
+        {
+            TestCode.Run();
+        }
+
+
+
+        // TestSingleFileParsing.RunTrials();
+
+        // -- "comprehensive" tests against archive names (all files)
+        // R: yea, but not very user friendly!
+        public static void BatchTesting1()
+        {
+            // 2022 sometime ..
+            TestFileArchive.RunTrials();
+            // TestBatchParsing.RunTrials();
 
             // R: Jan 2023 - cannot find this file
             // TestSpirvDll.RunTrials();
 
-            // -- comprehensive tests against archive names (all files)
-            // TestFileArchive.RunTrials();
-
-            // TestBatchParsing.RunTrials();
-            // TestSingleFileParsing.RunTrials();
-
             // -- fall 2021
             // there is variously still some useful code among these files ..
             // ProgramEntriesOld.RunTrials();
-
-
-            BatchProcessHtmlServerFiles();
         }
-
-
 
         public static void BatchProcessHtmlServerFiles()
         {
