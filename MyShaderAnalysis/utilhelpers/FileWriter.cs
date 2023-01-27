@@ -77,6 +77,10 @@ namespace MyShaderAnalysis.utilhelpers
         public void WriteText(string text)
         {
             sw.WriteLine(text);
+            if (writeToConsole)
+            {
+                Console.WriteLine($"{text}");
+            }
         }
 
 

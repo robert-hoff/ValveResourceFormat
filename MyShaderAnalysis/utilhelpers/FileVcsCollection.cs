@@ -11,7 +11,7 @@ namespace MyShaderAnalysis.utilhelpers
     class FileVcsCollection
     {
 
-        public FileVcsCollection(ARCHIVE archive, string vcsCollectionName)
+        public FileVcsCollection(ARCHIVE archive)
         {
 
         }
@@ -28,12 +28,15 @@ namespace MyShaderAnalysis.utilhelpers
          * {multiblend_pcgl_30_features.vcs, multiblend_pcgl_30_vs.vcs, multiblend_pcgl_30_ps.vcs}
          * {hero_pcgl_30_features.vcs, hero_pcgl_30_vs.vcs, hero_pcgl_30_ps.vcs, hero_pcgl_30_psrs.vcs}
          *
+         * ordered as {features,vs,others}
+         *
          *
          */
         public static List<string> GetRelatedFiles(ARCHIVE archive, string vcsCollectionName)
         {
             if (vcsCollectionName.EndsWith(".vcs"))
             {
+                // e.g. 'hero_pcgl_30_ps.vcs' is shortened to 'hero_pcgl_30'
                 vcsCollectionName = Path.GetFileName(vcsCollectionName);
                 vcsCollectionName = vcsCollectionName.Substring(0, vcsCollectionName.LastIndexOf('_'));
             }

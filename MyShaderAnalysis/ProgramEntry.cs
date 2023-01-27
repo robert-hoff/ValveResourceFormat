@@ -9,6 +9,8 @@ using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 using MyShaderAnalysis.utilhelpers.snippetcode;
 using MyShaderAnalysis.compat;
 using MyShaderAnalysis.vcstesting;
+using MyShaderAnalysis.batchtesting;
+using MyShaderAnalysis.utilhelpers.parsetrials;
 
 namespace MyShaderAnalysis
 {
@@ -31,40 +33,63 @@ namespace MyShaderAnalysis
         {
             Console.SetOut(new ToDebugWriter());
 
+            // Jan 2023
+            // TestCode.Run();
 
+
+            // Earlier
+            //-----------
+
+            // R: Jan 2023 - cannot find this file
             // TestSpirvDll.RunTrials();
 
             // -- comprehensive tests against archive names (all files)
             // TestFileArchive.RunTrials();
+
             // TestBatchParsing.RunTrials();
             // TestSingleFileParsing.RunTrials();
-
-            // -- revise how files are managed as collections
-            // CreateHtmlServerFiles.RunTrials();
-
-
-            // DemoCode.RunTrials();
-            PrintoutVulkanCode.RunTrials();
-            // -- Looking at dynamic expressions
-            // ParseDynamicExpression.RunTrials();
-
-
 
             // -- fall 2021
             // there is variously still some useful code among these files ..
             // ProgramEntriesOld.RunTrials();
 
 
-            // -- testing code
-            // TestFileUtilFunctions.RunTrials();
-            // RegexExamples.RunTrials();
-            // Snippetcode.RunTrials();
-            // TestStuff.RunTrials();
+            BatchProcessHtmlServerFiles();
+        }
+
+
+
+        public static void BatchProcessHtmlServerFiles()
+        {
+            // -- revise how files are managed as collections
+            CreateHtmlServerFiles.RunTrials();
+        }
+
+
+        public static void ParserSnippets()
+        {
+            SingleFileParserExamples.RunTrials();
+            // PrintoutVulkanCode.RunTrials();
+        }
+
+
+        public static void BasicFunctionalitySnippets()
+        {
+            // -- Looking at dynamic expressions
+            ParseDynamicExpression.RunTrials();
+            // EncodeZstdDictAsString.RunTrials();
             // CrcTrialsSha1.RunTrials();
             // CrcTrialsMurmur32.RunTrials();
-            // EncodeZstdDictAsString.RunTrials();
+        }
 
+        public static void CSharpSnippets()
+        {
+            // RegexExamples.RunTrials();
+            Snippetcode.RunTrials();
+        }
 
+        public static void TestConstraintRules()
+        {
             // CompatRulesGenerationTestRuns.RunTrials();
             // CompatRulesGenericStaticClass.RunTrials();
             // CompatRulesMultiframe.RunTrials();
@@ -78,9 +103,9 @@ namespace MyShaderAnalysis
             // CompatRules2.RunTrials();
             // CompatRules.RunTrials();
             // BitTestGeneration.RunTrials();
-
-
         }
+
+
     }
 }
 

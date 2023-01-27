@@ -122,7 +122,7 @@ namespace MyShaderAnalysis.codestash
             FileVcsTokens fileTokens = new FileVcsTokens(ARCHIVE.dota_game_pcgl_v64, filenamepath);
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             // List<string> relatedFiles = GetRelatedFiles2(fileTokens.filenamepath);
-            List<string> relatedFiles = FileVcsCollection.GetRelatedFiles(ARCHIVE.dota_game_pcgl_v64, fileTokens.filenamepath);
+            List<string> relatedFiles = GetRelatedFilesOld(ARCHIVE.dota_game_pcgl_v64, fileTokens.filenamepath);
             var buffer = new StringWriter(CultureInfo.InvariantCulture);
             new PrintVcsFileSummary(shaderFile, buffer.Write, showRichTextBoxLinks: true, relatedFiles);
 
@@ -136,6 +136,45 @@ namespace MyShaderAnalysis.codestash
             // fileWriter.GetOutputWriter()(buffer.ToString());
             fileWriter.CloseStreamWriter();
         }
+
+        /*
+         * copy of method in FileVcsCollection
+         *
+         */
+        private static List<string> GetRelatedFilesOld(ARCHIVE archive, string vcsCollectionName)
+        {
+            if (vcsCollectionName.EndsWith(".vcs"))
+            {
+                vcsCollectionName = Path.GetFileName(vcsCollectionName);
+                vcsCollectionName = vcsCollectionName.Substring(0, vcsCollectionName.LastIndexOf('_'));
+            }
+            List<string> relatedFiles = new();
+            string featuresFile = null;
+            foreach (var vcsFile in Directory.GetFiles(FileArchives.GetArchiveDir(archive)))
+            {
+                if (Path.GetFileName(vcsFile).StartsWith(vcsCollectionName))
+                {
+                    if (vcsFile.EndsWith("features.vcs"))
+                    {
+                        featuresFile = Path.GetFileName(vcsFile);
+                    } else if (vcsFile.EndsWith("vs.vcs"))
+                    {
+                        relatedFiles.Insert(0, Path.GetFileName(vcsFile));
+                    } else
+                    {
+                        relatedFiles.Add(Path.GetFileName(vcsFile));
+                    }
+                }
+            }
+            if (featuresFile != null)
+            {
+                relatedFiles.Insert(0, featuresFile);
+            }
+            return relatedFiles;
+        }
+
+
+
 
 
 

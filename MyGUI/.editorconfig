@@ -11,7 +11,11 @@ trim_trailing_whitespace = true
 dotnet_diagnostic.CA1812.severity = none
 dotnet_diagnostic.CA1822.severity = none
 
-
+# R: necessary for compiling MyGUI component
+# error CA1806: DecompileSpirv calls PushUInt32 but does not use the HRESULT or error code that the method returns
+dotnet_diagnostic.CA1806.severity = none
+# error CA2213: 'ZFrameRichTextBox' contains field 'zframeFile' that is of IDisposable type 'ZFrameFile', but it is never disposed
+dotnet_diagnostic.CA2213.severity = none
 
 
 [*.cs]

@@ -56,15 +56,16 @@ namespace MyShaderAnalysis.utilhelpers
             List<FileVcsTokens> reducedFiles = new();
             foreach (FileVcsTokens vcsFile in vcsFiles)
             {
-                if ((programType == VcsProgramType.Undetermined || programType == vcsFile.programType) &&
-                    (shaderModelType == VcsShaderModelType.Undetermined || shaderModelType == vcsFile.shaderModelType))
+                if ((programType == VcsProgramType.Undetermined ||
+                     programType == vcsFile.programType) &&
+                    (shaderModelType == VcsShaderModelType.Undetermined ||
+                     shaderModelType == vcsFile.shaderModelType))
                 {
                     reducedFiles.Add(vcsFile);
                 }
             }
             return reducedFiles;
         }
-
         public IEnumerable GetFileVcsTokens()
         {
             foreach (var vcsFile in ReduceFileListing())

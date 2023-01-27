@@ -7,7 +7,28 @@ using ValveResourceFormat.Serialization.VfxEval;
 using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
-
+/*
+ * Jan 2023 recap
+ * Example Vulkan bytecode
+ *
+ * 03 02 23 07 00 00 01 00 0A 00 08 00
+ * AC 62 00 00 00 00 00 00 11 00 02 00 01 00 00 00 0B 00 06 00
+ *
+ * SPIR-V magic number is 0x07230203
+ * Version = 0x00010000 = 0.1.0.0
+ * Generator 0x0008000A
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ *
+ */
 namespace MyShaderAnalysis.utilhelpers.parsetrials
 {
     public class ParseVulkanSource : ShaderDataReader

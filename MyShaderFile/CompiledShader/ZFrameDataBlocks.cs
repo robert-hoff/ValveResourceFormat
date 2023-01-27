@@ -127,6 +127,8 @@ namespace ValveResourceFormat.CompiledShader
         public VulkanSource(ShaderDataReader datareader, int sourceId) : base(datareader, sourceId)
         {
             this.offset = datareader.ReadInt32();
+            // IS THIS TRUE?
+            // if the offset is 0 there is no source present and the file is considered empty
             if (offset > 0)
             {
                 arg0 = datareader.ReadInt32();

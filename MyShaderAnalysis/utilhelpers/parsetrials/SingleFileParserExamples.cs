@@ -3,16 +3,15 @@ using System.Collections.Generic;
 using System.IO;
 using ValveResourceFormat.CompiledShader;
 using MyShaderAnalysis.utilhelpers;
-using MyShaderAnalysis.utilhelpers.parsetrials;
 using MyShaderAnalysis.utilhelpers.snippetcode;
 using static MyShaderAnalysis.utilhelpers.FileArchives;
 using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
 using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
-namespace MyShaderAnalysis
+namespace MyShaderAnalysis.utilhelpers.parsetrials
 {
-    class DemoCode
+    class SingleFileParserExamples
     {
 
         public static void RunTrials()
@@ -64,16 +63,12 @@ namespace MyShaderAnalysis
             new DataReaderVcsBytes(inputFile).PrintByteDetail();
         }
 
-
-
-
-
         static void V62ParseZFrameBytes2()
         {
             // string filenamepath = GetFilenamepath(ARCHIVE.the_lab_pc_v62, "downsample_pc_40_features.vcs");
             // string filenamepath = GetFilenamepath(ARCHIVE.the_lab_pc_v62, "downsample_pc_40_ps.vcs");
             string filenamepath = GetFilenamepath(ARCHIVE.the_lab_pc_v62, "aerial_perspective_pc_30_features.vcs");
-            ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
+            ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             // byte[] zframeDecomp = shaderFile.GetDecompressedZFrame(0);
             ZFrameFile zframe = shaderFile.GetZFrameFile(0);
             zframe.PrintByteDetail();
@@ -91,7 +86,7 @@ namespace MyShaderAnalysis
             string filenamepath = GetFilenamepath(ARCHIVE.the_lab_pc_v62, "downsample_pc_40_features.vcs");
             // string filenamepath = GetFilenamepath(ARCHIVE.the_lab_pc_v62, "downsample_pc_40_ps.vcs");
             // string filenamepath = GetFilenamepath(ARCHIVE.the_lab_pc_v62, "aerial_perspective_pc_30_features.vcs");
-            ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
+            ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             shaderFile.PrintByteDetail();
         }
 
@@ -112,7 +107,7 @@ namespace MyShaderAnalysis
             // -- original approach
             new DataReaderVcsBytes(filenamepath).PrintByteDetail();
             // -- production
-            ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
+            ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             shaderFile.PrintByteDetail();
         }
 
@@ -121,7 +116,7 @@ namespace MyShaderAnalysis
         {
             // string filenamepath = $"{DOTA_GAME_PC_SOURCE_V65}/crystal_pc_40_vs.vcs";
             string filenamepath = GetFilenamepath(ARCHIVE.dota_game_pc_v65, "crystal_pc_40_vs.vcs");
-            ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
+            ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
 
             byte[] result = shaderFile.GetCompressedZFrameData(0);
 
@@ -192,9 +187,10 @@ namespace MyShaderAnalysis
             ShaderDataReader datareader = new ShaderDataReader(filenamepath, buffer.Write);
             datareader.ShowByteCount();
             datareader.ShowBytes(200);
-            try {
+            try
+            {
                 datareader.ShowEndOfFile();
-            } catch (Exception) {}
+            } catch (Exception) { }
 
             Console.WriteLine($"{buffer}");
         }

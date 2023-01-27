@@ -17,14 +17,15 @@ namespace MyShaderAnalysis.utilhelpers
     class MyShaderUtilHelpers
     {
 
-        public static List<string> GetVcsFiles(string dir1, VcsProgramType fileType, int numEnding = -1, bool sortFiles = true, int LIMIT_NR = 1000)
+        public static List<string> GetVcsFiles(string dir1, VcsProgramType fileType,
+            int numEnding = -1, bool sortFiles = true, int LIMIT_NR = 1000)
         {
             return GetVcsFiles(dir1, null, fileType, numEnding, sortFiles, LIMIT_NR);
         }
 
-
         public static List<string> GetVcsFiles(string dir1, string dir2 = null,
-            VcsProgramType fileType = VcsProgramType.Undetermined, int numEnding = -1, bool sortFiles = true, int LIMIT_NR = 1000)
+            VcsProgramType fileType = VcsProgramType.Undetermined,
+            int numEnding = -1, bool sortFiles = true, int LIMIT_NR = 1000)
         {
             List<string> filesFound = new();
             if (fileType == VcsProgramType.Features || fileType == VcsProgramType.Undetermined)
@@ -110,8 +111,6 @@ namespace MyShaderAnalysis.utilhelpers
             }
             return filesFound;
         }
-
-
 
 
 
