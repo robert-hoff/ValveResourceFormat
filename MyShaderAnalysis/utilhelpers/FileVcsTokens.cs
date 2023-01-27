@@ -63,7 +63,7 @@ using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
  */
 namespace MyShaderAnalysis.utilhelpers
 {
-    internal class FileVcsTokens
+    public class FileVcsTokens
     {
         // used to have this - but isn't actually needed (parser determines this independently)
         // public string platformType { get; }  // pcgl, pc, vulkan

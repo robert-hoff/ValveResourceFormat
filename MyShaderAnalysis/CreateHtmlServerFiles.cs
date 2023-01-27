@@ -63,9 +63,9 @@ namespace MyShaderAnalysis
         public static void SaveServerSets()
         {
             // SaveAllServerFiles(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
-            SaveAllServerFiles(ARCHIVE.dota_game_pcgl_v64, "3dskyboxstencil_pcgl_30_features.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
-            SaveAllServerFiles(ARCHIVE.dota_game_pcgl_v64, "3dskyboxstencil_pcgl_30_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
-            SaveAllServerFiles(ARCHIVE.dota_game_pcgl_v64, "3dskyboxstencil_pcgl_30_ps.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
+            // SaveAllServerFiles(ARCHIVE.dota_game_pcgl_v64, "3dskyboxstencil_pcgl_30_features.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
+            // SaveAllServerFiles(ARCHIVE.dota_game_pcgl_v64, "3dskyboxstencil_pcgl_30_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
+            // SaveAllServerFiles(ARCHIVE.dota_game_pcgl_v64, "3dskyboxstencil_pcgl_30_ps.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
             // SaveAllServerFiles(ARCHIVE.dotagame_pc, "3dskyboxstencil_pc_30_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
             // SaveAllServerFiles(ARCHIVE.dotagame_pc, "3dskyboxstencil_pc_40_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
             // SaveAllServerFiles(ARCHIVE.dotagame_pc, "multiblend_pc_40_vs.vcs", zframesToPrint: 20, gpuSourcesToPrint: 5);
@@ -89,6 +89,9 @@ namespace MyShaderAnalysis
             // SaveAllServerFiles(ARCHIVE.the_lab_v62, "aerial_perspective_pc_30_features.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
             // SaveAllServerFiles(ARCHIVE.the_lab_v62, "aerial_perspective_pc_30_ps.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
             // SaveAllServerFiles(ARCHIVE.the_lab_v62, "aerial_perspective_pc_30_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
+
+
+            SaveAllServerFiles(ARCHIVE.alyx_hlvr_vulkan_v64, "vr_xen_foliage_vulkan_50_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
         }
 
         public static void SaveAllServerFiles(ARCHIVE archive, string filename, int zframesToPrint, int gpuSourcesToPrint)

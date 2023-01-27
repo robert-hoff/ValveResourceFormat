@@ -31,18 +31,20 @@ namespace MyShaderAnalysis.utilhelpers
          *
          *
          */
+        // signature (1,1,1)
         public FileArchive(ARCHIVE archive,
-            VcsProgramType programType1 = VcsProgramType.Undetermined,
-            VcsProgramType programType2 = VcsProgramType.Undetermined,
-            VcsShaderModelType shaderModelType = VcsShaderModelType.Undetermined,
+            VcsProgramType programType1,
+            VcsProgramType programType2,
+            VcsShaderModelType shaderModelType,
             bool useModularLookup = false,
-            int LIMIT_NR = 10000)
+            int maxFiles = 10000)
         {
             this.archive = archive;
+            this.useModularLookup = useModularLookup;
             int count = 0;
             foreach (string filenamepath in Directory.GetFiles(FileArchives.GetArchiveDir(archive)))
             {
-                if (count++ > LIMIT_NR)
+                if (count++ > maxFiles)
                 {
                     break;
                 }
@@ -57,10 +59,49 @@ namespace MyShaderAnalysis.utilhelpers
             Select(shaderModelType);
         }
 
+        // signature (0,0,0)
+        public FileArchive(ARCHIVE archive,
+            bool useModularLookup = false,
+            int maxFiles = 10000) : this(archive,
+                VcsProgramType.Undetermined, VcsProgramType.Undetermined, VcsShaderModelType.Undetermined, useModularLookup, maxFiles)
+        { }
+
+        // signature (1,0,0)
+        public FileArchive(ARCHIVE archive,
+            VcsProgramType programType1,
+            bool useModularLookup = false,
+            int maxFiles = 10000) : this(archive,
+                programType1, VcsProgramType.Undetermined, VcsShaderModelType.Undetermined, useModularLookup, maxFiles)
+        { }
+
+        // signature (0,0,1)
+        public FileArchive(ARCHIVE archive,
+            VcsShaderModelType shaderModelType,
+            bool useModularLookup = false,
+            int maxFiles = 10000) : this(archive,
+                VcsProgramType.Undetermined, VcsProgramType.Undetermined, shaderModelType, useModularLookup, maxFiles)
+        { }
+
+        // signature (1,0,1)
+        public FileArchive(ARCHIVE archive,
+            VcsProgramType programType1,
+            VcsShaderModelType shaderModelType,
+            bool useModularLookup = false,
+            int maxFiles = 10000) : this(archive, programType1, VcsProgramType.Undetermined, shaderModelType, useModularLookup, maxFiles)
+        { }
+
+        // signature (1,1,0)
+        public FileArchive(ARCHIVE archive,
+            VcsProgramType programType1,
+            VcsProgramType programType2,
+            bool useModularLookup = false,
+            int maxFiles = 10000) : this(archive,
+                programType1, programType2, VcsShaderModelType.Undetermined, useModularLookup, maxFiles)
+        { }
+
 
         public FileArchive Select(
-            VcsProgramType programType1,
-            VcsProgramType programType2 = VcsProgramType.Undetermined)
+        VcsProgramType programType1, VcsProgramType programType2 = VcsProgramType.Undetermined)
         {
             cachedShaderFileDetail = null;
             if (programType1 == VcsProgramType.Undetermined)
@@ -115,25 +156,16 @@ namespace MyShaderAnalysis.utilhelpers
             }
         }
 
-
-
-
-
-        /*
-        private int GetFileIndex(int queryIndex)
+        public int GetFileCount()
         {
-            if (vcsFiles.Count == 0)
-            {
-                throw new ShaderParserException($"FileArchive.GetFileIndex; archive is empty! queryIndex = {queryIndex}");
-            }
-            if (!useModularLookup && queryIndex >= vcsFiles.Count)
-            {
-                throw new ShaderParserException($"FileArchive.GetFileIndex; Index out of range {fileIndex}");
-            }
-            int fileIndex = queryIndex % vcsFiles.Count;
-            return fileIndex;
+            return vcsFiles.Count;
         }
-        */
+
+        public FileVcsTokens GetFile(int queryIndex)
+        {
+            return vcsFiles[useModularLookup ? queryIndex % vcsFiles.Count : queryIndex];
+        }
+
 
         private ShaderFileDetail GetShaderFileDetail(int queryIndex)
         {
@@ -146,20 +178,19 @@ namespace MyShaderAnalysis.utilhelpers
                 throw new ShaderParserException($"FileArchive.GetFileIndex; Index out of range {queryIndex}");
             }
             int fileIndex = queryIndex % vcsFiles.Count;
-            if (cachedShaderFileDetail[fileIndex] == null)
+            if (cachedShaderFileDetail == null)
             {
                 cachedShaderFileDetail = new ShaderFileDetail[vcsFiles.Count];
             }
             if (cachedShaderFileDetail[fileIndex] == null)
             {
-                cachedShaderFileDetail[fileIndex] = new ShaderFileDetail(vcsFiles[fileIndex]);
+                cachedShaderFileDetail[fileIndex] = new ShaderFileDetail(vcsFiles[fileIndex], useModularLookup);
             }
             return cachedShaderFileDetail[fileIndex];
         }
 
-
         /*
-         * Attempt to parse the files into ShaderFile. Returns them if successful or reports error.
+         * Iterate the ShaderFile's
          *
          */
         public IEnumerable GetShaderFiles()
@@ -170,57 +201,81 @@ namespace MyShaderAnalysis.utilhelpers
             }
         }
 
-
         public ShaderFile GetShaderFile(int queryIndex)
         {
-
-
-            return null;
+            try
+            {
+                return GetShaderFileDetail(queryIndex).shaderFile;
+            }
+            catch (Exception e)
+            {
+                throw new ShaderParserException($"FileArchive.GetShaderFile error parsing file {vcsFiles[queryIndex%vcsFiles.Count]}");
+            }
         }
 
-        /*
-         *
+        public int GetZFrameCount(int queryIndex)
+        {
+            return GetShaderFileDetail(queryIndex).zframeCount;
+        }
 
-                        try
-                        {
-                            shaderFile = vcsFile.GetShaderFile();
-                        }
-                        // may throw ShaderParserException or UnexpectedMagicException
-                        catch (Exception e)
-                        {
-                            Console.WriteLine($"Error couldn't parse {vcsFile.filename} {e.Message}");
-                            continue;
-                        }
+        public ZFrameFile GetZFrameFile(int queryIndexShader, int queryIndexFrame)
+        {
+            return GetShaderFileDetail(queryIndexShader).GetZFrameFile(queryIndexFrame);
+        }
+
+        public int GetSourceCount(int queryIndexShader, int queryIndexFrame)
+        {
+            return GetShaderFileDetail(queryIndexShader).zframeCount;
+        }
 
 
-        */
 
 
 
         private class ShaderFileDetail
         {
             public FileVcsTokens fileVcsTokens;
+            public bool useModularLookup;
             public string fileName;
             public ShaderFile shaderFile;
             public int zframeCount;
+            private ZFrameFile[] zFrameFiles;
 
-            public ShaderFileDetail(FileVcsTokens fileVcsTokens)
+            public ShaderFileDetail(FileVcsTokens fileVcsTokens, bool useModularLookup)
             {
                 this.fileVcsTokens = fileVcsTokens;
+                this.useModularLookup = useModularLookup;
                 this.fileName = fileVcsTokens.filename;
                 this.shaderFile = fileVcsTokens.GetShaderFile();
                 this.zframeCount = shaderFile.GetZFrameCount();
+                zFrameFiles = new ZFrameFile[zframeCount];
+            }
+
+            public ZFrameFile GetZFrameFile(int queryIndex)
+            {
+                if (zframeCount == 0)
+                {
+                    throw new ShaderParserException($"ShaderFileDetail.GetZFrameFile; no zframes defined, on queryIndex = {queryIndex}");
+                }
+                if (!useModularLookup && queryIndex >= zframeCount)
+                {
+                    throw new ShaderParserException($"ShaderFileDetail.GetZFrameFile; Index out of range {queryIndex}");
+                }
+                int fileIndex = queryIndex % zframeCount;
+                if (zFrameFiles[fileIndex] == null)
+                {
+                    zFrameFiles[fileIndex] = shaderFile.GetZFrameFileByIndex(fileIndex);
+                }
+                return zFrameFiles[fileIndex];
+            }
+
+            public int GetSourceCount(int queryIndex)
+            {
+                return GetZFrameFile(queryIndex).gpuSourceCount;
             }
         }
-
-
-
-
     }
 }
-
-
-
 
 
 

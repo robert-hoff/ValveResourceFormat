@@ -34,11 +34,11 @@ namespace MyShaderAnalysis
             Console.SetOut(new ToDebugWriter());
 
             // Jan 2023
-            // BatchProcessFiles();
+            BatchProcessFiles();
 
             // Earlier
             // BatchTesting1()
-            BatchProcessHtmlServerFiles();
+            // BatchProcessHtmlServerFiles();
             // ParserSnippets();
 
         }
@@ -46,9 +46,9 @@ namespace MyShaderAnalysis
 
         public static void BatchProcessFiles()
         {
-            TestCode.Run();
+            TestSpirvReflection.Run();
+            // TestBatchQueries.Run();
         }
-
 
 
         // TestSingleFileParsing.RunTrials();

@@ -32,8 +32,8 @@ namespace MyShaderAnalysis.vcstesting
             int LIMIT_ZFRAMES = 20;
             int LIMIT_GPU_SOURCES = 20;
 
-            // FileArchive vcsArchive = new FileArchive(ARCHIVE.alyx_hlvr_vulkan_v64, LIMIT_NR: 20000);
-            FileArchive vcsArchive = new FileArchive(ARCHIVE.alyx_core_vulkan_v64, LIMIT_NR: 20000);
+            // FileArchive vcsArchive = new FileArchive(ARCHIVE.alyx_hlvr_vulkan_v64, maxFiles: 20000);
+            FileArchive vcsArchive = new FileArchive(ARCHIVE.alyx_core_vulkan_v64, maxFiles: 20000);
             foreach (ShaderFile shaderFile in vcsArchive.GetShaderFiles())
             {
                 for (int zi = 0; zi < Math.Min(shaderFile.GetZFrameCount(), LIMIT_ZFRAMES); zi++)
