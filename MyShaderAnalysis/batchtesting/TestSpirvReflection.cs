@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ValveResourceFormat.CompiledShader;
+using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
 namespace MyShaderAnalysis.batchtesting
 {
@@ -16,16 +17,94 @@ namespace MyShaderAnalysis.batchtesting
 
         public static void Run()
         {
+            // TestSpecificFile2();
+            TestSpecificFile();
+            // BatchTestSpirvReflection();
             // ProblemFile();
             // NotAProblemFile();
             // IsolateSpirvReflection3();
             // IsolateSpirvReflection2();
             // IsolateSpirvReflection1();
-            BatchTestFirstSourceEachFile();
+            // BatchTestFirstSourceEachFile();
             // ShowZFramesAndSourceCount();
             // PrintServerFiles();
             // TestSpirVReflection();
         }
+
+
+        /*
+         * this file WORKS
+         * but decompiling the spirv bytes with the meta data bytes does not work
+         *
+         *
+         */
+        public static void TestSpecificFile2()
+        {
+            FileVcsTokens vcsTokens = new FileVcsTokens(ARCHIVE.alyx_hlvr_vulkan_v64, "cables_vulkan_50_ps.vcs");
+            ZFrameFile zFrameFile = vcsTokens.GetZframeFile(0);
+            VulkanSource vulkanSource = (VulkanSource)zFrameFile.gpuSources[0];
+            // byte[] spirvBytes = vulkanSource.GetSpirvBytes();
+            // string decompiledSource = DecompileSpirvDll.DecompileVulkan(spirvBytes);
+            // Debug.WriteLine($"{decompiledSource}");
+
+            // -- decompiling the source bytes (with the meta data)
+            byte[] sourceBytes = vulkanSource.sourcebytes;
+            string decompiledSource = DecompileSpirvDll.DecompileVulkan(sourceBytes);
+            // Debug.WriteLine($"{BytesToString(sourceBytes)}");
+        }
+
+
+        /*
+         * This file demonstrates it is not the size of the bytes that is the problem
+         *
+         * cables_vulkan_50_ps.vcs zframeId[0x44] source[0] source-size=1104
+         *
+         */
+        public static void TestSpecificFile()
+        {
+            FileVcsTokens vcsTokens = new FileVcsTokens(ARCHIVE.alyx_hlvr_vulkan_v64, "cables_vulkan_50_ps.vcs");
+            ZFrameFile zFrameFile = vcsTokens.GetZframeFile(0x44);
+            VulkanSource vulkanSource = (VulkanSource)zFrameFile.gpuSources[0];
+            byte[] spirvBytes = vulkanSource.GetSpirvBytes();
+            // string decompiledSource = DecompileSpirvDll.DecompileVulkan(spirvBytes); // will throw an exception
+            Debug.WriteLine($"{BytesToString(spirvBytes)}");
+
+
+            // -- decompiling the source bytes (with the meta data) also throws an exception
+            // byte[] sourceBytes = vulkanSource.sourcebytes;
+            // string decompiledSource = DecompileSpirvDll.DecompileVulkan(sourceBytes);
+            // Debug.WriteLine($"{BytesToString(sourceBytes)}");
+        }
+
+
+        /*
+         * This identifies a few more problematic files. For example
+         *
+         * cables_vulkan_50_ps.vcs zframeId[0x44] source[0] source-size=1104
+         *
+         *
+         *
+         */
+        public static void BatchTestSpirvReflection()
+        {
+            FileArchive fileArchive = new(ARCHIVE.alyx_hlvr_vulkan_v64, VS, PS);
+            int fileCount = fileArchive.GetFileCount();
+            for (int i = 0; i < fileCount; i++)
+            {
+                FileVcsTokens fileVcsTokens = fileArchive.GetFileVcsTokens(i);
+                int zFrameCount = fileArchive.GetZFrameCount(i);
+                for (int j = 0; j < zFrameCount; j++)
+                {
+                    ZFrameFile zFrameFile = fileArchive.GetZFrameFile(i, j);
+                    new DecompileSpirvTester(zFrameFile);
+                }
+                if (i==2)
+                {
+                    break;
+                }
+            }
+        }
+
 
         public static void ProblemFile()
         {
