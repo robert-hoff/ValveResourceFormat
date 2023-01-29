@@ -48,6 +48,10 @@ namespace MyShaderAnalysis
         {
             TestSpirvReflection.Run();
             // TestBatchQueries.Run();
+
+            // from an earlier effort analysing the data in zframes
+            // I'd like to do something similar for the Vulkan source code ..
+            // StaticAnalysisZframes.RunTrials();
         }
 
 

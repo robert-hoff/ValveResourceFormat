@@ -161,7 +161,7 @@ namespace MyShaderAnalysis.utilhelpers
             return vcsFiles.Count;
         }
 
-        public FileVcsTokens GetFile(int queryIndex)
+        public FileVcsTokens GetFileVcsTokens(int queryIndex)
         {
             return vcsFiles[useModularLookup ? queryIndex % vcsFiles.Count : queryIndex];
         }
@@ -225,7 +225,7 @@ namespace MyShaderAnalysis.utilhelpers
 
         public int GetSourceCount(int queryIndexShader, int queryIndexFrame)
         {
-            return GetShaderFileDetail(queryIndexShader).zframeCount;
+            return GetShaderFileDetail(queryIndexShader).GetSourceCount(queryIndexFrame);
         }
 
 

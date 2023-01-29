@@ -53,7 +53,7 @@ namespace MyShaderAnalysis.batchtesting
             FileArchive fileArchive = new(ARCHIVE.alyx_hlvr_vulkan_v64, VS, PS, useModularLookup: true);
             for (int i = 0; i < fileArchive.GetFileCount() + 1; i++)
             {
-                Debug.WriteLine($"{fileArchive.GetFile(i)} zFrameCount = {fileArchive.GetZFrameCount(i)}");
+                Debug.WriteLine($"{fileArchive.GetFileVcsTokens(i)} zFrameCount = {fileArchive.GetZFrameCount(i)}");
             }
         }
 

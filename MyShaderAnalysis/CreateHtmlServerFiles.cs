@@ -75,10 +75,10 @@ namespace MyShaderAnalysis
             // SaveAllServerFiles(ARCHIVE.dota_dac_android_vulkan, "global_lit_simple_android_vulkan_40_ps.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
             // SaveAllServerFiles(ARCHIVE.alyx_hlvr_vulkan_v64, "cables_vulkan_50_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
 
-            //SaveAllServerFiles(ARCHIVE.dota_game_vulkan_v65, "hero_vulkan_40_features.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
-            //SaveAllServerFiles(ARCHIVE.dota_game_vulkan_v65, "hero_vulkan_40_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
-            //SaveAllServerFiles(ARCHIVE.dota_game_vulkan_v65, "hero_vulkan_40_ps.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
-            //SaveAllServerFiles(ARCHIVE.dota_game_vulkan_v65, "hero_vulkan_40_psrs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
+            SaveAllServerFiles(ARCHIVE.dota_game_vulkan_v65, "hero_vulkan_40_features.vcs", zframesToPrint: 5, gpuSourcesToPrint: 20);
+            SaveAllServerFiles(ARCHIVE.dota_game_vulkan_v65, "hero_vulkan_40_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 20);
+            SaveAllServerFiles(ARCHIVE.dota_game_vulkan_v65, "hero_vulkan_40_ps.vcs", zframesToPrint: 5, gpuSourcesToPrint: 20);
+            SaveAllServerFiles(ARCHIVE.dota_game_vulkan_v65, "hero_vulkan_40_psrs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 20);
 
             // SaveAllServerFiles(ARCHIVE.dotagame_vulkan_v65, "multiblend_vulkan_40_ps.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
             // SaveAllServerFiles(ARCHIVE.dotagame_vulkan_v65, "multiblend_vulkan_40_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
@@ -90,8 +90,9 @@ namespace MyShaderAnalysis
             // SaveAllServerFiles(ARCHIVE.the_lab_v62, "aerial_perspective_pc_30_ps.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
             // SaveAllServerFiles(ARCHIVE.the_lab_v62, "aerial_perspective_pc_30_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
 
-
-            SaveAllServerFiles(ARCHIVE.alyx_hlvr_vulkan_v64, "vr_xen_foliage_vulkan_50_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
+            // SaveAllServerFiles(ARCHIVE.alyx_hlvr_vulkan_v64, "vr_xen_foliage_vulkan_50_features.vcs", zframesToPrint: 30, gpuSourcesToPrint: 30);
+            // SaveAllServerFiles(ARCHIVE.alyx_hlvr_vulkan_v64, "vr_xen_foliage_vulkan_50_vs.vcs", zframesToPrint: 30, gpuSourcesToPrint: 30);
+            // SaveAllServerFiles(ARCHIVE.alyx_hlvr_vulkan_v64, "vr_xen_foliage_vulkan_50_ps.vcs", zframesToPrint: 30, gpuSourcesToPrint: 30);
         }
 
         public static void SaveAllServerFiles(ARCHIVE archive, string filename, int zframesToPrint, int gpuSourcesToPrint)
