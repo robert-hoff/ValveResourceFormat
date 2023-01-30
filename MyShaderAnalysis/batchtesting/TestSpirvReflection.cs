@@ -2,6 +2,7 @@ using MyShaderAnalysis.utilhelpers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,9 +18,11 @@ namespace MyShaderAnalysis.batchtesting
 
         public static void Run()
         {
+            // CreateSpirvSamples();
+            // WriteSpirvBytesToFile();
             // TestSpecificFile2();
-            TestSpecificFile();
-            // BatchTestSpirvReflection();
+            // TestSpecificFile();
+            BatchTestSpirvReflection();
             // ProblemFile();
             // NotAProblemFile();
             // IsolateSpirvReflection3();
@@ -29,6 +32,42 @@ namespace MyShaderAnalysis.batchtesting
             // ShowZFramesAndSourceCount();
             // PrintServerFiles();
             // TestSpirVReflection();
+        }
+
+
+        //
+
+
+        public static void CreateSpirvSamples()
+        {
+            // byte[] spirvBytes = File.ReadAllBytes(@"X:\checkouts\SPIRV-Cross\vcs_vulkan_samples\source2.spv");
+            byte[] spirvBytes = File.ReadAllBytes(@"X:\checkouts\SPIRV-Cross\vcs_vulkan_samples\sample3.spv");
+            // Debug.WriteLine($"{BytesToString(spirvBytes)}");
+
+            string filename = "sample2.spv";
+            string directory = @"Z:\dev\www\vcs.codecreation.dev\spirv-samples\";
+            //Debug.WriteLine($"write spirv bytes to {directory}{filename}");
+            File.WriteAllBytes($"{directory}{filename}", spirvBytes);
+
+        }
+
+
+        public static void WriteSpirvBytesToFile()
+        {
+            FileVcsTokens vcsTokens = new FileVcsTokens(ARCHIVE.alyx_hlvr_vulkan_v64, "cables_vulkan_50_ps.vcs");
+            ZFrameFile zFrameFile = vcsTokens.GetZframeFile(0x44);
+            VulkanSource vulkanSource = (VulkanSource)zFrameFile.gpuSources[0];
+            byte[] spirvBytes = vulkanSource.GetSpirvBytes();
+            Debug.WriteLine($"{BytesToString(spirvBytes)}");
+
+            string filename = "sample3.spv";
+            string directory = @"X:\checkouts\VRF-Main\files_samples\";
+
+            Debug.WriteLine($"write spirv bytes to {directory}{filename}");
+            File.WriteAllBytes($"{directory}{filename}", spirvBytes);
+
+
+
         }
 
 
@@ -66,10 +105,10 @@ namespace MyShaderAnalysis.batchtesting
             ZFrameFile zFrameFile = vcsTokens.GetZframeFile(0x44);
             VulkanSource vulkanSource = (VulkanSource)zFrameFile.gpuSources[0];
             byte[] spirvBytes = vulkanSource.GetSpirvBytes();
-            // string decompiledSource = DecompileSpirvDll.DecompileVulkan(spirvBytes); // will throw an exception
-            Debug.WriteLine($"{BytesToString(spirvBytes)}");
+            string decompiledSource = DecompileSpirvDll.DecompileVulkan(spirvBytes); // fixed!! I fixed it
+            Debug.WriteLine($"{decompiledSource}");
 
-
+            // Debug.WriteLine($"{BytesToString(spirvBytes)}");
             // -- decompiling the source bytes (with the meta data) also throws an exception
             // byte[] sourceBytes = vulkanSource.sourcebytes;
             // string decompiledSource = DecompileSpirvDll.DecompileVulkan(sourceBytes);
@@ -87,45 +126,66 @@ namespace MyShaderAnalysis.batchtesting
          */
         public static void BatchTestSpirvReflection()
         {
-            FileArchive fileArchive = new(ARCHIVE.alyx_hlvr_vulkan_v64, VS, PS);
+            // FileArchive fileArchive = new(ARCHIVE.alyx_hlvr_vulkan_v64, VS, PS);
+            FileArchive fileArchive = new(ARCHIVE.dota_game_vulkan_v65, VS, PS);
+
             int fileCount = fileArchive.GetFileCount();
             for (int i = 0; i < fileCount; i++)
             {
                 FileVcsTokens fileVcsTokens = fileArchive.GetFileVcsTokens(i);
+                Debug.WriteLine($"testing file {fileVcsTokens}");
                 int zFrameCount = fileArchive.GetZFrameCount(i);
-                for (int j = 0; j < zFrameCount; j++)
+                int MAX_ZFRAMES = 100;
+                for (int j = 0; j < Math.Min(zFrameCount, MAX_ZFRAMES); j++)
                 {
                     ZFrameFile zFrameFile = fileArchive.GetZFrameFile(i, j);
                     new DecompileSpirvTester(zFrameFile);
                 }
-                if (i==2)
-                {
-                    break;
-                }
+                //if (i==20)
+                //{
+                //    break;
+                //}
             }
         }
 
 
         public static void ProblemFile()
         {
-            // FileVcsTokens vcsTokens = new FileVcsTokens(ARCHIVE.alyx_hlvr_vulkan_v64, "visualize_cloth_vulkan_50_gs.vcs");
-            FileVcsTokens vcsTokens = new FileVcsTokens(ARCHIVE.alyx_hlvr_vulkan_v64, "visualize_cloth_vulkan_50_ps.vcs");
-            int zframeCount = vcsTokens.GetShaderFile().GetZFrameCount();
-            for (int i = 0; i < zframeCount; i++)
-            {
-                ZFrameFile zFrameFile = vcsTokens.GetZframeFileByIndex(i);
-                int sourceCount = zFrameFile.gpuSources.Count;
-                for (int j = 0; j < sourceCount; j++)
-                {
-                    // Debug.WriteLine($"file {vcsTokens} got zframeByIndex[{i}] source[{j}]");
 
-                    Debug.WriteLine($"file {vcsTokens}, parsing zframeByIndex[{i}] source[{j}]");
-                    VulkanSource vulkanSource = (VulkanSource)zFrameFile.gpuSources[0];
-                    byte[] spirvBytes = vulkanSource.GetSpirvBytes();
-                    string decompiledSource = DecompileSpirvDll.DecompileVulkan(spirvBytes);
-                }
-            }
+
+            // FileVcsTokens vcsTokens = new FileVcsTokens(ARCHIVE.alyx_hlvr_vulkan_v64, "visualize_cloth_vulkan_50_gs.vcs");
+            // FileVcsTokens vcsTokens = new FileVcsTokens(ARCHIVE.alyx_hlvr_vulkan_v64, "visualize_cloth_vulkan_50_ps.vcs");
+            // FileVcsTokens vcsTokens = new FileVcsTokens(ARCHIVE.alyx_hlvr_vulkan_v64, "cables_vulkan_50_ps.vcs");
+
+            // string filename = "visualize_cloth_vulkan_50_gs.vcs"; int zFrameId = 0; int sourceId = 0; // this file works
+            // string filename = "visualize_cloth_vulkan_50_ps.vcs"; int zFrameId = 0; int sourceId = 0;
+            string filename = "cables_vulkan_50_ps.vcs"; int zFrameId = 0; int sourceId = 0;
+
+            FileVcsTokens vcsTokens = new FileVcsTokens(ARCHIVE.alyx_hlvr_vulkan_v64, filename);
+            ZFrameFile zFrameFile = vcsTokens.GetZframeFile(zFrameId);
+            VulkanSource vulkanSource = (VulkanSource)zFrameFile.gpuSources[sourceId];
+            byte[] spirvBytes = vulkanSource.GetSpirvBytes();
+
+            // -- test parser
+            // string decompiledSource = DecompileSpirvDll.DecompileVulkan(spirvBytes);
+
+            // -- show source
+            Debug.WriteLine($"{DecompileSpirvDll.DecompileVulkan(spirvBytes)}");
+
+            // -- save spirv bytes to file
+            // SaveSpirVBytesToFile(spirvBytes, "sample3.spv");
+
         }
+
+        private static void SaveSpirVBytesToFile(byte[] spirvBytes, string filename)
+        {
+            string directory = @"X:\checkouts\VRF-Main\files_samples\";
+            Debug.WriteLine($"write spirv bytes to {directory}{filename}");
+            File.WriteAllBytes($"{directory}{filename}", spirvBytes);
+        }
+
+
+
 
         public static void NotAProblemFile()
         {
