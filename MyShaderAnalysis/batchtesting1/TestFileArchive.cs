@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ValveResourceFormat.CompiledShader;
 
-namespace MyShaderAnalysis.vcstesting
+namespace MyShaderAnalysis.batchtesting1
 {
     public class TestFileArchive
     {

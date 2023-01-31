@@ -8,7 +8,11 @@ using MyShaderAnalysis.utilhelpers.snippetcode;
 using static MyShaderAnalysis.utilhelpers.FileArchives;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
-namespace MyShaderAnalysis.vcstesting
+/*
+ * sometime around fall 2021 beginning 2022
+ *
+ */
+namespace MyShaderAnalysis.batchtesting1
 {
     public class TestBatchParsing
     {

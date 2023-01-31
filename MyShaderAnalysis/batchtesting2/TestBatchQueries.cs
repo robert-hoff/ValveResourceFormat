@@ -7,7 +7,11 @@ using System.Text;
 using System.Threading.Tasks;
 using ValveResourceFormat.CompiledShader;
 
-namespace MyShaderAnalysis.batchtesting
+/*
+ * Early 2023
+ *
+ */
+namespace MyShaderAnalysis.batchtesting2
 {
     internal class TestBatchQueries
     {

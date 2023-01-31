@@ -17,7 +17,7 @@ namespace MyShaderAnalysis.utilhelpers
 {
     public class FileArchive
     {
-        private ARCHIVE archive;
+        public ARCHIVE archive;
         private List<FileVcsTokens> vcsFiles = new();
         private ShaderFileDetail[] cachedShaderFileDetail;
         private Boolean useModularLookup;

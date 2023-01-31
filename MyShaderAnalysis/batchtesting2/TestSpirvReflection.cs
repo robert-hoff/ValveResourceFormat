@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using ValveResourceFormat.CompiledShader;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
-namespace MyShaderAnalysis.batchtesting
+namespace MyShaderAnalysis.batchtesting2
 {
     internal class TestSpirvReflection
     {

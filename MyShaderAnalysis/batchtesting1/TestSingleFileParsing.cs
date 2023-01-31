@@ -7,7 +7,7 @@ using MyShaderAnalysis.utilhelpers.parsetrials;
 using static MyShaderAnalysis.utilhelpers.FileArchives;
 
 
-namespace MyShaderAnalysis.vcstesting
+namespace MyShaderAnalysis.batchtesting1
 {
     public class TestSingleFileParsing
     {

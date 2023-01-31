@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ValveResourceFormat.CompiledShader;
 
-namespace MyShaderAnalysis.batchtesting
+namespace MyShaderAnalysis.batchtesting2
 {
     public class DecompileSpirvTester
     {

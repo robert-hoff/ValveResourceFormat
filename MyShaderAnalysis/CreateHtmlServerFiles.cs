@@ -53,12 +53,35 @@ namespace MyShaderAnalysis
 
         public static void RunTrials()
         {
-
-            SaveAllServerFilesFromArchive();
+            PrintFileDirectoryGivenArchive();
+            // SaveAllServerFilesFromArchive();
             // SaveServerSets();
             // SingleFileExamples2();
             // SingleFileExamples1();
         }
+
+
+        public static void PrintFileDirectoryGivenArchive()
+        {
+            // ARCHIVE archive = ARCHIVE.dota_game_pcgl_v64;
+            // FileArchive fileArchive = new(archive, VcsShaderModelType._40, useModularLookup: true);
+
+            // ARCHIVE archive = ARCHIVE.alyx_hlvr_vulkan_v64;
+            ARCHIVE archive = ARCHIVE.dota_game_vulkan_v65;
+            FileArchive fileArchive = new(archive, useModularLookup: true);
+
+            string filenamepath = $"Z:\\dev\\www\\vcs.codecreation.dev\\{fileArchive.archive}\\index.html";
+            FileWriter fileWriter = new FileWriter(filenamepath, showOutputToConsole: false);
+            fileWriter.WriteHtmlHeader($"{fileArchive.archive}", $"{fileArchive.archive}");
+            foreach (FileVcsTokens fileVcs in fileArchive.GetFileVcsTokens())
+            {
+                // Debug.WriteLine($"<a href='{fileVcs.GetServerFileUrl("summary2")}'>{fileVcs}</a>");
+                fileWriter.WriteText($"<a href='{fileVcs.GetServerFileUrl("summary2")}'>{fileVcs}</a>");
+            }
+            fileWriter.CloseStreamWriter();
+            fileWriter.Dispose();
+        }
+
 
 
         public static void SaveAllServerFilesFromArchive()

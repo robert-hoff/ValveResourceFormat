@@ -8,8 +8,8 @@ using MyShaderAnalysis.codestash;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 using MyShaderAnalysis.utilhelpers.snippetcode;
 using MyShaderAnalysis.compat;
-using MyShaderAnalysis.vcstesting;
-using MyShaderAnalysis.batchtesting;
+using MyShaderAnalysis.batchtesting1;
+using MyShaderAnalysis.batchtesting2;
 using MyShaderAnalysis.utilhelpers.parsetrials;
 using System.Globalization;
 
@@ -35,14 +35,21 @@ namespace MyShaderAnalysis
             Console.SetOut(new ToDebugWriter());
 
             // Jan 2023
+            RunStaticAnalysis();
             // BatchProcessFiles();
             // OldStaticAnalysisSummaries();
 
             // Earlier
             // BatchTesting1()
-            BatchProcessHtmlServerFiles();
+            // BatchProcessHtmlServerFiles();
             // ParserSnippets();
             // BasicFunctionalitySnippets();
+        }
+
+
+        public static void RunStaticAnalysis()
+        {
+
         }
 
 
