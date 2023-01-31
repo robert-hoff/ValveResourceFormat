@@ -53,22 +53,28 @@ namespace MyShaderAnalysis
 
         public static void RunTrials()
         {
-            PrintFileDirectoryGivenArchive();
+            // PrintFileDirectoryGivenArchive();
             // SaveAllServerFilesFromArchive();
-            // SaveServerSets();
+            SaveServerSets();
             // SingleFileExamples2();
             // SingleFileExamples1();
         }
 
 
+
+        /*
+         * This prints all files in the given archive, but all files
+         * are not always present in the directory.
+         *
+         */
         public static void PrintFileDirectoryGivenArchive()
         {
-            // ARCHIVE archive = ARCHIVE.dota_game_pcgl_v64;
-            // FileArchive fileArchive = new(archive, VcsShaderModelType._40, useModularLookup: true);
+            ARCHIVE archive = ARCHIVE.dota_game_pcgl_v64;
+            FileArchive fileArchive = new(archive, VcsShaderModelType._40, useModularLookup: true);
 
             // ARCHIVE archive = ARCHIVE.alyx_hlvr_vulkan_v64;
-            ARCHIVE archive = ARCHIVE.dota_game_vulkan_v65;
-            FileArchive fileArchive = new(archive, useModularLookup: true);
+            // ARCHIVE archive = ARCHIVE.dota_game_vulkan_v65;
+            // FileArchive fileArchive = new(archive, useModularLookup: true);
 
             string filenamepath = $"Z:\\dev\\www\\vcs.codecreation.dev\\{fileArchive.archive}\\index.html";
             FileWriter fileWriter = new FileWriter(filenamepath, showOutputToConsole: false);
@@ -90,13 +96,18 @@ namespace MyShaderAnalysis
             // ARCHIVE archive = ARCHIVE.dota_game_vulkan_v65;
             //FileArchive fileArchive = new(archive, useModularLookup: true);
 
-            ARCHIVE archive = ARCHIVE.dota_game_pcgl_v64;
+            // ARCHIVE archive = ARCHIVE.dota_game_pcgl_v64;
+            ARCHIVE archive = ARCHIVE.dota_game_pc_v65;
             FileArchive fileArchive = new(archive, VcsShaderModelType._40, useModularLookup: true);
 
             int fileCount = fileArchive.GetFileCount();
             for (int i = 0; i < fileCount; i++)
             {
-                CreateHtmlServerFiles.SaveAllServerFiles(archive, fileArchive.GetFileVcsTokens(i).filename, 5, 5, saveGpuByteDetail: false);
+                CreateHtmlServerFiles.SaveAllServerFiles(archive, fileArchive.GetFileVcsTokens(i).filename, 5, 5, saveGpuByteDetail: true);
+            if (i==2)
+                {
+                    break;
+                   }
             }
         }
 
@@ -116,13 +127,25 @@ namespace MyShaderAnalysis
             // SaveAllServerFiles(ARCHIVE.dota_dac_android_vulkan, "global_lit_simple_android_vulkan_40_ps.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
             // SaveAllServerFiles(ARCHIVE.alyx_hlvr_vulkan_v64, "cables_vulkan_50_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
 
-            SaveAllServerFiles(ARCHIVE.dota_game_vulkan_v65, "hero_vulkan_40_features.vcs", zframesToPrint: 5, gpuSourcesToPrint: 20);
-            SaveAllServerFiles(ARCHIVE.dota_game_vulkan_v65, "hero_vulkan_40_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 20);
-            SaveAllServerFiles(ARCHIVE.dota_game_vulkan_v65, "hero_vulkan_40_ps.vcs", zframesToPrint: 5, gpuSourcesToPrint: 20);
-            SaveAllServerFiles(ARCHIVE.dota_game_vulkan_v65, "hero_vulkan_40_psrs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 20);
+            // SaveAllServerFiles(ARCHIVE.dota_game_vulkan_v65, "hero_vulkan_40_features.vcs", zframesToPrint: 5, gpuSourcesToPrint: 20);
+            // SaveAllServerFiles(ARCHIVE.dota_game_vulkan_v65, "hero_vulkan_40_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 20);
+            // SaveAllServerFiles(ARCHIVE.dota_game_vulkan_v65, "hero_vulkan_40_ps.vcs", zframesToPrint: 5, gpuSourcesToPrint: 20);
+            // SaveAllServerFiles(ARCHIVE.dota_game_vulkan_v65, "hero_vulkan_40_psrs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 20);
 
-            // SaveAllServerFiles(ARCHIVE.dotagame_vulkan_v65, "multiblend_vulkan_40_ps.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
-            // SaveAllServerFiles(ARCHIVE.dotagame_vulkan_v65, "multiblend_vulkan_40_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
+            // SaveAllServerFiles(ARCHIVE.dota_game_vulkan_v65, "multiblend_vulkan_40_ps.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
+            // SaveAllServerFiles(ARCHIVE.dota_game_vulkan_v65, "multiblend_vulkan_40_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
+
+            // SaveAllServerFiles(ARCHIVE.dota_game_pc_v65, "multiblend_pc_40_ps.vcs", zframesToPrint: 10, gpuSourcesToPrint: 10, saveGpuByteDetail: false);
+            // SaveAllServerFiles(ARCHIVE.dota_game_pc_v65, "multiblend_pc_40_vs.vcs", zframesToPrint: 10, gpuSourcesToPrint: 10, saveGpuByteDetail: false);
+
+
+            SaveAllServerFiles(ARCHIVE.dota_game_pcgl_v64, "crystal_pcgl_40_vs.vcs", zframesToPrint: 10000, gpuSourcesToPrint: 10000);
+
+
+            // SaveAllServerFiles(ARCHIVE.dota_game_pc_v64, "multiblend_pc_30_ps.vcs", zframesToPrint: 30, gpuSourcesToPrint: 30);
+            // SaveAllServerFiles(ARCHIVE.dota_game_pcgl_v64, "spritecard_pcgl_30_ps.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
+            // SaveAllServerFiles(ARCHIVE.dota_game_pcgl_v64, "spritecard_pcgl_30_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
+
             // SaveAllServerFiles(ARCHIVE.the_lab_v62, "bilateral_blur_pc_30_ps.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
             // SaveAllServerFiles(ARCHIVE.the_lab_v62, "bilateral_blur_pc_30_features.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
             // SaveAllServerFiles(ARCHIVE.the_lab_v62, "blend_pc_41_features.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);

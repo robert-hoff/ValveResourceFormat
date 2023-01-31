@@ -196,7 +196,7 @@ namespace MyShaderAnalysis
             }
             headerText += $"\n";
             string htmlTitle = $"{fileTokens.vcstoken}[{zframeFile.zframeId:x}]({gpuSourceId})";
-            string htmlHeader = $"{fileTokens.archivename} zframe[0x{zframeFile.zframeId:x}] source[{gpuSourceId}]";
+            string htmlHeader = $"{fileTokens.filename} zframe[0x{zframeFile.zframeId:x}] source[{gpuSourceId}]";
             WriteHtmlFile(outputFilenamepath, htmlTitle, htmlHeader, $"{headerText}{gpuSourceDetail}");
         }
 
@@ -212,9 +212,13 @@ namespace MyShaderAnalysis
             string gpuServerDir = fileTokens.GetGpuServerDir(createDirs: true);
             string outputFilenamepath = $"{gpuServerDir}/" +
                 $"{fileTokens.GetGpuHtmlFilename(zframeFile.gpuSources[gpuSourceId].GetEditorRefIdAsString()+"-bytes")}";
-            string htmlTitle = $"{fileTokens.vcstoken}[{zframeFile.zframeId:x}]({gpuSourceId})";
+            string htmlTitle = $"{fileTokens.filename}[{zframeFile.zframeId:x}]({gpuSourceId})";
             string htmlHeader = $"{fileTokens.sourceType}[{gpuSourceId}] {Path.GetFileName(outputFilenamepath)[0..^5]}";
             WriteHtmlFile(outputFilenamepath, htmlTitle, htmlHeader, gpuSourceDetail);
+
+            // -- if I want toprint the source files (in this example DXBC
+            // string filename = outputFilenamepath[0..^11];
+            // File.WriteAllBytes($"{filename}.dx", zframeFile.gpuSources[gpuSourceId].sourcebytes);
         }
 
         public void SaveGpuSourcesToHtml(long zframeId, int requestedGpuSourcesToPrint, bool saveGpuByteDetail = false)

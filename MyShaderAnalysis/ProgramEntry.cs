@@ -12,6 +12,7 @@ using MyShaderAnalysis.batchtesting1;
 using MyShaderAnalysis.batchtesting2;
 using MyShaderAnalysis.utilhelpers.parsetrials;
 using System.Globalization;
+using MyShaderAnalysis.staticanalysis;
 
 namespace MyShaderAnalysis
 {
@@ -35,13 +36,13 @@ namespace MyShaderAnalysis
             Console.SetOut(new ToDebugWriter());
 
             // Jan 2023
-            RunStaticAnalysis();
+            // RunStaticAnalysis();
             // BatchProcessFiles();
             // OldStaticAnalysisSummaries();
 
             // Earlier
             // BatchTesting1()
-            // BatchProcessHtmlServerFiles();
+            BatchProcessHtmlServerFiles(); // <-- create server files
             // ParserSnippets();
             // BasicFunctionalitySnippets();
         }
@@ -49,7 +50,7 @@ namespace MyShaderAnalysis
 
         public static void RunStaticAnalysis()
         {
-
+            StaticAnalysis3.Run();
         }
 
 
