@@ -41,11 +41,11 @@ namespace MyShaderAnalysis.codestash
 
 
             // SfBlocksTest();
-            // ShowSfBlocksWithAdditionalArguments(TestFilenamepath("F-params-multiple-properties.html"), true);
+            ShowSfBlocksWithAdditionalArguments(TestFilenamepath("F-params-multiple-properties.html"), true);
             // ShowFeaturesDetails();
             // SurveyParamBlocks(TestFilenamepath("param-printout.html"), false);
             // PrintingAndSortingParams(TestFilenamepath("TESTFILE.html"), true);
-            PrintingParamsWithDynamicExpressions(TestFilenamepath("shader-dynamic-expressions.html"), true);
+            // PrintingParamsWithDynamicExpressions(TestFilenamepath("shader-dynamic-expressions.html"), true);
 
 
 

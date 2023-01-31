@@ -1,4 +1,5 @@
 using MyShaderAnalysis.utilhelpers;
+using MyShaderAnalysis.utilhelpers.snippetcode;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -18,11 +19,13 @@ namespace MyShaderAnalysis.batchtesting
 
         public static void Run()
         {
+            ReadFile();
+            // TargetSingleFile();
             // CreateSpirvSamples();
             // WriteSpirvBytesToFile();
             // TestSpecificFile2();
             // TestSpecificFile();
-            BatchTestSpirvReflection();
+            // BatchTestSpirvReflection();
             // ProblemFile();
             // NotAProblemFile();
             // IsolateSpirvReflection3();
@@ -35,7 +38,44 @@ namespace MyShaderAnalysis.batchtesting
         }
 
 
-        //
+
+        public static void ReadFile()
+        {
+            // byte[] bytes = File.ReadAllBytes("X:\\checkouts\\SPIRV-Cross\\vcs_vulkan_samples\\textoverlay.frag.spv");
+            byte[] bytes = File.ReadAllBytes("X:\\checkouts\\SPIRV-Cross\\vcs_vulkan_samples\\phongpass.frag.spv");
+            Debug.WriteLine($"{BytesToString(bytes)}");
+
+
+            // ByteSequenceToString.ConvertByteSequenceToString("6D 61 69 6E");
+            // ByteSequenceToString.ConvertByteSequenceToString("74 79 70 65 2E 32 64 2E 69 6D 61 67 65");
+            ByteSequenceToString.ConvertByteSequenceToString("47 4C 53 4C 2E 73 74 64 2E 34 35 30");
+            // Debug.WriteLine($"{str}");
+
+
+        }
+
+
+        public static void TargetSingleFile()
+        {
+            // Shaderfile https://vcs.codecreation.dev/dota_game_vulkan_v65/multiblend_vulkan_40/multiblend_vulkan_40_vs-summary2.html
+            // ZFrame[0] https://vcs.codecreation.dev/dota_game_vulkan_v65/multiblend_vulkan_40/zframes/multiblend_vulkan_40_vs-ZFRAME00000000-summary.html
+            // ZFrame[0],Source[5] https://vcs.codecreation.dev/dota_game_vulkan_v65/multiblend_vulkan_40/vulkan/vulkan-ff91ed8e94e9bab6c01265d479fb4d86.html
+            int zframeId = 0;
+            int sourceIndex = 5;
+
+            FileVcsTokens vcsTokens = new FileVcsTokens(ARCHIVE.dota_game_vulkan_v65, "multiblend_vulkan_40_vs.vcs");
+            ZFrameFile zFrameFile = vcsTokens.GetZframeFile(0);
+            VulkanSource vulkanSource = (VulkanSource)zFrameFile.gpuSources[5];
+            byte[] spirvBytes = vulkanSource.GetSpirvBytes();
+
+            Debug.WriteLine($"file ref. {vulkanSource.GetEditorRefIdAsString()}");
+            string spirvReflected = DecompileSpirvDll.DecompileVulkan(spirvBytes);
+            // Debug.WriteLine($"{spirvReflected}");
+
+            string filename = "sample4.spv";
+            string directory = @"X:\checkouts\SPIRV-Cross\vcs_vulkan_samples";
+            SaveSpirVBytesToFile(spirvBytes, filename, directory);
+        }
 
 
         public static void CreateSpirvSamples()
@@ -177,15 +217,17 @@ namespace MyShaderAnalysis.batchtesting
 
         }
 
-        private static void SaveSpirVBytesToFile(byte[] spirvBytes, string filename)
+        const string DEFAULT_OUTPUT_DIR = @"X:\checkouts\VRF-Main\files_samples\";
+
+        private static void SaveSpirVBytesToFile(byte[] spirvBytes, string filename, string directory = "")
         {
-            string directory = @"X:\checkouts\VRF-Main\files_samples\";
-            Debug.WriteLine($"write spirv bytes to {directory}{filename}");
-            File.WriteAllBytes($"{directory}{filename}", spirvBytes);
+            if (directory.Length == 0)
+            {
+                directory = DEFAULT_OUTPUT_DIR;
+            }
+            Debug.WriteLine($"Saving spirv bytes to {directory}\\{filename}");
+            File.WriteAllBytes($"{directory}\\{filename}", spirvBytes);
         }
-
-
-
 
         public static void NotAProblemFile()
         {
@@ -246,7 +288,7 @@ namespace MyShaderAnalysis.batchtesting
         {
             FileVcsTokens vcsTokens = new FileVcsTokens(ARCHIVE.alyx_hlvr_vulkan_v64, "visualize_cloth_vulkan_50_gs.vcs");
             ZFrameFile firstZFrameFile = vcsTokens.GetZframeFile(0);
-            VulkanSource vulkanSource = (VulkanSource) firstZFrameFile.gpuSources[0];
+            VulkanSource vulkanSource = (VulkanSource)firstZFrameFile.gpuSources[0];
             byte[] sourceBytes = vulkanSource.sourcebytes;
             byte[] spirvBytes = vulkanSource.GetSpirvBytes();
             Debug.WriteLine($"{sourceBytes.Length}");
@@ -283,7 +325,7 @@ namespace MyShaderAnalysis.batchtesting
                 FileVcsTokens fileVcsTokens = fileArchive.GetFileVcsTokens(i);
                 ZFrameFile zFrameFile = fileArchive.GetZFrameFile(i, zFrameIndex);
                 // zFrameFile.PrintGpuSource(sourceIndex, outputWriter: (x) => { });
-                VulkanSource vulkanSource = (VulkanSource) zFrameFile.gpuSources[0];
+                VulkanSource vulkanSource = (VulkanSource)zFrameFile.gpuSources[0];
                 if (vulkanSource.arg0 == -1)
                 {
                     Debug.WriteLine($"{fileVcsTokens} zframe={zFrameIndex} sourceIndex={sourceIndex}");
@@ -331,13 +373,14 @@ namespace MyShaderAnalysis.batchtesting
 
         public static void PrintServerFiles()
         {
-            ARCHIVE archive = ARCHIVE.alyx_hlvr_vulkan_v64;
+            // ARCHIVE archive = ARCHIVE.alyx_hlvr_vulkan_v64;
+            ARCHIVE archive = ARCHIVE.dota_game_vulkan_v65;
             // ARCHIVE archive = ARCHIVE.dota_game_pcgl_v64;
             FileArchive fileArchive = new(archive, useModularLookup: true);
             int fileCount = fileArchive.GetFileCount();
             for (int i = 0; i < fileCount; i++)
             {
-                CreateHtmlServerFiles.SaveAllServerFiles(archive, fileArchive.GetFileVcsTokens(i).filename, 10, 10);
+                CreateHtmlServerFiles.SaveAllServerFiles(archive, fileArchive.GetFileVcsTokens(i).filename, 6, 10);
             }
         }
 

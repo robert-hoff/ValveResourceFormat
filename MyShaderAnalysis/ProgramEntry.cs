@@ -11,6 +11,7 @@ using MyShaderAnalysis.compat;
 using MyShaderAnalysis.vcstesting;
 using MyShaderAnalysis.batchtesting;
 using MyShaderAnalysis.utilhelpers.parsetrials;
+using System.Globalization;
 
 namespace MyShaderAnalysis
 {
@@ -34,13 +35,14 @@ namespace MyShaderAnalysis
             Console.SetOut(new ToDebugWriter());
 
             // Jan 2023
-            BatchProcessFiles();
+            // BatchProcessFiles();
+            // OldStaticAnalysisSummaries();
 
             // Earlier
             // BatchTesting1()
-            // BatchProcessHtmlServerFiles();
+            BatchProcessHtmlServerFiles();
             // ParserSnippets();
-
+            // BasicFunctionalitySnippets();
         }
 
 
@@ -87,10 +89,20 @@ namespace MyShaderAnalysis
         }
 
 
+        public static void OldStaticAnalysisSummaries()
+        {
+            // -- all garbage
+            StaticAnalysis.RunTrials();
+
+            // StaticAnalysis2.RunTrials();
+        }
+
+
         public static void BasicFunctionalitySnippets()
         {
+            // ByteSequenceToString.Run();
             // -- Looking at dynamic expressions
-            ParseDynamicExpression.RunTrials();
+            // ParseDynamicExpression.RunTrials();
             // EncodeZstdDictAsString.RunTrials();
             // CrcTrialsSha1.RunTrials();
             // CrcTrialsMurmur32.RunTrials();

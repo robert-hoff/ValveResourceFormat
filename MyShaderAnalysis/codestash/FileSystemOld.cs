@@ -73,13 +73,17 @@ namespace MyShaderAnalysis.codestash
         public const string V62_EXAMPLES_SOURCE = "X:/v62shaders-from-xpaw";
         public const string THE_LAB_SOURCE = "X:/Steam/steamapps/common/The Lab/RobotRepair/core/shaders/vfx";
 
+        // Jan 2023 - what does 'not registered' as an enum mean?
+        public const string DOTA_CORE_VULKAN_SOURCE_V65 = "X:/dota-2-VRF-exports/dota2-export-shaders-vulkan-V65/shaders-game/vfx";
+        public const string DOTA_GAME_VULKAN_SOURCE_V65 = "X:/dota-2-VRF-exports/dota2-export-shaders-vulkan-V65/shaders-core/vfx";
+
 
         public enum ARCHIVE_OLD
         {
             dotacore_pcgl, dotagame_pcgl, dotacore_pc, dotagame_pc,
             dota_core_gles, dota_dac_gles,
             artifact_classiccore_pc, artifact_classicdcg_pc,
-            hl_hlvr_vulkan
+            hl_hlvr_vulkan, dota_game_vulkan_v65, dota_core_vulkan_v65
         };
 
 
@@ -100,6 +104,7 @@ namespace MyShaderAnalysis.codestash
         }
 
 
+
         // todo - it may be possible to write all of this into the enums
         public static string GetSourceDir(ARCHIVE_OLD archive)
         {
@@ -112,6 +117,8 @@ namespace MyShaderAnalysis.codestash
             if (archive == ARCHIVE_OLD.artifact_classiccore_pc) return ARTIFACT_CLASSIC_CORE_PC_SOURCE;
             if (archive == ARCHIVE_OLD.artifact_classicdcg_pc) return ARTIFACT_CLASSIC_DCG_PC_SOURCE;
             if (archive == ARCHIVE_OLD.hl_hlvr_vulkan) return HLALYX_HLVR_VULKAN_SOURCE;
+            if (archive == ARCHIVE_OLD.dota_core_vulkan_v65) return DOTA_CORE_VULKAN_SOURCE_V65;
+            if (archive == ARCHIVE_OLD.dota_game_vulkan_v65) return DOTA_GAME_VULKAN_SOURCE_V65;
             throw new ShaderParserException("unknown archive");
         }
 
@@ -126,6 +133,8 @@ namespace MyShaderAnalysis.codestash
             if (archive == ARCHIVE_OLD.artifact_classiccore_pc) return "aclassic-core";
             if (archive == ARCHIVE_OLD.artifact_classicdcg_pc) return "aclassic-dcg";
             if (archive == ARCHIVE_OLD.hl_hlvr_vulkan) return "hlvr-vulkan";
+            if (archive == ARCHIVE_OLD.dota_core_vulkan_v65) return "dota_core_vulkan_v65";
+            if (archive == ARCHIVE_OLD.dota_game_vulkan_v65) return "dota_game_vulkan_v65";
             throw new ShaderParserException("unknown archive");
         }
 
@@ -142,6 +151,8 @@ namespace MyShaderAnalysis.codestash
             if (archive == ARCHIVE_OLD.artifact_classiccore_pc) return "artifact-core";
             if (archive == ARCHIVE_OLD.artifact_classicdcg_pc) return "artifact-dcg";
             if (archive == ARCHIVE_OLD.hl_hlvr_vulkan) return "hlvr-vulkan";
+            if (archive == ARCHIVE_OLD.dota_core_vulkan_v65) return "dota-core-vulkan-v65";
+            if (archive == ARCHIVE_OLD.dota_game_vulkan_v65) return "dota-game-vulkan-v65";
             throw new ShaderParserException("unknown archive");
         }
 
@@ -157,6 +168,8 @@ namespace MyShaderAnalysis.codestash
             if (archive == ARCHIVE_OLD.artifact_classiccore_pc) return "pc";
             if (archive == ARCHIVE_OLD.artifact_classicdcg_pc) return "pc";
             if (archive == ARCHIVE_OLD.hl_hlvr_vulkan) return "vulkan";
+            if (archive == ARCHIVE_OLD.dota_core_vulkan_v65) return "vulkan";
+            if (archive == ARCHIVE_OLD.dota_game_vulkan_v65) return "vulkan";
             throw new ShaderParserException("unknown archive");
         }
 
@@ -172,6 +185,8 @@ namespace MyShaderAnalysis.codestash
             if (archive == ARCHIVE_OLD.artifact_classiccore_pc) return "pc"; // todo - I want dxil and dxbc here
             if (archive == ARCHIVE_OLD.artifact_classicdcg_pc) return "pc";
             if (archive == ARCHIVE_OLD.hl_hlvr_vulkan) return "vulkan";
+            if (archive == ARCHIVE_OLD.dota_core_vulkan_v65) return "vulkan";
+            if (archive == ARCHIVE_OLD.dota_game_vulkan_v65) return "vulkan";
             throw new ShaderParserException("unknown archive");
         }
 
@@ -233,18 +248,17 @@ namespace MyShaderAnalysis.codestash
             {
                 return ARCHIVE_OLD.hl_hlvr_vulkan;
             }
+            if (Path.GetDirectoryName(vcsFileName).EndsWith("dota2-export-shaders-vulkan-V65\\shaders-core\\vfx"));
+            {
+                return ARCHIVE_OLD.dota_core_vulkan_v65;
+            }
+            if (Path.GetDirectoryName(vcsFileName).EndsWith("dota2-export-shaders-vulkan-V65\\shaders-game\\vfx"));
+            {
+                return ARCHIVE_OLD.dota_core_vulkan_v65;
+            }
             throw new ShaderParserException("don't know where this file belongs");
         }
-
-
-
-
-
-
     }
 }
-
-
-
 
 

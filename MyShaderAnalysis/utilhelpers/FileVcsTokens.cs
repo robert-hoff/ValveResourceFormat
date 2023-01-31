@@ -210,8 +210,13 @@ namespace MyShaderAnalysis.utilhelpers
 
         /*
          * glsl-e46ad784246f747dd88a611874194020.html
+         *
+         * E.g. append "-bytes"
+         * GetGpuHtmlFilename($"{name}-bytes")
+         *
+         * to get the "bytes" version of the file
+         *
          */
-        // public string GetGpuHtmlFilename(GpuSource gpuSource)
         public string GetGpuHtmlFilename(String labelOrRefId)
         {
             return $"{sourceType}-{labelOrRefId}.html";
@@ -219,6 +224,12 @@ namespace MyShaderAnalysis.utilhelpers
 
         /*
          * /dota-game-pcgl-v64/multiblend_pcgl_30/glsl/glsl-e46ad784246f747dd88a611874194020.html
+         *
+         * append "-bytes"
+         * GetGpuHtmlUrl($"{name}-bytes")
+         *
+         * to get the "bytes" version of the file
+         *
          */
         public string GetGpuHtmlUrl(String labelOrRefId)
         {
@@ -277,6 +288,17 @@ namespace MyShaderAnalysis.utilhelpers
             }
             return $"{GetZFramesServerPath()}/{name}-ZFRAME{zframeId:x08}{label}.html";
         }
+
+        // Do this later, if bothered
+        //public string GetGpuSourceUrl(long zframeId, string label)
+        //{
+        //    if (label.Length > 0)
+        //    {
+        //        label = $"-{label}";
+        //    }
+        //    return $"{GetZFramesServerPath()}/{name}-ZFRAME{zframeId:x08}{label}.html";
+        //}
+
 
         /*
          * multiblend(30-ft)

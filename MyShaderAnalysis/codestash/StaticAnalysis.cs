@@ -72,11 +72,11 @@ namespace MyShaderAnalysis.codestash
             // NOTE - currently points to Artifact classic
             // BlockCountSurvery($@"{SERVER_OUTPUT_DIR}/testfile.html", writeFile: true);
             // FileBlockCount(filenamepath);
-            // WriteSfArgumentsAllFiles($"{SERVER_OUTPUT_DIR}/testrun.html", writeFile: true);
+            WriteSfArgumentsAllFiles($"{SERVER_OUTPUT_DIR}/testrun.html", writeFile: true);
 
 
 
-            FileSummarySingleFile();
+            // FileSummarySingleFile();
             // ZFramePrintout();
 
 
@@ -333,7 +333,7 @@ namespace MyShaderAnalysis.codestash
         static void FileSummarySingleFile()
         {
             // List<(string, string, string)> triples = new();
-            // FileTriple triple = new(ARCHIVE_OLD.dotagame_pcgl, "hero_pcgl_30_features.vcs");
+            FileTriple triple = new(ARCHIVE_OLD.dotagame_pcgl, "hero_pcgl_30_features.vcs");
             // FileTriple triple = new(ARCHIVE_OLD.dotacore_pcgl, "visualize_cloth_pcgl_40_features.vcs");
             // FileTriple triple = new(ARCHIVE_OLD.dotacore_pcgl, "depth_only_pcgl_40_features.vcs");
             // FileTriple triple = new(ARCHIVE_OLD.dotacore_pcgl, "convolve_environment_map_pcgl_41_features.vcs");
@@ -344,7 +344,10 @@ namespace MyShaderAnalysis.codestash
             // FileTriple triple = new(ARCHIVE_OLD.dotacore_pcgl, "spritecard_pcgl_30_features.vcs");
             // FileTriple triple = new(ARCHIVE_OLD.dotagame_pcgl, "spritecard_pcgl_30_features.vcs");
             // FileTriple triple = new(ARCHIVE_OLD.dota_core_gles, "copytexture_mobile_gles_30_features.vcs");
-            FileTriple triple = new(ARCHIVE_OLD.hl_hlvr_vulkan, "solidcolor_vulkan_50_features.vcs");
+            // FileTriple triple = new(ARCHIVE_OLD.hl_hlvr_vulkan, "solidcolor_vulkan_50_features.vcs");
+
+
+            // FileTriple triple = new(ARCHIVE_OLD.hl_hlvr_vulkan, "solidcolor_vulkan_50_features.vcs");
 
 
 
@@ -360,9 +363,9 @@ namespace MyShaderAnalysis.codestash
          */
         static void FileSummaryAllFiles()
         {
-            // List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, -1);
+            List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, -1);
             // List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(DOTA_CORE_MOBILE_GLES_SOURCE, DOTA_DAC_MOBILE_GLES_SOURCE, -1);
-            List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, -1);
+            // List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, -1);
             foreach (var triple in triples)
             {
                 WriteVsPsFileSummary(triple, VcsProgramType.VertexShader, disableOutput: true);
@@ -372,6 +375,7 @@ namespace MyShaderAnalysis.codestash
             }
             swWriterAlreadyClosed = true;
         }
+
 
 
         static void WriteVsPsFileSummary(FileTriple fileTriple, VcsProgramType targetFileType, bool disableOutput = false)
