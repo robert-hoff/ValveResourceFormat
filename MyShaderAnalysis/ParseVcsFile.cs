@@ -4,7 +4,7 @@ using System.IO;
 
 using ValveResourceFormat.CompiledShader;
 using MyShaderAnalysis.utilhelpers;
-using MyShaderAnalysis.vcsanalysis;
+using MyShaderAnalysis.postprocessing;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 using System.Diagnostics;
 

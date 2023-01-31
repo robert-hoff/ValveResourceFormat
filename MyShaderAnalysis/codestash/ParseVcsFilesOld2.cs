@@ -2,8 +2,8 @@ using System.IO;
 using System.Collections.Generic;
 using System.Globalization;
 
-using PostProcessVcsFile = MyShaderAnalysis.vcsanalysis.PostProcessVcsFile;
-using PostProcessZframeFile = MyShaderAnalysis.vcsanalysis.PostProcessZframeFile;
+using PostProcessVcsFile = MyShaderAnalysis.postprocessing.PostProcessVcsFile;
+using PostProcessZframeFile = MyShaderAnalysis.postprocessing.PostProcessZframeFile;
 
 using ShaderFile = ValveResourceFormat.CompiledShader.ShaderFile;
 using ZFrameFile = ValveResourceFormat.CompiledShader.ZFrameFile;

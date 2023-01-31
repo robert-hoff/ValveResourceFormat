@@ -6,7 +6,7 @@ using ValveResourceFormat.CompiledShader;
 using MyShaderAnalysis.codestash;
 using MyShaderAnalysis.utilhelpers;
 
-namespace MyShaderAnalysis.vcsanalysis
+namespace MyShaderAnalysis.postprocessing
 {
     /*
      * Replace RichTextBox links. There are only two types of Zframe links

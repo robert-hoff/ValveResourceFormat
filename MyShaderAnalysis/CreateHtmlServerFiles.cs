@@ -8,7 +8,7 @@ using static MyShaderAnalysis.utilhelpers.FileArchives;
 using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
 using static MyShaderAnalysis.utilhelpers.ReadShaderFile;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
-using MyShaderAnalysis.vcsanalysis;
+using MyShaderAnalysis.postprocessing;
 using static ValveResourceFormat.CompiledShader.ShaderDataReader;
 using System.Diagnostics;
 using System.Globalization;

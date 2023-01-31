@@ -5,7 +5,7 @@ using MyShaderAnalysis.utilhelpers;
 using ValveResourceFormat.CompiledShader;
 using static MyShaderAnalysis.utilhelpers.MyShaderUtilHelpers;
 
-namespace MyShaderAnalysis.vcsanalysis
+namespace MyShaderAnalysis.postprocessing
 {
     /*
      * Replace RichTextBox links. They are in the form
