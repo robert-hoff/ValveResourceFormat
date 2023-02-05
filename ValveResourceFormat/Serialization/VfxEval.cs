@@ -127,9 +127,12 @@ namespace ValveResourceFormat.Serialization.VfxEval
         // OmitReturnStatement controls whether it is shown
         private readonly bool OmitReturnStatement;
 
-        public VfxEval(byte[] binaryBlob, bool omitReturnStatement = false)
+        private readonly IList<string> Features;
+
+        public VfxEval(byte[] binaryBlob, bool omitReturnStatement = false, IList<string> features = null)
         {
             OmitReturnStatement = omitReturnStatement;
+            Features = features;
             ParseExpression(binaryBlob);
         }
 
@@ -353,7 +356,7 @@ namespace ValveResourceFormat.Serialization.VfxEval
             if (op == OPCODE.COND)
             {
                 uint expressionId = dataReader.ReadByte();
-                Expressions.Push($"COND[{expressionId}]");
+                Expressions.Push((Features is null) ? $"COND[{expressionId}]" : Features[(int)expressionId]);
                 return;
             }
 

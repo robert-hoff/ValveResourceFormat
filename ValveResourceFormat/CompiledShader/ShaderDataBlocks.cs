@@ -256,32 +256,32 @@ namespace ValveResourceFormat.CompiledShader
     public class SfBlock : ShaderDataBlock
     {
         public int BlockIndex { get; }
-        public string Name0 { get; }
-        public string Name1 { get; }
+        public string Name { get; }
+        public string Category { get; }
         public int Arg0 { get; }
-        public int Arg1 { get; }
-        public int Arg2 { get; }
+        public int RangeMin { get; }
+        public int RangeMax { get; }
         public int Arg3 { get; }
         public int Arg4 { get; }
         public int Arg5 { get; }
-        public List<string> AdditionalParams { get; } = new();
+        public List<string> CheckboxNames { get; } = new();
         public SfBlock(ShaderDataReader datareader, int blockIndex) : base(datareader)
         {
             BlockIndex = blockIndex;
-            Name0 = datareader.ReadNullTermStringAtPosition();
+            Name = datareader.ReadNullTermStringAtPosition();
             datareader.BaseStream.Position += 64;
-            Name1 = datareader.ReadNullTermStringAtPosition();
+            Category = datareader.ReadNullTermStringAtPosition();
             datareader.BaseStream.Position += 64;
             Arg0 = datareader.ReadInt32();
-            Arg1 = datareader.ReadInt32();
-            Arg2 = datareader.ReadInt32();
+            RangeMin = datareader.ReadInt32();
+            RangeMax = datareader.ReadInt32();
             Arg3 = datareader.ReadInt32();
             Arg4 = datareader.ReadInt32();
             Arg5 = datareader.ReadInt32AtPosition();
             var additionalStringsCount = datareader.ReadInt32();
             for (var i = 0; i < additionalStringsCount; i++)
             {
-                AdditionalParams.Add(datareader.ReadNullTermString());
+                CheckboxNames.Add(datareader.ReadNullTermString());
             }
         }
         public void PrintByteDetail()
@@ -553,7 +553,7 @@ namespace ValveResourceFormat.CompiledShader
             {
                 if (Flags[i] == 2)
                 {
-                    names.Add(sfBlocks[Range0[i]].Name0);
+                    names.Add(sfBlocks[Range0[i]].Name);
                     continue;
                 }
                 if (Flags[i] == 3)
@@ -581,8 +581,8 @@ namespace ValveResourceFormat.CompiledShader
     public class ParamBlock : ShaderDataBlock
     {
         public int BlockIndex { get; }
-        public string Name0 { get; }
-        public string Name1 { get; }
+        public string Name { get; }
+        public string UiGroup { get; }
         public string Name2 { get; }
         public int Type { get; }
         public float Res0 { get; }
@@ -609,9 +609,9 @@ namespace ValveResourceFormat.CompiledShader
         public ParamBlock(ShaderDataReader datareader, int blockIndex, int vcsVersion) : base(datareader)
         {
             BlockIndex = blockIndex;
-            Name0 = datareader.ReadNullTermStringAtPosition();
+            Name = datareader.ReadNullTermStringAtPosition();
             datareader.BaseStream.Position += 64;
-            Name1 = datareader.ReadNullTermStringAtPosition();
+            UiGroup = datareader.ReadNullTermStringAtPosition();
             datareader.BaseStream.Position += 64;
             Type = datareader.ReadInt32();
             Res0 = datareader.ReadSingle();
