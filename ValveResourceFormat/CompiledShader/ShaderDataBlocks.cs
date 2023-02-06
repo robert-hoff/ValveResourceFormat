@@ -583,7 +583,7 @@ namespace ValveResourceFormat.CompiledShader
         public int BlockIndex { get; }
         public string Name { get; }
         public string UiGroup { get; }
-        public string Name2 { get; }
+        public string AttributeName { get; }
         public int Type { get; }
         public float Res0 { get; }
         public int Lead0 { get; }
@@ -615,7 +615,7 @@ namespace ValveResourceFormat.CompiledShader
             datareader.BaseStream.Position += 64;
             Type = datareader.ReadInt32();
             Res0 = datareader.ReadSingle();
-            Name2 = datareader.ReadNullTermStringAtPosition();
+            AttributeName = datareader.ReadNullTermStringAtPosition();
             datareader.BaseStream.Position += 64;
             Lead0 = datareader.ReadInt32();
             if (Lead0 == 6 || Lead0 == 7)
@@ -948,7 +948,7 @@ namespace ValveResourceFormat.CompiledShader
     {
         public int BlockIndex { get; }
         public int SymbolsCount { get; }
-        public List<(string, string, string, int)> SymbolsDefinition { get; } = new();
+        public List<(string Name, string Type, string Option, int SemanticIndex)> SymbolsDefinition { get; } = new();
 
         public VertexSymbolsBlock(ShaderDataReader datareader, int blockIndex) : base(datareader)
         {

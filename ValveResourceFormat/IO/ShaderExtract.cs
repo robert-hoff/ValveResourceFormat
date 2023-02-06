@@ -50,6 +50,8 @@ public sealed class ShaderExtract
 
     public string ToVFX()
     {
+        // TODO: IndentedTextWriter
+
         var headerSb = new StringBuilder();
         {
             headerSb.AppendLine();
@@ -110,7 +112,26 @@ public sealed class ShaderExtract
             commonSb.AppendLine();
             commonSb.AppendLine("COMMON");
             commonSb.AppendLine("{");
+
+            commonSb.AppendLine("\tstruct VS_INPUT");
+            commonSb.AppendLine("\t{");
+
+            foreach (var symbol in Vs.SymbolBlocks[0].SymbolsDefinition)
+            {
+                // TODO: type
+                commonSb.AppendLine($"\t\tfloat4 {symbol.Name} : {symbol.Type}{symbol.SemanticIndex};");
+            }
+
+            commonSb.AppendLine("\t};");
+
             commonSb.AppendLine();
+
+            commonSb.AppendLine("\tstruct PS_INPUT");
+            commonSb.AppendLine("\t{");
+            commonSb.AppendLine("\t\t//");
+            commonSb.AppendLine("\t{");
+
+
             commonSb.AppendLine("}");
         }
 
@@ -131,6 +152,20 @@ public sealed class ShaderExtract
             psSb.AppendLine("PS");
             psSb.AppendLine("{");
 
+            var types = new Dictionary<int, string>
+            {
+                {0, ""},
+                {1, "float"},
+                {2, "float2"},
+                {3, "float3"},
+                {4, "float4"},
+                {5, "enum"},
+                {9, "bool"},
+                {14, "tex"},
+                {21, "buffer"},
+                {23, "tex[]"}
+            };
+
             foreach (var param in Ps.ParamBlocks)
             {
                 var attributes = new List<string>();
@@ -150,10 +185,10 @@ public sealed class ShaderExtract
                     }
 
                     var attributesVfx = attributes.Count > 0
-                        ? "< " + string.Join(" ", attributes) + " >"
+                        ? " < " + string.Join(" ", attributes) + " > "
                         : string.Empty;
 
-                    psSb.AppendLine($"\tType({param.Type}) {param.Name}{attributesVfx};");
+                    psSb.AppendLine($"\t{types.GetValueOrDefault(param.Arg1)} {param.Name}{attributesVfx};");
                 }
             }
 

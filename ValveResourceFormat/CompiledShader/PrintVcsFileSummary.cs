@@ -329,9 +329,9 @@ namespace ValveResourceFormat.CompiledShader
                 {
                     nameCondensed += $" | {param.UiGroup}";
                 }
-                if (param.Name2.Length > 0)
+                if (param.AttributeName.Length > 0)
                 {
-                    nameCondensed += $" | {param.Name2}(2)";
+                    nameCondensed += $" | {param.AttributeName}(2)";
                 }
                 if (nameCondensed.Length > 65)
                 {
@@ -479,9 +479,9 @@ namespace ValveResourceFormat.CompiledShader
             {
                 foreach (var symbolsDef in symbolBlock.SymbolsDefinition)
                 {
-                    namePad = Math.Max(namePad, symbolsDef.Item1.Length);
-                    typePad = Math.Max(namePad, symbolsDef.Item2.Length);
-                    optionPad = Math.Max(namePad, symbolsDef.Item3.Length);
+                    namePad = Math.Max(namePad, symbolsDef.Name.Length);
+                    typePad = Math.Max(namePad, symbolsDef.Type.Length);
+                    optionPad = Math.Max(namePad, symbolsDef.Option.Length);
                 }
             }
             foreach (var symbolBlock in shaderFile.SymbolBlocks)
@@ -491,11 +491,7 @@ namespace ValveResourceFormat.CompiledShader
                     $"option".PadRight(optionPad), "semantic-index" });
                 foreach (var symbolsDef in symbolBlock.SymbolsDefinition)
                 {
-                    var name = symbolsDef.Item1;
-                    var type = symbolsDef.Item2;
-                    var option = symbolsDef.Item3;
-                    var semanticIndex = symbolsDef.Item4;
-                    output.AddTabulatedRow(new string[] { "", $"{name}", $"{type}", $"{option}", $"{semanticIndex,2}" });
+                    output.AddTabulatedRow(new string[] { "", $"{symbolsDef.Name}", $"{symbolsDef.Type}", $"{symbolsDef.Option}", $"{symbolsDef.SemanticIndex,2}" });
                 }
                 output.PrintTabulatedValues();
                 output.BreakLine();
