@@ -584,7 +584,7 @@ namespace ValveResourceFormat.CompiledShader
         public string Name { get; }
         public string UiGroup { get; }
         public string AttributeName { get; }
-        public int Type { get; }
+        public UiType UiType { get; }
         public float Res0 { get; }
         public int Lead0 { get; }
         public byte[] DynExp { get; } = Array.Empty<byte>();
@@ -613,7 +613,7 @@ namespace ValveResourceFormat.CompiledShader
             datareader.BaseStream.Position += 64;
             UiGroup = datareader.ReadNullTermStringAtPosition();
             datareader.BaseStream.Position += 64;
-            Type = datareader.ReadInt32();
+            UiType = (UiType)datareader.ReadInt32();
             Res0 = datareader.ReadSingle();
             AttributeName = datareader.ReadNullTermStringAtPosition();
             datareader.BaseStream.Position += 64;

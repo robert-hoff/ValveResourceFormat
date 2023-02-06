@@ -98,9 +98,18 @@ public sealed class ShaderExtract
 
             foreach (var sfConstraint in Features.SfConstraintsBlocks)
             {
-                // Verify Arg0, Requires
                 var constrainedFeatures = string.Join(", ", sfConstraint.Range0.Select(x => Features.SfBlocks[x].Name));
-                var rule = $"Allow{sfConstraint.Arg0}({constrainedFeatures})";
+
+                var rules = new List<string>
+                {
+                    "<unknown0>",
+                    "Requires",
+                    "<unknown2>",
+                    "Allow",
+                };
+
+                // Verify Arg0
+                var rule = $"{rules[sfConstraint.RelRule]}{sfConstraint.Arg0}({constrainedFeatures})";
                 featuresSb.AppendLine($"\tFeatureRule({rule}, \"{sfConstraint.Description}\");");
             }
 
@@ -118,8 +127,9 @@ public sealed class ShaderExtract
 
             foreach (var symbol in Vs.SymbolBlocks[0].SymbolsDefinition)
             {
+                var attributeVfx = symbol.Option.Length > 0 ? $" < Semantic({symbol.Option}); >" : string.Empty;
                 // TODO: type
-                commonSb.AppendLine($"\t\tfloat4 {symbol.Name} : {symbol.Type}{symbol.SemanticIndex};");
+                commonSb.AppendLine($"\t\tfloat4 {symbol.Name} : {symbol.Type}{symbol.SemanticIndex}{attributeVfx};");
             }
 
             commonSb.AppendLine("\t};");
@@ -152,20 +162,6 @@ public sealed class ShaderExtract
             psSb.AppendLine("PS");
             psSb.AppendLine("{");
 
-            var types = new Dictionary<int, string>
-            {
-                {0, ""},
-                {1, "float"},
-                {2, "float2"},
-                {3, "float3"},
-                {4, "float4"},
-                {5, "enum"},
-                {9, "bool"},
-                {14, "tex"},
-                {21, "buffer"},
-                {23, "tex[]"}
-            };
-
             foreach (var param in Ps.ParamBlocks)
             {
                 var attributes = new List<string>();
@@ -179,6 +175,11 @@ public sealed class ShaderExtract
                 }
                 else
                 {
+                    if (param.UiType != UiType.None)
+                    {
+                        attributes.Add($"UiType({param.UiType});");
+                    }
+
                     if (param.UiGroup.Length > 0)
                     {
                         attributes.Add($"UiGroup(\"{param.UiGroup}\");");
@@ -188,7 +189,7 @@ public sealed class ShaderExtract
                         ? " < " + string.Join(" ", attributes) + " > "
                         : string.Empty;
 
-                    psSb.AppendLine($"\t{types.GetValueOrDefault(param.Arg1)} {param.Name}{attributesVfx};");
+                    psSb.AppendLine($"\t{Vfx.Types.GetValueOrDefault(param.Arg1, $"unkntype{param.Arg1}")} {param.Name}{attributesVfx};");
                 }
             }
 
