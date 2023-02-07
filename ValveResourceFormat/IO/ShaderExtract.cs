@@ -92,32 +92,7 @@ public sealed class ShaderExtract
             featuresSb.AppendLine("FEATURES");
             featuresSb.AppendLine("{");
 
-            foreach (var sf in Features.SfBlocks)
-            {
-                var checkboxNames = sf.CheckboxNames.Count > 0
-                    ? " (" + string.Join(", ", sf.CheckboxNames.Select((x, i) => $"{i}=\"{x}\"")) + ")"
-                    : string.Empty;
-
-                // Verify RangeMin
-                featuresSb.AppendLine($"\tFeature({sf.Name}, {sf.RangeMin}..{sf.RangeMax}{checkboxNames}, \"{sf.Category}\");");
-            }
-
-            foreach (var sfConstraint in Features.SfConstraintsBlocks)
-            {
-                var constrainedFeatures = string.Join(", ", sfConstraint.Range0.Select(x => Features.SfBlocks[x].Name));
-
-                var rules = new List<string>
-                {
-                    "<unknown0>",
-                    "Requires",
-                    "<unknown2>",
-                    "Allow",
-                };
-
-                // Verify Arg0
-                var rule = $"{rules[sfConstraint.RelRule]}{sfConstraint.Arg0}({constrainedFeatures})";
-                featuresSb.AppendLine($"\tFeatureRule({rule}, \"{sfConstraint.Description}\");");
-            }
+            HandleFeatures(Features.SfBlocks, Features.SfConstraintsBlocks, featuresSb);
 
             featuresSb.AppendLine("}");
         }
@@ -154,13 +129,19 @@ public sealed class ShaderExtract
             commonSb.AppendLine("}");
         }
 
+        var features = Features.SfBlocks.Select(f => f.Name).ToList();
+
         // vs
         var vsSb = new StringBuilder();
         {
             vsSb.AppendLine();
             vsSb.AppendLine("VS");
             vsSb.AppendLine("{");
-            vsSb.AppendLine();
+            if (Vs is not null)
+            {
+                HandleStaticCombos(Vs.SfBlocks, Vs.SfConstraintsBlocks, features, vsSb);
+                HandleParameters(Vs.ParamBlocks, vsSb);
+            }
             vsSb.AppendLine("}");
         }
 
@@ -172,93 +153,173 @@ public sealed class ShaderExtract
 
         if (Ps is not null)
         {
-            foreach (var param in Ps.ParamBlocks.OrderBy(x => x.RenderState == 255))
-            {
-                var attributes = new List<string>();
-                //if (param.Lead0 == 6 || param.Lead0 == 7)
-                //{
-                //    var features = Features.SfBlocks.Select(f => f.Name).ToList();
-                //    var globalVars = Ps.ParamBlocks.Select(p => p.Name).ToArray();
-                //    var dynEx = new VfxEval(param.DynExp, globalVars, omitReturnStatement: true, features: features).DynamicExpressionResult;
-                //    psSb.AppendLine($"\tRenderState({param.Name}, {dynEx});");
-                //    // BoolAttribute
-                //    // FloatAttribute
-                //    // <Expression();>
-                //}
-
-
-                if (Enum.IsDefined(typeof(RenderState), (int)param.RenderState))
-                {
-                    if (param.DynExp.Length > 0)
-                    {
-                        var features = Features.SfBlocks.Select(f => f.Name).ToList();
-                        var globalVars = Ps.ParamBlocks.Select(p => p.Name).ToArray();
-                        var dynEx = new VfxEval(param.DynExp, globalVars, omitReturnStatement: true, features: features).DynamicExpressionResult;
-
-                        if (param.Name != ((RenderState)param.RenderState).ToString())
-                        {
-
-                        }
-                        psSb.AppendLine($"\tRenderState({param.Name}, {dynEx});");
-                    }
-                    else
-                    {
-                        psSb.AppendLine($"\tRenderState({param.Name}, unknownval!);");
-                    }
-                }
-
-                // User input
-                else if (param.RenderState == 255)
-                {
-                    // Texture Input (unpacked)
-                    if (param.Arg4 == -1)
-                    {
-                        if (param.UiType != UiType.Texture)
-                        {
-                            throw new Exception("Unexpected UiType: " + param.UiType.ToString());
-                        }
-
-                        var default4 = $"Default4({param.FloatDefs[0]}, {param.FloatDefs[1]}, {param.FloatDefs[2]}, {param.FloatDefs[3]})";
-                        var mode = param.IntArgs1[2] == 0
-                            ? "Linear"
-                            : "Srgb";
-                        psSb.AppendLine($"\tCreateInputTexture2D({param.Name}, {mode}, {param.IntArgs1[3]}, \"{param.Command1}\", \"{param.Command0}\", \"{param.UiGroup}\", {default4});");
-                        // param.FileRef materials/default/default_cube.png
-                        continue;
-                    }
-
-                    if (param.UiType != UiType.None)
-                    {
-                        attributes.Add($"UiType({param.UiType});");
-                    }
-
-                    if (param.UiGroup.Length > 0)
-                    {
-                        attributes.Add($"UiGroup(\"{param.UiGroup}\");");
-                    }
-
-                    if (param.DynExp.Length > 0)
-                    {
-                        var features = Features.SfBlocks.Select(f => f.Name).ToList();
-                        var globalVars = Ps.ParamBlocks.Select(p => p.Name).ToArray();
-                        var dynEx = new VfxEval(param.DynExp, globalVars, omitReturnStatement: true, features: features).DynamicExpressionResult.Replace(param.Name, "this");
-                        attributes.Add($"Expression({dynEx});");
-                    }
-
-                    var attributesVfx = attributes.Count > 0
-                        ? " < " + string.Join(" ", attributes) + " > "
-                        : string.Empty;
-
-                    psSb.AppendLine($"\t{Vfx.Types.GetValueOrDefault(param.VfxType, $"unkntype{param.VfxType}")} {param.Name}{attributesVfx};");
-                }
-                else
-                {
-
-                }
-            }
+            HandleStaticCombos(Ps.SfBlocks, Ps.SfConstraintsBlocks, features, psSb);
+            HandleParameters(Ps.ParamBlocks, psSb);
         }
+
         psSb.AppendLine("}");
 
         return headerSb.ToString() + modesSb.ToString() + featuresSb.ToString() + commonSb.ToString() + vsSb.ToString() + psSb.ToString();
+    }
+
+    private static void HandleFeatures(List<SfBlock> features, List<SfConstraintsBlock> constraints, StringBuilder sb)
+    {
+        foreach (var feature in features)
+        {
+            var checkboxNames = feature.CheckboxNames.Count > 0
+                ? " (" + string.Join(", ", feature.CheckboxNames.Select((x, i) => $"{i}=\"{x}\"")) + ")"
+                : string.Empty;
+
+            // Verify RangeMin
+            sb.AppendLine($"\tFeature( {feature.Name}, {feature.RangeMin}..{feature.RangeMax}{checkboxNames}, \"{feature.Category}\" );");
+        }
+
+        foreach (var rule in HandleConstraints(features, constraints))
+        {
+            sb.AppendLine($"\tFeatureRule( {rule.Constraint}, \"{rule.Description}\" );");
+        }
+    }
+    private static void HandleStaticCombos(List<SfBlock> combos, List<SfConstraintsBlock> constraints, List<string> features, StringBuilder sb)
+    {
+        foreach (var staticCombo in combos)
+        {
+            if (staticCombo.FeatureIndex != -1)
+            {
+                sb.AppendLine($"\tStaticCombo( {staticCombo.Name}, {features[staticCombo.FeatureIndex]}, Sys( All ) );");
+                continue;
+            }
+
+            sb.AppendLine($"\tStaticCombo( {staticCombo.Name}, {staticCombo.RangeMin}..{staticCombo.RangeMax}, Sys( All ) );");
+        }
+
+        foreach (var rule in HandleConstraints(combos, constraints))
+        {
+            sb.AppendLine($"\tStaticComboRule( {rule.Constraint} );");
+        }
+    }
+
+    private static IEnumerable<(string Constraint, string Description)> HandleConstraints(List<SfBlock> sfBlocks, List<SfConstraintsBlock> constraints)
+    {
+        foreach (var constraint in constraints)
+        {
+            Console.WriteLine(string.Join(" ", constraint.Flags));
+            var constrainedNames = string.Join(", ", constraint.Range0.Select(x => sfBlocks[x].Name));
+
+            var rules = new List<string>
+            {
+                "<rule0>",
+                "Requires1",
+                "Requiress", // spritecard: FeatureRule(Requiress(F_NORMAL_MAP, F_TEXTURE_LAYERS, F_TEXTURE_LAYERS, F_TEXTURE_LAYERS), "Normal map requires Less than 3 Layers due to DX9");
+                "Allow1",
+            };
+
+            yield return ($"{rules[constraint.RelRule]}( {constrainedNames} )", constraint.Description);
+        }
+    }
+
+    private void HandleParameters(List<ParamBlock> paramBlocks, StringBuilder sb)
+    {
+        foreach (var param in paramBlocks.OrderBy(x => x.RenderState == 255))
+        {
+            // BoolAttribute
+            // FloatAttribute
+            var attributes = new List<string>();
+
+            // Render State
+            if (param.Arg2 == 5)
+            {
+                if (Enum.TryParse<RenderState>(param.Name, false, out var result))
+                {
+                    if ((byte)result != param.RenderState)
+                    {
+                        Console.WriteLine($"{param.Name} = {param.RenderState},");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"{param.Name} = {param.RenderState},");
+                }
+
+                if (param.DynExp.Length > 0)
+                {
+                    var features = Features.SfBlocks.Select(f => f.Name).ToList();
+                    var globalVars = Features.ParamBlocks.Select(p => p.Name).ToArray();
+                    var dynEx = new VfxEval(param.DynExp, globalVars, omitReturnStatement: true, features: features).DynamicExpressionResult;
+
+                    sb.AppendLine($"\tRenderState({param.Name}, {dynEx});");
+                }
+                else
+                {
+                    sb.AppendLine($"\tRenderState({param.Name}, {param.IntDefs[0]});");
+                }
+            }
+
+            // Sampler State
+            else if (param.Arg2 == 6)
+            {
+                if (Enum.TryParse<SamplerState>(param.Name, false, out var result))
+                {
+                    if ((byte)result != param.RenderState)
+                    {
+                        Console.WriteLine($"{param.Name} = {param.RenderState},");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"{param.Name} = {param.RenderState},");
+                }
+
+                sb.AppendLine($"\t{param.Name}({param.IntDefs[0]}); // Sampler");
+            }
+
+            // User input
+            else if (param.RenderState == 255)
+            {
+                // Texture Input (unpacked)
+                if (param.Arg4 == -1)
+                {
+                    if (param.UiType != UiType.Texture)
+                    {
+                        throw new Exception("Unexpected UiType: " + param.UiType.ToString());
+                    }
+
+                    var default4 = $"Default4({param.FloatDefs[0]}, {param.FloatDefs[1]}, {param.FloatDefs[2]}, {param.FloatDefs[3]})";
+                    var mode = param.IntArgs1[2] == 0
+                        ? "Linear"
+                        : "Srgb";
+                    sb.AppendLine($"\tCreateInputTexture2D({param.Name}, {mode}, {param.IntArgs1[3]}, \"{param.Command1}\", \"{param.Command0}\", \"{param.UiGroup}\", {default4});");
+                    // param.FileRef materials/default/default_cube.png
+                    continue;
+                }
+
+                if (param.UiType != UiType.None)
+                {
+                    attributes.Add($"UiType({param.UiType});");
+                }
+
+                if (param.UiGroup.Length > 0)
+                {
+                    attributes.Add($"UiGroup(\"{param.UiGroup}\");");
+                }
+
+                if (param.DynExp.Length > 0)
+                {
+                    var features = Features.SfBlocks.Select(f => f.Name).ToList();
+                    var globalVars = Ps.ParamBlocks.Select(p => p.Name).ToArray();
+                    var dynEx = new VfxEval(param.DynExp, globalVars, omitReturnStatement: true, features: features).DynamicExpressionResult.Replace(param.Name, "this");
+                    attributes.Add($"Expression({dynEx});");
+                }
+
+                var attributesVfx = attributes.Count > 0
+                    ? " < " + string.Join(" ", attributes) + " > "
+                    : string.Empty;
+
+                sb.AppendLine($"\t{Vfx.Types.GetValueOrDefault(param.VfxType, $"unkntype{param.VfxType}")} {param.Name}{attributesVfx};");
+            }
+            else
+            {
+
+            }
+        }
     }
 }

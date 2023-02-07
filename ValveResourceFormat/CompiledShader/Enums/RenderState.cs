@@ -2,11 +2,11 @@ namespace ValveResourceFormat.CompiledShader;
 
 public enum RenderState
 {
-    FillMode = 8,
-    CullMode = 9,
-    DepthBias = 10,
-    DepthBiasClamp = 11,
-    SlopeScaleDepthBias = 12,
+    FillMode = 0,
+    CullMode = 1,
+    DepthBias = 2,
+    DepthBiasClamp = 4,
+    SlopeScaleDepthBias = 3,
     DepthClipEnable = 13,
     MultisampleEnable = 14,
     SampleMask = 15,
@@ -25,6 +25,7 @@ public enum RenderState
     BackStencilPassOp = 30,
     BackStencilFunc = 31,
     StencilRef = 32,
+    AlphaToCoverageEnable = 37,
 
     BlendEnable = 41,
     IndependentBlendEnable = 42,

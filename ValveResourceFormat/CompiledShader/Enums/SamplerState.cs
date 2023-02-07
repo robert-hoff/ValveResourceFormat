@@ -6,5 +6,8 @@ public enum SamplerState
     AddressU = 1,
     AddressV = 2,
     AddressW = 3,
-    ComparisonFunc = 4,
+    BorderColor = 4,
+    MaxAniso = 7,
+    ComparisonFunc = 10,
+    DefaultSamplerState = 11,
 }
