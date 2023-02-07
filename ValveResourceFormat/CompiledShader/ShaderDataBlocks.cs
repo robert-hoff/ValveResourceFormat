@@ -633,13 +633,14 @@ namespace ValveResourceFormat.CompiledShader
         public byte Rs0 { get; }
         public byte Rs1 { get; }
         public byte Rs2 { get; }
-
         public string FileRef { get; }
+        public static readonly float FloatInf = 1e9F;
+        public static readonly int IntInf = 999999999;
         public int[] IntDefs { get; } = new int[4];
         public int[] IntMins { get; } = new int[4];
         public int[] IntMaxs { get; } = new int[4];
         public float[] FloatDefs { get; } = new float[4];
-        public float[] FloadMins { get; } = new float[4];
+        public float[] FloatMins { get; } = new float[4];
         public float[] FloatMaxs { get; } = new float[4];
         public int[] IntArgs0 { get; } = new int[4];
         public int[] IntArgs1 { get; } = new int[4];
@@ -713,7 +714,7 @@ namespace ValveResourceFormat.CompiledShader
             }
             for (var i = 0; i < 4; i++)
             {
-                FloadMins[i] = datareader.ReadSingle();
+                FloatMins[i] = datareader.ReadSingle();
             }
             for (var i = 0; i < 4; i++)
             {
@@ -867,12 +868,12 @@ namespace ValveResourceFormat.CompiledShader
         }
         private static string Fmt(float val)
         {
-            if (val == -1e9)
+            if (val == -FloatInf)
             {
                 return "-inf";
             }
 
-            if (val == 1e9)
+            if (val == FloatInf)
             {
                 return "inf";
             }
@@ -881,17 +882,17 @@ namespace ValveResourceFormat.CompiledShader
         }
         private static string Fmt(int val)
         {
-            if (val == -999999999)
+            if (val == -IntInf)
             {
                 return "-inf";
             }
 
-            if (val == 999999999)
+            if (val == IntInf)
             {
                 return "inf";
             }
 
-            return "" + val; ;
+            return "" + val;
         }
     }
 

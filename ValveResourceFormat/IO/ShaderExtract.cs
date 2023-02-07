@@ -297,6 +297,31 @@ public sealed class ShaderExtract
                     continue;
                 }
 
+                if (param.IntDefs.Any(x => x > 0))
+                {
+                    if (param.FloatDefs.Any(x => x > 0))
+                    {
+                        attributes.Add($"Default4({string.Join(", ", param.FloatDefs)})");
+                    }
+                    else
+                    {
+                        attributes.Add($"Default4({string.Join(", ", param.IntDefs)})");
+                    }
+                }
+
+                if (param.IntMins[0] != -ParamBlock.IntInf)
+                {
+                    if (param.FloatMins[0] != -ParamBlock.FloatInf)
+                    {
+                        attributes.Add($"Range4({string.Join(", ", param.FloatMins)}, {string.Join(", ", param.FloatMaxs)})");
+                    }
+                    else
+                    {
+                        attributes.Add($"Range4({string.Join(", ", param.IntMins)}, {string.Join(", ", param.IntMaxs)});");
+                    }
+                }
+
+
                 if (param.UiType != UiType.None)
                 {
                     attributes.Add($"UiType({param.UiType});");
