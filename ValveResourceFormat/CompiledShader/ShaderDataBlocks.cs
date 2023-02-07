@@ -622,14 +622,14 @@ namespace ValveResourceFormat.CompiledShader
         public byte[] DynExp { get; } = Array.Empty<byte>();
         public int Arg0 { get; }
         public int VfxType { get; }
-        public int Arg2 { get; }
+        public ParameterType ParamType { get; }
         public byte Arg30 { get; }
         public byte Arg31 { get; }
         public byte Arg32 { get; }
         public byte Arg33 { get; }
         public int Arg4 { get; }
         public int Arg5 { get; } = -1;
-        public byte RenderState { get; }
+        public byte State { get; }
         public byte Rs0 { get; }
         public byte Rs1 { get; }
         public byte Rs2 { get; }
@@ -677,7 +677,7 @@ namespace ValveResourceFormat.CompiledShader
             }
 
             VfxType = datareader.ReadInt32();
-            Arg2 = datareader.ReadInt32();
+            ParamType = (ParameterType)datareader.ReadInt32();
 
             Arg30 = datareader.ReadByte();
             Arg31 = datareader.ReadByte();
@@ -687,7 +687,7 @@ namespace ValveResourceFormat.CompiledShader
             Arg4 = datareader.ReadInt32();
             if (vcsVersion > 62)
             {
-                RenderState = datareader.ReadByte();
+                State = datareader.ReadByte();
                 Rs0 = datareader.ReadByte();
                 Rs1 = datareader.ReadByte();
                 Rs2 = datareader.ReadByte();

@@ -219,25 +219,25 @@ public sealed class ShaderExtract
 
     private void HandleParameters(List<ParamBlock> paramBlocks, StringBuilder sb)
     {
-        foreach (var param in paramBlocks.OrderBy(x => x.RenderState == 255))
+        foreach (var param in paramBlocks.OrderBy(x => x.State == 255))
         {
             // BoolAttribute
             // FloatAttribute
             var attributes = new List<string>();
 
             // Render State
-            if (param.Arg2 == 5)
+            if (param.ParamType is ParameterType.RenderState)
             {
                 if (Enum.TryParse<RenderState>(param.Name, false, out var result))
                 {
-                    if ((byte)result != param.RenderState)
+                    if ((byte)result != param.State)
                     {
-                        Console.WriteLine($"{param.Name} = {param.RenderState},");
+                        Console.WriteLine($"{param.Name} = {param.State},");
                     }
                 }
                 else
                 {
-                    Console.WriteLine($"{param.Name} = {param.RenderState},");
+                    Console.WriteLine($"{param.Name} = {param.State},");
                 }
 
                 if (param.DynExp.Length > 0)
@@ -255,25 +255,25 @@ public sealed class ShaderExtract
             }
 
             // Sampler State
-            else if (param.Arg2 == 6)
+            else if (param.ParamType is ParameterType.SamplerState)
             {
                 if (Enum.TryParse<SamplerState>(param.Name, false, out var result))
                 {
-                    if ((byte)result != param.RenderState)
+                    if ((byte)result != param.State)
                     {
-                        Console.WriteLine($"{param.Name} = {param.RenderState},");
+                        Console.WriteLine($"{param.Name} = {param.State},");
                     }
                 }
                 else
                 {
-                    Console.WriteLine($"{param.Name} = {param.RenderState},");
+                    Console.WriteLine($"{param.Name} = {param.State},");
                 }
 
                 sb.AppendLine($"\t{param.Name}({param.IntDefs[0]}); // Sampler");
             }
 
             // User input
-            else if (param.RenderState == 255)
+            else if (param.State == 255)
             {
                 // Texture Input (unpacked)
                 if (param.Arg4 == -1)
@@ -283,7 +283,12 @@ public sealed class ShaderExtract
                         throw new Exception("Unexpected UiType: " + param.UiType.ToString());
                     }
 
-                    var default4 = $"Default4({param.FloatDefs[0]}, {param.FloatDefs[1]}, {param.FloatDefs[2]}, {param.FloatDefs[3]})";
+                    if (param.ParamType != ParameterType.InputTexture)
+                    {
+                        throw new Exception("Unexpected ParamType: " + param.UiType.ToString());
+                    }
+
+                    var default4 = $"Default4({string.Join(", ", param.FloatDefs)})";
                     var mode = param.IntArgs1[2] == 0
                         ? "Linear"
                         : "Srgb";
