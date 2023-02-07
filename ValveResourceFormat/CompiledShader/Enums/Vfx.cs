@@ -20,6 +20,7 @@ public static class Vfx
             {15, "volumetex?"},
             {16, "cube"},
             {21, "buffer"},
-            {23, "tex[]"}
+            {23, "tex[]"},
+            {40, "set?"},
         };
 }

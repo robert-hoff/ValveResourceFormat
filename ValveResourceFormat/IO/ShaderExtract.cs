@@ -213,7 +213,11 @@ public sealed class ShaderExtract
                     // Texture Input (unpacked)
                     if (param.Arg4 == -1)
                     {
-                        psSb.AppendLine($"\tCreateInputTexture2D({param.Name}, Linear, 8, \"{param.Command1}\", \"{param.Command0}\", \"{param.UiGroup}\");");
+                        var default4 = $"Default4({param.FloatDefs[0]}, {param.FloatDefs[1]}, {param.FloatDefs[2]}, {param.FloatDefs[3]})";
+                        var mode = param.IntArgs1[2] == 0
+                            ? "Linear"
+                            : "Srgb";
+                        psSb.AppendLine($"\tCreateInputTexture2D({param.Name}, {mode}, {param.IntArgs1[3]}, \"{param.Command1}\", \"{param.Command0}\", \"{param.UiGroup}\", {default4});");
                         // param.FileRef materials/default/default_cube.png
                         continue;
                     }

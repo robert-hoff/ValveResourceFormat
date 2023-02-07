@@ -372,14 +372,14 @@ namespace ValveResourceFormat.CompiledShader
             foreach (var param in shaderFile.ParamBlocks)
             {
                 var fileref = param.FileRef;
-                var r0 = param.Ranges0;
-                var r1 = param.Ranges1;
-                var r2 = param.Ranges2;
-                var r3 = param.Ranges3;
-                var r4 = param.Ranges4;
-                var r5 = param.Ranges5;
-                var r6 = param.Ranges6;
-                var r7 = param.Ranges7;
+                var r0 = param.IntDefs;
+                var r1 = param.IntMins;
+                var r2 = param.IntMaxs;
+                var r3 = param.FloatDefs;
+                var r4 = param.FloadMins;
+                var r5 = param.FloatMaxs;
+                var r6 = param.IntArgs0;
+                var r7 = param.IntArgs1;
                 var hasFileRef = param.FileRef.Length > 0 ? "true" : "";
                 var hasDynExp = param.Lead0 == 6 || param.Lead0 == 7 ? "true" : "";
                 output.AddTabulatedRow(new string[] { $"[{("" + param.BlockIndex).PadLeft(indexPad)}]", $"{param.Name}",

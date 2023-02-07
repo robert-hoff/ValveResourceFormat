@@ -608,14 +608,14 @@ namespace ValveResourceFormat.CompiledShader
         public byte Rs2 { get; }
 
         public string FileRef { get; }
-        public int[] Ranges0 { get; } = new int[4];
-        public int[] Ranges1 { get; } = new int[4];
-        public int[] Ranges2 { get; } = new int[4];
-        public float[] Ranges3 { get; } = new float[4];
-        public float[] Ranges4 { get; } = new float[4];
-        public float[] Ranges5 { get; } = new float[4];
-        public int[] Ranges6 { get; } = new int[4];
-        public int[] Ranges7 { get; } = new int[4];
+        public int[] IntDefs { get; } = new int[4];
+        public int[] IntMins { get; } = new int[4];
+        public int[] IntMaxs { get; } = new int[4];
+        public float[] FloatDefs { get; } = new float[4];
+        public float[] FloadMins { get; } = new float[4];
+        public float[] FloatMaxs { get; } = new float[4];
+        public int[] IntArgs0 { get; } = new int[4];
+        public int[] IntArgs1 { get; } = new int[4];
         public string Command0 { get; }
         public string Command1 { get; }
         public byte[] V65Data { get; } = Array.Empty<byte>();
@@ -670,35 +670,35 @@ namespace ValveResourceFormat.CompiledShader
             datareader.BaseStream.Position += 64;
             for (var i = 0; i < 4; i++)
             {
-                Ranges0[i] = datareader.ReadInt32();
+                IntDefs[i] = datareader.ReadInt32();
             }
             for (var i = 0; i < 4; i++)
             {
-                Ranges1[i] = datareader.ReadInt32();
+                IntMins[i] = datareader.ReadInt32();
             }
             for (var i = 0; i < 4; i++)
             {
-                Ranges2[i] = datareader.ReadInt32();
+                IntMaxs[i] = datareader.ReadInt32();
             }
             for (var i = 0; i < 4; i++)
             {
-                Ranges3[i] = datareader.ReadSingle();
+                FloatDefs[i] = datareader.ReadSingle();
             }
             for (var i = 0; i < 4; i++)
             {
-                Ranges4[i] = datareader.ReadSingle();
+                FloadMins[i] = datareader.ReadSingle();
             }
             for (var i = 0; i < 4; i++)
             {
-                Ranges5[i] = datareader.ReadSingle();
+                FloatMaxs[i] = datareader.ReadSingle();
             }
             for (var i = 0; i < 4; i++)
             {
-                Ranges6[i] = datareader.ReadInt32();
+                IntArgs0[i] = datareader.ReadInt32();
             }
             for (var i = 0; i < 4; i++)
             {
-                Ranges7[i] = datareader.ReadInt32();
+                IntArgs1[i] = datareader.ReadInt32();
             }
             Command0 = datareader.ReadNullTermStringAtPosition();
             datareader.BaseStream.Position += 32;
