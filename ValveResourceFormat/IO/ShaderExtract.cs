@@ -249,7 +249,7 @@ public sealed class ShaderExtract
                         ? " < " + string.Join(" ", attributes) + " > "
                         : string.Empty;
 
-                    psSb.AppendLine($"\t{Vfx.Types.GetValueOrDefault(param.Arg1, $"unkntype{param.Arg1}")} {param.Name}{attributesVfx};");
+                    psSb.AppendLine($"\t{Vfx.Types.GetValueOrDefault(param.VfxType, $"unkntype{param.VfxType}")} {param.Name}{attributesVfx};");
                 }
                 else
                 {

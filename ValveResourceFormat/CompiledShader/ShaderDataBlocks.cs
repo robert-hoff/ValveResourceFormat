@@ -257,7 +257,12 @@ namespace ValveResourceFormat.CompiledShader
         }
     }
 
-    // SfBlocks are usually 152 bytes long, occasionally they have extra string parameters
+    /// <summary>
+    /// Contains a definition for a feature or static configuration.
+    /// </summary>
+    /// <remarks>
+    /// These are usually 152 bytes long. Features may contain names describing each state
+    /// </remarks>
     public class SfBlock : ShaderDataBlock
     {
         public int BlockIndex { get; }
@@ -267,7 +272,10 @@ namespace ValveResourceFormat.CompiledShader
         public int RangeMin { get; }
         public int RangeMax { get; }
         public int Arg3 { get; }
-        public int Arg4 { get; }
+        /// <returns>
+        /// The feature index this static configuration is tied to, or -1
+        /// </returns>
+        public int FeatureIndex { get; }
         public int Arg5 { get; }
         public List<string> CheckboxNames { get; } = new();
         public SfBlock(ShaderDataReader datareader, int blockIndex) : base(datareader)
@@ -281,9 +289,13 @@ namespace ValveResourceFormat.CompiledShader
             RangeMin = datareader.ReadInt32();
             RangeMax = datareader.ReadInt32();
             Arg3 = datareader.ReadInt32();
-            Arg4 = datareader.ReadInt32();
+            FeatureIndex = datareader.ReadInt32();
             Arg5 = datareader.ReadInt32AtPosition();
             var additionalStringsCount = datareader.ReadInt32();
+            if (additionalStringsCount > 0 && RangeMax != additionalStringsCount - 1)
+            {
+                throw new InvalidOperationException("invalid");
+            }
             for (var i = 0; i < additionalStringsCount; i++)
             {
                 CheckboxNames.Add(datareader.ReadNullTermString());
@@ -609,7 +621,7 @@ namespace ValveResourceFormat.CompiledShader
         public int Lead0 { get; }
         public byte[] DynExp { get; } = Array.Empty<byte>();
         public int Arg0 { get; }
-        public int Arg1 { get; }
+        public int VfxType { get; }
         public int Arg2 { get; }
         public byte Arg30 { get; }
         public byte Arg31 { get; }
@@ -664,7 +676,7 @@ namespace ValveResourceFormat.CompiledShader
                 Arg0 = datareader.ReadInt32();
             }
 
-            Arg1 = datareader.ReadInt32();
+            VfxType = datareader.ReadInt32();
             Arg2 = datareader.ReadInt32();
 
             Arg30 = datareader.ReadByte();
