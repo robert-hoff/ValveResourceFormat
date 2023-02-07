@@ -213,6 +213,11 @@ public sealed class ShaderExtract
                     // Texture Input (unpacked)
                     if (param.Arg4 == -1)
                     {
+                        if (param.UiType != UiType.Texture)
+                        {
+                            throw new Exception("Unexpected UiType: " + param.UiType.ToString());
+                        }
+
                         var default4 = $"Default4({param.FloatDefs[0]}, {param.FloatDefs[1]}, {param.FloatDefs[2]}, {param.FloatDefs[3]})";
                         var mode = param.IntArgs1[2] == 0
                             ? "Linear"
