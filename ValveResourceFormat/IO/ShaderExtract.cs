@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -54,14 +55,12 @@ public sealed class ShaderExtract
 
         var headerSb = new StringBuilder();
         {
-            headerSb.AppendLine();
             headerSb.AppendLine("HEADER");
             headerSb.AppendLine("{");
 
             headerSb.AppendLine($"\tDescription = \"{Features.FeaturesHeader.FileDescription}\";");
             headerSb.AppendLine($"\tDevShader = {(Features.FeaturesHeader.DevShader == 0 ? "false" : "true")};");
             headerSb.AppendLine($"\tVersion = {Features.FeaturesHeader.Version};");
-            headerSb.AppendLine($"\tCompileTargets = (<unknown>);");
 
             headerSb.AppendLine("}");
         }
@@ -72,9 +71,16 @@ public sealed class ShaderExtract
             modesSb.AppendLine("MODES");
             modesSb.AppendLine("{");
 
-            foreach ((var mode, var condition) in Features.FeaturesHeader.MainParams)
+            foreach (var mode in Features.FeaturesHeader.Modes)
             {
-                modesSb.AppendLine($"\t{mode}({condition});");
+                if (string.IsNullOrEmpty(mode.Shader))
+                {
+                    modesSb.AppendLine($"\t{mode.Name}({mode.StaticConfig});");
+                }
+                else
+                {
+                    modesSb.AppendLine($"\t{mode.Name}(\"{mode.Shader}\");");
+                }
             }
 
             modesSb.AppendLine("}");
@@ -122,14 +128,17 @@ public sealed class ShaderExtract
             commonSb.AppendLine("COMMON");
             commonSb.AppendLine("{");
 
-            commonSb.AppendLine("\tstruct VS_INPUT");
-            commonSb.AppendLine("\t{");
-
-            foreach (var symbol in Vs.SymbolBlocks[0].SymbolsDefinition)
+            if (Vs is not null && Vs.SymbolBlocks.Count > 0)
             {
-                var attributeVfx = symbol.Option.Length > 0 ? $" < Semantic({symbol.Option}); >" : string.Empty;
-                // TODO: type
-                commonSb.AppendLine($"\t\tfloat4 {symbol.Name} : {symbol.Type}{symbol.SemanticIndex}{attributeVfx};");
+                commonSb.AppendLine("\tstruct VS_INPUT");
+                commonSb.AppendLine("\t{");
+
+                foreach (var symbol in Vs.SymbolBlocks[0].SymbolsDefinition)
+                {
+                    var attributeVfx = symbol.Option.Length > 0 ? $" < Semantic({symbol.Option}); >" : string.Empty;
+                    // TODO: type
+                    commonSb.AppendLine($"\t\tfloat4 {symbol.Name} : {symbol.Type}{symbol.SemanticIndex}{attributeVfx};");
+                }
             }
 
             commonSb.AppendLine("\t};");
@@ -139,7 +148,7 @@ public sealed class ShaderExtract
             commonSb.AppendLine("\tstruct PS_INPUT");
             commonSb.AppendLine("\t{");
             commonSb.AppendLine("\t\t//");
-            commonSb.AppendLine("\t{");
+            commonSb.AppendLine("\t};");
 
 
             commonSb.AppendLine("}");
@@ -157,24 +166,58 @@ public sealed class ShaderExtract
 
         // ps
         var psSb = new StringBuilder();
-        {
-            psSb.AppendLine();
-            psSb.AppendLine("PS");
-            psSb.AppendLine("{");
+        psSb.AppendLine();
+        psSb.AppendLine("PS");
+        psSb.AppendLine("{");
 
-            foreach (var param in Ps.ParamBlocks)
+        if (Ps is not null)
+        {
+            foreach (var param in Ps.ParamBlocks.OrderBy(x => x.RenderState == 255))
             {
                 var attributes = new List<string>();
-                if (param.Lead0 == 6 || param.Lead0 == 7)
+                //if (param.Lead0 == 6 || param.Lead0 == 7)
+                //{
+                //    var features = Features.SfBlocks.Select(f => f.Name).ToList();
+                //    var globalVars = Ps.ParamBlocks.Select(p => p.Name).ToArray();
+                //    var dynEx = new VfxEval(param.DynExp, globalVars, omitReturnStatement: true, features: features).DynamicExpressionResult;
+                //    psSb.AppendLine($"\tRenderState({param.Name}, {dynEx});");
+                //    // BoolAttribute
+                //    // FloatAttribute
+                //    // <Expression();>
+                //}
+
+
+                if (Enum.IsDefined(typeof(RenderState), (int)param.RenderState))
                 {
-                    var dynEx = new VfxEval(param.DynExp, omitReturnStatement: true, features: Features.SfBlocks.Select(f => f.Name).ToList()).DynamicExpressionResult;
-                    psSb.AppendLine($"\tRenderState({param.Name}, {dynEx});");
-                    // BoolAttribute
-                    // FloatAttribute
-                    // <Expression();>
+                    if (param.DynExp.Length > 0)
+                    {
+                        var features = Features.SfBlocks.Select(f => f.Name).ToList();
+                        var globalVars = Ps.ParamBlocks.Select(p => p.Name).ToArray();
+                        var dynEx = new VfxEval(param.DynExp, globalVars, omitReturnStatement: true, features: features).DynamicExpressionResult;
+
+                        if (param.Name != ((RenderState)param.RenderState).ToString())
+                        {
+
+                        }
+                        psSb.AppendLine($"\tRenderState({param.Name}, {dynEx});");
+                    }
+                    else
+                    {
+                        psSb.AppendLine($"\tRenderState({param.Name}, unknownval!);");
+                    }
                 }
-                else
+
+                // User input
+                else if (param.RenderState == 255)
                 {
+                    // Texture Input (unpacked)
+                    if (param.Arg4 == -1)
+                    {
+                        psSb.AppendLine($"\tCreateInputTexture2D({param.Name}, Linear, 8, \"{param.Command1}\", \"{param.Command0}\", \"{param.UiGroup}\");");
+                        // param.FileRef materials/default/default_cube.png
+                        continue;
+                    }
+
                     if (param.UiType != UiType.None)
                     {
                         attributes.Add($"UiType({param.UiType});");
@@ -185,17 +228,27 @@ public sealed class ShaderExtract
                         attributes.Add($"UiGroup(\"{param.UiGroup}\");");
                     }
 
+                    if (param.DynExp.Length > 0)
+                    {
+                        var features = Features.SfBlocks.Select(f => f.Name).ToList();
+                        var globalVars = Ps.ParamBlocks.Select(p => p.Name).ToArray();
+                        var dynEx = new VfxEval(param.DynExp, globalVars, omitReturnStatement: true, features: features).DynamicExpressionResult.Replace(param.Name, "this");
+                        attributes.Add($"Expression({dynEx});");
+                    }
+
                     var attributesVfx = attributes.Count > 0
                         ? " < " + string.Join(" ", attributes) + " > "
                         : string.Empty;
 
                     psSb.AppendLine($"\t{Vfx.Types.GetValueOrDefault(param.Arg1, $"unkntype{param.Arg1}")} {param.Name}{attributesVfx};");
                 }
+                else
+                {
+
+                }
             }
-
-
-            psSb.AppendLine("}");
         }
+        psSb.AppendLine("}");
 
         return headerSb.ToString() + modesSb.ToString() + featuresSb.ToString() + commonSb.ToString() + vsSb.ToString() + psSb.ToString();
     }

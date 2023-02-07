@@ -11,9 +11,14 @@ public static class Vfx
             {2, "float2"},
             {3, "float3"},
             {4, "float4"},
-            {5, "enum"},
+            {5, "int"},
+            {6, "int2"},
+            {7, "int3"},
+            {8, "int4"},
             {9, "bool"},
             {14, "tex"},
+            {15, "volumetex?"},
+            {16, "cube"},
             {21, "buffer"},
             {23, "tex[]"}
         };

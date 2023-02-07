@@ -19,7 +19,7 @@ namespace ValveResourceFormat.CompiledShader
         public int Arg5 { get; }
         public int Arg6 { get; }
         public int Arg7 { get; } = -1;
-        public List<(string, string)> MainParams { get; } = new();
+        public List<(string Name, string Shader, string StaticConfig)> Modes { get; } = new();
         public List<(string, string)> EditorIDs { get; } = new();
         public FeaturesHeaderBlock(ShaderDataReader datareader) : base(datareader)
         {
@@ -60,24 +60,29 @@ namespace ValveResourceFormat.CompiledShader
                 Arg7 = datareader.ReadInt32();
             }
 
-            var nr_of_arguments = datareader.ReadInt32();
+            var mode_count = datareader.ReadInt32();
             if (HasPsrsFile)
             {
                 // nr_of_arguments is overwritten
-                nr_of_arguments = datareader.ReadInt32();
+                mode_count = datareader.ReadInt32();
             }
-            for (var i = 0; i < nr_of_arguments; i++)
+
+            for (var i = 0; i < mode_count; i++)
             {
-                var string_arg0 = datareader.ReadNullTermStringAtPosition();
-                var string_arg1 = "";
-                datareader.BaseStream.Position += 128;
+                var name = datareader.ReadNullTermStringAtPosition();
+                datareader.BaseStream.Position += 64;
+                var shader = datareader.ReadNullTermStringAtPosition();
+                datareader.BaseStream.Position += 64;
+
+                var static_config = string.Empty;
                 if (datareader.ReadInt32() > 0)
                 {
-                    string_arg1 = datareader.ReadNullTermStringAtPosition();
+                    static_config = datareader.ReadNullTermStringAtPosition();
                     datareader.BaseStream.Position += 68;
                 }
-                MainParams.Add((string_arg0, string_arg1));
+                Modes.Add((name, shader, static_config));
             }
+
             EditorIDs.Add(($"{datareader.ReadBytesAsString(16)}", "// Editor ref. ID0 (produces this file)"));
             EditorIDs.Add(($"{datareader.ReadBytesAsString(16)}", $"// Editor ref. ID1 - usually a ref to the vs file ({VcsProgramType.VertexShader})"));
             EditorIDs.Add(($"{datareader.ReadBytesAsString(16)}", $"// Editor ref. ID2 - usually a ref to the ps file ({VcsProgramType.PixelShader})"));
@@ -591,9 +596,17 @@ namespace ValveResourceFormat.CompiledShader
         public int Arg0 { get; }
         public int Arg1 { get; }
         public int Arg2 { get; }
-        public int Arg3 { get; }
+        public byte Arg30 { get; }
+        public byte Arg31 { get; }
+        public byte Arg32 { get; }
+        public byte Arg33 { get; }
         public int Arg4 { get; }
         public int Arg5 { get; } = -1;
+        public byte RenderState { get; }
+        public byte Rs0 { get; }
+        public byte Rs1 { get; }
+        public byte Rs2 { get; }
+
         public string FileRef { get; }
         public int[] Ranges0 { get; } = new int[4];
         public int[] Ranges1 { get; } = new int[4];
@@ -638,11 +651,19 @@ namespace ValveResourceFormat.CompiledShader
 
             Arg1 = datareader.ReadInt32();
             Arg2 = datareader.ReadInt32();
-            Arg3 = datareader.ReadInt32();
+
+            Arg30 = datareader.ReadByte();
+            Arg31 = datareader.ReadByte();
+            Arg32 = datareader.ReadByte();
+            Arg33 = datareader.ReadByte();
+
             Arg4 = datareader.ReadInt32();
             if (vcsVersion > 62)
             {
-                Arg5 = datareader.ReadInt32();
+                RenderState = datareader.ReadByte();
+                Rs0 = datareader.ReadByte();
+                Rs1 = datareader.ReadByte();
+                Rs2 = datareader.ReadByte();
             }
 
             FileRef = datareader.ReadNullTermStringAtPosition();

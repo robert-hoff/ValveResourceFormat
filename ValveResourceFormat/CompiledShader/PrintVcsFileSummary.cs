@@ -81,13 +81,13 @@ namespace ValveResourceFormat.CompiledShader
             output.WriteLine($"{ftHeader.EditorIDs[^1].Item1}    // Editor ref. ID{ftHeader.EditorIDs.Count - 1} " +
                 $"- common editor reference shared by multiple files");
             output.BreakLine();
-            if (ftHeader.MainParams.Count == 0)
+            if (ftHeader.Modes.Count == 0)
             {
                 output.WriteLine("Primary modes");
                 output.WriteLine("[default only]");
                 return;
             }
-            if (ftHeader.MainParams.Count > 1)
+            if (ftHeader.Modes.Count > 1)
             {
                 output.WriteLine($"Primary static modes (one of these should be selected)");
             }
@@ -95,13 +95,12 @@ namespace ValveResourceFormat.CompiledShader
             {
                 output.WriteLine($"Primary static modes (this file has only one default mode)");
             }
-            output.DefineHeaders(new string[] { "name", "mode", "config-states" });
-            output.AddTabulatedRow(new string[] { "----", "----", "-------------" });
-            foreach (var mainParam in ftHeader.MainParams)
+            output.DefineHeaders(new string[] { "name", "shader", "mode" });
+            output.AddTabulatedRow(new string[] { "----", "----", "----" });
+            foreach (var mode in ftHeader.Modes)
             {
-                var arg2 = mainParam.Item2.Length == 0 ? "(default)" : mainParam.Item2;
-                var configs = mainParam.Item2.Length == 0 ? "(implicit)" : "0,1";
-                output.AddTabulatedRow(new string[] { $"{mainParam.Item1}", $"{arg2}", $"{configs}" });
+                var staticName = mode.StaticConfig.Length == 0 ? "(default)" : mode.StaticConfig;
+                output.AddTabulatedRow(new string[] { mode.Name, mode.Shader, staticName });
             }
             output.PrintTabulatedValues();
             output.BreakLine();
@@ -320,28 +319,10 @@ namespace ValveResourceFormat.CompiledShader
             var indexPad = shaderFile.ParamBlocks.Count > 100 ? 3 : 2;
             // parameters
             output.WriteLine($"PARAMETERS({shaderFile.ParamBlocks.Count})    *dyn-expressions shown separately");
-            output.DefineHeaders(new string[] { "index", "Name | Category | Attribute", "UiType", "type1", "res", "arg0", "VfxType",
-                "arg2", "arg3", "arg4", "arg5", "dyn-exp*", "command 0|1", "fileref"});
+            output.DefineHeaders(new string[] { "index", "Name", "UiType", "type1", "res", "arg0", "VfxType",
+                "arg2", "arg30", "arg31", "arg32", "arg33", "arg4", "RenderState", "r1", "r2", "r3", "dyn-exp*", "Attribute", "UiGroup", "command 0|1", "fileref"});
             foreach (var param in shaderFile.ParamBlocks)
             {
-                var nameCondensed = param.Name;
-                if (param.UiGroup.Length > 0)
-                {
-                    nameCondensed += $" | {param.UiGroup}";
-                }
-                if (param.AttributeName.Length > 0)
-                {
-                    nameCondensed += $" | {param.AttributeName}(Attr)";
-                }
-                if (nameCondensed.Length > 65)
-                {
-                    var tokens = nameCondensed.Split("|");
-                    nameCondensed = tokens[0].Trim();
-                    for (var i = 1; i < tokens.Length; i++)
-                    {
-                        nameCondensed += $"\n{tokens[i].Trim()}";
-                    }
-                }
                 var dynExpExists = param.Lead0 == 6 || param.Lead0 == 7 ? "true" : "";
                 if (dynExpExists.Length > 0)
                 {
@@ -353,10 +334,10 @@ namespace ValveResourceFormat.CompiledShader
                 {
                     c0 += $" | {c1}";
                 }
-                output.AddTabulatedRow(new string[] {$"[{(""+param.BlockIndex).PadLeft(indexPad)}]", $"{nameCondensed}", $"{param.UiType}",
+                output.AddTabulatedRow(new string[] {$"[{(""+param.BlockIndex).PadLeft(indexPad)}]", param.Name, param.UiType.ToString(),
                     $"{param.Lead0}", $"{param.Res0}", $"{BlankNegOne(param.Arg0),2}", Vfx.Types.GetValueOrDefault(param.Arg1, $"unkntype{param.Arg1}"), $"{param.Arg2}",
-                    $"{Pow2Rep(param.Arg3),4}", $"{param.Arg4,2}", $"{BlankNegOne(param.Arg5),2}",
-                    $"{dynExpExists}", $"{c0}", $"{param.FileRef}"});
+                    param.Arg30.ToString(), param.Arg31.ToString(), param.Arg32.ToString(), param.Arg33.ToString(), $"{param.Arg4,2}", param.RenderState.ToString(), param.Rs0.ToString(), param.Rs1.ToString(), param.Rs2.ToString(),
+                    $"{dynExpExists}", param.AttributeName, param.UiGroup, $"{c0}", $"{param.FileRef}"});
             }
             output.PrintTabulatedValues(spacing: 1);
             output.BreakLine();
@@ -378,7 +359,7 @@ namespace ValveResourceFormat.CompiledShader
                     var dynExpstring = ParseDynamicExpression(param.DynExp);
                     output.AddTabulatedRow(new string[] { $"[{(""+param.BlockIndex).PadLeft(indexPad)}]",
                         $"{param.Name}",
-                        $"{param.UiType,2},{param.Lead0,2},{BlankNegOne(param.Arg0),2},{Vfx.Types.GetValueOrDefault(param.Arg1, $"unkntype{param.Arg1}")},{param.Arg2,2},{param.Arg4,2},{BlankNegOne(param.Arg5),2}",
+                        $"{param.UiType,2},{param.Lead0,2},{BlankNegOne(param.Arg0),2},{Vfx.Types.GetValueOrDefault(param.Arg1, $"unkntype{param.Arg1}")},{param.Arg2,2},{param.Arg4,2},{param.RenderState}",
                         $"{dynExpstring}" });
                 }
                 output.PrintTabulatedValues();
@@ -402,7 +383,7 @@ namespace ValveResourceFormat.CompiledShader
                 var hasFileRef = param.FileRef.Length > 0 ? "true" : "";
                 var hasDynExp = param.Lead0 == 6 || param.Lead0 == 7 ? "true" : "";
                 output.AddTabulatedRow(new string[] { $"[{("" + param.BlockIndex).PadLeft(indexPad)}]", $"{param.Name}",
-                    $"{param.UiType,2},{param.Lead0,2},{BlankNegOne(param.Arg0),2},{Vfx.Types.GetValueOrDefault(param.Arg1, $"unkntype{param.Arg1}")},{param.Arg2,2},{param.Arg4,2},{BlankNegOne(param.Arg5),2}",
+                    $"{param.UiType,2},{param.Lead0,2},{BlankNegOne(param.Arg0),2},{Vfx.Types.GetValueOrDefault(param.Arg1, $"unkntype{param.Arg1}")},{param.Arg2,2},{param.Arg4,2},{param.RenderState}",
                     $"{Comb(r0)}", $"{Comb(r1)}", $"{Comb(r2)}", $"{Comb(r3)}", $"{Comb(r4)}",
                     $"{Comb(r5)}", $"{Comb(r6)}", $"{Comb(r7)}", $"{param.Command0}", $"{hasFileRef}", $"{hasDynExp}"});
             }

@@ -136,9 +136,11 @@ namespace ValveResourceFormat.Serialization.VfxEval
             ParseExpression(binaryBlob);
         }
 
-        public VfxEval(byte[] binaryBlob, string[] renderAttributesUsed, bool omitReturnStatement = false)
+        // TODO: better constructors
+        public VfxEval(byte[] binaryBlob, string[] renderAttributesUsed, bool omitReturnStatement = false, IList<string> features = null)
         {
             OmitReturnStatement = omitReturnStatement;
+            Features = features;
             uint MURMUR2SEED = 0x31415926; // pi!
 
             foreach (var externalVarName in renderAttributesUsed)
