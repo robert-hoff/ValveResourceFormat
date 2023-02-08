@@ -6,7 +6,7 @@ namespace ValveResourceFormat.CompiledShader;
 public enum ParameterType
 {
     Bool = 1,
-    Unk2,
+    Int,
     Uniform,
     Texture,
     RenderState,

@@ -181,10 +181,10 @@ namespace ValveResourceFormat.CompiledShader
                 output.BreakLine();
                 return;
             }
-            output.DefineHeaders(new string[] { nameof(SfBlock.BlockIndex), nameof(SfBlock.Name), nameof(SfBlock.RangeMax), nameof(SfBlock.Arg3), nameof(SfBlock.FeatureIndex) });
+            output.DefineHeaders(new string[] { nameof(SfBlock.BlockIndex), nameof(SfBlock.Name), nameof(SfBlock.RangeMax), nameof(SfBlock.Sys), nameof(SfBlock.FeatureIndex) });
             foreach (var item in shaderFile.SfBlocks)
             {
-                output.AddTabulatedRow(new string[] { $"[{item.BlockIndex,2}]", $"{item.Name}", $"{item.RangeMax}", $"{item.Arg3}", $"{item.FeatureIndex,2}" });
+                output.AddTabulatedRow(new string[] { $"[{item.BlockIndex,2}]", $"{item.Name}", $"{item.RangeMax}", $"{item.Sys}", $"{item.FeatureIndex,2}" });
             }
             output.PrintTabulatedValues();
             output.BreakLine();
@@ -320,7 +320,7 @@ namespace ValveResourceFormat.CompiledShader
             // parameters
             output.WriteLine($"PARAMETERS({shaderFile.ParamBlocks.Count})    *dyn-expressions shown separately");
             output.DefineHeaders(new string[] { "index", nameof(ParamBlock.Name), nameof(ParamBlock.UiType), nameof(ParamBlock.Lead0), nameof(ParamBlock.Res0), nameof(ParamBlock.Arg0), nameof(ParamBlock.VfxType),
-                nameof(ParamBlock.ParamType), nameof(ParamBlock.Arg30), nameof(ParamBlock.Arg31), nameof(ParamBlock.Arg32), nameof(ParamBlock.Arg33), nameof(ParamBlock.Arg4), nameof(ParamBlock.State), nameof(ParamBlock.Rs0), nameof(ParamBlock.Rs1), nameof(ParamBlock.Rs2), "dyn-exp*", nameof(ParamBlock.AttributeName), nameof(ParamBlock.UiGroup), "command 0|1", nameof(ParamBlock.FileRef)});
+                nameof(ParamBlock.ParamType), nameof(ParamBlock.Arg3), nameof(ParamBlock.Arg4), nameof(ParamBlock.Arg5), nameof(ParamBlock.Arg6), nameof(ParamBlock.VecSize), nameof(ParamBlock.Id), nameof(ParamBlock.Arg9), nameof(ParamBlock.Arg10), nameof(ParamBlock.Arg11), "dyn-exp*", nameof(ParamBlock.AttributeName), nameof(ParamBlock.UiGroup), "command 0|1", nameof(ParamBlock.FileRef)});
             foreach (var param in shaderFile.ParamBlocks)
             {
                 var dynExpExists = param.Lead0 == 6 || param.Lead0 == 7 ? "true" : "";
@@ -336,7 +336,7 @@ namespace ValveResourceFormat.CompiledShader
                 }
                 output.AddTabulatedRow(new string[] {$"[{(""+param.BlockIndex).PadLeft(indexPad)}]", param.Name, param.UiType.ToString(),
                     $"{param.Lead0}", $"{param.Res0}", $"{BlankNegOne(param.Arg0),2}", Vfx.Types.GetValueOrDefault(param.VfxType, $"unkntype{param.VfxType}"), $"{param.ParamType}",
-                    param.Arg30.ToString(), param.Arg31.ToString(), param.Arg32.ToString(), param.Arg33.ToString(), $"{param.Arg4,2}", param.State.ToString(), param.Rs0.ToString(), param.Rs1.ToString(), param.Rs2.ToString(),
+                    param.Arg3.ToString(), param.Arg4.ToString(), param.Arg5.ToString(), param.Arg6.ToString(), $"{param.VecSize,2}", param.Id.ToString(), param.Arg9.ToString(), param.Arg10.ToString(), param.Arg11.ToString(),
                     $"{dynExpExists}", param.AttributeName, param.UiGroup, $"{c0}", $"{param.FileRef}"});
             }
             output.PrintTabulatedValues(spacing: 1);
@@ -359,7 +359,7 @@ namespace ValveResourceFormat.CompiledShader
                     var dynExpstring = ParseDynamicExpression(param.DynExp);
                     output.AddTabulatedRow(new string[] { $"[{(""+param.BlockIndex).PadLeft(indexPad)}]",
                         $"{param.Name}",
-                        $"{param.UiType,2},{param.Lead0,2},{BlankNegOne(param.Arg0),2},{Vfx.Types.GetValueOrDefault(param.VfxType, $"unkntype{param.VfxType}")},{param.ParamType,2},{param.Arg4,2},{param.State}",
+                        $"{param.UiType,2},{param.Lead0,2},{BlankNegOne(param.Arg0),2},{Vfx.Types.GetValueOrDefault(param.VfxType, $"unkntype{param.VfxType}")},{param.ParamType,2},{param.VecSize,2},{param.Id}",
                         $"{dynExpstring}" });
                 }
                 output.PrintTabulatedValues();
@@ -375,7 +375,7 @@ namespace ValveResourceFormat.CompiledShader
                 var vfxType = Vfx.Types.GetValueOrDefault(param.VfxType, $"unkntype{param.VfxType}");
                 var hasDynExp = param.Lead0 == 6 || param.Lead0 == 7 ? "true" : "";
                 output.AddTabulatedRow(new string[] { $"[{("" + param.BlockIndex).PadLeft(indexPad)}]", $"{param.Name}",
-                    $"{param.UiType,2},{param.Lead0,2},{BlankNegOne(param.Arg0),2},{vfxType},{param.ParamType,2},{param.Arg4,2},{param.State}",
+                    $"{param.UiType,2},{param.Lead0,2},{BlankNegOne(param.Arg0),2},{vfxType},{param.ParamType,2},{param.VecSize,2},{param.Id}",
                     $"{Comb(param.IntDefs)}", $"{Comb(param.IntMins)}", $"{Comb(param.IntMaxs)}", $"{Comb(param.FloatDefs)}", $"{Comb(param.FloatMins)}",
                     $"{Comb(param.FloatMaxs)}", $"{Comb(param.IntArgs0)}", $"{Comb(param.IntArgs1)}", param.Command0, param.FileRef, $"{hasDynExp}"});
             }

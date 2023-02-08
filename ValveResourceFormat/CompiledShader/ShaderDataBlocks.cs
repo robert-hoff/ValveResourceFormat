@@ -271,7 +271,8 @@ namespace ValveResourceFormat.CompiledShader
         public int Arg0 { get; }
         public int RangeMin { get; }
         public int RangeMax { get; }
-        public int Arg3 { get; }
+        // Seems to be connected to Sys
+        public int Sys { get; }
         /// <returns>
         /// The feature index this static configuration is tied to, or -1
         /// </returns>
@@ -288,25 +289,27 @@ namespace ValveResourceFormat.CompiledShader
             Arg0 = datareader.ReadInt32();
             RangeMin = datareader.ReadInt32();
             RangeMax = datareader.ReadInt32();
-            Arg3 = datareader.ReadInt32();
+            Sys = datareader.ReadInt32();
             FeatureIndex = datareader.ReadInt32();
             Arg5 = datareader.ReadInt32AtPosition();
             var additionalStringsCount = datareader.ReadInt32();
+
             if (additionalStringsCount > 0 && RangeMax != additionalStringsCount - 1)
             {
                 throw new InvalidOperationException("invalid");
             }
+
             for (var i = 0; i < additionalStringsCount; i++)
             {
                 CheckboxNames.Add(datareader.ReadNullTermString());
             }
 
             // Seen in steampal's vr_complex VertexShader
-            if (Arg3 == 11)
+            if (Sys == 11)
             {
                 if (Name != "S_FOLIAGE_ANIMATION_ENABLED")
                 {
-                    throw new UnexpectedMagicException($"Unexpected static config with {nameof(Arg3)} = 11", Name, nameof(Name));
+                    throw new UnexpectedMagicException($"Unexpected static config with {nameof(Sys)} = 11", Name, nameof(Name));
                 }
 
                 var foliage = datareader.ReadInt32();
@@ -623,16 +626,15 @@ namespace ValveResourceFormat.CompiledShader
         public int Arg0 { get; }
         public int VfxType { get; }
         public ParameterType ParamType { get; }
-        public byte Arg30 { get; }
-        public byte Arg31 { get; }
-        public byte Arg32 { get; }
-        public byte Arg33 { get; }
-        public int Arg4 { get; }
-        public int Arg5 { get; } = -1;
-        public byte State { get; }
-        public byte Rs0 { get; }
-        public byte Rs1 { get; }
-        public byte Rs2 { get; }
+        public byte Arg3 { get; }
+        public byte Arg4 { get; }
+        public byte Arg5 { get; }
+        public byte Arg6 { get; }
+        public int VecSize { get; }
+        public byte Id { get; }
+        public byte Arg9 { get; }
+        public byte Arg10 { get; }
+        public byte Arg11 { get; }
         public string FileRef { get; }
         public static readonly float FloatInf = 1e9F;
         public static readonly int IntInf = 999999999;
@@ -680,18 +682,18 @@ namespace ValveResourceFormat.CompiledShader
             VfxType = datareader.ReadInt32();
             ParamType = (ParameterType)datareader.ReadInt32();
 
-            Arg30 = datareader.ReadByte();
-            Arg31 = datareader.ReadByte();
-            Arg32 = datareader.ReadByte();
-            Arg33 = datareader.ReadByte();
+            Arg3 = datareader.ReadByte();
+            Arg4 = datareader.ReadByte();
+            Arg5 = datareader.ReadByte();
+            Arg6 = datareader.ReadByte();
 
-            Arg4 = datareader.ReadInt32();
+            VecSize = datareader.ReadInt32();
             if (vcsVersion > 62)
             {
-                State = datareader.ReadByte();
-                Rs0 = datareader.ReadByte();
-                Rs1 = datareader.ReadByte();
-                Rs2 = datareader.ReadByte();
+                Id = datareader.ReadByte();
+                Arg9 = datareader.ReadByte();
+                Arg10 = datareader.ReadByte();
+                Arg11 = datareader.ReadByte();
             }
 
             FileRef = datareader.ReadNullTermStringAtPosition();
