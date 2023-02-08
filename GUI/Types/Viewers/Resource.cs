@@ -358,16 +358,21 @@ namespace GUI.Types.Viewers
 
                 resTabs.TabPages.Add(tab2);
 
-                static void AddContentTab(TabControl resTabs, string name, string text)
+                static void AddContentTab(TabControl resTabs, string name, string text, bool selected = false)
                 {
                     var control = new MonospaceTextBox
                     {
-                        Text = Utils.Utils.NormalizeLineEndings(text),
+                        Text = text.ReplaceLineEndings(),
                     };
 
                     var tab = new TabPage(name);
                     tab.Controls.Add(control);
                     resTabs.TabPages.Add(tab);
+
+                    if (selected)
+                    {
+                        resTabs.SelectTab(tab);
+                    }
                 }
 
                 if (block.Type != BlockType.DATA)
@@ -407,7 +412,7 @@ namespace GUI.Types.Viewers
                             break;
                         }
                     case ResourceType.Shader:
-                        AddContentTab(resTabs, "Reconstructed vfx", new ShaderExtract(resource).ToVFX());
+                        AddContentTab(resTabs, "Reconstructed vfx", new ShaderExtract(resource).ToVFX(), true);
                         break;
                 }
             }

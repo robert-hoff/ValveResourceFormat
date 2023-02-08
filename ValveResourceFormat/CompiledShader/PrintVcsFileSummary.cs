@@ -209,16 +209,14 @@ namespace ValveResourceFormat.CompiledShader
                 const int BL = 70;
                 var breakNames = CombineValuesBreakString(sfNames, BL);
                 var s0 = $"[{sfRuleBlock.BlockIndex,2}]";
-                var s1 = (sfRuleBlock.RelRule == 1 || sfRuleBlock.RelRule == 2) ? $"INC({sfRuleBlock.RelRule})" : $"EXC({sfRuleBlock.RelRule})";
-                var s3 = $"{sfRuleBlock.GetByteFlagsAsString()}";
                 var s4 = $"{breakNames[0]}";
-                var s5 = $"{CombineIntArray(sfRuleBlock.Indices)}";
+                var s5 = $"{sfRuleBlock.Rule}{sfRuleBlock.Range2[0]}";
                 var s6 = $"{CombineIntArray(sfRuleBlock.Values)}";
                 var s7 = $"{CombineIntArray(sfRuleBlock.Range2)}";
-                var blockSummary = $"{s0,-7}{s1,-10}{s5,-16}{s4,-BL}{s6,-8}{s7,-8}";
+                var blockSummary = $"{s0}  {s5,-10}  {s4,-BL}{s6,-10}{s7,-8}";
                 for (var i = 1; i < breakNames.Length; i++)
                 {
-                    blockSummary += $"\n{"",7}{"",10}{"",16}{breakNames[i],-BL}";
+                    blockSummary += $"\n{"",7}{"",10}{"",16}{breakNames[i],-BL}{sfRuleBlock.Description,-BL}";
                 }
                 output.Write(blockSummary);
                 output.BreakLine();
@@ -289,13 +287,11 @@ namespace ValveResourceFormat.CompiledShader
                 const int BL = 70;
                 var breakNames = CombineValuesBreakString(dRuleName, BL);
                 var s0 = $"[{dRuleBlock.BlockIndex,2}]";
-                var s1 = (dRuleBlock.RelRule == 1 || dRuleBlock.RelRule == 2) ? $"INC({dRuleBlock.RelRule})" : $"EXC({dRuleBlock.RelRule})";
-                var s3 = $"{dRuleBlock.GetByteFlagsAsString()}";
                 var s4 = $"{breakNames[0]}";
-                var s5 = $"{CombineIntArray(dRuleBlock.Indices)}";
+                var s5 = $"{dRuleBlock.Rule}{dRuleBlock.Range2[0]}";
                 var s6 = $"{CombineIntArray(dRuleBlock.Values)}";
                 var s7 = $"{CombineIntArray(dRuleBlock.Range2)}";
-                var blockSummary = $"{s0,-7}{s1,-10}{s3,-15}{s5,-16}{s4,-BL}{s6,-10}{s7,-8}";
+                var blockSummary = $"{s0}  {s5,-10}  {s4,-BL}{s6,-10}{s7,-8}";
                 for (var i = 1; i < breakNames.Length; i++)
                 {
                     blockSummary += $"\n{"",-7}{"",-10}{"",-15}{"",-16}{breakNames[i],-BL}";
@@ -328,7 +324,7 @@ namespace ValveResourceFormat.CompiledShader
                 {
                     dynExpCount++;
                 }
-                var c0 = param.Command0;
+                var c0 = param.Suffix;
                 var c1 = param.Command1;
                 if (c1.Length > 0)
                 {
@@ -369,7 +365,7 @@ namespace ValveResourceFormat.CompiledShader
             output.WriteLine("(- indicates -infinity, + indicates +infinity, def. = default)");
             output.DefineHeaders(new string[] { "index", "name0", "t0,t1,a0,a1,a2,a4,a5  ", nameof(ParamBlock.IntDefs), nameof(ParamBlock.IntMins), nameof(ParamBlock.IntMaxs),
                 nameof(ParamBlock.FloatDefs), nameof(ParamBlock.FloatMins), nameof(ParamBlock.FloatMaxs), nameof(ParamBlock.IntArgs0), nameof(ParamBlock.IntArgs1),
-                nameof(ParamBlock.Command0), nameof(ParamBlock.FileRef), nameof(ParamBlock.DynExp)});
+                nameof(ParamBlock.Suffix), nameof(ParamBlock.FileRef), nameof(ParamBlock.DynExp)});
             foreach (var param in shaderFile.ParamBlocks)
             {
                 var vfxType = Vfx.Types.GetValueOrDefault(param.VfxType, $"unkntype{param.VfxType}");
@@ -377,7 +373,7 @@ namespace ValveResourceFormat.CompiledShader
                 output.AddTabulatedRow(new string[] { $"[{("" + param.BlockIndex).PadLeft(indexPad)}]", $"{param.Name}",
                     $"{param.UiType,2},{param.Lead0,2},{BlankNegOne(param.Arg0),2},{vfxType},{param.ParamType,2},{param.VecSize,2},{param.Id}",
                     $"{Comb(param.IntDefs)}", $"{Comb(param.IntMins)}", $"{Comb(param.IntMaxs)}", $"{Comb(param.FloatDefs)}", $"{Comb(param.FloatMins)}",
-                    $"{Comb(param.FloatMaxs)}", $"{Comb(param.IntArgs0)}", $"{Comb(param.IntArgs1)}", param.Command0, param.FileRef, $"{hasDynExp}"});
+                    $"{Comb(param.FloatMaxs)}", $"{Comb(param.IntArgs0)}", $"{Comb(param.IntArgs1)}", param.Suffix, param.FileRef, $"{hasDynExp}"});
             }
             output.PrintTabulatedValues(spacing: 1);
             output.BreakLine();

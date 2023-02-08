@@ -291,11 +291,7 @@ namespace ValveResourceFormat.CompiledShader
         public int Arg0 { get; }
         public int RangeMin { get; }
         public int RangeMax { get; }
-        // Seems to be connected to Sys
         public int Sys { get; }
-        /// <returns>
-        /// The feature index this static configuration is tied to, or -1
-        /// </returns>
         public int FeatureIndex { get; }
         public int Arg5 { get; }
         public List<string> CheckboxNames { get; } = new();
@@ -395,7 +391,7 @@ namespace ValveResourceFormat.CompiledShader
     public interface IComboConstraints
     {
         int BlockIndex { get; }
-        int RelRule { get; }
+        ConditionalRule Rule { get; }
         ConditionalType BlockType { get; }
         ConditionalType[] ConditionalTypes { get; }
         int[] Indices { get; }
@@ -404,7 +400,6 @@ namespace ValveResourceFormat.CompiledShader
         string Description { get; }
 
         void PrintByteDetail();
-        string RelRuleDescribe();
         string GetByteFlagsAsString();
     }
 
@@ -412,7 +407,7 @@ namespace ValveResourceFormat.CompiledShader
     public class SfConstraintsBlock : ShaderDataBlock, IComboConstraints
     {
         public int BlockIndex { get; }
-        public int RelRule { get; }  // 1 = dependency-rule (feature file), 2 = dependency-rule (other files), 3 = exclusion
+        public ConditionalRule Rule { get; }  // 1 = dependency-rule (feature file), 2 = dependency-rule (other files), 3 = exclusion
         public ConditionalType BlockType { get; } // this is just 1 for features files and 2 for all other files
         public ConditionalType[] ConditionalTypes { get; }
         public int[] Indices { get; }
@@ -422,7 +417,7 @@ namespace ValveResourceFormat.CompiledShader
         public SfConstraintsBlock(ShaderDataReader datareader, int blockIndex) : base(datareader)
         {
             BlockIndex = blockIndex;
-            RelRule = datareader.ReadInt32();
+            Rule = (ConditionalRule)datareader.ReadInt32();
             BlockType = (ConditionalType)datareader.ReadInt32();
             // flags are at (8)
             ConditionalTypes = Array.ConvertAll(ReadByteFlags(), x => (ConditionalType)x);
@@ -464,10 +459,6 @@ namespace ValveResourceFormat.CompiledShader
             }
             DataReader.BaseStream.Position = savedPosition + 16;
             return byteFlags;
-        }
-        public string RelRuleDescribe()
-        {
-            return RelRule == 3 ? "EXC(3)" : $"INC({RelRule})";
         }
         public string GetByteFlagsAsString()
         {
@@ -528,7 +519,7 @@ namespace ValveResourceFormat.CompiledShader
     public class DConstraintsBlock : ShaderDataBlock, IComboConstraints
     {
         public int BlockIndex { get; }
-        public int RelRule { get; }  // 2 = dependency-rule (other files), 3 = exclusion (1 not present, as in the compat-blocks)
+        public ConditionalRule Rule { get; }  // 2 = dependency-rule (other files), 3 = exclusion (1 not present, as in the compat-blocks)
         public ConditionalType BlockType { get; } // ALWAYS 3 (for sf-constraint-blocks this value is 1 for features files and 2 for all other files)
         public int Arg1 { get; } // arg1 at (88) sometimes has a value > -1 (in compat-blocks this value is always seen to be -1)
         public ConditionalType[] ConditionalTypes { get; }
@@ -541,7 +532,7 @@ namespace ValveResourceFormat.CompiledShader
         public DConstraintsBlock(ShaderDataReader datareader, int blockIndex) : base(datareader)
         {
             BlockIndex = blockIndex;
-            RelRule = datareader.ReadInt32();
+            Rule = (ConditionalRule)datareader.ReadInt32();
             BlockType = (ConditionalType)datareader.ReadInt32();
             if (BlockType != ConditionalType.Dynamic)
             {
@@ -596,10 +587,6 @@ namespace ValveResourceFormat.CompiledShader
         {
             return string.Join(" ", ConditionalTypes);
         }
-        public string RelRuleDescribe()
-        {
-            return RelRule == 3 ? "EXC(3)" : $"INC({RelRule})";
-        }
         public void PrintByteDetail()
         {
             DataReader.BaseStream.Position = Start;
@@ -642,7 +629,7 @@ namespace ValveResourceFormat.CompiledShader
         public float[] FloatMaxs { get; } = new float[4];
         public int[] IntArgs0 { get; } = new int[4];
         public int[] IntArgs1 { get; } = new int[4];
-        public string Command0 { get; }
+        public string Suffix { get; }
         public string Command1 { get; }
         public byte[] V65Data { get; } = Array.Empty<byte>();
         public ParamBlock(ShaderDataReader datareader, int blockIndex, int vcsVersion) : base(datareader)
@@ -726,7 +713,7 @@ namespace ValveResourceFormat.CompiledShader
             {
                 IntArgs1[i] = datareader.ReadInt32();
             }
-            Command0 = datareader.ReadNullTermStringAtPosition();
+            Suffix = datareader.ReadNullTermStringAtPosition();
             datareader.BaseStream.Position += 32;
             Command1 = datareader.ReadNullTermStringAtPosition();
             datareader.BaseStream.Position += 32;

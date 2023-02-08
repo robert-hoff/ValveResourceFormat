@@ -13,7 +13,28 @@ public sealed class ShaderExtract
 {
     public readonly struct ShaderExtractParams
     {
-        //readonly bool CollapseBuffers;
+        public bool CollapseCommonBuffers { get; init; }
+        public bool FirstVsInput_Only { get; init; }
+
+        public static readonly ShaderExtractParams Inspect = new()
+        {
+            CollapseCommonBuffers = true,
+            FirstVsInput_Only = true,
+        };
+
+        public static readonly ShaderExtractParams Export = new()
+        {
+            CollapseCommonBuffers = false,
+            FirstVsInput_Only = true,
+        };
+
+        public static HashSet<string> CommonBuffers => new()
+        {
+            "PerViewConstantBuffer_t",
+            "PerViewConstantBufferVR_t",
+            "PerViewLightingConstantBufferVr_t",
+            "DotaGlobalParams_t",
+        };
     }
 
     public ShaderFile Features { get; init; }
@@ -23,6 +44,7 @@ public sealed class ShaderExtract
     public ShaderFile ComputeShader { get; init; }
     public ShaderFile RaytracingShader { get; init; }
 
+    private ShaderExtractParams Options { get; set; } = ShaderExtractParams.Inspect;
     private List<string> FeatureNames { get; set; }
     private string[] Globals { get; set; }
 
@@ -83,19 +105,30 @@ public sealed class ShaderExtract
     {
         var vfx = new ContentFile
         {
-            Data = Encoding.UTF8.GetBytes(ToVFX())
+            Data = Encoding.UTF8.GetBytes(ToVFX(ShaderExtractParams.Export))
         };
+
+        // TODO: includes..
 
         return vfx;
     }
 
     public string ToVFX()
     {
+        return ToVFX(ShaderExtractParams.Inspect);
+    }
+
+    public string ToVFX(ShaderExtractParams @params)
+    {
         // TODO: IndentedTextWriter
         FeatureNames = Features.SfBlocks.Select(f => f.Name).ToList();
         Globals = Features.ParamBlocks.Select(p => p.Name).ToArray();
+        Options = @params;
 
-        return HEADER()
+        return "//=================================================================================================\n"
+            + "// Reconstructed with VRF - https://vrf.steamdb.info/\n"
+            + "//=================================================================================================\n"
+            + HEADER()
             + MODES()
             + FEATURES()
             + COMMON()
@@ -166,12 +199,14 @@ public sealed class ShaderExtract
         stringBuilder.AppendLine("COMMON");
         stringBuilder.AppendLine("{");
 
-        HandleVsInput(stringBuilder);
+        stringBuilder.AppendLine("\t#include \"system.fxc\"");
 
         if (VertexShader is not null)
         {
             HandleCBuffers(VertexShader.BufferBlocks, stringBuilder);
         }
+
+        HandleVsInput(stringBuilder);
 
         stringBuilder.AppendLine("}");
 
@@ -180,12 +215,22 @@ public sealed class ShaderExtract
 
     private void HandleVsInput(StringBuilder stringBuilder)
     {
-        if (VertexShader is not null && VertexShader.SymbolBlocks.Count > 0)
+        if (VertexShader is null)
         {
-            stringBuilder.AppendLine("\tstruct VS_INPUT");
+            return;
+        }
+
+        foreach (var i in Enumerable.Range(0, VertexShader.SymbolBlocks.Count))
+        {
+            stringBuilder.AppendLine();
+
+            var index = VertexShader.SymbolBlocks.Count > 1 && !Options.FirstVsInput_Only
+                ? $" ({i})"
+                : string.Empty;
+            stringBuilder.AppendLine($"\tstruct VS_INPUT{index}");
             stringBuilder.AppendLine("\t{");
 
-            foreach (var symbol in VertexShader.SymbolBlocks[0].SymbolsDefinition)
+            foreach (var symbol in VertexShader.SymbolBlocks[i].SymbolsDefinition)
             {
                 var attributeVfx = symbol.Option.Length > 0 ? $" < Semantic({symbol.Option}); >" : string.Empty;
                 // TODO: type
@@ -193,15 +238,28 @@ public sealed class ShaderExtract
             }
 
             stringBuilder.AppendLine("\t};");
+
+            if (Options.FirstVsInput_Only)
+            {
+                break;
+            }
         }
     }
 
-    private static void HandleCBuffers(List<BufferBlock> bufferBlocks, StringBuilder stringBuilder)
+    private void HandleCBuffers(List<BufferBlock> bufferBlocks, StringBuilder stringBuilder)
     {
         foreach (var buffer in bufferBlocks)
         {
             stringBuilder.AppendLine();
-            stringBuilder.AppendLine("\tcbuffer " + buffer.Name);
+            stringBuilder.Append("\tcbuffer " + buffer.Name);
+
+            if (Options.CollapseCommonBuffers && ShaderExtractParams.CommonBuffers.Contains(buffer.Name))
+            {
+                stringBuilder.AppendLine(";");
+                continue;
+            }
+
+            stringBuilder.AppendLine();
             stringBuilder.AppendLine("\t{");
 
             foreach (var member in buffer.BufferParams)
@@ -340,68 +398,69 @@ public sealed class ShaderExtract
             sb.AppendLine($"\tFeature( {feature.Name}, {feature.RangeMin}..{feature.RangeMax}{checkboxNames}, \"{feature.Category}\" );");
         }
 
-        foreach (var rule in HandleConstraints(Enumerable.Empty<ICombo>().ToList(),
-                                               Enumerable.Empty<ICombo>().ToList(),
-                                               constraints.Cast<IComboConstraints>().ToList()))
-        {
-            sb.AppendLine($"\tFeatureRule( {rule.Constraint}, \"{rule.Description}\" );");
-        }
+        HandleRules(ConditionalType.Feature,
+                    Enumerable.Empty<ICombo>().ToList(),
+                    Enumerable.Empty<ICombo>().ToList(),
+                    constraints.Cast<IComboConstraints>().ToList(),
+                    sb);
     }
-    private void HandleStaticCombos(List<SfBlock> combos, List<SfConstraintsBlock> constraints, StringBuilder sb)
+
+    private void HandleStaticCombos(List<SfBlock> staticCombos, List<SfConstraintsBlock> constraints, StringBuilder sb)
+    {
+        HandleCombos(ConditionalType.Static, staticCombos.Cast<ICombo>().ToList(), sb);
+        HandleRules(ConditionalType.Static,
+                    staticCombos.Cast<ICombo>().ToList(),
+                    Enumerable.Empty<ICombo>().ToList(),
+                    constraints.Cast<IComboConstraints>().ToList(),
+                    sb);
+    }
+
+    private void HandleDynamicCombos(List<SfBlock> staticCombos, List<DBlock> dynamicCombos, List<DConstraintsBlock> constraints, StringBuilder sb)
+    {
+        HandleCombos(ConditionalType.Dynamic, dynamicCombos.Cast<ICombo>().ToList(), sb);
+        HandleRules(ConditionalType.Dynamic,
+                    staticCombos.Cast<ICombo>().ToList(),
+                    dynamicCombos.Cast<ICombo>().ToList(),
+                    constraints.Cast<IComboConstraints>().ToList(),
+                    sb);
+    }
+
+    private void HandleCombos(ConditionalType comboType, List<ICombo> combos, StringBuilder sb)
     {
         foreach (var staticCombo in combos)
         {
             if (staticCombo.FeatureIndex != -1)
             {
-                sb.AppendLine($"\tStaticCombo( {staticCombo.Name}, {FeatureNames[staticCombo.FeatureIndex]}, Sys( ALL ) );");
+                sb.AppendLine($"\t{comboType}Combo( {staticCombo.Name}, {FeatureNames[staticCombo.FeatureIndex]}, Sys( ALL ) );");
                 continue;
             }
             else if (staticCombo.RangeMax != 0)
             {
-                sb.AppendLine($"\tStaticCombo( {staticCombo.Name}, {staticCombo.RangeMin}..{staticCombo.RangeMax}, Sys( ALL ) );");
+                sb.AppendLine($"\t{comboType}Combo( {staticCombo.Name}, {staticCombo.RangeMin}..{staticCombo.RangeMax}, Sys( ALL ) );");
             }
             else
             {
-                sb.AppendLine($"\tStaticCombo( {staticCombo.Name}, {staticCombo.RangeMax}, Sys( {staticCombo.Sys} ) );");
+                sb.AppendLine($"\t{comboType}Combo( {staticCombo.Name}, {staticCombo.RangeMax}, Sys( {staticCombo.Sys} ) );");
             }
-        }
-
-        foreach (var rule in HandleConstraints(combos.Cast<ICombo>().ToList(),
-                                               Enumerable.Empty<ICombo>().ToList(),
-                                               constraints.Cast<IComboConstraints>().ToList()))
-        {
-            sb.AppendLine($"\tStaticComboRule( {rule.Constraint} );");
         }
     }
 
-    private void HandleDynamicCombos(List<SfBlock> staticCombos, List<DBlock> dynamicCombos, List<DConstraintsBlock> constraints, StringBuilder sb)
+    private void HandleRules(ConditionalType conditionalType, List<ICombo> staticCombos, List<ICombo> dynamicCombos, List<IComboConstraints> constraints, StringBuilder sb)
     {
-        foreach (var dynamicCombo in dynamicCombos)
+        foreach (var rule in HandleConstraintsY(staticCombos, dynamicCombos, constraints))
         {
-            if (dynamicCombo.FeatureIndex != -1)
+            if (conditionalType == ConditionalType.Feature)
             {
-                sb.AppendLine($"\tDynamicCombo( {dynamicCombo.Name}, {FeatureNames[dynamicCombo.FeatureIndex]}, Sys( ALL ) );");
-                continue;
-            }
-            else if (dynamicCombo.RangeMax != 0)
-            {
-                sb.AppendLine($"\tDynamicCombo( {dynamicCombo.Name}, {dynamicCombo.RangeMin}..{dynamicCombo.RangeMax}, Sys( ALL ) );");
+                sb.AppendLine($"\tFeatureRule( {rule.Constraint}, \"{rule.Description}\" );");
             }
             else
             {
-                sb.AppendLine($"\tDynamicCombo( {dynamicCombo.Name}, {dynamicCombo.RangeMax}, Sys( {dynamicCombo.Sys} ) );");
+                sb.AppendLine($"\t{conditionalType}ComboRule( {rule.Constraint} );");
             }
-        }
-
-        foreach (var rule in HandleConstraints(staticCombos.Cast<ICombo>().ToList(),
-                                               dynamicCombos.Cast<ICombo>().ToList(),
-                                               constraints.Cast<IComboConstraints>().ToList()))
-        {
-            sb.AppendLine($"\tDynamicComboRule( {rule.Constraint} );");
         }
     }
 
-    private IEnumerable<(string Constraint, string Description)> HandleConstraints(List<ICombo> staticCombos, List<ICombo> dynamicCombos, List<IComboConstraints> constraints)
+    private IEnumerable<(string Constraint, string Description)> HandleConstraintsY(List<ICombo> staticCombos, List<ICombo> dynamicCombos, List<IComboConstraints> constraints)
     {
         foreach (var constraint in constraints)
         {
@@ -422,14 +481,6 @@ public sealed class ShaderExtract
                 }
             }
 
-            var rules = new List<string>
-            {
-                "<rule0>",
-                "Requirez",
-                "Requires", // spritecard: FeatureRule(Requiress(F_NORMAL_MAP, F_TEXTURE_LAYERS, F_TEXTURE_LAYERS, F_TEXTURE_LAYERS), "Normal map requires Less than 3 Layers due to DX9");
-                "Allow",
-            };
-
             // By value constraint
             if (constraint.Values.Length > 0)
             {
@@ -438,12 +489,12 @@ public sealed class ShaderExtract
                     throw new InvalidOperationException("Expected to have 1 less value than conditionals.");
                 }
 
-                // The format for this unknown, but should be something like
+                // The format for this not known, but should be something like:
                 // FeatureRule( Requires1( F_REFRACT, F_TEXTURE_LAYERS=0, F_TEXTURE_LAYERS=1 ), "Refract requires Less than 2 Layers due to DX9" );
                 constrainedNames = constrainedNames.Take(1).Concat(constrainedNames.Skip(1).Select((s, i) => $"{s}={constraint.Values[i]}")).ToList();
             }
 
-            yield return ($"{rules[constraint.RelRule]}{constraint.Range2[0]}( {string.Join(", ", constrainedNames)} )", constraint.Description);
+            yield return ($"{constraint.Rule}{constraint.Range2[0]}( {string.Join(", ", constrainedNames)} )", constraint.Description);
         }
     }
 
@@ -516,10 +567,16 @@ public sealed class ShaderExtract
                     }
 
                     var default4 = $"Default4({string.Join(", ", param.FloatDefs)})";
+
                     var mode = param.IntArgs1[2] == 0
                         ? "Linear"
                         : "Srgb";
-                    sb.AppendLine($"\tCreateInputTexture2D({param.Name}, {mode}, {param.IntArgs1[3]}, \"{param.Command1}\", \"{param.Command0}\", \"{param.UiGroup}\", {default4});");
+
+                    var textureSuffix = param.Suffix.Length > 0
+                        ? "_" + param.Suffix
+                        : string.Empty;
+
+                    sb.AppendLine($"\tCreateInputTexture2D({param.Name}, {mode}, {param.IntArgs1[3]}, \"{param.Command1}\", \"{textureSuffix}\", \"{param.UiGroup}\", {default4});");
                     // param.FileRef materials/default/default_cube.png
                     continue;
                 }
