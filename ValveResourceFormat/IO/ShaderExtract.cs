@@ -11,6 +11,11 @@ namespace ValveResourceFormat.IO;
 
 public sealed class ShaderExtract
 {
+    public readonly struct ShaderExtractParams
+    {
+        //readonly bool CollapseBuffers;
+    }
+
     public ShaderFile Features { get; init; }
     public ShaderFile GeometryShader { get; init; }
     public ShaderFile VertexShader { get; init; }
@@ -232,9 +237,7 @@ public sealed class ShaderExtract
         stringBuilder.AppendLine("GS");
         stringBuilder.AppendLine("{");
 
-        HandleStaticCombos(GeometryShader.SfBlocks, GeometryShader.SfConstraintsBlocks, FeatureNames, stringBuilder);
-        HandleDynamicCombos(GeometryShader.DBlocks, GeometryShader.DConstraintsBlocks, FeatureNames, stringBuilder);
-        HandleParameters(GeometryShader.ParamBlocks, stringBuilder);
+        HandleCommons(GeometryShader, stringBuilder);
 
         stringBuilder.AppendLine("}");
 
@@ -253,9 +256,7 @@ public sealed class ShaderExtract
         stringBuilder.AppendLine("VS");
         stringBuilder.AppendLine("{");
 
-        HandleStaticCombos(VertexShader.SfBlocks, VertexShader.SfConstraintsBlocks, FeatureNames, stringBuilder);
-        HandleDynamicCombos(VertexShader.DBlocks, VertexShader.DConstraintsBlocks, FeatureNames, stringBuilder);
-        HandleParameters(VertexShader.ParamBlocks, stringBuilder);
+        HandleCommons(VertexShader, stringBuilder);
 
         stringBuilder.AppendLine("}");
 
@@ -274,9 +275,7 @@ public sealed class ShaderExtract
         stringBuilder.AppendLine("PS");
         stringBuilder.AppendLine("{");
 
-        HandleStaticCombos(PixelShader.SfBlocks, PixelShader.SfConstraintsBlocks, FeatureNames, stringBuilder);
-        HandleDynamicCombos(PixelShader.DBlocks, PixelShader.DConstraintsBlocks, FeatureNames, stringBuilder);
-        HandleParameters(PixelShader.ParamBlocks, stringBuilder);
+        HandleCommons(PixelShader, stringBuilder);
 
         foreach (var mipmap in Features.MipmapBlocks)
         {
@@ -299,8 +298,7 @@ public sealed class ShaderExtract
         stringBuilder.AppendLine("CS");
         stringBuilder.AppendLine("{");
 
-        HandleStaticCombos(ComputeShader.SfBlocks, ComputeShader.SfConstraintsBlocks, FeatureNames, stringBuilder);
-        HandleParameters(ComputeShader.ParamBlocks, stringBuilder);
+        HandleCommons(ComputeShader, stringBuilder);
 
         stringBuilder.AppendLine("}");
         return stringBuilder.ToString();
@@ -317,17 +315,20 @@ public sealed class ShaderExtract
         stringBuilder.AppendLine();
         stringBuilder.AppendLine("RTX");
         stringBuilder.AppendLine("{");
-
-        HandleStaticCombos(RaytracingShader.SfBlocks, RaytracingShader.SfConstraintsBlocks, FeatureNames, stringBuilder);
-        HandleDynamicCombos(RaytracingShader.DBlocks, RaytracingShader.DConstraintsBlocks, FeatureNames, stringBuilder);
-        HandleParameters(RaytracingShader.ParamBlocks, stringBuilder);
+        HandleCommons(RaytracingShader, stringBuilder);
 
         stringBuilder.AppendLine("}");
         return stringBuilder.ToString();
     }
 
+    private void HandleCommons(ShaderFile shader, StringBuilder stringBuilder)
+    {
+        HandleStaticCombos(shader.SfBlocks, shader.SfConstraintsBlocks, stringBuilder);
+        HandleDynamicCombos(shader.SfBlocks, shader.DBlocks, shader.DConstraintsBlocks, stringBuilder);
+        HandleParameters(shader.ParamBlocks, stringBuilder);
+    }
 
-    private static void HandleFeatures(List<SfBlock> features, List<SfConstraintsBlock> constraints, StringBuilder sb)
+    private void HandleFeatures(List<SfBlock> features, List<SfConstraintsBlock> constraints, StringBuilder sb)
     {
         foreach (var feature in features)
         {
@@ -339,18 +340,20 @@ public sealed class ShaderExtract
             sb.AppendLine($"\tFeature( {feature.Name}, {feature.RangeMin}..{feature.RangeMax}{checkboxNames}, \"{feature.Category}\" );");
         }
 
-        foreach (var rule in HandleConstraints(features.Cast<ICombo>().ToList(), constraints.Cast<IComboConstraints>().ToList()))
+        foreach (var rule in HandleConstraints(Enumerable.Empty<ICombo>().ToList(),
+                                               Enumerable.Empty<ICombo>().ToList(),
+                                               constraints.Cast<IComboConstraints>().ToList()))
         {
             sb.AppendLine($"\tFeatureRule( {rule.Constraint}, \"{rule.Description}\" );");
         }
     }
-    private static void HandleStaticCombos(List<SfBlock> combos, List<SfConstraintsBlock> constraints, List<string> features, StringBuilder sb)
+    private void HandleStaticCombos(List<SfBlock> combos, List<SfConstraintsBlock> constraints, StringBuilder sb)
     {
         foreach (var staticCombo in combos)
         {
             if (staticCombo.FeatureIndex != -1)
             {
-                sb.AppendLine($"\tStaticCombo( {staticCombo.Name}, {features[staticCombo.FeatureIndex]}, Sys( ALL ) );");
+                sb.AppendLine($"\tStaticCombo( {staticCombo.Name}, {FeatureNames[staticCombo.FeatureIndex]}, Sys( ALL ) );");
                 continue;
             }
             else if (staticCombo.RangeMax != 0)
@@ -363,19 +366,21 @@ public sealed class ShaderExtract
             }
         }
 
-        foreach (var rule in HandleConstraints(combos.Cast<ICombo>().ToList(), constraints.Cast<IComboConstraints>().ToList()))
+        foreach (var rule in HandleConstraints(combos.Cast<ICombo>().ToList(),
+                                               Enumerable.Empty<ICombo>().ToList(),
+                                               constraints.Cast<IComboConstraints>().ToList()))
         {
             sb.AppendLine($"\tStaticComboRule( {rule.Constraint} );");
         }
     }
 
-    private static void HandleDynamicCombos(List<DBlock> combos, List<DConstraintsBlock> constraints, List<string> features, StringBuilder sb)
+    private void HandleDynamicCombos(List<SfBlock> staticCombos, List<DBlock> dynamicCombos, List<DConstraintsBlock> constraints, StringBuilder sb)
     {
-        foreach (var dynamicCombo in combos)
+        foreach (var dynamicCombo in dynamicCombos)
         {
             if (dynamicCombo.FeatureIndex != -1)
             {
-                sb.AppendLine($"\tDynamicCombo( {dynamicCombo.Name}, {features[dynamicCombo.FeatureIndex]}, Sys( ALL ) );");
+                sb.AppendLine($"\tDynamicCombo( {dynamicCombo.Name}, {FeatureNames[dynamicCombo.FeatureIndex]}, Sys( ALL ) );");
                 continue;
             }
             else if (dynamicCombo.RangeMax != 0)
@@ -388,18 +393,34 @@ public sealed class ShaderExtract
             }
         }
 
-        foreach (var rule in HandleConstraints(combos.Cast<ICombo>().ToList(), constraints.Cast<IComboConstraints>().ToList()))
+        foreach (var rule in HandleConstraints(staticCombos.Cast<ICombo>().ToList(),
+                                               dynamicCombos.Cast<ICombo>().ToList(),
+                                               constraints.Cast<IComboConstraints>().ToList()))
         {
             sb.AppendLine($"\tDynamicComboRule( {rule.Constraint} );");
         }
     }
 
-    private static IEnumerable<(string Constraint, string Description)> HandleConstraints(List<ICombo> combos, List<IComboConstraints> constraints)
+    private IEnumerable<(string Constraint, string Description)> HandleConstraints(List<ICombo> staticCombos, List<ICombo> dynamicCombos, List<IComboConstraints> constraints)
     {
         foreach (var constraint in constraints)
         {
-            Console.WriteLine(string.Join(" ", constraint.Flags));
-            var constrainedNames = string.Join(", ", constraint.Range0.Select(x => combos[x].Name));
+            var constrainedNames = new List<string>(constraint.ConditionalTypes.Length);
+            foreach ((var Type, var Index) in Enumerable.Zip(constraint.ConditionalTypes, constraint.Indices))
+            {
+                if (Type == ConditionalType.Feature)
+                {
+                    constrainedNames.Add(FeatureNames[Index]);
+                }
+                else if (Type == ConditionalType.Static)
+                {
+                    constrainedNames.Add(staticCombos[Index].Name);
+                }
+                else if (Type == ConditionalType.Dynamic)
+                {
+                    constrainedNames.Add(dynamicCombos[Index].Name);
+                }
+            }
 
             var rules = new List<string>
             {
@@ -409,7 +430,20 @@ public sealed class ShaderExtract
                 "Allow",
             };
 
-            yield return ($"{rules[constraint.RelRule]}{constraint.Range2[0]}( {constrainedNames} )", constraint.Description);
+            // By value constraint
+            if (constraint.Values.Length > 0)
+            {
+                if (constraint.Values.Length != constraint.ConditionalTypes.Length - 1)
+                {
+                    throw new InvalidOperationException("Expected to have 1 less value than conditionals.");
+                }
+
+                // The format for this unknown, but should be something like
+                // FeatureRule( Requires1( F_REFRACT, F_TEXTURE_LAYERS=0, F_TEXTURE_LAYERS=1 ), "Refract requires Less than 2 Layers due to DX9" );
+                constrainedNames = constrainedNames.Take(1).Concat(constrainedNames.Skip(1).Select((s, i) => $"{s}={constraint.Values[i]}")).ToList();
+            }
+
+            yield return ($"{rules[constraint.RelRule]}{constraint.Range2[0]}( {string.Join(", ", constrainedNames)} )", constraint.Description);
         }
     }
 

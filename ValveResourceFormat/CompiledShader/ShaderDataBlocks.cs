@@ -399,20 +399,27 @@ namespace ValveResourceFormat.CompiledShader
         }
     }
 
+    public enum ConditionalType
+    {
+        Feature = 1,
+        Static = 2,
+        Dynamic = 3
+    }
+
     public interface IComboConstraints
     {
         int BlockIndex { get; }
         int RelRule { get; }
-        int BlockType { get; }
-        int[] Flags { get; }
-        int[] Range0 { get; }
-        int[] Range1 { get; }
+        ConditionalType BlockType { get; }
+        ConditionalType[] ConditionalTypes { get; }
+        int[] Indices { get; }
+        int[] Values { get; }
         int[] Range2 { get; }
         string Description { get; }
 
-        string GetByteFlagsAsString();
         void PrintByteDetail();
         string RelRuleDescribe();
+        string GetByteFlagsAsString();
     }
 
     // SfConstraintsBlocks are always 472 bytes long
@@ -420,26 +427,26 @@ namespace ValveResourceFormat.CompiledShader
     {
         public int BlockIndex { get; }
         public int RelRule { get; }  // 1 = dependency-rule (feature file), 2 = dependency-rule (other files), 3 = exclusion
-        public int BlockType { get; } // this is just 1 for features files and 2 for all other files
-        public int[] Flags { get; }
-        public int[] Range0 { get; }
-        public int[] Range1 { get; }
+        public ConditionalType BlockType { get; } // this is just 1 for features files and 2 for all other files
+        public ConditionalType[] ConditionalTypes { get; }
+        public int[] Indices { get; }
+        public int[] Values { get; }
         public int[] Range2 { get; }
         public string Description { get; }
         public SfConstraintsBlock(ShaderDataReader datareader, int blockIndex) : base(datareader)
         {
             BlockIndex = blockIndex;
             RelRule = datareader.ReadInt32();
-            BlockType = datareader.ReadInt32();
+            BlockType = (ConditionalType)datareader.ReadInt32();
             // flags are at (8)
-            Flags = ReadByteFlags();
+            ConditionalTypes = Array.ConvertAll(ReadByteFlags(), x => (ConditionalType)x);
             // range 0 at (24)
-            Range0 = ReadIntRange();
-            datareader.BaseStream.Position += 68 - Range0.Length * 4;
+            Indices = ReadIntRange();
+            datareader.BaseStream.Position += 68 - Indices.Length * 4;
             // range 1 at (92)
-            Range1 = ReadIntRange();
+            Values = ReadIntRange();
 
-            datareader.BaseStream.Position += 60 - Range1.Length * 4;
+            datareader.BaseStream.Position += 60 - Values.Length * 4;
             // range 2 at (152)
             Range2 = ReadIntRange();
             datareader.BaseStream.Position += 64 - Range2.Length * 4;
@@ -478,7 +485,7 @@ namespace ValveResourceFormat.CompiledShader
         }
         public string GetByteFlagsAsString()
         {
-            return CombineIntArray(Flags);
+            return string.Join(" ", ConditionalTypes);
         }
         public void PrintByteDetail()
         {
@@ -536,33 +543,34 @@ namespace ValveResourceFormat.CompiledShader
     {
         public int BlockIndex { get; }
         public int RelRule { get; }  // 2 = dependency-rule (other files), 3 = exclusion (1 not present, as in the compat-blocks)
-        public int BlockType { get; } // ALWAYS 3 (for sf-constraint-blocks this value is 1 for features files and 2 for all other files)
+        public ConditionalType BlockType { get; } // ALWAYS 3 (for sf-constraint-blocks this value is 1 for features files and 2 for all other files)
         public int Arg1 { get; } // arg1 at (88) sometimes has a value > -1 (in compat-blocks this value is always seen to be -1)
-        public int[] Flags { get; }
-        public int[] Range0 { get; }
-        public int[] Range1 { get; }
+        public ConditionalType[] ConditionalTypes { get; }
+        public int[] Indices { get; }
+        public int[] Values { get; }
         public int[] Range2 { get; }
         public string Description { get; }
 
+        // TODO: Merge this with SfConstraints
         public DConstraintsBlock(ShaderDataReader datareader, int blockIndex) : base(datareader)
         {
             BlockIndex = blockIndex;
             RelRule = datareader.ReadInt32();
-            BlockType = datareader.ReadInt32();
-            if (BlockType != 3)
+            BlockType = (ConditionalType)datareader.ReadInt32();
+            if (BlockType != ConditionalType.Dynamic)
             {
                 throw new ShaderParserException("unexpected value!");
             }
             // flags at (8)
-            Flags = ReadByteFlags();
+            ConditionalTypes = Array.ConvertAll(ReadByteFlags(), x => (ConditionalType)x);
             // range0 at (24)
-            Range0 = ReadIntRange();
-            datareader.BaseStream.Position += 64 - Range0.Length * 4;
+            Indices = ReadIntRange();
+            datareader.BaseStream.Position += 64 - Indices.Length * 4;
             // integer at (88)
             Arg1 = datareader.ReadInt32();
             // range1 at (92)
-            Range1 = ReadIntRange();
-            datareader.BaseStream.Position += 60 - Range1.Length * 4;
+            Values = ReadIntRange();
+            datareader.BaseStream.Position += 60 - Values.Length * 4;
             // range1 at (152)
             Range2 = ReadIntRange();
             datareader.BaseStream.Position += 64 - Range2.Length * 4;
@@ -570,6 +578,7 @@ namespace ValveResourceFormat.CompiledShader
             Description = datareader.ReadNullTermStringAtPosition();
             datareader.BaseStream.Position += 256;
         }
+
         private int[] ReadIntRange()
         {
             List<int> ints0 = new();
@@ -599,49 +608,7 @@ namespace ValveResourceFormat.CompiledShader
         }
         public string GetByteFlagsAsString()
         {
-            return CombineIntArray(Flags);
-        }
-        public bool AllFlagsAre3()
-        {
-            var flagsAre3 = true;
-            foreach (var flag in Flags)
-            {
-                if (flag != 3)
-                {
-                    flagsAre3 = false;
-                }
-            }
-            return flagsAre3;
-        }
-        public string GetConciseDescription(int[] usePadding = null)
-        {
-            int[] p = { 10, 8, 15, 5 };
-            if (usePadding != null)
-            {
-                p = usePadding;
-            }
-            var relRuleKeyDesciption = $"{RelRuleDescribe().PadRight(p[0])}{CombineIntArray(Range1).PadRight(p[1])}" +
-                $"{CombineIntArray(Flags, includeParenth: true).PadRight(p[2])}{CombineIntArray(Range2).PadRight(p[3])}";
-            return relRuleKeyDesciption;
-        }
-        public string GetResolvedNames(List<SfBlock> sfBlocks, List<DBlock> dBlocks)
-        {
-            List<string> names = new();
-            for (var i = 0; i < Flags.Length; i++)
-            {
-                if (Flags[i] == 2)
-                {
-                    names.Add(sfBlocks[Range0[i]].Name);
-                    continue;
-                }
-                if (Flags[i] == 3)
-                {
-                    names.Add(dBlocks[Range0[i]].Name);
-                    continue;
-                }
-                throw new ShaderParserException("this cannot happen!");
-            }
-            return CombineStringArray(names.ToArray());
+            return string.Join(" ", ConditionalTypes);
         }
         public string RelRuleDescribe()
         {

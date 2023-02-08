@@ -201,10 +201,10 @@ namespace ValveResourceFormat.CompiledShader
             }
             foreach (var sfRuleBlock in shaderFile.SfConstraintsBlocks)
             {
-                var sfNames = new string[sfRuleBlock.Range0.Length];
+                var sfNames = new string[sfRuleBlock.Indices.Length];
                 for (var i = 0; i < sfNames.Length; i++)
                 {
-                    sfNames[i] = shaderFile.SfBlocks[sfRuleBlock.Range0[i]].Name;
+                    sfNames[i] = shaderFile.SfBlocks[sfRuleBlock.Indices[i]].Name;
                 }
                 const int BL = 70;
                 var breakNames = CombineValuesBreakString(sfNames, BL);
@@ -212,8 +212,8 @@ namespace ValveResourceFormat.CompiledShader
                 var s1 = (sfRuleBlock.RelRule == 1 || sfRuleBlock.RelRule == 2) ? $"INC({sfRuleBlock.RelRule})" : $"EXC({sfRuleBlock.RelRule})";
                 var s3 = $"{sfRuleBlock.GetByteFlagsAsString()}";
                 var s4 = $"{breakNames[0]}";
-                var s5 = $"{CombineIntArray(sfRuleBlock.Range0)}";
-                var s6 = $"{CombineIntArray(sfRuleBlock.Range1)}";
+                var s5 = $"{CombineIntArray(sfRuleBlock.Indices)}";
+                var s6 = $"{CombineIntArray(sfRuleBlock.Values)}";
                 var s7 = $"{CombineIntArray(sfRuleBlock.Range2)}";
                 var blockSummary = $"{s0,-7}{s1,-10}{s5,-16}{s4,-BL}{s6,-8}{s7,-8}";
                 for (var i = 1; i < breakNames.Length; i++)
@@ -271,20 +271,20 @@ namespace ValveResourceFormat.CompiledShader
             }
             foreach (var dRuleBlock in shaderFile.DConstraintsBlocks)
             {
-                var dRuleName = new string[dRuleBlock.Flags.Length];
+                var dRuleName = new string[dRuleBlock.ConditionalTypes.Length];
                 for (var i = 0; i < dRuleName.Length; i++)
                 {
-                    if (dRuleBlock.Flags[i] == 3)
+                    if (dRuleBlock.ConditionalTypes[i] == ConditionalType.Dynamic)
                     {
-                        dRuleName[i] = shaderFile.DBlocks[dRuleBlock.Range0[i]].Name;
+                        dRuleName[i] = shaderFile.DBlocks[dRuleBlock.Indices[i]].Name;
                         continue;
                     }
-                    if (dRuleBlock.Flags[i] == 2)
+                    if (dRuleBlock.ConditionalTypes[i] == ConditionalType.Static)
                     {
-                        dRuleName[i] = shaderFile.SfBlocks[dRuleBlock.Range0[i]].Name;
+                        dRuleName[i] = shaderFile.SfBlocks[dRuleBlock.Indices[i]].Name;
                         continue;
                     }
-                    throw new ShaderParserException($"unknown flag value {dRuleBlock.Flags[i]}");
+                    throw new ShaderParserException($"unknown flag value {dRuleBlock.ConditionalTypes[i]}");
                 }
                 const int BL = 70;
                 var breakNames = CombineValuesBreakString(dRuleName, BL);
@@ -292,8 +292,8 @@ namespace ValveResourceFormat.CompiledShader
                 var s1 = (dRuleBlock.RelRule == 1 || dRuleBlock.RelRule == 2) ? $"INC({dRuleBlock.RelRule})" : $"EXC({dRuleBlock.RelRule})";
                 var s3 = $"{dRuleBlock.GetByteFlagsAsString()}";
                 var s4 = $"{breakNames[0]}";
-                var s5 = $"{CombineIntArray(dRuleBlock.Range0)}";
-                var s6 = $"{CombineIntArray(dRuleBlock.Range1)}";
+                var s5 = $"{CombineIntArray(dRuleBlock.Indices)}";
+                var s6 = $"{CombineIntArray(dRuleBlock.Values)}";
                 var s7 = $"{CombineIntArray(dRuleBlock.Range2)}";
                 var blockSummary = $"{s0,-7}{s1,-10}{s3,-15}{s5,-16}{s4,-BL}{s6,-10}{s7,-8}";
                 for (var i = 1; i < breakNames.Length; i++)
