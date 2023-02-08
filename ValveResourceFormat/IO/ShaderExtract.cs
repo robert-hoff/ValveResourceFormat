@@ -15,10 +15,10 @@ public sealed class ShaderExtract
     public ShaderFile VertexShader { get; init; }
     public ShaderFile PixelShader { get; init; }
     public ShaderFile ComputeShader { get; init; }
+    public ShaderFile RaytracingShader { get; init; }
 
     private List<string> FeatureNames { get; set; }
     private string[] Globals { get; set; }
-
 
     public ShaderExtract(Resource resource)
         : this((SboxShader)resource.DataBlock)
@@ -65,6 +65,11 @@ public sealed class ShaderExtract
             {
                 ComputeShader = shader;
             }
+
+            if (shader.VcsProgramType == VcsProgramType.RaytracingShader)
+            {
+                RaytracingShader = shader;
+            }
         }
     }
 
@@ -92,6 +97,7 @@ public sealed class ShaderExtract
             + VS()
             + PS()
             + CS()
+            + RTX()
             ;
     }
 
@@ -228,7 +234,6 @@ public sealed class ShaderExtract
         stringBuilder.AppendLine("PS");
         stringBuilder.AppendLine("{");
 
-
         HandleStaticCombos(PixelShader.SfBlocks, PixelShader.SfConstraintsBlocks, FeatureNames, stringBuilder);
         HandleParameters(PixelShader.ParamBlocks, stringBuilder);
 
@@ -253,9 +258,27 @@ public sealed class ShaderExtract
         stringBuilder.AppendLine("CS");
         stringBuilder.AppendLine("{");
 
-
         HandleStaticCombos(ComputeShader.SfBlocks, ComputeShader.SfConstraintsBlocks, FeatureNames, stringBuilder);
         HandleParameters(ComputeShader.ParamBlocks, stringBuilder);
+
+        stringBuilder.AppendLine("}");
+        return stringBuilder.ToString();
+    }
+
+    private string RTX()
+    {
+        if (RaytracingShader is null)
+        {
+            return string.Empty;
+        }
+
+        var stringBuilder = new StringBuilder();
+        stringBuilder.AppendLine();
+        stringBuilder.AppendLine("RTX");
+        stringBuilder.AppendLine("{");
+
+        HandleStaticCombos(RaytracingShader.SfBlocks, RaytracingShader.SfConstraintsBlocks, FeatureNames, stringBuilder);
+        HandleParameters(RaytracingShader.ParamBlocks, stringBuilder);
 
         stringBuilder.AppendLine("}");
         return stringBuilder.ToString();
