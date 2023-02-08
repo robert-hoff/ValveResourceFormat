@@ -232,11 +232,11 @@ public sealed class ShaderExtract
         stringBuilder.AppendLine("GS");
         stringBuilder.AppendLine("{");
 
-        HandleStaticCombos(VertexShader.SfBlocks, VertexShader.SfConstraintsBlocks, FeatureNames, stringBuilder);
-        HandleParameters(VertexShader.ParamBlocks, stringBuilder);
+        HandleStaticCombos(GeometryShader.SfBlocks, GeometryShader.SfConstraintsBlocks, FeatureNames, stringBuilder);
+        HandleDynamicCombos(GeometryShader.DBlocks, GeometryShader.DConstraintsBlocks, FeatureNames, stringBuilder);
+        HandleParameters(GeometryShader.ParamBlocks, stringBuilder);
 
         stringBuilder.AppendLine("}");
-
 
         return stringBuilder.ToString();
     }
@@ -254,10 +254,10 @@ public sealed class ShaderExtract
         stringBuilder.AppendLine("{");
 
         HandleStaticCombos(VertexShader.SfBlocks, VertexShader.SfConstraintsBlocks, FeatureNames, stringBuilder);
+        HandleDynamicCombos(VertexShader.DBlocks, VertexShader.DConstraintsBlocks, FeatureNames, stringBuilder);
         HandleParameters(VertexShader.ParamBlocks, stringBuilder);
 
         stringBuilder.AppendLine("}");
-
 
         return stringBuilder.ToString();
     }
@@ -319,6 +319,7 @@ public sealed class ShaderExtract
         stringBuilder.AppendLine("{");
 
         HandleStaticCombos(RaytracingShader.SfBlocks, RaytracingShader.SfConstraintsBlocks, FeatureNames, stringBuilder);
+        HandleDynamicCombos(RaytracingShader.DBlocks, RaytracingShader.DConstraintsBlocks, FeatureNames, stringBuilder);
         HandleParameters(RaytracingShader.ParamBlocks, stringBuilder);
 
         stringBuilder.AppendLine("}");
@@ -338,7 +339,7 @@ public sealed class ShaderExtract
             sb.AppendLine($"\tFeature( {feature.Name}, {feature.RangeMin}..{feature.RangeMax}{checkboxNames}, \"{feature.Category}\" );");
         }
 
-        foreach (var rule in HandleConstraints(features, constraints))
+        foreach (var rule in HandleConstraints(features.Cast<ICombo>().ToList(), constraints.Cast<IComboConstraints>().ToList()))
         {
             sb.AppendLine($"\tFeatureRule( {rule.Constraint}, \"{rule.Description}\" );");
         }
@@ -362,7 +363,7 @@ public sealed class ShaderExtract
             }
         }
 
-        foreach (var rule in HandleConstraints(combos, constraints))
+        foreach (var rule in HandleConstraints(combos.Cast<ICombo>().ToList(), constraints.Cast<IComboConstraints>().ToList()))
         {
             sb.AppendLine($"\tStaticComboRule( {rule.Constraint} );");
         }
@@ -386,24 +387,29 @@ public sealed class ShaderExtract
                 sb.AppendLine($"\tDynamicCombo( {dynamicCombo.Name}, {dynamicCombo.RangeMax}, Sys( {dynamicCombo.Sys} ) );");
             }
         }
+
+        foreach (var rule in HandleConstraints(combos.Cast<ICombo>().ToList(), constraints.Cast<IComboConstraints>().ToList()))
+        {
+            sb.AppendLine($"\tDynamicComboRule( {rule.Constraint} );");
+        }
     }
 
-    private static IEnumerable<(string Constraint, string Description)> HandleConstraints(List<SfBlock> sfBlocks, List<SfConstraintsBlock> constraints)
+    private static IEnumerable<(string Constraint, string Description)> HandleConstraints(List<ICombo> combos, List<IComboConstraints> constraints)
     {
         foreach (var constraint in constraints)
         {
             Console.WriteLine(string.Join(" ", constraint.Flags));
-            var constrainedNames = string.Join(", ", constraint.Range0.Select(x => sfBlocks[x].Name));
+            var constrainedNames = string.Join(", ", constraint.Range0.Select(x => combos[x].Name));
 
             var rules = new List<string>
             {
                 "<rule0>",
-                "Requires1",
-                "Requiress", // spritecard: FeatureRule(Requiress(F_NORMAL_MAP, F_TEXTURE_LAYERS, F_TEXTURE_LAYERS, F_TEXTURE_LAYERS), "Normal map requires Less than 3 Layers due to DX9");
-                "Allow1",
+                "Requirez",
+                "Requires", // spritecard: FeatureRule(Requiress(F_NORMAL_MAP, F_TEXTURE_LAYERS, F_TEXTURE_LAYERS, F_TEXTURE_LAYERS), "Normal map requires Less than 3 Layers due to DX9");
+                "Allow",
             };
 
-            yield return ($"{rules[constraint.RelRule]}( {constrainedNames} )", constraint.Description);
+            yield return ($"{rules[constraint.RelRule]}{constraint.Range2[0]}( {constrainedNames} )", constraint.Description);
         }
     }
 
@@ -543,6 +549,10 @@ public sealed class ShaderExtract
                     }
                 }
 
+                if (param.AttributeName.Length > 0)
+                {
+                    attributes.Add($"Attribute(\"{param.AttributeName}\");");
+                }
 
                 if (param.UiType != UiType.None)
                 {

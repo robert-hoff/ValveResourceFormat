@@ -5,7 +5,7 @@ using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
 namespace ValveResourceFormat.CompiledShader
 {
-    public enum ExtraFile
+    public enum AdditionalFiles
     {
         None = 0,
         Psrs,
@@ -14,7 +14,7 @@ namespace ValveResourceFormat.CompiledShader
     public class FeaturesHeaderBlock : ShaderDataBlock
     {
         public int VcsFileVersion { get; }
-        public ExtraFile ExtraFile { get; }
+        public AdditionalFiles AdditionalFiles { get; }
         public int Version { get; }
         public string FileDescription { get; }
         public int DevShader { get; }
@@ -41,17 +41,17 @@ namespace ValveResourceFormat.CompiledShader
 
             if (VcsFileVersion >= 64)
             {
-                ExtraFile = (ExtraFile)datareader.ReadInt32();
+                AdditionalFiles = (AdditionalFiles)datareader.ReadInt32();
             }
 
-            if (ExtraFile < ExtraFile.None || ExtraFile > ExtraFile.Rtx)
+            if (AdditionalFiles < AdditionalFiles.None || AdditionalFiles > AdditionalFiles.Rtx)
             {
-                throw new UnexpectedMagicException("unexpected v64 value", (int)ExtraFile, nameof(ExtraFile));
+                throw new UnexpectedMagicException("Unexpected v64 value", (int)AdditionalFiles, nameof(AdditionalFiles));
             }
-            else if (ExtraFile == ExtraFile.Rtx) // sbox
+            else if (AdditionalFiles == AdditionalFiles.Rtx) // sbox
             {
                 datareader.BaseStream.Position += 4;
-                ExtraFile = ExtraFile.None;
+                AdditionalFiles = AdditionalFiles.None;
                 VcsFileVersion = 64;
             }
 
@@ -71,11 +71,11 @@ namespace ValveResourceFormat.CompiledShader
                 Arg7 = datareader.ReadInt32();
             }
 
-            if (ExtraFile == ExtraFile.Psrs)
+            if (AdditionalFiles == AdditionalFiles.Psrs)
             {
                 datareader.BaseStream.Position += 4;
             }
-            else if (ExtraFile == ExtraFile.Rtx)
+            else if (AdditionalFiles == AdditionalFiles.Rtx)
             {
                 datareader.BaseStream.Position += 8;
             }
@@ -97,6 +97,7 @@ namespace ValveResourceFormat.CompiledShader
                 Modes.Add((name, shader, static_config));
             }
 
+            // Editor Id bytes, the length in-so-far is 16 bytes * (6 + AdditionalFiles + 1)
             for (var program = VcsProgramType.Features; program <= VcsProgramType.Undetermined; program++)
             {
                 if (program == VcsProgramType.Undetermined)
@@ -105,8 +106,8 @@ namespace ValveResourceFormat.CompiledShader
                     continue;
                 }
 
-                if ((ExtraFile == ExtraFile.None && program >= VcsProgramType.PixelShaderRenderState)
-                    || (ExtraFile == ExtraFile.Psrs && program >= VcsProgramType.RaytracingShader))
+                if ((AdditionalFiles == AdditionalFiles.None && program > VcsProgramType.ComputeShader)
+                || (AdditionalFiles == AdditionalFiles.Psrs && program > VcsProgramType.PixelShaderRenderState))
                 {
                     continue;
                 }
@@ -229,15 +230,15 @@ namespace ValveResourceFormat.CompiledShader
             VcsFileVersion = datareader.ReadInt32();
             ThrowIfNotSupported(VcsFileVersion);
 
-            var extraFile = ExtraFile.None;
+            var extraFile = AdditionalFiles.None;
             if (VcsFileVersion >= 64)
             {
-                extraFile = (ExtraFile)datareader.ReadInt32();
-                if (extraFile < ExtraFile.None || extraFile > ExtraFile.Rtx)
+                extraFile = (AdditionalFiles)datareader.ReadInt32();
+                if (extraFile < AdditionalFiles.None || extraFile > AdditionalFiles.Rtx)
                 {
-                    throw new UnexpectedMagicException("unexpected v64 value", (int)extraFile, nameof(ExtraFile));
+                    throw new UnexpectedMagicException("unexpected v64 value", (int)extraFile, nameof(AdditionalFiles));
                 }
-                if (extraFile == ExtraFile.Rtx)
+                if (extraFile == AdditionalFiles.Rtx)
                 {
                     datareader.BaseStream.Position += 4;
                     VcsFileVersion--;
@@ -268,13 +269,28 @@ namespace ValveResourceFormat.CompiledShader
         }
     }
 
+    public interface ICombo
+    {
+        int BlockIndex { get; }
+        string Name { get; }
+        string Category { get; }
+        int Arg0 { get; }
+        int RangeMin { get; }
+        int RangeMax { get; }
+        int Sys { get; }
+        int FeatureIndex { get; }
+        int Arg5 { get; }
+
+        void PrintByteDetail();
+    }
+
     /// <summary>
     /// Contains a definition for a feature or static configuration.
     /// </summary>
     /// <remarks>
     /// These are usually 152 bytes long. Features may contain names describing each state
     /// </remarks>
-    public class SfBlock : ShaderDataBlock
+    public class SfBlock : ShaderDataBlock, ICombo
     {
         public int BlockIndex { get; }
         public string Name { get; }
@@ -383,8 +399,24 @@ namespace ValveResourceFormat.CompiledShader
         }
     }
 
+    public interface IComboConstraints
+    {
+        int BlockIndex { get; }
+        int RelRule { get; }
+        int BlockType { get; }
+        int[] Flags { get; }
+        int[] Range0 { get; }
+        int[] Range1 { get; }
+        int[] Range2 { get; }
+        string Description { get; }
+
+        string GetByteFlagsAsString();
+        void PrintByteDetail();
+        string RelRuleDescribe();
+    }
+
     // SfConstraintsBlocks are always 472 bytes long
-    public class SfConstraintsBlock : ShaderDataBlock
+    public class SfConstraintsBlock : ShaderDataBlock, IComboConstraints
     {
         public int BlockIndex { get; }
         public int RelRule { get; }  // 1 = dependency-rule (feature file), 2 = dependency-rule (other files), 3 = exclusion
@@ -461,11 +493,11 @@ namespace ValveResourceFormat.CompiledShader
     }
 
     // DBlocks are always 152 bytes long
-    public class DBlock : ShaderDataBlock
+    public class DBlock : ShaderDataBlock, ICombo
     {
         public int BlockIndex { get; }
         public string Name { get; }
-        public string Name1 { get; } // it looks like d-blocks might have the provision for 2 strings (but not seen in use)
+        public string Category { get; } // it looks like d-blocks might have the provision for 2 strings (but not seen in use)
         public int Arg0 { get; }
         public int RangeMin { get; }
         public int RangeMax { get; }
@@ -477,7 +509,7 @@ namespace ValveResourceFormat.CompiledShader
             BlockIndex = blockIndex;
             Name = datareader.ReadNullTermStringAtPosition();
             datareader.BaseStream.Position += 64;
-            Name1 = datareader.ReadNullTermStringAtPosition();
+            Category = datareader.ReadNullTermStringAtPosition();
             datareader.BaseStream.Position += 64;
             Arg0 = datareader.ReadInt32();
             RangeMin = datareader.ReadInt32();
@@ -500,7 +532,7 @@ namespace ValveResourceFormat.CompiledShader
     }
 
     // DConstraintsBlock are always 472 bytes long
-    public class DConstraintsBlock : ShaderDataBlock
+    public class DConstraintsBlock : ShaderDataBlock, IComboConstraints
     {
         public int BlockIndex { get; }
         public int RelRule { get; }  // 2 = dependency-rule (other files), 3 = exclusion (1 not present, as in the compat-blocks)
@@ -565,7 +597,7 @@ namespace ValveResourceFormat.CompiledShader
             DataReader.BaseStream.Position += 16;
             return byteFlags;
         }
-        public string ReadByteFlagsAsString()
+        public string GetByteFlagsAsString()
         {
             return CombineIntArray(Flags);
         }

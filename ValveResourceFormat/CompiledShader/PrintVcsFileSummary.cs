@@ -65,7 +65,7 @@ namespace ValveResourceFormat.CompiledShader
 
             output.WriteLine($"VFX File Desc: {shaderFile.FeaturesHeader.FileDescription}");
             output.BreakLine();
-            output.WriteLine($"has_psrs_file = {shaderFile.FeaturesHeader.ExtraFile}");
+            output.WriteLine($"has_psrs_file = {shaderFile.FeaturesHeader.AdditionalFiles}");
             output.WriteLine($"{nameof(shaderFile.FeaturesHeader.Version)} = {shaderFile.FeaturesHeader.Version}");
             var ftHeader = shaderFile.FeaturesHeader;
             output.WriteLine($"{nameof(ftHeader.DevShader)} = {ftHeader.DevShader}");
@@ -290,7 +290,7 @@ namespace ValveResourceFormat.CompiledShader
                 var breakNames = CombineValuesBreakString(dRuleName, BL);
                 var s0 = $"[{dRuleBlock.BlockIndex,2}]";
                 var s1 = (dRuleBlock.RelRule == 1 || dRuleBlock.RelRule == 2) ? $"INC({dRuleBlock.RelRule})" : $"EXC({dRuleBlock.RelRule})";
-                var s3 = $"{dRuleBlock.ReadByteFlagsAsString()}";
+                var s3 = $"{dRuleBlock.GetByteFlagsAsString()}";
                 var s4 = $"{breakNames[0]}";
                 var s5 = $"{CombineIntArray(dRuleBlock.Range0)}";
                 var s6 = $"{CombineIntArray(dRuleBlock.Range1)}";
