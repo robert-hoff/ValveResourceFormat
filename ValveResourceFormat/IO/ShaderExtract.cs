@@ -447,9 +447,9 @@ public sealed class ShaderExtract
                     }
                 }
 
-                if (param.IntMins[0] != -ParamBlock.IntInf)
+                if (intRangeCutOff <= 3 && param.IntMins[0] != -ParamBlock.IntInf)
                 {
-                    if (param.FloatMins[0] != -ParamBlock.FloatInf)
+                    if (floatRangeCutOff <= 3 && param.FloatMins[0] != -ParamBlock.FloatInf)
                     {
                         attributes.Add($"{GetFuncName("Range", floatRangeCutOff)}({string.Join(", ", param.FloatMins[..^floatRangeCutOff])}, {string.Join(", ", param.FloatMaxs[..^floatRangeCutOff])})");
                     }
