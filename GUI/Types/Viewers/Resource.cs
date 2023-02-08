@@ -406,6 +406,9 @@ namespace GUI.Types.Viewers
 
                             break;
                         }
+                    case ResourceType.Shader:
+                        AddContentTab(resTabs, "Reconstructed vfx", new ShaderExtract(resource).ToVFX());
+                        break;
                 }
             }
 
