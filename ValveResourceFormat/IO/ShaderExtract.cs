@@ -5,6 +5,7 @@ using System.Text;
 using ValveResourceFormat.ResourceTypes;
 using ValveResourceFormat.CompiledShader;
 using ValveResourceFormat.Serialization.VfxEval;
+using ValveResourceFormat.Utils;
 
 namespace ValveResourceFormat.IO;
 
@@ -160,6 +161,20 @@ public sealed class ShaderExtract
         stringBuilder.AppendLine("COMMON");
         stringBuilder.AppendLine("{");
 
+        HandleVsInput(stringBuilder);
+
+        if (VertexShader is not null)
+        {
+            HandleCBuffers(VertexShader.BufferBlocks, stringBuilder);
+        }
+
+        stringBuilder.AppendLine("}");
+
+        return stringBuilder.ToString();
+    }
+
+    private void HandleVsInput(StringBuilder stringBuilder)
+    {
         if (VertexShader is not null && VertexShader.SymbolBlocks.Count > 0)
         {
             stringBuilder.AppendLine("\tstruct VS_INPUT");
@@ -174,10 +189,35 @@ public sealed class ShaderExtract
 
             stringBuilder.AppendLine("\t};");
         }
+    }
 
-        stringBuilder.AppendLine("}");
+    private static void HandleCBuffers(List<BufferBlock> bufferBlocks, StringBuilder stringBuilder)
+    {
+        foreach (var buffer in bufferBlocks)
+        {
+            stringBuilder.AppendLine();
+            stringBuilder.AppendLine("\tcbuffer " + buffer.Name);
+            stringBuilder.AppendLine("\t{");
 
-        return stringBuilder.ToString();
+            foreach (var member in buffer.BufferParams)
+            {
+                var dim1 = member.VectorSize > 1
+                    ? member.VectorSize.ToString()
+                    : string.Empty;
+
+                var dim2 = member.Depth > 1
+                    ? "x" + member.Depth.ToString()
+                    : string.Empty;
+
+                var array = member.Length > 1
+                    ? "[" + member.Length.ToString() + "]"
+                    : string.Empty;
+
+                stringBuilder.AppendLine($"\t\tfloat{dim1}{dim2} {member.Name}{array};");
+            }
+
+            stringBuilder.AppendLine("\t};");
+        }
     }
 
     private string GS()
@@ -235,6 +275,7 @@ public sealed class ShaderExtract
         stringBuilder.AppendLine("{");
 
         HandleStaticCombos(PixelShader.SfBlocks, PixelShader.SfConstraintsBlocks, FeatureNames, stringBuilder);
+        HandleDynamicCombos(PixelShader.DBlocks, PixelShader.DConstraintsBlocks, FeatureNames, stringBuilder);
         HandleParameters(PixelShader.ParamBlocks, stringBuilder);
 
         foreach (var mipmap in Features.MipmapBlocks)
@@ -308,12 +349,12 @@ public sealed class ShaderExtract
         {
             if (staticCombo.FeatureIndex != -1)
             {
-                sb.AppendLine($"\tStaticCombo( {staticCombo.Name}, {features[staticCombo.FeatureIndex]}, Sys( All ) );");
+                sb.AppendLine($"\tStaticCombo( {staticCombo.Name}, {features[staticCombo.FeatureIndex]}, Sys( ALL ) );");
                 continue;
             }
             else if (staticCombo.RangeMax != 0)
             {
-                sb.AppendLine($"\tStaticCombo( {staticCombo.Name}, {staticCombo.RangeMin}..{staticCombo.RangeMax}, Sys( All ) );");
+                sb.AppendLine($"\tStaticCombo( {staticCombo.Name}, {staticCombo.RangeMin}..{staticCombo.RangeMax}, Sys( ALL ) );");
             }
             else
             {
@@ -324,6 +365,26 @@ public sealed class ShaderExtract
         foreach (var rule in HandleConstraints(combos, constraints))
         {
             sb.AppendLine($"\tStaticComboRule( {rule.Constraint} );");
+        }
+    }
+
+    private static void HandleDynamicCombos(List<DBlock> combos, List<DConstraintsBlock> constraints, List<string> features, StringBuilder sb)
+    {
+        foreach (var dynamicCombo in combos)
+        {
+            if (dynamicCombo.FeatureIndex != -1)
+            {
+                sb.AppendLine($"\tDynamicCombo( {dynamicCombo.Name}, {features[dynamicCombo.FeatureIndex]}, Sys( ALL ) );");
+                continue;
+            }
+            else if (dynamicCombo.RangeMax != 0)
+            {
+                sb.AppendLine($"\tDynamicCombo( {dynamicCombo.Name}, {dynamicCombo.RangeMin}..{dynamicCombo.RangeMax}, Sys( ALL ) );");
+            }
+            else
+            {
+                sb.AppendLine($"\tDynamicCombo( {dynamicCombo.Name}, {dynamicCombo.RangeMax}, Sys( {dynamicCombo.Sys} ) );");
+            }
         }
     }
 
@@ -406,12 +467,12 @@ public sealed class ShaderExtract
                 {
                     if (param.UiType != UiType.Texture)
                     {
-                        throw new Exception("Unexpected UiType: " + param.UiType.ToString());
+                        throw new UnexpectedMagicException($"Expected {UiType.Texture}, got", (int)param.UiType, nameof(param.UiType));
                     }
 
                     if (param.ParamType != ParameterType.InputTexture)
                     {
-                        throw new Exception("Unexpected ParamType: " + param.UiType.ToString());
+                        throw new UnexpectedMagicException($"Expected {ParameterType.InputTexture}, got", (int)param.ParamType, nameof(param.ParamType));
                     }
 
                     var default4 = $"Default4({string.Join(", ", param.FloatDefs)})";

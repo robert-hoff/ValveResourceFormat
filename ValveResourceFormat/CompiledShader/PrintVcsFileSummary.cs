@@ -246,10 +246,10 @@ namespace ValveResourceFormat.CompiledShader
             foreach (var dBlock in shaderFile.DBlocks)
             {
                 var v0 = $"[{dBlock.BlockIndex,2}]";
-                var v1 = dBlock.Name0;
-                var v2 = "" + dBlock.Arg2;
-                var v3 = "" + dBlock.Arg3;
-                var v4 = $"{dBlock.Arg4,2}";
+                var v1 = dBlock.Name;
+                var v2 = "" + dBlock.RangeMax;
+                var v3 = "" + dBlock.Sys;
+                var v4 = $"{dBlock.FeatureIndex,2}";
                 var blockSummary = $"{v0.PadRight(pad[0])} {v1.PadRight(pad[1])} {v2.PadRight(pad[2])} {v3.PadRight(pad[3])} {v4.PadRight(pad[4])}";
                 output.WriteLine(blockSummary);
             }
@@ -276,7 +276,7 @@ namespace ValveResourceFormat.CompiledShader
                 {
                     if (dRuleBlock.Flags[i] == 3)
                     {
-                        dRuleName[i] = shaderFile.DBlocks[dRuleBlock.Range0[i]].Name0;
+                        dRuleName[i] = shaderFile.DBlocks[dRuleBlock.Range0[i]].Name;
                         continue;
                     }
                     if (dRuleBlock.Flags[i] == 2)
@@ -421,12 +421,12 @@ namespace ValveResourceFormat.CompiledShader
                 output.DefineHeaders(new string[] { "       ", "name", "offset", "vertex-size", "attrib-count", "data-count" });
                 foreach (var bufferParams in bufferBlock.BufferParams)
                 {
-                    var name = bufferParams.Item1;
-                    var bOffset = bufferParams.Item2;
-                    var nrVertices = bufferParams.Item3;
-                    var nrAttribs = bufferParams.Item4;
-                    var length = bufferParams.Item5;
-                    output.AddTabulatedRow(new string[] { "", $"{name}", $"{bOffset,3}", $"{nrVertices,3}", $"{nrAttribs,3}", $"{length,3}" });
+                    var name = bufferParams.Name;
+                    var bOffset = bufferParams.Offset;
+                    var vectorSize = bufferParams.VectorSize;
+                    var depth = bufferParams.Depth;
+                    var length = bufferParams.Length;
+                    output.AddTabulatedRow(new string[] { "", $"{name}", $"{bOffset,3}", $"{vectorSize,3}", $"{depth,3}", $"{length,3}" });
 
                 }
                 output.PrintTabulatedValues();

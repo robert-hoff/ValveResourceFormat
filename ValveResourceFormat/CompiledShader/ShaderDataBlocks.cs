@@ -388,7 +388,7 @@ namespace ValveResourceFormat.CompiledShader
     {
         public int BlockIndex { get; }
         public int RelRule { get; }  // 1 = dependency-rule (feature file), 2 = dependency-rule (other files), 3 = exclusion
-        public int Arg0 { get; } // this is just 1 for features files and 2 for all other files
+        public int BlockType { get; } // this is just 1 for features files and 2 for all other files
         public int[] Flags { get; }
         public int[] Range0 { get; }
         public int[] Range1 { get; }
@@ -398,7 +398,7 @@ namespace ValveResourceFormat.CompiledShader
         {
             BlockIndex = blockIndex;
             RelRule = datareader.ReadInt32();
-            Arg0 = datareader.ReadInt32();
+            BlockType = datareader.ReadInt32();
             // flags are at (8)
             Flags = ReadByteFlags();
             // range 0 at (24)
@@ -464,26 +464,26 @@ namespace ValveResourceFormat.CompiledShader
     public class DBlock : ShaderDataBlock
     {
         public int BlockIndex { get; }
-        public string Name0 { get; }
+        public string Name { get; }
         public string Name1 { get; } // it looks like d-blocks might have the provision for 2 strings (but not seen in use)
         public int Arg0 { get; }
-        public int Arg1 { get; }
-        public int Arg2 { get; }
-        public int Arg3 { get; }
-        public int Arg4 { get; }
+        public int RangeMin { get; }
+        public int RangeMax { get; }
+        public int Sys { get; }
+        public int FeatureIndex { get; }
         public int Arg5 { get; }
         public DBlock(ShaderDataReader datareader, int blockIndex) : base(datareader)
         {
             BlockIndex = blockIndex;
-            Name0 = datareader.ReadNullTermStringAtPosition();
+            Name = datareader.ReadNullTermStringAtPosition();
             datareader.BaseStream.Position += 64;
             Name1 = datareader.ReadNullTermStringAtPosition();
             datareader.BaseStream.Position += 64;
             Arg0 = datareader.ReadInt32();
-            Arg1 = datareader.ReadInt32();
-            Arg2 = datareader.ReadInt32();
-            Arg3 = datareader.ReadInt32();
-            Arg4 = datareader.ReadInt32();
+            RangeMin = datareader.ReadInt32();
+            RangeMax = datareader.ReadInt32();
+            Sys = datareader.ReadInt32();
+            FeatureIndex = datareader.ReadInt32();
             Arg5 = datareader.ReadInt32();
         }
         public void PrintByteDetail()
@@ -504,7 +504,7 @@ namespace ValveResourceFormat.CompiledShader
     {
         public int BlockIndex { get; }
         public int RelRule { get; }  // 2 = dependency-rule (other files), 3 = exclusion (1 not present, as in the compat-blocks)
-        public int Arg0 { get; } // ALWAYS 3 (for sf-constraint-blocks this value is 1 for features files and 2 for all other files)
+        public int BlockType { get; } // ALWAYS 3 (for sf-constraint-blocks this value is 1 for features files and 2 for all other files)
         public int Arg1 { get; } // arg1 at (88) sometimes has a value > -1 (in compat-blocks this value is always seen to be -1)
         public int[] Flags { get; }
         public int[] Range0 { get; }
@@ -516,8 +516,8 @@ namespace ValveResourceFormat.CompiledShader
         {
             BlockIndex = blockIndex;
             RelRule = datareader.ReadInt32();
-            Arg0 = datareader.ReadInt32();
-            if (Arg0 != 3)
+            BlockType = datareader.ReadInt32();
+            if (BlockType != 3)
             {
                 throw new ShaderParserException("unexpected value!");
             }
@@ -604,7 +604,7 @@ namespace ValveResourceFormat.CompiledShader
                 }
                 if (Flags[i] == 3)
                 {
-                    names.Add(dBlocks[Range0[i]].Name0);
+                    names.Add(dBlocks[Range0[i]].Name);
                     continue;
                 }
                 throw new ShaderParserException("this cannot happen!");
@@ -968,7 +968,7 @@ namespace ValveResourceFormat.CompiledShader
         public int BufferSize { get; }
         public int Arg0 { get; }
         public int ParamCount { get; }
-        public List<(string, int, int, int, int)> BufferParams { get; } = new();
+        public List<(string Name, int Offset, int VectorSize, int Depth, int Length)> BufferParams { get; } = new();
         public uint BlockCrc { get; }
         public BufferBlock(ShaderDataReader datareader, int blockIndex) : base(datareader)
         {
