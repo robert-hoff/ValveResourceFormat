@@ -44,7 +44,7 @@ public sealed class ShaderExtract
     public ShaderFile ComputeShader { get; init; }
     public ShaderFile RaytracingShader { get; init; }
 
-    private ShaderExtractParams Options { get; set; } = ShaderExtractParams.Inspect;
+    private ShaderExtractParams Options { get; set; }
     private List<string> FeatureNames { get; set; }
     private string[] Globals { get; set; }
 
@@ -506,6 +506,7 @@ public sealed class ShaderExtract
             // FloatAttribute
             var attributes = new List<string>();
 
+            // Todo merge these two's logic.
             // Render State
             if (param.ParamType is ParameterType.RenderState)
             {
@@ -604,12 +605,12 @@ public sealed class ShaderExtract
                 {
                     if (floatDefsCutOff <= 3)
                     {
-                        attributes.Add($"{GetFuncName("Default", floatDefsCutOff)}({string.Join(", ", param.FloatDefs[..^floatDefsCutOff])})");
+                        attributes.Add($"{GetFuncName("Default", floatDefsCutOff)}({string.Join(", ", param.FloatDefs[..^floatDefsCutOff])});");
                     }
                     else
                     {
                         var funcName = intDefsCutOff == 3 ? "Default" : "Default" + (4 - intDefsCutOff);
-                        attributes.Add($"{GetFuncName("Default", intDefsCutOff)}({string.Join(", ", param.IntDefs[..^intDefsCutOff])})");
+                        attributes.Add($"{GetFuncName("Default", intDefsCutOff)}({string.Join(", ", param.IntDefs[..^intDefsCutOff])});");
                     }
                 }
 

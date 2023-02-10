@@ -325,7 +325,7 @@ namespace ValveResourceFormat.CompiledShader
             {
                 if (Name != "S_FOLIAGE_ANIMATION_ENABLED")
                 {
-                    throw new UnexpectedMagicException($"Unexpected static config with {nameof(Sys)} = 11", Name, nameof(Name));
+                    throw new UnexpectedMagicException($"Unexpected static config with {nameof(Sys)} = 11. Is it also 4 bytes longer?", Name, nameof(Name));
                 }
 
                 var foliage = datareader.ReadInt32();

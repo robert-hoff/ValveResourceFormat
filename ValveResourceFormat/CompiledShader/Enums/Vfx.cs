@@ -21,6 +21,7 @@ public static class Vfx
         {16, "cube"},
         {21, "buffer"},
         {23, "tex[]"},
+        {32, "RWTexture2D<float4>"},
         {34, "RWTexture3D<float4>"},
         {40, "set?"},
     };
