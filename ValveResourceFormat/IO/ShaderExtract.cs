@@ -659,7 +659,7 @@ public sealed class ShaderExtract
                 if (param.DynExp.Length > 0)
                 {
                     var globals = paramBlocks.Select(p => p.Name).ToArray();
-                    var dynEx = new VfxEval(param.DynExp, globals, omitReturnStatement: true, FeatureNames).DynamicExpressionResult.Replace(param.Name, "this");
+                    var dynEx = new VfxEval(param.DynExp, globals, omitReturnStatement: true, FeatureNames).DynamicExpressionResult.Replace($"EVAL[{param.Name}]", "this");
                     attributes.Add($"Expression({dynEx});");
                 }
 
