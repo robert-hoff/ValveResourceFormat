@@ -60,6 +60,8 @@ public sealed class ShaderExtract
         VertexShader = sboxShaderCollection.Vertex;
         PixelShader = sboxShaderCollection.Pixel;
         ComputeShader = sboxShaderCollection.Compute;
+
+        ThrowIfNoFeatures();
     }
 
     public ShaderExtract(SortedDictionary<(VcsProgramType, string), ShaderFile> shaderCollection)
@@ -99,6 +101,16 @@ public sealed class ShaderExtract
             {
                 RaytracingShader = shader;
             }
+        }
+
+        ThrowIfNoFeatures();
+    }
+
+    private void ThrowIfNoFeatures()
+    {
+        if (Features == null)
+        {
+            throw new InvalidOperationException("Shader extract cannot continue without at least a features file.");
         }
     }
 

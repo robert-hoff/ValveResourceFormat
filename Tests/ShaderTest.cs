@@ -4,17 +4,20 @@ using System.IO;
 using NUnit.Framework;
 using ValveResourceFormat;
 using ValveResourceFormat.CompiledShader;
+using ValveResourceFormat.IO;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
 namespace Tests
 {
     public class ShaderTest
     {
+        public static string ShadersDir
+            => Path.Combine(TestContext.CurrentContext.TestDirectory, "Files", "Shaders");
+
         [Test]
         public void ParseShaders()
         {
-            var path = Path.Combine(TestContext.CurrentContext.TestDirectory, "Files", "Shaders");
-            var files = Directory.GetFiles(path, "*.vcs");
+            var files = Directory.GetFiles(ShadersDir, "*.vcs");
 
             foreach (var file in files)
             {
@@ -72,13 +75,40 @@ namespace Tests
         [Test]
         public void CompiledShaderInResourceThrows()
         {
-            var path = Path.Combine(TestContext.CurrentContext.TestDirectory, "Files", "Shaders", "error_pcgl_40_ps.vcs");
-
+            var path = Path.Combine(ShadersDir, "error_pcgl_40_ps.vcs");
             using var resource = new Resource();
 
             var ex = Assert.Throws<InvalidDataException>(() => resource.Read(path));
 
             Assert.That(ex.Message, Does.Contain("Use CompiledShader"));
+        }
+
+        [Test]
+        public void VfxShaderExtract_Invalid()
+        {
+            var path = Path.Combine(ShadersDir, "error_pcgl_40_ps.vcs");
+            using var shader = new ShaderFile();
+            shader.Read(path);
+
+            var ex = Assert.Throws<InvalidOperationException>(() => new ShaderExtract(new[] { shader }));
+
+            Assert.That(ex.Message, Does.Contain("cannot continue without at least a features file"));
+        }
+
+        [Test]
+        public void VfxShaderExtract_Minimal()
+        {
+            var path = Path.Combine(ShadersDir, "error_pc_40_features.vcs");
+            using var shader = new ShaderFile();
+            shader.Read(path);
+
+            var extract = new ShaderExtract(new[] { shader });
+
+            var vfx = extract.ToVFX(ShaderExtract.ShaderExtractParams.Inspect);
+            vfx = extract.ToVFX(ShaderExtract.ShaderExtractParams.Export);
+
+            Assert.That(vfx, Does.Contain("Description = \"Error shader\""));
+            Assert.That(vfx, Does.Contain("DevShader = true"));
         }
     }
 }
