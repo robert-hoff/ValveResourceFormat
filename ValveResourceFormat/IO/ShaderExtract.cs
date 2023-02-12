@@ -131,12 +131,12 @@ public sealed class ShaderExtract
         return ToVFX(ShaderExtractParams.Inspect);
     }
 
-    public string ToVFX(ShaderExtractParams @params)
+    public string ToVFX(ShaderExtractParams options)
     {
         // TODO: IndentedTextWriter
         FeatureNames = Features.SfBlocks.Select(f => f.Name).ToList();
         Globals = Features.ParamBlocks.Select(p => p.Name).ToArray();
-        Options = @params;
+        Options = options;
 
         return "//=================================================================================================\n"
             + "// Reconstructed with VRF - https://vrf.steamdb.info/\n"
@@ -155,78 +155,85 @@ public sealed class ShaderExtract
 
     private string HEADER()
     {
-        var stringBuilder = new StringBuilder();
-        stringBuilder.AppendLine("HEADER");
-        stringBuilder.AppendLine("{");
+        using var writer = new IndentedTextWriter();
+        writer.WriteLine(nameof(HEADER));
+        writer.WriteLine("{");
+        writer.Indent++;
 
-        stringBuilder.AppendLine($"\tDescription = \"{Features.FeaturesHeader.FileDescription}\";");
-        stringBuilder.AppendLine($"\tDevShader = {(Features.FeaturesHeader.DevShader == 0 ? "false" : "true")};");
-        stringBuilder.AppendLine($"\tVersion = {Features.FeaturesHeader.Version};");
+        writer.WriteLine($"Description = \"{Features.FeaturesHeader.FileDescription}\";");
+        writer.WriteLine($"DevShader = {(Features.FeaturesHeader.DevShader == 0 ? "false" : "true")};");
+        writer.WriteLine($"Version = {Features.FeaturesHeader.Version};");
 
-        stringBuilder.AppendLine("}");
+        writer.Indent--;
+        writer.WriteLine("}");
 
-        return stringBuilder.ToString();
+        return writer.ToString();
     }
 
     private string MODES()
     {
-        var stringBuilder = new StringBuilder();
-        stringBuilder.AppendLine();
-        stringBuilder.AppendLine("MODES");
-        stringBuilder.AppendLine("{");
+        using var writer = new IndentedTextWriter();
+        writer.WriteLine(nameof(MODES));
+        writer.WriteLine("{");
+        writer.Indent++;
 
         foreach (var mode in Features.FeaturesHeader.Modes)
         {
             if (string.IsNullOrEmpty(mode.Shader))
             {
-                stringBuilder.AppendLine($"\t{mode.Name}({mode.StaticConfig});");
+                writer.WriteLine($"{mode.Name}({mode.StaticConfig});");
             }
             else
             {
-                stringBuilder.AppendLine($"\t{mode.Name}(\"{mode.Shader}\");");
+                writer.WriteLine($"{mode.Name}(\"{mode.Shader}\");");
             }
         }
 
-        stringBuilder.AppendLine("}");
-        return stringBuilder.ToString();
+        writer.Indent--;
+        writer.WriteLine("}");
+        return writer.ToString();
     }
 
     private string FEATURES()
     {
-        var stringBuilder = new StringBuilder();
-        stringBuilder.AppendLine();
-        stringBuilder.AppendLine("FEATURES");
-        stringBuilder.AppendLine("{");
+        using var writer = new IndentedTextWriter();
+        writer.WriteLine();
+        writer.WriteLine(nameof(FEATURES));
+        writer.WriteLine("{");
+        writer.Indent++;
 
-        HandleFeatures(Features.SfBlocks, Features.SfConstraintsBlocks, stringBuilder);
+        HandleFeatures(Features.SfBlocks, Features.SfConstraintsBlocks, writer);
 
-        stringBuilder.AppendLine("}");
+        writer.Indent--;
+        writer.WriteLine("}");
 
-        return stringBuilder.ToString();
+        return writer.ToString();
     }
 
     private string COMMON()
     {
-        var stringBuilder = new StringBuilder();
-        stringBuilder.AppendLine();
-        stringBuilder.AppendLine("COMMON");
-        stringBuilder.AppendLine("{");
+        using var writer = new IndentedTextWriter();
+        writer.WriteLine();
+        writer.WriteLine(nameof(COMMON));
+        writer.WriteLine("{");
+        writer.Indent++;
 
-        stringBuilder.AppendLine("\t#include \"system.fxc\"");
+        writer.WriteLine("#include \"system.fxc\"");
 
         if (VertexShader is not null)
         {
-            HandleCBuffers(VertexShader.BufferBlocks, stringBuilder);
+            HandleCBuffers(VertexShader.BufferBlocks, writer);
         }
 
-        HandleVsInput(stringBuilder);
+        HandleVsInput(writer);
 
-        stringBuilder.AppendLine("}");
+        writer.Indent--;
+        writer.WriteLine("}");
 
-        return stringBuilder.ToString();
+        return writer.ToString();
     }
 
-    private void HandleVsInput(StringBuilder stringBuilder)
+    private void HandleVsInput(IndentedTextWriter writer)
     {
         if (VertexShader is null)
         {
@@ -235,22 +242,24 @@ public sealed class ShaderExtract
 
         foreach (var i in Enumerable.Range(0, VertexShader.SymbolBlocks.Count))
         {
-            stringBuilder.AppendLine();
+            writer.WriteLine();
 
             var index = VertexShader.SymbolBlocks.Count > 1 && !Options.FirstVsInput_Only
                 ? $" ({i})"
                 : string.Empty;
-            stringBuilder.AppendLine($"\tstruct VS_INPUT{index}");
-            stringBuilder.AppendLine("\t{");
+            writer.WriteLine($"struct VS_INPUT{index}");
+            writer.WriteLine("{");
+            writer.Indent++;
 
             foreach (var symbol in VertexShader.SymbolBlocks[i].SymbolsDefinition)
             {
                 var attributeVfx = symbol.Option.Length > 0 ? $" < Semantic({symbol.Option}); >" : string.Empty;
                 // TODO: type
-                stringBuilder.AppendLine($"\t\tfloat4 {symbol.Name} : {symbol.Type}{symbol.SemanticIndex}{attributeVfx};");
+                writer.WriteLine($"float4 {symbol.Name} : {symbol.Type}{symbol.SemanticIndex}{attributeVfx};");
             }
 
-            stringBuilder.AppendLine("\t};");
+            writer.Indent--;
+            writer.WriteLine("};");
 
             if (Options.FirstVsInput_Only)
             {
@@ -259,7 +268,7 @@ public sealed class ShaderExtract
         }
     }
 
-    private void HandleCBuffers(List<BufferBlock> bufferBlocks, StringBuilder stringBuilder)
+    private void HandleCBuffers(List<BufferBlock> bufferBlocks, IndentedTextWriter writer)
     {
         var includedCommon = false;
 
@@ -274,7 +283,7 @@ public sealed class ShaderExtract
 
                 if (Options.CollapseCommonBuffers_InInclude)
                 {
-                    stringBuilder.AppendLine("\t#include \"common.fxc\"");
+                    writer.WriteLine("#include \"common.fxc\"");
                     includedCommon = true;
                     continue;
                 }
@@ -282,14 +291,15 @@ public sealed class ShaderExtract
 
                 if (Options.CollapseCommonBuffers_InPlace)
                 {
-                    stringBuilder.Append("\tcbuffer " + buffer.Name + ";");
+                    writer.Write("cbuffer " + buffer.Name + ";");
                     continue;
                 }
             }
 
-            stringBuilder.AppendLine();
-            stringBuilder.AppendLine("\tcbuffer " + buffer.Name);
-            stringBuilder.AppendLine("\t{");
+            writer.WriteLine();
+            writer.WriteLine("cbuffer " + buffer.Name);
+            writer.WriteLine("{");
+            writer.Indent++;
 
             foreach (var member in buffer.BufferParams)
             {
@@ -305,10 +315,11 @@ public sealed class ShaderExtract
                     ? "[" + member.Length.ToString() + "]"
                     : string.Empty;
 
-                stringBuilder.AppendLine($"\t\tfloat{dim1}{dim2} {member.Name}{array};");
+                writer.WriteLine($"float{dim1}{dim2} {member.Name}{array};");
             }
 
-            stringBuilder.AppendLine("\t};");
+            writer.Indent--;
+            writer.WriteLine("};");
         }
     }
 
@@ -319,16 +330,18 @@ public sealed class ShaderExtract
             return string.Empty;
         }
 
-        var stringBuilder = new StringBuilder();
-        stringBuilder.AppendLine();
-        stringBuilder.AppendLine("GS");
-        stringBuilder.AppendLine("{");
+        using var writer = new IndentedTextWriter();
+        writer.WriteLine();
+        writer.WriteLine(nameof(GS));
+        writer.WriteLine("{");
+        writer.Indent++;
 
-        HandleCommons(GeometryShader, stringBuilder);
+        HandleCommons(GeometryShader, writer);
 
-        stringBuilder.AppendLine("}");
+        writer.Indent--;
+        writer.WriteLine("}");
 
-        return stringBuilder.ToString();
+        return writer.ToString();
     }
 
     private string VS()
@@ -338,16 +351,18 @@ public sealed class ShaderExtract
             return string.Empty;
         }
 
-        var stringBuilder = new StringBuilder();
-        stringBuilder.AppendLine();
-        stringBuilder.AppendLine("VS");
-        stringBuilder.AppendLine("{");
+        using var writer = new IndentedTextWriter();
+        writer.WriteLine();
+        writer.WriteLine(nameof(VS));
+        writer.WriteLine("{");
+        writer.Indent++;
 
-        HandleCommons(VertexShader, stringBuilder);
+        HandleCommons(VertexShader, writer);
 
-        stringBuilder.AppendLine("}");
+        writer.Indent--;
+        writer.WriteLine("}");
 
-        return stringBuilder.ToString();
+        return writer.ToString();
     }
 
     private string PS()
@@ -357,20 +372,22 @@ public sealed class ShaderExtract
             return string.Empty;
         }
 
-        var stringBuilder = new StringBuilder();
-        stringBuilder.AppendLine();
-        stringBuilder.AppendLine("PS");
-        stringBuilder.AppendLine("{");
+        using var writer = new IndentedTextWriter();
+        writer.WriteLine();
+        writer.WriteLine(nameof(PS));
+        writer.WriteLine("{");
+        writer.Indent++;
 
-        HandleCommons(PixelShader, stringBuilder);
+        HandleCommons(PixelShader, writer);
 
         foreach (var mipmap in Features.MipmapBlocks)
         {
-            stringBuilder.AppendLine($"\t{GetChannelFromMipmap(mipmap)}");
+            writer.WriteLine($"{GetChannelFromMipmap(mipmap)}");
         }
 
-        stringBuilder.AppendLine("}");
-        return stringBuilder.ToString();
+        writer.Indent--;
+        writer.WriteLine("}");
+        return writer.ToString();
     }
 
     private string CS()
@@ -380,15 +397,17 @@ public sealed class ShaderExtract
             return string.Empty;
         }
 
-        var stringBuilder = new StringBuilder();
-        stringBuilder.AppendLine();
-        stringBuilder.AppendLine("CS");
-        stringBuilder.AppendLine("{");
+        using var writer = new IndentedTextWriter();
+        writer.WriteLine();
+        writer.WriteLine(nameof(CS));
+        writer.WriteLine("{");
+        writer.Indent++;
 
-        HandleCommons(ComputeShader, stringBuilder);
+        HandleCommons(ComputeShader, writer);
 
-        stringBuilder.AppendLine("}");
-        return stringBuilder.ToString();
+        writer.Indent--;
+        writer.WriteLine("}");
+        return writer.ToString();
     }
 
     private string RTX()
@@ -398,24 +417,27 @@ public sealed class ShaderExtract
             return string.Empty;
         }
 
-        var stringBuilder = new StringBuilder();
-        stringBuilder.AppendLine();
-        stringBuilder.AppendLine("RTX");
-        stringBuilder.AppendLine("{");
-        HandleCommons(RaytracingShader, stringBuilder);
+        using var writer = new IndentedTextWriter();
+        writer.WriteLine();
+        writer.WriteLine(nameof(RTX));
+        writer.WriteLine("{");
+        writer.Indent++;
 
-        stringBuilder.AppendLine("}");
-        return stringBuilder.ToString();
+        HandleCommons(RaytracingShader, writer);
+
+        writer.Indent--;
+        writer.WriteLine("}");
+        return writer.ToString();
     }
 
-    private void HandleCommons(ShaderFile shader, StringBuilder stringBuilder)
+    private void HandleCommons(ShaderFile shader, IndentedTextWriter writer)
     {
-        HandleStaticCombos(shader.SfBlocks, shader.SfConstraintsBlocks, stringBuilder);
-        HandleDynamicCombos(shader.SfBlocks, shader.DBlocks, shader.DConstraintsBlocks, stringBuilder);
-        HandleParameters(shader.ParamBlocks, stringBuilder);
+        HandleStaticCombos(shader.SfBlocks, shader.SfConstraintsBlocks, writer);
+        HandleDynamicCombos(shader.SfBlocks, shader.DBlocks, shader.DConstraintsBlocks, writer);
+        HandleParameters(shader.ParamBlocks, writer);
     }
 
-    private void HandleFeatures(List<SfBlock> features, List<SfConstraintsBlock> constraints, StringBuilder sb)
+    private void HandleFeatures(List<SfBlock> features, List<SfConstraintsBlock> constraints, IndentedTextWriter writer)
     {
         foreach (var feature in features)
         {
@@ -424,67 +446,67 @@ public sealed class ShaderExtract
                 : string.Empty;
 
             // Verify RangeMin
-            sb.AppendLine($"\tFeature( {feature.Name}, {feature.RangeMin}..{feature.RangeMax}{checkboxNames}, \"{feature.Category}\" );");
+            writer.WriteLine($"Feature( {feature.Name}, {feature.RangeMin}..{feature.RangeMax}{checkboxNames}, \"{feature.Category}\" );");
         }
 
         HandleRules(ConditionalType.Feature,
                     Enumerable.Empty<ICombo>().ToList(),
                     Enumerable.Empty<ICombo>().ToList(),
                     constraints.Cast<IComboConstraints>().ToList(),
-                    sb);
+                    writer);
     }
 
-    private void HandleStaticCombos(List<SfBlock> staticCombos, List<SfConstraintsBlock> constraints, StringBuilder sb)
+    private void HandleStaticCombos(List<SfBlock> staticCombos, List<SfConstraintsBlock> constraints, IndentedTextWriter writer)
     {
-        HandleCombos(ConditionalType.Static, staticCombos.Cast<ICombo>().ToList(), sb);
+        HandleCombos(ConditionalType.Static, staticCombos.Cast<ICombo>().ToList(), writer);
         HandleRules(ConditionalType.Static,
                     staticCombos.Cast<ICombo>().ToList(),
                     Enumerable.Empty<ICombo>().ToList(),
                     constraints.Cast<IComboConstraints>().ToList(),
-                    sb);
+                    writer);
     }
 
-    private void HandleDynamicCombos(List<SfBlock> staticCombos, List<DBlock> dynamicCombos, List<DConstraintsBlock> constraints, StringBuilder sb)
+    private void HandleDynamicCombos(List<SfBlock> staticCombos, List<DBlock> dynamicCombos, List<DConstraintsBlock> constraints, IndentedTextWriter writer)
     {
-        HandleCombos(ConditionalType.Dynamic, dynamicCombos.Cast<ICombo>().ToList(), sb);
+        HandleCombos(ConditionalType.Dynamic, dynamicCombos.Cast<ICombo>().ToList(), writer);
         HandleRules(ConditionalType.Dynamic,
                     staticCombos.Cast<ICombo>().ToList(),
                     dynamicCombos.Cast<ICombo>().ToList(),
                     constraints.Cast<IComboConstraints>().ToList(),
-                    sb);
+                    writer);
     }
 
-    private void HandleCombos(ConditionalType comboType, List<ICombo> combos, StringBuilder sb)
+    private void HandleCombos(ConditionalType comboType, List<ICombo> combos, IndentedTextWriter writer)
     {
         foreach (var staticCombo in combos)
         {
             if (staticCombo.FeatureIndex != -1)
             {
-                sb.AppendLine($"\t{comboType}Combo( {staticCombo.Name}, {FeatureNames[staticCombo.FeatureIndex]}, Sys( ALL ) );");
+                writer.WriteLine($"{comboType}Combo( {staticCombo.Name}, {FeatureNames[staticCombo.FeatureIndex]}, Sys( ALL ) );");
                 continue;
             }
             else if (staticCombo.RangeMax != 0)
             {
-                sb.AppendLine($"\t{comboType}Combo( {staticCombo.Name}, {staticCombo.RangeMin}..{staticCombo.RangeMax}, Sys( ALL ) );");
+                writer.WriteLine($"{comboType}Combo( {staticCombo.Name}, {staticCombo.RangeMin}..{staticCombo.RangeMax}, Sys( ALL ) );");
             }
             else
             {
-                sb.AppendLine($"\t{comboType}Combo( {staticCombo.Name}, {staticCombo.RangeMax}, Sys( {staticCombo.Sys} ) );");
+                writer.WriteLine($"{comboType}Combo( {staticCombo.Name}, {staticCombo.RangeMax}, Sys( {staticCombo.Sys} ) );");
             }
         }
     }
 
-    private void HandleRules(ConditionalType conditionalType, List<ICombo> staticCombos, List<ICombo> dynamicCombos, List<IComboConstraints> constraints, StringBuilder sb)
+    private void HandleRules(ConditionalType conditionalType, List<ICombo> staticCombos, List<ICombo> dynamicCombos, List<IComboConstraints> constraints, IndentedTextWriter writer)
     {
         foreach (var rule in HandleConstraintsY(staticCombos, dynamicCombos, constraints))
         {
             if (conditionalType == ConditionalType.Feature)
             {
-                sb.AppendLine($"\tFeatureRule( {rule.Constraint}, \"{rule.Description}\" );");
+                writer.WriteLine($"FeatureRule( {rule.Constraint}, \"{rule.Description}\" );");
             }
             else
             {
-                sb.AppendLine($"\t{conditionalType}ComboRule( {rule.Constraint} );");
+                writer.WriteLine($"{conditionalType}ComboRule( {rule.Constraint} );");
             }
         }
     }
@@ -511,6 +533,7 @@ public sealed class ShaderExtract
             }
 
             // By value constraint
+            // e.g. FeatureRule( Requires1( F_REFRACT, F_TEXTURE_LAYERS=0, F_TEXTURE_LAYERS=1 ), "Refract requires Less than 2 Layers due to DX9" );
             if (constraint.Values.Length > 0)
             {
                 if (constraint.Values.Length != constraint.ConditionalTypes.Length - 1)
@@ -518,16 +541,14 @@ public sealed class ShaderExtract
                     throw new InvalidOperationException("Expected to have 1 less value than conditionals.");
                 }
 
-                // The format for this not known, but should be something like:
-                // FeatureRule( Requires1( F_REFRACT, F_TEXTURE_LAYERS=0, F_TEXTURE_LAYERS=1 ), "Refract requires Less than 2 Layers due to DX9" );
-                constrainedNames = constrainedNames.Take(1).Concat(constrainedNames.Skip(1).Select((s, i) => $"{s}={constraint.Values[i]}")).ToList();
+                constrainedNames = constrainedNames.Take(1).Concat(constrainedNames.Skip(1).Select((s, i) => $"{s} == {constraint.Values[i]}")).ToList();
             }
 
             yield return ($"{constraint.Rule}{constraint.Range2[0]}( {string.Join(", ", constrainedNames)} )", constraint.Description);
         }
     }
 
-    private void HandleParameters(List<ParamBlock> paramBlocks, StringBuilder sb)
+    private void HandleParameters(List<ParamBlock> paramBlocks, IndentedTextWriter writer)
     {
         foreach (var param in paramBlocks.OrderBy(x => x.Id == 255))
         {
@@ -554,11 +575,11 @@ public sealed class ShaderExtract
                 if (param.DynExp.Length > 0)
                 {
                     var dynEx = new VfxEval(param.DynExp, Globals, omitReturnStatement: true, FeatureNames).DynamicExpressionResult;
-                    sb.AppendLine($"\tRenderState({param.Name}, {dynEx});");
+                    writer.WriteLine($"RenderState({param.Name}, {dynEx});");
                 }
                 else
                 {
-                    sb.AppendLine($"\tRenderState({param.Name}, {param.IntDefs[0]});");
+                    writer.WriteLine($"RenderState({param.Name}, {param.IntDefs[0]});");
                 }
             }
 
@@ -577,7 +598,7 @@ public sealed class ShaderExtract
                     Console.WriteLine($"{param.Name} = {param.Id},");
                 }
 
-                sb.AppendLine($"\t{param.Name}({param.IntDefs[0]}); // Sampler");
+                writer.WriteLine($"{param.Name}({param.IntDefs[0]}); // Sampler");
             }
 
             // User input
@@ -606,7 +627,7 @@ public sealed class ShaderExtract
                         ? "_" + param.Suffix
                         : string.Empty;
 
-                    sb.AppendLine($"\tCreateInputTexture2D({param.Name}, {mode}, {param.IntArgs1[3]}, \"{param.Command1}\", \"{textureSuffix}\", \"{param.UiGroup}\", {default4});");
+                    writer.WriteLine($"CreateInputTexture2D({param.Name}, {mode}, {param.IntArgs1[3]}, \"{param.Command1}\", \"{textureSuffix}\", \"{param.UiGroup}\", {default4});");
                     // param.FileRef materials/default/default_cube.png
                     continue;
                 }
@@ -688,7 +709,8 @@ public sealed class ShaderExtract
                 if (param.DynExp.Length > 0)
                 {
                     var globals = paramBlocks.Select(p => p.Name).ToArray();
-                    var dynEx = new VfxEval(param.DynExp, globals, omitReturnStatement: true, FeatureNames).DynamicExpressionResult.Replace($"EVAL[{param.Name}]", "this");
+                    var dynEx = new VfxEval(param.DynExp, globals, omitReturnStatement: true, FeatureNames).DynamicExpressionResult;
+                    dynEx = dynEx.Replace(param.Name, "this");
                     attributes.Add($"Expression({dynEx});");
                 }
 
@@ -696,7 +718,7 @@ public sealed class ShaderExtract
                     ? " < " + string.Join(" ", attributes) + " > "
                     : string.Empty;
 
-                sb.AppendLine($"\t{Vfx.Types.GetValueOrDefault(param.VfxType, $"unkntype{param.VfxType}")} {param.Name}{attributesVfx};");
+                writer.WriteLine($"{Vfx.Types.GetValueOrDefault(param.VfxType, $"unkntype{param.VfxType}")} {param.Name}{attributesVfx};");
             }
             else
             {
