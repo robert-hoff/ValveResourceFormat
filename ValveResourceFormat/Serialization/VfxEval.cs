@@ -366,8 +366,14 @@ namespace ValveResourceFormat.Serialization.VfxEval
             {
                 var intval = dataReader.ReadUInt32();
                 // if this reference exists in the vars-reference, then show it
-                var murmurString = ExternalVarsReference.GetValueOrDefault(intval, $"{intval:x08}");
-                Expressions.Push($"EVAL[{murmurString}]");
+                if (ExternalVarsReference.TryGetValue(intval, out var externalVar))
+                {
+                    Expressions.Push(externalVar);
+                }
+                else
+                {
+                    Expressions.Push($"EVAL[{intval:x08}]");
+                }
                 return;
             }
 
