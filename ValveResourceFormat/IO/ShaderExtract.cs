@@ -42,6 +42,16 @@ public sealed class ShaderExtract
 
     public ShaderCollection Shaders { get; init; }
 
+    public ShaderFile Features => Shaders.Features;
+    public ShaderFile Vertex => Shaders.Vertex;
+    public ShaderFile Geometry => Shaders.Geometry;
+    public ShaderFile Domain => Shaders.Domain;
+    public ShaderFile Hull => Shaders.Hull;
+    public ShaderFile Pixel => Shaders.Pixel;
+    public ShaderFile Compute => Shaders.Compute;
+    public ShaderFile PixelShaderRenderState => Shaders.PixelShaderRenderState;
+    public ShaderFile Raytracing => Shaders.Raytracing;
+
     private ShaderExtractParams Options { get; set; }
     private List<string> FeatureNames { get; set; }
     private string[] Globals { get; set; }
@@ -62,7 +72,7 @@ public sealed class ShaderExtract
 
     private void ThrowIfNoFeatures()
     {
-        if (Shaders.Features == null)
+        if (Features == null)
         {
             throw new InvalidOperationException("Shader extract cannot continue without at least a features file.");
         }
@@ -88,8 +98,8 @@ public sealed class ShaderExtract
     public string ToVFX(ShaderExtractParams options)
     {
         // TODO: IndentedTextWriter
-        FeatureNames = Shaders.Features.SfBlocks.Select(f => f.Name).ToList();
-        Globals = Shaders.Features.ParamBlocks.Select(p => p.Name).ToArray();
+        FeatureNames = Features.SfBlocks.Select(f => f.Name).ToList();
+        Globals = Features.ParamBlocks.Select(p => p.Name).ToArray();
         Options = options;
 
         return "//=================================================================================================\n"
@@ -116,9 +126,9 @@ public sealed class ShaderExtract
         writer.WriteLine("{");
         writer.Indent++;
 
-        writer.WriteLine($"Description = \"{Shaders.Features.FeaturesHeader.FileDescription}\";");
-        writer.WriteLine($"DevShader = {(Shaders.Features.FeaturesHeader.DevShader == 0 ? "false" : "true")};");
-        writer.WriteLine($"Version = {Shaders.Features.FeaturesHeader.Version};");
+        writer.WriteLine($"Description = \"{Features.FeaturesHeader.FileDescription}\";");
+        writer.WriteLine($"DevShader = {(Features.FeaturesHeader.DevShader == 0 ? "false" : "true")};");
+        writer.WriteLine($"Version = {Features.FeaturesHeader.Version};");
 
         writer.Indent--;
         writer.WriteLine("}");
@@ -133,7 +143,7 @@ public sealed class ShaderExtract
         writer.WriteLine("{");
         writer.Indent++;
 
-        foreach (var mode in Shaders.Features.FeaturesHeader.Modes)
+        foreach (var mode in Features.FeaturesHeader.Modes)
         {
             if (string.IsNullOrEmpty(mode.Shader))
             {
@@ -158,7 +168,7 @@ public sealed class ShaderExtract
         writer.WriteLine("{");
         writer.Indent++;
 
-        HandleFeatures(Shaders.Features.SfBlocks, Shaders.Features.SfConstraintsBlocks, writer);
+        HandleFeatures(Features.SfBlocks, Features.SfConstraintsBlocks, writer);
 
         writer.Indent--;
         writer.WriteLine("}");
@@ -176,9 +186,9 @@ public sealed class ShaderExtract
 
         writer.WriteLine("#include \"system.fxc\"");
 
-        if (Shaders.Vertex is not null)
+        if (Vertex is not null)
         {
-            HandleCBuffers(Shaders.Vertex.BufferBlocks, writer);
+            HandleCBuffers(Vertex.BufferBlocks, writer);
         }
 
         HandleVsInput(writer);
@@ -191,23 +201,23 @@ public sealed class ShaderExtract
 
     private void HandleVsInput(IndentedTextWriter writer)
     {
-        if (Shaders.Vertex is null)
+        if (Vertex is null)
         {
             return;
         }
 
-        foreach (var i in Enumerable.Range(0, Shaders.Vertex.SymbolBlocks.Count))
+        foreach (var i in Enumerable.Range(0, Vertex.SymbolBlocks.Count))
         {
             writer.WriteLine();
 
-            var index = Shaders.Vertex.SymbolBlocks.Count > 1 && !Options.FirstVsInput_Only
+            var index = Vertex.SymbolBlocks.Count > 1 && !Options.FirstVsInput_Only
                 ? $" ({i})"
                 : string.Empty;
             writer.WriteLine($"struct VS_INPUT{index}");
             writer.WriteLine("{");
             writer.Indent++;
 
-            foreach (var symbol in Shaders.Vertex.SymbolBlocks[i].SymbolsDefinition)
+            foreach (var symbol in Vertex.SymbolBlocks[i].SymbolsDefinition)
             {
                 var attributeVfx = symbol.Option.Length > 0 ? $" < Semantic({symbol.Option}); >" : string.Empty;
                 // TODO: type
@@ -280,25 +290,25 @@ public sealed class ShaderExtract
     }
 
     private string VS()
-        => HandleStageCommons(Shaders.Vertex, nameof(VS));
+        => HandleStageCommons(Vertex, nameof(VS));
 
     private string GS()
-        => HandleStageCommons(Shaders.Geometry, nameof(GS));
+        => HandleStageCommons(Geometry, nameof(GS));
 
     private string HS()
-        => HandleStageCommons(Shaders.Hull, nameof(HS));
+        => HandleStageCommons(Hull, nameof(HS));
 
     private string DS()
-        => HandleStageCommons(Shaders.Domain, nameof(DS));
+        => HandleStageCommons(Domain, nameof(DS));
 
     private string PS()
-        => HandleStageCommons(Shaders.Pixel, nameof(PS));
+        => HandleStageCommons(Pixel, nameof(PS));
 
     private string CS()
-        => HandleStageCommons(Shaders.Compute, nameof(CS));
+        => HandleStageCommons(Compute, nameof(CS));
 
     private string RTX()
-        => HandleStageCommons(Shaders.Raytracing, nameof(RTX));
+        => HandleStageCommons(Raytracing, nameof(RTX));
 
     private string HandleStageCommons(ShaderFile shader, string stageName)
     {
@@ -614,7 +624,7 @@ public sealed class ShaderExtract
             : "Srgb";
 
         var cutoff = Array.IndexOf(mipmapBlock.InputTextureIndices, -1);
-        var inputs = string.Join(", ", mipmapBlock.InputTextureIndices[..cutoff].Select(idx => Shaders.Features.ParamBlocks[idx].Name));
+        var inputs = string.Join(", ", mipmapBlock.InputTextureIndices[..cutoff].Select(idx => Features.ParamBlocks[idx].Name));
 
         return $"Channel( {mipmapBlock.Channel}, {mipmapBlock.Name}( {inputs} ) );";
     }
