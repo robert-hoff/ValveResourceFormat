@@ -7,6 +7,7 @@ using ValveResourceFormat.CompiledShader;
 using ValveResourceFormat.Serialization.VfxEval;
 using ValveResourceFormat.Utils;
 using System.Runtime.CompilerServices;
+using System.Globalization;
 
 namespace ValveResourceFormat.IO;
 
@@ -305,15 +306,15 @@ public sealed class ShaderExtract
             foreach (var member in buffer.BufferParams)
             {
                 var dim1 = member.VectorSize > 1
-                    ? member.VectorSize.ToString()
+                    ? member.VectorSize.ToString(CultureInfo.InvariantCulture)
                     : string.Empty;
 
                 var dim2 = member.Depth > 1
-                    ? "x" + member.Depth.ToString()
+                    ? "x" + member.Depth.ToString(CultureInfo.InvariantCulture)
                     : string.Empty;
 
                 var array = member.Length > 1
-                    ? "[" + member.Length.ToString() + "]"
+                    ? "[" + member.Length.ToString(CultureInfo.InvariantCulture) + "]"
                     : string.Empty;
 
                 writer.WriteLine($"float{dim1}{dim2} {member.Name}{array};");
@@ -677,7 +678,7 @@ public sealed class ShaderExtract
                 {
                     var globals = paramBlocks.Select(p => p.Name).ToArray();
                     var dynEx = new VfxEval(param.DynExp, globals, omitReturnStatement: true, FeatureNames).DynamicExpressionResult;
-                    dynEx = dynEx.Replace(param.Name, "this");
+                    dynEx = dynEx.Replace(param.Name, "this", StringComparison.Ordinal);
                     attributes.Add($"Expression({dynEx});");
                 }
 
@@ -709,14 +710,17 @@ public sealed class ShaderExtract
             Console.WriteLine($"{param.Name} = {param.Id},");
         }
 
-        if (param.DynExp.Length > 0)
+        var stateValue = param.DynExp.Length > 0
+            ? new VfxEval(param.DynExp, Globals, omitReturnStatement: true, FeatureNames).DynamicExpressionResult
+            : param.IntDefs[0].ToString(CultureInfo.InvariantCulture);
+
+        if (param.ParamType == ParameterType.RenderState)
         {
-            var dynEx = new VfxEval(param.DynExp, Globals, omitReturnStatement: true, FeatureNames).DynamicExpressionResult;
-            writer.WriteLine($"{param.ParamType}({param.Name}, {dynEx});");
+            writer.WriteLine("{0}({1}, {2});", param.ParamType, param.Name, stateValue);
         }
         else
         {
-            writer.WriteLine($"{param.ParamType}({param.Name}, {param.IntDefs[0]});");
+            writer.WriteLine("{0}({1});", param.Name, stateValue);
         }
     }
 
