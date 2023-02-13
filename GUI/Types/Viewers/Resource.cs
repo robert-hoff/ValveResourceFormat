@@ -378,19 +378,8 @@ namespace GUI.Types.Viewers
                     }
                 }
 
-                static void VcsShaderResourceBridge(TabControl resTabs, SboxShader shaderFileContainer)
+                static void VcsShaderResourceBridge(TabControl resTabs, SboxShader sboxShader)
                 {
-                    var shaders = new List<ShaderFile>()
-                    {
-                        shaderFileContainer.Features,
-                        shaderFileContainer.Vertex,
-                        shaderFileContainer.Pixel,
-                        shaderFileContainer.Geometry,
-                        shaderFileContainer.Hull,
-                        shaderFileContainer.Domain,
-                        shaderFileContainer.Compute,
-                    };
-
                     var shaderTab = new TabPage("Embedded Shader");
                     var shaderTabControl = new TabControl
                     {
@@ -410,7 +399,7 @@ namespace GUI.Types.Viewers
                     //
                     ////shaderRichTextBox.MouseEnter += new EventHandler(MouseEnterHandler);
 
-                    foreach (var shader in shaders)
+                    foreach (var shader in sboxShader.Shaders)
                     {
                         if (shader is null)
                         {
