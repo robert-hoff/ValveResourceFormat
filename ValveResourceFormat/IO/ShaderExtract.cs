@@ -41,8 +41,10 @@ public sealed class ShaderExtract
     }
 
     public ShaderFile Features { get; init; }
-    public ShaderFile GeometryShader { get; init; }
     public ShaderFile VertexShader { get; init; }
+    public ShaderFile GeometryShader { get; init; }
+    public ShaderFile HullShader { get; init; }
+    public ShaderFile DomainShader { get; init; }
     public ShaderFile PixelShader { get; init; }
     public ShaderFile ComputeShader { get; init; }
     public ShaderFile RaytracingShader { get; init; }
@@ -56,14 +58,8 @@ public sealed class ShaderExtract
     { }
 
     public ShaderExtract(SboxShader sboxShaderCollection)
+        : this(sboxShaderCollection.Shaders)
     {
-        Features = sboxShaderCollection.Features;
-        GeometryShader = sboxShaderCollection.Geometry;
-        VertexShader = sboxShaderCollection.Vertex;
-        PixelShader = sboxShaderCollection.Pixel;
-        ComputeShader = sboxShaderCollection.Compute;
-
-        ThrowIfNoFeatures();
     }
 
     public ShaderExtract(SortedDictionary<(VcsProgramType, string), ShaderFile> shaderCollection)
@@ -79,14 +75,24 @@ public sealed class ShaderExtract
                 Features = shader;
             }
 
+            if (shader.VcsProgramType == VcsProgramType.VertexShader)
+            {
+                VertexShader = shader;
+            }
+
             if (shader.VcsProgramType == VcsProgramType.GeometryShader)
             {
                 GeometryShader = shader;
             }
 
-            if (shader.VcsProgramType == VcsProgramType.VertexShader)
+            if (shader.VcsProgramType == VcsProgramType.HullShader)
             {
-                VertexShader = shader;
+                HullShader = shader;
+            }
+
+            if (shader.VcsProgramType == VcsProgramType.DomainShader)
+            {
+                DomainShader = shader;
             }
 
             if (shader.VcsProgramType == VcsProgramType.PixelShader)
@@ -147,8 +153,10 @@ public sealed class ShaderExtract
             + MODES()
             + FEATURES()
             + COMMON()
-            + GS()
             + VS()
+            + GS()
+            + HS()
+            + DS()
             + PS()
             + CS()
             + RTX()
@@ -325,6 +333,27 @@ public sealed class ShaderExtract
         }
     }
 
+    private string VS()
+    {
+        if (VertexShader is null)
+        {
+            return string.Empty;
+        }
+
+        using var writer = new IndentedTextWriter();
+        writer.WriteLine();
+        writer.WriteLine(nameof(VS));
+        writer.WriteLine("{");
+        writer.Indent++;
+
+        HandleCommons(VertexShader, writer);
+
+        writer.Indent--;
+        writer.WriteLine("}");
+
+        return writer.ToString();
+    }
+
     private string GS()
     {
         if (GeometryShader is null)
@@ -346,20 +375,41 @@ public sealed class ShaderExtract
         return writer.ToString();
     }
 
-    private string VS()
+    private string HS()
     {
-        if (VertexShader is null)
+        if (HullShader is null)
         {
             return string.Empty;
         }
 
         using var writer = new IndentedTextWriter();
         writer.WriteLine();
-        writer.WriteLine(nameof(VS));
+        writer.WriteLine(nameof(HS));
         writer.WriteLine("{");
         writer.Indent++;
 
-        HandleCommons(VertexShader, writer);
+        HandleCommons(HullShader, writer);
+
+        writer.Indent--;
+        writer.WriteLine("}");
+
+        return writer.ToString();
+    }
+
+    private string DS()
+    {
+        if (DomainShader is null)
+        {
+            return string.Empty;
+        }
+
+        using var writer = new IndentedTextWriter();
+        writer.WriteLine();
+        writer.WriteLine(nameof(DS));
+        writer.WriteLine("{");
+        writer.Indent++;
+
+        HandleCommons(DomainShader, writer);
 
         writer.Indent--;
         writer.WriteLine("}");

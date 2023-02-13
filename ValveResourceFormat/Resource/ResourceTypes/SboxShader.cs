@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using ValveResourceFormat.Blocks;
 using ValveResourceFormat.CompiledShader;
 
@@ -14,6 +16,17 @@ namespace ValveResourceFormat.ResourceTypes
         public ShaderFile Hull { get; private set; }
         public ShaderFile Domain { get; private set; }
         public ShaderFile Compute { get; private set; }
+
+        public IEnumerable<ShaderFile> Shaders => new[]
+        {
+            Features,
+            Vertex,
+            Pixel,
+            Geometry,
+            Hull,
+            Domain,
+            Compute,
+        }.Where(x => x != null);
 
         public override void Read(BinaryReader reader, Resource resource)
         {
