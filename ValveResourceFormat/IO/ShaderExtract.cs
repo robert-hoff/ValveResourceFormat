@@ -59,8 +59,7 @@ public sealed class ShaderExtract
 
     public ShaderExtract(SboxShader sboxShaderCollection)
         : this(sboxShaderCollection.Shaders)
-    {
-    }
+    { }
 
     public ShaderExtract(SortedDictionary<(VcsProgramType, string), ShaderFile> shaderCollection)
         : this(shaderCollection.Values)
@@ -301,7 +300,7 @@ public sealed class ShaderExtract
 
                 if (Options.CollapseCommonBuffers_InPlace)
                 {
-                    writer.Write("cbuffer " + buffer.Name + ";");
+                    writer.WriteLine("cbuffer " + buffer.Name + ";");
                     continue;
                 }
             }
@@ -334,159 +333,46 @@ public sealed class ShaderExtract
     }
 
     private string VS()
-    {
-        if (VertexShader is null)
-        {
-            return string.Empty;
-        }
-
-        using var writer = new IndentedTextWriter();
-        writer.WriteLine();
-        writer.WriteLine(nameof(VS));
-        writer.WriteLine("{");
-        writer.Indent++;
-
-        HandleCommons(VertexShader, writer);
-
-        writer.Indent--;
-        writer.WriteLine("}");
-
-        return writer.ToString();
-    }
+        => HandleStageCommons(VertexShader, nameof(VS));
 
     private string GS()
-    {
-        if (GeometryShader is null)
-        {
-            return string.Empty;
-        }
-
-        using var writer = new IndentedTextWriter();
-        writer.WriteLine();
-        writer.WriteLine(nameof(GS));
-        writer.WriteLine("{");
-        writer.Indent++;
-
-        HandleCommons(GeometryShader, writer);
-
-        writer.Indent--;
-        writer.WriteLine("}");
-
-        return writer.ToString();
-    }
+        => HandleStageCommons(GeometryShader, nameof(GS));
 
     private string HS()
-    {
-        if (HullShader is null)
-        {
-            return string.Empty;
-        }
-
-        using var writer = new IndentedTextWriter();
-        writer.WriteLine();
-        writer.WriteLine(nameof(HS));
-        writer.WriteLine("{");
-        writer.Indent++;
-
-        HandleCommons(HullShader, writer);
-
-        writer.Indent--;
-        writer.WriteLine("}");
-
-        return writer.ToString();
-    }
+        => HandleStageCommons(HullShader, nameof(HS));
 
     private string DS()
-    {
-        if (DomainShader is null)
-        {
-            return string.Empty;
-        }
-
-        using var writer = new IndentedTextWriter();
-        writer.WriteLine();
-        writer.WriteLine(nameof(DS));
-        writer.WriteLine("{");
-        writer.Indent++;
-
-        HandleCommons(DomainShader, writer);
-
-        writer.Indent--;
-        writer.WriteLine("}");
-
-        return writer.ToString();
-    }
+        => HandleStageCommons(DomainShader, nameof(DS));
 
     private string PS()
-    {
-        if (PixelShader is null)
-        {
-            return string.Empty;
-        }
-
-        using var writer = new IndentedTextWriter();
-        writer.WriteLine();
-        writer.WriteLine(nameof(PS));
-        writer.WriteLine("{");
-        writer.Indent++;
-
-        HandleCommons(PixelShader, writer);
-
-        foreach (var mipmap in Features.MipmapBlocks)
-        {
-            writer.WriteLine($"{GetChannelFromMipmap(mipmap)}");
-        }
-
-        writer.Indent--;
-        writer.WriteLine("}");
-        return writer.ToString();
-    }
+        => HandleStageCommons(PixelShader, nameof(PS));
 
     private string CS()
-    {
-        if (ComputeShader is null)
-        {
-            return string.Empty;
-        }
-
-        using var writer = new IndentedTextWriter();
-        writer.WriteLine();
-        writer.WriteLine(nameof(CS));
-        writer.WriteLine("{");
-        writer.Indent++;
-
-        HandleCommons(ComputeShader, writer);
-
-        writer.Indent--;
-        writer.WriteLine("}");
-        return writer.ToString();
-    }
+        => HandleStageCommons(ComputeShader, nameof(CS));
 
     private string RTX()
+        => HandleStageCommons(RaytracingShader, nameof(RTX));
+
+    private string HandleStageCommons(ShaderFile shader, string stageName)
     {
-        if (RaytracingShader is null)
+        if (shader is null)
         {
             return string.Empty;
         }
 
         using var writer = new IndentedTextWriter();
         writer.WriteLine();
-        writer.WriteLine(nameof(RTX));
+        writer.WriteLine(stageName);
         writer.WriteLine("{");
         writer.Indent++;
 
-        HandleCommons(RaytracingShader, writer);
-
-        writer.Indent--;
-        writer.WriteLine("}");
-        return writer.ToString();
-    }
-
-    private void HandleCommons(ShaderFile shader, IndentedTextWriter writer)
-    {
         HandleStaticCombos(shader.SfBlocks, shader.SfConstraintsBlocks, writer);
         HandleDynamicCombos(shader.SfBlocks, shader.DBlocks, shader.DConstraintsBlocks, writer);
         HandleParameters(shader.ParamBlocks, writer);
+
+        writer.Indent--;
+        writer.WriteLine("}");
+        return writer.ToString();
     }
 
     private void HandleFeatures(List<SfBlock> features, List<SfConstraintsBlock> constraints, IndentedTextWriter writer)
