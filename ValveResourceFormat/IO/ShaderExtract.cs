@@ -6,6 +6,7 @@ using ValveResourceFormat.ResourceTypes;
 using ValveResourceFormat.CompiledShader;
 using ValveResourceFormat.Serialization.VfxEval;
 using ValveResourceFormat.Utils;
+using System.Runtime.CompilerServices;
 
 namespace ValveResourceFormat.IO;
 
@@ -15,6 +16,14 @@ public sealed class ShaderExtract
     {
         public bool CollapseCommonBuffers_InInclude { get; init; }
         public bool CollapseCommonBuffers_InPlace { get; init; }
+        public static HashSet<string> CommonBuffers => new()
+        {
+            "PerViewConstantBuffer_t",
+            "PerViewConstantBufferVR_t",
+            "PerViewLightingConstantBufferVr_t",
+            "DotaGlobalParams_t",
+        };
+
         public bool FirstVsInput_Only { get; init; }
 
         public static readonly ShaderExtractParams Inspect = new()
@@ -27,14 +36,6 @@ public sealed class ShaderExtract
         {
             CollapseCommonBuffers_InInclude = true,
             FirstVsInput_Only = true,
-        };
-
-        public static HashSet<string> CommonBuffers => new()
-        {
-            "PerViewConstantBuffer_t",
-            "PerViewConstantBufferVR_t",
-            "PerViewLightingConstantBufferVr_t",
-            "DotaGlobalParams_t",
         };
     }
 
@@ -556,49 +557,15 @@ public sealed class ShaderExtract
             // FloatAttribute
             var attributes = new List<string>();
 
-            // Todo merge these two's logic.
             // Render State
             if (param.ParamType is ParameterType.RenderState)
             {
-                if (Enum.TryParse<RenderState>(param.Name, false, out var result))
-                {
-                    if ((byte)result != param.Id)
-                    {
-                        Console.WriteLine($"{param.Name} = {param.Id},");
-                    }
-                }
-                else
-                {
-                    Console.WriteLine($"{param.Name} = {param.Id},");
-                }
-
-                if (param.DynExp.Length > 0)
-                {
-                    var dynEx = new VfxEval(param.DynExp, Globals, omitReturnStatement: true, FeatureNames).DynamicExpressionResult;
-                    writer.WriteLine($"RenderState({param.Name}, {dynEx});");
-                }
-                else
-                {
-                    writer.WriteLine($"RenderState({param.Name}, {param.IntDefs[0]});");
-                }
+                HandleState(writer, param);
             }
-
             // Sampler State
             else if (param.ParamType is ParameterType.SamplerState)
             {
-                if (Enum.TryParse<SamplerState>(param.Name, false, out var result))
-                {
-                    if ((byte)result != param.Id)
-                    {
-                        Console.WriteLine($"{param.Name} = {param.Id},");
-                    }
-                }
-                else
-                {
-                    Console.WriteLine($"{param.Name} = {param.Id},");
-                }
-
-                writer.WriteLine($"{param.Name}({param.IntDefs[0]}); // Sampler");
+                HandleState(writer, param);
             }
 
             // User input
@@ -724,6 +691,32 @@ public sealed class ShaderExtract
             {
 
             }
+        }
+    }
+
+    private void HandleState(IndentedTextWriter writer, ParamBlock param)
+    {
+        byte result = 255;
+        var exists = param.ParamType switch
+        {
+            ParameterType.RenderState => Enum.TryParse(param.Name, false, out Unsafe.As<byte, RenderState>(ref result)),
+            ParameterType.SamplerState => Enum.TryParse(param.Name, false, out Unsafe.As<byte, SamplerState>(ref result)),
+            _ => throw new InvalidOperationException($"Expected {ParameterType.RenderState} or {ParameterType.SamplerState}, got {nameof(ParameterType)}={param.ParamType}"),
+        };
+
+        if (!exists || (exists && result != param.Id))
+        {
+            Console.WriteLine($"{param.Name} = {param.Id},");
+        }
+
+        if (param.DynExp.Length > 0)
+        {
+            var dynEx = new VfxEval(param.DynExp, Globals, omitReturnStatement: true, FeatureNames).DynamicExpressionResult;
+            writer.WriteLine($"{param.ParamType}({param.Name}, {dynEx});");
+        }
+        else
+        {
+            writer.WriteLine($"{param.ParamType}({param.Name}, {param.IntDefs[0]});");
         }
     }
 
