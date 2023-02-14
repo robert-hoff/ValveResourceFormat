@@ -50,4 +50,16 @@ public class ShaderCollection : IEnumerable<ShaderFile>
     {
         return ((IEnumerable)shaders.Values).GetEnumerator();
     }
+
+    public static ShaderCollection FromEnumerable(IEnumerable<ShaderFile> shaders)
+    {
+        var collection = new ShaderCollection();
+
+        foreach (var shader in shaders)
+        {
+            collection.Add(shader);
+        }
+
+        return collection;
+    }
 }
