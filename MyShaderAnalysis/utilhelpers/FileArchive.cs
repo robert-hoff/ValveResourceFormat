@@ -35,9 +35,11 @@ namespace MyShaderAnalysis.utilhelpers
         public FileArchive(ARCHIVE archive,
             VcsProgramType programType1,
             VcsProgramType programType2,
-            VcsShaderModelType shaderModelType,
+            VcsProgramType programType3,
+            VcsShaderModelType shaderModelType = VcsShaderModelType.Undetermined,
             bool useModularLookup = false,
-            int maxFiles = 10000)
+            int maxFiles = 10000
+            )
         {
             this.archive = archive;
             this.useModularLookup = useModularLookup;
@@ -55,7 +57,7 @@ namespace MyShaderAnalysis.utilhelpers
             }
 
             // filter the list based on passed criteria
-            Select(programType1, programType2);
+            Select(programType1, programType2, programType3);
             Select(shaderModelType);
         }
 
@@ -63,7 +65,8 @@ namespace MyShaderAnalysis.utilhelpers
         public FileArchive(ARCHIVE archive,
             bool useModularLookup = false,
             int maxFiles = 10000) : this(archive,
-                VcsProgramType.Undetermined, VcsProgramType.Undetermined, VcsShaderModelType.Undetermined, useModularLookup, maxFiles)
+                VcsProgramType.Undetermined, VcsProgramType.Undetermined, VcsProgramType.Undetermined,
+                VcsShaderModelType.Undetermined, useModularLookup, maxFiles)
         { }
 
         // signature (1,0,0)
@@ -71,7 +74,8 @@ namespace MyShaderAnalysis.utilhelpers
             VcsProgramType programType1,
             bool useModularLookup = false,
             int maxFiles = 10000) : this(archive,
-                programType1, VcsProgramType.Undetermined, VcsShaderModelType.Undetermined, useModularLookup, maxFiles)
+                programType1, VcsProgramType.Undetermined, VcsProgramType.Undetermined,
+                VcsShaderModelType.Undetermined, useModularLookup, maxFiles)
         { }
 
         // signature (0,0,1)
@@ -79,7 +83,8 @@ namespace MyShaderAnalysis.utilhelpers
             VcsShaderModelType shaderModelType,
             bool useModularLookup = false,
             int maxFiles = 10000) : this(archive,
-                VcsProgramType.Undetermined, VcsProgramType.Undetermined, shaderModelType, useModularLookup, maxFiles)
+                VcsProgramType.Undetermined, VcsProgramType.Undetermined, VcsProgramType.Undetermined,
+                shaderModelType, useModularLookup, maxFiles)
         { }
 
         // signature (1,0,1)
@@ -87,7 +92,8 @@ namespace MyShaderAnalysis.utilhelpers
             VcsProgramType programType1,
             VcsShaderModelType shaderModelType,
             bool useModularLookup = false,
-            int maxFiles = 10000) : this(archive, programType1, VcsProgramType.Undetermined, shaderModelType, useModularLookup, maxFiles)
+            int maxFiles = 10000) : this(archive, programType1, VcsProgramType.Undetermined, VcsProgramType.Undetermined,
+                shaderModelType, useModularLookup, maxFiles)
         { }
 
         // signature (1,1,0)
@@ -96,12 +102,14 @@ namespace MyShaderAnalysis.utilhelpers
             VcsProgramType programType2,
             bool useModularLookup = false,
             int maxFiles = 10000) : this(archive,
-                programType1, programType2, VcsShaderModelType.Undetermined, useModularLookup, maxFiles)
+                programType1, programType2, VcsProgramType.Undetermined,
+                VcsShaderModelType.Undetermined, useModularLookup, maxFiles)
         { }
 
-
         public FileArchive Select(
-        VcsProgramType programType1, VcsProgramType programType2 = VcsProgramType.Undetermined)
+        VcsProgramType programType1,
+        VcsProgramType programType2 = VcsProgramType.Undetermined,
+        VcsProgramType programType3 = VcsProgramType.Undetermined)
         {
             cachedShaderFileDetail = null;
             if (programType1 == VcsProgramType.Undetermined)
@@ -112,10 +120,14 @@ namespace MyShaderAnalysis.utilhelpers
             {
                 programType2 = programType1;
             }
+            if (programType3 == VcsProgramType.Undetermined)
+            {
+                programType3 = programType2;
+            }
             List<FileVcsTokens> reducedFiles = new();
             foreach (FileVcsTokens vcsFile in vcsFiles)
             {
-                if (vcsFile.programType == programType1 || vcsFile.programType == programType2)
+                if (vcsFile.programType == programType1 || vcsFile.programType == programType2 || vcsFile.programType == programType3)
                 {
                     reducedFiles.Add(vcsFile);
                 }

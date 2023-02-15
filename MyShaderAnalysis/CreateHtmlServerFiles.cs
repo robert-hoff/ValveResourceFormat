@@ -139,7 +139,8 @@ namespace MyShaderAnalysis
             // SaveAllServerFiles(ARCHIVE.dota_game_pc_v65, "multiblend_pc_40_vs.vcs", zframesToPrint: 10, gpuSourcesToPrint: 10, saveGpuByteDetail: false);
 
 
-            SaveAllServerFiles(ARCHIVE.dota_game_pcgl_v64, "crystal_pcgl_40_vs.vcs", zframesToPrint: 10000, gpuSourcesToPrint: 10000);
+            // SaveAllServerFiles(ARCHIVE.dota_game_pcgl_v64, "crystal_pcgl_40_vs.vcs", zframesToPrint: 10000, gpuSourcesToPrint: 10000);
+            SaveAllServerFiles(ARCHIVE.dota_game_pcgl_v64, "crystal_pcgl_40_ps.vcs", zframesToPrint: 10000, gpuSourcesToPrint: 10000);
 
 
             // SaveAllServerFiles(ARCHIVE.dota_game_pc_v64, "multiblend_pc_30_ps.vcs", zframesToPrint: 30, gpuSourcesToPrint: 30);

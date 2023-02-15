@@ -36,13 +36,13 @@ namespace MyShaderAnalysis
             Console.SetOut(new ToDebugWriter());
 
             // Jan 2023
-            // RunStaticAnalysis();
+            RunStaticAnalysis();
             // BatchProcessFiles();
             // OldStaticAnalysisSummaries();
 
             // Earlier
             // BatchTesting1()
-            BatchProcessHtmlServerFiles(); // <-- create server files
+            // BatchProcessHtmlServerFiles(); // <-- create server files
             // ParserSnippets();
             // BasicFunctionalitySnippets();
         }
@@ -51,6 +51,8 @@ namespace MyShaderAnalysis
         public static void RunStaticAnalysis()
         {
             StaticAnalysis3.Run();
+            // StaticAnalysis2.RunTrials();
+            // StaticAnalysis.RunTrials();
         }
 
 
