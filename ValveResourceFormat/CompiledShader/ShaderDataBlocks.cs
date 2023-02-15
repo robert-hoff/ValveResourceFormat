@@ -630,7 +630,7 @@ namespace ValveResourceFormat.CompiledShader
         public int[] IntArgs0 { get; } = new int[4];
         public int[] IntArgs1 { get; } = new int[4];
         public string Suffix { get; }
-        public string Command1 { get; }
+        public string Processor { get; }
         public byte[] V65Data { get; } = Array.Empty<byte>();
         public ParamBlock(ShaderDataReader datareader, int blockIndex, int vcsVersion) : base(datareader)
         {
@@ -715,7 +715,7 @@ namespace ValveResourceFormat.CompiledShader
             }
             Suffix = datareader.ReadNullTermStringAtPosition();
             datareader.BaseStream.Position += 32;
-            Command1 = datareader.ReadNullTermStringAtPosition();
+            Processor = datareader.ReadNullTermStringAtPosition();
             datareader.BaseStream.Position += 32;
 
             if (vcsVersion >= 65)

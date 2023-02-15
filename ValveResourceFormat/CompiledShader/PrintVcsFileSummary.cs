@@ -325,7 +325,7 @@ namespace ValveResourceFormat.CompiledShader
                     dynExpCount++;
                 }
                 var c0 = param.Suffix;
-                var c1 = param.Command1;
+                var c1 = param.Processor;
                 if (c1.Length > 0)
                 {
                     c0 += $" | {c1}";

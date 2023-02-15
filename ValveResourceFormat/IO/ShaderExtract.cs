@@ -290,27 +290,27 @@ public sealed class ShaderExtract
     }
 
     private string VS()
-        => HandleStageCommons(Vertex, nameof(VS));
+        => HandleStageShared(Vertex, nameof(VS));
 
     private string GS()
-        => HandleStageCommons(Geometry, nameof(GS));
+        => HandleStageShared(Geometry, nameof(GS));
 
     private string HS()
-        => HandleStageCommons(Hull, nameof(HS));
+        => HandleStageShared(Hull, nameof(HS));
 
     private string DS()
-        => HandleStageCommons(Domain, nameof(DS));
+        => HandleStageShared(Domain, nameof(DS));
 
     private string PS()
-        => HandleStageCommons(Pixel, nameof(PS));
+        => HandleStageShared(Pixel, nameof(PS));
 
     private string CS()
-        => HandleStageCommons(Compute, nameof(CS));
+        => HandleStageShared(Compute, nameof(CS));
 
     private string RTX()
-        => HandleStageCommons(Raytracing, nameof(RTX));
+        => HandleStageShared(Raytracing, nameof(RTX));
 
-    private string HandleStageCommons(ShaderFile shader, string stageName)
+    private string HandleStageShared(ShaderFile shader, string stageName)
     {
         if (shader is null)
         {
@@ -488,7 +488,7 @@ public sealed class ShaderExtract
                         ? "_" + param.Suffix
                         : string.Empty;
 
-                    writer.WriteLine($"CreateInputTexture2D({param.Name}, {mode}, {param.IntArgs1[3]}, \"{param.Command1}\", \"{textureSuffix}\", \"{param.UiGroup}\", {default4});");
+                    writer.WriteLine($"CreateInputTexture2D({param.Name}, {mode}, {param.IntArgs1[3]}, \"{param.Processor}\", \"{textureSuffix}\", \"{param.UiGroup}\", {default4});");
                     // param.FileRef materials/default/default_cube.png
                     continue;
                 }
@@ -516,12 +516,14 @@ public sealed class ShaderExtract
                 {
                     if (floatDefsCutOff <= 3)
                     {
-                        attributes.Add($"{GetFuncName("Default", floatDefsCutOff)}({string.Join(", ", param.FloatDefs[..^floatDefsCutOff])});");
+                        var defaults = string.Join(", ", param.FloatDefs[..^floatDefsCutOff]);
+                        attributes.Add($"{GetFuncName("Default", floatDefsCutOff)}({defaults});");
                     }
                     else
                     {
                         var funcName = intDefsCutOff == 3 ? "Default" : "Default" + (4 - intDefsCutOff);
-                        attributes.Add($"{GetFuncName("Default", intDefsCutOff)}({string.Join(", ", param.IntDefs[..^intDefsCutOff])});");
+                        var defaults = string.Join(", ", param.IntDefs[..^intDefsCutOff]);
+                        attributes.Add($"{GetFuncName("Default", intDefsCutOff)}({defaults});");
                     }
                 }
 
@@ -544,11 +546,15 @@ public sealed class ShaderExtract
                 {
                     if (floatRangeCutOff <= 3 && param.FloatMins[0] != -ParamBlock.FloatInf)
                     {
-                        attributes.Add($"{GetFuncName("Range", floatRangeCutOff)}({string.Join(", ", param.FloatMins[..^floatRangeCutOff])}, {string.Join(", ", param.FloatMaxs[..^floatRangeCutOff])})");
+                        var mins = string.Join(", ", param.FloatMins[..^floatRangeCutOff]);
+                        var maxs = string.Join(", ", param.FloatMaxs[..^floatRangeCutOff]);
+                        attributes.Add($"{GetFuncName("Range", floatRangeCutOff)}({mins}, {maxs});");
                     }
                     else
                     {
-                        attributes.Add($"{GetFuncName("Range", intRangeCutOff)}({string.Join(", ", param.IntMins[..^intRangeCutOff])}, {string.Join(", ", param.IntMaxs[..^intRangeCutOff])});");
+                        var mins = string.Join(", ", param.IntMins[..^intRangeCutOff]);
+                        var maxs = string.Join(", ", param.IntMaxs[..^intRangeCutOff]);
+                        attributes.Add($"{GetFuncName("Range", intRangeCutOff)}({mins}, {maxs});");
                     }
                 }
 
