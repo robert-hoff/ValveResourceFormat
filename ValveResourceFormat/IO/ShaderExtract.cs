@@ -332,7 +332,7 @@ public sealed class ShaderExtract
         return writer.ToString();
     }
 
-    private void HandleFeatures(List<SfBlock> features, List<SfConstraintsBlock> constraints, IndentedTextWriter writer)
+    private void HandleFeatures(List<SfBlock> features, List<ConstraintsBlock> constraints, IndentedTextWriter writer)
     {
         foreach (var feature in features)
         {
@@ -347,27 +347,27 @@ public sealed class ShaderExtract
         HandleRules(ConditionalType.Feature,
                     Enumerable.Empty<ICombo>().ToList(),
                     Enumerable.Empty<ICombo>().ToList(),
-                    constraints.Cast<IComboConstraints>().ToList(),
+                    constraints,
                     writer);
     }
 
-    private void HandleStaticCombos(List<SfBlock> staticCombos, List<SfConstraintsBlock> constraints, IndentedTextWriter writer)
+    private void HandleStaticCombos(List<SfBlock> staticCombos, List<ConstraintsBlock> constraints, IndentedTextWriter writer)
     {
         HandleCombos(ConditionalType.Static, staticCombos.Cast<ICombo>().ToList(), writer);
         HandleRules(ConditionalType.Static,
                     staticCombos.Cast<ICombo>().ToList(),
                     Enumerable.Empty<ICombo>().ToList(),
-                    constraints.Cast<IComboConstraints>().ToList(),
+                    constraints,
                     writer);
     }
 
-    private void HandleDynamicCombos(List<SfBlock> staticCombos, List<DBlock> dynamicCombos, List<DConstraintsBlock> constraints, IndentedTextWriter writer)
+    private void HandleDynamicCombos(List<SfBlock> staticCombos, List<DBlock> dynamicCombos, List<ConstraintsBlock> constraints, IndentedTextWriter writer)
     {
         HandleCombos(ConditionalType.Dynamic, dynamicCombos.Cast<ICombo>().ToList(), writer);
         HandleRules(ConditionalType.Dynamic,
                     staticCombos.Cast<ICombo>().ToList(),
                     dynamicCombos.Cast<ICombo>().ToList(),
-                    constraints.Cast<IComboConstraints>().ToList(),
+                    constraints,
                     writer);
     }
 
@@ -391,7 +391,7 @@ public sealed class ShaderExtract
         }
     }
 
-    private void HandleRules(ConditionalType conditionalType, List<ICombo> staticCombos, List<ICombo> dynamicCombos, List<IComboConstraints> constraints, IndentedTextWriter writer)
+    private void HandleRules(ConditionalType conditionalType, List<ICombo> staticCombos, List<ICombo> dynamicCombos, List<ConstraintsBlock> constraints, IndentedTextWriter writer)
     {
         foreach (var rule in HandleConstraintsY(staticCombos, dynamicCombos, constraints))
         {
@@ -406,7 +406,7 @@ public sealed class ShaderExtract
         }
     }
 
-    private IEnumerable<(string Constraint, string Description)> HandleConstraintsY(List<ICombo> staticCombos, List<ICombo> dynamicCombos, List<IComboConstraints> constraints)
+    private IEnumerable<(string Constraint, string Description)> HandleConstraintsY(List<ICombo> staticCombos, List<ICombo> dynamicCombos, List<ConstraintsBlock> constraints)
     {
         foreach (var constraint in constraints)
         {
@@ -484,11 +484,11 @@ public sealed class ShaderExtract
                         ? "Linear"
                         : "Srgb";
 
-                    var textureSuffix = param.Suffix.Length > 0
-                        ? "_" + param.Suffix
+                    var imageSuffix = param.ImageSuffix.Length > 0
+                        ? "_" + param.ImageSuffix
                         : string.Empty;
 
-                    writer.WriteLine($"CreateInputTexture2D({param.Name}, {mode}, {param.IntArgs1[3]}, \"{param.Processor}\", \"{textureSuffix}\", \"{param.UiGroup}\", {default4});");
+                    writer.WriteLine($"CreateInputTexture2D({param.Name}, {mode}, {param.IntArgs1[3]}, \"{param.ImageProcessor}\", \"{imageSuffix}\", \"{param.UiGroup}\", {default4});");
                     // param.FileRef materials/default/default_cube.png
                     continue;
                 }
@@ -623,15 +623,15 @@ public sealed class ShaderExtract
         }
     }
 
-    private string GetChannelFromMipmap(MipmapBlock mipmapBlock)
+    private string GetChannelFromMipmap(ChannelBlock ChannelBlock)
     {
-        var mode = mipmapBlock.ColorMode == 0
+        var mode = ChannelBlock.ColorMode == 0
             ? "Linear"
             : "Srgb";
 
-        var cutoff = Array.IndexOf(mipmapBlock.InputTextureIndices, -1);
-        var inputs = string.Join(", ", mipmapBlock.InputTextureIndices[..cutoff].Select(idx => Features.ParamBlocks[idx].Name));
+        var cutoff = Array.IndexOf(ChannelBlock.InputTextureIndices, -1);
+        var inputs = string.Join(", ", ChannelBlock.InputTextureIndices[..cutoff].Select(idx => Features.ParamBlocks[idx].Name));
 
-        return $"Channel( {mipmapBlock.Channel}, {mipmapBlock.Name}( {inputs} ) );";
+        return $"Channel( {ChannelBlock.Channel}, {ChannelBlock.Name}( {inputs} ) );";
     }
 }
