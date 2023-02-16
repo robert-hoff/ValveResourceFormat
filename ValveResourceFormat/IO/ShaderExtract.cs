@@ -326,9 +326,57 @@ public sealed class ShaderExtract
         HandleDynamicCombos(shader.SfBlocks, shader.DBlocks, shader.DConstraintsBlocks, writer);
         HandleParameters(shader.ParamBlocks, shader.ChannelBlocks, writer);
 
+        // zframe0 stuff
+        HandleZFrame000(shader, writer);
+
         writer.Indent--;
         writer.WriteLine("}");
         return writer.ToString();
+    }
+
+    private static void HandleZFrame000(ShaderFile shader, IndentedTextWriter writer)
+    {
+        if (shader.GetZFrameCount() == 0)
+        {
+            return;
+        }
+
+        writer.WriteLine();
+
+        using var zframe000 = shader.GetZFrameFileByIndex(0);
+
+        foreach (var attribute in zframe000.ZframeParams)
+        {
+            var type = Vfx.GetTypeName(attribute.VfxType);
+            string value = null;
+
+            if (attribute.StaticValBool.HasValue)
+            {
+                value = attribute.StaticValBool.Value ? "true" : "false";
+            }
+            else if (attribute.StaticValInt.HasValue)
+            {
+                value = attribute.StaticValInt.Value.ToString(CultureInfo.InvariantCulture);
+            }
+            else if (attribute.StaticValFloat.HasValue)
+            {
+                value = attribute.StaticValFloat.Value.ToString(CultureInfo.InvariantCulture);
+            }
+            else if (attribute.LinkedParameterIndex != 255)
+            {
+                value = shader.ParamBlocks[attribute.LinkedParameterIndex].Name;
+            }
+            else if (attribute.DynExpEvaluated is not null)
+            {
+                value = attribute.DynExpEvaluated;
+            }
+            else
+            {
+                throw new InvalidOperationException("Whats the value of this attribute then?");
+            }
+
+            writer.WriteLine("Attribute({0}, {1}, {2});", type, attribute.Name0, value);
+        }
     }
 
     private void HandleFeatures(List<SfBlock> features, List<ConstraintsBlock> constraints, IndentedTextWriter writer)
@@ -458,7 +506,7 @@ public sealed class ShaderExtract
             // Sampler State
             else if (param.ParamType is ParameterType.SamplerState)
             {
-                HandleState(writer, param);
+                //HandleState(writer, param);
             }
 
             // User input
@@ -582,7 +630,7 @@ public sealed class ShaderExtract
                     attributes.Add($"Expression({dynEx});");
                 }
 
-                writer.WriteLine($"{Vfx.Types.GetValueOrDefault(param.VfxType, $"unkntype{param.VfxType}")} {param.Name}{GetVfxAttributes(attributes)};");
+                writer.WriteLine($"{Vfx.GetTypeName(param.VfxType)} {param.Name}{GetVfxAttributes(attributes)};");
             }
             else if (param.ParamType == ParameterType.Texture)
             {

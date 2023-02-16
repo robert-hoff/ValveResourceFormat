@@ -517,7 +517,7 @@ namespace ValveResourceFormat.CompiledShader
         public int Lead0 { get; }
         public byte[] DynExp { get; } = Array.Empty<byte>();
         public int Arg0 { get; }
-        public int VfxType { get; }
+        public Vfx.Type VfxType { get; }
         public ParameterType ParamType { get; }
         public byte Arg3 { get; }
         public byte Arg4 { get; }
@@ -575,7 +575,7 @@ namespace ValveResourceFormat.CompiledShader
                 Arg0 = datareader.ReadInt32();
             }
 
-            VfxType = datareader.ReadInt32();
+            VfxType = (Vfx.Type)datareader.ReadInt32();
             ParamType = (ParameterType)datareader.ReadInt32();
 
             Arg3 = datareader.ReadByte();
