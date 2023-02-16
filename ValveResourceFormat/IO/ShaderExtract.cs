@@ -586,7 +586,7 @@ public sealed class ShaderExtract
             }
             else if (param.ParamType == ParameterType.Texture)
             {
-                if (param.Arg86 > -1 && param.ChannelCount > 0)
+                if ((int)param.Format > -1 && param.ChannelCount > 0)
                 {
                     for (var i = 0; i < param.ChannelCount; i++)
                     {
@@ -599,7 +599,8 @@ public sealed class ShaderExtract
                         attributes.Add(GetChannelFromChannelBlock(channelBlocks[index], paramBlocks));
                     }
 
-                    attributes.Add(param.Arg86.ToString(CultureInfo.InvariantCulture));
+                    attributes.Add($"OutputFormat({param.Format});");
+                    attributes.Add($"SrgbRead({(param.Id == 0 ? "false" : "true")});");
 
                     writer.WriteLine($"CreateTexture2DWithoutSampler({param.Name}){GetVfxAttributes(attributes)};");
                 }
@@ -642,6 +643,6 @@ public sealed class ShaderExtract
         var cutoff = Array.IndexOf(channelBlock.InputTextureIndices, -1);
         var inputs = string.Join(", ", channelBlock.InputTextureIndices[..cutoff].Select(idx => paramBlocks[idx].Name));
 
-        return $"Channel({channelBlock.Channel}, {channelBlock.Name}({inputs}));";
+        return $"Channel({channelBlock.Channel}, {channelBlock.Name}({inputs}), {mode});";
     }
 }

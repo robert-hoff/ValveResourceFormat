@@ -537,7 +537,7 @@ namespace ValveResourceFormat.CompiledShader
         public float[] FloatDefs { get; } = new float[4];
         public float[] FloatMins { get; } = new float[4];
         public float[] FloatMaxs { get; } = new float[4];
-        public int Arg86 { get; }
+        public TextureFormat Format { get; }
         public int ChannelCount { get; }
         public int[] ChannelIndices { get; } = new int[4];
         public int ColorMode { get; }
@@ -619,7 +619,7 @@ namespace ValveResourceFormat.CompiledShader
                 FloatMaxs[i] = datareader.ReadSingle();
             }
 
-            Arg86 = datareader.ReadInt32();
+            Format = (TextureFormat)datareader.ReadInt32();
             ChannelCount = datareader.ReadInt32();
             for (var i = 0; i < 4; i++)
             {
