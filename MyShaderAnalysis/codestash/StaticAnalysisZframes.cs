@@ -31,6 +31,11 @@ namespace MyShaderAnalysis.codestash
         public const string ARTIFACT_CLASSIC_DCG_PC_SOURCE = "X:/artifact-classic-exports/artifact-shaders-pc-dcg";
         public const string HLALYX_CORE_VULKAN_SOURCE = "X:/hl2alyx-export/alyx-vulkan-core";
         public const string HLALYX_HLVR_VULKAN_SOURCE = "X:/hl2alyx-export/alyx-vulkan-hlvr";
+
+        public const string DOTA_VULKAN_V65_CORE = "X:\\dota-2-VRF-exports\\dota2-export-shaders-vulkan-V65\\shaders-core\\vfx";
+        public const string DOTA_VULKAN_V65_GAME = "X:\\dota-2-VRF-exports\\dota2-export-shaders-vulkan-V65\\shaders-game\\vfx";
+
+
         const string PCGL_DIR_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders-core/vfx";
         const string PCGL_DIR_NOT_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders/vfx";
         const string PC_DIR_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pc/shaders-core/vfx";
@@ -49,13 +54,13 @@ namespace MyShaderAnalysis.codestash
             // Console.WriteLine($"{f}");
 
 
-            ZFrameEndBlocks5();
+            // ZFrameEndBlocks5();
             // ZFrameEndBlocks4();
             // ZFrameEndBlocks3();
             // ZFrameEndBlocks2();
             // ZFrameEndBlocks();
             // CountZframeAndSourceFilesSingleFile1();
-            // SurverH0LeadingData();
+            // SurveyH0LeadingData();
             // SurverH1H2ValuesInDatablocks();
             // StateSummariesValuesSeen();
             // DifferencesInSuccessiveH0H2();
@@ -69,7 +74,7 @@ namespace MyShaderAnalysis.codestash
             // DataBlockCountSelectedfile();
             // SurveryH1ValuesInDatablocks();
             // SurveryH0H2RelationshipInSpriteCardPs();
-            // SurveryHeaderParams();
+            SurveryHeaderParams();
             // SurveryBytesInLeadingDataload();
             // SurveryLeadingDataSingleFile();
 
@@ -835,7 +840,7 @@ namespace MyShaderAnalysis.codestash
          *
          *
          */
-        static void SurverH0LeadingData()
+        static void SurveyH0LeadingData()
         {
             List<string> vcsFiles = GetFileSelectionWithLimitedZframes();
             foreach (string vcsFilenamepath in vcsFiles)
@@ -1056,7 +1061,9 @@ breakhere: Console.WriteLine("");
         static List<string> GetFileSelectionWithLimitedZframes()
         {
             List<string> vcsFiles = new();
-            List<string> selectedFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsProgramType.Undetermined, 30);
+            // List<string> selectedFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsProgramType.Undetermined, 30);
+            // List<string> selectedFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsProgramType.Undetermined, 30);
+             List<string> selectedFiles = GetVcsFiles(DOTA_VULKAN_V65_CORE, DOTA_VULKAN_V65_GAME, VcsProgramType.Undetermined, -1);
             // List<string> selectedFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsProgramType.Undetermined, -1);
             // List<string> selectedFiles = GetVcsFiles(PC_DIR_CORE, PC_DIR_NOT_CORE, VcsProgramType.Undetermined, -1);
             // List<string> selectedFiles = GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsProgramType.Undetermined, -1);

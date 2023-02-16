@@ -57,6 +57,40 @@ namespace MyShaderAnalysis.codestash
         // string filenamepath = PCGL_DIR_NOT_CORE + @"/spritecard_pcgl_30_features.vcs";
 
 
+
+
+        public static void RunTrialNew()
+        {
+
+        }
+
+        /*
+         * Note only the features files have a features header!
+         * arg4,arg5,arg6,arg7 are always 0
+         *
+         */
+        static void TestAnalysis()
+        {
+            List<string> featuresFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsProgramType.Features, -1);
+            foreach (string filenamepath in featuresFiles)
+            {
+                ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
+                FeaturesHeaderBlock featuresHeader = shaderFile.featuresHeader;
+                //string featuresArgs = $"{RemoveBaseDir(filenamepath).PadRight(80)} {featuresHeader.arg0} " +
+                //    $"{featuresHeader.arg1} {featuresHeader.arg2} {featuresHeader.arg3}";
+
+                // string featuresArgs = $"({featuresHeader.arg0} {featuresHeader.arg1} {featuresHeader.arg2} {featuresHeader.arg3})";
+                string featuresArgs = $"({featuresHeader.arg4} {featuresHeader.arg5} {featuresHeader.arg6} {featuresHeader.arg7})";
+                CollectStringValue(featuresArgs);
+            }
+
+            PrintReport();
+        }
+
+
+
+
+
         public static void RunTrials()
         {
             // string filenamepath = PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_ps.vcs";
@@ -72,7 +106,7 @@ namespace MyShaderAnalysis.codestash
             // NOTE - currently points to Artifact classic
             // BlockCountSurvery($@"{SERVER_OUTPUT_DIR}/testfile.html", writeFile: true);
             // FileBlockCount(filenamepath);
-            WriteSfArgumentsAllFiles($"{SERVER_OUTPUT_DIR}/testrun.html", writeFile: true);
+            // WriteSfArgumentsAllFiles($"{SERVER_OUTPUT_DIR}/testrun.html", writeFile: true);
 
 
 
@@ -84,7 +118,7 @@ namespace MyShaderAnalysis.codestash
 
             // -- these methods aren't particularly valuable (should upgrade and remove)
             // Trial1();
-            // FeaturesHeaderFirstFour();
+            FeaturesHeaderFirstFour();
             // MainParamsInFeaturesFiles();
             // SfBlockInspections();
             // AllFiles();

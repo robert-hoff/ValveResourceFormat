@@ -614,7 +614,7 @@ namespace MyShaderAnalysis.codestash
                 if (showCount)
                 {
                     collectValuesString.TryGetValue(s, out int instanceCount);
-                    Console.WriteLine($"{s.PadRight(80)}        {instanceCount,3}");
+                    Console.WriteLine($"{s.PadRight(120)}        {instanceCount,3}");
                 } else
                 {
                     Console.WriteLine($"{s}");

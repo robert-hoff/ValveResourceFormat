@@ -35,8 +35,10 @@ namespace MyShaderAnalysis
         {
             Console.SetOut(new ToDebugWriter());
 
+            StaticAnalysisForKristiker();
+
             // Jan 2023
-            RunStaticAnalysis();
+            // RunStaticAnalysis();
             // BatchProcessFiles();
             // OldStaticAnalysisSummaries();
 
@@ -46,6 +48,16 @@ namespace MyShaderAnalysis
             // ParserSnippets();
             // BasicFunctionalitySnippets();
         }
+
+
+
+        public static void StaticAnalysisForKristiker()
+        {
+            StaticAnalysisZframes.RunTrials();
+            // StaticAnalysis.RunTrials();
+            // StaticAnalysis2.RunTrials();
+        }
+
 
 
         public static void RunStaticAnalysis()
