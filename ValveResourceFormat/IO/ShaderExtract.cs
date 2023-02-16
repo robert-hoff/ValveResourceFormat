@@ -325,7 +325,7 @@ public sealed class ShaderExtract
 
         HandleStaticCombos(shader.SfBlocks, shader.SfConstraintsBlocks, writer);
         HandleDynamicCombos(shader.SfBlocks, shader.DBlocks, shader.DConstraintsBlocks, writer);
-        HandleParameters(shader.ParamBlocks, writer);
+        HandleParameters(shader.ParamBlocks, shader.ChannelBlocks, writer);
 
         writer.Indent--;
         writer.WriteLine("}");
@@ -443,7 +443,7 @@ public sealed class ShaderExtract
         }
     }
 
-    private void HandleParameters(List<ParamBlock> paramBlocks, IndentedTextWriter writer)
+    private void HandleParameters(List<ParamBlock> paramBlocks, List<ChannelBlock> channelBlocks, IndentedTextWriter writer)
     {
         foreach (var param in paramBlocks.OrderBy(x => x.Id == 255))
         {
@@ -480,7 +480,7 @@ public sealed class ShaderExtract
 
                     var default4 = $"Default4({string.Join(", ", param.FloatDefs)})";
 
-                    var mode = param.IntArgs1[2] == 0
+                    var mode = param.ColorMode == 0
                         ? "Linear"
                         : "Srgb";
 
@@ -488,7 +488,7 @@ public sealed class ShaderExtract
                         ? "_" + param.ImageSuffix
                         : string.Empty;
 
-                    writer.WriteLine($"CreateInputTexture2D({param.Name}, {mode}, {param.IntArgs1[3]}, \"{param.ImageProcessor}\", \"{imageSuffix}\", \"{param.UiGroup}\", {default4});");
+                    writer.WriteLine($"CreateInputTexture2D({param.Name}, {mode}, {param.Arg12}, \"{param.ImageProcessor}\", \"{imageSuffix}\", \"{param.UiGroup}\", {default4});");
                     // param.FileRef materials/default/default_cube.png
                     continue;
                 }
@@ -581,15 +581,30 @@ public sealed class ShaderExtract
                     attributes.Add($"Expression({dynEx});");
                 }
 
-                var attributesVfx = attributes.Count > 0
-                    ? " < " + string.Join(" ", attributes) + " > "
-                    : string.Empty;
+                writer.WriteLine($"{Vfx.Types.GetValueOrDefault(param.VfxType, $"unkntype{param.VfxType}")} {param.Name}{GetVfxAttributes(attributes)};");
+            }
+            else if (param.ParamType == ParameterType.Texture)
+            {
+                if (param.Arg86 > -1 && param.ChannelCount > 0)
+                {
+                    for (var i = 0; i < param.ChannelCount; i++)
+                    {
+                        var index = param.ChannelIndices[i];
+                        if (index == -1 || index >= channelBlocks.Count)
+                        {
+                            throw new InvalidOperationException("Invalid channel block index");
+                        }
 
-                writer.WriteLine($"{Vfx.Types.GetValueOrDefault(param.VfxType, $"unkntype{param.VfxType}")} {param.Name}{attributesVfx};");
+                        attributes.Add(GetChannelFromChannelBlock(channelBlocks[index], paramBlocks));
+                    }
+
+                    attributes.Add(param.Arg86.ToString(CultureInfo.InvariantCulture));
+
+                    writer.WriteLine($"CreateTexture2DWithoutSampler({param.Name}){GetVfxAttributes(attributes)};");
+                }
             }
             else
             {
-
             }
         }
     }
@@ -623,15 +638,22 @@ public sealed class ShaderExtract
         }
     }
 
-    private string GetChannelFromMipmap(ChannelBlock ChannelBlock)
+    private static string GetVfxAttributes(List<string> attributes)
     {
-        var mode = ChannelBlock.ColorMode == 0
+        return attributes.Count > 0
+            ? " < " + string.Join(" ", attributes) + " > "
+            : string.Empty;
+    }
+
+    private static string GetChannelFromChannelBlock(ChannelBlock channelBlock, IReadOnlyList<ParamBlock> paramBlocks)
+    {
+        var mode = channelBlock.ColorMode == 0
             ? "Linear"
             : "Srgb";
 
-        var cutoff = Array.IndexOf(ChannelBlock.InputTextureIndices, -1);
-        var inputs = string.Join(", ", ChannelBlock.InputTextureIndices[..cutoff].Select(idx => Features.ParamBlocks[idx].Name));
+        var cutoff = Array.IndexOf(channelBlock.InputTextureIndices, -1);
+        var inputs = string.Join(", ", channelBlock.InputTextureIndices[..cutoff].Select(idx => paramBlocks[idx].Name));
 
-        return $"Channel( {ChannelBlock.Channel}, {ChannelBlock.Name}( {inputs} ) );";
+        return $"Channel({channelBlock.Channel}, {channelBlock.Name}({inputs}));";
     }
 }

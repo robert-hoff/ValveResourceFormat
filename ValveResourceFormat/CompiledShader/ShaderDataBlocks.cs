@@ -537,8 +537,11 @@ namespace ValveResourceFormat.CompiledShader
         public float[] FloatDefs { get; } = new float[4];
         public float[] FloatMins { get; } = new float[4];
         public float[] FloatMaxs { get; } = new float[4];
-        public int[] IntArgs0 { get; } = new int[4];
-        public int[] IntArgs1 { get; } = new int[4];
+        public int Arg86 { get; }
+        public int ChannelCount { get; }
+        public int[] ChannelIndices { get; } = new int[4];
+        public int ColorMode { get; }
+        public int Arg12 { get; }
         public string ImageSuffix { get; }
         public string ImageProcessor { get; }
         public byte[] V65Data { get; } = Array.Empty<byte>();
@@ -615,14 +618,15 @@ namespace ValveResourceFormat.CompiledShader
             {
                 FloatMaxs[i] = datareader.ReadSingle();
             }
+
+            Arg86 = datareader.ReadInt32();
+            ChannelCount = datareader.ReadInt32();
             for (var i = 0; i < 4; i++)
             {
-                IntArgs0[i] = datareader.ReadInt32();
+                ChannelIndices[i] = datareader.ReadInt32();
             }
-            for (var i = 0; i < 4; i++)
-            {
-                IntArgs1[i] = datareader.ReadInt32();
-            }
+            ColorMode = datareader.ReadInt32();
+            Arg12 = datareader.ReadInt32();
             ImageSuffix = datareader.ReadNullTermStringAtPosition();
             datareader.BaseStream.Position += 32;
             ImageProcessor = datareader.ReadNullTermStringAtPosition();
