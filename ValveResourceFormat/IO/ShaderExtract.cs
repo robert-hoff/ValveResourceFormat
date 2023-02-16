@@ -6,7 +6,6 @@ using ValveResourceFormat.ResourceTypes;
 using ValveResourceFormat.CompiledShader;
 using ValveResourceFormat.Serialization.VfxEval;
 using ValveResourceFormat.Utils;
-using System.Runtime.CompilerServices;
 using System.Globalization;
 
 namespace ValveResourceFormat.IO;
@@ -613,19 +612,6 @@ public sealed class ShaderExtract
 
     private void HandleState(IndentedTextWriter writer, ParamBlock param)
     {
-        byte result = 255;
-        var exists = param.ParamType switch
-        {
-            ParameterType.RenderState => Enum.TryParse(param.Name, false, out Unsafe.As<byte, RenderState>(ref result)),
-            ParameterType.SamplerState => Enum.TryParse(param.Name, false, out Unsafe.As<byte, SamplerState>(ref result)),
-            _ => throw new InvalidOperationException($"Expected {ParameterType.RenderState} or {ParameterType.SamplerState}, got {nameof(ParameterType)}={param.ParamType}"),
-        };
-
-        if (!exists || (exists && result != param.Id))
-        {
-            Console.WriteLine($"{param.Name} = {param.Id},");
-        }
-
         var stateValue = param.DynExp.Length > 0
             ? new VfxEval(param.DynExp, Globals, omitReturnStatement: true, FeatureNames).DynamicExpressionResult
             : param.IntDefs[0].ToString(CultureInfo.InvariantCulture);
