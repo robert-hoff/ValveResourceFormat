@@ -334,7 +334,7 @@ public sealed class ShaderExtract
         return writer.ToString();
     }
 
-    private static void HandleZFrame000(ShaderFile shader, IndentedTextWriter writer)
+    private void HandleZFrame000(ShaderFile shader, IndentedTextWriter writer)
     {
         if (shader.GetZFrameCount() == 0)
         {
@@ -366,9 +366,9 @@ public sealed class ShaderExtract
             {
                 value = shader.ParamBlocks[attribute.LinkedParameterIndex].Name;
             }
-            else if (attribute.DynExpEvaluated is not null)
+            else if (attribute.DynExpression.Length > 0)
             {
-                value = attribute.DynExpEvaluated;
+                value = new VfxEval(attribute.DynExpression, Globals, omitReturnStatement: true, FeatureNames).DynamicExpressionResult;
             }
             else
             {
