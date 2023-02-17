@@ -327,25 +327,33 @@ public sealed class ShaderExtract
         HandleParameters(shader.ParamBlocks, shader.ChannelBlocks, writer);
 
         // zframe0 stuff
-        HandleZFrame000(shader, writer);
+        HandleZFrames(shader, writer);
 
         writer.Indent--;
         writer.WriteLine("}");
         return writer.ToString();
     }
 
-    private void HandleZFrame000(ShaderFile shader, IndentedTextWriter writer)
+    private void HandleZFrames(ShaderFile shader, IndentedTextWriter writer)
     {
         if (shader.GetZFrameCount() == 0)
         {
             return;
         }
 
-        writer.WriteLine();
+        // TODO: merge into one with #if defs
+        foreach (var i in Enumerable.Range(0, shader.GetZFrameCount()))
+        {
+            using var zFrame = shader.GetZFrameFileByIndex(i);
+            writer.WriteLine();
+            writer.WriteLine($"// zframe {i}");
+            HandleZframeAttributes(zFrame, shader.ParamBlocks, writer);
+        }
+    }
 
-        using var zframe000 = shader.GetZFrameFileByIndex(0);
-
-        foreach (var attribute in zframe000.Attributes)
+    private void HandleZframeAttributes(ZFrameFile zFrameFile, IReadOnlyList<ParamBlock> paramBlocks, IndentedTextWriter writer)
+    {
+        foreach (var attribute in zFrameFile.Attributes)
         {
             var type = Vfx.GetTypeName(attribute.VfxType);
             string value = null;
@@ -364,7 +372,7 @@ public sealed class ShaderExtract
             }
             else if (attribute.LinkedParameterIndex != 255)
             {
-                value = shader.ParamBlocks[attribute.LinkedParameterIndex].Name;
+                value = paramBlocks[attribute.LinkedParameterIndex].Name;
             }
             else if (attribute.DynExpression.Length > 0)
             {
@@ -375,7 +383,26 @@ public sealed class ShaderExtract
                 throw new InvalidOperationException("Whats the value of this attribute then?");
             }
 
-            writer.WriteLine("Attribute({0}, {1}, {2});", type, attribute.Name0, value);
+            if (attribute.VfxType == Vfx.Type.Bool)
+            {
+                writer.WriteLine("BoolAttribute({0}, {1});", attribute.Name0, value);
+            }
+            else if (attribute.VfxType == Vfx.Type.Int)
+            {
+                writer.WriteLine("IntAttribute({0}, {1});", attribute.Name0, value);
+            }
+            else if (attribute.VfxType == Vfx.Type.Float)
+            {
+                writer.WriteLine("FloatAttribute({0}, {1});", attribute.Name0, value);
+            }
+            else if (attribute.VfxType == Vfx.Type.Sampler2D)
+            {
+                writer.WriteLine("TextureAttribute({0}, {1});", attribute.Name0, value);
+            }
+            else
+            {
+                writer.WriteLine("Attribute({0}, {1}, {2});", type, attribute.Name0, value);
+            }
         }
     }
 
