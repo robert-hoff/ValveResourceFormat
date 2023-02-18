@@ -39,6 +39,18 @@ dotnet_diagnostic.CA1823.severity = none
 dotnet_diagnostic.IDE0090.severity = none
 dotnet_diagnostic.CA2000.severity = none
 dotnet_diagnostic.CA1062.severity = none
+dotnet_diagnostic.CA1707.severity = none
+dotnet_diagnostic.CA1051.severity = none
+dotnet_diagnostic.CA1052.severity = none
+dotnet_diagnostic.CA1024.severity = none
+dotnet_diagnostic.CA1002.severity = none
+dotnet_diagnostic.CA1310.severity = none
+dotnet_diagnostic.CS0168.severity = none
+dotnet_diagnostic.CA1304.severity = none
+dotnet_diagnostic.CA1055.severity = none
+dotnet_diagnostic.CA1307.severity = none
+
+
 
 #
 # CSharp code style settings:
