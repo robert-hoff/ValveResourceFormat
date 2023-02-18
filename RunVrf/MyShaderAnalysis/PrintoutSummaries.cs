@@ -1,15 +1,10 @@
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using RunVrf.UtilHelpers.LSystemsMG.Util.External;
 using ValveResourceFormat.CompiledShader;
 
-namespace RunVrf
+namespace RunVrf.MyShaderAnalysis
 {
-    class ParseFiles
+    class PrintoutSummaries
     {
         static string DOTA_PCGL_V64_GAME = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders\vfx\";
 
@@ -19,12 +14,17 @@ namespace RunVrf
         // static string inputFile = $"{DOTA_PCGL_V64_GAME}spring_meteor_pcgl_30_vs.vcs"; static int zFrameIndex = 0;
         // static string inputFile = $"{DOTA_PCGL_V64_GAME}crystal_pcgl_40_vs.vcs"; static int zFrameIndex = 0;
         // static string inputFile = $"{DOTA_PCGL_V64_GAME}crystal_pcgl_40_ps.vcs"; static int zFrameIndex = 0;
-        static string inputFile = $"{DOTA_PCGL_V64_GAME}crystal_pcgl_40_features.vcs"; static int zFrameIndex = 0;
+        // static string inputFile = $"{DOTA_PCGL_V64_GAME}crystal_pcgl_40_features.vcs"; static int zFrameIndex = 0;
+        static string inputFile = $"{DOTA_PCGL_V64_GAME}3dskyboxstencil_pcgl_40_ps.vcs"; static int zFrameIndex = 0;
+
+        static bool writeToDefaultFile = true;
+        static string defaultFile = "output.html";
+
 
         public static void RunTrials()
         {
-            PrintShaderFileToHtml();
-            // PrintZframeToHtml();
+            // PrintShaderFileToHtml();
+            PrintZframeToHtml();
             // PrintZframeByteVersion();
             // ShowZFrameParameters();
         }
@@ -37,7 +37,7 @@ namespace RunVrf
             string htmlTitle = $"{Path.GetFileName(inputFile)}";
             string htmlHeader = htmlTitle;
             ShaderFile shaderFile = GetShaderFile();
-            string outputFilename = OutputFilenameShaderFile();
+            string outputFilename = writeToDefaultFile ? defaultFile : OutputFilenameShaderFile();
             FileWriter fw = new FileWriter(outputFilename, true, true, htmlTitle, htmlHeader);
             _ = new PrintVcsFileSummary(shaderFile, (x) => { fw.Write(x); }, showRichTextBoxLinks: true);
             fw.CloseStreamWriter();
@@ -47,7 +47,7 @@ namespace RunVrf
         {
             string htmlTitle = $"Z[0x{zFrameIndex:x}]";
             string htmlHeader = $"{Path.GetFileName(inputFile)}  Z[0x{zFrameIndex:x}]";
-            string outputFilename = OutputFilenameZframe();
+            string outputFilename = writeToDefaultFile ? defaultFile : OutputFilenameZframe();
             FileWriter fw = new FileWriter(outputFilename, true, true, htmlTitle, htmlHeader);
             ShaderFile shaderFile = GetShaderFile();
             ZFrameFile zFrameFile = GetZFrameFile(shaderFile);
@@ -59,7 +59,7 @@ namespace RunVrf
         {
             string htmlTitle = $"Z[0x{zFrameIndex:x}]";
             string htmlHeader = $"{Path.GetFileName(inputFile)}  Z[0x{zFrameIndex:x}]";
-            string outputFilename = OutputFilenameZframeBytes();
+            string outputFilename = writeToDefaultFile ? defaultFile : OutputFilenameZframeBytes();
             FileWriter fw = new FileWriter(outputFilename, true, true, htmlTitle, htmlHeader);
             ShaderFile shaderFile = GetShaderFile();
             ZFrameFile zFrameFile = GetZFrameFile(shaderFile);

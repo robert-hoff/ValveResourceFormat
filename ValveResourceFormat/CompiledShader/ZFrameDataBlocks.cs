@@ -6,7 +6,7 @@ namespace ValveResourceFormat.CompiledShader
     public class ZDataBlock : ShaderDataBlock
     {
         public int BlockId { get; }
-        public int H0 { get; }
+        public int H0 { get; } // length of dataload is H0 * 4
         public int H1 { get; }
         public int H2 { get; }
         public byte[] Dataload { get; }
