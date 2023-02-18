@@ -35,7 +35,7 @@ namespace MyShaderAnalysis
         {
             Console.SetOut(new ToDebugWriter());
 
-            StaticAnalysisForKristiker();
+            StaticAnalysisForKristiker(); // analyse zfrme data ahead of parsing
 
             // Jan 2023
             // RunStaticAnalysis();

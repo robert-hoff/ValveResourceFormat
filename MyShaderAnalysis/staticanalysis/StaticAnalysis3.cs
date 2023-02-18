@@ -1,12 +1,8 @@
 using MyShaderAnalysis.utilhelpers;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 using ValveResourceFormat.CompiledShader;
+using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
 
 namespace MyShaderAnalysis.staticanalysis
 {
@@ -20,8 +16,45 @@ namespace MyShaderAnalysis.staticanalysis
 
         public static void Run()
         {
-            MipMapCountFileSets();
+            Parameters();
+            // ConfigurationHeaders();
+            // MipMapCountFileSets();
             // CheckDBlockCountForFeaturesFiles();
+        }
+
+
+        public static void Parameters()
+        {
+            FileArchive fileArchive = new(ARCHIVE.dota_game_pcgl_v64, FEAT, VS, PS);
+            foreach (FileVcsTokens vcsFile in fileArchive.GetFileVcsTokens())
+            {
+                ShaderFile shaderFile = vcsFile.GetShaderFile();
+                foreach (ParamBlock pBlock in shaderFile.paramBlocks)
+                {
+                    // same as (kristiker)
+                    // lead0, UiType, VfxType, ParamType
+                    string reportLine = $"{pBlock.lead0:00} {pBlock.type} {pBlock.arg1} {pBlock.arg2}";
+                    CollectStringValue(reportLine);
+                }
+            }
+            PrintReport();
+        }
+
+        public static void ConfigurationHeaders()
+        {
+            FileArchive fileArchive = new(ARCHIVE.dota_game_pcgl_v64, FEAT, VS, PS);
+            foreach (FileVcsTokens vcsFile in fileArchive.GetFileVcsTokens())
+            {
+                ShaderFile shaderFile = vcsFile.GetShaderFile();
+                foreach (SfBlock sfBlock in shaderFile.sfBlocks)
+                {
+                    // string reportLine = $"{sfBlock.name0,-40} {sfBlock.name1,-40} {sfBlock.arg2}";
+                    // string reportLine = $"{sfBlock.name0,-40} {sfBlock.arg2}";
+                    string reportLine = $"{sfBlock.name0,-40} {sfBlock.arg3}";
+                    CollectStringValue(reportLine);
+                }
+            }
+            PrintReport();
         }
 
         public static void MipMapCountFileSets()
@@ -41,7 +74,6 @@ namespace MyShaderAnalysis.staticanalysis
             }
         }
 
-
         /*
          * D-blocks are always 0 for features files
          */
@@ -60,8 +92,5 @@ namespace MyShaderAnalysis.staticanalysis
 
             }
         }
-
-
-
     }
 }

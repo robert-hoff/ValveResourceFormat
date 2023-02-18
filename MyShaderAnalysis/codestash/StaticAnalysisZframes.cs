@@ -9,7 +9,7 @@ using VcsProgramType = ValveResourceFormat.CompiledShader.VcsProgramType;
 using ConfigMappingSParams = ValveResourceFormat.CompiledShader.ConfigMappingSParams;
 
 using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
-
+using System.Diagnostics;
 
 namespace MyShaderAnalysis.codestash
 {
@@ -48,12 +48,11 @@ namespace MyShaderAnalysis.codestash
 
         public static void RunTrials()
         {
+            // -- new additions
+            SurveryDataBlocks2();
+
+            // -- old
             // Trial1();
-
-            // float f = BitConverter.ToSingle(new byte[] { 0xff,0xff,0xff,0xff}, 0);
-            // Console.WriteLine($"{f}");
-
-
             // ZFrameEndBlocks5();
             // ZFrameEndBlocks4();
             // ZFrameEndBlocks3();
@@ -74,7 +73,7 @@ namespace MyShaderAnalysis.codestash
             // DataBlockCountSelectedfile();
             // SurveryH1ValuesInDatablocks();
             // SurveryH0H2RelationshipInSpriteCardPs();
-            SurveryHeaderParams();
+            // SurveryHeaderParams();
             // SurveryBytesInLeadingDataload();
             // SurveryLeadingDataSingleFile();
 
@@ -901,6 +900,28 @@ namespace MyShaderAnalysis.codestash
         }
 
 
+        static void SurveryDataBlocks2()
+        {
+            List<ZFrameFile> zFrames = GetZFrameSelectionFromEachFile();
+
+
+            foreach (ZFrameFile zFrame in zFrames)
+            {
+                // check h0,h2 values
+                foreach (ZDataBlock zBlock in zFrame.dataBlocks)
+                {
+                    CollectStringValue($"{zBlock.h0,-3:000} {zBlock.h2,-3}");
+
+                    // if (zBlock.h2 == zBlock.h0 - 1)
+                    if (zBlock.h0 == 5 && zBlock.h2 == 5)
+                    {
+                        Debug.WriteLine($"{zFrame.filenamepath} zframe=0x{zFrame.zframeId:x} h0={zBlock.h0} h2={zBlock.h2}");
+                        return;
+                    }
+                }
+            }
+        }
+
         /*
          * The value of the h1 argument for all non-leading datablocks is 0
          *
@@ -914,6 +935,31 @@ namespace MyShaderAnalysis.codestash
                 for (int i = 0; i < shaderFile.GetZFrameCount(); i++)
                 {
                     ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(i);
+
+                    // check h0,h1,h2 values
+                    //foreach (ZDataBlock zBlock in zframeFile.dataBlocks)
+                    //{
+                    //    CollectStringValue($"{zBlock.h0,-3:000} {zBlock.h1,-3} {zBlock.h2,-3}");
+                    //}
+
+                    // check h1,h2 values
+                    //foreach (ZDataBlock zBlock in zframeFile.dataBlocks)
+                    //{
+                    //    CollectStringValue($"{zBlock.h1,-3:000} {zBlock.h2,-3}");
+                    //}
+
+                    // check h0,h2 values
+                    foreach (ZDataBlock zBlock in zframeFile.dataBlocks)
+                    {
+                        CollectStringValue($"{zBlock.h0,-3:000} {zBlock.h2,-3}");
+
+                        // if (zBlock.h2 == zBlock.h0 - 1)
+                        if (zBlock.h0 == 3 && zBlock.h2 == 0)
+                        {
+                            Debug.WriteLine($"{zframeFile.filenamepath} zframe=0x{zframeFile.zframeId:x} h0={zBlock.h0} h2={zBlock.h2}");
+                            return;
+                        }
+                    }
 
                     // check h0 values
                     //foreach (ZDataBlock zBlock in zframeFile.dataBlocks) {
@@ -1057,13 +1103,12 @@ breakhere: Console.WriteLine("");
 
 
 
-
-        static List<string> GetFileSelectionWithLimitedZframes()
+        static List<string> FileSelection()
         {
-            List<string> vcsFiles = new();
+            // List<string> selectedFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsProgramType.Undetermined, 40);
+            List<string> selectedFiles = GetVcsFiles(PCGL_DIR_NOT_CORE, VcsProgramType.Undetermined, 40);
             // List<string> selectedFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsProgramType.Undetermined, 30);
-            // List<string> selectedFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsProgramType.Undetermined, 30);
-             List<string> selectedFiles = GetVcsFiles(DOTA_VULKAN_V65_CORE, DOTA_VULKAN_V65_GAME, VcsProgramType.Undetermined, -1);
+            // List<string> selectedFiles = GetVcsFiles(DOTA_VULKAN_V65_CORE, DOTA_VULKAN_V65_GAME, VcsProgramType.Undetermined, -1);
             // List<string> selectedFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsProgramType.Undetermined, -1);
             // List<string> selectedFiles = GetVcsFiles(PC_DIR_CORE, PC_DIR_NOT_CORE, VcsProgramType.Undetermined, -1);
             // List<string> selectedFiles = GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsProgramType.Undetermined, -1);
@@ -1071,6 +1116,31 @@ breakhere: Console.WriteLine("");
 
             // something wrong in the vulkan source
             // List<string> selectedFiles = GetVcsFiles(HLALYX_CORE_VULKAN_SOURCE, HLALYX_HLVR_VULKAN_SOURCE, VcsProgramType.Undetermined, -1);
+            return selectedFiles;
+        }
+
+        static List<ZFrameFile> GetZFrameSelectionFromEachFile(int nrZFrames = 5)
+        {
+            List<ZFrameFile> zFrames = new();
+            List<string> selectedFiles = FileSelection();
+            foreach (string file in selectedFiles)
+            {
+                ShaderFile shaderFile = new ShaderFile();
+                shaderFile.Read(file);
+                for (int i = 0; i < Math.Min(nrZFrames, shaderFile.GetZFrameCount()); i++)
+                {
+                    ZFrameFile zFrame = shaderFile.GetZFrameFileByIndex(i);
+                    zFrames.Add(zFrame);
+                }
+            }
+            return zFrames;
+        }
+
+
+        static List<string> GetFileSelectionWithLimitedZframes()
+        {
+            List<string> vcsFiles = new();
+            List<string> selectedFiles = FileSelection();
 
             foreach (string checkVcsFile in selectedFiles)
             {
@@ -1085,6 +1155,9 @@ breakhere: Console.WriteLine("");
                 if (shaderFile.GetZFrameCount() < 4000 && shaderFile.GetZFrameCount() > 0)
                 {
                     vcsFiles.Add(checkVcsFile);
+                } else if (shaderFile.GetZFrameCount() > 0)
+                {
+                    Debug.WriteLine($"{shaderFile.filenamepath}");
                 }
             }
 
