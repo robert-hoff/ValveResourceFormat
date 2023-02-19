@@ -1,33 +1,21 @@
 using System;
 using System.Collections.Generic;
 
-
 namespace MyShaderAnalysis.compat
 {
-
     public class CompatRules3
     {
-
         public static void RunTrials()
         {
             // Trial1MultiblendPcgl30VsAttempt2();
 
-
             // THIS IS MY BEST INTERPRATION YET - DON'T CHANGE IT
             Trial1MultiblendPcgl30PsAttempt5();
-
-
 
             // Trial1MultiblendPcgl30PsAttempt4();
 
             // Console.WriteLine($"{1<<100}");
-
         }
-
-
-
-
-
 
         /*
          * It looks like S_LAYER_BORDER_TINT might have two entries
@@ -95,7 +83,6 @@ namespace MyShaderAnalysis.compat
          */
         static void Trial1MultiblendPcgl30PsAttempt5()
         {
-
             remappingTable.Add(0, -1);   // S_TOOLS_ENABLED removed
             remappingTable.Add(1, 0);    // S_MODE_FORWARD            mapped to 0
             remappingTable.Add(2, 1);    // S_MODE_DEPTH              mapped to 1
@@ -116,7 +103,6 @@ namespace MyShaderAnalysis.compat
             remappingTable.Add(17, 17);  // S_GLOBAL_TINT             mapped to 16
 
             // remappingTable.Add(18, 11);  // S_LAYER_BORDER_TINT       mapped to 11
-
 
             AddExclusion(1, 2);             // compat[0]
             AddExclusion(1, 3);             // compat[0]
@@ -161,8 +147,6 @@ namespace MyShaderAnalysis.compat
             AddExclusion(9, 17);            // compat[24]
             AddExclusion(6, 17);            // compat[24]
 
-
-
             // inclusions
             AddInclusion(5, 4);            // compat[3]
             AddInclusion(7, 4);            // compat[5]
@@ -182,9 +166,6 @@ namespace MyShaderAnalysis.compat
             AddInclusion(16, 5);           // compat[21]
             AddInclusion(16, 4);           // compat[22]
             AddInclusion(11, 10);          // compat[25]
-
-
-
 
             // ------------- LATEST EFFORTS
             /*
@@ -248,12 +229,6 @@ namespace MyShaderAnalysis.compat
              *
              */
 
-
-
-
-
-
-
             // ------------- BEFORE DOUBLE ENTRY
 
             // I'm not generating this index, which I'm supposed to. This is based on the rule
@@ -262,12 +237,9 @@ namespace MyShaderAnalysis.compat
             // 76543210987654321
             // 00001000000101000
 
-
-
             // And this number is weird, it seems the rule imply that 13 requires both 5 and 4. Not either.
             //       43210987654321
             // 00000001000000001000
-
 
             // The latest problem is that I'm generating this. Which the system doesn't want
             // the exclusion of this rule makes sense to me though because of EXC(13,5)
@@ -281,14 +253,10 @@ namespace MyShaderAnalysis.compat
             //       43210987654321
             // 00000001000001001000
 
-
             // IS IT POSSIBLE THAT 12 IS REPEATED in two places? the pattern seems to suggest this
             // I'm not getting this, why not
             //      432210987654321
             // 00000001000000001000
-
-
-
 
             for (int i = 0; i < 262144; i++)
             {
@@ -329,19 +297,11 @@ namespace MyShaderAnalysis.compat
                 {
                     Console.WriteLine($"{i,3}    {i:x04}           {Convert.ToString(i, 2).PadLeft(20, '0')}");
                 }
-
-
-
-
             }
         }
 
-
-
-
         static void Trial1MultiblendPcgl30PsAttempt4()
         {
-
             remappingTable.Add(0, -1);   // S_TOOLS_ENABLED removed
             remappingTable.Add(1, 0);    // S_MODE_FORWARD            mapped to 0
             remappingTable.Add(2, 1);    // S_MODE_DEPTH              mapped to 1
@@ -360,7 +320,6 @@ namespace MyShaderAnalysis.compat
             remappingTable.Add(15, 14);  // S_PARALLAX_MAP_ON_3       mapped to 14
             remappingTable.Add(16, 15);  // S_PARALLAX_MAP_ON_4       mapped to 15
             remappingTable.Add(17, 16);  // S_GLOBAL_TINT             mapped to 16
-
 
             AddExclusion(1, 2);             // compat[0]
             AddExclusion(1, 3);             // compat[0]
@@ -394,9 +353,6 @@ namespace MyShaderAnalysis.compat
             // trying some variations
             AddExclusion(2, 6);
 
-
-
-
             AddExclusion(2, 17);            // compat[23]
             AddExclusion(6, 17);            // compat[23]
 
@@ -418,21 +374,15 @@ namespace MyShaderAnalysis.compat
             AddInclusion(16, 4);           // compat[22]
             AddInclusion(11, 10);          // compat[25]
 
-
-
-
             // I'm not generating this index, which I'm supposed to. This is based on the rule
             // EXC(3)    13,6,2          S_PARALLAX_MAP_ON_0, S_RENDER_BACKFACES, S_MODE_DEPTH
 
             // 76543210987654321
             // 00001000000101000
 
-
-
             // And this number is weird, it seems the rule imply that 13 requires both 5 and 4. Not either.
             //       43210987654321
             // 00000001000000001000
-
 
             // The latest problem is that I'm generating this. Which the system doesn't want
             // the exclusion of this rule makes sense to me though because of EXC(13,5)
@@ -446,12 +396,7 @@ namespace MyShaderAnalysis.compat
             //       43210987654321
             // 00000001000001001000
 
-
             // IS IT POSSIBLE THAT 12 IS REPEATED in two places? the pattern seems to suggest this
-
-
-
-
 
             // for (int i = 0; i < 262144; i++) {
             for (int i = 0; i < 20000; i++)
@@ -491,15 +436,8 @@ namespace MyShaderAnalysis.compat
                 {
                     Console.WriteLine($"{i,3}    {i:x04}           {Convert.ToString(i, 2).PadLeft(20, '0')}");
                 }
-
-
-
-
             }
         }
-
-
-
 
         static bool CheckExclusion(int num)
         {
@@ -507,14 +445,6 @@ namespace MyShaderAnalysis.compat
             Console.WriteLine($"{Convert.ToString(num, 2).PadLeft(20, '0')}");
             return true;
         }
-
-
-
-
-
-
-
-
 
         /*
          *
@@ -544,7 +474,6 @@ namespace MyShaderAnalysis.compat
          */
         static void Trial1MultiblendPcgl30PsAttempt3()
         {
-
             //  0    S_TOOLS_ENABLED
             //  1    S_MODE_FORWARD
             //  2    S_MODE_DEPTH
@@ -563,9 +492,6 @@ namespace MyShaderAnalysis.compat
             // 15    S_PARALLAX_MAP_ON_2
             // 16    S_PARALLAX_MAP_ON_3
             // 17    S_GLOBAL_TINT
-
-
-
 
             remappingTable.Add(0, -1);   // S_TOOLS_ENABLED removed
             remappingTable.Add(1, 0);    // S_MODE_FORWARD            mapped to 0
@@ -586,14 +512,11 @@ namespace MyShaderAnalysis.compat
             remappingTable.Add(16, 15);  // S_PARALLAX_MAP_ON_4       mapped to 15
             remappingTable.Add(17, 16);  // S_GLOBAL_TINT             mapped to 16
 
-
             // I'm not generating this zframe, which the system wants
             // so what if I add a ghost parameter at position 12 or 13 (this doesn't seem to do anything beneficial)
             //      43 210987654321
 
             // 00000001000000001000
-
-
 
             //       43210987654321
             // 00000001000000001000
@@ -604,13 +527,9 @@ namespace MyShaderAnalysis.compat
 
             // YES - this does get me further (can now generate the first 337 frames correctly)
 
-
             // next I'm not generating, but this is because 13 and 6 are excluded ... ?
             //       43210987654321
             // 00000001000000101000
-
-
-
 
             // if we remap where the parallax starts I get this thing being included
             // which makes perfect sense ...
@@ -619,9 +538,6 @@ namespace MyShaderAnalysis.compat
             //
             // 76543_210987654321
             // 000001000000000000
-
-
-
 
             AddExclusion(1, 2);             // compat[0]
             AddExclusion(1, 3);             // compat[0]
@@ -651,7 +567,6 @@ namespace MyShaderAnalysis.compat
             AddExclusion(2, 14);             // compat[14]
             AddExclusion(6, 14);             // compat[14]
 
-
             AddExclusion(2, 17);            // compat[23]
             AddExclusion(6, 17);            // compat[23]
 
@@ -672,10 +587,6 @@ namespace MyShaderAnalysis.compat
             AddInclusion(16, 5);           // compat[21]
             AddInclusion(16, 4);           // compat[22]
             AddInclusion(11, 10);          // compat[25]
-
-
-
-
 
             // for (int i = 0; i < 262144; i++) {
             for (int i = 0; i < 20000; i++)
@@ -716,16 +627,10 @@ namespace MyShaderAnalysis.compat
                     Console.WriteLine($"{i,3}    {i:x04}           {Convert.ToString(i, 2).PadLeft(20, '0')}");
                 }
             }
-
-
         }
-
-
-
 
         static void Trial1MultiblendPcgl30VsAttempt2()
         {
-
             remappingTable.Add(0, 0);   // S_TRANSFORM_CONSTANT_BUFFER   mapped to 0
             remappingTable.Add(1, -1);   // S_TOOLS_ENABLED removed
             remappingTable.Add(2, 1);   // S_MODE_FORWARD                mapped to 1
@@ -745,7 +650,6 @@ namespace MyShaderAnalysis.compat
             AddExclusion(3, 8);
             AddExclusion(7, 8);
             AddInclusion(5, 4);
-
 
             for (int i = 0; i < 512; i++)
             {
@@ -773,21 +677,15 @@ namespace MyShaderAnalysis.compat
                     Console.WriteLine($"{i:x04}               {Convert.ToString(i, 2).PadLeft(9, '0')}");
                 }
             }
-
         }
-
-
 
         // static int index_removed = 999;
         // static int index_added = 999;
-
-
 
         static List<(int, int)> exclusions = new();
         static List<(int, int)> inclusions = new();
         static List<(int, int, int)> inclusionsTriple = new();
         static Dictionary<int, int> remappingTable = new();
-
 
         static void AddExlusionNoRemap(int b0, int b1)
         {
@@ -795,8 +693,6 @@ namespace MyShaderAnalysis.compat
             int num1 = 1 << (b1);
             exclusions.Add((num0, num1));
         }
-
-
 
         static void AddExclusion(int b0, int b1)
         {
@@ -824,14 +720,12 @@ namespace MyShaderAnalysis.compat
             inclusions.Add((num0, num1));
         }
 
-
         static void AddInclusionNoRemap(int b0, int b1)
         {
             int num0 = 1 << (b0);
             int num1 = 1 << (b1);
             inclusions.Add((num0, num1));
         }
-
 
         static void AddInclusionTriple(int b0, int b1, int b2)
         {
@@ -847,21 +741,6 @@ namespace MyShaderAnalysis.compat
             int num2 = 1 << (b2);
             inclusionsTriple.Add((num0, num1, num2));
         }
-
-
-
-
-
-
     }
-
-
 }
-
-
-
-
-
-
-
 

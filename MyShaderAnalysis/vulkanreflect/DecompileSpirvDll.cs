@@ -27,7 +27,6 @@ namespace MyShaderAnalysis.vulkanreflect
 #pragma warning restore CA1813
 #pragma warning restore CA5392
 
-
         public static string DecompileVulkan(byte[] databytes)
         {
             IntPtr decompiler = CreateSpirvDecompiler();

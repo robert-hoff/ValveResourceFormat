@@ -7,14 +7,11 @@ using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
 
 namespace MyShaderAnalysis.codestash
 {
-
     public class StaticAnalysis2
     {
-
         const string PCGL_DIR_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders-core/vfx";
         const string PCGL_DIR_NOT_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders/vfx";
         const string SERVER_OUTPUT_DIR = @"Z:/dev/www/vcs.codecreation.dev/GEN-output";
-
 
         public static void RunTrials()
         {
@@ -23,15 +20,12 @@ namespace MyShaderAnalysis.codestash
             CloseStreamWriter();
         }
 
-
-
         static void Trial1()
         {
             // string filenamepath = $@"{PCGL_DIR_NOT_CORE}/multiblend_pcgl_30_vs.vcs";
             // string filenamepath = $@"{PCGL_DIR_NOT_CORE}/multiblend_pcgl_30_ps.vcs";
             // string filenamepath = $@"{PCGL_DIR_NOT_CORE}/hero_pcgl_30_ps.vcs";
             // string filenamepath = $@"{PCGL_DIR_NOT_CORE}/global_lit_simple_pcgl_30_vs.vcs";
-
 
             // SfBlocksTest();
             ShowSfBlocksWithAdditionalArguments(TestFilenamepath("F-params-multiple-properties.html"), true);
@@ -40,34 +34,21 @@ namespace MyShaderAnalysis.codestash
             // PrintingAndSortingParams(TestFilenamepath("TESTFILE.html"), true);
             // PrintingParamsWithDynamicExpressions(TestFilenamepath("shader-dynamic-expressions.html"), true);
 
-
-
             // wtf is this? the history of this file appears to show this as always enabled and the DoSomething()
             // method itself never performing anything meaningful. Most of my changes were only refactoring changes
             // so I must have copied the code in from another previous file maybe 'ShaderAnalysis'
             //
             // DoSomething();
-
         }
-
 
         static void DoSomething()
         {
-
             List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsProgramType.Features, -1);
             foreach (string filenamepath in vcsFiles)
             {
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
-
             }
-
-
         }
-
-
-
-
-
 
         static string Pow2Rep(int val)
         {
@@ -87,8 +68,6 @@ namespace MyShaderAnalysis.codestash
             }
             return $"(2^{pow})";
         }
-
-
 
         /*
          *
@@ -140,7 +119,6 @@ namespace MyShaderAnalysis.codestash
                     byte[] dynExp = paramBlock.DynExp;
                     string dynExpstring = dynExp.Length > 0 ? new VfxEval(dynExp).DynamicExpressionResult : "";
 
-
                     CUTLEN = 16;
                     string sortOn = $"{r7[0] + 100:d04}{r7[1] + 100:d04}{r7[2] + 100:d04}{r7[3] + 100:d04}";
                     string c0c1 = c0;
@@ -151,7 +129,6 @@ namespace MyShaderAnalysis.codestash
                     string reportString = $"{sortOn}{name0,-40} {tp,2}  {res0,8} {main0,3} " +
                     $"{arg0,3} {arg1,3} {arg2,3} {Pow2Rep(arg3),8} {arg4,3} {arg5,3}  " +
                     $"{comb(r0),12} {comb(r6),14} {comb(r7),12} | ";
-
 
                     string spaceString = new string(' ', reportString.Length - CUTLEN + 3);
                     string[] dynExpLines = dynExpstring.Split("\n");
@@ -171,7 +148,6 @@ namespace MyShaderAnalysis.codestash
                     }
 
                     CollectStringValue(reportString);
-
                 }
             }
 
@@ -179,9 +155,6 @@ namespace MyShaderAnalysis.codestash
             // It is the method PrintReport() shows the data to console. Called from Runtrials() method
             ShowStringsCollected(CUTLEN);
         }
-
-
-
 
         static void PrintingAndSortingParams(string outputFilenamepath = null, bool writeFile = false)
         {
@@ -196,7 +169,6 @@ namespace MyShaderAnalysis.codestash
             // 0103009901000099
             // this has to be removed for the printouts to appear well
             int CUTLEN = 0;
-
 
             foreach (string filenamepath in vcsFiles)
             {
@@ -233,7 +205,6 @@ namespace MyShaderAnalysis.codestash
                     //    $"{comb(r0)} {comb(r1)} {comb(r2)} {comb(r3)} {comb(r4)} {comb(r5)} {comb(r6)} {comb(r7)} " +
                     //    $"{c0} {c1}   |    {name1} {fileref}");
 
-
                     // CUTLEN = 16;
                     string sortOn = $"{r7[0] + 100:d04}{r7[1] + 100:d04}{r7[2] + 100:d04}{r7[3] + 100:d04}";
 
@@ -247,7 +218,6 @@ namespace MyShaderAnalysis.codestash
                     $"{comb(r0),12} {comb(r6),14} {comb(r7),12} " +
                     $"{c0c1,-14}   |    {name1} {fileref}");
 
-
                     // there exists one parameter that has three names
                     //
                     //     g_flIsSelected
@@ -259,16 +229,11 @@ namespace MyShaderAnalysis.codestash
                         //paramBlock.ShowBlock();
                         //Console.WriteLine($"");
                     }
-
                 }
             }
 
-
             ShowStringsCollected(CUTLEN);
-
         }
-
-
 
         private static void ShowStringsCollected(int cutstring = 0)
         {
@@ -279,10 +244,7 @@ namespace MyShaderAnalysis.codestash
             {
                 OutputWriteLine(item.Key[cutstring..]);
             }
-
         }
-
-
 
         private static string comb2(int[] ints0)
         {
@@ -299,7 +261,6 @@ namespace MyShaderAnalysis.codestash
             return $"({f(floats0[0])},{f(floats0[1])},{f(floats0[2])},{f(floats0[3])})";
         }
 
-
         private static string f(float val)
         {
             if (val == -1e9) return "-M";
@@ -313,9 +274,6 @@ namespace MyShaderAnalysis.codestash
             if (val == 999999999) return "M";
             return "" + val; ;
         }
-
-
-
 
         static void SfBlocksTest(string outputFilenamepath = null, bool writeFile = false)
         {
@@ -335,9 +293,6 @@ namespace MyShaderAnalysis.codestash
                 }
             }
         }
-
-
-
 
         static void ShowSfBlocksWithAdditionalArguments(string outputFilenamepath = null, bool writeFile = false)
         {
@@ -364,8 +319,6 @@ namespace MyShaderAnalysis.codestash
                 }
             }
         }
-
-
 
         static void ShowFeaturesDetails()
         {
@@ -402,16 +355,10 @@ namespace MyShaderAnalysis.codestash
             }
         }
 
-
-
-
-
-
         private static string TestFilenamepath(string filename)
         {
             return $"{SERVER_OUTPUT_DIR}/{filename}";
         }
-
 
         private static StreamWriter sw = null;
         private static bool DisableOutput = false;
@@ -427,7 +374,6 @@ namespace MyShaderAnalysis.codestash
             sw.WriteLine(GetHtmlHeader(htmlTitle, htmlHeader));
         }
 
-
         private static void ConfigureOutputFile(string filepathname, bool disableOutput = false)
         {
             DisableOutput = disableOutput;
@@ -435,9 +381,7 @@ namespace MyShaderAnalysis.codestash
             sw = new StreamWriter(filepathname);
         }
 
-
         private static bool swWriterAlreadyClosed = false;
-
 
         // This basestream != null is nonsense, it doesn't check if the file is open
         private static void CloseStreamWriter()
@@ -467,16 +411,6 @@ namespace MyShaderAnalysis.codestash
         {
             OutputWrite(text + "\n");
         }
-
-
-
     }
-
 }
-
-
-
-
-
-
 

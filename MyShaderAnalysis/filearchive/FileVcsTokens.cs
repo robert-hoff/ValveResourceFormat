@@ -4,7 +4,6 @@ using System.IO;
 using ValveResourceFormat.CompiledShader;
 using static MyShaderAnalysis.filearchive.ReadShaderFile;
 
-
 // R: I'm not sure I  like this very much (something to think about)
 // it's for use of ShaderUtilHelpers.ComputeVCSFileName
 // it doesn't feel right to use the utility founctions across project folders. It's ok to use the interfaces and enums,
@@ -30,7 +29,6 @@ using static MyShaderAnalysis.filearchive.ReadShaderFile;
 //
 //
 //
-
 
 /*
  *
@@ -76,7 +74,6 @@ namespace MyShaderAnalysis.filearchive
         public string sourceType { get; }       // glsl, dxil, dxbc or vulkan (names gles, vulkan, android_vulkan, ios_vulkan are not used)
         public string vcstoken { get; }         // ft, vs, ps, psrs or gs
 
-
         public FileVcsTokens(ARCHIVE archive, string filename)
         {
             this.archive = archive;
@@ -116,8 +113,6 @@ namespace MyShaderAnalysis.filearchive
             };
         }
 
-
-
         private ShaderFile shaderFile { get; set; } = null;
 
         public ShaderFile GetShaderFile()
@@ -125,7 +120,6 @@ namespace MyShaderAnalysis.filearchive
             shaderFile ??= InstantiateShaderFile(filenamepath);
             return shaderFile;
         }
-
 
         public ZFrameFile GetZframeFile(long zframeId)
         {
@@ -138,8 +132,6 @@ namespace MyShaderAnalysis.filearchive
             ShaderFile shaderFile = GetShaderFile();
             return shaderFile.GetZFrameFileByIndex(zframeIndex);
         }
-
-
 
         /*
          * Z:/dev/www/vcs.codecreation.dev/dota-game-pcgl-v64/multiblend_pcgl_30
@@ -292,7 +284,6 @@ namespace MyShaderAnalysis.filearchive
         //    return $"{GetZFramesServerPath()}/{name}-ZFRAME{zframeId:x08}{label}.html";
         //}
 
-
         /*
          * multiblend(30-ft)
          * multiblend(30-vs)
@@ -315,7 +306,6 @@ namespace MyShaderAnalysis.filearchive
             return $"/{archivename}/{filename}";
         }
 
-
         // todo - this is a bit weird
         public string GetBestZframesLink(long zframeId, bool noBrackets = false)
         {
@@ -329,7 +319,6 @@ namespace MyShaderAnalysis.filearchive
             return noBrackets ? $"{zframeId:x08}" : $"Z[{zframeId:x08}]";
         }
 
-
         /*
          * {multiblend_pcgl_30_features.vcs, multiblend_pcgl_30_vs.vcs, multiblend_pcgl_30_ps.vcs}
          *
@@ -339,15 +328,10 @@ namespace MyShaderAnalysis.filearchive
             return FileVcsCollection.GetRelatedFiles(archive, foldername);
         }
 
-
         public override string ToString()
         {
             return $"{filename}";
         }
-
-
-
     }
 }
-
 

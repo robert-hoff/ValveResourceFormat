@@ -35,23 +35,17 @@ namespace MyShaderAnalysis.batchtesting
             // TestSpirVReflection();
         }
 
-
-
         public static void ReadFile()
         {
             // byte[] bytes = File.ReadAllBytes("X:\\checkouts\\SPIRV-Cross\\vcs_vulkan_samples\\textoverlay.frag.spv");
             byte[] bytes = File.ReadAllBytes("X:\\checkouts\\SPIRV-Cross\\vcs_vulkan_samples\\phongpass.frag.spv");
             Debug.WriteLine($"{BytesToString(bytes)}");
 
-
             // ByteSequenceToString.ConvertByteSequenceToString("6D 61 69 6E");
             // ByteSequenceToString.ConvertByteSequenceToString("74 79 70 65 2E 32 64 2E 69 6D 61 67 65");
             ByteSequenceToString.ConvertByteSequenceToString("47 4C 53 4C 2E 73 74 64 2E 34 35 30");
             // Debug.WriteLine($"{str}");
-
-
         }
-
 
         public static void TargetSingleFile()
         {
@@ -75,7 +69,6 @@ namespace MyShaderAnalysis.batchtesting
             SaveSpirVBytesToFile(spirvBytes, filename, directory);
         }
 
-
         public static void CreateSpirvSamples()
         {
             // byte[] spirvBytes = File.ReadAllBytes(@"X:\checkouts\SPIRV-Cross\vcs_vulkan_samples\source2.spv");
@@ -86,9 +79,7 @@ namespace MyShaderAnalysis.batchtesting
             string directory = @"Z:\dev\www\vcs.codecreation.dev\spirv-samples\";
             //Debug.WriteLine($"write spirv bytes to {directory}{filename}");
             File.WriteAllBytes($"{directory}{filename}", spirvBytes);
-
         }
-
 
         public static void WriteSpirvBytesToFile()
         {
@@ -103,11 +94,7 @@ namespace MyShaderAnalysis.batchtesting
 
             Debug.WriteLine($"write spirv bytes to {directory}{filename}");
             File.WriteAllBytes($"{directory}{filename}", spirvBytes);
-
-
-
         }
-
 
         /*
          * this file WORKS
@@ -130,7 +117,6 @@ namespace MyShaderAnalysis.batchtesting
             // Debug.WriteLine($"{BytesToString(sourceBytes)}");
         }
 
-
         /*
          * This file demonstrates it is not the size of the bytes that is the problem
          *
@@ -152,7 +138,6 @@ namespace MyShaderAnalysis.batchtesting
             // string decompiledSource = DecompileSpirvDll.DecompileVulkan(sourceBytes);
             // Debug.WriteLine($"{BytesToString(sourceBytes)}");
         }
-
 
         /*
          * This identifies a few more problematic files. For example
@@ -186,11 +171,8 @@ namespace MyShaderAnalysis.batchtesting
             }
         }
 
-
         public static void ProblemFile()
         {
-
-
             // FileVcsTokens vcsTokens = new FileVcsTokens(ARCHIVE.alyx_hlvr_vulkan_v64, "visualize_cloth_vulkan_50_gs.vcs");
             // FileVcsTokens vcsTokens = new FileVcsTokens(ARCHIVE.alyx_hlvr_vulkan_v64, "visualize_cloth_vulkan_50_ps.vcs");
             // FileVcsTokens vcsTokens = new FileVcsTokens(ARCHIVE.alyx_hlvr_vulkan_v64, "cables_vulkan_50_ps.vcs");
@@ -212,7 +194,6 @@ namespace MyShaderAnalysis.batchtesting
 
             // -- save spirv bytes to file
             // SaveSpirVBytesToFile(spirvBytes, "sample3.spv");
-
         }
 
         const string DEFAULT_OUTPUT_DIR = @"X:\checkouts\VRF-Main\files_samples\";
@@ -249,7 +230,6 @@ namespace MyShaderAnalysis.batchtesting
             }
         }
 
-
         public static void IsolateSpirvReflection3()
         {
             FileVcsTokens vcsTokens = new FileVcsTokens(ARCHIVE.alyx_hlvr_vulkan_v64, "vr_ice_surface_vulkan_50_ps.vcs");
@@ -261,7 +241,6 @@ namespace MyShaderAnalysis.batchtesting
             // string decompiledSource = DecompileSpirvDll.DecompileVulkan(sourceBytes);
             Debug.WriteLine($"{decompiledSource}");
         }
-
 
         public static void IsolateSpirvReflection2()
         {
@@ -275,7 +254,6 @@ namespace MyShaderAnalysis.batchtesting
             // string decompiledSource = DecompileSpirvDll.DecompileVulkan(sourceBytes);
             Debug.WriteLine($"{decompiledSource}");
         }
-
 
         /*
          * The source bytes (3146) containing some meta data, being slightly
@@ -292,7 +270,6 @@ namespace MyShaderAnalysis.batchtesting
             Debug.WriteLine($"{sourceBytes.Length}");
             Debug.WriteLine($"{spirvBytes.Length}");
         }
-
 
         /*
          *
@@ -382,7 +359,6 @@ namespace MyShaderAnalysis.batchtesting
             }
         }
 
-
         public static void TestSpirVReflection()
         {
             FileArchive fileArchive = new(ARCHIVE.alyx_hlvr_vulkan_v64, VS, PS, useModularLookup: true);
@@ -396,12 +372,7 @@ namespace MyShaderAnalysis.batchtesting
             byte[] sourceBytes = vulkanSource.GetSpirvBytes();
             string spirvSource = DecompileSpirvDll.DecompileVulkan(sourceBytes);
             Debug.WriteLine($"{spirvSource}");
-
         }
-
-
-
     }
 }
-
 

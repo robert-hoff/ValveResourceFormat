@@ -35,7 +35,6 @@ namespace MyShaderAnalysis.postprocessing
             this.fileTokens = fileTokens;
         }
 
-
         public string PostProcessVcsData(string data)
         {
             Regex rx = new Regex(@"\\\\([a-z0-9_\.]*)\\([a-z0-9_\.]*)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
@@ -48,7 +47,6 @@ namespace MyShaderAnalysis.postprocessing
 
             return newData;
         }
-
 
         private string ReplaceVcsDoubleToken(Match m)
         {
@@ -77,7 +75,6 @@ namespace MyShaderAnalysis.postprocessing
                 return fileTokens.GetBestZframesLink(zframeId, noBrackets: true);
             }
         }
-
     }
 }
 

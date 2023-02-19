@@ -41,7 +41,6 @@ namespace MyShaderAnalysis.parsing
             ShowBytes(4, $"block DELIM always 17, or minor version? (but stayed the same for v65 and v64)");
             BreakLine();
 
-
             PrintAllSfBlocks();
             PrintAllCompatibilityBlocks();
             PrintAllDBlocks();
@@ -64,11 +63,7 @@ namespace MyShaderAnalysis.parsing
                 return;
             }
             ShowEndOfFile();
-
-
         }
-
-
 
         // private bool shortenOutput = true;
         private bool shortenOutput = false;
@@ -128,7 +123,6 @@ namespace MyShaderAnalysis.parsing
                 ShowBytes(12, 4, breakLine: false);
                 TabComment($"({arg4},{arg5},{arg6})");
             }
-
 
             BreakLine();
             ShowByteCount();
@@ -193,7 +187,6 @@ namespace MyShaderAnalysis.parsing
             BreakLine();
         }
 
-
         private int PrintVsPsHeader()
         {
             ShowByteCount("vcs file");
@@ -212,8 +205,6 @@ namespace MyShaderAnalysis.parsing
             BreakLine();
             return version;
         }
-
-
 
         private void PrintAllSfBlocks()
         {
@@ -390,8 +381,6 @@ namespace MyShaderAnalysis.parsing
                 ShowBytes(dynLength, "dynamic expression", 1);
             }
 
-
-
             // check to see if this reads 'SBMS' (unknown what this is, instance found in v65 hero_pc_40_features.vcs file)
             byte[] checkSBMS = ReadBytesAtPosition(0, 4);
             if (checkSBMS[0] == 0x53 && checkSBMS[1] == 0x42 && checkSBMS[2] == 0x4D && checkSBMS[3] == 0x53)
@@ -425,7 +414,6 @@ namespace MyShaderAnalysis.parsing
             //    OutputWriteLine($"// {name4}");
             //}
             //ShowBytes(64);
-
 
             // float or int arguments
             int a0 = ReadInt32AtPosition(0);
@@ -648,7 +636,6 @@ namespace MyShaderAnalysis.parsing
             }
         }
 
-
         int MAX_ZFRAME_BYTES_SHOWN = 96;
 
         public void PrintCompressedZFrame(uint zframeId)
@@ -704,11 +691,5 @@ namespace MyShaderAnalysis.parsing
                 return $"zframe[0x{zframeId:x08}]";
             }
         }
-
-
-
-
-
-
     }
 }

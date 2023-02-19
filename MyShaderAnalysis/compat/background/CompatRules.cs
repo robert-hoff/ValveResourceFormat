@@ -3,19 +3,13 @@ using System.Collections.Generic;
 
 namespace MyShaderAnalysis.compat
 {
-
-
     public class CompatRules
     {
-
-
         public static void RunTrials()
         {
             Trial1MultiblendPcgl30Vs();
             // Trial1MultiblendPcgl30Ps();
         }
-
-
 
         static void Trial1MultiblendPcgl30Vs()
         {
@@ -53,16 +47,11 @@ namespace MyShaderAnalysis.compat
                     Console.WriteLine($"{i:x04}               {Convert.ToString(i, 2).PadLeft(9, '0')}");
                 }
             }
-
-
         }
-
-
 
         static List<(int, int)> exclusions = new();
         static List<(int, int)> inclusions = new();
         static List<(int, int, int)> inclusionsTriples = new();
-
 
         static void AddExlusion(int b0, int b1)
         {
@@ -86,8 +75,6 @@ namespace MyShaderAnalysis.compat
             inclusionsTriples.Add((num0, num1, num2));
         }
 
-
-
         /*
          *
          * I'm supposed to exclude the following
@@ -104,7 +91,6 @@ namespace MyShaderAnalysis.compat
          */
         static void Trial1MultiblendPcgl30Ps()
         {
-
             AddExlusion(1, 2);             // compat[0]
             AddExlusion(1, 3);             // compat[0]
                                            // AddExlusion(2, 3);             // uncertain if compat[0] implies this
@@ -123,7 +109,6 @@ namespace MyShaderAnalysis.compat
             AddExlusion(2, 17);            // compat[23]
             AddExlusion(6, 17);            // compat[23]
                                            // AddExlusion(6, 17);            // compat[26]         // already described in compat[23]
-
 
             // AddInclusionTriples(5,4,1);    // compat[3]
             AddInclusion(5, 4);               // compat[3]
@@ -145,9 +130,6 @@ namespace MyShaderAnalysis.compat
             AddInclusion(16, 4);           // compat[22]
             AddInclusion(11, 10);          // compat[25]
 
-
-
-
             // not sure what to do with these
             // 2,3,0                        // compat[6]
             // 13,6,2                       // compat[11]
@@ -155,7 +137,6 @@ namespace MyShaderAnalysis.compat
             // 15,6,2                       // compat[17]
             // 16,6,2                       // compat[20]
             // 17,9                         // compat[23]
-
 
             for (int i = 0; i < 262144; i++)
             {
@@ -194,22 +175,7 @@ namespace MyShaderAnalysis.compat
                     Console.WriteLine($"{i,3}               {Convert.ToString(i, 2).PadLeft(9, '0')}");
                 }
             }
-
-
         }
-
-
-
     }
-
-
-
-
 }
-
-
-
-
-
-
 

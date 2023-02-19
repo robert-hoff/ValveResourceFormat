@@ -5,7 +5,6 @@ namespace MyShaderAnalysis.snippetcode
 {
     internal class ByteSequenceToString
     {
-
         public static void Run()
         {
             ConvertByteSequenceToString("30 50 51 52 53 5D"); // 0PQRS

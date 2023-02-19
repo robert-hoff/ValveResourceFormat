@@ -93,7 +93,6 @@ namespace MyShaderAnalysis.snippetcode
         {
             Console.WriteLine($"byte check");
 
-
             // byte[] input = Array.Empty<byte>();
             // byte[] input = { 1, 2, 3, 4 };
             byte[] input = { 1, 2, 3, 0 };
@@ -277,7 +276,6 @@ namespace MyShaderAnalysis.snippetcode
             "00 00 00 1A 02 00 46 6F 72 77 61 72 64 4C 61 79 65 72 4F 6E 6C 79 00 C4 29 CF 2B 09 FF FF 00 00 " +
             "00 00 01 4E 6F 72 6D 61 6C 4D 61 70 54 65 78 74 75 72 65 00 2E 56 C6 1C 0E 7A 00 01 00 00 00";
 
-
             string assembleString = "";
             int count = 0;
             foreach (var hexcode in input3.Split(' '))
@@ -294,7 +292,6 @@ namespace MyShaderAnalysis.snippetcode
                 {
                     assembleString += "\n";
                 }
-
             }
             Console.WriteLine($"{assembleString}");
         }
@@ -330,14 +327,11 @@ namespace MyShaderAnalysis.snippetcode
 
         static void PrintByteCounter()
         {
-
             for (int i = 0; i < 8; i++)
             {
                 Console.WriteLine($"({i * 32 + 216}) 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
             }
-
         }
-
     }
 }
 

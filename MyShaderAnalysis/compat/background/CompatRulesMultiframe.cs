@@ -5,26 +5,18 @@ using System.Collections.Generic;
 using ValveResourceFormat.CompiledShader;
 using static MyShaderAnalysis.util.MyShaderUtilHelpers;
 
-
 //  17      16      15    14     13   12     11   10   9     8   7   6   5  4  3  2  1  0
 // 98304  49152  24576  12288  6144  2048  1024  512  256  128  64  32  16  8  4  2  1  1
 
 namespace MyShaderAnalysis.compat
 {
-
-
     public class CompatRulesMultiframe
     {
-
         public static void RunTrials()
         {
-
             Trial1();
             // TestShadernameShorten();
-
         }
-
-
 
         static void TestShadernameShorten()
         {
@@ -48,14 +40,11 @@ namespace MyShaderAnalysis.compat
             }
         }
 
-
-
         // static int[] offset = { 1, 1, 2, 4, 8, 16, 32, 64, 128, 384, 768, 1536 };
         // static int[] layers = { 0, 1, 1, 1, 1,  1,  1,  1,   2,  1,    1,    1 };
 
         static int[] offset;
         static int[] layers;
-
 
         public static void Trial1()
         {
@@ -119,12 +108,11 @@ namespace MyShaderAnalysis.compat
                     // string stateList = GetStateString(thisState);
                     // StaticAnalysis.OutputWriteLine($"zframe[{i:x08}]   {Convert.ToString(i, 2).PadLeft(20, '0')}    {sfNameList}");
                     // StaticAnalysis.OutputWriteLine($"zframe[{i:x08}]  {sfNameList}");
-                    fw.WriteText($"Zframe[0x{zframeId:x08}]  {sfNameList}");
+                    fw.WriteLine($"Zframe[0x{zframeId:x08}]  {sfNameList}");
                 }
             }
             fw.CloseStreamWriter();
         }
-
 
         private static FileWriter GetFileWriterHtml(string htmltitle, string htmlHeader)
         {
@@ -133,10 +121,6 @@ namespace MyShaderAnalysis.compat
             fw.WriteHtmlHeader(htmltitle, htmlHeader);
             return fw;
         }
-
-
-
-
 
         static string getSfNameList(ShaderFile shaderFile, int[] thisState)
         {
@@ -163,9 +147,6 @@ namespace MyShaderAnalysis.compat
             }
             return nameList;
         }
-
-
-
 
         // WARN - get these array lengths sorted out
 
@@ -219,11 +200,8 @@ namespace MyShaderAnalysis.compat
             return state;
         }
 
-
         static bool[,] exclusions = new bool[100, 100];
         static bool[,] inclusions = new bool[100, 100];
-
-
 
         static void AddExclusion(int s1, int s2, int s3)
         {
@@ -242,8 +220,6 @@ namespace MyShaderAnalysis.compat
             inclusions[s1, s2] = true;
         }
 
-
-
         static void ShowStateForZframe(int num)
         {
             int[] state = GetBitPattern(num);
@@ -261,8 +237,6 @@ namespace MyShaderAnalysis.compat
             return stateStr;
         }
 
-
-
         static void ShowIntArray(int[] state, string space = "")
         {
             string stateStr = "";
@@ -272,19 +246,6 @@ namespace MyShaderAnalysis.compat
             }
             Console.WriteLine($"{stateStr[0..^1]}");
         }
-
-
-
     }
-
-
-
-
-
-
 }
-
-
-
-
 

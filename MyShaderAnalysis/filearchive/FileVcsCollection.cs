@@ -11,10 +11,8 @@ namespace MyShaderAnalysis.filearchive
 {
     class FileVcsCollection
     {
-
         public FileVcsCollection(ARCHIVE archive)
         {
-
         }
 
         /*

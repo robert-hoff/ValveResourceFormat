@@ -101,7 +101,6 @@ namespace MyShaderAnalysis.snippetcode
 
         static void Trial1()
         {
-
             // -- showing sha1 on selected files (160 bit) and their guid
 
             // glsl-25abff568a269b7a34c464ca09e7de0c.TXT
@@ -128,7 +127,6 @@ namespace MyShaderAnalysis.snippetcode
             byte[] bytes31 = ParseString("A4 74 A6 DB B0 38 6C 0B E3 89 C2 28 00 B5 DB 6C 4A 88 8B A0");
             byte[] bytes32 = ParseString("25 D9 EC 38 40 BB 0D 4C 5C 62 40 49 17 15 B1 61");
 
-
             for (int i = 0; i < 8; i++)
             {
                 for (int j = 1; j < 16; j++)
@@ -148,7 +146,6 @@ namespace MyShaderAnalysis.snippetcode
                             Console.WriteLine($"{BoolArrayToString(result2)}");
                             Console.WriteLine($"");
                         }
-
                     }
                 }
             }
@@ -178,7 +175,6 @@ namespace MyShaderAnalysis.snippetcode
                 int b1 = BitAt(i, bytes2);
                 int b2 = BitAt(ind2, bytes1);
                 matches[i] = b1 == b2;
-
             }
             return matches;
         }
@@ -261,7 +257,6 @@ namespace MyShaderAnalysis.snippetcode
                 {
                     result += bool0[i] ? "T" : "F";
                 }
-
             }
             return result;
         }

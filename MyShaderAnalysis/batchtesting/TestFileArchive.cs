@@ -8,7 +8,6 @@ namespace MyShaderAnalysis.batchtesting
 {
     public class TestFileArchive
     {
-
         public static void RunTrials()
         {
             TestVulkanGpuSources();
@@ -20,7 +19,6 @@ namespace MyShaderAnalysis.batchtesting
             // TestShaderFilesBytesShowOutput();
             // ShowVcsFiles();
         }
-
 
         public static void TestVulkanGpuSources()
         {
@@ -50,7 +48,6 @@ namespace MyShaderAnalysis.batchtesting
             }
         }
 
-
         public static void RunTestShaderFilesSelectedArchives()
         {
             // ARCHIVE[] archives = { ARCHIVE.dota_core_pcgl_v64, ARCHIVE.dota_game_pcgl_v64 };
@@ -63,7 +60,6 @@ namespace MyShaderAnalysis.batchtesting
             }
         }
 
-
         public static void RunTestShaderFilesAllArchives()
         {
             var archives = Enum.GetValues(typeof(ARCHIVE));
@@ -74,7 +70,6 @@ namespace MyShaderAnalysis.batchtesting
             }
         }
 
-
         public static void TestShaderFiles(FileArchive vcsArchive)
         {
             foreach (ShaderFile shaderFile in vcsArchive.GetShaderFiles())
@@ -82,7 +77,6 @@ namespace MyShaderAnalysis.batchtesting
                 Console.WriteLine($"{shaderFile.FilenamePath} zframe count = {shaderFile.GetZFrameCount()}");
             }
         }
-
 
         /*
          * ShaderFile parsing is done by FileArchive - so retrieving a ShaderFile object means that it successfully parsed.
@@ -100,7 +94,6 @@ namespace MyShaderAnalysis.batchtesting
             }
         }
 
-
         public static void TestShaderFilesBytes2()
         {
             // FileArchive vcsArchive = new FileArchive(ARCHIVE.dota_testset_pcgl_v64, VcsProgramType.VertexShader, VcsShaderModelType._30);
@@ -113,7 +106,6 @@ namespace MyShaderAnalysis.batchtesting
                 shaderFile.PrintByteDetail(outputWriter: (x) => { });
             }
         }
-
 
         public static void TestShaderFilesBytes1()
         {
@@ -132,7 +124,6 @@ namespace MyShaderAnalysis.batchtesting
             }
         }
 
-
         public static void TestShaderFilesBytesShowOutput()
         {
             FileArchive vcsArchive = new FileArchive(ARCHIVE.dota_testset_pcgl_v64, VcsProgramType.VertexShader, VcsShaderModelType._30);
@@ -141,7 +132,6 @@ namespace MyShaderAnalysis.batchtesting
                 new DataReaderVcsBytes(vcsTokens.filenamepath).PrintByteDetail();
             }
         }
-
 
         public static void ShowVcsFiles()
         {

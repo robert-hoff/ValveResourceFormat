@@ -15,12 +15,10 @@ namespace MyShaderAnalysis.parsing
 {
     class ParseV65Files : ShaderDataReader
     {
-
         public static void RunTrials()
         {
             Trial1();
         }
-
 
         static void Trial1()
         {
@@ -30,7 +28,6 @@ namespace MyShaderAnalysis.parsing
             string filenamepath = GetFilenamepath(ARCHIVE.dota_game_pc_v65, "hero_pc_40_features.vcs");
             new ParseV65Files(filenamepath);
         }
-
 
         private VcsProgramType vcsProgramType;
         private VcsPlatformType vcsSourceType;
@@ -59,7 +56,6 @@ namespace MyShaderAnalysis.parsing
             ShowBytes(4, $"block DELIM always 17, or minor version? (but stayed the same for v65 and v64)");
             BreakLine();
 
-
             PrintAllSfBlocks();
             PrintAllCompatibilityBlocks();
             PrintAllDBlocks();
@@ -79,11 +75,7 @@ namespace MyShaderAnalysis.parsing
                 return;
             }
             ShowEndOfFile();
-
-
         }
-
-
 
         // private bool shortenOutput = true;
         private bool shortenOutput = false;
@@ -143,7 +135,6 @@ namespace MyShaderAnalysis.parsing
                 ShowBytes(12, 4, breakLine: false);
                 TabComment($"({arg5},{arg6},{arg7})");
             }
-
 
             BreakLine();
             ShowByteCount();
@@ -208,7 +199,6 @@ namespace MyShaderAnalysis.parsing
             BreakLine();
         }
 
-
         private int PrintVsPsHeader()
         {
             ShowByteCount("vcs file");
@@ -227,8 +217,6 @@ namespace MyShaderAnalysis.parsing
             BreakLine();
             return version;
         }
-
-
 
         private void PrintAllSfBlocks()
         {
@@ -405,8 +393,6 @@ namespace MyShaderAnalysis.parsing
                 ShowBytes(dynLength, "dynamic expression", 1);
             }
 
-
-
             // check to see if this reads 'SBMS' (unknown what this is, instance found in v65 hero_pc_40_features.vcs file)
             byte[] checkSBMS = ReadBytesAtPosition(0, 4);
             if (checkSBMS[0] == 0x53 && checkSBMS[1] == 0x42 && checkSBMS[2] == 0x4D && checkSBMS[3] == 0x53)
@@ -417,8 +403,6 @@ namespace MyShaderAnalysis.parsing
                 ShowBytes(dynLength, "dynamic expression", 1);
             }
 
-
-
             // 6 int parameters follow the dynamic expression
             if (version == 64 || version == 65)
             {
@@ -427,8 +411,6 @@ namespace MyShaderAnalysis.parsing
             {
                 ShowBytes(20, 4);
             }
-
-
 
             // a rarely seen file reference
             string name4 = ReadNullTermStringAtPosition();
@@ -658,7 +640,6 @@ namespace MyShaderAnalysis.parsing
             }
         }
 
-
         int MAX_ZFRAME_BYTES_SHOWN = 96;
 
         public void PrintCompressedZFrame(uint zframeId)
@@ -714,11 +695,5 @@ namespace MyShaderAnalysis.parsing
                 return $"zframe[0x{zframeId:x08}]";
             }
         }
-
-
-
-
-
-
     }
 }

@@ -2,8 +2,6 @@ using MyShaderAnalysis.filearchive;
 using ValveResourceFormat.CompiledShader;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
-
-
 /*
  *
  * Generating the zframes from the compat-rules is a verification-task. The method employed is slow.
@@ -25,7 +23,6 @@ namespace MyShaderAnalysis.compat
 {
     public class CompatRulesGenericStaticClass
     {
-
         const string PCGL_DIR_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders-core/vfx";
         const string PCGL_DIR_NOT_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders/vfx";
 
@@ -33,8 +30,6 @@ namespace MyShaderAnalysis.compat
         {
             Trial1();
         }
-
-
 
         static void Trial1()
         {
@@ -44,9 +39,6 @@ namespace MyShaderAnalysis.compat
             ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(vcsFilenamepath);
             GenerateZFrames(shaderFile);
         }
-
-
-
 
         static void GenerateZFrames(ShaderFile shaderFile)
         {
@@ -81,7 +73,6 @@ namespace MyShaderAnalysis.compat
             AddInclusion(16, 4);           // compat[22]
             AddInclusion(11, 10);          // compat[25]
 
-
             for (int zframeId = 0; zframeId < MaxEnumeration(); zframeId++)
             {
                 if (CheckZFrame(zframeId))
@@ -90,14 +81,10 @@ namespace MyShaderAnalysis.compat
                     ShowIntArray(thisState, 5);
                 }
             }
-
-
         }
-
 
         static int[] offsets;
         static int[] layers;
-
 
         static bool[,] exclusions = new bool[100, 100];
         static bool[,] inclusions = new bool[100, 100];
@@ -122,7 +109,6 @@ namespace MyShaderAnalysis.compat
         {
             return 2 * offsets[^1];
         }
-
 
         static bool CheckZFrame(int zframe)
         {
@@ -174,8 +160,6 @@ namespace MyShaderAnalysis.compat
             return state;
         }
 
-
-
         /*
          *
          *
@@ -195,7 +179,6 @@ namespace MyShaderAnalysis.compat
          */
         static void GenerateOffsetAndLayers(ShaderFile shaderFile)
         {
-
             offsets = new int[shaderFile.SfBlocks.Count];
             layers = new int[shaderFile.SfBlocks.Count];
 
@@ -209,22 +192,6 @@ namespace MyShaderAnalysis.compat
                 offsets[i] = offsets[i - 1] * (layers[i - 1] + 1);
             }
         }
-
-
-
-
-
-
     }
 }
-
-
-
-
-
-
-
-
-
-
 

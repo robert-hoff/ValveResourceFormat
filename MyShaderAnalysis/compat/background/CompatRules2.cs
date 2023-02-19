@@ -8,16 +8,12 @@ namespace MyShaderAnalysis.compat
 {
     public class CompatRules2
     {
-
         public static void RunTrials()
         {
-
             Trial1MultiblendPcgl30Ps();
             // Trial1GlobalLitSimpleVs();
             // Trial1GenericLightPcgl30Ps();
         }
-
-
 
         static List<(int, int)> exclusions = new();
         static List<(int, int)> inclusions = new();
@@ -43,19 +39,14 @@ namespace MyShaderAnalysis.compat
             inclusionsTriples.Add((num0, num1, num2));
         }
 
-
         static void Trial1GenericLightPcgl30Ps()
         {
-
             AddExlusion(1, 2);
             AddExlusion(1, 3);
             AddExlusion(2, 3); // these three described as (1,2,3) compat[0]
             AddInclusion(5, 4);
 
-
             // these is also compat[1] described as an exclusion of (0), but that doesn't seem to do anything ..
-
-
 
             for (int i = 0; i < 64; i++)
             {
@@ -84,10 +75,7 @@ namespace MyShaderAnalysis.compat
                     Console.WriteLine($"{i,3}               {Convert.ToString(i, 2).PadLeft(9, '0')}");
                 }
             }
-
         }
-
-
 
         /*
          *
@@ -142,11 +130,7 @@ namespace MyShaderAnalysis.compat
                     Console.WriteLine($"{i,3}               {Convert.ToString(i, 2).PadLeft(9, '0')}");
                 }
             }
-
         }
-
-
-
 
         /*
          *
@@ -178,7 +162,6 @@ namespace MyShaderAnalysis.compat
          */
         static void Trial1MultiblendPcgl30Ps()
         {
-
             AddExlusion(1, 2);             // compat[0]
             AddExlusion(1, 3);             // compat[0]
                                            // AddExlusion(2, 3);             // uncertain if compat[0] implies this
@@ -197,7 +180,6 @@ namespace MyShaderAnalysis.compat
             AddExlusion(2, 17);            // compat[23]
             AddExlusion(6, 17);            // compat[23]
                                            // AddExlusion(6, 17);            // compat[26]         // already described in compat[23]
-
 
             AddInclusion(5, 4);               // compat[3]     (5,4) but it appears with an additionl 1 argument
             AddInclusion(7, 4);               // compat[5]     (7,4) but it appears with an additionl 1 argument
@@ -218,9 +200,6 @@ namespace MyShaderAnalysis.compat
             AddInclusion(16, 4);           // compat[22]
             AddInclusion(11, 10);          // compat[25]
 
-
-
-
             // not sure what to do with these (these are written as exclusions)
             // 2,3,0                        // compat[6]
             // 13,6,2                       // compat[11]
@@ -228,7 +207,6 @@ namespace MyShaderAnalysis.compat
             // 15,6,2                       // compat[17]
             // 16,6,2                       // compat[20]
             // 17,9                         // compat[23]
-
 
             // for (int i = 0; i < 262144; i++) {
             for (int i = 0; i < 10000; i++)
@@ -268,36 +246,7 @@ namespace MyShaderAnalysis.compat
                     Console.WriteLine($"{i,3}               {Convert.ToString(i, 2).PadLeft(9, '0')}");
                 }
             }
-
-
         }
-
-
-
-
-
-
-
-
     }
-
-
-
-
-
-
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
 

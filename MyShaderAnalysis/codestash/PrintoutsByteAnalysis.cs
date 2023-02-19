@@ -10,11 +10,8 @@ namespace MyShaderAnalysis.codestash
 {
     public class PrintoutsByteAnalysis
     {
-
         // const string OUTPUT_DIR = @"Z:/active/projects/dota2-sourcesdk-modding/shader-analysis-vcs-format/OUTPUT_DUMP";
         // const string SERVER_OUTPUT_DIR = @"Z:/dev/www/vcs.codecreation.dev/GEN-output";
-
-
 
         public static void RunTrials()
         {
@@ -29,13 +26,9 @@ namespace MyShaderAnalysis.codestash
             // DemoZframeHeaderAndTitle();
             // PrintZFrameBytesToScreen()
 
-
             PrintGlslAllFiles();
             // PrintGlslSingleFiles();
-
         }
-
-
 
         static void RunBatchPrintVcsBytes()
         {
@@ -54,7 +47,6 @@ namespace MyShaderAnalysis.codestash
                 PrintVcsFilesAsBytes(filenamepath);
             }
         }
-
 
         static void RunPrintVcsFilesAsBytes()
         {
@@ -83,7 +75,6 @@ namespace MyShaderAnalysis.codestash
             PrintVcsFilesAsBytes(filenamepath);
         }
 
-
         static void PrintVcsFilesAsBytes(string filenamepath)
         {
             FileTokensOld fileTokens = new FileTokensOld(filenamepath);
@@ -98,9 +89,6 @@ namespace MyShaderAnalysis.codestash
             fileWriter.CloseStreamWriter();
         }
 
-
-
-
         static void PrintVcsFileToScreen()
         {
             // string filenamepath = $"{V62_EXAMPLES_SOURCE}/test_pcgl_30_ps.vcs";
@@ -114,7 +102,6 @@ namespace MyShaderAnalysis.codestash
             // string filenamepath = $"{THE_LAB_SOURCE}/foliage_pc_41_ps.vcs";
             // string filenamepath = $"{THE_LAB_SOURCE}/foliage_pc_41_features.vcs";
 
-
             // -- using DataReaderVcsBytes
             // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs";
             // DataReaderVcsBytes testfile = new DataReaderVcsBytes(filenamepath);
@@ -126,8 +113,6 @@ namespace MyShaderAnalysis.codestash
             shaderFile.PrintByteDetail();
         }
 
-
-
         static void Trial2()
         {
             string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/generic_light_pcgl_30_vs.vcs";
@@ -137,9 +122,6 @@ namespace MyShaderAnalysis.codestash
             GpuSource gpuSource = zframeFile.GpuSources[0];
             // gpuSource.sourcebytes
         }
-
-
-
 
         const int LIMIT_ZFRAME_PRINTOUT = 5;
 
@@ -156,7 +138,6 @@ namespace MyShaderAnalysis.codestash
             }
         }
 
-
         static void BatchPrintZframeBytes(string filenamepath, int limitZframes)
         {
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
@@ -169,7 +150,6 @@ namespace MyShaderAnalysis.codestash
             }
         }
 
-
         static void RunPrintZFrameBytes()
         {
             int ZFRAME_INDEX = 11;
@@ -179,7 +159,6 @@ namespace MyShaderAnalysis.codestash
             ZFrameFile zframe = shaderFile.GetZFrameFileByIndex(ZFRAME_INDEX);
             PrintZFrameBytes(zframe, fileTokens);
         }
-
 
         static void PrintZFrameBytes(ZFrameFile zframe, FileTokensOld fileTokens = null)
         {
@@ -197,7 +176,6 @@ namespace MyShaderAnalysis.codestash
             zframe.PrintByteDetail(outputWriter: fileWriter.GetOutputWriter());
             fileWriter.CloseStreamWriter();
         }
-
 
         /*
          * Note this is printed by index not by zframeId
@@ -223,7 +201,6 @@ namespace MyShaderAnalysis.codestash
             fileWriter.CloseStreamWriter();
         }
 
-
         static void PrintZFrameBytesAsTestfile()
         {
             long ZFRAME_ID = 0;
@@ -243,8 +220,6 @@ namespace MyShaderAnalysis.codestash
             fileWriter.CloseStreamWriter();
         }
 
-
-
         static void DemoZframeHeaderAndTitle()
         {
             string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_vs.vcs";
@@ -257,7 +232,6 @@ namespace MyShaderAnalysis.codestash
             // html header
             Console.WriteLine(fileTokens.GetZFrameHtmlFilename(zframeId, "bytes")[..^5]);
         }
-
 
         /*
          * there are two ways to print the zframe bytes
@@ -278,12 +252,10 @@ namespace MyShaderAnalysis.codestash
             zframe.PrintByteDetail();
         }
 
-
         static int LIMIT_GPU_SOURCES_TO_PRINT = 2;
 
         static void PrintGlslAllFiles()
         {
-
             // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PCGL_SOURCE, DOTA_GAME_PCGL_SOURCE, VcsProgramType.Undetermined, -1, LIMIT_NR: 20);
             List<string> vcsFiles = GetVcsFiles(DOTA_GAME_PCGL_SOURCE, VcsProgramType.Undetermined, -1, LIMIT_NR: 20);
             // List<string> vcsFiles = GetVcsFiles(DOTA_GAME_PCGL_SOURCE, DOTA_CORE_PCGL_SOURCE, VcsProgramType.Undetermined, 30, LIMIT_NR: 20);
@@ -320,10 +292,6 @@ namespace MyShaderAnalysis.codestash
             }
         }
 
-
-
-
-
         /*
          * This currently only makes sense for glsl sources (it's the only one where the bytes are the sourcecode)
          *
@@ -356,7 +324,6 @@ namespace MyShaderAnalysis.codestash
                     WriteBytesToFile(glslSource.Sourcebytes, outputFilenamepath);
                 }
 
-
                 //foreach (var glslSource in zframeFile.gpuSources)
                 //{
                 //    string outputFilenamepath = $"{glslServerDir}/{fileTokens.GetGlslHtmlFilename((GlslSource)glslSource)}";
@@ -364,7 +331,6 @@ namespace MyShaderAnalysis.codestash
                 //}
             }
         }
-
 
         /*
          * This method is only called by the two functions above PrintGlslAllFiles() and PrintGlslSingleFiles()
@@ -398,9 +364,5 @@ namespace MyShaderAnalysis.codestash
                 File.WriteAllBytes(outputFilenamepath, databytes);
             }
         }
-
-
-
-
     }
 }

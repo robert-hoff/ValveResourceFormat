@@ -1,23 +1,14 @@
 using System;
 using System.Collections.Generic;
 
-
-
 namespace MyShaderAnalysis.compat
 {
     public class CompatRulesWater
     {
-
-
-
-
         public static void RunTrials()
         {
             Trial1Water_30_Ps();
         }
-
-
-
 
         /*
          *
@@ -43,9 +34,6 @@ namespace MyShaderAnalysis.compat
          */
         static void Trial1Water_30_Ps()
         {
-
-
-
             remappingTable.Add(0, -1);    // S_TOOLS_ENABLED
             remappingTable.Add(1, 0);   // S_MODE_FORWARD
             remappingTable.Add(2, 1);    // S_MODE_DEPTH
@@ -58,8 +46,6 @@ namespace MyShaderAnalysis.compat
             remappingTable.Add(9, 10);    // S_USE_FOG_COLOR
             remappingTable.Add(10, 11);   // S_FORCE_CHEAP_WATER
             remappingTable.Add(11, 12);   // S_FORCE_NULL_WATER
-
-
 
             AddExlusion(1, 3);             // compat[]
             AddExlusion(1, 2);             // compat[]
@@ -74,17 +60,13 @@ namespace MyShaderAnalysis.compat
             AddExlusion(3, 9);             // compat[]
             AddExlusion(10, 11);            // compat[]
 
-
             //AddInclusionNoRemap(8, 5);
             //int num0 = 1 << (9);
             //int num1 = 1 << (5);
             //inclusions.Add((num0, num1));
 
-
             AddInclusion(8, 6);            // compat[]
             AddInclusion(7, 6);            // compat[]
-
-
 
             for (int i = 0; i < 4096; i++)
             {
@@ -127,16 +109,10 @@ namespace MyShaderAnalysis.compat
             }
         }
 
-
-
-
-
-
         static List<(int, int)> exclusions = new();
         static List<(int, int)> inclusions = new();
         static List<(int, int, int)> inclusionsTriple = new();
         static Dictionary<int, int> remappingTable = new();
-
 
         static void AddExlusionNoRemap(int b0, int b1)
         {
@@ -188,22 +164,6 @@ namespace MyShaderAnalysis.compat
             int num2 = 1 << (b2);
             inclusionsTriple.Add((num0, num1, num2));
         }
-
-
-
-
-
-
-
-
-
-
-
-
     }
 }
-
-
-
-
 

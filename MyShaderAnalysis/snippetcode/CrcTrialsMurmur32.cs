@@ -7,7 +7,6 @@ namespace MyShaderAnalysis.snippetcode
     {
         public static void RunTrials()
         {
-
             // Trial1();
             Trial2();
             // Trial3();
@@ -54,7 +53,6 @@ namespace MyShaderAnalysis.snippetcode
             h ^= 0xff;
             h *= M;
             Console.WriteLine("{0:X08}", h);
-
         }
 
         static void Trial4()
@@ -63,7 +61,6 @@ namespace MyShaderAnalysis.snippetcode
             byte[] databytes = getDatabytesExample1();
             uint murmur32 = MurmurHash2.Hash(databytes, MURMUR2SEED);
             Console.WriteLine($"{murmur32:X08}");
-
         }
 
         static string ByteStringtoString(string databytes)

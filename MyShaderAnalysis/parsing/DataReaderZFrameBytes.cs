@@ -1,17 +1,13 @@
 using System;
 using System.IO;
-using System.Collections.Generic;
-using ValveResourceFormat.ThirdParty;
 using ValveResourceFormat.CompiledShader;
-using ValveResourceFormat.Serialization.VfxEval;
+using ValveResourceFormat.ThirdParty;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
 namespace MyShaderAnalysis.parsing
 {
-
     public class DataReaderZFrameBytes : ShaderDataReader
     {
-
         private VcsProgramType vcsProgramType;
         private VcsPlatformType vcsPlatformType;
         private VcsShaderModelType vcsShaderModelType;
@@ -26,7 +22,6 @@ namespace MyShaderAnalysis.parsing
             this.vcsShaderModelType = vcsShaderModelType;
             this.showStatusMessage = showStatusMessage;
         }
-
 
         // these are recorded in case save is indicated
         // private List<(int, int, string)> glslSources = new();
@@ -44,13 +39,11 @@ namespace MyShaderAnalysis.parsing
                 return;
             }
 
-
             ShowZDataSection(-1);
             ShowZFrameHeader();
 
             // ShowBytes(10000);
             // return;
-
 
             // this applies only to vs files (ps, gs and psrs files don't have this section)
             if (vcsProgramType == VcsProgramType.VertexShader)
@@ -190,7 +183,6 @@ namespace MyShaderAnalysis.parsing
             }
             // ShowBytes(1000);
 
-
             BreakLine();
             ShowEndOfFile();
 
@@ -199,7 +191,6 @@ namespace MyShaderAnalysis.parsing
                 Console.WriteLine($"- OK");
             }
         }
-
 
         private bool prevBlockWasZero = false;
         public void ShowZDataSection(int blockId)
@@ -520,13 +511,6 @@ namespace MyShaderAnalysis.parsing
             ShowBytes(dynExpLen);
         }
 
-
-
-
-
-
-
-
         /*
         private void ShowDynamicExpression(int dynExpLen)
         {
@@ -546,7 +530,6 @@ namespace MyShaderAnalysis.parsing
             }
         }
         */
-
 
         /*
         private void SaveGlslSourcestoHtml(List<(int, int, string)> glslSources)
@@ -593,19 +576,6 @@ namespace MyShaderAnalysis.parsing
             }
         }
         */
-
-
-
-
-
     }
 }
-
-
-
-
-
-
-
-
 

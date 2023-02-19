@@ -12,7 +12,6 @@ namespace MyShaderAnalysis.codestash
         public FileTokensOld vsFile { get; }
         public FileTokensOld psFile { get; }
 
-
         public FileTriple(ARCHIVE_OLD archive, string ftFileName)
         {
             ftFile = new FileTokensOld(archive, ftFileName);
@@ -32,15 +31,12 @@ namespace MyShaderAnalysis.codestash
             }
         }
 
-
         public FileTriple(ARCHIVE_OLD archive, string ftFileName, string vsFileName, string psFileName)
         {
             ftFile = new FileTokensOld(archive, ftFileName);
             vsFile = new FileTokensOld(archive, vsFileName);
             psFile = new FileTokensOld(archive, psFileName);
         }
-
-
 
         public static FileTriple GetTripleIfExists(ARCHIVE_OLD archive, string ftFilename)
         {
@@ -61,7 +57,6 @@ namespace MyShaderAnalysis.codestash
             }
         }
 
-
         public static List<FileTriple> GetFeaturesVsPsFileTriple(string dir1, string dir2, int vcsFileVer = -1)
         {
             List<FileTriple> fileTriples = new();
@@ -79,15 +74,12 @@ namespace MyShaderAnalysis.codestash
             validFeaturesFiles.Sort();
             foreach (string ftFilenamepath in validFeaturesFiles)
             {
-
                 // ARCHIVE_OLD archive = GetCoreOrDotaString(ftFilenamepath).Equals("core") ? ARCHIVE.dotacore_pcgl : ARCHIVE.dotagame_pcgl;
                 ARCHIVE_OLD archive = DetermineArchiveType(ftFilenamepath);
                 fileTriples.Add(new FileTriple(archive, ftFilenamepath));
             }
             return fileTriples;
         }
-
-
 
         // untested, wrote it in to reduce a vcsFiles collection to only the features files
         public static List<FileTriple> GetFeaturesVsPsFileTriple(List<string> vcsFiles)
@@ -114,7 +106,6 @@ namespace MyShaderAnalysis.codestash
             validFeaturesFiles.Sort();
             foreach (string ftFilenamepath in validFeaturesFiles)
             {
-
                 // ARCHIVE archive = GetCoreOrDotaString(ftFilenamepath).Equals("core") ? ARCHIVE.dotacore_pcgl : ARCHIVE.dotagame_pcgl;
                 ARCHIVE_OLD archive = DetermineArchiveType(ftFilenamepath);
                 fileTriples.Add(new FileTriple(archive, ftFilenamepath));

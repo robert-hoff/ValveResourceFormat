@@ -1,28 +1,15 @@
 using System;
 using System.Collections.Generic;
 
-
-
 namespace MyShaderAnalysis.compat
 {
-
-
     public class CompatRules5
     {
-
         public static void RunTrials()
         {
-
-
             // Trial1MultiblendPcgl30PsAttempt8();
             Trial1MultiblendPcgl30PsAttempt9();
-
         }
-
-
-
-
-
 
         /*
          *
@@ -66,7 +53,6 @@ namespace MyShaderAnalysis.compat
 
             // remappingTable.Add(18, 11);  // S_LAYER_BORDER_TINT       mapped to 11
 
-
             AddExlusion(1, 2);             // compat[0]
             AddExlusion(1, 3);             // compat[0]
             AddExlusion(2, 3);             // compat[0]
@@ -109,8 +95,6 @@ namespace MyShaderAnalysis.compat
 
             AddExlusion(9, 17);            // compat[24]
             AddExlusion(6, 17);            // compat[24]
-
-
 
             // inclusions
             AddInclusion(5, 4);            // compat[3]
@@ -172,21 +156,8 @@ namespace MyShaderAnalysis.compat
                 {
                     Console.WriteLine($"{i,3}    {i:x04}           {Convert.ToString(i, 2).PadLeft(20, '0')}");
                 }
-
-
-
-
             }
-
         }
-
-
-
-
-
-
-
-
 
         /*
          *
@@ -282,7 +253,6 @@ namespace MyShaderAnalysis.compat
 
             // remappingTable.Add(18, 11);  // S_LAYER_BORDER_TINT       mapped to 11
 
-
             AddExlusion(1, 2);             // compat[0]
             AddExlusion(1, 3);             // compat[0]
             AddExlusion(2, 3);             // compat[0]
@@ -325,8 +295,6 @@ namespace MyShaderAnalysis.compat
 
             AddExlusion(9, 17);            // compat[24]
             AddExlusion(6, 17);            // compat[24]
-
-
 
             // inclusions
             AddInclusion(5, 4);            // compat[3]
@@ -388,26 +356,13 @@ namespace MyShaderAnalysis.compat
                 {
                     Console.WriteLine($"{i,3}    {i:x04}           {Convert.ToString(i, 2).PadLeft(20, '0')}");
                 }
-
-
-
-
             }
-
         }
-
-
-
-
-
-
-
 
         static List<(int, int)> exclusions = new();
         static List<(int, int)> inclusions = new();
         static List<(int, int, int)> inclusionsTriple = new();
         static Dictionary<int, int> remappingTable = new();
-
 
         static void AddExlusionNoRemap(int b0, int b1)
         {
@@ -459,25 +414,6 @@ namespace MyShaderAnalysis.compat
             int num2 = 1 << (b2);
             inclusionsTriple.Add((num0, num1, num2));
         }
-
-
-
-
-
-
-
-
-
-
-
     }
-
-
 }
-
-
-
-
-
-
 

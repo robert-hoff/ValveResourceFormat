@@ -5,12 +5,10 @@ namespace MyShaderAnalysis.snippetcode
 {
     public class EncodeZstdDictAsString
     {
-
         public static void RunTrials()
         {
             EncodeDictionary();
             // Trials2();
-
         }
 
         static void EncodeDictionary()
@@ -19,13 +17,11 @@ namespace MyShaderAnalysis.snippetcode
             EncodeBytes(zstdDict);
         }
 
-
         static void Trials2()
         {
             byte[] hello2 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
             EncodeBytes(hello2);
         }
-
 
         static void Trials1()
         {
@@ -41,7 +37,6 @@ namespace MyShaderAnalysis.snippetcode
             // Decode("Va]2");
         }
 
-
         /*
          * Note - encoder always assumes databytes requires 21846 * 4 characters to encode
          *
@@ -49,7 +44,6 @@ namespace MyShaderAnalysis.snippetcode
 
         static void EncodeBytes(byte[] databytes)
         {
-
             string dict = "";
             for (int i = 0; i < 21846; i++)
             {
@@ -58,7 +52,6 @@ namespace MyShaderAnalysis.snippetcode
 
             // use p as a placeholder in place of '\'
             dict = dict.Replace('\\', 'p');
-
 
             for (int i = 0; i < dict.Length; i += 100)
             {
@@ -70,7 +63,6 @@ namespace MyShaderAnalysis.snippetcode
                 Console.WriteLine($"\"{dict[i..end]}\"+");
             }
         }
-
 
         static byte[] Decode(string enc)
         {
@@ -86,8 +78,6 @@ namespace MyShaderAnalysis.snippetcode
         {
             return c - 0x30 << shift;
         }
-
-
 
         static string GetPiece3(byte[] dict, int ind)
         {
@@ -114,7 +104,6 @@ namespace MyShaderAnalysis.snippetcode
             return (char)(val + 0x30);
         }
 
-
         static int GetPiece2(byte[] dict, int ind)
         {
             int val = 0;
@@ -124,7 +113,6 @@ namespace MyShaderAnalysis.snippetcode
                 val += i < dict.Length ? dict[i] : 0;
             }
             return val;
-
         }
 
         static int[] GetPiece(byte[] dict, int ind)
@@ -136,7 +124,6 @@ namespace MyShaderAnalysis.snippetcode
                 returnArr[i - start] = dict[i];
             }
             return returnArr;
-
         }
     }
 }

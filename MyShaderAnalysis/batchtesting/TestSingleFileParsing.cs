@@ -10,7 +10,6 @@ namespace MyShaderAnalysis.batchtesting
 {
     public class TestSingleFileParsing
     {
-
         public static void RunTrials()
         {
             // RunTestSingleFilePrintout();
@@ -27,11 +26,8 @@ namespace MyShaderAnalysis.batchtesting
             // RunTestZFrameBytePrintoutV62Batch();
             // RunTestZFrameBytePrintoutV62();
 
-
             ShowGpuSource();
         }
-
-
 
         static void RunZframeBytesSetExample2()
         {
@@ -41,7 +37,6 @@ namespace MyShaderAnalysis.batchtesting
             // TestZFrameBytePrintout1(filenamepath, zframeIndex);
             TestZFrameBytePrintout2(filenamepath, zframeIndex);
         }
-
 
         static void RunZframeBytesSetExample1()
         {
@@ -153,7 +148,6 @@ namespace MyShaderAnalysis.batchtesting
 
         static void RunBatchTestZFramesSuppressOutput()
         {
-
             // ARCHIVE archive = ARCHIVE.dotagame_pcgl_v62;
             ARCHIVE archive = ARCHIVE.dota_core_pcgl_v62;
             // ARCHIVE archive = ARCHIVE.the_lab_v62;
@@ -220,7 +214,6 @@ namespace MyShaderAnalysis.batchtesting
 
             ParseV62ZFrame zframeParser = new ParseV62ZFrame(zframeBytes, shaderFile);
             zframeParser.PrintByteDetail();
-
         }
         static void TestZFrameFilePrintout(string filenamepath, int zframeIndex)
         {
@@ -252,9 +245,7 @@ namespace MyShaderAnalysis.batchtesting
 
             ZFrameFile zframeFile = fileTokens.GetZframeFileByIndex(0);
 
-
             // zframeFile.PrintByteDetail();
-
 
             VulkanSource vulkanSource = (VulkanSource)zframeFile.GpuSources[2];
             ParseVulkanSource vulkanParser = new ParseVulkanSource(vulkanSource);

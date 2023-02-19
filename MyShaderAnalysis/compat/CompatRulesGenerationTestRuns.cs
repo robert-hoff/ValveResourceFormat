@@ -4,17 +4,14 @@ using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
 namespace MyShaderAnalysis.compat
 {
-
     public class CompatRulesGenerationTestRuns
     {
-
         const string PCGL_DIR_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders-core/vfx";
         const string PCGL_DIR_NOT_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders/vfx";
 
         public static void RunTrials()
         {
             Trial1();
-
         }
 
         static void Trial1()
@@ -29,29 +26,12 @@ namespace MyShaderAnalysis.compat
             ConfigMappingSParams configGen = new(shaderFile);
             // zframeGen.ShowOffsetAndLayersArrays();
 
-
             foreach (var item in shaderFile.ZframesLookup)
             {
                 int[] state = configGen.GetConfigState(item.Key);
                 ShowIntArray(state);
-
             }
-
-
-
-
         }
-
-
-
-
-
     }
-
-
-
 }
-
-
-
 

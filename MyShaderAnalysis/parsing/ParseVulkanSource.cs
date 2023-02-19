@@ -42,7 +42,6 @@ namespace MyShaderAnalysis.parsing
             this.vulkanSource = vulkanSource;
         }
 
-
         public void PrintByteDetail()
         {
             BaseStream.Position = 0;
@@ -59,8 +58,6 @@ namespace MyShaderAnalysis.parsing
             BreakLine();
             ShowBytes(4000);
         }
-
-
 
         public void PrintByteDetailSpirvReflection()
         {
@@ -82,8 +79,5 @@ namespace MyShaderAnalysis.parsing
             BreakLine();
             ShowBytes(4000);
         }
-
-
-
     }
 }

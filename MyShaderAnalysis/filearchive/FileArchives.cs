@@ -17,7 +17,6 @@ namespace MyShaderAnalysis.filearchive
         private const string SERVER_BASEDIR = "Z:/dev/www/vcs.codecreation.dev";
         private const string SERVER_TESTPATH = SERVER_BASEDIR + "/GEN-output";
 
-
         public static string GetServerBaseDir()
         {
             return SERVER_BASEDIR;
@@ -44,7 +43,6 @@ namespace MyShaderAnalysis.filearchive
             object[] attributes = fieldInfo.GetCustomAttributes(typeof(ArchiveDirectoryAttribute), true);
             return ((ArchiveDirectoryAttribute)attributes[0]).dirName;
         }
-
 
         public static string GetFilenamepath(ARCHIVE archive, string filename)
         {

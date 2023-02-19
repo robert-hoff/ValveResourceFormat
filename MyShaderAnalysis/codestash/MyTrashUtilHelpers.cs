@@ -8,14 +8,12 @@ namespace MyShaderAnalysis.codestash
 {
     public class MyTrashUtilHelpers
     {
-
         public static ShaderFile InstantiateShaderFile(string filenamepath)
         {
             ShaderFile shaderFile = new ShaderFile();
             shaderFile.Read(filenamepath);
             return shaderFile;
         }
-
 
         public static string BytesToString(byte[] databytes, int breakLen = 32)
         {
@@ -40,14 +38,10 @@ namespace MyShaderAnalysis.codestash
             return bytestring.Trim();
         }
 
-
-
-
         public static List<string> GetVcsFiles(string dir1, VcsProgramType fileType, int numEnding = -1, bool sortFiles = true, int LIMIT_NR = 1000)
         {
             return GetVcsFiles(dir1, null, fileType, numEnding, sortFiles, LIMIT_NR);
         }
-
 
         public static List<string> GetVcsFiles(string dir1, string dir2 = null,
             VcsProgramType fileType = VcsProgramType.Undetermined, int numEnding = -1, bool sortFiles = true, int LIMIT_NR = 1000)
@@ -174,7 +168,6 @@ namespace MyShaderAnalysis.codestash
             return fileTriplets;
         }
 
-
         public static string RemoveBaseDir(string filenamepath)
         {
             string dirname = Path.GetDirectoryName(filenamepath).Replace("\\", "/");
@@ -204,11 +197,9 @@ namespace MyShaderAnalysis.codestash
                 return @"/core/" + filename;
             } else
             {
-
                 return filenamepath;
             }
         }
-
 
         public static string GetHtmlHeader(string browserTitle, string pageHeader)
         {
@@ -410,7 +401,6 @@ namespace MyShaderAnalysis.codestash
                 // if (Path.GetFileName(f).StartsWith(collectionName) && !Path.GetFileName(f).Equals(filename))
                 if (Path.GetFileName(f).StartsWith(collectionName))
                 {
-
                     if (f.EndsWith("features.vcs"))
                     {
                         featuresFile = f.Replace("\\", "/");
@@ -429,7 +419,6 @@ namespace MyShaderAnalysis.codestash
             }
             return relatedFiles.ToArray();
         }
-
 
         /*
          * not sorted in any way, backslashes not replaced, also includes the input file.
@@ -452,9 +441,6 @@ namespace MyShaderAnalysis.codestash
             }
             return relatedFiles;
         }
-
-
-
 
         public static (VcsProgramType, VcsPlatformType, VcsShaderModelType) ComputeVCSFileName(string filenamepath)
         {
@@ -540,10 +526,6 @@ namespace MyShaderAnalysis.codestash
              };
         }
 
-
-
-
-
         public static string ParseDynamicExpression(byte[] dynExpDatabytes)
         {
             try
@@ -554,10 +536,6 @@ namespace MyShaderAnalysis.codestash
                 return "[error in dyn-exp]";
             }
         }
-
-
-
-
 
         // --- collect int and string mechanisms
 
@@ -574,7 +552,6 @@ namespace MyShaderAnalysis.codestash
             int currIterator = collectValuesString.GetValueOrDefault(val, 0);
             collectValuesString[val] = currIterator + 1;
         }
-
 
         public static void PrintReport(bool showCount = true)
         {
@@ -618,10 +595,7 @@ namespace MyShaderAnalysis.codestash
             collectValuesString = new();
         }
 
-
-
         public delegate void MyHandleOutputWrite(string s);
-
 
         public class OutputFormatterTabulatedData
         {
@@ -733,9 +707,6 @@ namespace MyShaderAnalysis.codestash
             }
         }
 
-
-
-
         public static string[] CombineValuesBreakString(string[] strings0, int breakLen)
         {
             List<string> stringCollection = new();
@@ -762,7 +733,6 @@ namespace MyShaderAnalysis.codestash
             }
             return stringCollection.ToArray();
         }
-
 
         public static string ShortenShaderParam(string shaderParam)
         {
@@ -814,7 +784,6 @@ namespace MyShaderAnalysis.codestash
             return $"{valueString}";
         }
 
-
         public static string CombineStringsSpaceSep(string[] strings0, int padding = 5)
         {
             string combinedString = "";
@@ -861,8 +830,5 @@ namespace MyShaderAnalysis.codestash
             labelstr = label != null ? $"{labelstr,12} = " : "";
             Console.WriteLine($"{labelstr}{intsString.Trim()}");
         }
-
-
-
     }
 }

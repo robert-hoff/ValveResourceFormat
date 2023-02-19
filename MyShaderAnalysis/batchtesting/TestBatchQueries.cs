@@ -18,15 +18,12 @@ namespace MyShaderAnalysis.batchtesting
         const VcsProgramType VS = VcsProgramType.VertexShader;
         const VcsProgramType PS = VcsProgramType.PixelShader;
 
-
         public static void Run()
         {
             ShowSingleZFrame();
             // ShowZFrame();
             // ShowFileListing();
         }
-
-
 
         /*
          *
@@ -50,7 +47,6 @@ namespace MyShaderAnalysis.batchtesting
             // Debug.WriteLine($"{zFrame.PrintByteDetail}");
             zFrame.PrintByteDetail();
         }
-
 
         public static void ShowZFrame()
         {

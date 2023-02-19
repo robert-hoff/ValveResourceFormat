@@ -5,15 +5,11 @@ namespace MyShaderAnalysis.compat
 {
     public class CompatRules4
     {
-
-
         public static void RunTrials()
         {
             // Trial1MultiblendPcgl30PsAttempt7();
             Trial1MultiblendPcgl30PsAttempt6();
         }
-
-
 
         /*
          *
@@ -27,7 +23,6 @@ namespace MyShaderAnalysis.compat
          */
         static void Trial1MultiblendPcgl30PsAttempt7()
         {
-
             remappingTable.Add(0, -1);   // S_TOOLS_ENABLED removed
             remappingTable.Add(1, 0);    // S_MODE_FORWARD            mapped to 0
             remappingTable.Add(2, 1);    // S_MODE_DEPTH              mapped to 1
@@ -46,8 +41,6 @@ namespace MyShaderAnalysis.compat
             remappingTable.Add(15, 15);  // S_PARALLAX_MAP_ON_3       mapped to 14
             remappingTable.Add(16, 16);  // S_PARALLAX_MAP_ON_4       mapped to 15
             remappingTable.Add(17, 17);  // S_GLOBAL_TINT             mapped to 16
-
-
 
             // remappingTable.Add(18, 11);  // S_LAYER_BORDER_TINT       mapped to 11
 
@@ -66,8 +59,6 @@ namespace MyShaderAnalysis.compat
             AddExlusion(9, 17);            // compat[24]
             AddExlusion(6, 17);            // compat[24]
 
-
-
             // inclusions
             AddInclusion(5, 4);            // compat[3]
             AddInclusion(7, 4);            // compat[5]
@@ -83,7 +74,6 @@ namespace MyShaderAnalysis.compat
             AddInclusion(16, 5);           // compat[21]
             AddInclusion(16, 4);           // compat[22]
             AddInclusion(11, 10);          // compat[25]
-
 
             // for (int i = 0; i < 262144; i++) {
             // for (int i = 2048; i < 4096; i++) {
@@ -129,18 +119,12 @@ namespace MyShaderAnalysis.compat
                     }
                 }
 
-
                 if (!exclude)
                 {
                     Console.WriteLine($"{i,3}    {i:x04}           {Convert.ToString(i, 2).PadLeft(20, '0')}");
                 }
-
             }
         }
-
-
-
-
 
         /*
          *
@@ -154,7 +138,6 @@ namespace MyShaderAnalysis.compat
          */
         static void Trial1MultiblendPcgl30PsAttempt6()
         {
-
             remappingTable.Add(0, -1);   // S_TOOLS_ENABLED removed
             remappingTable.Add(1, 0);    // S_MODE_FORWARD            mapped to 0
             remappingTable.Add(2, 1);    // S_MODE_DEPTH              mapped to 1
@@ -176,7 +159,6 @@ namespace MyShaderAnalysis.compat
 
             // remappingTable.Add(18, 11);  // S_LAYER_BORDER_TINT       mapped to 11
 
-
             AddExclusionTriple(1, 2, 3);             // compat[0]
             AddExclusionTriple(2, 3, 4);             // compat[1]
             AddExclusionTriple(2, 3, 5);             // compat[2]
@@ -191,8 +173,6 @@ namespace MyShaderAnalysis.compat
             AddExclusionTriple(2, 6, 17);            // compat[23]
             AddExlusion(9, 17);            // compat[24]
             AddExlusion(6, 17);            // compat[26]
-
-
 
             // inclusions
             AddInclusion(5, 4);            // compat[3]
@@ -210,8 +190,6 @@ namespace MyShaderAnalysis.compat
             AddInclusion(16, 4);           // compat[22]
             AddInclusion(11, 10);          // compat[25]
 
-
-
             // including these from the vs file still leaves in (2,3) which the system doesn't want
             // [ 0]   3     S_MODE_FORWARD, S_MODE_DEPTH                         (1,2)
             // [ 1]   3     S_MODE_DEPTH, S_SHADER_QUALITY                       (2,4)
@@ -225,9 +203,6 @@ namespace MyShaderAnalysis.compat
 
             // this isn't even close, so .. the only working interpretation of the exclusion rules
             // is that all three exclude each other
-
-
-
 
             // for (int i = 0; i < 262144; i++) {
             // for (int i = 2048; i < 4096; i++) {
@@ -273,18 +248,12 @@ namespace MyShaderAnalysis.compat
                     }
                 }
 
-
                 if (!exclude)
                 {
                     Console.WriteLine($"{i,3}    {i:x04}           {Convert.ToString(i, 2).PadLeft(20, '0')}");
                 }
-
             }
         }
-
-
-
-
 
         static List<(int, int)> exclusions = new();
         static List<(int, int)> inclusions = new();
@@ -292,15 +261,12 @@ namespace MyShaderAnalysis.compat
         static List<(int, int, int)> exclusionsTriple = new();
         static Dictionary<int, int> remappingTable = new();
 
-
         static void AddExlusionNoRemap(int b0, int b1)
         {
             int num0 = 1 << (b0);
             int num1 = 1 << (b1);
             exclusions.Add((num0, num1));
         }
-
-
 
         static void AddExlusion(int b0, int b1)
         {
@@ -321,7 +287,6 @@ namespace MyShaderAnalysis.compat
             AddExlusion(b0, b2);
         }
 
-
         static void AddInclusion(int b0, int b1)
         {
             b0 = remappingTable[b0];
@@ -335,14 +300,12 @@ namespace MyShaderAnalysis.compat
             inclusions.Add((num0, num1));
         }
 
-
         static void AddInclusionNoRemap(int b0, int b1)
         {
             int num0 = 1 << (b0);
             int num1 = 1 << (b1);
             inclusions.Add((num0, num1));
         }
-
 
         static void AddInclusionTriple(int b0, int b1, int b2)
         {
@@ -373,14 +336,6 @@ namespace MyShaderAnalysis.compat
             int num2 = 1 << (b2);
             exclusionsTriple.Add((num0, num1, num2));
         }
-
-
-
-
-
     }
 }
-
-
-
 

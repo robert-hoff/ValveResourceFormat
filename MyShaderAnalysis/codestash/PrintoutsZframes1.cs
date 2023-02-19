@@ -14,11 +14,8 @@ using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
  */
 namespace MyShaderAnalysis.codestash
 {
-
-
     public class PrintoutsZframes1
     {
-
         // const string PCGL_DIR_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders-core/vfx";
         // const string PCGL_DIR_NOT_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders/vfx";
         //const string PC_DIR_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pc/shaders-core/vfx";
@@ -30,10 +27,8 @@ namespace MyShaderAnalysis.codestash
         //const string SERVER_BASEDIR = @"Z:/dev/www/vcs.codecreation.dev";
         //const string OUTPUT_SUB_DIR = @"/GEN-output";
 
-
         public static void RunTrials()
         {
-
             WriteBunchOfZframes();
             // PrintSingleFileSummary();
 
@@ -41,10 +36,8 @@ namespace MyShaderAnalysis.codestash
             CloseStreamWriter();
         }
 
-
         static void PrintSingleFileSummary()
         {
-
             // ZFileSummary(ARCHIVE_OLD.dotacore_pcgl, "bilateral_blur_pcgl_30_vs.vcs", 0x0, writeFile: true);
             // ZFileSummary(ARCHIVE_OLD.dotagame_pcgl, "multiblend_pcgl_30_ps.vcs", 0x2, writeFile: true);
             // ZFileSummary(ARCHIVE_OLD.dotagame_pcgl, "multiblend_pcgl_30_ps.vcs", 0xa9, writeFile: true);
@@ -63,20 +56,13 @@ namespace MyShaderAnalysis.codestash
             // ZFileSummary(ARCHIVE_OLD.artifact_classiccore_pc, "depth_only_pc_40_vs.vcs", 0x0, writeFile: true, disableOutput: true);
             // WriteBunchOfZframes();
 
-
-
             // ZFileSummary(ARCHIVE_OLD.dotagame_pcgl, "visualize_physics_pcgl_40_gs.vcs", 0x0, writeFile: true);
-
 
             ZFileSummary(ARCHIVE_OLD.dotacore_pcgl, "visualize_physics_pcgl_40_gs.vcs", 0x0, writeFile: true);
             // ZFileSummary(ARCHIVE_OLD.dotacore_pcgl, "debug_show_texture_pcgl_30_vs.vcs", 0x0, writeFile: true);
 
-
-
             // PrintZframeFileDirectory(SERVER_OUTPUT_DIR, writeFile: true);
         }
-
-
 
         static void WriteBunchOfZframes()
         {
@@ -87,7 +73,6 @@ namespace MyShaderAnalysis.codestash
             // List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(DOTA_GAME_PCGL_SOURCE, DOTA_CORE_PCGL_SOURCE, 30);
             // List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(DOTA_CORE_MOBILE_GLES_SOURCE, DOTA_DAC_MOBILE_GLES_SOURCE, -1);
             // List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, -1);
-
 
             int count = 0;
 
@@ -124,17 +109,13 @@ namespace MyShaderAnalysis.codestash
                 //}
             }
             swWriterAlreadyClosed = true;
-
         }
-
 
         static void ZFileSummary(ARCHIVE_OLD archive, string filename, long zframeId, bool writeFile = false, bool disableOutput = false)
         {
             FileTokensOld vcsFile = new(archive, filename);
             ZFileSummary(vcsFile, zframeId, writeFile, disableOutput);
         }
-
-
 
         static void ZFileSummary(FileTokensOld vcsFile, long zframeId, bool writeFile = false, bool disableOutput = false)
         {
@@ -150,14 +131,12 @@ namespace MyShaderAnalysis.codestash
                 WriteHtmlFile($"Z 0x{zframeId:x}", vcsFile.GetZFrameHtmlFilename(zframeId, "")[0..^5]);
             }
 
-
             // print referring files
             // OutputWriteLine($"<a href='{vcsFile.GetBestPath()}'>{vcsFile.RemoveBaseDir()}</a>");
             OutputWriteLine($"<a href='{vcsFile.GetServerFileUrl("summary2")}'>{vcsFile.RemoveBaseDir()}</a>");
             // PrintZframeByteCodeLink(shaderFile.filenamepath, zframeId);
             OutputWriteLine($"<a href='{vcsFile.GetZFrameLink(zframeId, "bytes")}'>{vcsFile.GetZFrameHtmlFilename(zframeId, "")[0..^5]}-databytes</a>");
             OutputWriteLine("");
-
 
             PrintConfigurationState(shaderFile, zframeId);
             // PrintDataBlocks1(shaderFile, zframeFile);
@@ -170,10 +149,7 @@ namespace MyShaderAnalysis.codestash
             PrintTailSummary(zframeFile);
             PrintSourceSummary(zframeFile);
             ShowEndBlocks(shaderFile, zframeFile);
-
         }
-
-
 
         static Dictionary<int, GpuSource> GetBlockIdToSource(ZFrameFile zframeFile)
         {
@@ -194,8 +170,6 @@ namespace MyShaderAnalysis.codestash
             return blockIdToSource;
         }
 
-
-
         static void PrintSourceSummary(ZFrameFile zframeFile)
         {
             string headerText = "source summary";
@@ -212,7 +186,6 @@ namespace MyShaderAnalysis.codestash
             OutputWriteLine($"{zframeFile.Flagbyte1}              // values seen 0,1");
             OutputWriteLine("");
             OutputWriteLine("");
-
         }
 
         static string ByteToBinary(int b0)
@@ -224,8 +197,6 @@ namespace MyShaderAnalysis.codestash
             return byteString;
         }
 
-
-
         static void PrintLeadSummary(ZFrameFile zframeFile)
         {
             OutputWriteLine(PrintZFrameSummary.SummarizeBytes(zframeFile.LeadingSummary));
@@ -236,7 +207,6 @@ namespace MyShaderAnalysis.codestash
             OutputWriteLine(PrintZFrameSummary.SummarizeBytes(zframeFile.TrailingSummary));
             OutputWriteLine("");
         }
-
 
         static void PrintFrameLeadingArgs(ZFrameFile zframeFile)
         {
@@ -252,10 +222,6 @@ namespace MyShaderAnalysis.codestash
             OutputWriteLine("");
         }
 
-
-
-
-
         static void PrintDataBlocks3(ShaderFile shaderFile, ZFrameFile zframeFile, SortedDictionary<int, int> writeSequences)
         {
             FileTokensOld fileTokens = new FileTokensOld(shaderFile.FilenamePath);
@@ -267,7 +233,6 @@ namespace MyShaderAnalysis.codestash
             PrintAbbreviations(shaderFile);
             List<int> activeBlockIds = GetActiveBlockIds(zframeFile);
 
-
             List<string> dParamNames = new();
             foreach (DBlock dBlock in shaderFile.DBlocks)
             {
@@ -276,7 +241,6 @@ namespace MyShaderAnalysis.codestash
             string configNames = CombineStringsSpaceSep(dParamNames.ToArray(), 6);
             configNames = $"{new string(' ', 5)}{configNames}";
             int dBlockCount = 0;
-
 
             foreach (int blockId in activeBlockIds)
             {
@@ -305,12 +269,10 @@ namespace MyShaderAnalysis.codestash
                     // todo - doesn't show id along with block name
                     OutputWriteLine($"  {blockSource.GetBlockName().PadRight(20)} {blockSource.Sourcebytes.Length,12} (bytes)");
                 }
-
             }
             OutputWriteLine("");
             OutputWriteLine("");
         }
-
 
         static List<int> GetActiveBlockIds(ZFrameFile zframeFile)
         {
@@ -330,9 +292,6 @@ namespace MyShaderAnalysis.codestash
             }
             return blockIds;
         }
-
-
-
 
         static void PrintDataBlocks2(ShaderFile shaderFile, ZFrameFile zframeFile, SortedDictionary<int, int> writeSequences)
         {
@@ -374,7 +333,6 @@ namespace MyShaderAnalysis.codestash
             OutputWriteLine("");
         }
 
-
         static string GetSourceLink(string filenamepath, GlslSource blockSource)
         {
             string glslId = blockSource.GetEditorRefIdAsString();
@@ -383,7 +341,6 @@ namespace MyShaderAnalysis.codestash
             string urlText = $"source[{glslId}]";
             return $"<a href='{fileName}'>{urlText}</a>";
         }
-
 
         static void PrintAbbreviations(ShaderFile shaderFile)
         {
@@ -410,8 +367,6 @@ namespace MyShaderAnalysis.codestash
             }
         }
 
-
-
         static void PrintWriteSequences(ShaderFile shaderFile, ZFrameFile zframeFile, SortedDictionary<int, int> writeSequences)
         {
             string headerText = "Parameter glsl mapping";
@@ -423,7 +378,6 @@ namespace MyShaderAnalysis.codestash
             {
                 OutputWriteLine("");
             }
-
 
             string seqName = $"WRITESEQ[{lastseq}] (default)";
             ValveResourceFormat.CompiledShader.ZDataBlock leadData = zframeFile.LeadingData;
@@ -442,9 +396,6 @@ namespace MyShaderAnalysis.codestash
             }
             OutputWriteLine("");
         }
-
-
-
 
         /*
          *
@@ -485,11 +436,9 @@ namespace MyShaderAnalysis.codestash
                 {
                     sequencesMap.Add(zBlock.BlockId, seq);
                 }
-
             }
             return sequencesMap;
         }
-
 
         static void PrintParamWriteSequence(ShaderFile shaderFile, byte[] dataload, int h0, int h1, int h2, string seqName = "")
         {
@@ -535,9 +484,6 @@ namespace MyShaderAnalysis.codestash
             }
         }
 
-
-
-
         static void PrintDataBlocks1(ShaderFile shaderFile, ZFrameFile zframeFile)
         {
             PrintZBlock(shaderFile, zframeFile.LeadingData);
@@ -565,11 +511,6 @@ namespace MyShaderAnalysis.codestash
             PrintParamWriteSequence(shaderFile, zBlock.Dataload, h0, h1, h2);
             OutputWriteLine("");
         }
-
-
-
-
-
 
         //static void PrintZBlock(ZDataBlock zBlock) {
         //    int h0 = zframeFile.leadingData.h0;
@@ -601,8 +542,6 @@ namespace MyShaderAnalysis.codestash
         //    }
         //}
 
-
-
         static void PrintConfigurationState(ShaderFile shaderFile, long zframeId)
         {
             string configHeader = "Configuration";
@@ -624,7 +563,6 @@ namespace MyShaderAnalysis.codestash
             OutputWriteLine("");
         }
 
-
         // todo - remove this, functionality should be overed by FileTokens class
         static void PrintZframeByteCodeLink(string filenamepath, long zframeId)
         {
@@ -634,9 +572,6 @@ namespace MyShaderAnalysis.codestash
             OutputWrite(htmlLink);
             OutputWriteLine("");
         }
-
-
-
 
         static void ShowEndBlocks(ShaderFile shaderFile, ZFrameFile zframeFile)
         {
@@ -694,10 +629,6 @@ namespace MyShaderAnalysis.codestash
                 }
             }
         }
-
-
-
-
 
         static void PrintZframeFileDirectory(string outputDir = null, bool writeFile = false, bool disableOutput = false)
         {
@@ -773,14 +704,10 @@ namespace MyShaderAnalysis.codestash
             }
         }
 
-
-
-
         private static StreamWriter sw = null;
         private static bool DisableOutput = false;
         private static bool WriteAsHtml = false;
         private static bool swWriterAlreadyClosed = false;
-
 
         private static void WriteHtmlFile(string htmlTitle, string htmlHeader)
         {
@@ -792,14 +719,12 @@ namespace MyShaderAnalysis.codestash
             sw.WriteLine(GetHtmlHeader(htmlTitle, htmlHeader));
         }
 
-
         private static void ConfigureOutputFile(string filepathname, bool disableOutput = false)
         {
             DisableOutput = disableOutput;
             Console.WriteLine($"writing to {filepathname}");
             sw = new StreamWriter(filepathname);
         }
-
 
         // This basestream != null is nonsense, it doesn't check if the file is open
         private static void CloseStreamWriter()
@@ -829,18 +754,6 @@ namespace MyShaderAnalysis.codestash
         {
             OutputWrite(text + "\n");
         }
-
-
     }
-
-
-
 }
-
-
-
-
-
-
-
 

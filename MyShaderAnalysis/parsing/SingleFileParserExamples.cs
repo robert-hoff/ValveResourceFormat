@@ -14,10 +14,8 @@ namespace MyShaderAnalysis.parsing
 {
     class SingleFileParserExamples
     {
-
         public static void RunTrials()
         {
-
             DecompileVulkanSource();
 
             // ParseV44FileIntoHtml();
@@ -30,11 +28,8 @@ namespace MyShaderAnalysis.parsing
             // PrintZframeToHtml();
             // ShowFilenamePath();
 
-
             // WriteBytesToStringBuffer();
         }
-
-
 
         static void DecompileVulkanSource()
         {
@@ -43,7 +38,6 @@ namespace MyShaderAnalysis.parsing
             string sourceRefection = DecompileSpirvDll.DecompileVulkan(databytes);
             Console.WriteLine($"{sourceRefection}");
         }
-
 
         static void ParseV44FileIntoHtml()
         {
@@ -56,7 +50,6 @@ namespace MyShaderAnalysis.parsing
             new DataReaderVcsBytes(inputFile, outputWriter: writer.GetOutputWriter());
             writer.CloseStreamWriter();
         }
-
 
         static void ParseV44FileToConsole()
         {
@@ -75,12 +68,9 @@ namespace MyShaderAnalysis.parsing
             zframe.PrintByteDetail();
         }
 
-
         static void V62ParseZFrameBytes1()
         {
-
         }
-
 
         static void V62InstantiateShaderFile()
         {
@@ -91,7 +81,6 @@ namespace MyShaderAnalysis.parsing
             shaderFile.PrintByteDetail();
         }
 
-
         static void V62ExampleFiles()
         {
             // string filenamepath = GetFilenamepath(ARCHIVE.the_lab_pc_v62, "downsample_pc_40_features.vcs");
@@ -99,7 +88,6 @@ namespace MyShaderAnalysis.parsing
             string filenamepath = GetFilenamepath(ARCHIVE.the_lab_pc_v62, "aerial_perspective_pc_30_features.vcs");
             new ParseV62Files(filenamepath);
         }
-
 
         // two ways to print the byte analysis (keep these both functionally identical)
         static void ParseV62File()
@@ -111,7 +99,6 @@ namespace MyShaderAnalysis.parsing
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             shaderFile.PrintByteDetail();
         }
-
 
         static void ManualZFrameDecompression()
         {
@@ -131,7 +118,6 @@ namespace MyShaderAnalysis.parsing
             // Console.WriteLine(uncompressedData.Length);
         }
 
-
         static byte[] DecompressZstdFrame(byte[] compressedZstdFrame)
         {
             byte[] zstdDict = ZstdDictionary.GetDictionary();
@@ -141,10 +127,8 @@ namespace MyShaderAnalysis.parsing
             return decompressedData;
         }
 
-
         static void ShowVcsFilesForGivenArchive()
         {
-
             // gets all files ending with 40_vs.vcs from the given directory
             List<string> vcsFiles = GetVcsFiles(GetArchiveDir(ARCHIVE.dota_game_pcgl_v64), null, VcsProgramType.VertexShader, 40);
 
@@ -153,7 +137,6 @@ namespace MyShaderAnalysis.parsing
                 Console.WriteLine(filenamepath);
             }
         }
-
 
         /*
          * A very useful approach in general for working on parsing and printing layouts
@@ -175,7 +158,6 @@ namespace MyShaderAnalysis.parsing
             sw.Close();
         }
 
-
         /*
          * This records everything up to where the exception is thrown
          *
@@ -196,16 +178,11 @@ namespace MyShaderAnalysis.parsing
             Console.WriteLine($"{buffer}");
         }
 
-
-
-
         static void ShowFilenamePath()
         {
             string filenamepath = GetFilenamepath(ARCHIVE.dota_game_pcgl_v64, "multiblend_pcgl_30_vs.vcs");
             Console.WriteLine($"{filenamepath}");
         }
-
-
 
         private static string GetHtmlHeader(string browserTitle, string pageHeader)
         {
@@ -219,10 +196,6 @@ namespace MyShaderAnalysis.parsing
         {
             return "</pre>\n</html>";
         }
-
-
     }
 }
-
-
 

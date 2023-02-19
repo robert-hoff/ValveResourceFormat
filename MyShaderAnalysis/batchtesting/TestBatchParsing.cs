@@ -17,7 +17,6 @@ namespace MyShaderAnalysis.batchtesting
 {
     public class TestBatchParsing
     {
-
         public static void RunTrials()
         {
             TestSingleVcsFile();
@@ -30,12 +29,10 @@ namespace MyShaderAnalysis.batchtesting
             // RunTestZframeParserArchive();
             // RunTestSingleZframeParser();
 
-
             // TestArchivesShaderFile();
             // TestArchivesShaderFileSummarize();
             // TestArchivesBytes();
         }
-
 
         public static void TestSingleVcsFile()
         {
@@ -50,7 +47,6 @@ namespace MyShaderAnalysis.batchtesting
             shaderFile.PrintByteDetail(shortenOutput: true);
         }
 
-
         public static void TestSingleFileBytes()
         {
             // string filenamepath = GetFilenamepath(ARCHIVE.the_lab_v62, "bilateral_blur_pc_30_features.vcs");
@@ -61,9 +57,6 @@ namespace MyShaderAnalysis.batchtesting
             new DataReaderVcsBytes(filenamepath).PrintByteDetail();
             // new ParseV44Files(filenamepath);
         }
-
-
-
 
         public static void RunTestZframeBytesByArchive()
         {
@@ -89,7 +82,6 @@ namespace MyShaderAnalysis.batchtesting
             TestZframeBytesByArchive(ARCHIVE.exampleset_pc_v62);
             TestZframeBytesByArchive(ARCHIVE.the_lab_pc_v62);
         }
-
 
         // public static void TestZframeBytesByArchive(ARCHIVE archive, VcsProgramType vcsProgramType = VcsProgramType.DomainShader)
         // public static void TestZframeBytesByArchive(ARCHIVE archive, VcsProgramType vcsProgramType = VcsProgramType.HullShader)
@@ -121,7 +113,6 @@ namespace MyShaderAnalysis.batchtesting
             }
         }
 
-
         static int LIMIT_ZFRAME_COUNT = 100;
 
         public static void RunTestSingleZframeBytesSilent()
@@ -150,7 +141,6 @@ namespace MyShaderAnalysis.batchtesting
                 Console.WriteLine($"ERROR in Z[0x{zframeId:x08}] zframeIndex={zFrameIndex} {e.Message}");
             }
         }
-
 
         public static void RunTestSingleZframeBytes()
         {
@@ -185,7 +175,6 @@ namespace MyShaderAnalysis.batchtesting
             TestSingleZframeBytes(shaderFile, zframeIndex);
         }
 
-
         public static void TestSingleZframeBytes(ShaderFile shaderFile, int zframeIndex)
         {
             byte[] zframeBytes = shaderFile.GetDecompressedZFrameByIndex(zframeIndex);
@@ -201,10 +190,8 @@ namespace MyShaderAnalysis.batchtesting
             dataReaderZframe.PrintByteDetail();
         }
 
-
         public static void RunTestZframeParserArchive()
         {
-
             //TestZframeParserArchive(ARCHIVE.dotagame_pc_v65);
             //TestZframeParserArchive(ARCHIVE.dotacore_pc_v65);
             //TestZframeParserArchive(ARCHIVE.dotacore_vulkan_v65);
@@ -224,8 +211,6 @@ namespace MyShaderAnalysis.batchtesting
             TestZframeParserArchive(ARCHIVE.the_lab_pc_v62);
             TestZframeParserArchive(ARCHIVE.the_lab_pc_v62);
         }
-
-
 
         public static void TestZframeParserArchive(ARCHIVE archive)
         {
@@ -255,7 +240,6 @@ namespace MyShaderAnalysis.batchtesting
             }
         }
 
-
         public static void RunTestSingleZframeParser()
         {
             // string filenamepath = GetFilenamepath(ARCHIVE.alyx_hlvr_vulkan, "vr_projected_decals_vulkan_50_ps.vcs"); int zframeIndex = 0;
@@ -270,7 +254,6 @@ namespace MyShaderAnalysis.batchtesting
             TestSingleZframeParser(shaderFile, zframeIndex);
         }
 
-
         public static void TestSingleZframeParser(ShaderFile shaderFile, int zFrameIndex)
         {
             try
@@ -282,9 +265,6 @@ namespace MyShaderAnalysis.batchtesting
                 Console.WriteLine($"ERROR in Z[0x{zframeId:x08}] zframeIndex={zFrameIndex} {e.GetType()} {e.Message}");
             }
         }
-
-
-
 
         public static void TestArchivesShaderFile()
         {
@@ -309,7 +289,6 @@ namespace MyShaderAnalysis.batchtesting
             TestArchiveShader(ARCHIVE.the_lab_pc_v62);
         }
 
-
         public static void TestArchiveShader(ARCHIVE archive)
         {
             string archiveName = archive.ToString();
@@ -329,13 +308,10 @@ namespace MyShaderAnalysis.batchtesting
                 } catch (Exception e)
                 {
                     Console.WriteLine($"{reportString} ERROR\n {e.Message}");
-
                 }
             }
             Console.WriteLine();
         }
-
-
 
         public static void TestArchivesShaderFileSummarize()
         {
@@ -359,7 +335,6 @@ namespace MyShaderAnalysis.batchtesting
             TestArchiveShaderFileSummarise(ARCHIVE.exampleset_pc_v62);
             TestArchiveShaderFileSummarise(ARCHIVE.the_lab_pc_v62);
         }
-
 
         public static void TestArchiveShaderFileSummarise(ARCHIVE archive, bool showSuccesses = false)
         {
@@ -393,8 +368,6 @@ namespace MyShaderAnalysis.batchtesting
             Console.WriteLine($"{statCounter.getReport()}\n\n");
         }
 
-
-
         public static void TestArchivesBytes()
         {
             TestArchiveBytes(ARCHIVE.dota_game_pc_v65);
@@ -416,9 +389,7 @@ namespace MyShaderAnalysis.batchtesting
             TestArchiveBytes(ARCHIVE.alyx_hlvr_vulkan_v64);
             TestArchiveBytes(ARCHIVE.exampleset_pc_v62);
             TestArchiveBytes(ARCHIVE.the_lab_pc_v62);
-
         }
-
 
         /*
          * This test depends on the shaderFile parsing correctly first,
@@ -443,13 +414,8 @@ namespace MyShaderAnalysis.batchtesting
                 {
                     Console.WriteLine($"ERROR {e.Message}");
                 }
-
-
             }
         }
-
-
-
     }
 }
 

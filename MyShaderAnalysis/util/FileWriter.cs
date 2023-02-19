@@ -11,7 +11,7 @@ namespace MyShaderAnalysis.util
         private bool writeAsHtml = false; // is set to true if html header is written
         private bool swOpen = true;
 
-        public FileWriter(string outputFilenamepath, bool showOutputToConsole = true)
+        public FileWriter(string outputFilenamepath, bool showOutputToConsole = false)
         {
             Console.WriteLine($"Writing to {outputFilenamepath}");
             sw = new StreamWriter(outputFilenamepath);
@@ -65,8 +65,7 @@ namespace MyShaderAnalysis.util
             }
         }
 
-
-        public void WriteText(string text)
+        public void WriteLine(string text)
         {
             sw.WriteLine(text);
             if (writeToConsole)
@@ -74,7 +73,6 @@ namespace MyShaderAnalysis.util
                 Console.WriteLine($"{text}");
             }
         }
-
 
         public void WriteHtmlHeader(string browserTitle, string pageHeader)
         {

@@ -29,7 +29,6 @@ namespace MyShaderAnalysis.postprocessing
 
         public string PostProcessZframeData(string data)
         {
-
             string newData = getBackLink() + data;
 
             Regex rx = new Regex(@"\\\\([a-z0-9_\.]*)\\([a-z0-9_\.]*)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
@@ -43,13 +42,11 @@ namespace MyShaderAnalysis.postprocessing
             return newData;
         }
 
-
         private string getBackLink()
         {
             string linkName = $"{fileTokens.GetServerFilePath()}_{fileTokens.vcstoken}.vcs";
             return $"Zframe belongs to <a href='{fileTokens.GetServerFileUrl("summary2")}'>{linkName}</a>\n";
         }
-
 
         /*
          * groups[1] equals "source"
@@ -83,7 +80,6 @@ namespace MyShaderAnalysis.postprocessing
             }
         }
 
-
         // always in the form
         // \\3dskyboxstencil_pcgl_30_vs.vcs-ZFRAME00000000-databytes
         private string ReplaceZframeSingleToken(Match m)
@@ -96,8 +92,6 @@ namespace MyShaderAnalysis.postprocessing
             string htmlBytesName = fileTokens.GetZFrameUrl(zframeId, "bytes");
             return $"<a href='{htmlBytesName}'>//{groups[1]}</a>";
         }
-
-
     }
 }
 

@@ -8,11 +8,9 @@ namespace MyShaderAnalysis.staticanalysis
 {
     internal class StaticAnalysis3
     {
-
         const VcsProgramType FEAT = VcsProgramType.Features;
         const VcsProgramType VS = VcsProgramType.VertexShader;
         const VcsProgramType PS = VcsProgramType.PixelShader;
-
 
         public static void Run()
         {
@@ -21,7 +19,6 @@ namespace MyShaderAnalysis.staticanalysis
             // MipMapCountFileSets();
             // CheckDBlockCountForFeaturesFiles();
         }
-
 
         public static void Parameters()
         {
@@ -89,7 +86,6 @@ namespace MyShaderAnalysis.staticanalysis
                 {
                     throw new Exception("unecpexted value");
                 }
-
             }
         }
     }

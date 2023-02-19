@@ -1,24 +1,14 @@
 using System;
 using System.Collections.Generic;
 
-
-
 namespace MyShaderAnalysis.compat
 {
     public class CompatRulesGlobalLitSimple
     {
-
-
-
-
         public static void RunTrials()
         {
             Trial1GLS_30_Vs();
         }
-
-
-
-
 
         static void Trial1GLS_30_Vs()
         {
@@ -36,7 +26,6 @@ namespace MyShaderAnalysis.compat
             // [ 4]   INC(2)    8,7             S_TRAVELLING_WIND_OBJECT_X, S_ENABLE_WIND
             // [ 8]   INC(2)    8,7             S_TRAVELLING_WIND_OBJECT_X, S_ENABLE_WIND
 
-
             remappingTable.Add(0, 0);   // S_TRANSFORM_CONSTANT_BUFFER
             remappingTable.Add(1, -1);    // S_TOOLS_ENABLED             removed
             remappingTable.Add(2, 1);    // S_MODE_DEPTH                 mapped to 1
@@ -49,8 +38,6 @@ namespace MyShaderAnalysis.compat
             remappingTable.Add(9, 8);    // S_TRAVELLING_WIND_OBJECT_Z   mapped to 8
             remappingTable.Add(10, 9);   // S_AO_MAP                     mapped to 9
 
-
-
             AddExlusion(2, 1);             // compat[]
             AddExlusion(2, 3);             // compat[]
             AddExlusion(2, 4);             // compat[]
@@ -59,8 +46,6 @@ namespace MyShaderAnalysis.compat
             AddExlusion(8, 9);             // compat[]
             AddInclusion(8, 7);           // compat[]
             AddInclusion(9, 7);           // compat[]
-
-
 
             for (int i = 0; i < 1024; i++)
             {
@@ -102,28 +87,13 @@ namespace MyShaderAnalysis.compat
                 {
                     Console.WriteLine($"{i,3}    {i:x04}           {Convert.ToString(i, 2).PadLeft(20, '0')}");
                 }
-
-
-
-
             }
-
-
         }
-
-
-
-
-
-
-
-
 
         static List<(int, int)> exclusions = new();
         static List<(int, int)> inclusions = new();
         static List<(int, int, int)> inclusionsTriple = new();
         static Dictionary<int, int> remappingTable = new();
-
 
         static void AddExlusionNoRemap(int b0, int b1)
         {
@@ -175,22 +145,6 @@ namespace MyShaderAnalysis.compat
             int num2 = 1 << (b2);
             inclusionsTriple.Add((num0, num1, num2));
         }
-
-
-
-
-
-
-
-
-
-
-
-
     }
 }
-
-
-
-
 

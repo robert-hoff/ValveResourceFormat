@@ -14,7 +14,6 @@ namespace MyShaderAnalysis.parsing
 {
     class ParseV62Files : ShaderDataReader
     {
-
         // public static void RunTrials()
         // {
         // Console.WriteLine("parse those suckers!");
@@ -22,14 +21,12 @@ namespace MyShaderAnalysis.parsing
         // ShaderFile shaderFile = InstantiateShaderFile(vcsTestFile);
         // }
 
-
         public static void RunTrials()
         {
             // Trial1();
             Trial2InstantiateShaderFile();
             // V62UncompressedZFrames();
         }
-
 
         static void V62UncompressedZFrames()
         {
@@ -44,7 +41,6 @@ namespace MyShaderAnalysis.parsing
             zframe.PrintByteDetail();
         }
 
-
         static void Trial2InstantiateShaderFile()
         {
             // string filenamepath = $"{THE_LAB_SOURCE}/downsample_pc_40_features.vcs";
@@ -52,12 +48,8 @@ namespace MyShaderAnalysis.parsing
             string filenamepath = $"{THE_LAB_SOURCE}/aerial_perspective_pc_30_features.vcs";
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
 
-
             shaderFile.PrintByteDetail();
-
-
         }
-
 
         static void Trial1()
         {
@@ -71,7 +63,6 @@ namespace MyShaderAnalysis.parsing
 
             new ParseV62Files(filenamepath);
         }
-
 
         private VcsProgramType vcsProgramType;
         private VcsPlatformType vcsSourceType;
@@ -100,7 +91,6 @@ namespace MyShaderAnalysis.parsing
             ShowBytes(4, $"block DELIM always 17, or minor version? (but stayed the same for v65 and v64)");
             BreakLine();
 
-
             PrintAllSfBlocks();
             PrintAllCompatibilityBlocks();
             PrintAllDBlocks();
@@ -120,11 +110,7 @@ namespace MyShaderAnalysis.parsing
                 return;
             }
             ShowEndOfFile();
-
-
         }
-
-
 
         // private bool shortenOutput = true;
         private bool shortenOutput = false;
@@ -184,7 +170,6 @@ namespace MyShaderAnalysis.parsing
                 ShowBytes(12, 4, breakLine: false);
                 TabComment($"({arg4},{arg5},{arg6})");
             }
-
 
             BreakLine();
             ShowByteCount();
@@ -249,7 +234,6 @@ namespace MyShaderAnalysis.parsing
             BreakLine();
         }
 
-
         private int PrintVsPsHeader()
         {
             ShowByteCount("vcs file");
@@ -268,8 +252,6 @@ namespace MyShaderAnalysis.parsing
             BreakLine();
             return version;
         }
-
-
 
         private void PrintAllSfBlocks()
         {
@@ -445,8 +427,6 @@ namespace MyShaderAnalysis.parsing
                 ShowBytes(4, "dyn-exp len");
                 ShowBytes(dynLength, "dynamic expression", 1);
             }
-
-
 
             // check to see if this reads 'SBMS' (unknown what this is, instance found in v65 hero_pc_40_features.vcs file)
             byte[] checkSBMS = ReadBytesAtPosition(0, 4);
@@ -694,7 +674,6 @@ namespace MyShaderAnalysis.parsing
             }
         }
 
-
         int MAX_ZFRAME_BYTES_SHOWN = 96;
 
         public void PrintCompressedZFrame(uint zframeId)
@@ -750,11 +729,5 @@ namespace MyShaderAnalysis.parsing
                 return $"zframe[0x{zframeId:x08}]";
             }
         }
-
-
-
-
-
-
     }
 }

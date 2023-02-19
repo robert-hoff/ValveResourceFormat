@@ -2,8 +2,6 @@ using System.IO;
 using ShaderParserException = ValveResourceFormat.CompiledShader.ShaderParserException;
 using VcsProgramType = ValveResourceFormat.CompiledShader.VcsProgramType;
 
-
-
 /*
  * NOTE - use forward slashes in ALL cases because this is what HTML wants,
  * and it doesn't make any difference for local files
@@ -39,10 +37,8 @@ using VcsProgramType = ValveResourceFormat.CompiledShader.VcsProgramType;
  */
 namespace MyShaderAnalysis.codestash
 {
-
     public class FileSystemOld
     {
-
         public const string PROJECT_TESTDIR = "Z:/active/projects/dota2-sourcesdk-modding/shader-analysis-vcs-format/OUTPUT_DUMP";
         public const string SERVER_BASEDIR = "Z:/dev/www/vcs.codecreation.dev";
         // public const string SERVER_BASEDIR = "Z:/dev/www/vcs.codecreation.dev-SERVERBACKUP-2021-08-24";
@@ -76,7 +72,6 @@ namespace MyShaderAnalysis.codestash
         public const string DOTA_CORE_VULKAN_SOURCE_V65 = "X:/dota-2-VRF-exports/dota2-export-shaders-vulkan-V65/shaders-game/vfx";
         public const string DOTA_GAME_VULKAN_SOURCE_V65 = "X:/dota-2-VRF-exports/dota2-export-shaders-vulkan-V65/shaders-core/vfx";
 
-
         public enum ARCHIVE_OLD
         {
             dotacore_pcgl, dotagame_pcgl, dotacore_pc, dotagame_pc,
@@ -84,8 +79,6 @@ namespace MyShaderAnalysis.codestash
             artifact_classiccore_pc, artifact_classicdcg_pc,
             hl_hlvr_vulkan, dota_game_vulkan_v65, dota_core_vulkan_v65
         };
-
-
 
         public static string GetFilenamepath(ARCHIVE_OLD archive, string filename)
         {
@@ -101,8 +94,6 @@ namespace MyShaderAnalysis.codestash
         {
             return $"{SERVER_BASEDIR}{SERVER_TESTPATH}"; ;
         }
-
-
 
         // todo - it may be possible to write all of this into the enums
         public static string GetSourceDir(ARCHIVE_OLD archive)
@@ -203,7 +194,6 @@ namespace MyShaderAnalysis.codestash
             throw new ShaderParserException($"Unknown vcsFileType {vcsFiletype}");
         }
 
-
         // todo - problem here with the backslashes
         // it's not consistent, because Path.GetDirectory() always returns string with backslashes
         // I sometimes need to make comparisong with backslashes in the name, in other places I make comparisong
@@ -259,5 +249,4 @@ namespace MyShaderAnalysis.codestash
         }
     }
 }
-
 

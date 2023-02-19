@@ -19,9 +19,6 @@ namespace MyShaderAnalysis.codestash
         // const string OUTPUT_DIR = @"../../../GEN-OUTPUT";
         const string OUTPUT_DIR = @"Z:/active/projects/dota2-sourcesdk-modding/shader-analysis-vcs-format/OUTPUT_DUMP";
 
-
-
-
         public static void RunTrials()
         {
             // string filenamepath = PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_vs.vcs";
@@ -56,8 +53,6 @@ namespace MyShaderAnalysis.codestash
             // string filenamepath = PCGL_DIR_CORE + @"/spritecard_pcgl_30_ps.vcs";
             string filenamepath = PCGL_DIR_CORE + @"/panorama_pcgl_50_ps.vcs";
 
-
-
             // WARN - even 3 every 100 is a lot of files
             // Write3ZFramesEveryHundedAfter300();
             // WriteFirst50ZFramesEveryFile(OUTPUT_DIR, writeAsHtml: true, saveGlsl: false);
@@ -68,13 +63,10 @@ namespace MyShaderAnalysis.codestash
             // ParseABunchOfZframes();
             // WriteFirstZFrameEveryFile();
 
-
-
             // R: currently writes the blur_pcgl_30_features.vcs + vs, ps collection into my OUTPUT dir (not the server)
             // --> There must be an updated method for this somewhere that uses the new FileTokens class
             // NO, remember the byte-analysis goes to the directory "vcs-all"
             // WriteVcsCollectionAsHtml();
-
 
             // ShowVcsByteAnalysis(filenamepath);
             // WriteAllVcsFilesToTxt();
@@ -85,20 +77,12 @@ namespace MyShaderAnalysis.codestash
             WriteVcsByteAnalysisToHtml(filenamepath, writeHtmlLinks: true);
             // ParseAllVcsFilesDisableOutput();
 
-
-
-
-
             // -- test or write single files
             // RunWriteZframeAsTxt();
             // TestZFrameSingleFile();
             // ShaderFileTestSinglefiles();
             // VcsParsingTestSinglefiles();
-
         }
-
-
-
 
         static void WriteVcsCollectionAsHtml()
         {
@@ -107,10 +91,7 @@ namespace MyShaderAnalysis.codestash
 
             // (string, string, string) triple = GetTriple(PCGL_DIR_CORE+@"/visualize_cloth_pcgl_40_features.vcs");
 
-
             (string, string, string) triple = GetTriple(PCGL_DIR_CORE + @"/blur_pcgl_30_features.vcs");
-
-
 
             string[] filenames = { triple.Item1, triple.Item2, triple.Item3 };
             // foreach (var filename in filenames) {
@@ -127,8 +108,6 @@ namespace MyShaderAnalysis.codestash
             }
         }
 
-
-
         static void Write3ZFramesEveryHundedAfter300()
         {
             // string filenamespecific = PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_ps.vcs";
@@ -141,11 +120,8 @@ namespace MyShaderAnalysis.codestash
 
             List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsProgramType.Undetermined, -1);
 
-
-
             foreach (string filenamepath in vcsFiles)
             {
-
                 // skip hero files, they are too big
                 if (filenamepath.Equals(PCGL_DIR_NOT_CORE + @"/hero_pcgl_30_ps.vcs"))
                 {
@@ -155,7 +131,6 @@ namespace MyShaderAnalysis.codestash
                 {
                     continue;
                 }
-
 
                 string token = GetCoreOrDotaString(filenamepath);
                 string outputdir = @$"Z:/dev/www/vcs.codecreation.dev/vcs-all/{token}/zsource";
@@ -182,14 +157,8 @@ namespace MyShaderAnalysis.codestash
                     }
                     i += 100;
                 }
-
-
             }
-
         }
-
-
-
 
         static void WriteFirst50ZFramesEveryFile(string outputdir = null, bool useServerDefaultDir = false, bool writeAsHtml = true, bool saveGlsl = true)
         {
@@ -204,7 +173,6 @@ namespace MyShaderAnalysis.codestash
 
             int ZFRAME_FILES_TO_WRITE = 10;
 
-
             // string filenamepath = PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_ps.vcs";
             // string filenamepath = PCGL_DIR_CORE + @"/blur_pcgl_30_ps.vcs";
             // List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
@@ -218,8 +186,6 @@ namespace MyShaderAnalysis.codestash
             vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, null, VcsProgramType.VertexShader, -1));
             vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, null, VcsProgramType.PixelShader, -1));
             vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, null, VcsProgramType.PixelShaderRenderState, -1));
-
-
 
             foreach (string filenamepath in vcsFiles)
             {
@@ -248,7 +214,6 @@ namespace MyShaderAnalysis.codestash
             }
         }
 
-
         //static void WriteAZFrameAsHtmlByZframeId(string filenamepath, long zframeId, string outputdir = null)
         //{
         //    if (outputdir == null)
@@ -271,12 +236,6 @@ namespace MyShaderAnalysis.codestash
         //    sw.WriteLine($"{GetHtmlFooter()}");
         //    sw.Close();
         //}
-
-
-
-
-
-
 
         static void WriteZframeAsHtml(ShaderFile shaderFile, int zframeIndex, string outputdir = null, bool saveGlsl = true)
         {
@@ -304,8 +263,6 @@ namespace MyShaderAnalysis.codestash
             //sw.Close();
         }
 
-
-
         static void RunWriteZframeAsTxt()
         {
             string filenamepath = PCGL_DIR_CORE + @"/rendermicrobenchmark_pcgl_40_ps.vcs";
@@ -314,13 +271,8 @@ namespace MyShaderAnalysis.codestash
 
             byte[] zframeDatabytes = shaderFile.GetDecompressedZFrameByIndex(0);
 
-
             // WriteZframeAsTxt(shaderFile, 2, null, true);
         }
-
-
-
-
 
         static void WriteZframeAsTxt(ShaderFile shaderFile, int zframeIndex, string outputdir = null, bool saveGlsl = true)
         {
@@ -344,10 +296,6 @@ namespace MyShaderAnalysis.codestash
             //zFrameParser.PrintByteDetail();
             //sw.Close();
         }
-
-
-
-
 
         static void WriteFirstZFrameEveryFile()
         {
@@ -394,7 +342,6 @@ namespace MyShaderAnalysis.codestash
             }
         }
 
-
         static void WriteZFrameToFileByZframeId(string filenamepath, long zframeId)
         {
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
@@ -406,8 +353,6 @@ namespace MyShaderAnalysis.codestash
             PrintZFrame(zframeDatabytes, shaderFile.VcsProgramType, shaderFile.VcsPlatformType, true, sw);
             sw.Close();
         }
-
-
 
         // THIS OUTPUTS FUCKING txt (which can be good!)
         static void WriteZFrameToFile(string filenamepath, int zframeIndex)
@@ -422,8 +367,6 @@ namespace MyShaderAnalysis.codestash
             sw.Close();
         }
 
-
-
         static void TestZFrameSingleFile()
         {
             // string filenamepath = PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_vs.vcs";
@@ -436,8 +379,6 @@ namespace MyShaderAnalysis.codestash
 
             PrintZFrame(filenamepath, 0x0);
         }
-
-
 
         static void PrintZFrame(string filenamepath, int zframeIndex, bool disableOutput = false)
         {
@@ -458,7 +399,6 @@ namespace MyShaderAnalysis.codestash
             //zFrameParser.PrintByteDetail();
         }
 
-
         /*
          * parse all files with the ShaderFile class (only shows status output)
          */
@@ -473,8 +413,6 @@ namespace MyShaderAnalysis.codestash
             }
         }
 
-
-
         static void ShaderFileTestSinglefiles()
         {
             // string filenamepath = PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_vs.vcs";
@@ -483,10 +421,7 @@ namespace MyShaderAnalysis.codestash
             // string filenamepath = ARTIFACT_CLASSIC_CORE_PC_SOURCE + @"/aerial_perspective_pc_30_ps.vcs";
             // string filenamepath = ARTIFACT_CLASSIC_CORE_PC_SOURCE + @"/bilateral_blur_pc_30_vs.vcs";
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
-
-
         }
-
 
         static void VcsParsingTestSinglefiles()
         {
@@ -511,8 +446,6 @@ namespace MyShaderAnalysis.codestash
 
             ShowVcsByteAnalysis(filenamepath);
         }
-
-
 
         static void ShowVcsByteAnalysis(string filenamepath)
         {
@@ -543,7 +476,6 @@ namespace MyShaderAnalysis.codestash
             //sw.Close();
         }
 
-
         static void WriteAllVcsFilesToHtml()
         {
             // List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
@@ -561,13 +493,11 @@ namespace MyShaderAnalysis.codestash
             vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_DCG_PC_SOURCE, null, VcsProgramType.PixelShader, -1));
             vcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_DCG_PC_SOURCE, null, VcsProgramType.PixelShaderRenderState, -1));
 
-
             foreach (string vcsFile in vcsFiles)
             {
                 WriteVcsByteAnalysisToHtml(vcsFile, writeHtmlLinks: true);
             }
         }
-
 
         /*
          * set writeHtmlLinks explicitly, want this is also printing zframes
@@ -614,25 +544,6 @@ namespace MyShaderAnalysis.codestash
             //    $"gs({typesParsed[(int)VcsFileType.GeometryShader]}), " +
             //    $"psrs({typesParsed[(int)VcsFileType.PixelShaderRenderState]})");
         }
-
-
-
     }
-
-
-
-
-
-
-
-
 }
-
-
-
-
-
-
-
-
 

@@ -9,15 +9,12 @@ namespace MyShaderAnalysis.codestash
 {
     public class ParseVcsFilesOld1
     {
-
         public static void RunTrials()
         {
             // -- these methods uses largely redundant code, direct parsing to the production code
             RunBatchPrintVcsFiles();
             // RunPrintVcsFile();
         }
-
-
 
         static void RunBatchPrintVcsFiles()
         {
@@ -40,7 +37,6 @@ namespace MyShaderAnalysis.codestash
             PrintVcsFile(filenamepath);
         }
 
-
         static void PrintVcsFile(string filenamepath)
         {
             string outputFile = "Z:/dev/www/vcs.codecreation.dev/GEN-output/testfile.html";
@@ -55,8 +51,6 @@ namespace MyShaderAnalysis.codestash
             sw.Close();
         }
 
-
-
         private static string GetHtmlHeader(string browserTitle, string pageHeader)
         {
             string html_header = "" +
@@ -69,6 +63,5 @@ namespace MyShaderAnalysis.codestash
         {
             return "</pre>\n</html>";
         }
-
     }
 }

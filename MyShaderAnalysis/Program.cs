@@ -4,6 +4,7 @@ using MyShaderAnalysis.parsing;
 using MyShaderAnalysis.serverhtml;
 using MyShaderAnalysis.snippetcode;
 using MyShaderAnalysis.staticanalysis;
+using MyShaderAnalysis.util;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -12,7 +13,6 @@ namespace MyShaderAnalysis
 {
     class Program
     {
-
         public class ToDebugWriter : StringWriter
         {
             public override void WriteLine(string str0)
@@ -41,9 +41,8 @@ namespace MyShaderAnalysis
             // BatchProcessHtmlServerFiles(); // <-- create server files
             // ParserSnippets();
             // BasicFunctionalitySnippets();
+            // CSharpSnippets();
         }
-
-
 
         public static void StaticAnalysisForKristiker()
         {
@@ -52,15 +51,12 @@ namespace MyShaderAnalysis
             // StaticAnalysis2.RunTrials();
         }
 
-
-
         public static void RunStaticAnalysis()
         {
             StaticAnalysis3.Run();
             // StaticAnalysis2.RunTrials();
             // StaticAnalysis.RunTrials();
         }
-
 
         public static void BatchProcessFiles()
         {
@@ -71,7 +67,6 @@ namespace MyShaderAnalysis
             // I'd like to do something similar for the Vulkan source code ..
             // StaticAnalysisZframes.RunTrials();
         }
-
 
         // TestSingleFileParsing.RunTrials();
 
@@ -97,13 +92,11 @@ namespace MyShaderAnalysis
             CreateHtmlServerFiles.RunTrials();
         }
 
-
         public static void ParserSnippets()
         {
             SingleFileParserExamples.RunTrials();
             // PrintoutVulkanCode.RunTrials();
         }
-
 
         public static void OldStaticAnalysisSummaries()
         {
@@ -112,7 +105,6 @@ namespace MyShaderAnalysis
 
             // StaticAnalysis2.RunTrials();
         }
-
 
         public static void BasicFunctionalitySnippets()
         {
@@ -126,8 +118,10 @@ namespace MyShaderAnalysis
 
         public static void CSharpSnippets()
         {
+            // -- fix some style issues
+            FixCsSources.Run();
             // RegexExamples.RunTrials();
-            Snippetcode.RunTrials();
+            // Snippetcode.RunTrials();
         }
 
         public static void TestConstraintRules()
@@ -146,10 +140,6 @@ namespace MyShaderAnalysis
             // CompatRules.RunTrials();
             // BitTestGeneration.RunTrials();
         }
-
-
     }
 }
-
-
 

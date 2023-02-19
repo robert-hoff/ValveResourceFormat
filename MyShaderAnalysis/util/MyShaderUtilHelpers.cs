@@ -6,7 +6,6 @@ namespace MyShaderAnalysis.util
 {
     class MyShaderUtilHelpers
     {
-
         public static List<string> GetVcsFiles(string dir1, VcsProgramType fileType,
             int numEnding = -1, bool sortFiles = true, int LIMIT_NR = 1000)
         {
@@ -102,8 +101,6 @@ namespace MyShaderAnalysis.util
             return filesFound;
         }
 
-
-
         // todo - duplicates from MyShaderFile.CompiledShader.ShaderUtilHelpers, but it's better to have these separated
         public static (VcsProgramType p1, VcsPlatformType p2, VcsShaderModelType p3) ComputeVCSFileName(string filenamepath)
         {
@@ -188,7 +185,6 @@ namespace MyShaderAnalysis.util
                  _ => VcsProgramType.Undetermined
              };
         }
-
 
         public static string GetSourceType(VcsPlatformType vcsPlatformType, VcsShaderModelType vcsShaderModelType)
         {

@@ -13,19 +13,14 @@ namespace MyShaderAnalysis.snippetcode
             //    "00 51 00 1D 16 82 0D 28 06 1B 00 15 02 56 00 07 00 00 00 00 1D CF 75 4A D4 13 07 00 00 00 3F 09 01 " +
             //    "09 02 14 09 02 09 01 13 06 1A 00 15 14 07 00 00 00 3F 13 08 03 09 02 09 01 09 03 1E 55 06 19 00 00");
 
-
             var testBytes = ParseString("1A 04 00");
-
 
             // -- not a dynamic expressions (it's a common header pattern in the zframes)
             // var testBytes = ParseString("0E 71 00");
 
-
-
             // string dynExpResult = new VfxEval(testBytes, omitReturnStatement: true).DynamicExpressionResult;
             string dynExpResult = new VfxEval(testBytes).DynamicExpressionResult;
             Console.WriteLine(dynExpResult);
-
         }
 
         private static byte[] ParseString(string bytestring)

@@ -19,7 +19,6 @@ namespace MyShaderAnalysis.serverhtml
 
         // public int zframesToPrint { get; set; } = 0;
 
-
         public ParseVcsFile(ARCHIVE archive, string filename, bool showRichTextBoxLinks = true, bool convertLinksToHtml = true)
         {
             fileTokens = new FileVcsTokens(archive, filename);
@@ -27,7 +26,6 @@ namespace MyShaderAnalysis.serverhtml
             this.showRichTextBoxLinks = showRichTextBoxLinks;
             this.convertLinksToHtml = convertLinksToHtml;
         }
-
 
         public string GetVcsSummary()
         {
@@ -81,7 +79,6 @@ namespace MyShaderAnalysis.serverhtml
             }
             return textBuffer.ToString();
         }
-
 
         public string GetGpuByteSource(ZFrameFile zframeFile, int gpuSourceId)
         {
@@ -255,7 +252,7 @@ namespace MyShaderAnalysis.serverhtml
         {
             FileWriter fileWriter = new FileWriter(outputFilenamepath, showOutputToConsole: false);
             fileWriter.WriteHtmlHeader(htmlTitle, htmlHeader);
-            fileWriter.WriteText(htmlBody);
+            fileWriter.WriteLine(htmlBody);
             fileWriter.CloseStreamWriter();
             fileWriter.Dispose();
         }

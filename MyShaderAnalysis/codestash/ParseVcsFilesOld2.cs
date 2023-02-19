@@ -35,7 +35,6 @@ namespace MyShaderAnalysis.codestash
 
         public static void RunTrials()
         {
-
             // RunPrintZFrameSummaryPostProcess();
             RunPrintVcsSummaryPostProcess();
 
@@ -44,10 +43,7 @@ namespace MyShaderAnalysis.codestash
             // RunPrintZFrameSummary();
             // RunPrintZFrameBytes();
             // RunPrintGpuSource();
-
         }
-
-
 
         static void RunPrintZFrameSummaryPostProcess()
         {
@@ -65,8 +61,6 @@ namespace MyShaderAnalysis.codestash
             // PrintZFrameSummaryPostProcess(shaderFile, zframe1, fileTokens);
         }
 
-
-
         static void PrintZFrameSummaryPostProcess(ShaderFile shaderFile, ZFrameFile zframeFile, FileVcsTokens fileTokens = null)
         {
             //if (fileTokens == null)
@@ -74,12 +68,10 @@ namespace MyShaderAnalysis.codestash
             //    fileTokens = new FileTokensOld(zframeFile.filenamepath);
             //}
 
-
             var buffer = new StringWriter(CultureInfo.InvariantCulture);
             new PrintZFrameSummary(shaderFile, zframeFile, outputWriter: buffer.Write, showRichTextBoxLinks: true);
 
             string processedData = new PostProcessZframeFile(zframeFile, fileTokens).PostProcessZframeData(buffer.ToString());
-
 
             string outputFilenamepath = fileTokens.GetZFrameHtmlFilenamepath(zframeFile.ZframeId, "summary", createDirs: true);
             FileWriter fileWriter = new FileWriter(outputFilenamepath, showOutputToConsole: false);
@@ -95,9 +87,6 @@ namespace MyShaderAnalysis.codestash
             fileWriter.CloseStreamWriter();
         }
 
-
-
-
         static void RunPrintVcsSummaryPostProcess()
         {
             // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/multiblend_pcgl_30_features.vcs";
@@ -108,7 +97,6 @@ namespace MyShaderAnalysis.codestash
             // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/3dskyboxstencil_pcgl_30_vs.vcs";
             PrintVcsSummaryPostProcess(filenamepath);
         }
-
 
         static void PrintVcsSummaryPostProcess(string filenamepath)
         {
@@ -166,11 +154,6 @@ namespace MyShaderAnalysis.codestash
             return relatedFiles;
         }
 
-
-
-
-
-
         // no post-processing performed here (therefore links won't be enabled)
 
         static void RunPrintVcsSummary()
@@ -190,7 +173,6 @@ namespace MyShaderAnalysis.codestash
             PrintVcsByteDetail(filenamepath);
         }
 
-
         static void RunPrintZFrameSummary()
         {
             int ZFRAME_INDEX0 = 0;
@@ -207,8 +189,6 @@ namespace MyShaderAnalysis.codestash
             PrintZFrameSummary(shaderFile, zframe1, fileTokens);
         }
 
-
-
         static void RunPrintZFrameBytes()
         {
             int ZFRAME_INDEX0 = 0;
@@ -223,7 +203,6 @@ namespace MyShaderAnalysis.codestash
             PrintZFrameBytes(zframe1, fileTokens);
         }
 
-
         static void PrintVcsSummary(string filenamepath)
         {
             FileTokensOld fileTokens = new FileTokensOld(filenamepath);
@@ -235,7 +214,6 @@ namespace MyShaderAnalysis.codestash
             new PrintVcsFileSummary(shaderFile, fileWriter.GetOutputWriter(), showRichTextBoxLinks: true, relatedFiles);
             fileWriter.CloseStreamWriter();
         }
-
 
         static void PrintVcsByteDetail(string filenamepath)
         {
@@ -251,7 +229,6 @@ namespace MyShaderAnalysis.codestash
             shaderFile.PrintByteDetail(outputWriter: fileWriter.GetOutputWriter());
             fileWriter.CloseStreamWriter();
         }
-
 
         static void PrintZFrameSummary(ShaderFile shaderFile, ZFrameFile zframeFile, FileTokensOld fileTokens = null)
         {
@@ -273,7 +250,6 @@ namespace MyShaderAnalysis.codestash
             fileWriter.CloseStreamWriter();
         }
 
-
         static void PrintZFrameBytes(ZFrameFile zframeFile, FileTokensOld fileTokens = null)
         {
             if (fileTokens == null)
@@ -290,7 +266,6 @@ namespace MyShaderAnalysis.codestash
             zframeFile.PrintByteDetail(outputWriter: fileWriter.GetOutputWriter());
             fileWriter.CloseStreamWriter();
         }
-
 
         static void RunPrintGpuSource()
         {
@@ -317,13 +292,6 @@ namespace MyShaderAnalysis.codestash
             zframeFile.PrintGpuSource(sourceId, fileWriter.GetOutputWriter());
             fileWriter.CloseStreamWriter();
         }
-
-
-
-
-
-
     }
 }
-
 

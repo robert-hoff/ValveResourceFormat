@@ -4,10 +4,8 @@ using System.IO;
 using ValveResourceFormat.CompiledShader;
 using static MyShaderAnalysis.util.MyShaderUtilHelpers;
 
-
 namespace MyShaderAnalysis.parsing
 {
-
     public class DataReaderVcsBytes : ShaderDataReader
     {
         public const uint ZSTD_DELIM = 0xFFFFFFFD;
@@ -34,7 +32,6 @@ namespace MyShaderAnalysis.parsing
 
         private uint zFrameCount = 0;
 
-
         public void PrintByteDetail()
         {
             BaseStream.Position = 0;
@@ -59,15 +56,12 @@ namespace MyShaderAnalysis.parsing
                 throw new ShaderParserException($"ERROR Unsupported vcs version {vcsVersion}");
             }
 
-
-
             uint blockDelim = ReadUInt32AtPosition();
             ShowByteCount();
             ShowBytes(4, $"block DELIM (values seen 14,17)");
 
             // ShowBytes(4);
             // ShowBytes(4);
-
 
             BreakLine();
             PrintAllSfBlocks();
@@ -211,7 +205,6 @@ namespace MyShaderAnalysis.parsing
             ShowBytes(16, "Editor ref. ID1 - common editor reference shared by multiple files");
             return vcsVersion;
         }
-
 
         private void PrintAllSfBlocks()
         {
@@ -589,7 +582,6 @@ namespace MyShaderAnalysis.parsing
             if (symbolGroupCount == 0) BreakLine();
         }
 
-
         private const int SKIP_ZFRAMES_IF_MORE_THAN = 10;
         private const int MAX_ZFRAME_BYTES_TO_SHOW = 96;
 
@@ -654,7 +646,6 @@ namespace MyShaderAnalysis.parsing
             }
         }
 
-
         public void PrintCompressedZFrame(uint zframeId)
         {
             OutputWriteLine($"[{BaseStream.Position}] zframe[0x{zframeId:x08}]");
@@ -693,13 +684,6 @@ namespace MyShaderAnalysis.parsing
             BaseStream.Position += compressed_length;
             BreakLine();
         }
-
-
-
-
     }
 }
-
-
-
 

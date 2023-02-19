@@ -39,7 +39,6 @@ namespace MyShaderAnalysis.snippetcode
             int nrFailed = totalTally.Item2 - totalTally.Item1;
             int nrTotal = totalTally.Item2;
 
-
             string detailString = "";
             foreach (var fileStat in stats)
             {

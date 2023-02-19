@@ -22,7 +22,6 @@ namespace MyShaderAnalysis.parsing
 {
     public class PrintoutVulkanCode
     {
-
         public static void RunTrials()
         {
             // ShowSourceCodeSpirvReflection();
@@ -30,10 +29,7 @@ namespace MyShaderAnalysis.parsing
             // PrintAZframeToConsole();
             // Trial2();
             // Trial1();
-
         }
-
-
 
         static void ShowSourceCodeSpirvReflection()
         {
@@ -44,23 +40,19 @@ namespace MyShaderAnalysis.parsing
             ShaderFile shaderFile = fileTokens.GetShaderFile();
             ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(0);
 
-
             VulkanSource vulkanSource = (VulkanSource)zframeFile.GpuSources[gpuIndex];
             string reflectedSpirv = DecompileSpirvDll.DecompileVulkan(vulkanSource.GetSpirvBytes());
 
-
             FileWriter fw = new FileWriter(FileArchives.GetServerTestFile());
             fw.WriteHtmlHeader("Spirv reflection", "Spirv reflection");
-            fw.WriteText(vulkanSource.GetSourceDetails());
-            fw.WriteText($"// Spirv source ({vulkanSource.MetadataOffset}), reflection performed with SPIRV-Cross, KhronosGroup\n");
-            fw.WriteText($"{reflectedSpirv}");
-            fw.WriteText($"// Source metadata (unknown encoding) ({vulkanSource.MetadataLength})");
-            fw.WriteText($"[{vulkanSource.MetadataOffset}]");
-            fw.WriteText($"{BytesToString(vulkanSource.GetMetadataBytes())}");
+            fw.WriteLine(vulkanSource.GetSourceDetails());
+            fw.WriteLine($"// Spirv source ({vulkanSource.MetadataOffset}), reflection performed with SPIRV-Cross, KhronosGroup\n");
+            fw.WriteLine($"{reflectedSpirv}");
+            fw.WriteLine($"// Source metadata (unknown encoding) ({vulkanSource.MetadataLength})");
+            fw.WriteLine($"[{vulkanSource.MetadataOffset}]");
+            fw.WriteLine($"{BytesToString(vulkanSource.GetMetadataBytes())}");
             fw.CloseStreamWriter();
         }
-
-
 
         static void ShowSourceCode()
         {
@@ -77,10 +69,6 @@ namespace MyShaderAnalysis.parsing
             fw.CloseStreamWriter();
         }
 
-
-
-
-
         static void PrintAZframeToConsole()
         {
             FileVcsTokens fileTokens = new FileVcsTokens(ARCHIVE.alyx_hlvr_vulkan_v64, "solidcolor_vulkan_50_vs.vcs");
@@ -88,7 +76,6 @@ namespace MyShaderAnalysis.parsing
             ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(0);
             new PrintZFrameSummary(shaderFile, zframeFile);
         }
-
 
         /*
          * saves bytecode that can be decompiled as SPIR-V
@@ -111,8 +98,6 @@ namespace MyShaderAnalysis.parsing
             // File.WriteAllBytes("X:/checkouts/SPIRV-Cross/Debug/source1.spv", sourceBytes);
         }
 
-
-
         static void Trial1()
         {
             FileVcsTokens fileTokens = new FileVcsTokens(ARCHIVE.alyx_hlvr_vulkan_v64, "cables_vulkan_50_vs.vcs");
@@ -125,11 +110,8 @@ namespace MyShaderAnalysis.parsing
             // Console.WriteLine(zframeFile.leadingData.h0);
             // Console.WriteLine(zframeFile.gpuSources.Capacity);
 
-
-
             // there is one Vulkan source file present
             // Console.WriteLine(zframeFile.gpuSources.Count);
-
 
             // this doesn't print anything ..
             // try to convert the sourcebytes to text ..
@@ -137,21 +119,11 @@ namespace MyShaderAnalysis.parsing
 
             // Well -> regarding printing the sourcebytes as text, I'm pretty sure that won't have a good result
 
-
             VulkanSource vulkanSource = zframeFile.GpuSources[0] as VulkanSource;
             byte[] sourceBytes = vulkanSource.Sourcebytes;
             string vulkanBytesAsString = BytesToString(sourceBytes);
             Console.WriteLine(vulkanBytesAsString); // prints the Vulkan source as a byte string
         }
-
-
-
-
-
-
-
     }
 }
-
-
 

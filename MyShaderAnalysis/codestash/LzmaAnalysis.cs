@@ -6,13 +6,8 @@ using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
 
 namespace MyShaderAnalysis.codestash
 {
-
-
     public class LzmaAnalysis
     {
-
-
-
         public static void RunTrials()
         {
             // Trial1();
@@ -24,16 +19,12 @@ namespace MyShaderAnalysis.codestash
             Trial11();
         }
 
-
         static void Trial11()
         {
             string filenamepath = $"{ARTIFACT_CLASSIC_CORE_PC_SOURCE}/aerial_perspective_pc_30_vs.vcs"; long zId = 0;
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             ZFrameFile zframeFile = shaderFile.GetZFrameFile(zId);
-
         }
-
-
 
         static void Trial10()
         {
@@ -48,10 +39,7 @@ namespace MyShaderAnalysis.codestash
             DataReaderZFrameBytes datareader = new(zframeDatabytes,
                 vcsFileProperties.Item1, vcsFileProperties.Item2, vcsFileProperties.Item3);
             datareader.PrintByteDetail();
-
         }
-
-
 
         static void Trial8()
         {
@@ -61,7 +49,6 @@ namespace MyShaderAnalysis.codestash
             shaderByteAnalysis.PrintByteDetail();
         }
 
-
         static void Trial6()
         {
             string filenamepath = $"{DOTA_GAME_PC_SOURCE}/multiblend_pc_30_ps.vcs";
@@ -70,7 +57,6 @@ namespace MyShaderAnalysis.codestash
             DataReaderZFrameBytes datareader = new(zframeDatabytes, shaderFile.VcsProgramType, shaderFile.VcsPlatformType, shaderFile.VcsShaderModelType);
             datareader.PrintByteDetail();
         }
-
 
         /*
          *
@@ -108,7 +94,6 @@ namespace MyShaderAnalysis.codestash
             int num = reader.ReadInt32AtPosition();
             Console.WriteLine($"{num}");
             reader.ShowBytes(4);
-
         }
 
         /*
@@ -118,8 +103,6 @@ namespace MyShaderAnalysis.codestash
          */
         static void Trial1()
         {
-
-
             string filenamepath = $"{ARTIFACT_CLASSIC_CORE_PC_SOURCE}/aerial_perspective_pc_30_ps.vcs";
             // string filenamepath = $"{DOTA_CORE_PCGL_SOURCE}/apply_fog_pcgl_40_ps.vcs";
 

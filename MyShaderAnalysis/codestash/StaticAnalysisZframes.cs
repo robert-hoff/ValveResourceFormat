@@ -7,10 +7,8 @@ using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
 
 namespace MyShaderAnalysis.codestash
 {
-
     public class StaticAnalysisZframes
     {
-
         public const string DOTA_CORE_PCGL_SOURCE = "X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders-core/vfx";
         public const string DOTA_GAME_PCGL_SOURCE = "X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders/vfx";
         public const string DOTA_CORE_PC_SOURCE = "X:/dota-2-VRF-exports/dota2-export-shaders-pc/shaders-core/vfx";
@@ -29,7 +27,6 @@ namespace MyShaderAnalysis.codestash
         public const string DOTA_VULKAN_V65_CORE = "X:\\dota-2-VRF-exports\\dota2-export-shaders-vulkan-V65\\shaders-core\\vfx";
         public const string DOTA_VULKAN_V65_GAME = "X:\\dota-2-VRF-exports\\dota2-export-shaders-vulkan-V65\\shaders-game\\vfx";
 
-
         const string PCGL_DIR_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders-core/vfx";
         const string PCGL_DIR_NOT_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders/vfx";
         const string PC_DIR_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pc/shaders-core/vfx";
@@ -38,7 +35,6 @@ namespace MyShaderAnalysis.codestash
         const string SERVER_OUTPUT_DIR = @"Z:/dev/www/vcs.codecreation.dev/GEN-output";
         const string SERVER_BASEDIR = @"Z:/dev/www/vcs.codecreation.dev";
         const string OUTPUT_SUB_DIR = @"/GEN-output";
-
 
         public static void RunTrials()
         {
@@ -71,14 +67,11 @@ namespace MyShaderAnalysis.codestash
             // SurveryBytesInLeadingDataload();
             // SurveryLeadingDataSingleFile();
 
-
-
             // Console.WriteLine($"{123:x}");
 
             PrintReport(showCount: true);
             CloseStreamWriter();
         }
-
 
         static void ZFrameEndBlocks5()
         {
@@ -116,8 +109,6 @@ namespace MyShaderAnalysis.codestash
                         //    Console.WriteLine($"{zframeFile.filenamepath}       zframeId={zframeFile.zframeId:x08}");
                         //}
 
-
-
                         //if (endBlock.data0 == null || endBlock.data1 == null)
                         //{
                         //    endBlock.data0 = new byte[] { };
@@ -128,17 +119,13 @@ namespace MyShaderAnalysis.codestash
                         // float f2 = BitConverter.ToSingle(endBlock.data0, 8);
                         // CollectStringValue($"{BytesToString(endBlock.data0)}    {f1} {f2}");
 
-
                         string show0 = endBlock.Data0 == null ? "".PadRight(47) : BytesToString(endBlock.Data0);
                         string show1 = endBlock.Data1 == null ? "".PadRight(59) : BytesToString(endBlock.Data1);
                         CollectStringValue($"{show0}   {show1}");
-
-
                     }
                 }
             }
         }
-
 
         static void ZFrameEndBlocks4()
         {
@@ -164,18 +151,15 @@ namespace MyShaderAnalysis.codestash
 
                 ConfigMappingSParams configMap = new ConfigMappingSParams(shaderFile);
 
-
                 // Console.WriteLine($"{shaderFile.GetZFrameCount()}");
                 for (int zIndex = 0; zIndex < shaderFile.GetZFrameCount(); zIndex++)
                 {
-
                     ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(zIndex);
                     int[] configState = configMap.GetConfigState(zframeFile.ZframeId);
                     Console.WriteLine($"{zframeFile.FilenamePath}       zframeId={zframeFile.ZframeId:x08}");
                     ShowIntArray(configState);
                     foreach (var endBlock in zframeFile.PsEndBlocks)
                     {
-
                         byte[] sec0 = new byte[3];
                         sec0[0] = endBlock.Data2[0];
                         sec0[1] = endBlock.Data2[1];
@@ -202,10 +186,7 @@ namespace MyShaderAnalysis.codestash
                     }
                 }
             }
-
         }
-
-
 
         static void ZFrameEndBlocks3()
         {
@@ -247,12 +228,10 @@ namespace MyShaderAnalysis.codestash
                             Console.WriteLine(vcsFilenamepath);
                             Console.WriteLine($"{BytesToString(sec1, -1)}     {BytesToString(sec2, -1)}");
                         }
-
                     }
                 }
             }
         }
-
 
         static void ZFrameEndBlocks2()
         {
@@ -293,8 +272,6 @@ namespace MyShaderAnalysis.codestash
             }
         }
 
-
-
         static void ZFrameEndBlocks()
         {
             // List<string> vcsFiles = new();
@@ -325,10 +302,6 @@ namespace MyShaderAnalysis.codestash
             }
         }
 
-
-
-
-
         static void Trial1()
         {
             // string filenamepath = $@"{PCGL_DIR_NOT_CORE}/multiblend_pcgl_30_vs.vcs"; int useZFrame = 0x24;
@@ -339,7 +312,6 @@ namespace MyShaderAnalysis.codestash
 
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             ZFrameFile zframeFile = shaderFile.GetZFrameFile(useZFrame);
-
 
             // ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(5);
 
@@ -355,15 +327,7 @@ namespace MyShaderAnalysis.codestash
             // zframeFile.ShowTailSummary();
             // zframeFile.ShowGlslSources();
             // zframeFile.ShowEndBlocks();
-
         }
-
-
-
-
-
-
-
 
         /*
          *
@@ -438,7 +402,6 @@ namespace MyShaderAnalysis.codestash
                 }
             }
 
-
             Console.WriteLine($"source references = {sourceReferencesCount}");
             SortedDictionary<int, int> referenceDistribution = new();
 
@@ -447,11 +410,7 @@ namespace MyShaderAnalysis.codestash
                 referenceDistribution.TryGetValue(item.Value, out int count);
                 referenceDistribution[item.Value] = count + 1;
             }
-
-
         }
-
-
 
         static void StateSummariesValuesSeen()
         {
@@ -471,8 +430,6 @@ namespace MyShaderAnalysis.codestash
                         CollectIntValue(v);
                     }
 
-
-
                     // leadSummary values - some strange values encountered here
                     //if (zframeFile.leadSummary == null) {
                     //    continue;
@@ -483,13 +440,9 @@ namespace MyShaderAnalysis.codestash
                     //        Console.WriteLine($"{RemoveBaseDir(vcsFilenamepath)} {zframeFile.zframeId:x}");
                     //    }
                     //}
-
                 }
             }
         }
-
-
-
 
         /*
          * doesn't appear to be any defnition limitations for these,
@@ -512,7 +465,6 @@ namespace MyShaderAnalysis.codestash
 
                     for (int i = 1; i < zframeFile.DataBlocks.Count; i++)
                     {
-
                         int h2last = zframeFile.DataBlocks[i - 1].H2;
                         int h2cur = zframeFile.DataBlocks[i].H2;
 
@@ -522,7 +474,6 @@ namespace MyShaderAnalysis.codestash
                             CollectIntValue(h2last - h2cur);
                         }
 
-
                         //if (diff == 4) {
                         //    Console.WriteLine($"{RemoveBaseDir(vcsFilenamepath)} {zframeFile.zframeId:x} " +
                         //        $"{zframeFile.dataBlocks[i].blockId}");
@@ -531,8 +482,6 @@ namespace MyShaderAnalysis.codestash
                 }
             }
         }
-
-
 
         static void ZFrameHeaderComparisonGivenFile()
         {
@@ -559,8 +508,6 @@ namespace MyShaderAnalysis.codestash
             }
         }
 
-
-
         /*
          * The
          * DepthPassBatchID                         2c5b5105   05 FF FF   1
@@ -586,8 +533,6 @@ namespace MyShaderAnalysis.codestash
                 }
             }
         }
-
-
 
         static void CheckB0ToB3Uniqeness()
         {
@@ -626,8 +571,6 @@ namespace MyShaderAnalysis.codestash
             }
         }
 
-
-
         /*
          *
          * The b0 values never exceed the file's parameter count
@@ -663,9 +606,6 @@ namespace MyShaderAnalysis.codestash
                 }
             }
         }
-
-
-
 
         /*
          * The b0 byte within the dataloads do sometimes repeat
@@ -703,7 +643,6 @@ namespace MyShaderAnalysis.codestash
                                     //int b2 = dataBlock.dataload[i+2];
                                     //int b3 = dataBlock.dataload[i+3];
                                     //CollectStringValue($"{b0:X02} {b1:X02} {b2:X02} {b3:X02}");
-
                                 }
                                 b0Values[dataBlock.Dataload[i]] = count + 1;
                             }
@@ -712,8 +651,6 @@ namespace MyShaderAnalysis.codestash
                 }
             }
         }
-
-
 
         static void ShowB0ValuesSelectedFile()
         {
@@ -741,9 +678,7 @@ namespace MyShaderAnalysis.codestash
                     }
                 }
             }
-
         }
-
 
         /*
          * nr of end blocks and source-count is not the same, but
@@ -765,14 +700,12 @@ namespace MyShaderAnalysis.codestash
                 {
                     ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(i);
 
-
                     // CollectStringValue($"{zframeFile.glslSourceCount}  {zframeFile.nrEndBlocks}");
                     if (zframeFile.NrEndBlocks != zframeFile.GpuSourceCount)
                     {
                         Console.WriteLine($"{RemoveBaseDir(vcsFilenamepath)} {zframeFile.ZframeId:x}");
                         break;
                     }
-
 
                     // CollectStringValue($"{zframeFile.nonZeroDataBlockCount}  {zframeFile.nrEndBlocks}");
 
@@ -784,13 +717,9 @@ namespace MyShaderAnalysis.codestash
                     //if (zframeFile.zframeId != 0) {
                     //    CollectStringValue($"{zframeFile.nonZeroDataBlockCount}  {zframeFile.nrEndBlocks}");
                     //}
-
-
                 }
             }
         }
-
-
 
         static void DataBlockCountSurvey()
         {
@@ -805,8 +734,6 @@ namespace MyShaderAnalysis.codestash
                 }
             }
         }
-
-
 
         static void DataBlockCountSelectedfile()
         {
@@ -824,8 +751,6 @@ namespace MyShaderAnalysis.codestash
                 CollectIntValue(zframeFile.DataBlocks.Count);
             }
         }
-
-
 
         /*
          * If leadingData.h0 is 0 then all the datablocks data are also 0
@@ -854,7 +779,6 @@ namespace MyShaderAnalysis.codestash
             }
         }
 
-
         /*
          * The value of the h1 argument for all non-leading datablocks is 0
          *
@@ -875,11 +799,7 @@ namespace MyShaderAnalysis.codestash
                         // Console.WriteLine($"{RemoveBaseDir(vcsFilenamepath)} {zframeFile.zframeId:x}");
                     }
 
-
-
-
                     // remember zBlock.h1 is ALWAYS 0 !!!
-
 
                     //foreach (ZDataBlock zBlock in zframeFile.dataBlocks) {
                     //    if (zBlock.dataload == null) {
@@ -893,11 +813,9 @@ namespace MyShaderAnalysis.codestash
             }
         }
 
-
         static void SurveryDataBlocks2()
         {
             List<ZFrameFile> zFrames = GetZFrameSelectionFromEachFile();
-
 
             foreach (ZFrameFile zFrame in zFrames)
             {
@@ -979,11 +897,9 @@ namespace MyShaderAnalysis.codestash
                     //foreach (ZDataBlock zBlock in zframeFile.dataBlocks) {
                     //    CollectIntValue(zBlock.h2);
                     //}
-
                 }
             }
         }
-
 
         /*
          * for spritecard_pcgl_30_ps.vcs the differece h0-h2 in
@@ -1010,8 +926,6 @@ namespace MyShaderAnalysis.codestash
             }
         }
 
-
-
         static void SurveryHeaderParams()
         {
             List<string> vcsFiles = GetFileSelectionWithLimitedZframes();
@@ -1025,7 +939,6 @@ namespace MyShaderAnalysis.codestash
                 }
                 foreach (ZFrameFile zframeFile in zframeFiles)
                 {
-
                     // zframeFile.ShowZFrameHeader();
                     foreach (var zparam in zframeFile.ZframeParams)
                     {
@@ -1034,8 +947,6 @@ namespace MyShaderAnalysis.codestash
                 }
             }
         }
-
-
 
         static void SurveryBytesInLeadingDataload()
         {
@@ -1068,8 +979,6 @@ namespace MyShaderAnalysis.codestash
 breakhere: Console.WriteLine("");
         }
 
-
-
         /*
          * A big problem with surverying zframes is that it creates insane workloads
          * decompressing and parsing hero_pcgl_30_ps.vcs taking 20 GB of data.
@@ -1079,7 +988,6 @@ breakhere: Console.WriteLine("");
          */
         static void SurveryLeadingDataSingleFile()
         {
-
             List<string> vcsFiles = GetFileSelectionWithLimitedZframes();
             foreach (string vcsFilenamepath in vcsFiles)
             {
@@ -1095,9 +1003,6 @@ breakhere: Console.WriteLine("");
                 }
             }
         }
-
-
-
 
         static List<string> FileSelection()
         {
@@ -1131,7 +1036,6 @@ breakhere: Console.WriteLine("");
             }
             return zFrames;
         }
-
 
         static List<string> GetFileSelectionWithLimitedZframes()
         {
@@ -1173,17 +1077,10 @@ breakhere: Console.WriteLine("");
             return null;
         }
 
-
-
-
-
-
-
         private static StreamWriter sw = null;
         private static bool DisableOutput = false;
         private static bool WriteAsHtml = false;
         private static bool swWriterAlreadyClosed = false;
-
 
         // This basestream != null is nonsense, it doesn't check if the file is open
         private static void CloseStreamWriter()
@@ -1213,18 +1110,6 @@ breakhere: Console.WriteLine("");
         {
             OutputWrite(text + "\n");
         }
-
-
     }
-
-
-
 }
-
-
-
-
-
-
-
 

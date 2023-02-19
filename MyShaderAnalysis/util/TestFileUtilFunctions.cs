@@ -8,31 +8,25 @@ namespace MyShaderAnalysis.util
 {
     public class TestFileUtilFunctions
     {
-
         public static void RunTrials()
         {
-
-
             // ShowFileTokenDetail2();
             // ShowFileTokenDetail1();
             // ShowRelatedFilesInVcsCollection(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30");
             // ShowRelatedFilesInVcsCollection(ARCHIVE.dotagame_pcgl, "hero_pcgl_30");
             // TestShaderInstantiation();
             // TestFileRetrievalHelper();
-
         }
 
         static void TestComputeVcsFilename() {
             ComputeVCSFileName("sadf");
         }
 
-
         static void ShowFileTokenDetail2()
         {
             FileVcsTokens fileTokens = new FileVcsTokens(ARCHIVE.dota_game_pcgl_v64, "multiblend_pcgl_30_ps.vcs");
             // Console.WriteLine($"{fileTokens.sourcedir}");
         }
-
 
         static void ShowFileTokenDetail1()
         {
@@ -58,8 +52,6 @@ namespace MyShaderAnalysis.util
             Console.WriteLine($" * GetBaseName()                       {fileTokens.GetBaseName()}");
         }
 
-
-
         static void ShowRelatedFilesInVcsCollection(ARCHIVE archive, string vcsCollectionName)
         {
             List<string> relatedFiles = FileVcsCollection.GetRelatedFiles(archive, vcsCollectionName);
@@ -69,7 +61,6 @@ namespace MyShaderAnalysis.util
             }
         }
 
-
         static void TestShaderInstantiation()
         {
             FileVcsTokens spritecard_ps = new(ARCHIVE.dota_game_pcgl_v64, "spritecard_pcgl_30_ps.vcs");
@@ -78,10 +69,6 @@ namespace MyShaderAnalysis.util
             Console.WriteLine($"spritecard_ps has {shaderFile.GetZFrameCount()} zframes");
         }
 
-
-
-
-
         static void TestFileRetrievalHelper()
         {
             List<string> vcsFiles = MyShaderUtilHelpers.GetVcsFiles(FileArchives.GetArchiveDir(ARCHIVE.alyx_hlvr_vulkan_v64), VcsProgramType.Undetermined);
@@ -89,18 +76,7 @@ namespace MyShaderAnalysis.util
             {
                 Console.WriteLine($"{f}");
             }
-
-
-
         }
-
-
     }
-
-
-
-
 }
-
-
 

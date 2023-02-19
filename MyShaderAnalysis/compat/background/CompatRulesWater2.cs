@@ -1,22 +1,16 @@
 using System;
 
-
 namespace MyShaderAnalysis.compat
 {
-
-
     public class CompatRulesWater2
     {
-
         const string PCGL_DIR_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders-core/vfx";
         const string PCGL_DIR_NOT_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders/vfx";
 
         public static void RunTrials()
         {
-
             Trial1();
             // Trial2();
-
         }
 
         static void Trial2()
@@ -24,10 +18,8 @@ namespace MyShaderAnalysis.compat
             ShowState(3071);
         }
 
-
         static void Trial1()
         {
-
             // string filenamepath = @$"{PCGL_DIR_NOT_CORE}/water_dota_pcgl_30_ps.vcs";
             // ShaderFile shaderFile = new(filenamepath);
             // ShowBitGeneration();
@@ -48,7 +40,6 @@ namespace MyShaderAnalysis.compat
             AddInclusion(8, 6);
             AddInclusion(7, 6);
 
-
             for (int i = 0; i < 3072; i++)
             {
                 // for (int i = 0; i < 100; i++) {
@@ -58,18 +49,11 @@ namespace MyShaderAnalysis.compat
                     // ShowState(i);
                 }
             }
-
-
-
-
         }
-
-
 
         static bool CheckZFrame(int zframe)
         {
             int[] state = GetBitPattern(zframe);
-
 
             for (int j = 2; j <= 11; j++)
             {
@@ -101,8 +85,6 @@ namespace MyShaderAnalysis.compat
                 if (s1 == 0) continue;
                 for (int j = 1; j <= 11; j++)
                 {
-
-
                     //Console.WriteLine($"{i} {j}");
 
                     if (inclusions[i, j] && state[j] == 0)
@@ -112,10 +94,8 @@ namespace MyShaderAnalysis.compat
                 }
             }
 
-
             return true;
         }
-
 
         static void ShowBitGeneration()
         {
@@ -126,13 +106,10 @@ namespace MyShaderAnalysis.compat
             }
         }
 
-
-
         static void ShowState(int i)
         {
             ShowState(GetBitPattern(i));
         }
-
 
         static void ShowState(int[] state)
         {
@@ -144,20 +121,16 @@ namespace MyShaderAnalysis.compat
             Console.WriteLine($"{stateStr[0..^1]}");
         }
 
-
         static int[] GetBitPattern(int testNum)
         {
             int[] state = new int[12];
             for (int i = 1; i <= 11; i++)
             {
-
                 int res = (testNum / offset[i]) % (layers[i] + 1);
                 state[i] = res;
             }
             return state;
         }
-
-
 
         static int[] offset = { 1, 1, 2, 4, 8, 16, 32, 64, 128, 384, 768, 1536 };
         static int[] layers = { 0, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1 };
@@ -175,20 +148,6 @@ namespace MyShaderAnalysis.compat
         {
             inclusions[s1, s2] = true;
         }
-
-
-
-
     }
-
-
-
-
 }
-
-
-
-
-
-
 

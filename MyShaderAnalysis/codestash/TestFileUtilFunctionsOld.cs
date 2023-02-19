@@ -8,9 +8,6 @@ namespace MyShaderAnalysis.codestash
 {
     public class TestFileUtilFunctionsOld
     {
-
-
-
         public static void RunTrials()
         {
             ShowFileTokenDetail();
@@ -25,7 +22,6 @@ namespace MyShaderAnalysis.codestash
             // TestFileAndPathNamesNewArchive();
             // TestFileSystem();
         }
-
 
         static void ShowFileTokenDetail()
         {
@@ -42,7 +38,6 @@ namespace MyShaderAnalysis.codestash
             Console.WriteLine($"GetGlslHtmlFilename(gpuSource) {fileToken.GetGlslHtmlFilename(zframeFile.GpuSources[0].GetEditorRefIdAsString())}");
             Console.WriteLine($"GetGlslHtmlUrl(gpusource)      {fileToken.GetGlslHtmlUrl(zframeFile.GpuSources[0].GetEditorRefIdAsString())}");
 
-
             Console.WriteLine($"GetZFramesServerDir()               {fileToken.GetZFramesServerDir()}");
             // Console.WriteLine($"CreateZFramesDirectory()         {fileToken.CreateZFramesDirectory()}"); // returns void
             Console.WriteLine($"GetZFramesServerPath()              {fileToken.GetZFramesServerPath()}");
@@ -51,8 +46,6 @@ namespace MyShaderAnalysis.codestash
             Console.WriteLine($"GetZFrameLink(id,label)             {fileToken.GetZFrameLink(0,"label")}");
             Console.WriteLine($"GetShortHandName()                  {fileToken.GetShortHandName()}");
         }
-
-
 
         /*
          * Use this loop to generate names that I want, stick with the label 'summary2' for now
@@ -66,7 +59,6 @@ namespace MyShaderAnalysis.codestash
             // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_MOBILE_GLES_SOURCE, DOTA_DAC_MOBILE_GLES_SOURCE, VcsProgramType.Undetermined, -1);
             // List<string> vcsFiles = GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsProgramType.Undetermined, -1);
 
-
             foreach (var filenamepath in vcsFiles)
             {
                 FileTokensOld fileTokens = new FileTokensOld(filenamepath);
@@ -77,12 +69,8 @@ namespace MyShaderAnalysis.codestash
                 // for printing the output to file
                 // PrintSingleFileFullSummary(filenamepath, outputFilenamepath, writeFile: true, disableOutput: true);
                 // output.CloseStreamWriter();
-
-
-
             }
         }
-
 
         /*
          * creates the base folder for each file, in the form
@@ -122,8 +110,6 @@ namespace MyShaderAnalysis.codestash
             }
         }
 
-
-
         /*
          * hero(pcgl-ps)
          * hero(dxbc-ps)
@@ -136,7 +122,6 @@ namespace MyShaderAnalysis.codestash
             FileTokensOld fileTokens = new FileTokensOld(filenamepath);
             Console.WriteLine($"{fileTokens.GetAbbreviatedName()}");
         }
-
 
         /*
          * Prints the full filenamepath of all related files. E.g. any file from the following collection
@@ -158,7 +143,6 @@ namespace MyShaderAnalysis.codestash
             }
         }
 
-
         static void TestSourceTypes()
         {
             string filenamepath = $"{DOTA_DAC_MOBILE_GLES_SOURCE}/spritecard_mobile_gles_30_vs.vcs";
@@ -171,7 +155,6 @@ namespace MyShaderAnalysis.codestash
             VcsPlatformType vcsSourceType = ComputeVCSFileName(filenamepath).Item2;
             Console.WriteLine($"{vcsSourceType}");
         }
-
 
         static void TestWriteSystem(string outputFilenamepath = null, bool writeFile = false)
         {
@@ -187,7 +170,6 @@ namespace MyShaderAnalysis.codestash
             output.printTabulatedValues();
             */
         }
-
 
         /*
          * shows the server pathname for the first source file in spritecard_mobile_gles_30_vs.vcs
@@ -219,8 +201,6 @@ namespace MyShaderAnalysis.codestash
             Console.WriteLine($"{fileTokens.GetGlslHtmlUrl(gpuSource.GetEditorRefIdAsString())}");
         }
 
-
-
         static void TestFileTokensForNewGlesArchive()
         {
             string filenamepath = $"{DOTA_DAC_MOBILE_GLES_SOURCE}/spritecard_mobile_gles_30_vs.vcs";
@@ -245,7 +225,6 @@ namespace MyShaderAnalysis.codestash
             Console.WriteLine($"{fileTokens.GetBestZframesLink(0)}"); //   Z[00000000] (plaintext if no zframe found)
         }
 
-
         /*
          * should they exist on disk, prints the zframes belonging to a given vcs files
          * E.g.
@@ -265,13 +244,6 @@ namespace MyShaderAnalysis.codestash
                 Console.WriteLine($"{f}");
             }
         }
-
-
     }
 }
-
-
-
-
-
 

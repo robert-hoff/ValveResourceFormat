@@ -19,7 +19,6 @@ namespace MyShaderAnalysis.codestash
         private FileTokensOld fileTokens;
         private ShaderFile shaderFile;
 
-
         /* todo - I'm not doing anything currently with the printHtmlLinks variable
          *
          *
@@ -469,7 +468,6 @@ namespace MyShaderAnalysis.codestash
                     int nrAttribs = bufferParams.Item4;
                     int length = bufferParams.Item5;
                     output.AddTabulatedRow(new string[] { "", $"{name}", $"{bOffset,3}", $"{nrVertices,3}", $"{nrAttribs,3}", $"{length,3}" });
-
                 }
                 output.PrintTabulatedValues();
                 output.BreakLine();

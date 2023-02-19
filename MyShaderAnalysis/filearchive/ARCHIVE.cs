@@ -3,7 +3,6 @@ using System;
 #pragma warning disable CA1813 // Avoid unsealed attributes
 namespace MyShaderAnalysis.filearchive
 {
-
     /*
      * The name of the enum can be used as the base folder for exporting any given archive
      *
@@ -13,7 +12,6 @@ namespace MyShaderAnalysis.filearchive
 
     public enum ARCHIVE
     {
-
         [ArchiveDirectory("X:/dota-2-VRF-exports/dota2-export-shaders-pc-V65/shaders/vfx")]
         dota_game_pc_v65,
         [ArchiveDirectory("X:/dota-2-VRF-exports/dota2-export-shaders-pc-V65/shaders-core/vfx")]
@@ -64,7 +62,6 @@ namespace MyShaderAnalysis.filearchive
         // -- experimental s&box shader, the versioning is set to 65 on the file I got while it is actually v64
         // [ArchiveDirectory("X:/s&box-shader-examples")]
         // sbox_shaders,
-
     }
 
     [AttributeUsage(AttributeTargets.Field)]
@@ -76,8 +73,5 @@ namespace MyShaderAnalysis.filearchive
             this.dirName = dirName;
         }
     }
-
-
 }
 #pragma warning restore CA1813
-

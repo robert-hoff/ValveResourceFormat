@@ -17,11 +17,8 @@ using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
  */
 namespace MyShaderAnalysis.codestash
 {
-
-
     public class StaticAnalysis
     {
-
         const string PCGL_DIR_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders-core/vfx";
         const string PCGL_DIR_NOT_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders/vfx";
         const string PC_DIR_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pc/shaders-core/vfx";
@@ -34,8 +31,6 @@ namespace MyShaderAnalysis.codestash
         const string ARTIFACT_CLASSIC_CORE_PC_SOURCE = "X:/artifact-classic-exports/artifact-shaders-pc-core";
         const string ARTIFACT_CLASSIC_DCG_PC_SOURCE = "X:/artifact-classic-exports/artifact-shaders-pc-dcg";
 
-
-
         // string filenamepath = PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_ps.vcs";
         // string filenamepath = PCGL_DIR_NOT_CORE + @"/hero_pcgl_30_features.vcs";
         // string filenamepath = PCGL_DIR_CORE + @"/generic_light_pcgl_30_features.vcs";
@@ -45,12 +40,8 @@ namespace MyShaderAnalysis.codestash
         // string filenamepath = PCGL_DIR_NOT_CORE + @"/cables_pcgl_30_features.vcs";
         // string filenamepath = PCGL_DIR_NOT_CORE + @"/spritecard_pcgl_30_features.vcs";
 
-
-
-
         public static void RunTrialNew()
         {
-
         }
 
         /*
@@ -76,10 +67,6 @@ namespace MyShaderAnalysis.codestash
             PrintReport();
         }
 
-
-
-
-
         public static void RunTrials()
         {
             // string filenamepath = PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_ps.vcs";
@@ -97,13 +84,8 @@ namespace MyShaderAnalysis.codestash
             // FileBlockCount(filenamepath);
             // WriteSfArgumentsAllFiles($"{SERVER_OUTPUT_DIR}/testrun.html", writeFile: true);
 
-
-
             // FileSummarySingleFile();
             // ZFramePrintout();
-
-
-
 
             // -- these methods aren't particularly valuable (should upgrade and remove)
             // Trial1();
@@ -115,16 +97,10 @@ namespace MyShaderAnalysis.codestash
             // SfBlockInspections2();
             // CompatBlockDetailsConcise(PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_ps.vcs");
 
-
-
             // -- setting up comprehensive summary for particular file (NEEDS UPDATE)
             // FileSummaryMultiblendPs();
 
-
-
-
             // FullFileSummary(@$"{PCGL_DIR_NOT_CORE}/water_dota_pcgl_30_features.vcs", "water", $@"{SERVER_OUTPUT_DIR}/summary-water.html", writeFile: false);
-
 
             // -- useful methods
             // CompareTriplesMainParams($@"{SERVER_OUTPUT_DIR}/SF-names.html", writeFile: true);
@@ -156,7 +132,6 @@ namespace MyShaderAnalysis.codestash
             // ScanForValueSfBlocks();
             // TestHelperMethods();
 
-
             // TestRun();
             // CompatRuleKeyDescriptionSurvey();
             // CompatRuleKeyValuesAnalysis();
@@ -167,10 +142,6 @@ namespace MyShaderAnalysis.codestash
             CloseStreamWriter();
         }
 
-
-
-
-
         static void DBlockRuleKeyValuesAnalysis()
         {
             List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsProgramType.Undetermined, -1);
@@ -180,7 +151,6 @@ namespace MyShaderAnalysis.codestash
                 ShaderFile shaderFile = InstantiateShaderFile(vcsFilenamepath);
                 foreach (DConstraintsBlock uknBlock in shaderFile.DConstraintsBlocks)
                 {
-
                     // check on the rules that have range2 = (0,1)
                     //if (uknBlock.range2[0] == 0) {
                     //    Console.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {uknBlock.GetConciseDescription(new int[] { 8, 4, 7, 5 })}" +
@@ -222,13 +192,9 @@ namespace MyShaderAnalysis.codestash
                         Console.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {uknBlock.GetConciseDescription(new int[] { 8, 4, 12, 5 })} " +
                             $"{uknBlock.GetResolvedNames(shaderFile.SfBlocks, shaderFile.DBlocks)}");
                     }
-
-
                 }
             }
         }
-
-
 
         static void DBlockRuleKeyDescriptionSurvey()
         {
@@ -244,7 +210,6 @@ namespace MyShaderAnalysis.codestash
                 }
             }
         }
-
 
         static void CompatRuleKeyValuesAnalysis()
         {
@@ -264,7 +229,6 @@ namespace MyShaderAnalysis.codestash
             }
         }
 
-
         static void CompatRuleKeyDescriptionSurvey()
         {
             List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsProgramType.Undetermined, -1);
@@ -279,19 +243,12 @@ namespace MyShaderAnalysis.codestash
             }
         }
 
-
-
-
-
-
         static void TestRun()
         {
             // string targetFile = @$"{PCGL_DIR_CORE}/depth_only_pcgl_40_vs.vcs";
             // UnknownBlockConcise(targetFile, showLink: false);
             FileSummarySingleFile();
         }
-
-
 
         /*
          * This method just prints the zframe IDs for a given file,
@@ -318,13 +275,10 @@ namespace MyShaderAnalysis.codestash
                 }
                 spacedOutBinary = spacedOutBinary.Trim();
 
-
                 // Console.WriteLine($"{Convert.ToString(item.Key, 2).PadLeft(12, '0')} {item.Key,5}      {item.Key:x04}       {spacedOutBinary}");
                 Console.WriteLine($"{Convert.ToString(item.Key, 2).PadLeft(12, '0')}");
             }
         }
-
-
 
         static string GetSFSummaryLink(string filenamepath)
         {
@@ -350,9 +304,6 @@ namespace MyShaderAnalysis.codestash
             return "";
         }
 
-
-
-
         static void FileSummarySingleFile()
         {
             // List<(string, string, string)> triples = new();
@@ -369,17 +320,12 @@ namespace MyShaderAnalysis.codestash
             // FileTriple triple = new(ARCHIVE_OLD.dota_core_gles, "copytexture_mobile_gles_30_features.vcs");
             // FileTriple triple = new(ARCHIVE_OLD.hl_hlvr_vulkan, "solidcolor_vulkan_50_features.vcs");
 
-
             // FileTriple triple = new(ARCHIVE_OLD.hl_hlvr_vulkan, "solidcolor_vulkan_50_features.vcs");
-
-
 
             // FileTriple triple = new(ARCHIVE_OLD.artifact_classiccore_pc, "aerial_perspective_pc_30_features.vcs");
 
             WriteVsPsFileSummary(triple, VcsProgramType.PixelShader, disableOutput: true);
         }
-
-
 
         /*
          *
@@ -399,8 +345,6 @@ namespace MyShaderAnalysis.codestash
             swWriterAlreadyClosed = true;
         }
 
-
-
         static void WriteVsPsFileSummary(FileTriple fileTriple, VcsProgramType targetFileType, bool disableOutput = false)
         {
             if (targetFileType != VcsProgramType.VertexShader && targetFileType != VcsProgramType.PixelShader)
@@ -410,18 +354,13 @@ namespace MyShaderAnalysis.codestash
             FileTokensOld targetFile = targetFileType == VcsProgramType.VertexShader ? fileTriple.vsFile : fileTriple.psFile;
             string htmlTitle = $"{targetFile.namelabel}({targetFile.vcstoken})";
 
-
             string outputNamepath = targetFile.GetServerFilenamepath("summary", createDirs: true);
 
             // NOTE NOTE - overriding target output file
             outputNamepath = "Z:/dev/www/vcs.codecreation.dev/GEN-output/testfile2.html";
 
-
-
             FileSummaryVsPSFile(fileTriple, targetFileType, htmlTitle, outputNamepath, writeFile: true, disableOutput);
         }
-
-
 
         static void ScanForValueSfBlocks()
         {
@@ -438,7 +377,6 @@ namespace MyShaderAnalysis.codestash
                     // Console.WriteLine($"{sfBlock.arg3}");
                     // if (sfBlock.arg2 != 1 && sfBlock.arg3 != 0) {
 
-
                     // if (sfBlock.arg2 == 2) {
                     // if (sfBlock.arg2 == 3) {
                     // if (sfBlock.arg2 == 0) {
@@ -451,16 +389,12 @@ namespace MyShaderAnalysis.codestash
                             $"{sfBlock.Name0,-25} {ShortHandName(filenamepath)}");
                     }
 
-
-
                     //if (sfBlock.arg0 == 1) {
                     //    Console.Write($"{sfBlock.arg0} {sfBlock.arg1} {sfBlock.arg2} {sfBlock.arg3}    ");
                     //    Console.WriteLine($"{sfBlock.name0,-25}    {RemoveBaseDir(filenamepath)}");
                     //}
 
-
                     // Console.WriteLine($"{sfBlock.arg0,3} {sfBlock.arg2,3} {sfBlock.arg3,3} {sfBlock.arg4,3}        {sfBlock.name0}");
-
                 }
             }
 
@@ -469,10 +403,7 @@ namespace MyShaderAnalysis.codestash
             {
                 Console.WriteLine($"{item}");
             }
-
         }
-
-
 
         static void BlockCountSurvery(string outputFilenamepath = null, bool writeFile = false)
         {
@@ -498,11 +429,9 @@ namespace MyShaderAnalysis.codestash
             string header = $"{fH,-55}{link,3}{sfH,pad}{cH,pad}{dH,pad}{uH,pad}{pH,pad}{mH,pad}{bH,pad}{sH,pad}{zH,pad}";
             OutputWriteLine($"{header}");
 
-
             List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsProgramType.Undetermined, -1);
             // List<string> allVcsFiles = GetVcsFiles(DOTA_CORE_MOBILE_GLES_SOURCE, DOTA_DAC_MOBILE_GLES_SOURCE, VcsProgramType.Undetermined, -1);
             // List<string> allVcsFiles = GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsProgramType.Undetermined, -1);
-
 
             //List<string> allVcsFiles = new();
             //allVcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsFileType.Features, -1));
@@ -510,8 +439,6 @@ namespace MyShaderAnalysis.codestash
             //allVcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsFileType.VertexShader, -1));
             //allVcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsFileType.PixelShaderRenderState, -1));
             //allVcsFiles.Sort();
-
-
 
             foreach (string filenamepath in allVcsFiles)
             {
@@ -555,8 +482,6 @@ namespace MyShaderAnalysis.codestash
                 $"{uCount,pad}{pCount,pad}{mCount,pad}{bCount,pad}{sCount,pad}{zCount,pad}");
         }
 
-
-
         static void ShowUnknownBlockConcise()
         {
             // string filenamepath = PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_ps.vcs";
@@ -566,9 +491,7 @@ namespace MyShaderAnalysis.codestash
             string filenamepath = PCGL_DIR_NOT_CORE + @"/hero_pcgl_30_ps.vcs";
 
             UnknownBlockConcise(filenamepath);
-
         }
-
 
         static void UnknownBlockConcise(string filenamepath, bool showLink = true)
         {
@@ -577,7 +500,6 @@ namespace MyShaderAnalysis.codestash
 
             foreach (DConstraintsBlock uBlock in shaderFile.DConstraintsBlocks)
             {
-
                 if (newFile)
                 {
                     OutputWriteLine("D-BLOCK RULES");
@@ -635,10 +557,6 @@ namespace MyShaderAnalysis.codestash
 
             OutputWriteLine("");
         }
-
-
-
-
 
         static void UnknownBlocksSurvey(string outputFilenamepath = null, bool writeFile = true)
         {
@@ -698,10 +616,6 @@ namespace MyShaderAnalysis.codestash
             }
         }
 
-
-
-
-
         static void ShowUnknownBlock()
         {
             // ShaderFile shaderFile = new(PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_ps.vcs");
@@ -721,12 +635,7 @@ namespace MyShaderAnalysis.codestash
                 OutputWriteLine($"{uBlock.Description}");
                 OutputWriteLine($"");
             }
-
         }
-
-
-
-
 
         static void DBlockSurvey(string outputFilenamepath = null, bool writeFile = true)
         {
@@ -758,7 +667,6 @@ namespace MyShaderAnalysis.codestash
                         int val = dBlock.DataReader.ReadInt32AtPosition(i);
                         int curVal = values[(i - ARG_OFFSET) / 4].GetValueOrDefault(val, 0);
                         values[(i - ARG_OFFSET) / 4][val] = curVal + 1;
-
                     }
                 }
             }
@@ -777,10 +685,7 @@ namespace MyShaderAnalysis.codestash
             //    }
             //    OutputWriteLine($"  ({i * 4,3})   {tab}{CombineValues(values[i])}");
             //}
-
         }
-
-
 
         /*
          * dBlock.arg0 is always 2
@@ -819,10 +724,7 @@ namespace MyShaderAnalysis.codestash
             OutputWriteLine("");
         }
 
-
         static SortedDictionary<string, int> abbreviationsUsed = new();
-
-
 
         static void ShowSfArgumentList(string filenamepath, bool showLink = true)
         {
@@ -851,7 +753,6 @@ namespace MyShaderAnalysis.codestash
                 string abbreviation = $"{sfBlock.Name0}({ShortenShaderParam(sfBlock.Name0).ToLower()})";
                 abbreviationsUsed[abbreviation] = 1;
 
-
                 string v2 = "" + sfBlock.Arg2;
                 string v3 = "" + sfBlock.Arg3;
                 string blockSummary = $"{v0.PadRight(pad[0])} {v1.PadRight(pad[1])} {v2.PadRight(pad[2])} {v3.PadRight(pad[3])}";
@@ -864,9 +765,6 @@ namespace MyShaderAnalysis.codestash
 
             OutputWriteLine("");
         }
-
-
-
 
         //static void FileSummaryVsPSFile((string, string, string) triple, FILETYPE targetFileType, string title = "summary",
         //        string outputFilenamepath = null, bool writeFile = false) {
@@ -888,14 +786,11 @@ namespace MyShaderAnalysis.codestash
             }
             List<(string, string, string)> triples = new();
 
-
-
             SfSummaryOfFileTriple(triple);
             ShowSfArgumentList(targetFile.filenamepath);
             CompatBlockDetailsConcise2(targetFile.filenamepath, showLink: false);
             ShowDBlockArgumentList(targetFile.filenamepath, showHtmlLink: false);
             UnknownBlockConcise(targetFile.filenamepath, showLink: false);
-
 
             // print the config headers every 100 frames
             int zframeCount = 0;
@@ -907,13 +802,10 @@ namespace MyShaderAnalysis.codestash
             // prepare the lookup to determine configuration state
             ConfigMappingSParams configGen = new(shaderFile);
 
-
-
             OutputWriteLine("");
             string zframesHeader = $"ZFRAMES ({shaderFile.GetZFrameCount()})";
             OutputWriteLine(zframesHeader);
             OutputWriteLine(new string('-', zframesHeader.Length));
-
 
             // collect names in the order they appear
             List<string> sfNames = new();
@@ -921,7 +813,6 @@ namespace MyShaderAnalysis.codestash
             {
                 sfNames.Add(ShortenShaderParam(sfBlock.Name0).ToLower());
             }
-
 
             string configHeader = CombineStringsSpaceSep(sfNames.ToArray(), 6);
             configHeader = $"{new string(' ', 14)}{configHeader}";
@@ -940,12 +831,8 @@ namespace MyShaderAnalysis.codestash
                 string zframeLink = targetFile.GetBestZframesLink(item.Key);
                 OutputWriteLine($"{zframeLink} {CombineIntsSpaceSep(configState, 6)}");
                 zframeCount++;
-
             }
-
         }
-
-
 
         /*
          * FIXME WARN - this has been overwritten to output data for multiblend ONLY!!
@@ -962,7 +849,6 @@ namespace MyShaderAnalysis.codestash
             bool writeFile = true;
             FileTriple triple = FileTriple.GetTripleIfExists(ARCHIVE_OLD.dotagame_pcgl, featuresfile);
 
-
             string multiBlendPsFile = featuresfile[0..^12] + "ps.vcs";
             string htmlTitle = GetShortName(multiBlendPsFile);
 
@@ -976,7 +862,6 @@ namespace MyShaderAnalysis.codestash
             CompatBlockDetailsConcise2(multiBlendPsFile, showLink: false);
             ShowDBlockArgumentList(multiBlendPsFile, showHtmlLink: false);
             UnknownBlockConcise(multiBlendPsFile, showLink: false);
-
 
             // R: zframes specific to multiblend_pcgl_30_ps.vcs only
             OutputWriteLine("");
@@ -995,9 +880,7 @@ namespace MyShaderAnalysis.codestash
             }
             OutputWriteLine("");
 
-
             // I need to use the multiblend directory to get all the files
-
 
             string zFrameBaseDir = $"/multiblend_pcgl_30/";
             ShaderFile shaderFile = InstantiateShaderFile(multiBlendPsFile);
@@ -1010,7 +893,6 @@ namespace MyShaderAnalysis.codestash
             {
                 sfNames.Add(ShortenShaderParam(sfBlock.Name0).ToLower());
             }
-
 
             string configHeader = CombineStringsSpaceSep(sfNames.ToArray(), 6);
             configHeader = $"{new string(' ', 14)}{configHeader}";
@@ -1032,14 +914,8 @@ namespace MyShaderAnalysis.codestash
 
                 OutputWriteLine($"{zframeLink} {CombineIntsSpaceSep(configState, 6)}");
                 zframeCount++;
-
             }
-
-
-
         }
-
-
 
         /*
          *
@@ -1097,13 +973,11 @@ namespace MyShaderAnalysis.codestash
 
         static void CompatBlockDetailsConcise2(string filenamepath, bool showLink = true)
         {
-
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             bool newFile = true;
 
             foreach (SfConstraintsBlock cBlock in shaderFile.SfConstraintsBlocks)
             {
-
                 if (newFile && showLink)
                 {
                     OutputWriteLine($"Compatibility rules for {GetHtmlLink(filenamepath,"")}");
@@ -1144,13 +1018,6 @@ namespace MyShaderAnalysis.codestash
             OutputWriteLine("");
         }
 
-
-
-
-
-
-
-
         static void CompatBlockRelationships()
         {
             List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsProgramType.Undetermined, -1);
@@ -1173,13 +1040,9 @@ namespace MyShaderAnalysis.codestash
                     {
                         Console.WriteLine($"{filenamepath}");
                     }
-
-
                 }
             }
         }
-
-
 
         static void CompatBlockConciseAll(string outputFilenamepath = null, bool writeFile = false)
         {
@@ -1212,7 +1075,6 @@ namespace MyShaderAnalysis.codestash
             //OutputWrite($"{s0.PadRight(10)} {s1.PadRight(6)} {s2.PadRight(6)} {s3.PadRight(14)} " +
             //    $"{s4.PadRight(20)} {s5.PadRight(8)} {s6.PadRight(8)}");
 
-
             foreach (string filenamepath in allVcsFiles)
             {
                 CompatBlockDetailsConcise(filenamepath);
@@ -1220,14 +1082,10 @@ namespace MyShaderAnalysis.codestash
             // Console.WriteLine($"{blockCount}");
         }
 
-
-
-
         // static int blockCount = 0;
 
         static void CompatBlockDetailsConcise(string filenamepath)
         {
-
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
 
             // OutputWriteLine("");
@@ -1237,7 +1095,6 @@ namespace MyShaderAnalysis.codestash
             // OutputWriteLine($"{RemoveBaseDir(filenamepath)}");
 
             bool newFile = true;
-
 
             foreach (SfConstraintsBlock cBlock in shaderFile.SfConstraintsBlocks)
             {
@@ -1274,8 +1131,6 @@ namespace MyShaderAnalysis.codestash
             }
         }
 
-
-
         static void CompatBlockDetails(string outputFilenamepath = null, bool writeFile = false)
         {
             if (outputFilenamepath != null && writeFile)
@@ -1298,14 +1153,8 @@ namespace MyShaderAnalysis.codestash
             }
         }
 
-
-
-
-
-
         static void CompatBlockDetailsSelectedFile(string filenamepath)
         {
-
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
 
             OutputWriteLine("");
@@ -1313,7 +1162,6 @@ namespace MyShaderAnalysis.codestash
             OutputWriteLine(new string('-', 100));
             foreach (SfConstraintsBlock cBlock in shaderFile.SfConstraintsBlocks)
             {
-
                 OutputWriteLine($"COMPAT-BLOCK[{cBlock.BlockIndex}]");
                 OutputWriteLine($"rule = {cBlock.RelRule}");
                 OutputWriteLine($"arg1 = {cBlock.Arg0}");
@@ -1324,13 +1172,8 @@ namespace MyShaderAnalysis.codestash
                 OutputWriteLine($"{CombineValues(cBlock.Range2)}");
                 OutputWriteLine($"{cBlock.Description}");
                 OutputWriteLine($"");
-
             }
-
         }
-
-
-
 
         static void CompatibilityBlocksSurveyIntRange(int offset, int count, string outputFilenamepath = null, bool writeFile = false)
         {
@@ -1349,7 +1192,6 @@ namespace MyShaderAnalysis.codestash
             // allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_features.vcs");
             // allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_vs.vcs");
             allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_ps.vcs");
-
 
             foreach (string filenamepath in allVcsFiles)
             {
@@ -1371,11 +1213,7 @@ namespace MyShaderAnalysis.codestash
             {
                 Console.WriteLine($"{item.Key,5}                 {item.Value}");
             }
-
         }
-
-
-
 
         static void CompatibilityBlocksSurvey(string outputFilenamepath = null, bool writeFile = false)
         {
@@ -1435,9 +1273,6 @@ namespace MyShaderAnalysis.codestash
             }
         }
 
-
-
-
         static void CompatibilityBlocksValuesSeenAtOffset(int offset, string outputFilenamepath = null, bool writeFile = false)
         {
             if (outputFilenamepath != null && writeFile)
@@ -1459,8 +1294,6 @@ namespace MyShaderAnalysis.codestash
             }
             Console.WriteLine($"{CombineValues(values)}");
         }
-
-
 
         static void CompatibilityBlocksValuesSeenAtOffset0(string outputFilenamepath = null, bool writeFile = false)
         {
@@ -1484,8 +1317,6 @@ namespace MyShaderAnalysis.codestash
             Console.WriteLine($"{CombineValues(values)}");
         }
 
-
-
         static void TestHelperMethods()
         {
             string[] @string = { "D_SPECULAR_GBUFFER_DISABLED", "S_MODE_FORWARD", "S_MODE_DEPTH", "S_MODE_TOOLS_VIS", "S_MODE_TOOLS_WIREFRAME" };
@@ -1495,9 +1326,6 @@ namespace MyShaderAnalysis.codestash
                 Console.WriteLine($"{str}");
             }
         }
-
-
-
 
         static string CombineValues2(int[] ints0, bool includeParenth = false)
         {
@@ -1511,7 +1339,6 @@ namespace MyShaderAnalysis.codestash
             return includeParenth ? $"({valueString})" : $"{valueString}";
         }
 
-
         static string CombineValues(int[] ints0)
         {
             if (ints0.Length == 0) return $"{"()",3}";
@@ -1522,7 +1349,6 @@ namespace MyShaderAnalysis.codestash
             }
             return $"{valueString[0..^2]}";
         }
-
 
         static string CombineValues(SortedDictionary<int, int> values)
         {
@@ -1554,9 +1380,6 @@ namespace MyShaderAnalysis.codestash
             return valueString[0..^2];
         }
 
-
-
-
         static void CompatibilityBlockValuesExample(string outputFilenamepath = null, bool writeFile = false)
         {
             if (outputFilenamepath != null && writeFile)
@@ -1578,11 +1401,7 @@ namespace MyShaderAnalysis.codestash
             }
 
             // if present, the bytes following contain a string decription of the block
-
         }
-
-
-
 
         static void CompatBlockPresence(string outputFilenamepath = null, bool writeFile = false)
         {
@@ -1600,12 +1419,6 @@ namespace MyShaderAnalysis.codestash
             }
         }
 
-
-
-
-
-
-
         static void WriteSfArgumentsAllFiles(string outputFilenamepath = null, bool writeFile = false)
         {
             if (outputFilenamepath != null && writeFile)
@@ -1615,9 +1428,7 @@ namespace MyShaderAnalysis.codestash
             }
             List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, -1);
             SfSummaryOfFileTriples(triples);
-
         }
-
 
         static void SfSummaryOfFileTriple(FileTriple triple)
         {
@@ -1626,14 +1437,11 @@ namespace MyShaderAnalysis.codestash
             SfSummaryOfFileTriples(triples);
         }
 
-
-
         // static void SfSummaryOfFileTriple(List<(string, string, string)> triples) {
         static void SfSummaryOfFileTriples(List<FileTriple> triples)
         {
             foreach (var triple in triples)
             {
-
                 string title = $"{triple.ftFile.RemoveBaseDir()} + vs, ps files";
                 OutputWriteLine($"{title}");
                 OutputWriteLine(new string('-', title.Length));
@@ -1683,7 +1491,6 @@ namespace MyShaderAnalysis.codestash
                     }
                 }
 
-
                 // features-header
                 int ftHeaderNrArguments = ftFile.FeaturesHeader.MainParams.Count;
                 OutputWriteLine($"<span style='color: #3783ed'>Arguments in {triple.ftFile.filename} header ({ftHeaderNrArguments})</span>");
@@ -1699,7 +1506,6 @@ namespace MyShaderAnalysis.codestash
                 }
                 OutputWriteLine("");
 
-
                 string headerText = $"{"[FEATURES-FILE]".PadRight(52)} ";
 
                 // OutputWrite(headerText.Replace("[", $"<a href='{triple.ftFile.GetBytePath()}'>").Replace("]", "</a>"));
@@ -1709,7 +1515,6 @@ namespace MyShaderAnalysis.codestash
                 headerText = $"{"[PS-FILE]".PadRight(52)}\n";
                 OutputWrite(headerText.Replace("[", $"<a href='{triple.psFile.GetSummariesPath()}'>").Replace("]", "</a>"));
                 OutputWriteLine($"{"-------------".PadRight(50)} {"-------".PadRight(50)} {"-------".PadRight(50)}");
-
 
                 // print the negative values
                 foreach (var item in n)
@@ -1796,10 +1601,6 @@ namespace MyShaderAnalysis.codestash
             }
         }
 
-
-
-
-
         private static int CountActiveModes(List<string> items)
         {
             int count = 0;
@@ -1813,8 +1614,6 @@ namespace MyShaderAnalysis.codestash
 
             return count;
         }
-
-
 
         public static int nd(int i)
         {
@@ -1834,14 +1633,11 @@ namespace MyShaderAnalysis.codestash
             return Convert.ToString(num, 2).Length;
         }
 
-
         public static void AddStringValue(SortedDictionary<string, int> register, string val, int fid)
         {
             int currIterator = register.GetValueOrDefault(val, 0);
             register[val] = currIterator + fid;
         }
-
-
 
         static void PrintStringList(List<string> strList)
         {
@@ -1851,8 +1647,6 @@ namespace MyShaderAnalysis.codestash
             }
             Console.WriteLine("");
         }
-
-
 
         static void ShowFileTriples()
         {
@@ -1865,13 +1659,7 @@ namespace MyShaderAnalysis.codestash
                 string file3 = Path.GetFileName(sFiles.Item3);
                 Console.WriteLine($"{directory.PadRight(25)} {file1.PadRight(60)} {file2.PadRight(60)} {file3}");
             }
-
-
         }
-
-
-
-
 
         static void AllFiles()
         {
@@ -1883,7 +1671,6 @@ namespace MyShaderAnalysis.codestash
             PrintReport(showCount: false);
         }
 
-
         static void SfBlockInspections2()
         {
             List<string> files = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsProgramType.Undetermined, -1);
@@ -1894,12 +1681,8 @@ namespace MyShaderAnalysis.codestash
                 {
                     CollectStringValue($"{sfBlock.Name0} ({sfBlock.Arg4})");
                 }
-
-
             }
-
         }
-
 
         /*
          * Some arguments are specific only to only vs/ps files, while others are shared.
@@ -1934,14 +1717,8 @@ namespace MyShaderAnalysis.codestash
                 {
                     CollectStringValue($"{sfBlock.Name0.PadRight(35)[2..]} {filetype}    {sfBlock.Name1.PadRight(35)}");
                 }
-
-
             }
-
-
         }
-
-
 
         static void MainParamsInFeaturesFiles()
         {
@@ -1954,7 +1731,6 @@ namespace MyShaderAnalysis.codestash
                 // featuresHeader.ShowMainParams();
                 foreach (var parampair in featuresHeader.MainParams)
                 {
-
                     Console.WriteLine($"         {parampair.Item1.PadRight(35)} {parampair.Item2.PadRight(35)}");
                     // CollectStringValue($"{parampair.Item1.PadRight(35)} {parampair.Item2.PadRight(35)}");
                     // CollectStringValue($"{parampair.Item2.PadRight(35)}");
@@ -1964,14 +1740,8 @@ namespace MyShaderAnalysis.codestash
                 Console.WriteLine($"");
             }
 
-
             Console.WriteLine($"{featuresFiles.Count}");
-
-
         }
-
-
-
 
         /*
          * Note only the features files have a features header!
@@ -1996,16 +1766,10 @@ namespace MyShaderAnalysis.codestash
             PrintReport();
         }
 
-
-
         static List<(string, string, string)> GetFeaturesVsPsFileTriples()
         {
             return GetFeaturesVsPsFileTriple(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE);
         }
-
-
-
-
 
         private static StreamWriter sw = null;
         private static bool DisableOutput = false;
@@ -2021,7 +1785,6 @@ namespace MyShaderAnalysis.codestash
             sw.WriteLine(GetHtmlHeader(htmlTitle, htmlHeader));
         }
 
-
         private static void ConfigureOutputFile(string filepathname, bool disableOutput = false)
         {
             DisableOutput = disableOutput;
@@ -2029,9 +1792,7 @@ namespace MyShaderAnalysis.codestash
             sw = new StreamWriter(filepathname);
         }
 
-
         private static bool swWriterAlreadyClosed = false;
-
 
         // This basestream != null is nonsense, it doesn't check if the file is open
         private static void CloseStreamWriter()
@@ -2061,23 +1822,6 @@ namespace MyShaderAnalysis.codestash
         {
             OutputWrite(text + "\n");
         }
-
-
     }
-
-
-
-
-
-
-
 }
-
-
-
-
-
-
-
-
 

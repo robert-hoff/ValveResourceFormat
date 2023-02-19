@@ -5,10 +5,8 @@ using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
 namespace MyShaderAnalysis.parsing
 {
-
     public class ParseV62ZFrame : ShaderDataReader
     {
-
         private ShaderFile shaderFile;
         private VcsProgramType vcsProgramType;
         private VcsPlatformType vcsPlatformType;
@@ -24,11 +22,9 @@ namespace MyShaderAnalysis.parsing
             vcsShaderModelType = shaderFile.VcsShaderModelType;
         }
 
-
         public void PrintByteDetail()
         {
             BaseStream.Position = 0;
-
 
             int h0 = ReadInt32AtPosition();
             int h1 = ReadInt32AtPosition(4);
@@ -65,7 +61,6 @@ namespace MyShaderAnalysis.parsing
             // uint nrHeaders = ReadUInt16AtPosition();
             ShowZFrameHeader();
 
-
             uint end_arg0 = ReadUInt16AtPosition(); // always 1
             uint end_arg1 = ReadUInt16AtPosition(2); // values seen [0,7]
 
@@ -88,9 +83,6 @@ namespace MyShaderAnalysis.parsing
             ShowEndOfFile();
 
             return;
-
-
-
 
             //ShowZDataSection(-1);
             //ShowZFrameHeader();
@@ -118,14 +110,7 @@ namespace MyShaderAnalysis.parsing
             //ShowBytes(blockCountOutput * 2);
             //BreakLine();
             //ShowByteCount();
-
-
-
         }
-
-
-
-
 
         private bool prevBlockWasZero = false;
         public void ShowZDataSection(int blockId)
@@ -446,13 +431,6 @@ namespace MyShaderAnalysis.parsing
             ShowBytes(dynExpLen);
         }
 
-
-
-
-
-
-
-
         /*
         private void ShowDynamicExpression(int dynExpLen)
         {
@@ -472,7 +450,6 @@ namespace MyShaderAnalysis.parsing
             }
         }
         */
-
 
         /*
         private void SaveGlslSourcestoHtml(List<(int, int, string)> glslSources)
@@ -519,19 +496,6 @@ namespace MyShaderAnalysis.parsing
             }
         }
         */
-
-
-
-
-
     }
 }
-
-
-
-
-
-
-
-
 

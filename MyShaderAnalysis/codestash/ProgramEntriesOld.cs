@@ -15,9 +15,6 @@ namespace MyShaderAnalysis.codestash
 {
     class ProgramEntriesOld
     {
-
-
-
         public static void RunTrials()
         {
             // ProduceServerSet();
@@ -37,9 +34,7 @@ namespace MyShaderAnalysis.codestash
 
             // -- get related files util method
             // TestGetRelatedFiles();
-
         }
-
 
         private static void ProduceServerSet()
         {
@@ -52,7 +47,6 @@ namespace MyShaderAnalysis.codestash
             ParseVcsFilesOld1.RunTrials();
         }
 
-
         private static void TestGetRelatedFiles()
         {
             var filenamepath = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders\vfx\water_dota_pcgl_40_features.vcs";
@@ -62,10 +56,6 @@ namespace MyShaderAnalysis.codestash
             {
                 Console.WriteLine($"{relatedFile}");
             }
-
         }
-
-
-
     }
 }

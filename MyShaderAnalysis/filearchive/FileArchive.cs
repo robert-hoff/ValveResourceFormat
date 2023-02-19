@@ -158,7 +158,6 @@ namespace MyShaderAnalysis.filearchive
             this.useModularLookup = useModularLookup;
         }
 
-
         public IEnumerable GetFileVcsTokens()
         {
             foreach (var vcsFile in vcsFiles)
@@ -176,7 +175,6 @@ namespace MyShaderAnalysis.filearchive
         {
             return vcsFiles[useModularLookup ? queryIndex % vcsFiles.Count : queryIndex];
         }
-
 
         private ShaderFileDetail GetShaderFileDetail(int queryIndex)
         {

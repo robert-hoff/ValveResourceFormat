@@ -27,7 +27,6 @@ namespace MyShaderAnalysis.codestash
             // shaderFile.PrintByteDetail();
         }
 
-
         static void Trial2()
         {
             string filenamepath = $"{DOTA_DAC_MOBILE_GLES_SOURCE}/spritecard_mobile_gles_30_vs.vcs";
@@ -36,8 +35,6 @@ namespace MyShaderAnalysis.codestash
             zframeFile.PrintByteDetail();
         }
 
-
-
         // this works well
         static void Trial1()
         {
@@ -45,10 +42,6 @@ namespace MyShaderAnalysis.codestash
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             shaderFile.PrintByteDetail(shortenOutput: false);
         }
-
-
-
-
 
         static void DirListings()
         {
@@ -63,10 +56,6 @@ namespace MyShaderAnalysis.codestash
             {
                 Console.WriteLine($"{d}");
             }
-
         }
-
-
-
     }
 }

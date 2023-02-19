@@ -2,13 +2,8 @@ using System;
 
 namespace MyShaderAnalysis.compat
 {
-
-
-
     public class BitTestGeneration
     {
-
-
         public static void RunTrials()
         {
             Trial1();
@@ -26,7 +21,6 @@ namespace MyShaderAnalysis.compat
         //10         768        2*2*2*2*2*2*2*3*2
         //11        1536        2*2*2*2*2*2*2*3*2*2
 
-
         /*
          * The bit system from water_dota_pcgl_30_ps.vcs
          *
@@ -34,17 +28,12 @@ namespace MyShaderAnalysis.compat
          */
         static void Trial1()
         {
-
             int[] testnums = { 128, 256, 384, 512, 640, 768, 896, 1024, 1152, 1280, 1408, 1536, 1664, 1792, 1920, 2048, 2176 };
             for (int i = 0; i < 17; i++)
             {
                 Console.WriteLine($"{GetBitPattern(testnums[i])}");
             }
-
-
         }
-
-
 
         //         00000xxxxxxx         11(off), 10(off), 9(off), 8(off)
         // 128     00001xxxxxxx         11(off), 10(off), 9(off), 8(1on)
@@ -76,7 +65,5 @@ namespace MyShaderAnalysis.compat
             }
             return result.Trim();
         }
-
-
     }
 }

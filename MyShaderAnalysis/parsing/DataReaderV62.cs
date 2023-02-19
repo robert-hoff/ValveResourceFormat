@@ -14,7 +14,6 @@ namespace MyShaderAnalysis.parsing
 {
     public class DataReaderV62 : ShaderDataReader
     {
-
         public static void RunTrials()
         {
             Trial1();
@@ -26,11 +25,9 @@ namespace MyShaderAnalysis.parsing
             new DataReaderV62(filenamepath);
         }
 
-
         private VcsProgramType vcsProgramType;
         private VcsPlatformType vcsSourceType;
         private VcsShaderModelType vcsModelType;
-
 
         public DataReaderV62(string filenamepath) : base(new MemoryStream(File.ReadAllBytes(filenamepath)))
         {
@@ -108,8 +105,6 @@ namespace MyShaderAnalysis.parsing
             ShowBytes(64);
             BreakLine();
 
-
-
             string paramName1 = ReadNullTermStringAtPosition();
             OutputWriteLine(paramName1);
             ShowBytes(64);
@@ -132,19 +127,9 @@ namespace MyShaderAnalysis.parsing
             ShowBytes(16);
             ShowBytes(16);
 
-
-
             BreakLine();
 
-
             ShowBytes(500);
-
-
-
         }
-
-
-
-
     }
 }

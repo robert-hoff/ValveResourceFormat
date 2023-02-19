@@ -2,12 +2,10 @@ using System;
 using ValveResourceFormat.CompiledShader;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
-
 namespace MyShaderAnalysis.compat
 {
     public class CompatRulesGenerationz
     {
-
         ShaderFile shaderfile;
 
         public CompatRulesGenerationz(ShaderFile shaderfile)
@@ -51,7 +49,6 @@ namespace MyShaderAnalysis.compat
                 offsets[i] = offsets[i - 1] * (layers[i - 1] + 1);
             }
         }
-
 
         /*
          * getting the config state is not dependend on processing the configuration constraints (but is useful for verification)
@@ -143,15 +140,7 @@ namespace MyShaderAnalysis.compat
         {
             ShowIntArray(offsets, 8, "offsets", hex: true);
             ShowIntArray(layers, 8, "layers");
-
         }
-
-
     }
-
 }
-
-
-
-
 

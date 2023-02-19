@@ -27,7 +27,6 @@ using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
 // todo - get rid of  GetShortName(string vcsFileName) from MyShaderUtilHelpers (and others)
 namespace MyShaderAnalysis.codestash
 {
-
     public class FileTokensOld
     {
         public string name { get; }          // name without the file extension, e.g. spritecard_pcgl_30_ps
@@ -44,7 +43,6 @@ namespace MyShaderAnalysis.codestash
         public string sourceVersion { get; }    // 30,40,50,etc
         public string serverdir { get; }     // full directory path of the server files
         public VcsProgramType vcsProgramType { get; }
-
 
         public FileTokensOld(string filenamepath) : this(DetermineArchiveType(filenamepath), filenamepath) { }
 
@@ -75,7 +73,6 @@ namespace MyShaderAnalysis.codestash
                 throw new ShaderParserException("file doesn't exist");
             }
         }
-
 
         /*
          * e.g. Z:/dev/www/vcs.codecreation.dev/dota-game/pcgl/spritecard_pcgl_30_ps
@@ -122,7 +119,6 @@ namespace MyShaderAnalysis.codestash
             return $"{GetServerFilePath()}/{sourceType}";
         }
 
-
         // -todo - not general, only works for glsl
         public string GetGlslHtmlFilename(string glslLabelOrRef)
         {
@@ -145,7 +141,6 @@ namespace MyShaderAnalysis.codestash
         {
             return $"{GetServerFilePath()}/{sourceType}/{GetGlslHtmlFilenameGeneral(glslLabelOrRef)}";
         }
-
 
         public string GetZFramesServerDir(bool createDirs = false)
         {
@@ -220,12 +215,10 @@ namespace MyShaderAnalysis.codestash
             return $"{namelabel}({platformType}-{vcstoken})";
         }
 
-
         public string GetBaseName()
         {
             return $"/{archivename}/{platformType}/{filename}";
         }
-
 
         // hero(pcgl-ps)
         public string GetAbbreviatedName()
