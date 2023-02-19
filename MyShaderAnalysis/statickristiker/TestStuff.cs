@@ -1,4 +1,7 @@
-using MyShaderFileKristiker;
+using System;
+using ValveResourceFormat.CompiledShader;
+using ValveResourceFormat.MyHelperClasses;
+using static ValveResourceFormat.MyHelperClasses.FileArchive;
 
 namespace MyShaderAnalysis.statickristiker
 {
@@ -6,14 +9,15 @@ namespace MyShaderAnalysis.statickristiker
     {
         public static void RunTrials()
         {
-            Go1();
+            ShowZFrameCount();
         }
 
-        public static void Go1()
+        static void ShowZFrameCount()
         {
-            Class1.Sayhi();
+            string filenamepath = GetFilenamepath(ARCHIVE.dota_game_pcgl_v64, "multiblend_pcgl_30_vs.vcs");
+            Console.WriteLine($"{filenamepath}");
+            ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
+            Console.WriteLine($"{shaderFile.GetZFrameCount()} zframes");
         }
-
-
     }
 }

@@ -10,6 +10,11 @@ using static MyShaderAnalysis.filearchive.FileArchive;
 using static MyShaderAnalysis.filearchive.ReadShaderFile;
 using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 
+/*
+ * SINGLE FILE PARSING ALSO IN
+ * batchtesting.TestSingleFileParsing
+ *
+ */
 namespace MyShaderAnalysis.parsing
 {
     class SingleFileParserExamples
