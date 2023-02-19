@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using ValveResourceFormat.CompiledShader;
 
 /*
@@ -43,7 +44,7 @@ namespace MyShaderAnalysis.filearchive
             this.archive = archive;
             this.useModularLookup = useModularLookup;
             int count = 0;
-            foreach (string filenamepath in Directory.GetFiles(FileArchives.GetArchiveDir(archive)))
+            foreach (string filenamepath in Directory.GetFiles(FileArchive.GetArchiveDir(archive)))
             {
                 if (count++ > maxFiles)
                 {
@@ -277,6 +278,23 @@ namespace MyShaderAnalysis.filearchive
             {
                 return GetZFrameFile(queryIndex).GpuSourceCount;
             }
+        }
+
+        /*
+         * Returns directory of the vcs source files. E.g.
+         * X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders/vfx
+         *
+         */
+        public static string GetArchiveDir(ARCHIVE archive)
+        {
+            FieldInfo fieldInfo = typeof(ARCHIVE).GetField(archive.ToString());
+            object[] attributes = fieldInfo.GetCustomAttributes(typeof(ArchiveDirectoryAttribute), true);
+            return ((ArchiveDirectoryAttribute)attributes[0]).dirName;
+        }
+
+        public static string GetFilenamepath(ARCHIVE archive, string filename)
+        {
+            return $"{GetArchiveDir(archive)}/{filename}";
         }
     }
 }

@@ -1,4 +1,5 @@
 using MyShaderAnalysis.filearchive;
+using MyShaderAnalysis.serverhtml;
 using MyShaderAnalysis.util;
 using System;
 using System.Collections.Generic;
@@ -22,8 +23,8 @@ namespace MyShaderAnalysis.compat
         {
             SortedDictionary<string, int> map = new();
 
-            string dir_game = FileArchives.GetArchiveDir(ARCHIVE.dota_game_pcgl_v64);
-            string dir_core = FileArchives.GetArchiveDir(ARCHIVE.dota_core_pcgl_v64);
+            string dir_game = FileArchive.GetArchiveDir(ARCHIVE.dota_game_pcgl_v64);
+            string dir_core = FileArchive.GetArchiveDir(ARCHIVE.dota_core_pcgl_v64);
 
             List<string> allVcsFiles = GetVcsFiles(dir_game, dir_core, VcsProgramType.Undetermined, -1);
             foreach (string filenamepath in allVcsFiles)
@@ -48,7 +49,7 @@ namespace MyShaderAnalysis.compat
 
         public static void Trial1()
         {
-            string dir_game = FileArchives.GetArchiveDir(ARCHIVE.dota_game_pcgl_v64);
+            string dir_game = FileArchive.GetArchiveDir(ARCHIVE.dota_game_pcgl_v64);
             string vcsFilenamepath = @$"{dir_game}/multiblend_pcgl_30_ps.vcs";
             ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(vcsFilenamepath);
 
@@ -116,7 +117,7 @@ namespace MyShaderAnalysis.compat
 
         private static FileWriter GetFileWriterHtml(string htmltitle, string htmlHeader)
         {
-            string outputFilenamepath = FileArchives.GetServerTestFile();
+            string outputFilenamepath = ServerNames.GetServerTestFile();
             FileWriter fw = new FileWriter(outputFilenamepath);
             fw.WriteHtmlHeader(htmltitle, htmlHeader);
             return fw;

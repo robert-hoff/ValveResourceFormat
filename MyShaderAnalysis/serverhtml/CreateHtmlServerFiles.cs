@@ -14,7 +14,7 @@ using ValveResourceFormat.CompiledShader;
  *
  * defined by the shader collection name (3dskyboxstencil_pcgl_30) archive name (dota-game) and platform (pcgl)
  *
- * The colletion should have knowledge of all the related shaders (features.vcs, vs.vcs, ps.vcs)
+ * The collection should have knowledge of all the related shaders (features.vcs, vs.vcs, ps.vcs)
  *
  *      3dskyboxstencil_pcgl_30_features.vcs
  *      3dskyboxstencil_pcgl_30_vs.vcs
@@ -24,10 +24,6 @@ using ValveResourceFormat.CompiledShader;
  *
  *
  * NOTE NOTE - haven't as yet got round to implement the shaders using this collection idea.
- *
- *
- *
- *
  *
  *
  *
@@ -51,7 +47,7 @@ namespace MyShaderAnalysis.serverhtml
          * are actually active.
          *
          */
-        public static void PrintFileDirectoryGivenArchive()
+        public static void CreateHtmlIndexForArchive()
         {
             ARCHIVE archive = ARCHIVE.dota_game_pcgl_v64;
             FileArchive fileArchive = new(archive, VcsShaderModelType._40, useModularLookup: true);

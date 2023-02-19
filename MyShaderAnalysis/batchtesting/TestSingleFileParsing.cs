@@ -4,7 +4,7 @@ using MyShaderAnalysis.util;
 using System;
 using System.Collections.Generic;
 using ValveResourceFormat.CompiledShader;
-using static MyShaderAnalysis.filearchive.FileArchives;
+using static MyShaderAnalysis.filearchive.FileArchive;
 
 namespace MyShaderAnalysis.batchtesting
 {

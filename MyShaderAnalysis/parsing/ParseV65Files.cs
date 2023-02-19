@@ -1,14 +1,14 @@
 using MyShaderAnalysis.filearchive;
+using MyShaderAnalysis.serverhtml;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using ValveResourceFormat.CompiledShader;
 using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
-using static MyShaderAnalysis.filearchive.FileArchives;
+using static MyShaderAnalysis.filearchive.FileArchive;
 
 /*
  * Almost identical to DataReaderVcsBytes - all relevant changes were written into DataReaderVcsBytes since
- *
  *
  */
 namespace MyShaderAnalysis.parsing
@@ -686,7 +686,7 @@ namespace MyShaderAnalysis.parsing
             if (writeHtmlLinks)
             {
                 // return GetZframeHtmlLink(zframeId, vcsFilename);
-                string serverdir = GetServerBaseDir();
+                string serverdir = ServerNames.GetServerBaseDir();
                 string basedir = $"/vcs-all/{GetCoreOrDotaString(vcsFilename)}/zsource/";
 
                 return GetZframeHtmlLinkCheckExists(zframeId, vcsFilename, serverdir, basedir);

@@ -1,12 +1,12 @@
-using MyShaderAnalysis.filearchive;
+using MyShaderAnalysis.util;
 using System;
 using System.Collections.Generic;
 using ValveResourceFormat.CompiledShader;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
-namespace MyShaderAnalysis.util
+namespace MyShaderAnalysis.filearchive
 {
-    public class TestFileUtilFunctions
+    public class TestFileArchive
     {
         public static void RunTrials()
         {
@@ -18,7 +18,8 @@ namespace MyShaderAnalysis.util
             // TestFileRetrievalHelper();
         }
 
-        static void TestComputeVcsFilename() {
+        static void TestComputeVcsFilename()
+        {
             ComputeVCSFileName("sadf");
         }
 
@@ -40,9 +41,10 @@ namespace MyShaderAnalysis.util
             Console.WriteLine($" * GetServerFileUrl(label)             {fileTokens.GetServerFileUrl("label")}");
             Console.WriteLine($" * GetGpuServerDir()                   {fileTokens.GetGpuServerDir()}");
             Console.WriteLine($" * GetGpuServerUrl()                   {fileTokens.GetGpuServerUrl()}");
-            Console.WriteLine($" * GetGpuHtmlFilename(refid) {fileTokens.GetGpuHtmlFilename(zframeFile.GpuSources[0].GetEditorRefIdAsString())}");
-            Console.WriteLine($" * GetGpuHtmlUrl(refid)      {fileTokens.GetGpuHtmlUrl(zframeFile.GpuSources[0].GetEditorRefIdAsString())}");
-
+            Console.WriteLine($" * GetGpuHtmlFilename(refid) " +
+                $"{fileTokens.GetGpuHtmlFilename(zframeFile.GpuSources[0].GetEditorRefIdAsString())}");
+            Console.WriteLine($" * GetGpuHtmlUrl(refid)      " +
+                $"{fileTokens.GetGpuHtmlUrl(zframeFile.GpuSources[0].GetEditorRefIdAsString())}");
             Console.WriteLine($" * GetZFramesServerDir()               {fileTokens.GetZFramesServerDir()}");
             Console.WriteLine($" * GetZFramesServerPath()              {fileTokens.GetZFramesServerPath()}");
             Console.WriteLine($" * GetZFrameHtmlFilenamepath(id,label) {fileTokens.GetZFrameHtmlFilenamepath(0, "label")}");
@@ -71,7 +73,7 @@ namespace MyShaderAnalysis.util
 
         static void TestFileRetrievalHelper()
         {
-            List<string> vcsFiles = MyShaderUtilHelpers.GetVcsFiles(FileArchives.GetArchiveDir(ARCHIVE.alyx_hlvr_vulkan_v64), VcsProgramType.Undetermined);
+            List<string> vcsFiles = MyShaderUtilHelpers.GetVcsFiles(FileArchive.GetArchiveDir(ARCHIVE.alyx_hlvr_vulkan_v64), VcsProgramType.Undetermined);
             foreach (var f in vcsFiles)
             {
                 Console.WriteLine($"{f}");

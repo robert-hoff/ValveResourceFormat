@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using ValveResourceFormat.CompiledShader;
-using static MyShaderAnalysis.filearchive.FileArchives;
+using static MyShaderAnalysis.filearchive.FileArchive;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
 /*
@@ -88,7 +88,7 @@ namespace MyShaderAnalysis.batchtesting
         public static void TestZframeBytesByArchive(ARCHIVE archive, VcsProgramType vcsProgramType = VcsProgramType.Undetermined)
         {
             string archiveName = archive.ToString();
-            List<string> vcsFiles = MyShaderUtilHelpers.GetVcsFiles(FileArchives.GetArchiveDir(archive), vcsProgramType);
+            List<string> vcsFiles = MyShaderUtilHelpers.GetVcsFiles(FileArchive.GetArchiveDir(archive), vcsProgramType);
             string headerText = $"Parsing zframes for vcs archive {archiveName}";
             Console.WriteLine(headerText);
             Console.WriteLine(new string('-', headerText.Length));
@@ -216,7 +216,7 @@ namespace MyShaderAnalysis.batchtesting
         {
             string archiveName = archive.ToString();
             // List<string> vcsFiles = MyShaderUtilHelpers.GetVcsFiles(FileArchives.GetSourceDir(archive), VcsProgramType.Undetermined);
-            List<string> vcsFiles = MyShaderUtilHelpers.GetVcsFiles(FileArchives.GetArchiveDir(archive), VcsProgramType.HullShader);
+            List<string> vcsFiles = MyShaderUtilHelpers.GetVcsFiles(FileArchive.GetArchiveDir(archive), VcsProgramType.HullShader);
             string headerText = $"Parsing zframes for vcs archive {archiveName}";
             Console.WriteLine(headerText);
             Console.WriteLine(new string('-', headerText.Length));
@@ -292,7 +292,7 @@ namespace MyShaderAnalysis.batchtesting
         public static void TestArchiveShader(ARCHIVE archive)
         {
             string archiveName = archive.ToString();
-            List<string> vcsFiles = MyShaderUtilHelpers.GetVcsFiles(FileArchives.GetArchiveDir(archive), VcsProgramType.Undetermined);
+            List<string> vcsFiles = MyShaderUtilHelpers.GetVcsFiles(FileArchive.GetArchiveDir(archive), VcsProgramType.Undetermined);
 
             string headerText = $"Parsing vcs archive {archiveName}";
             Console.WriteLine(headerText);
@@ -339,7 +339,7 @@ namespace MyShaderAnalysis.batchtesting
         public static void TestArchiveShaderFileSummarise(ARCHIVE archive, bool showSuccesses = false)
         {
             string archiveName = archive.ToString();
-            List<string> vcsFiles = MyShaderUtilHelpers.GetVcsFiles(FileArchives.GetArchiveDir(archive), VcsProgramType.Undetermined);
+            List<string> vcsFiles = MyShaderUtilHelpers.GetVcsFiles(FileArchive.GetArchiveDir(archive), VcsProgramType.Undetermined);
             // List<string> vcsFiles = MyShaderUtilHelpers.GetVcsFiles(FileArchives.GetSourceDir(archive), VcsProgramType.GeometryShader);
 
             string headerText = $"Parsing vcs archive {archiveName}";
@@ -400,7 +400,7 @@ namespace MyShaderAnalysis.batchtesting
         public static void TestArchiveBytes(ARCHIVE archive)
         {
             string archiveName = archive.ToString();
-            List<string> vcsFiles = MyShaderUtilHelpers.GetVcsFiles(FileArchives.GetArchiveDir(archive), VcsProgramType.Undetermined);
+            List<string> vcsFiles = MyShaderUtilHelpers.GetVcsFiles(FileArchive.GetArchiveDir(archive), VcsProgramType.Undetermined);
             foreach (var f in vcsFiles)
             {
                 // new DataReaderVcsBytes(f, outputWriter: (x) => { }, showStatusMessage: true).PrintByteDetail(archiveName);

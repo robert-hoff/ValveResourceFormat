@@ -1,14 +1,13 @@
 using MyShaderAnalysis.filearchive;
 using MyShaderAnalysis.serverhtml;
 using MyShaderAnalysis.snippetcode;
-using MyShaderAnalysis.vulkanreflect;
 using System;
 using System.Diagnostics;
 using System.IO;
 using ValveResourceFormat.CompiledShader;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
-namespace MyShaderAnalysis.batchtesting
+namespace MyShaderAnalysis.vulkanreflect
 {
     internal class TestSpirvReflection
     {

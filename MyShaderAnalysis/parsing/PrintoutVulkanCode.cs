@@ -1,4 +1,5 @@
 using MyShaderAnalysis.filearchive;
+using MyShaderAnalysis.serverhtml;
 using MyShaderAnalysis.util;
 using MyShaderAnalysis.vulkanreflect;
 using System;
@@ -43,7 +44,7 @@ namespace MyShaderAnalysis.parsing
             VulkanSource vulkanSource = (VulkanSource)zframeFile.GpuSources[gpuIndex];
             string reflectedSpirv = DecompileSpirvDll.DecompileVulkan(vulkanSource.GetSpirvBytes());
 
-            FileWriter fw = new FileWriter(FileArchives.GetServerTestFile());
+            FileWriter fw = new FileWriter(ServerNames.GetServerTestFile());
             fw.WriteHtmlHeader("Spirv reflection", "Spirv reflection");
             fw.WriteLine(vulkanSource.GetSourceDetails());
             fw.WriteLine($"// Spirv source ({vulkanSource.MetadataOffset}), reflection performed with SPIRV-Cross, KhronosGroup\n");
@@ -63,7 +64,7 @@ namespace MyShaderAnalysis.parsing
             ShaderFile shaderFile = fileTokens.GetShaderFile();
             ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(0);
 
-            FileWriter fw = new FileWriter(FileArchives.GetServerTestFile());
+            FileWriter fw = new FileWriter(ServerNames.GetServerTestFile());
             fw.WriteHtmlHeader("Zframe testing", "Zframe testing");
             zframeFile.PrintGpuSource(gpuIndex, fw.GetOutputWriter());
             fw.CloseStreamWriter();

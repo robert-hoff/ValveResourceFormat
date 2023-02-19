@@ -4,35 +4,7 @@ using System.IO;
 using ValveResourceFormat.CompiledShader;
 using static MyShaderAnalysis.filearchive.ReadShaderFile;
 
-// R: I'm not sure I  like this very much (something to think about)
-// it's for use of ShaderUtilHelpers.ComputeVCSFileName
-// it doesn't feel right to use the utility founctions across project folders. It's ok to use the interfaces and enums,
-// but not the utility functions, I feel .. (but can't quite nail exactly why right now ..)
-//
-// It's to do with refactoring and when inspecting and understanding code.
-// If I'm looking to optimise my shader-parser and I go about it by looking at code in the production ShaderUtilHelpers,
-// it doesn't help me to have 10 references leading into some function in ShaderUtilHelpers that comes from places
-// that have nothing to do with the public interface.
-//
-// Come to think of this more, having general 'utility' functions that do a wide assortment of weird tasks and that are
-// all grouped into one file that tons of different archives refer to is clearly bad practise.
-//
-// There is also some idea here about "who's providing a service to who"?
-// One must not have one archive requiring service from another, and then have the another archive require services from one
-// in a different context (this isn't actually happening though)
-//
-//
-//
-//
-//
-// using ShaderUtilHelpers = ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
-//
-//
-//
-
 /*
- *
- *
  * GetServerFileDir()                  Z:/dev/www/vcs.codecreation.dev/dota-game-pcgl-v64/multiblend_pcgl_30
  * GetServerFilenamepath(label)        Z:/dev/www/vcs.codecreation.dev/dota-game-pcgl-v64/multiblend_pcgl_30/multiblend_pcgl_30_ps-label.html
  * GetServerFilePath()                 /dota-game-pcgl-v64/multiblend_pcgl_30
@@ -49,15 +21,12 @@ using static MyShaderAnalysis.filearchive.ReadShaderFile;
  * GetShortName()                      multiblend(30-ps)
  * GetBaseName()                       /dota-game-pcgl-v64/multiblend_pcgl_30_ps.vcs
  *
- *
- *
  */
 namespace MyShaderAnalysis.filearchive
 {
     public class FileVcsTokens
     {
-        // used to have this - but isn't actually needed (parser determines this independently)
-        // public string platformType { get; }  // pcgl, pc, vulkan
+        private const string SERVER_BASEDIR = "Z:/dev/www/vcs.codecreation.dev";
 
         public ARCHIVE archive { get; }
         public VcsProgramType programType;
@@ -80,12 +49,12 @@ namespace MyShaderAnalysis.filearchive
             archivename = archive.ToString();
             filename = Path.GetFileName(filename);
             this.filename = filename;
-            filenamepath = $"{FileArchives.GetArchiveDir(archive)}/{filename}";
+            filenamepath = $"{FileArchive.GetArchiveDir(archive)}/{filename}";
             if (!File.Exists(filenamepath))
             {
                 throw new ShaderParserException("file doesn't exist");
             }
-            serverdir = FileArchives.GetServerBaseDir();
+            serverdir = SERVER_BASEDIR;
             name = filename[0..^4];
             foldername = name.Substring(0, name.LastIndexOf('_'));
             namelabel = filename.Split('_')[0];

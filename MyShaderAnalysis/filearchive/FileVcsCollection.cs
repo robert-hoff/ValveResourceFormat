@@ -39,7 +39,7 @@ namespace MyShaderAnalysis.filearchive
             }
             List<string> relatedFiles = new();
             string featuresFile = null;
-            foreach (var vcsFile in Directory.GetFiles(FileArchives.GetArchiveDir(archive)))
+            foreach (var vcsFile in Directory.GetFiles(FileArchive.GetArchiveDir(archive)))
             {
                 if (Path.GetFileName(vcsFile).StartsWith(vcsCollectionName))
                 {
