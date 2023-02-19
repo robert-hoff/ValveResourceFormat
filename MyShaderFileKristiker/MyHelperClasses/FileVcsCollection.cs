@@ -36,6 +36,17 @@ namespace MyShaderFileKristiker.MyHelperClasses
             }
             return relatedFiles;
         }
+
+        public static List<FileVcsTokens> GetRelatedVcs(ARCHIVE archive, string vcsCollectionName)
+        {
+            List<string> relatedFiles = GetRelatedFiles(archive, vcsCollectionName);
+            List<FileVcsTokens> relatedVcs = new();
+            foreach (string filename in relatedFiles)
+            {
+                relatedVcs.Add(new FileVcsTokens(archive, filename));
+            }
+            return relatedVcs;
+        }
     }
 }
 

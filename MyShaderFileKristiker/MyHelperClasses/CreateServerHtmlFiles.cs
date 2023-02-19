@@ -1,16 +1,64 @@
+using MyShaderFileKristiker.MyHelperClasses.ProgEntries;
+using System.Diagnostics;
 using ValveResourceFormat.CompiledShader;
 
 namespace MyShaderFileKristiker.MyHelperClasses
 {
     public class CreateServerHtmlFiles
     {
+        //private static ARCHIVE archive = ARCHIVE.alyx_hlvr_vulkan_v64;
+        //private static ARCHIVE archive = ARCHIVE.dota_game_vulkan_v65;
+        //private static ARCHIVE archive = ARCHIVE.dota_game_pc_v65;
+        //private static ARCHIVE archive = ARCHIVE.dota_core_pcgl_v64;
+        private static ARCHIVE archive = ARCHIVE.dota_game_pcgl_v64;
+        private const int ZCOUNT = 1;
+        private const int GPU_COUNT = 1;
+        private const bool CLEAR_DIRECTORY = true;
+
         public static void RunTrials()
         {
-            // PrintFileDirectoryGivenArchive();
-            SaveAllServerFilesFromArchive();
-            // SaveServerSets();
-            // SingleFileExamples2();
-            // SingleFileExamples1();
+            // SaveAllServerFilesForArchive();
+            SaveVcsCollection(ARCHIVE.dota_game_pcgl_v64, "crystal_pcgl_40", zFramesToPrint: ZCOUNT, gpuSourcesToPrint: GPU_COUNT);
+            // CreateServerHtmlFiles.SaveServerSets();
+            // CreateServerHtmlFiles.SaveAllServerFilesFromArchive(limitFileCount: 2);
+        }
+
+        public static void SaveAllServerFilesForArchive(ARCHIVE archive, int limitFileCount = 1000)
+        {
+            FileArchive fileArchive = new(archive, VcsProgramType.Features, VcsShaderModelType._40);
+            int fileCount = fileArchive.GetFileCount();
+            for (int i = 0; i < fileCount; i++)
+            {
+                SaveVcsCollection(archive, fileArchive.GetFileVcsTokens(i).filename, 1, 1, saveGpuByteDetail: false);
+                if (i == limitFileCount)
+                {
+                    break;
+                }
+            }
+        }
+
+        /*
+         * shaderName is in the form 'multiblend_pcgl_30'
+         *
+         */
+        public static void SaveVcsCollection(
+            ARCHIVE archive,
+            string shaderName,
+            int zFramesToPrint = ZCOUNT,
+            int gpuSourcesToPrint = GPU_COUNT,
+            bool saveGpuByteDetail = false,
+            bool clearDirectory = CLEAR_DIRECTORY)
+        {
+            List<FileVcsTokens> relatedVcs = FileVcsCollection.GetRelatedVcs(archive, shaderName);
+            if (clearDirectory)
+            {
+                RunSnippets.DeleteDirectoryContent(relatedVcs[0].GetServerFileDir());
+            }
+            foreach (FileVcsTokens vcsTokens in relatedVcs)
+            {
+                ParseVcsFile vcsFile = new ParseVcsFile(vcsTokens, convertLinksToHtml: true);
+                vcsFile.SaveAllServerFiles(zFramesToPrint, gpuSourcesToPrint, saveGpuByteDetail);
+            }
         }
 
         /*
@@ -39,159 +87,67 @@ namespace MyShaderFileKristiker.MyHelperClasses
             fileWriter.Dispose();
         }
 
-        public static void SaveAllServerFilesFromArchive(int limitFileCount = 1000)
-        {
-            // ARCHIVE archive = ARCHIVE.alyx_hlvr_vulkan_v64;
-            // ARCHIVE archive = ARCHIVE.dota_game_vulkan_v65;
-            //FileArchive fileArchive = new(archive, useModularLookup: true);
-
-            // ARCHIVE archive = ARCHIVE.dota_core_pcgl_v64;
-            ARCHIVE archive = ARCHIVE.dota_game_pcgl_v64;
-            // ARCHIVE archive = ARCHIVE.dota_game_pc_v65;
-            FileArchive fileArchive = new(archive, VcsShaderModelType._40);
-
-            int fileCount = fileArchive.GetFileCount();
-            for (int i = 0; i < fileCount; i++)
-            {
-                SaveAllServerFiles(archive, fileArchive.GetFileVcsTokens(i).filename, 1, 1, saveGpuByteDetail: false);
-                if (i == limitFileCount)
-                {
-                    break;
-                }
-            }
-        }
-
-        /*
-         * shaderName is in the form 'multiblend_pcgl_30'
-         *
-         */
-        public static void SaveVcsCollection(ARCHIVE archive, string shaderName,
-            int zFramesToPrint = 5, int gpuSourcesToPrint = 5, bool saveGpuByteDetail = false)
-        {
-
-            List<string> relatedFiles = FileVcsCollection.GetRelatedFiles(archive, shaderName);
-            // List<FileVcsTokens> vcsTokens = new();
-            foreach (string filename in relatedFiles)
-            {
-                // vcsTokens.Add(new FileVcsTokens(archive, filename));
-                ParseVcsFile vcsFile = new ParseVcsFile(archive, filename, convertLinksToHtml: true);
-                vcsFile.SaveAllServerFiles(zFramesToPrint, gpuSourcesToPrint, saveGpuByteDetail);
-            }
-        }
-
-
-        public static void SaveServerSets()
-        {
-            // SaveAllServerFiles(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
-            // SaveAllServerFiles(ARCHIVE.dota_game_pcgl_v64, "3dskyboxstencil_pcgl_30_features.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
-            // SaveAllServerFiles(ARCHIVE.dota_game_pcgl_v64, "3dskyboxstencil_pcgl_30_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
-            // SaveAllServerFiles(ARCHIVE.dota_game_pcgl_v64, "3dskyboxstencil_pcgl_30_ps.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
-            // SaveAllServerFiles(ARCHIVE.dotagame_pc, "3dskyboxstencil_pc_30_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
-            // SaveAllServerFiles(ARCHIVE.dotagame_pc, "3dskyboxstencil_pc_40_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
-            // SaveAllServerFiles(ARCHIVE.dotagame_pc, "multiblend_pc_40_vs.vcs", zframesToPrint: 20, gpuSourcesToPrint: 5);
-            // SaveAllServerFiles(ARCHIVE.dotagame_pc, "multiblend_pc_40_ps.vcs", zframesToPrint: 20, gpuSourcesToPrint: 5);
-            // SaveAllServerFiles(ARCHIVE.dota_dac_gles, "citycrawl_building_anim_mobile_gles_30_ps.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
-            // SaveAllServerFiles(ARCHIVE.dota_core_android_vulkan, "sky_model_android_vulkan_40_ps.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
-            // SaveAllServerFiles(ARCHIVE.dota_dac_android_vulkan, "global_lit_simple_android_vulkan_40_ps.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
-            // SaveAllServerFiles(ARCHIVE.alyx_hlvr_vulkan_v64, "cables_vulkan_50_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
-
-            // SaveAllServerFiles(ARCHIVE.dota_game_vulkan_v65, "hero_vulkan_40_features.vcs", zframesToPrint: 5, gpuSourcesToPrint: 20);
-            // SaveAllServerFiles(ARCHIVE.dota_game_vulkan_v65, "hero_vulkan_40_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 20);
-            // SaveAllServerFiles(ARCHIVE.dota_game_vulkan_v65, "hero_vulkan_40_ps.vcs", zframesToPrint: 5, gpuSourcesToPrint: 20);
-            // SaveAllServerFiles(ARCHIVE.dota_game_vulkan_v65, "hero_vulkan_40_psrs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 20);
-
-            // SaveAllServerFiles(ARCHIVE.dota_game_vulkan_v65, "multiblend_vulkan_40_ps.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
-            // SaveAllServerFiles(ARCHIVE.dota_game_vulkan_v65, "multiblend_vulkan_40_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
-
-            // SaveAllServerFiles(ARCHIVE.dota_game_pc_v65, "multiblend_pc_40_ps.vcs", zframesToPrint: 10, gpuSourcesToPrint: 10, saveGpuByteDetail: false);
-            // SaveAllServerFiles(ARCHIVE.dota_game_pc_v65, "multiblend_pc_40_vs.vcs", zframesToPrint: 10, gpuSourcesToPrint: 10, saveGpuByteDetail: false);
-
-            // SaveAllServerFiles(ARCHIVE.dota_game_pcgl_v64, "crystal_pcgl_40_vs.vcs", zframesToPrint: 10000, gpuSourcesToPrint: 10000);
-            SaveAllServerFiles(ARCHIVE.dota_game_pcgl_v64, "crystal_pcgl_40_ps.vcs", zframesToPrint: 4, gpuSourcesToPrint: 4);
-
-            // SaveAllServerFiles(ARCHIVE.dota_game_pc_v64, "multiblend_pc_30_ps.vcs", zframesToPrint: 30, gpuSourcesToPrint: 30);
-            // SaveAllServerFiles(ARCHIVE.dota_game_pcgl_v64, "spritecard_pcgl_30_ps.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
-            // SaveAllServerFiles(ARCHIVE.dota_game_pcgl_v64, "spritecard_pcgl_30_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
-
-            // SaveAllServerFiles(ARCHIVE.the_lab_v62, "bilateral_blur_pc_30_ps.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
-            // SaveAllServerFiles(ARCHIVE.the_lab_v62, "bilateral_blur_pc_30_features.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
-            // SaveAllServerFiles(ARCHIVE.the_lab_v62, "blend_pc_41_features.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
-            // SaveAllServerFiles(ARCHIVE.the_lab_v62, "aerial_perspective_pc_30_ps.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
-            // SaveAllServerFiles(ARCHIVE.the_lab_v62, "aerial_perspective_pc_30_features.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
-            // SaveAllServerFiles(ARCHIVE.the_lab_v62, "aerial_perspective_pc_30_ps.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
-            // SaveAllServerFiles(ARCHIVE.the_lab_v62, "aerial_perspective_pc_30_vs.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
-
-            // SaveAllServerFiles(ARCHIVE.alyx_hlvr_vulkan_v64, "vr_xen_foliage_vulkan_50_features.vcs", zframesToPrint: 30, gpuSourcesToPrint: 30);
-            // SaveAllServerFiles(ARCHIVE.alyx_hlvr_vulkan_v64, "vr_xen_foliage_vulkan_50_vs.vcs", zframesToPrint: 30, gpuSourcesToPrint: 30);
-            // SaveAllServerFiles(ARCHIVE.alyx_hlvr_vulkan_v64, "vr_xen_foliage_vulkan_50_ps.vcs", zframesToPrint: 30, gpuSourcesToPrint: 30);
-        }
-
-        public static void SaveAllServerFiles(ARCHIVE archive, string filename, int zframesToPrint, int gpuSourcesToPrint, bool saveGpuByteDetail = false)
-        {
-            ParseVcsFile vcsFile = new ParseVcsFile(archive, filename, convertLinksToHtml: true);
-            vcsFile.SaveAllServerFiles(zframesToPrint, gpuSourcesToPrint, saveGpuByteDetail);
-        }
-
-
-
         public static void SingleFileExamples2()
         {
-            // ParseVcsFile vcsFile = GetVcsFile(ARCHIVE.dotagame_pc, "multiblend_pc_30_vs.vcs");
-            ParseVcsFile vcsFile = GetVcsFile(ARCHIVE.the_lab_pc_v62, "bilateral_blur_pc_30_features.vcs");
+            // FileVcsTokens vcsTokens = new(ARCHIVE.the_lab_pc_v62, "bilateral_blur_pc_30_features.vcs");
+            FileVcsTokens vcsTokens = new(ARCHIVE.dota_game_pcgl_v64, "multiblend_pc_30_vs.vcs");
+
+            ParseVcsFile vcsFile = new ParseVcsFile(vcsTokens);
             // vcsFile.SaveVcsSummaryToHtml();
             vcsFile.SaveVcsByteSummaryToHtml();
         }
 
         public static void SingleFileExamples1()
         {
-            // SaveVcsBytesAndSummary(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_vs.vcs");
-            // SaveZframeSummary(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_vs.vcs", zframeId: 0);
-            // SaveZframeSummaries(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_vs.vcs", zframesToPrint: 20);
-            // SaveGpuSource(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_vs.vcs", zframeId: 0, gpuSourceId: 0);
-            // SaveGpuSources(ARCHIVE.dota_game_pcgl_v64, "multiblend_pcgl_30_vs.vcs", zframeId: 0, gpuSourcesToPrint: 2);
+            // FileVcsTokens vcsTokens = new(ARCHIVE.dota_game_pcgl_v64, "multiblend_pc_30_vs.vcs");
+            FileVcsTokens vcsTokens = new(ARCHIVE.dota_game_vulkan_v65, "blur_cs_vulkan_50_cs.vcs");
 
-            // SaveGpuSources(ARCHIVE.dota_game_pcgl_v64, "multiblend_pcgl_30_vs.vcs", zframeId: 0, gpuSourcesToPrint: 1, saveGpuByteSource: true);
-            // SaveGpuSources(ARCHIVE.dota_game_pcgl_v64, "multiblend_pcgl_30_vs.vcs", zframeId: 0, gpuSourcesToPrint: 1, saveGpuByteSource: false);
-
-            SaveGpuSources(ARCHIVE.dota_game_vulkan_v65, "blur_cs_vulkan_50_cs.vcs", zframeId: 0, gpuSourcesToPrint: 1, saveGpuByteSource: true);
+            SaveVcsBytesAndSummary(vcsTokens);
+            //SaveZframeSummary(vcsTokens, zframeId: 0);
+            //SaveZframeSummaries(vcsTokens, zframesToPrint: 20);
+            //SaveGpuSource(vcsTokens, zframeId: 0, gpuSourceId: 0);
+            //SaveGpuSources(vcsTokens, zframeId: 0, gpuSourcesToPrint: 2);
+            //SaveGpuSources(vcsTokens, zframeId: 0, gpuSourcesToPrint: 1, saveGpuByteSource: true);
+            //SaveGpuSources(vcsTokens, zframeId: 0, gpuSourcesToPrint: 1, saveGpuByteSource: false);
+            //SaveGpuSources(vcsTokens, zframeId: 0, gpuSourcesToPrint: 1, saveGpuByteSource: true);
         }
 
-        public static ParseVcsFile GetVcsFile(ARCHIVE archive, string filename)
-        {
-            return new ParseVcsFile(archive, filename, convertLinksToHtml: true);
-        }
 
-        public static void SaveVcsBytesAndSummary(ARCHIVE archive, string filename)
+        public static void SaveVcsBytesAndSummary(FileVcsTokens vcsFileTokens)
         {
-            ParseVcsFile vcsFile = new ParseVcsFile(archive, filename, convertLinksToHtml: true);
+            ParseVcsFile vcsFile = new ParseVcsFile(vcsFileTokens, convertLinksToHtml: true);
             vcsFile.SaveVcsByteSummaryToHtml();
             vcsFile.SaveVcsSummaryToHtml();
         }
 
-        public static void SaveZframeSummary(ARCHIVE archive, string filename, int zframeId)
+        // save ONE zframe
+        public static void SaveZframeSummary(FileVcsTokens vcsFileTokens, int zframeId)
         {
-            ParseVcsFile vcsFile = new ParseVcsFile(archive, filename, convertLinksToHtml: true);
+            ParseVcsFile vcsFile = new ParseVcsFile(vcsFileTokens, convertLinksToHtml: true);
             vcsFile.SaveZframeByteSummaryToHtml(zframeId);
             vcsFile.SaveZframeSummaryToHtml(zframeId);
         }
 
-        public static void SaveZframeSummaries(ARCHIVE archive, string filename, int zframesToPrint)
+        // save more than one
+        public static void SaveZframeSummaries(FileVcsTokens vcsFileTokens, int zframesToPrint)
         {
-            ParseVcsFile vcsFile = new ParseVcsFile(archive, filename, convertLinksToHtml: true);
-            // vcsFile.SaveZframeByteSummaries(requestedZframesToPrint);
+            ParseVcsFile vcsFile = new ParseVcsFile(vcsFileTokens, convertLinksToHtml: true);
             vcsFile.SaveZframeSummaries(zframesToPrint);
         }
 
-        public static void SaveGpuSource(ARCHIVE archive, string filename, int zframeId, int gpuSourceId)
+        // save ONE gpu source
+        public static void SaveGpuSource(FileVcsTokens vcsFileTokens, int zframeId, int gpuSourceId)
         {
-            ParseVcsFile vcsFile = new ParseVcsFile(archive, filename, convertLinksToHtml: true);
+            ParseVcsFile vcsFile = new ParseVcsFile(vcsFileTokens, convertLinksToHtml: true);
             vcsFile.SaveGpuSourceToHtml(zframeId, gpuSourceId);
         }
 
-        public static void SaveGpuSources(ARCHIVE archive, string filename, int zframeId, int gpuSourcesToPrint, bool saveGpuByteSource = false)
+        // save more than one
+        public static void SaveGpuSources(FileVcsTokens vcsFileTokens, int zframeId, int gpuSourcesToPrint, bool saveGpuByteSource = false)
         {
-            ParseVcsFile vcsFile = new ParseVcsFile(archive, filename, convertLinksToHtml: true);
+            ParseVcsFile vcsFile = new ParseVcsFile(vcsFileTokens, convertLinksToHtml: true);
             vcsFile.SaveGpuSourcesToHtml(zframeId, gpuSourcesToPrint, saveGpuByteSource);
         }
     }
 }
+

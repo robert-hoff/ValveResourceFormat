@@ -14,9 +14,9 @@ namespace MyShaderFileKristiker.MyHelperClasses
 
         // public int zframesToPrint { get; set; } = 0;
 
-        public ParseVcsFile(ARCHIVE archive, string filename, bool showRichTextBoxLinks = true, bool convertLinksToHtml = true)
+        public ParseVcsFile(FileVcsTokens fileTokens, bool showRichTextBoxLinks = true, bool convertLinksToHtml = true)
         {
-            fileTokens = new FileVcsTokens(archive, filename);
+            this.fileTokens = fileTokens;
             shaderFile = fileTokens.GetShaderFile();
             this.showRichTextBoxLinks = showRichTextBoxLinks;
             this.convertLinksToHtml = convertLinksToHtml;

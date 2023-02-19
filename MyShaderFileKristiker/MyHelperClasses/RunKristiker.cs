@@ -7,6 +7,7 @@ namespace MyShaderFileKristiker.MyHelperClasses
         public static void RunTrials()
         {
             RunServerHtml.RunTrials();
+            // RunSnippets.RunTrials();
         }
     }
 }

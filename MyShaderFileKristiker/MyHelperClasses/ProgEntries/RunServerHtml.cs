@@ -25,21 +25,13 @@ namespace MyShaderFileKristiker.MyHelperClasses.ProgEntries
 
         public static void RunTrials()
         {
-            SaveAllServerFilesFromArchive();
+            CreateServerHtmlFiles.RunTrials();
             // PrintShaderFileToHtml();
             // PrintZframeToHtml();
             // PrintZframeToHtmlByteVersion();
             // ShowZFrameParameters();
             // ShowZFrameCount();
         }
-
-        public static void SaveAllServerFilesFromArchive()
-        {
-            SaveVcsCollection(ARCHIVE.dota_game_pcgl_v64, "crystal_pcgl_40", zFramesToPrint: 1, gpuSourcesToPrint: 1);
-            // CreateServerHtmlFiles.SaveServerSets();
-            // CreateServerHtmlFiles.SaveAllServerFilesFromArchive(limitFileCount: 2);
-        }
-
 
         public static void PrintShaderFileToHtml()
         {
