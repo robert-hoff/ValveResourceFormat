@@ -1,15 +1,9 @@
 using System;
-using System.IO;
 using System.Collections.Generic;
-
-using ShaderFile = ValveResourceFormat.CompiledShader.ShaderFile;
-using ZFrameFile = ValveResourceFormat.CompiledShader.ZFrameFile;
-using ZDataBlock = ValveResourceFormat.CompiledShader.ZDataBlock;
-using VcsProgramType = ValveResourceFormat.CompiledShader.VcsProgramType;
-using ConfigMappingSParams = ValveResourceFormat.CompiledShader.ConfigMappingSParams;
-
-using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
 using System.Diagnostics;
+using System.IO;
+using ValveResourceFormat.CompiledShader;
+using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
 
 namespace MyShaderAnalysis.codestash
 {

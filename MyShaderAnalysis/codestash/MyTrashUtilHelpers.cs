@@ -1,16 +1,8 @@
 using System;
-using System.IO;
 using System.Collections.Generic;
-
+using System.IO;
+using ValveResourceFormat.CompiledShader;
 using ValveResourceFormat.Serialization.VfxEval;
-
-using ShaderFile = ValveResourceFormat.CompiledShader.ShaderFile;
-using VcsPlatformType = ValveResourceFormat.CompiledShader.VcsPlatformType;
-using VcsProgramType = ValveResourceFormat.CompiledShader.VcsProgramType;
-using VcsShaderModelType = ValveResourceFormat.CompiledShader.VcsShaderModelType;
-using ShaderParserException = ValveResourceFormat.CompiledShader.ShaderParserException;
-
-
 
 namespace MyShaderAnalysis.codestash
 {
@@ -633,9 +625,9 @@ namespace MyShaderAnalysis.codestash
 
         public class OutputFormatterTabulatedData
         {
-            public MyHandleOutputWrite outputWriter { get; set; }
+            public HandleOutputWrite outputWriter { get; set; }
 
-            public OutputFormatterTabulatedData(MyHandleOutputWrite outputWriter = null)
+            public OutputFormatterTabulatedData(HandleOutputWrite outputWriter = null)
             {
                 this.outputWriter = outputWriter ?? ((x) => { Console.Write(x); });
             }

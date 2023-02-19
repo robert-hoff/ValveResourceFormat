@@ -1,18 +1,11 @@
-using System.IO;
+using MyShaderAnalysis.filearchive;
+using MyShaderAnalysis.postprocessing;
+using MyShaderAnalysis.util;
 using System.Collections.Generic;
 using System.Globalization;
-
-using PostProcessVcsFile = MyShaderAnalysis.postprocessing.PostProcessVcsFile;
-using PostProcessZframeFile = MyShaderAnalysis.postprocessing.PostProcessZframeFile;
-
-using ShaderFile = ValveResourceFormat.CompiledShader.ShaderFile;
-using ZFrameFile = ValveResourceFormat.CompiledShader.ZFrameFile;
-using PrintVcsFileSummary = ValveResourceFormat.CompiledShader.PrintVcsFileSummary;
-using PrintZFrameSummary = ValveResourceFormat.CompiledShader.PrintZFrameSummary;
-
-using MyShaderAnalysis.utilhelpers;
+using System.IO;
+using ValveResourceFormat.CompiledShader;
 using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
-
 
 /*
  *

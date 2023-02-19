@@ -1,20 +1,9 @@
 using System;
-using System.IO;
 using System.Collections.Generic;
-
-using ConfigMappingSParams = ValveResourceFormat.CompiledShader.ConfigMappingSParams;
-using DBlock = ValveResourceFormat.CompiledShader.DBlock;
-using DConstraintsBlock = ValveResourceFormat.CompiledShader.DConstraintsBlock;
-using FeaturesHeaderBlock = ValveResourceFormat.CompiledShader.FeaturesHeaderBlock;
-using SfBlock = ValveResourceFormat.CompiledShader.SfBlock;
-using SfConstraintsBlock = ValveResourceFormat.CompiledShader.SfConstraintsBlock;
-using ShaderFile = ValveResourceFormat.CompiledShader.ShaderFile;
-using ShaderParserException = ValveResourceFormat.CompiledShader.ShaderParserException;
-using VcsProgramType = ValveResourceFormat.CompiledShader.VcsProgramType;
-
+using System.IO;
+using ValveResourceFormat.CompiledShader;
 using static MyShaderAnalysis.codestash.FileSystemOld;
 using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
-
 
 /*
  * Cables website - looks interesting

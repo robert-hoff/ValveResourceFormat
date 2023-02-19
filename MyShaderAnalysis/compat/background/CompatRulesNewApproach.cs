@@ -1,6 +1,5 @@
+using MyShaderAnalysis.filearchive;
 using System;
-using MyShaderAnalysis.codestash;
-using MyShaderAnalysis.utilhelpers;
 using ValveResourceFormat.CompiledShader;
 
 namespace MyShaderAnalysis.compat

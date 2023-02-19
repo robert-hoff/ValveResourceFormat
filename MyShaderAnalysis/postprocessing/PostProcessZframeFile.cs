@@ -1,10 +1,9 @@
+using MyShaderAnalysis.filearchive;
 using System;
-using System.IO;
 using System.Globalization;
+using System.IO;
 using System.Text.RegularExpressions;
 using ValveResourceFormat.CompiledShader;
-using MyShaderAnalysis.codestash;
-using MyShaderAnalysis.utilhelpers;
 
 namespace MyShaderAnalysis.postprocessing
 {

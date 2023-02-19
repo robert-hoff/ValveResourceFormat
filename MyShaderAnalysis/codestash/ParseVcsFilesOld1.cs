@@ -1,12 +1,9 @@
 using System;
-using System.IO;
 using System.Collections.Generic;
-
-using VcsProgramType = ValveResourceFormat.CompiledShader.VcsProgramType;
-
+using System.IO;
+using ValveResourceFormat.CompiledShader;
 using static MyShaderAnalysis.codestash.FileSystemOld;
 using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
-
 
 namespace MyShaderAnalysis.codestash
 {

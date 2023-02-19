@@ -1,21 +1,9 @@
 using System;
-using System.IO;
 using System.Collections.Generic;
-
-using ConfigMappingSParams = ValveResourceFormat.CompiledShader.ConfigMappingSParams;
-using DBlock = ValveResourceFormat.CompiledShader.DBlock;
-using GlslSource = ValveResourceFormat.CompiledShader.GlslSource;
-using GpuSource = ValveResourceFormat.CompiledShader.GpuSource;
-using PrintZFrameSummary = ValveResourceFormat.CompiledShader.PrintZFrameSummary;
-using ShaderFile = ValveResourceFormat.CompiledShader.ShaderFile;
-using ShaderParserException = ValveResourceFormat.CompiledShader.ShaderParserException;
-using VcsProgramType = ValveResourceFormat.CompiledShader.VcsProgramType;
-using ZDataBlock = ValveResourceFormat.CompiledShader.ZDataBlock;
-using ZFrameFile = ValveResourceFormat.CompiledShader.ZFrameFile;
-
+using System.IO;
+using ValveResourceFormat.CompiledShader;
 using static MyShaderAnalysis.codestash.FileSystemOld;
 using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
-
 
 /*
  *

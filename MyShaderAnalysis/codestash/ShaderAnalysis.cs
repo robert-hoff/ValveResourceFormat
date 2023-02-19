@@ -1,19 +1,12 @@
+using MyShaderAnalysis.parsing;
 using System;
-using System.IO;
 using System.Collections.Generic;
-
-using ShaderFile = ValveResourceFormat.CompiledShader.ShaderFile;
-using VcsProgramType = ValveResourceFormat.CompiledShader.VcsProgramType;
-using VcsPlatformType = ValveResourceFormat.CompiledShader.VcsPlatformType;
-using ShaderParserException = ValveResourceFormat.CompiledShader.ShaderParserException;
-
+using System.IO;
+using ValveResourceFormat.CompiledShader;
 using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
-using MyShaderAnalysis.utilhelpers;
 
 namespace MyShaderAnalysis.codestash
 {
-
-
     public class ShaderAnalysis
     {
         const string PCGL_DIR_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders-core/vfx";

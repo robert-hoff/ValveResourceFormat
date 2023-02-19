@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
 
-
-
 /*
  *
  * The trio of methods given in ProduceServerSet() producing a full html server pintout functioning correctly at the commit

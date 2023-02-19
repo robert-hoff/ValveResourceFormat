@@ -1,4 +1,4 @@
-using MyShaderAnalysis.utilhelpers;
+using MyShaderAnalysis.filearchive;
 using System;
 using System.Diagnostics;
 using ValveResourceFormat.CompiledShader;

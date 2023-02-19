@@ -1,16 +1,8 @@
 using System;
 using System.Collections.Generic;
-
-using GlslSource = ValveResourceFormat.CompiledShader.GlslSource;
-using GpuSource = ValveResourceFormat.CompiledShader.GpuSource;
-using ShaderFile = ValveResourceFormat.CompiledShader.ShaderFile;
-using VcsPlatformType = ValveResourceFormat.CompiledShader.VcsPlatformType;
-using VcsProgramType = ValveResourceFormat.CompiledShader.VcsProgramType;
-using ZFrameFile = ValveResourceFormat.CompiledShader.ZFrameFile;
-
+using ValveResourceFormat.CompiledShader;
 using static MyShaderAnalysis.codestash.FileSystemOld;
 using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
-
 
 namespace MyShaderAnalysis.codestash
 {

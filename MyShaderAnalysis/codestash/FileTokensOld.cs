@@ -1,14 +1,8 @@
-using System.IO;
 using System.Collections.Generic;
-
-using ShaderParserException = ValveResourceFormat.CompiledShader.ShaderParserException;
-using VcsProgramType = ValveResourceFormat.CompiledShader.VcsProgramType;
-
+using System.IO;
+using ValveResourceFormat.CompiledShader;
 using static MyShaderAnalysis.codestash.FileSystemOld;
 using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
-
-
-
 
 /*
  *
@@ -291,12 +285,6 @@ namespace MyShaderAnalysis.codestash
             fileDetails += $"{sourceType}\n";
             return fileDetails;
         }
-
-
-
     }
 }
-
-
-
 

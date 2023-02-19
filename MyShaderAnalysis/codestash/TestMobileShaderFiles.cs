@@ -1,13 +1,8 @@
 using System;
 using System.IO;
-
-using ShaderFile = ValveResourceFormat.CompiledShader.ShaderFile;
-using ZFrameFile = ValveResourceFormat.CompiledShader.ZFrameFile;
-
-using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
+using ValveResourceFormat.CompiledShader;
 using static MyShaderAnalysis.codestash.FileSystemOld;
-
-
+using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
 
 namespace MyShaderAnalysis.codestash
 {

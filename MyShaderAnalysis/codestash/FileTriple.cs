@@ -1,16 +1,11 @@
-using System.IO;
 using System.Collections.Generic;
-
-using ShaderParserException = ValveResourceFormat.CompiledShader.ShaderParserException;
-using VcsProgramType = ValveResourceFormat.CompiledShader.VcsProgramType;
-
-using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
+using System.IO;
+using ValveResourceFormat.CompiledShader;
 using static MyShaderAnalysis.codestash.FileSystemOld;
-
+using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
 
 namespace MyShaderAnalysis.codestash
 {
-
     public class FileTriple
     {
         public FileTokensOld ftFile { get; }
@@ -126,18 +121,6 @@ namespace MyShaderAnalysis.codestash
             }
             return fileTriples;
         }
-
-
-
     }
-
-
-
-
-
 }
-
-
-
-
 

@@ -1,16 +1,9 @@
 using System;
-using System.IO;
 using System.Collections.Generic;
-
-using ParamBlock = ValveResourceFormat.CompiledShader.ParamBlock;
-using ShaderFile = ValveResourceFormat.CompiledShader.ShaderFile;
-using ShaderParserException = ValveResourceFormat.CompiledShader.ShaderParserException;
-using VcsProgramType = ValveResourceFormat.CompiledShader.VcsProgramType;
+using System.IO;
+using ValveResourceFormat.CompiledShader;
 using ValveResourceFormat.Serialization.VfxEval;
-
 using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
-
-
 
 namespace MyShaderAnalysis.codestash
 {

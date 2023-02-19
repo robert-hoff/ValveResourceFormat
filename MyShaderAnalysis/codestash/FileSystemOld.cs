@@ -1,7 +1,6 @@
 using System.IO;
-
-using VcsProgramType = ValveResourceFormat.CompiledShader.VcsProgramType;
 using ShaderParserException = ValveResourceFormat.CompiledShader.ShaderParserException;
+using VcsProgramType = ValveResourceFormat.CompiledShader.VcsProgramType;
 
 
 
