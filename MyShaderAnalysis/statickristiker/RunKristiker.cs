@@ -1,11 +1,13 @@
-using System.Diagnostics;
-using System.IO;
+using System;
 using ValveResourceFormat.CompiledShader;
 using MyShaderFileKristiker.MyHelperClasses;
+using static MyShaderFileKristiker.MyHelperClasses.FileArchive;
+using System.Diagnostics;
+using System.IO;
 
 namespace MyShaderAnalysis.statickristiker
 {
-    class PrintoutSummaries
+    public class RunKristiker
     {
         static string DOTA_PCGL_V64_GAME = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders\vfx\";
 
@@ -23,13 +25,13 @@ namespace MyShaderAnalysis.statickristiker
         static bool writeToDefaultFile = false;
         static string defaultFile = "output2.html";
 
-
         public static void RunTrials()
         {
             // PrintShaderFileToHtml();
             PrintZframeToHtml();
-            PrintZframeToHtmlByteVersion();
+            // PrintZframeToHtmlByteVersion();
             // ShowZFrameParameters();
+            // ShowZFrameCount();
         }
 
         public static void PrintShaderFileToHtml()
@@ -38,7 +40,8 @@ namespace MyShaderAnalysis.statickristiker
             string htmlHeader = htmlTitle;
             ShaderFile shaderFile = GetShaderFile();
             string outputFilename = writeToDefaultFile ? defaultFile : OutputFilenameShaderFile();
-            FileWriter fw = new FileWriter(outputFilename, true, true, htmlTitle, htmlHeader);
+            FileWriter fw = new FileWriter(outputFilename, true, true);
+            fw.WriteHtmlHeader(htmlTitle, htmlHeader);
             _ = new PrintVcsFileSummary(shaderFile, (x) => { fw.Write(x); }, showRichTextBoxLinks: true);
             fw.CloseStreamWriter();
         }
@@ -48,7 +51,8 @@ namespace MyShaderAnalysis.statickristiker
             string htmlTitle = $"Z[0x{zFrameIndex:x}]";
             string htmlHeader = $"{Path.GetFileName(inputFile)}  Z[0x{zFrameIndex:x}]";
             string outputFilename = writeToDefaultFile ? defaultFile : OutputFilenameZframe();
-            FileWriter fw = new FileWriter(outputFilename, true, true, htmlTitle, htmlHeader);
+            FileWriter fw = new FileWriter(outputFilename, true, true);
+            fw.WriteHtmlHeader(htmlTitle, htmlHeader);
             ShaderFile shaderFile = GetShaderFile();
             ZFrameFile zFrameFile = GetZFrameFile(shaderFile);
             _ = new PrintZFrameSummary(shaderFile, zFrameFile, (x) => { fw.Write(x); }, showRichTextBoxLinks: true);
@@ -60,7 +64,8 @@ namespace MyShaderAnalysis.statickristiker
             string htmlTitle = $"Z[0x{zFrameIndex:x}]";
             string htmlHeader = $"{Path.GetFileName(inputFile)}  Z[0x{zFrameIndex:x}]";
             string outputFilename = writeToDefaultFile ? defaultFile : OutputFilenameZframeBytes();
-            FileWriter fw = new FileWriter(outputFilename, true, true, htmlTitle, htmlHeader);
+            FileWriter fw = new FileWriter(outputFilename, true, true);
+            fw.WriteHtmlHeader(htmlTitle, htmlHeader);
             ShaderFile shaderFile = GetShaderFile();
             ZFrameFile zFrameFile = GetZFrameFile(shaderFile);
             zFrameFile.PrintByteDetail((x) => { fw.Write(x); });
@@ -106,6 +111,14 @@ namespace MyShaderAnalysis.statickristiker
             Debug.WriteLine($"{zFrameFile.Attributes[0].StaticValFloat}");
             Debug.WriteLine($"{zFrameFile.Attributes[0].StaticValInt}");
             Debug.WriteLine($"{zFrameFile.Attributes[0].HeaderOperator}");
+        }
+
+        static void ShowZFrameCount()
+        {
+            string filenamepath = GetFilenamepath(ARCHIVE.dota_game_pcgl_v64, "multiblend_pcgl_30_vs.vcs");
+            Console.WriteLine($"{filenamepath}");
+            ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
+            Console.WriteLine($"{shaderFile.GetZFrameCount()} zframes");
         }
     }
 }

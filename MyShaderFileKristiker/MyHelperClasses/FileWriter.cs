@@ -7,6 +7,7 @@ namespace MyShaderFileKristiker.MyHelperClasses
         private StreamWriter sw;
         private bool writeAsHtml = false;
         private bool swOpen = true;
+        private bool showOutputToConsole = false;
 
         private static string DEFAULT_DIR = @"Z:\dev\www\vcs.codecreation.dev\GEN-output2\";
 
@@ -14,6 +15,7 @@ namespace MyShaderFileKristiker.MyHelperClasses
             string outputFilenamepath,
             bool writeAsHtml = false,
             bool useDefaultDir = false,
+            bool showOutputToConsole = false,
             string htmlTitle = "",
             string htmlHeader = ""
         )
@@ -26,19 +28,18 @@ namespace MyShaderFileKristiker.MyHelperClasses
             this.writeAsHtml = writeAsHtml;
             Debug.WriteLine($"Writing to {outputFilenamepath}");
             sw = new StreamWriter(outputFilenamepath);
-            if (writeAsHtml)
-            {
-                if (htmlHeader.Length == 0)
-                {
-                    string filename = Path.GetFileName(outputFilenamepath);
-                    WriteHtmlHeader(filename, filename);
-                }
-                else
-                {
-                    WriteHtmlHeader(htmlTitle, htmlHeader);
-                }
-
-            }
+            //if (writeAsHtml)
+            //{
+            //    if (htmlHeader.Length == 0)
+            //    {
+            //        string filename = Path.GetFileName(outputFilenamepath);
+            //        WriteHtmlHeader(filename, filename);
+            //    }
+            //    else
+            //    {
+            //        WriteHtmlHeader(htmlTitle, htmlHeader);
+            //    }
+            //}
             sw.NewLine = "\n";
         }
 
