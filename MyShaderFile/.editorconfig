@@ -28,6 +28,8 @@ dotnet_diagnostic.IDE0044.severity = none
 # unecessary assignment
 dotnet_diagnostic.IDE0059.severity = none
 
+# CA1308: Normalize strings to uppercase
+dotnet_diagnostic.CA1308.severity = none
 
 
 # unused member

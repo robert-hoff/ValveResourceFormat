@@ -36,7 +36,7 @@ namespace MyShaderAnalysis.compat
             // zframeGen.ShowOffsetAndLayersArrays();
 
 
-            foreach (var item in shaderFile.zframesLookup)
+            foreach (var item in shaderFile.ZframesLookup)
             {
                 int[] state = configGen.GetConfigState(item.Key);
                 ShowIntArray(state);

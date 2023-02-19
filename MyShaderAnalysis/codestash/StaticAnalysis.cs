@@ -80,7 +80,7 @@ namespace MyShaderAnalysis.codestash
                 //    $"{featuresHeader.arg1} {featuresHeader.arg2} {featuresHeader.arg3}";
 
                 // string featuresArgs = $"({featuresHeader.arg0} {featuresHeader.arg1} {featuresHeader.arg2} {featuresHeader.arg3})";
-                string featuresArgs = $"({featuresHeader.arg4} {featuresHeader.arg5} {featuresHeader.arg6} {featuresHeader.arg7})";
+                string featuresArgs = $"({featuresHeader.Arg4} {featuresHeader.Arg5} {featuresHeader.Arg6} {featuresHeader.Arg7})";
                 CollectStringValue(featuresArgs);
             }
 
@@ -189,7 +189,7 @@ namespace MyShaderAnalysis.codestash
             foreach (string vcsFilenamepath in allVcsFiles)
             {
                 ShaderFile shaderFile = InstantiateShaderFile(vcsFilenamepath);
-                foreach (DConstraintsBlock uknBlock in shaderFile.dConstraintsBlocks)
+                foreach (DConstraintsBlock uknBlock in shaderFile.DConstraintsBlocks)
                 {
 
                     // check on the rules that have range2 = (0,1)
@@ -228,10 +228,10 @@ namespace MyShaderAnalysis.codestash
                     //        $"{uknBlock.GetResolvedNames(shaderFile.sfBlocks, shaderFile.dBlocks)}");
                     //}
 
-                    if (uknBlock.arg1 > -1)
+                    if (uknBlock.Arg1 > -1)
                     {
                         Console.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {uknBlock.GetConciseDescription(new int[] { 8, 4, 12, 5 })} " +
-                            $"{uknBlock.GetResolvedNames(shaderFile.sfBlocks, shaderFile.dBlocks)}");
+                            $"{uknBlock.GetResolvedNames(shaderFile.SfBlocks, shaderFile.DBlocks)}");
                     }
 
 
@@ -247,10 +247,10 @@ namespace MyShaderAnalysis.codestash
             foreach (string vcsFilenamepath in allVcsFiles)
             {
                 ShaderFile shaderFile = InstantiateShaderFile(vcsFilenamepath);
-                foreach (DConstraintsBlock unkBlock in shaderFile.dConstraintsBlocks)
+                foreach (DConstraintsBlock unkBlock in shaderFile.DConstraintsBlocks)
                 {
-                    string relRuleKeyDesciption = $"{unkBlock.RelRuleDescribe(),-10} {CombineValues2(unkBlock.range1),-8} " +
-                        $"{CombineValues2(unkBlock.flags, includeParenth: true),-15} {CombineValues2(unkBlock.range2)}";
+                    string relRuleKeyDesciption = $"{unkBlock.RelRuleDescribe(),-10} {CombineValues2(unkBlock.Range1),-8} " +
+                        $"{CombineValues2(unkBlock.Flags, includeParenth: true),-15} {CombineValues2(unkBlock.Range2)}";
                     CollectStringValue(relRuleKeyDesciption);
                 }
             }
@@ -264,12 +264,12 @@ namespace MyShaderAnalysis.codestash
             foreach (string vcsFilenamepath in allVcsFiles)
             {
                 ShaderFile shaderFile = InstantiateShaderFile(vcsFilenamepath);
-                foreach (SfConstraintsBlock cBlock in shaderFile.sfConstraintsBlocks)
+                foreach (SfConstraintsBlock cBlock in shaderFile.SfConstraintsBlocks)
                 {
-                    if (cBlock.range2[0] == 0)
+                    if (cBlock.Range2[0] == 0)
                     {
                         Console.Write($"{ShortHandName(vcsFilenamepath),-50}");
-                        Console.WriteLine($"nr arguments {cBlock.range0.Length} {shaderFile.sfBlocks[cBlock.range0[0]].name0}");
+                        Console.WriteLine($"nr arguments {cBlock.Range0.Length} {shaderFile.SfBlocks[cBlock.Range0[0]].Name0}");
                     }
                 }
             }
@@ -282,9 +282,9 @@ namespace MyShaderAnalysis.codestash
             foreach (string vcsFilenamepath in allVcsFiles)
             {
                 ShaderFile shaderFile = InstantiateShaderFile(vcsFilenamepath);
-                foreach (SfConstraintsBlock cBlock in shaderFile.sfConstraintsBlocks)
+                foreach (SfConstraintsBlock cBlock in shaderFile.SfConstraintsBlocks)
                 {
-                    string relRuleKeyDesciption = $"{cBlock.RelRuleDescribe(),-10} {CombineValues2(cBlock.range1),-7} {CombineValues2(cBlock.range2)}";
+                    string relRuleKeyDesciption = $"{cBlock.RelRuleDescribe(),-10} {CombineValues2(cBlock.Range1),-7} {CombineValues2(cBlock.Range2)}";
                     CollectStringValue(relRuleKeyDesciption);
                 }
             }
@@ -315,7 +315,7 @@ namespace MyShaderAnalysis.codestash
             string filenamepath = @$"{PCGL_DIR_NOT_CORE}/water_dota_pcgl_30_ps.vcs";
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
 
-            foreach (var item in shaderFile.zframesLookup)
+            foreach (var item in shaderFile.ZframesLookup)
             {
                 // Console.WriteLine($"{item.Key:x04}");
 
@@ -444,7 +444,7 @@ namespace MyShaderAnalysis.codestash
             foreach (string filenamepath in allVcsFiles)
             {
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
-                foreach (var sfBlock in shaderFile.sfBlocks)
+                foreach (var sfBlock in shaderFile.SfBlocks)
                 {
                     // Console.WriteLine($"{sfBlock.arg3}");
                     // if (sfBlock.arg2 != 1 && sfBlock.arg3 != 0) {
@@ -456,10 +456,10 @@ namespace MyShaderAnalysis.codestash
                     // if (sfBlock.arg2 == 5) {
                     // if (sfBlock.arg3 == 2) {
                     // if (sfBlock.arg3 == 4) {
-                    if (sfBlock.arg3 == 1)
+                    if (sfBlock.Arg3 == 1)
                     {
-                        result.Add($"{sfBlock.arg0,3} {sfBlock.arg2,3} {sfBlock.arg3,3} {sfBlock.arg4,3}     " +
-                            $"{sfBlock.name0,-25} {ShortHandName(filenamepath)}");
+                        result.Add($"{sfBlock.Arg0,3} {sfBlock.Arg2,3} {sfBlock.Arg3,3} {sfBlock.Arg4,3}     " +
+                            $"{sfBlock.Name0,-25} {ShortHandName(filenamepath)}");
                     }
 
 
@@ -542,15 +542,15 @@ namespace MyShaderAnalysis.codestash
                 return;
             }
 
-            int sfCount = shaderFile.sfBlocks.Count;
-            int cCount = shaderFile.sfConstraintsBlocks.Count;
-            int dCount = shaderFile.dBlocks.Count;
-            int uCount = shaderFile.dConstraintsBlocks.Count;
-            int pCount = shaderFile.paramBlocks.Count;
-            int mCount = shaderFile.mipmapBlocks.Count;
-            int bCount = shaderFile.bufferBlocks.Count;
-            int sCount = shaderFile.symbolBlocks.Count;
-            int zCount = shaderFile.zframesLookup.Count;
+            int sfCount = shaderFile.SfBlocks.Count;
+            int cCount = shaderFile.SfConstraintsBlocks.Count;
+            int dCount = shaderFile.DBlocks.Count;
+            int uCount = shaderFile.DConstraintsBlocks.Count;
+            int pCount = shaderFile.ParamBlocks.Count;
+            int mCount = shaderFile.MipmapBlocks.Count;
+            int bCount = shaderFile.BufferBlocks.Count;
+            int sCount = shaderFile.SymbolBlocks.Count;
+            int zCount = shaderFile.ZframesLookup.Count;
             const int pad = 8;
             //OutputWriteLine($"{RemoveBaseDir(shaderFile.filenamepath),-70}{sfCount,pad}{cCount,pad}{dCount,pad}" +
             //    $"{uCount,pad}{pCount,pad}{mCount,pad}{bCount,pad}{sCount,pad}{zCount,pad}");
@@ -586,7 +586,7 @@ namespace MyShaderAnalysis.codestash
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             bool newFile = true;
 
-            foreach (DConstraintsBlock uBlock in shaderFile.dConstraintsBlocks)
+            foreach (DConstraintsBlock uBlock in shaderFile.DConstraintsBlocks)
             {
 
                 if (newFile)
@@ -606,34 +606,34 @@ namespace MyShaderAnalysis.codestash
                 //    sfNames[i] = shaderFile.sfBlocks[uBlock.range0[i]].name0;
                 //}
 
-                string[] uknNames = new string[uBlock.flags.Length];
+                string[] uknNames = new string[uBlock.Flags.Length];
                 for (int i = 0; i < uknNames.Length; i++)
                 {
-                    if (uBlock.flags[i] == 3)
+                    if (uBlock.Flags[i] == 3)
                     {
-                        uknNames[i] = shaderFile.dBlocks[uBlock.range0[i]].name0;
+                        uknNames[i] = shaderFile.DBlocks[uBlock.Range0[i]].Name0;
                         continue;
                     }
-                    if (uBlock.flags[i] == 2)
+                    if (uBlock.Flags[i] == 2)
                     {
-                        uknNames[i] = shaderFile.sfBlocks[uBlock.range0[i]].name0;
+                        uknNames[i] = shaderFile.SfBlocks[uBlock.Range0[i]].Name0;
                         continue;
                     }
-                    throw new ShaderParserException($"unknown flag value {uBlock.flags[i]}");
+                    throw new ShaderParserException($"unknown flag value {uBlock.Flags[i]}");
                 }
 
                 const int BL = 70;
                 string[] breakNames = CombineValuesBreakString(uknNames, BL);
-                string s0 = $"[{uBlock.blockIndex,2}]";
-                string s1 = (uBlock.relRule == 1 || uBlock.relRule == 2) ? $"INC({uBlock.relRule})" : $"EXC({uBlock.relRule})";
+                string s0 = $"[{uBlock.BlockIndex,2}]";
+                string s1 = (uBlock.RelRule == 1 || uBlock.RelRule == 2) ? $"INC({uBlock.RelRule})" : $"EXC({uBlock.RelRule})";
                 // string s2 = $"{cBlock.arg0}";
                 string s3 = $"{uBlock.ReadByteFlagsAsString()}";
                 // string s4 = $"{CombineValues(uknNames)}";
                 string s4 = $"{breakNames[0]}";
                 // string s4 = "NAMES HERE";
-                string s5 = $"{CombineValues2(uBlock.range0)}";
-                string s6 = $"{CombineValues2(uBlock.range1)}";
-                string s7 = $"{CombineValues2(uBlock.range2)}";
+                string s5 = $"{CombineValues2(uBlock.Range0)}";
+                string s6 = $"{CombineValues2(uBlock.Range1)}";
+                string s7 = $"{CombineValues2(uBlock.Range2)}";
                 // string blockSummary = $"{s0.PadRight(10)} {s1.PadRight(6)} {s2.PadRight(6)} {s3.PadRight(18)} s4.PadRight(20)} {s5.PadRight(8)} {s6.PadRight(8)}";
                 string blockSummary = $"{s0,-7}{s1,-10}{s3,-15}{s5,-16}{s4,-BL}{s6,-10}{s7,-8}";
                 for (int i = 1; i < breakNames.Length; i++)
@@ -669,11 +669,11 @@ namespace MyShaderAnalysis.codestash
             foreach (string filenamepath in allVcsFiles)
             {
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
-                foreach (DConstraintsBlock uBlock in shaderFile.dConstraintsBlocks)
+                foreach (DConstraintsBlock uBlock in shaderFile.DConstraintsBlocks)
                 {
                     for (int i = 0; i < 8; i += 4)
                     {
-                        int val = uBlock.datareader.ReadInt32AtPosition(i);
+                        int val = uBlock.Datareader.ReadInt32AtPosition(i);
                         int curVal = values[i / 4].GetValueOrDefault(val, 0);
                         values[i / 4][val] = curVal + 1;
                     }
@@ -685,7 +685,7 @@ namespace MyShaderAnalysis.codestash
                     }
                     for (int i = 24; i < 216; i += 4)
                     {
-                        int val = uBlock.datareader.ReadInt32AtPosition(i);
+                        int val = uBlock.Datareader.ReadInt32AtPosition(i);
                         int curVal = values[i / 4].GetValueOrDefault(val, 0);
                         values[i / 4][val] = curVal + 1;
                     }
@@ -717,19 +717,19 @@ namespace MyShaderAnalysis.codestash
         {
             // ShaderFile shaderFile = new(PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_ps.vcs");
             ShaderFile shaderFile = InstantiateShaderFile(PCGL_DIR_CORE + @"/depth_only_pcgl_40_vs.vcs");
-            Console.WriteLine($"{RemoveBaseDir(shaderFile.filenamepath)}");
+            Console.WriteLine($"{RemoveBaseDir(shaderFile.FilenamePath)}");
 
-            foreach (DConstraintsBlock uBlock in shaderFile.dConstraintsBlocks)
+            foreach (DConstraintsBlock uBlock in shaderFile.DConstraintsBlocks)
             {
-                OutputWriteLine($"COMPAT-BLOCK[{uBlock.blockIndex}]");
-                OutputWriteLine($"rule = {uBlock.relRule}");
-                OutputWriteLine($"arg1 = {uBlock.arg0}");
+                OutputWriteLine($"COMPAT-BLOCK[{uBlock.BlockIndex}]");
+                OutputWriteLine($"rule = {uBlock.RelRule}");
+                OutputWriteLine($"arg1 = {uBlock.Arg0}");
                 // OutputWriteLine($"{CombineValues(cBlock.flags)}");
-                OutputWriteLine($"      {CombineValues(uBlock.flags)}");
-                OutputWriteLine($"{CombineValues(uBlock.range0)}");
-                OutputWriteLine($"{CombineValues(uBlock.range1)}");
-                OutputWriteLine($"{CombineValues(uBlock.range2)}");
-                OutputWriteLine($"{uBlock.description}");
+                OutputWriteLine($"      {CombineValues(uBlock.Flags)}");
+                OutputWriteLine($"{CombineValues(uBlock.Range0)}");
+                OutputWriteLine($"{CombineValues(uBlock.Range1)}");
+                OutputWriteLine($"{CombineValues(uBlock.Range2)}");
+                OutputWriteLine($"{uBlock.Description}");
                 OutputWriteLine($"");
             }
 
@@ -762,11 +762,11 @@ namespace MyShaderAnalysis.codestash
             foreach (string filenamepath in allVcsFiles)
             {
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
-                foreach (DBlock dBlock in shaderFile.dBlocks)
+                foreach (DBlock dBlock in shaderFile.DBlocks)
                 {
                     for (int i = ARG_OFFSET; i < ARG_OFFSET + 24; i += 4)
                     {
-                        int val = dBlock.datareader.ReadInt32AtPosition(i);
+                        int val = dBlock.Datareader.ReadInt32AtPosition(i);
                         int curVal = values[(i - ARG_OFFSET) / 4].GetValueOrDefault(val, 0);
                         values[(i - ARG_OFFSET) / 4][val] = curVal + 1;
 
@@ -803,7 +803,7 @@ namespace MyShaderAnalysis.codestash
             OutputWriteLine($"DYNAMIC PARAMS");
             if (showHtmlLink)
             {
-                OutputWriteLine($"{RemoveBaseDir(shaderFile.filenamepath)}");
+                OutputWriteLine($"{RemoveBaseDir(shaderFile.FilenamePath)}");
             }
             int[] pad = { 7, 40, 7, 7, 7 };
             string h0 = "index";
@@ -813,17 +813,17 @@ namespace MyShaderAnalysis.codestash
             string h4 = "arg4";
             string blockHeader = $"{h0.PadRight(pad[0])} {h1.PadRight(pad[1])} {h2.PadRight(pad[2])} {h3.PadRight(pad[3])} {h4.PadRight(pad[4])}";
             OutputWriteLine(blockHeader);
-            foreach (DBlock dBlock in shaderFile.dBlocks)
+            foreach (DBlock dBlock in shaderFile.DBlocks)
             {
-                string v0 = $"[{dBlock.blockIndex,2}]";
-                string v1 = dBlock.name0;
-                string v2 = "" + dBlock.arg2;
-                string v3 = "" + dBlock.arg3;
-                string v4 = $"{dBlock.arg4,2}";
+                string v0 = $"[{dBlock.BlockIndex,2}]";
+                string v1 = dBlock.Name0;
+                string v2 = "" + dBlock.Arg2;
+                string v3 = "" + dBlock.Arg3;
+                string v4 = $"{dBlock.Arg4,2}";
                 string blockSummary = $"{v0.PadRight(pad[0])} {v1.PadRight(pad[1])} {v2.PadRight(pad[2])} {v3.PadRight(pad[3])} {v4.PadRight(pad[4])}";
                 OutputWriteLine(blockSummary);
             }
-            if (shaderFile.dBlocks.Count == 0)
+            if (shaderFile.DBlocks.Count == 0)
             {
                 OutputWrite("[empty list]");
             }
@@ -853,22 +853,22 @@ namespace MyShaderAnalysis.codestash
             string h3 = "arg3";
             string blockHeader = $"{h0.PadRight(pad[0])} {h1.PadRight(pad[1])} {h2.PadRight(pad[2])} {h3.PadRight(pad[3])}";
             OutputWriteLine(blockHeader);
-            foreach (var sfBlock in shaderFile.sfBlocks)
+            foreach (var sfBlock in shaderFile.SfBlocks)
             {
-                string v0 = $"[{sfBlock.blockIndex,2}]";
-                string v1 = sfBlock.name0;
+                string v0 = $"[{sfBlock.BlockIndex,2}]";
+                string v1 = sfBlock.Name0;
 
                 // R: the abbreviations are only used later if printing the zframes (instantited to new() at start of method)
-                string abbreviation = $"{sfBlock.name0}({ShortenShaderParam(sfBlock.name0).ToLower()})";
+                string abbreviation = $"{sfBlock.Name0}({ShortenShaderParam(sfBlock.Name0).ToLower()})";
                 abbreviationsUsed[abbreviation] = 1;
 
 
-                string v2 = "" + sfBlock.arg2;
-                string v3 = "" + sfBlock.arg3;
+                string v2 = "" + sfBlock.Arg2;
+                string v3 = "" + sfBlock.Arg3;
                 string blockSummary = $"{v0.PadRight(pad[0])} {v1.PadRight(pad[1])} {v2.PadRight(pad[2])} {v3.PadRight(pad[3])}";
                 OutputWriteLine(blockSummary);
             }
-            if (shaderFile.sfBlocks.Count == 0)
+            if (shaderFile.SfBlocks.Count == 0)
             {
                 OutputWrite("[empty list]");
             }
@@ -928,9 +928,9 @@ namespace MyShaderAnalysis.codestash
 
             // collect names in the order they appear
             List<string> sfNames = new();
-            foreach (SfBlock sfBlock in shaderFile.sfBlocks)
+            foreach (SfBlock sfBlock in shaderFile.SfBlocks)
             {
-                sfNames.Add(ShortenShaderParam(sfBlock.name0).ToLower());
+                sfNames.Add(ShortenShaderParam(sfBlock.Name0).ToLower());
             }
 
 
@@ -938,7 +938,7 @@ namespace MyShaderAnalysis.codestash
             configHeader = $"{new string(' ', 14)}{configHeader}";
             // OutputWriteLine(configHeader);
 
-            foreach (var item in shaderFile.zframesLookup)
+            foreach (var item in shaderFile.ZframesLookup)
             {
                 if (zframeCount % 100 == 0)
                 {
@@ -1017,9 +1017,9 @@ namespace MyShaderAnalysis.codestash
 
             // collect names in the order they appear
             List<string> sfNames = new();
-            foreach (SfBlock sfBlock in shaderFile.sfBlocks)
+            foreach (SfBlock sfBlock in shaderFile.SfBlocks)
             {
-                sfNames.Add(ShortenShaderParam(sfBlock.name0).ToLower());
+                sfNames.Add(ShortenShaderParam(sfBlock.Name0).ToLower());
             }
 
 
@@ -1027,7 +1027,7 @@ namespace MyShaderAnalysis.codestash
             configHeader = $"{new string(' ', 14)}{configHeader}";
             // OutputWriteLine(configHeader);
 
-            foreach (var item in shaderFile.zframesLookup)
+            foreach (var item in shaderFile.ZframesLookup)
             {
                 if (zframeCount % 100 == 0)
                 {
@@ -1112,7 +1112,7 @@ namespace MyShaderAnalysis.codestash
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             bool newFile = true;
 
-            foreach (SfConstraintsBlock cBlock in shaderFile.sfConstraintsBlocks)
+            foreach (SfConstraintsBlock cBlock in shaderFile.SfConstraintsBlocks)
             {
 
                 if (newFile && showLink)
@@ -1125,24 +1125,24 @@ namespace MyShaderAnalysis.codestash
                     OutputWriteLine("Compatibility rules");
                 }
                 newFile = false;
-                string[] sfNames = new string[cBlock.range0.Length];
+                string[] sfNames = new string[cBlock.Range0.Length];
                 for (int i = 0; i < sfNames.Length; i++)
                 {
-                    sfNames[i] = shaderFile.sfBlocks[cBlock.range0[i]].name0;
+                    sfNames[i] = shaderFile.SfBlocks[cBlock.Range0[i]].Name0;
                 }
 
                 const int BL = 70;
                 string[] breakNames = CombineValuesBreakString(sfNames, BL);
 
-                string s0 = $"[{cBlock.blockIndex,2}]";
-                string s1 = (cBlock.relRule == 1 || cBlock.relRule == 2) ? $"INC({cBlock.relRule})" : $"EXC({cBlock.relRule})";
+                string s0 = $"[{cBlock.BlockIndex,2}]";
+                string s1 = (cBlock.RelRule == 1 || cBlock.RelRule == 2) ? $"INC({cBlock.RelRule})" : $"EXC({cBlock.RelRule})";
                 // string s2 = $"{cBlock.arg0}";
                 string s3 = $"{cBlock.GetByteFlagsAsString()}";
                 // string s4 = $"{CombineValues(sfNames)}";
                 string s4 = $"{breakNames[0]}";
-                string s5 = $"{CombineValues2(cBlock.range0)}";
-                string s6 = $"{CombineValues2(cBlock.range1)}";
-                string s7 = $"{CombineValues2(cBlock.range2)}";
+                string s5 = $"{CombineValues2(cBlock.Range0)}";
+                string s6 = $"{CombineValues2(cBlock.Range1)}";
+                string s7 = $"{CombineValues2(cBlock.Range2)}";
                 // string blockSummary = $"{s0.PadRight(10)} {s1.PadRight(6)} {s2.PadRight(6)} {s3.PadRight(18)} s4.PadRight(20)} {s5.PadRight(8)} {s6.PadRight(8)}";
                 string blockSummary = $"{s0.PadRight(7)}{s1.PadRight(10)}{s5.PadRight(16)}{s4.PadRight(BL)}{s6.PadRight(8)}{s7.PadRight(8)}";
                 for (int i = 1; i < breakNames.Length; i++)
@@ -1168,19 +1168,19 @@ namespace MyShaderAnalysis.codestash
             foreach (string filenamepath in allVcsFiles)
             {
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
-                foreach (var cBlock in shaderFile.sfConstraintsBlocks)
+                foreach (var cBlock in shaderFile.SfConstraintsBlocks)
                 {
-                    if (cBlock.range2[1] != cBlock.range0.Length)
+                    if (cBlock.Range2[1] != cBlock.Range0.Length)
                     {
                         Console.WriteLine($"ERROR!");
                     }
 
-                    if (cBlock.arg0 == 1 && shaderFile.vcsProgramType != VcsProgramType.Features)
+                    if (cBlock.Arg0 == 1 && shaderFile.VcsProgramType != VcsProgramType.Features)
                     {
                         Console.WriteLine($"error!");
                     }
 
-                    if (cBlock.arg0 == 2)
+                    if (cBlock.Arg0 == 2)
                     {
                         Console.WriteLine($"{filenamepath}");
                     }
@@ -1250,15 +1250,15 @@ namespace MyShaderAnalysis.codestash
             bool newFile = true;
 
 
-            foreach (SfConstraintsBlock cBlock in shaderFile.sfConstraintsBlocks)
+            foreach (SfConstraintsBlock cBlock in shaderFile.SfConstraintsBlocks)
             {
-                string s0 = $"[{cBlock.blockIndex,2}]";
-                string s1 = $"{cBlock.relRule}";
-                string s2 = $"{cBlock.arg0}";
+                string s0 = $"[{cBlock.BlockIndex,2}]";
+                string s1 = $"{cBlock.RelRule}";
+                string s2 = $"{cBlock.Arg0}";
                 string s3 = $"{cBlock.GetByteFlagsAsString()}";
-                string s4 = $"{CombineValues2(cBlock.range0)}";
-                string s5 = $"{CombineValues2(cBlock.range1)}";
-                string s6 = $"{CombineValues2(cBlock.range2)}";
+                string s4 = $"{CombineValues2(cBlock.Range0)}";
+                string s5 = $"{CombineValues2(cBlock.Range1)}";
+                string s6 = $"{CombineValues2(cBlock.Range2)}";
                 // string blockSummary = $"{s0.PadRight(10)} {s1.PadRight(6)} {s2.PadRight(6)} {s3.PadRight(18)} s4.PadRight(20)} {s5.PadRight(8)} {s6.PadRight(8)}";
                 string blockSummary = $"{s0.PadRight(7)}{s1.PadRight(6)}{s2.PadRight(6)}{s4.PadRight(16)}{s5.PadRight(8)}{s6.PadRight(8)}";
 
@@ -1272,10 +1272,10 @@ namespace MyShaderAnalysis.codestash
                     OutputWrite("");
                 }
 
-                if (cBlock.description.Length > 0)
+                if (cBlock.Description.Length > 0)
                 {
                     // OutputWriteLine($"{blockSummary}  {cBlock.description.PadRight(70)} {GetHtmlLink(filenamepath)}");
-                    OutputWriteLine($"{cBlock.description}");
+                    OutputWriteLine($"{cBlock.Description}");
                 } else
                 {
                     OutputWriteLine("");
@@ -1322,18 +1322,18 @@ namespace MyShaderAnalysis.codestash
             OutputWriteLine("");
             OutputWriteLine($"<a href='../vcs-all/{Path.GetFileName(filenamepath)[0..^4]}-analysis.html'>{RemoveBaseDir(filenamepath)}</a>");
             OutputWriteLine(new string('-', 100));
-            foreach (SfConstraintsBlock cBlock in shaderFile.sfConstraintsBlocks)
+            foreach (SfConstraintsBlock cBlock in shaderFile.SfConstraintsBlocks)
             {
 
-                OutputWriteLine($"COMPAT-BLOCK[{cBlock.blockIndex}]");
-                OutputWriteLine($"rule = {cBlock.relRule}");
-                OutputWriteLine($"arg1 = {cBlock.arg0}");
+                OutputWriteLine($"COMPAT-BLOCK[{cBlock.BlockIndex}]");
+                OutputWriteLine($"rule = {cBlock.RelRule}");
+                OutputWriteLine($"arg1 = {cBlock.Arg0}");
                 // OutputWriteLine($"{CombineValues(cBlock.flags)}");
                 OutputWriteLine($"      {cBlock.GetByteFlagsAsString()}");
-                OutputWriteLine($"{CombineValues(cBlock.range0)}");
-                OutputWriteLine($"{CombineValues(cBlock.range1)}");
-                OutputWriteLine($"{CombineValues(cBlock.range2)}");
-                OutputWriteLine($"{cBlock.description}");
+                OutputWriteLine($"{CombineValues(cBlock.Range0)}");
+                OutputWriteLine($"{CombineValues(cBlock.Range1)}");
+                OutputWriteLine($"{CombineValues(cBlock.Range2)}");
+                OutputWriteLine($"{cBlock.Description}");
                 OutputWriteLine($"");
 
             }
@@ -1365,12 +1365,12 @@ namespace MyShaderAnalysis.codestash
             foreach (string filenamepath in allVcsFiles)
             {
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
-                foreach (SfConstraintsBlock cBlock in shaderFile.sfConstraintsBlocks)
+                foreach (SfConstraintsBlock cBlock in shaderFile.SfConstraintsBlocks)
                 {
                     int[] ints0 = new int[count];
                     for (int i = 0; i < count; i++)
                     {
-                        ints0[i] = cBlock.datareader.ReadInt32AtPosition(offset + i * 4);
+                        ints0[i] = cBlock.Datareader.ReadInt32AtPosition(offset + i * 4);
                     }
                     string intsStr = CombineValues(ints0);
                     int parmCount = intrange.GetValueOrDefault(intsStr, 0);
@@ -1406,11 +1406,11 @@ namespace MyShaderAnalysis.codestash
             foreach (string filenamepath in allVcsFiles)
             {
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
-                foreach (SfConstraintsBlock cBlock in shaderFile.sfConstraintsBlocks)
+                foreach (SfConstraintsBlock cBlock in shaderFile.SfConstraintsBlocks)
                 {
                     for (int i = 0; i < 8; i += 4)
                     {
-                        int val = cBlock.datareader.ReadInt32AtPosition(i);
+                        int val = cBlock.Datareader.ReadInt32AtPosition(i);
                         int curVal = values[i / 4].GetValueOrDefault(val, 0);
                         values[i / 4][val] = curVal + 1;
                     }
@@ -1422,7 +1422,7 @@ namespace MyShaderAnalysis.codestash
                     }
                     for (int i = 24; i < 216; i += 4)
                     {
-                        int val = cBlock.datareader.ReadInt32AtPosition(i);
+                        int val = cBlock.Datareader.ReadInt32AtPosition(i);
                         int curVal = values[i / 4].GetValueOrDefault(val, 0);
                         values[i / 4][val] = curVal + 1;
                     }
@@ -1461,9 +1461,9 @@ namespace MyShaderAnalysis.codestash
             foreach (string filenamepath in allVcsFiles)
             {
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
-                foreach (SfConstraintsBlock cBlock in shaderFile.sfConstraintsBlocks)
+                foreach (SfConstraintsBlock cBlock in shaderFile.SfConstraintsBlocks)
                 {
-                    int val = cBlock.datareader.ReadInt32AtPosition(offset);
+                    int val = cBlock.Datareader.ReadInt32AtPosition(offset);
                     int curVal = values.GetValueOrDefault(val, offset);
                     values[val] = curVal + 1;
                 }
@@ -1485,9 +1485,9 @@ namespace MyShaderAnalysis.codestash
             foreach (string filenamepath in allVcsFiles)
             {
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
-                foreach (SfConstraintsBlock cBlock in shaderFile.sfConstraintsBlocks)
+                foreach (SfConstraintsBlock cBlock in shaderFile.SfConstraintsBlocks)
                 {
-                    int val = cBlock.datareader.ReadInt32AtPosition(0);
+                    int val = cBlock.Datareader.ReadInt32AtPosition(0);
                     int curVal = values.GetValueOrDefault(val, 0);
                     values[val] = curVal + 1;
                 }
@@ -1578,14 +1578,14 @@ namespace MyShaderAnalysis.codestash
             string filenamepath = $@"{PCGL_DIR_NOT_CORE}/multiblend_pcgl_30_ps.vcs";
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
 
-            SfConstraintsBlock block0 = shaderFile.sfConstraintsBlocks[0];
-            Console.WriteLine($"{block0.datareader.ReadInt32AtPosition(0)}");
-            Console.WriteLine($"{block0.datareader.ReadInt32AtPosition(4)}");
+            SfConstraintsBlock block0 = shaderFile.SfConstraintsBlocks[0];
+            Console.WriteLine($"{block0.Datareader.ReadInt32AtPosition(0)}");
+            Console.WriteLine($"{block0.Datareader.ReadInt32AtPosition(4)}");
             Console.WriteLine($"{block0.GetByteFlagsAsString()}");
 
             for (int i = 24; i <= 215; i += 4)
             {
-                Console.WriteLine($"{block0.datareader.ReadInt32AtPosition(i)}");
+                Console.WriteLine($"{block0.Datareader.ReadInt32AtPosition(i)}");
             }
 
             // if present, the bytes following contain a string decription of the block
@@ -1607,7 +1607,7 @@ namespace MyShaderAnalysis.codestash
             {
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
                 OutputWriteLine($"{RemoveBaseDir(filenamepath).PadRight(80)} " +
-                    $"nr of compat blocks = {shaderFile.sfConstraintsBlocks.Count}");
+                    $"nr of compat blocks = {shaderFile.SfConstraintsBlocks.Count}");
             }
         }
 
@@ -1649,7 +1649,7 @@ namespace MyShaderAnalysis.codestash
                 OutputWriteLine($"{title}");
                 OutputWriteLine(new string('-', title.Length));
                 ShaderFile ftFile = InstantiateShaderFile(triple.ftFile.filenamepath);
-                OutputWriteLine($"{ftFile.featuresHeader.file_description}");
+                OutputWriteLine($"{ftFile.featuresHeader.FileDescription}");
                 Dictionary<int, string[]> p = new();
                 for (int i = 0; i < 30; i++)
                 {
@@ -1662,49 +1662,49 @@ namespace MyShaderAnalysis.codestash
                 List<string> ps_items = new();
 
                 int count = 0;
-                foreach (var sfBlock in ftFile.sfBlocks)
+                foreach (var sfBlock in ftFile.SfBlocks)
                 {
-                    p[count++][0] = $"{sfBlock.name0}({sfBlock.arg4})";
+                    p[count++][0] = $"{sfBlock.Name0}({sfBlock.Arg4})";
                 }
-                foreach (var sfBlock in vsFile.sfBlocks)
+                foreach (var sfBlock in vsFile.SfBlocks)
                 {
-                    vs_items.Add(sfBlock.name0);
-                    if (sfBlock.arg4 >= 0)
+                    vs_items.Add(sfBlock.Name0);
+                    if (sfBlock.Arg4 >= 0)
                     {
-                        if (p[sfBlock.arg4][1].Length > 0) throw new ShaderParserException("id not unique");
-                        p[sfBlock.arg4][1] = $"{sfBlock.name0}({sfBlock.arg4})";
+                        if (p[sfBlock.Arg4][1].Length > 0) throw new ShaderParserException("id not unique");
+                        p[sfBlock.Arg4][1] = $"{sfBlock.Name0}({sfBlock.Arg4})";
                     } else
                     {
-                        if (sfBlock.arg4 != -1) throw new ShaderParserException("unexpected value");
-                        n[sfBlock.name0] = 1;
+                        if (sfBlock.Arg4 != -1) throw new ShaderParserException("unexpected value");
+                        n[sfBlock.Name0] = 1;
                     }
                 }
-                foreach (var sfBlock in psFile.sfBlocks)
+                foreach (var sfBlock in psFile.SfBlocks)
                 {
-                    ps_items.Add(sfBlock.name0);
-                    if (sfBlock.arg4 >= 0)
+                    ps_items.Add(sfBlock.Name0);
+                    if (sfBlock.Arg4 >= 0)
                     {
-                        if (p[sfBlock.arg4][2].Length > 0) throw new ShaderParserException("error!");
-                        p[sfBlock.arg4][2] = $"{sfBlock.name0}({sfBlock.arg4})";
+                        if (p[sfBlock.Arg4][2].Length > 0) throw new ShaderParserException("error!");
+                        p[sfBlock.Arg4][2] = $"{sfBlock.Name0}({sfBlock.Arg4})";
                     } else
                     {
-                        if (sfBlock.arg4 != -1) throw new ShaderParserException("unexpected value");
-                        int val = n.GetValueOrDefault(sfBlock.name0, 0);
-                        n[sfBlock.name0] = val + 2;
+                        if (sfBlock.Arg4 != -1) throw new ShaderParserException("unexpected value");
+                        int val = n.GetValueOrDefault(sfBlock.Name0, 0);
+                        n[sfBlock.Name0] = val + 2;
                     }
                 }
 
 
                 // features-header
-                int ftHeaderNrArguments = ftFile.featuresHeader.mainParams.Count;
+                int ftHeaderNrArguments = ftFile.featuresHeader.MainParams.Count;
                 OutputWriteLine($"<span style='color: #3783ed'>Arguments in {triple.ftFile.filename} header ({ftHeaderNrArguments})</span>");
                 // print the features main args
                 int max_len = 0;
-                foreach (var mp in ftFile.featuresHeader.mainParams)
+                foreach (var mp in ftFile.featuresHeader.MainParams)
                 {
                     max_len = mp.Item1.Length > max_len ? mp.Item1.Length : max_len;
                 }
-                foreach (var mp in ftFile.featuresHeader.mainParams)
+                foreach (var mp in ftFile.featuresHeader.MainParams)
                 {
                     OutputWriteLine($"<span style='color: #3783ed'>{mp.Item1.PadRight(max_len)} {mp.Item2}</span>");
                 }
@@ -1901,9 +1901,9 @@ namespace MyShaderAnalysis.codestash
             foreach (string filenamepath in files)
             {
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
-                foreach (var sfBlock in shaderFile.sfBlocks)
+                foreach (var sfBlock in shaderFile.SfBlocks)
                 {
-                    CollectStringValue($"{sfBlock.name0} ({sfBlock.arg4})");
+                    CollectStringValue($"{sfBlock.Name0} ({sfBlock.Arg4})");
                 }
 
 
@@ -1928,22 +1928,22 @@ namespace MyShaderAnalysis.codestash
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
 
                 string filetype = "";
-                if (shaderFile.vcsProgramType == VcsProgramType.Features)
+                if (shaderFile.VcsProgramType == VcsProgramType.Features)
                 {
                     filetype = "           FEAT";
                 }
-                if (shaderFile.vcsProgramType == VcsProgramType.VertexShader)
+                if (shaderFile.VcsProgramType == VcsProgramType.VertexShader)
                 {
                     filetype = "VS             ";
                 }
-                if (shaderFile.vcsProgramType == VcsProgramType.PixelShader)
+                if (shaderFile.VcsProgramType == VcsProgramType.PixelShader)
                 {
                     filetype = "      PS       ";
                 }
 
-                foreach (var sfBlock in shaderFile.sfBlocks)
+                foreach (var sfBlock in shaderFile.SfBlocks)
                 {
-                    CollectStringValue($"{sfBlock.name0.PadRight(35)[2..]} {filetype}    {sfBlock.name1.PadRight(35)}");
+                    CollectStringValue($"{sfBlock.Name0.PadRight(35)[2..]} {filetype}    {sfBlock.Name1.PadRight(35)}");
                 }
 
 
@@ -1963,7 +1963,7 @@ namespace MyShaderAnalysis.codestash
                 FeaturesHeaderBlock featuresHeader = shaderFile.featuresHeader;
                 Console.WriteLine($"{RemoveBaseDir(filenamepath)}");
                 // featuresHeader.ShowMainParams();
-                foreach (var parampair in featuresHeader.mainParams)
+                foreach (var parampair in featuresHeader.MainParams)
                 {
 
                     Console.WriteLine($"         {parampair.Item1.PadRight(35)} {parampair.Item2.PadRight(35)}");
@@ -2000,7 +2000,7 @@ namespace MyShaderAnalysis.codestash
                 //    $"{featuresHeader.arg1} {featuresHeader.arg2} {featuresHeader.arg3}";
 
                 // string featuresArgs = $"({featuresHeader.arg0} {featuresHeader.arg1} {featuresHeader.arg2} {featuresHeader.arg3})";
-                string featuresArgs = $"({featuresHeader.arg4} {featuresHeader.arg5} {featuresHeader.arg6} {featuresHeader.arg7})";
+                string featuresArgs = $"({featuresHeader.Arg4} {featuresHeader.Arg5} {featuresHeader.Arg6} {featuresHeader.Arg7})";
                 CollectStringValue(featuresArgs);
             }
 

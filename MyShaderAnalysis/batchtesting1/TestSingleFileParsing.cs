@@ -137,7 +137,7 @@ namespace MyShaderAnalysis.batchtesting1
 
             byte[] zframeBytes = shaderFile.GetDecompressedZFrameByIndex(zframeIndex);
             DataReaderZFrameBytes dataReaderZframe = new DataReaderZFrameBytes(zframeBytes,
-                shaderFile.vcsProgramType, shaderFile.vcsPlatformType, shaderFile.vcsShaderModelType);
+                shaderFile.VcsProgramType, shaderFile.VcsPlatformType, shaderFile.VcsShaderModelType);
             long zframeId = shaderFile.GetZFrameIdByIndex(zframeIndex);
             Console.Write($"parsing zframe[0x{zframeId:x08}]");
             dataReaderZframe.PrintByteDetail();
@@ -191,7 +191,7 @@ namespace MyShaderAnalysis.batchtesting1
             int MAX_ZFRAMES = 100;
             for (int i = 0; i < Math.Min(shaderFile.GetZFrameCount(), MAX_ZFRAMES); i++)
             {
-                Console.WriteLine($"parsing {shaderFile.filenamepath} zframeIndex = {i}");
+                Console.WriteLine($"parsing {shaderFile.FilenamePath} zframeIndex = {i}");
                 byte[] zframeBytes = shaderFile.GetDecompressedZFrameByIndex(i);
                 Console.WriteLine($"zframe size {zframeBytes.Length}");
                 ParseV62ZFrame zframeParser = new ParseV62ZFrame(zframeBytes, shaderFile, outputWriter: (x) => { });

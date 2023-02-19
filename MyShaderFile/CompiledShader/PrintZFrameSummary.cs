@@ -35,7 +35,7 @@ namespace ValveResourceFormat.CompiledShader
             this.showRichTextBoxLinks = showRichTextBoxLinks;
             if (showRichTextBoxLinks)
             {
-                OutputWriteLine($"View byte detail \\\\{Path.GetFileName(shaderFile.filenamepath)}-ZFRAME{zframeFile.ZframeId:x08}-databytes");
+                OutputWriteLine($"View byte detail \\\\{Path.GetFileName(shaderFile.FilenamePath)}-ZFRAME{zframeFile.ZframeId:x08}-databytes");
                 OutputWriteLine("");
             }
             PrintConfigurationState();
@@ -67,7 +67,7 @@ namespace ValveResourceFormat.CompiledShader
             int[] configState = configGen.GetConfigState(zframeFile.ZframeId);
             for (int i = 0; i < configState.Length; i++)
             {
-                OutputWriteLine($"{shaderFile.sfBlocks[i].name0,-30} {configState[i]}");
+                OutputWriteLine($"{shaderFile.SfBlocks[i].Name0,-30} {configState[i]}");
             }
             if (configState.Length == 0)
             {
@@ -103,34 +103,34 @@ namespace ValveResourceFormat.CompiledShader
             SortedDictionary<int, int> sequencesMap = new();
             int seqCount = 0;
             // IMP the first entry is always set 0 regardless of whether the leading datablock carries any data
-            sequencesMap.Add(zframeFile.LeadingData.blockId, 0);
-            if (zframeFile.LeadingData.h0 == 0)
+            sequencesMap.Add(zframeFile.LeadingData.BlockId, 0);
+            if (zframeFile.LeadingData.H0 == 0)
             {
                 writeSequences.Add("", seqCount++);
             }
             else
             {
-                writeSequences.Add(BytesToString(zframeFile.LeadingData.dataload, -1), seqCount++);
+                writeSequences.Add(BytesToString(zframeFile.LeadingData.Dataload, -1), seqCount++);
             }
 
             foreach (ZDataBlock zBlock in zframeFile.DataBlocks)
             {
-                if (zBlock.dataload == null)
+                if (zBlock.Dataload == null)
                 {
-                    sequencesMap.Add(zBlock.blockId, -1);
+                    sequencesMap.Add(zBlock.BlockId, -1);
                     continue;
                 }
-                string dataloadStr = BytesToString(zBlock.dataload, -1);
+                string dataloadStr = BytesToString(zBlock.Dataload, -1);
                 int seq = writeSequences.GetValueOrDefault(dataloadStr, -1);
                 if (seq == -1)
                 {
                     writeSequences.Add(dataloadStr, seqCount);
-                    sequencesMap.Add(zBlock.blockId, seqCount);
+                    sequencesMap.Add(zBlock.BlockId, seqCount);
                     seqCount++;
                 }
                 else
                 {
-                    sequencesMap.Add(zBlock.blockId, seq);
+                    sequencesMap.Add(zBlock.BlockId, seq);
                 }
             }
             return sequencesMap;
@@ -146,13 +146,13 @@ namespace ValveResourceFormat.CompiledShader
                 "each configuration points to exactly one sequence. WRITESEQ[0] is always defined and considered 'default'.\n");
 
             int lastseq = writeSequences[-1];
-            if (zframeFile.LeadingData.h0 > 0)
+            if (zframeFile.LeadingData.H0 > 0)
             {
                 OutputWriteLine("");
             }
             string seqName = $"WRITESEQ[{lastseq}] (default)";
             ZDataBlock leadData = zframeFile.LeadingData;
-            PrintParamWriteSequence(shaderFile, leadData.dataload, leadData.h0, leadData.h1, leadData.h2, seqName: seqName);
+            PrintParamWriteSequence(shaderFile, leadData.Dataload, leadData.H0, leadData.H1, leadData.H2, seqName: seqName);
             OutputWriteLine("");
             foreach (var item in writeSequences)
             {
@@ -161,7 +161,7 @@ namespace ValveResourceFormat.CompiledShader
                     lastseq = item.Value;
                     ZDataBlock zBlock = zframeFile.DataBlocks[item.Key];
                     seqName = $"WRITESEQ[{lastseq}]";
-                    PrintParamWriteSequence(shaderFile, zBlock.dataload, zBlock.h0, zBlock.h1, zBlock.h2, seqName: seqName);
+                    PrintParamWriteSequence(shaderFile, zBlock.Dataload, zBlock.H0, zBlock.H1, zBlock.H2, seqName: seqName);
                     OutputWriteLine("");
                 }
             }
@@ -194,7 +194,7 @@ namespace ValveResourceFormat.CompiledShader
                 {
                     b3Text = $"  _ ({b2:X02})";
                 }
-                OutputWrite($"[{paramId,3}] {shaderFile.paramBlocks[paramId].name0,-30} {b2Text,-14} {b3Text}");
+                OutputWrite($"[{paramId,3}] {shaderFile.ParamBlocks[paramId].Name0,-30} {b2Text,-14} {b3Text}");
                 if (i + 1 == h0 && h0 != h2)
                 {
                     OutputWrite($"   // {h0}");
@@ -225,9 +225,9 @@ namespace ValveResourceFormat.CompiledShader
             PrintAbbreviations();
             List<int> activeBlockIds = GetActiveBlockIds();
             List<string> dParamNames = new();
-            foreach (DBlock dBlock in shaderFile.dBlocks)
+            foreach (DBlock dBlock in shaderFile.DBlocks)
             {
-                dParamNames.Add(ShortenShaderParam(dBlock.name0).ToLower());
+                dParamNames.Add(ShortenShaderParam(dBlock.Name0).ToLower());
             }
             string configNames = CombineStringsSpaceSep(dParamNames.ToArray(), 6);
             configNames = $"{new string(' ', 5)}{configNames}";
@@ -251,7 +251,7 @@ namespace ValveResourceFormat.CompiledShader
 
                 if (showRichTextBoxLinks)
                 {
-                    OutputWriteLine($"{blockSource.GetBlockName()}[{blockSource.sourceId}] \\\\source\\{blockSource.sourceId}");
+                    OutputWriteLine($"{blockSource.GetBlockName()}[{blockSource.SourceId}] \\\\source\\{blockSource.SourceId}");
                 }
                 else
                 {
@@ -265,9 +265,9 @@ namespace ValveResourceFormat.CompiledShader
         private void PrintAbbreviations()
         {
             List<string> abbreviations = new();
-            foreach (var dBlock in shaderFile.dBlocks)
+            foreach (var dBlock in shaderFile.DBlocks)
             {
-                string abbreviation = $"{dBlock.name0}({ShortenShaderParam(dBlock.name0).ToLower()})";
+                string abbreviation = $"{dBlock.Name0}({ShortenShaderParam(dBlock.Name0).ToLower()})";
                 abbreviations.Add(abbreviation);
             }
             if (abbreviations.Count == 0)
@@ -382,7 +382,7 @@ namespace ValveResourceFormat.CompiledShader
             OutputWriteLine($"{headerText}");
             OutputWriteLine(new string('-', headerText.Length));
 
-            VcsProgramType vcsFiletype = shaderFile.vcsProgramType;
+            VcsProgramType vcsFiletype = shaderFile.VcsProgramType;
             if (vcsFiletype == VcsProgramType.VertexShader || vcsFiletype == VcsProgramType.GeometryShader ||
                 vcsFiletype == VcsProgramType.ComputeShader || vcsFiletype == VcsProgramType.DomainShader ||
                 vcsFiletype == VcsProgramType.HullShader)

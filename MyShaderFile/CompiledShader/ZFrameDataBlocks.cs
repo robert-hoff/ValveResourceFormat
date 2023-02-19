@@ -4,64 +4,64 @@ namespace ValveResourceFormat.CompiledShader
 {
     public class ZDataBlock : ShaderDataBlock
     {
-        public int blockId { get; }
-        public int h0 { get; }
-        public int h1 { get; }
-        public int h2 { get; }
-        public byte[] dataload { get; }
+        public int BlockId { get; }
+        public int H0 { get; }
+        public int H1 { get; }
+        public int H2 { get; }
+        public byte[] Dataload { get; }
         public ZDataBlock(ShaderDataReader datareader, int blockId) : base(datareader)
         {
-            this.blockId = blockId;
-            h0 = datareader.ReadInt32();
-            h1 = datareader.ReadInt32();
-            h2 = datareader.ReadInt32();
-            if (h0 > 0)
+            this.BlockId = blockId;
+            H0 = datareader.ReadInt32();
+            H1 = datareader.ReadInt32();
+            H2 = datareader.ReadInt32();
+            if (H0 > 0)
             {
-                dataload = datareader.ReadBytes(h0 * 4);
+                Dataload = datareader.ReadBytes(H0 * 4);
             }
         }
     }
 
     public abstract class GpuSource : ShaderDataBlock
     {
-        public int sourceId { get; }
-        public int offset { get; protected set; }
-        public byte[] sourcebytes { get; protected set; } = Array.Empty<byte>();
-        public byte[] editorRefId { get; protected set; }
+        public int SourceId { get; }
+        public int Offset { get; protected set; }
+        public byte[] Sourcebytes { get; protected set; } = Array.Empty<byte>();
+        public byte[] EditorRefId { get; protected set; }
         protected GpuSource(ShaderDataReader datareader, int sourceId) : base(datareader)
         {
-            this.sourceId = sourceId;
+            this.SourceId = sourceId;
         }
         public string GetEditorRefIdAsString()
         {
-            string stringId = ShaderUtilHelpers.BytesToString(editorRefId);
+            string stringId = ShaderUtilHelpers.BytesToString(EditorRefId);
             stringId = stringId.Replace(" ", "").ToLower();
             return stringId;
         }
         public string GetSourceDetails()
         {
-            return $"// {GetBlockName()}[{sourceId}] source bytes ({sourcebytes.Length}) ref={GetEditorRefIdAsString()}";
+            return $"// {GetBlockName()}[{SourceId}] source bytes ({Sourcebytes.Length}) ref={GetEditorRefIdAsString()}";
         }
         public abstract string GetBlockName();
     }
 
     public class GlslSource : GpuSource
     {
-        public int arg0 { get; } // always 3
+        public int Arg0 { get; } // always 3
         // offset2, if present, always observes offset2 == offset + 8
         // offset2 can also be interpreted as the source-size
-        public int offset2 { get; } = -1;
+        public int Offset2 { get; } = -1;
         public GlslSource(ShaderDataReader datareader, int sourceId) : base(datareader, sourceId)
         {
-            offset = datareader.ReadInt32();
-            if (offset > 0)
+            Offset = datareader.ReadInt32();
+            if (Offset > 0)
             {
-                arg0 = datareader.ReadInt32();
-                offset2 = datareader.ReadInt32();
-                sourcebytes = datareader.ReadBytes(offset2-1); // -1 because the sourcebytes are null-term
+                Arg0 = datareader.ReadInt32();
+                Offset2 = datareader.ReadInt32();
+                Sourcebytes = datareader.ReadBytes(Offset2-1); // -1 because the sourcebytes are null-term
                 datareader.BaseStream.Position += 1;
             }
-            editorRefId = datareader.ReadBytes(16);
+            EditorRefId = datareader.ReadBytes(16);
         }
         public override string GetBlockName()
         {
@@ -71,26 +71,26 @@ namespace ValveResourceFormat.CompiledShader
 
     public class DxilSource : GpuSource
     {
-        public int arg0 { get; } // always 3
-        public int arg1 { get; } // always 0xFFFF or 0xFFFE
-        public int headerBytes { get; }
+        public int Arg0 { get; } // always 3
+        public int Arg1 { get; } // always 0xFFFF or 0xFFFE
+        public int HeaderBytes { get; }
         public DxilSource(ShaderDataReader datareader, int sourceId) : base(datareader, sourceId)
         {
-            offset = datareader.ReadInt32();
-            if (offset > 0)
+            Offset = datareader.ReadInt32();
+            if (Offset > 0)
             {
-                arg0 = datareader.ReadInt16();
-                arg1 = (int)datareader.ReadUInt16();
+                Arg0 = datareader.ReadInt16();
+                Arg1 = (int)datareader.ReadUInt16();
                 uint dxilDelim = datareader.ReadUInt16();
                 if (dxilDelim != 0xFFFE)
                 {
                     throw new ShaderParserException($"Unexpected DXIL source id {dxilDelim:x08}");
                 }
 
-                headerBytes = (int)datareader.ReadUInt16() * 4; // size is given as a 4-byte count
-                sourcebytes = datareader.ReadBytes(offset - 8); // size of source equals offset-8
+                HeaderBytes = (int)datareader.ReadUInt16() * 4; // size is given as a 4-byte count
+                Sourcebytes = datareader.ReadBytes(Offset - 8); // size of source equals offset-8
             }
-            editorRefId = datareader.ReadBytes(16);
+            EditorRefId = datareader.ReadBytes(16);
         }
         public override string GetBlockName()
         {
@@ -105,12 +105,12 @@ namespace ValveResourceFormat.CompiledShader
     {
         public DxbcSource(ShaderDataReader datareader, int sourceId) : base(datareader, sourceId)
         {
-            this.offset = datareader.ReadInt32();
-            if (offset > 0)
+            this.Offset = datareader.ReadInt32();
+            if (Offset > 0)
             {
-                sourcebytes = datareader.ReadBytes(offset);
+                Sourcebytes = datareader.ReadBytes(Offset);
             }
-            editorRefId = datareader.ReadBytes(16);
+            EditorRefId = datareader.ReadBytes(16);
         }
         public override string GetBlockName()
         {
@@ -120,23 +120,23 @@ namespace ValveResourceFormat.CompiledShader
 
     public class VulkanSource : GpuSource
     {
-        public int arg0 { get; } = -1;
-        public int metadataOffset { get; } = -1;
-        public int metadataLength { get; }
+        public int Arg0 { get; } = -1;
+        public int MetadataOffset { get; } = -1;
+        public int MetadataLength { get; }
 
         public VulkanSource(ShaderDataReader datareader, int sourceId) : base(datareader, sourceId)
         {
-            this.offset = datareader.ReadInt32();
+            this.Offset = datareader.ReadInt32();
             // IS THIS TRUE?
             // if the offset is 0 there is no source present and the file is considered empty
-            if (offset > 0)
+            if (Offset > 0)
             {
-                arg0 = datareader.ReadInt32();
-                metadataOffset = datareader.ReadInt32();
-                sourcebytes = datareader.ReadBytes(offset - 8);
-                metadataLength = sourcebytes.Length - metadataOffset;
+                Arg0 = datareader.ReadInt32();
+                MetadataOffset = datareader.ReadInt32();
+                Sourcebytes = datareader.ReadBytes(Offset - 8);
+                MetadataLength = Sourcebytes.Length - MetadataOffset;
             }
-            editorRefId = datareader.ReadBytes(16);
+            EditorRefId = datareader.ReadBytes(16);
         }
         public override string GetBlockName()
         {
@@ -144,11 +144,11 @@ namespace ValveResourceFormat.CompiledShader
         }
         public byte[] GetSpirvBytes()
         {
-            return sourcebytes[0..metadataOffset];
+            return Sourcebytes[0..MetadataOffset];
         }
         public byte[] GetMetadataBytes()
         {
-            return sourcebytes[metadataOffset..];
+            return Sourcebytes[MetadataOffset..];
         }
 
     }

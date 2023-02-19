@@ -314,7 +314,7 @@ namespace MyShaderAnalysis.codestash
                     {
                         var glslSource = zframeFile.GpuSources[j];
                         string outputFilenamepath = $"{glslServerDir}/{fileTokens.GetGlslHtmlFilename(glslSource.GetEditorRefIdAsString())}";
-                        WriteBytesToFile(glslSource.sourcebytes, outputFilenamepath);
+                        WriteBytesToFile(glslSource.Sourcebytes, outputFilenamepath);
                     }
 
                     //foreach (var glslSource in zframeFile.gpuSources)
@@ -359,7 +359,7 @@ namespace MyShaderAnalysis.codestash
                 {
                     var glslSource = zframeFile.GpuSources[j];
                     string outputFilenamepath = $"{glslServerDir}/{fileTokens.GetGlslHtmlFilename(glslSource.GetEditorRefIdAsString())}";
-                    WriteBytesToFile(glslSource.sourcebytes, outputFilenamepath);
+                    WriteBytesToFile(glslSource.Sourcebytes, outputFilenamepath);
                 }
 
 

@@ -56,7 +56,7 @@ namespace MyShaderAnalysis.codestash
                 Console.WriteLine($"ERROR! couldn't parse this file {filenamepath} {e.Message}");
                 return;
             }
-            if (shaderFile.vcsProgramType == VcsProgramType.Features)
+            if (shaderFile.VcsProgramType == VcsProgramType.Features)
             {
                 PrintFeaturesHeader();
                 PrintFBlocks();
@@ -77,9 +77,9 @@ namespace MyShaderAnalysis.codestash
 
         private void PrintFeaturesHeader()
         {
-            output.WriteLine($"Valve Compiled Shader 2 (vcs2), version {shaderFile.featuresHeader.vcsFileVersion}");
+            output.WriteLine($"Valve Compiled Shader 2 (vcs2), version {shaderFile.featuresHeader.VcsFileVersion}");
             output.BreakLine();
-            output.Write($"Features Detail ({Path.GetFileName(shaderFile.filenamepath)})");
+            output.Write($"Features Detail ({Path.GetFileName(shaderFile.FilenamePath)})");
             output.WriteLine($" (byte version <a href='{fileTokens.GetServerFileUrl("bytes")}'>{fileTokens.filename}</a>)");
             string[] relatedFiles = GetRelatedFiles(fileTokens.filenamepath);
             if (relatedFiles.Length > 0)
@@ -92,30 +92,30 @@ namespace MyShaderAnalysis.codestash
                 }
                 output.BreakLine();
             }
-            output.WriteLine($"VFX File Desc: {shaderFile.featuresHeader.file_description}");
+            output.WriteLine($"VFX File Desc: {shaderFile.featuresHeader.FileDescription}");
             output.BreakLine();
-            output.WriteLine($"has_psrs_file = {shaderFile.featuresHeader.has_psrs_file}");
-            output.WriteLine($"unknown_val = {shaderFile.featuresHeader.unknown_val} values seen (0,1) (likely editor related)");
+            output.WriteLine($"has_psrs_file = {shaderFile.featuresHeader.HasPsrsFile}");
+            output.WriteLine($"unknown_val = {shaderFile.featuresHeader.Version} values seen (0,1) (likely editor related)");
             var ftHeader = shaderFile.featuresHeader;
-            output.WriteLine($"bool flags = ({ftHeader.arg0},{ftHeader.arg1},{ftHeader.arg2},{ftHeader.arg3}," +
-                $"{ftHeader.arg4},{ftHeader.arg5},{ftHeader.arg6},{ftHeader.arg7}) (related to editor dependencies)");
-            output.WriteLine($"probable minor version = {shaderFile.possibleEditorDescription}");
+            output.WriteLine($"bool flags = ({ftHeader.DevShader},{ftHeader.Arg1},{ftHeader.Arg2},{ftHeader.Arg3}," +
+                $"{ftHeader.Arg4},{ftHeader.Arg5},{ftHeader.Arg6},{ftHeader.Arg7}) (related to editor dependencies)");
+            output.WriteLine($"probable minor version = {shaderFile.PossibleEditorDescription}");
             output.BreakLine();
             output.WriteLine("Editor/Shader compiler stack");
-            for (int i = 0; i < ftHeader.editorIDs.Count - 1; i++)
+            for (int i = 0; i < ftHeader.EditorIDs.Count - 1; i++)
             {
-                output.WriteLine($"{ftHeader.editorIDs[i].Item1}    {ftHeader.editorIDs[i].Item2}");
+                output.WriteLine($"{ftHeader.EditorIDs[i].Item1}    {ftHeader.EditorIDs[i].Item2}");
             }
-            output.WriteLine($"{ftHeader.editorIDs[^1].Item1}    // Editor ref. ID{ftHeader.editorIDs.Count - 1} " +
-                $"- this ID is shared across archives for vcs files with minor-version = {shaderFile.possibleEditorDescription}");
+            output.WriteLine($"{ftHeader.EditorIDs[^1].Item1}    // Editor ref. ID{ftHeader.EditorIDs.Count - 1} " +
+                $"- this ID is shared across archives for vcs files with minor-version = {shaderFile.PossibleEditorDescription}");
             output.BreakLine();
-            if (ftHeader.mainParams.Count == 0)
+            if (ftHeader.MainParams.Count == 0)
             {
                 output.WriteLine("Primary modes");
                 output.WriteLine("[default only]");
                 return;
             }
-            if (ftHeader.mainParams.Count > 1)
+            if (ftHeader.MainParams.Count > 1)
             {
                 output.WriteLine($"Primary static modes (one of these should be selected)");
             } else
@@ -124,7 +124,7 @@ namespace MyShaderAnalysis.codestash
             }
             output.DefineHeaders(new string[] { "name", "mode", "config-states" });
             output.AddTabulatedRow(new string[] { "----", "----", "-------------" });
-            foreach (var mainParam in ftHeader.mainParams)
+            foreach (var mainParam in ftHeader.MainParams)
             {
                 string arg2 = mainParam.Item2.Length == 0 ? "(default)" : mainParam.Item2;
                 string configs = mainParam.Item2.Length == 0 ? "(implicit)" : "0,1";
@@ -136,9 +136,9 @@ namespace MyShaderAnalysis.codestash
 
         private void PrintPsVsHeader()
         {
-            output.WriteLine($"Valve Compiled Shader 2 (vcs2), version {shaderFile.vspsHeader.vcsFileVersion}");
+            output.WriteLine($"Valve Compiled Shader 2 (vcs2), version {shaderFile.VspsHeader.VcsFileVersion}");
             output.BreakLine();
-            output.Write($"{shaderFile.vcsProgramType} ({Path.GetFileName(shaderFile.filenamepath)})");
+            output.Write($"{shaderFile.VcsProgramType} ({Path.GetFileName(shaderFile.FilenamePath)})");
             output.WriteLine($" (byte version <a href='{fileTokens.GetServerFileUrl("bytes")}'>{fileTokens.filename}</a>)");
             string[] relatedFiles = GetRelatedFiles(fileTokens.filenamepath);
             if (relatedFiles.Length > 0)
@@ -151,43 +151,43 @@ namespace MyShaderAnalysis.codestash
                 }
                 output.BreakLine();
             }
-            output.WriteLine($"probable minor version = {shaderFile.possibleEditorDescription}");
+            output.WriteLine($"probable minor version = {shaderFile.PossibleEditorDescription}");
             output.BreakLine();
             output.WriteLine("Editor/Shader compiler stack");
-            output.WriteLine($"{shaderFile.vspsHeader.fileID0}    // Editor ref. ID0 (produces this file)");
-            output.WriteLine($"{shaderFile.vspsHeader.fileID1}    // Editor ref. ID1 " +
-                $"- this ID is shared across archives for vcs files with minor-version = {shaderFile.possibleEditorDescription}");
+            output.WriteLine($"{shaderFile.VspsHeader.FileID0}    // Editor ref. ID0 (produces this file)");
+            output.WriteLine($"{shaderFile.VspsHeader.FileID1}    // Editor ref. ID1 " +
+                $"- this ID is shared across archives for vcs files with minor-version = {shaderFile.PossibleEditorDescription}");
             output.BreakLine();
         }
 
         private void PrintFBlocks()
         {
-            output.WriteLine($"FEATURE/STATIC-CONFIGURATIONS({shaderFile.sfBlocks.Count})");
-            if (shaderFile.sfBlocks.Count == 0)
+            output.WriteLine($"FEATURE/STATIC-CONFIGURATIONS({shaderFile.SfBlocks.Count})");
+            if (shaderFile.SfBlocks.Count == 0)
             {
                 output.WriteLine("[none defined]");
                 output.BreakLine();
                 return;
             }
             output.DefineHeaders(new string[] { "index", "name", "nr-configs", "config-states", "" });
-            foreach (var item in shaderFile.sfBlocks)
+            foreach (var item in shaderFile.SfBlocks)
             {
                 string configStates = "_";
-                if (item.arg2 > 0)
+                if (item.Arg2 > 0)
                 {
                     configStates = "0";
                 }
-                for (int i = 1; i <= item.arg2; i++)
+                for (int i = 1; i <= item.Arg2; i++)
                 {
                     configStates += $",{i}";
                 }
                 string configStates2 = "";
-                if (item.arg2 > 1)
+                if (item.Arg2 > 1)
                 {
-                    configStates2 = $"{CombineStringArray(item.additionalParams.ToArray())}";
+                    configStates2 = $"{CombineStringArray(item.AdditionalParams.ToArray())}";
                 }
 
-                output.AddTabulatedRow(new string[] {$"[{item.blockIndex,2}]", $"{item.name0}", $"{item.arg2+1}",
+                output.AddTabulatedRow(new string[] {$"[{item.BlockIndex,2}]", $"{item.Name0}", $"{item.Arg2+1}",
                     $"{configStates}", $"{configStates2}"});
             }
             output.PrintTabulatedValues();
@@ -196,18 +196,18 @@ namespace MyShaderAnalysis.codestash
 
         private void PrintSBlocks()
         {
-            output.WriteLine($"STATIC-CONFIGURATIONS({shaderFile.sfBlocks.Count})");
-            if (shaderFile.sfBlocks.Count == 0)
+            output.WriteLine($"STATIC-CONFIGURATIONS({shaderFile.SfBlocks.Count})");
+            if (shaderFile.SfBlocks.Count == 0)
             {
                 output.WriteLine("[none defined]");
                 output.BreakLine();
                 return;
             }
             output.DefineHeaders(new string[] { "index", "name", "arg2", "arg3", "arg4" });
-            foreach (var item in shaderFile.sfBlocks)
+            foreach (var item in shaderFile.SfBlocks)
             {
-                output.AddTabulatedRow(new string[] {$"[{item.blockIndex,2}]", $"{item.name0}", $"{item.arg2}",
-                    $"{item.arg3}", $"{item.arg4,2}"});
+                output.AddTabulatedRow(new string[] {$"[{item.BlockIndex,2}]", $"{item.Name0}", $"{item.Arg2}",
+                    $"{item.Arg3}", $"{item.Arg4,2}"});
             }
             output.PrintTabulatedValues();
             output.BreakLine();
@@ -217,28 +217,28 @@ namespace MyShaderAnalysis.codestash
         private void PrintStaticConstraints()
         {
             output.WriteLine("STATIC-CONFIGS INCLUSION/EXCLUSION RULES");
-            if (shaderFile.sfConstraintsBlocks.Count == 0)
+            if (shaderFile.SfConstraintsBlocks.Count == 0)
             {
                 output.WriteLine("[none defined]");
                 output.BreakLine();
                 return;
             }
-            foreach (SfConstraintsBlock cBlock in shaderFile.sfConstraintsBlocks)
+            foreach (SfConstraintsBlock cBlock in shaderFile.SfConstraintsBlocks)
             {
-                string[] sfNames = new string[cBlock.range0.Length];
+                string[] sfNames = new string[cBlock.Range0.Length];
                 for (int i = 0; i < sfNames.Length; i++)
                 {
-                    sfNames[i] = shaderFile.sfBlocks[cBlock.range0[i]].name0;
+                    sfNames[i] = shaderFile.SfBlocks[cBlock.Range0[i]].Name0;
                 }
                 const int BL = 70;
                 string[] breakNames = CombineValuesBreakString(sfNames, BL);
-                string s0 = $"[{cBlock.blockIndex,2}]";
-                string s1 = (cBlock.relRule == 1 || cBlock.relRule == 2) ? $"INC({cBlock.relRule})" : $"EXC({cBlock.relRule})";
+                string s0 = $"[{cBlock.BlockIndex,2}]";
+                string s1 = (cBlock.RelRule == 1 || cBlock.RelRule == 2) ? $"INC({cBlock.RelRule})" : $"EXC({cBlock.RelRule})";
                 string s3 = $"{cBlock.GetByteFlagsAsString()}";
                 string s4 = $"{breakNames[0]}";
-                string s5 = $"{CombineIntArray(cBlock.range0)}";
-                string s6 = $"{CombineIntArray(cBlock.range1)}";
-                string s7 = $"{CombineIntArray(cBlock.range2)}";
+                string s5 = $"{CombineIntArray(cBlock.Range0)}";
+                string s6 = $"{CombineIntArray(cBlock.Range1)}";
+                string s7 = $"{CombineIntArray(cBlock.Range2)}";
                 string blockSummary = $"{s0.PadRight(7)}{s1.PadRight(10)}{s5.PadRight(16)}{s4.PadRight(BL)}{s6.PadRight(8)}{s7.PadRight(8)}";
                 for (int i = 1; i < breakNames.Length; i++)
                 {
@@ -253,8 +253,8 @@ namespace MyShaderAnalysis.codestash
         // todo - bring these in-line with the other printouts
         private void PrintDynamicConfigurations()
         {
-            output.WriteLine($"DYNAMIC-CONFIGURATIONS({shaderFile.dBlocks.Count})");
-            if (shaderFile.dBlocks.Count == 0)
+            output.WriteLine($"DYNAMIC-CONFIGURATIONS({shaderFile.DBlocks.Count})");
+            if (shaderFile.DBlocks.Count == 0)
             {
                 output.WriteLine("[none defined]");
                 output.BreakLine();
@@ -268,17 +268,17 @@ namespace MyShaderAnalysis.codestash
             string h4 = "arg4";
             string blockHeader = $"{h0.PadRight(pad[0])} {h1.PadRight(pad[1])} {h2.PadRight(pad[2])} {h3.PadRight(pad[3])} {h4.PadRight(pad[4])}";
             output.WriteLine(blockHeader);
-            foreach (DBlock dBlock in shaderFile.dBlocks)
+            foreach (DBlock dBlock in shaderFile.DBlocks)
             {
-                string v0 = $"[{dBlock.blockIndex,2}]";
-                string v1 = dBlock.name0;
-                string v2 = "" + dBlock.arg2;
-                string v3 = "" + dBlock.arg3;
-                string v4 = $"{dBlock.arg4,2}";
+                string v0 = $"[{dBlock.BlockIndex,2}]";
+                string v1 = dBlock.Name0;
+                string v2 = "" + dBlock.Arg2;
+                string v3 = "" + dBlock.Arg3;
+                string v4 = $"{dBlock.Arg4,2}";
                 string blockSummary = $"{v0.PadRight(pad[0])} {v1.PadRight(pad[1])} {v2.PadRight(pad[2])} {v3.PadRight(pad[3])} {v4.PadRight(pad[4])}";
                 output.WriteLine(blockSummary);
             }
-            if (shaderFile.dBlocks.Count == 0)
+            if (shaderFile.DBlocks.Count == 0)
             {
                 output.WriteLine("[empty list]");
             }
@@ -289,38 +289,38 @@ namespace MyShaderAnalysis.codestash
         private void PrintDynamicConstraints()
         {
             output.WriteLine("DYNAMIC-CONFIGS INCLUSION/EXCLUSION RULES");
-            if (shaderFile.dConstraintsBlocks.Count == 0)
+            if (shaderFile.DConstraintsBlocks.Count == 0)
             {
                 output.WriteLine("[none defined]");
                 output.BreakLine();
                 return;
             }
-            foreach (DConstraintsBlock uBlock in shaderFile.dConstraintsBlocks)
+            foreach (DConstraintsBlock uBlock in shaderFile.DConstraintsBlocks)
             {
-                string[] uknNames = new string[uBlock.flags.Length];
+                string[] uknNames = new string[uBlock.Flags.Length];
                 for (int i = 0; i < uknNames.Length; i++)
                 {
-                    if (uBlock.flags[i] == 3)
+                    if (uBlock.Flags[i] == 3)
                     {
-                        uknNames[i] = shaderFile.dBlocks[uBlock.range0[i]].name0;
+                        uknNames[i] = shaderFile.DBlocks[uBlock.Range0[i]].Name0;
                         continue;
                     }
-                    if (uBlock.flags[i] == 2)
+                    if (uBlock.Flags[i] == 2)
                     {
-                        uknNames[i] = shaderFile.sfBlocks[uBlock.range0[i]].name0;
+                        uknNames[i] = shaderFile.SfBlocks[uBlock.Range0[i]].Name0;
                         continue;
                     }
-                    throw new ShaderParserException($"unknown flag value {uBlock.flags[i]}");
+                    throw new ShaderParserException($"unknown flag value {uBlock.Flags[i]}");
                 }
                 const int BL = 70;
                 string[] breakNames = CombineValuesBreakString(uknNames, BL);
-                string s0 = $"[{uBlock.blockIndex,2}]";
-                string s1 = (uBlock.relRule == 1 || uBlock.relRule == 2) ? $"INC({uBlock.relRule})" : $"EXC({uBlock.relRule})";
+                string s0 = $"[{uBlock.BlockIndex,2}]";
+                string s1 = (uBlock.RelRule == 1 || uBlock.RelRule == 2) ? $"INC({uBlock.RelRule})" : $"EXC({uBlock.RelRule})";
                 string s3 = $"{uBlock.ReadByteFlagsAsString()}";
                 string s4 = $"{breakNames[0]}";
-                string s5 = $"{CombineIntArray(uBlock.range0)}";
-                string s6 = $"{CombineIntArray(uBlock.range1)}";
-                string s7 = $"{CombineIntArray(uBlock.range2)}";
+                string s5 = $"{CombineIntArray(uBlock.Range0)}";
+                string s6 = $"{CombineIntArray(uBlock.Range1)}";
+                string s7 = $"{CombineIntArray(uBlock.Range2)}";
                 string blockSummary = $"{s0,-7}{s1,-10}{s3,-15}{s5,-16}{s4,-BL}{s6,-10}{s7,-8}";
                 for (int i = 1; i < breakNames.Length; i++)
                 {
@@ -335,7 +335,7 @@ namespace MyShaderAnalysis.codestash
 
         private void PrintParameters()
         {
-            if (shaderFile.paramBlocks.Count == 0)
+            if (shaderFile.ParamBlocks.Count == 0)
             {
                 output.WriteLine($"PARAMETERS(0)");
                 output.WriteLine("[none defined]");
@@ -344,21 +344,21 @@ namespace MyShaderAnalysis.codestash
             }
 
             int dynExpCount = 0;
-            int indexPad = shaderFile.paramBlocks.Count > 100 ? 3 : 2;
+            int indexPad = shaderFile.ParamBlocks.Count > 100 ? 3 : 2;
             // parameters
-            output.WriteLine($"PARAMETERS({shaderFile.paramBlocks.Count})    *dyn-expressions shown separately");
+            output.WriteLine($"PARAMETERS({shaderFile.ParamBlocks.Count})    *dyn-expressions shown separately");
             output.DefineHeaders(new string[] { "index", "name0 | name1 | name2", "type0", "type1", "res", "arg0", "arg1",
                 "arg2", "arg3", "arg4", "arg5", "dyn-exp*", "command 0|1", "fileref"});
-            foreach (var param in shaderFile.paramBlocks)
+            foreach (var param in shaderFile.ParamBlocks)
             {
-                string nameCondensed = param.name0;
-                if (param.name1.Length > 0)
+                string nameCondensed = param.Name0;
+                if (param.Name1.Length > 0)
                 {
-                    nameCondensed += $" | {param.name1}";
+                    nameCondensed += $" | {param.Name1}";
                 }
-                if (param.name2.Length > 0)
+                if (param.Name2.Length > 0)
                 {
-                    nameCondensed += $" | {param.name2}(2)";
+                    nameCondensed += $" | {param.Name2}(2)";
                 }
                 if (nameCondensed.Length > 65)
                 {
@@ -369,21 +369,21 @@ namespace MyShaderAnalysis.codestash
                         nameCondensed += $"\n{tokens[i].Trim()}";
                     }
                 }
-                string dynExpExists = param.lead0 == 6 || param.lead0 == 7 ? "true" : "";
+                string dynExpExists = param.Lead0 == 6 || param.Lead0 == 7 ? "true" : "";
                 if (dynExpExists.Length > 0)
                 {
                     dynExpCount++;
                 }
-                string c0 = param.command0;
-                string c1 = param.command1;
+                string c0 = param.Command0;
+                string c1 = param.Command1;
                 if (c1.Length > 0)
                 {
                     c0 += $" | {c1}";
                 }
-                output.AddTabulatedRow(new string[] {$"[{(""+param.blockIndex).PadLeft(indexPad)}]", $"{nameCondensed}", $"{param.type}",
-                    $"{param.lead0}", $"{param.res0}", $"{BlankNegOne(param.arg0),2}", $"{param.arg1,2}", $"{param.arg2}",
-                    $"{Pow2Rep(param.arg3),4}", $"{param.arg4,2}", $"{BlankNegOne(param.arg5),2}",
-                    $"{dynExpExists}", $"{c0}", $"{param.fileref}"});
+                output.AddTabulatedRow(new string[] {$"[{(""+param.BlockIndex).PadLeft(indexPad)}]", $"{nameCondensed}", $"{param.Type}",
+                    $"{param.Lead0}", $"{param.Res0}", $"{BlankNegOne(param.Arg0),2}", $"{param.Arg1,2}", $"{param.Arg2}",
+                    $"{Pow2Rep(param.Arg3),4}", $"{param.Arg4,2}", $"{BlankNegOne(param.Arg5),2}",
+                    $"{dynExpExists}", $"{c0}", $"{param.Fileref}"});
             }
             output.PrintTabulatedValues(spacing: 1);
             output.BreakLine();
@@ -395,16 +395,16 @@ namespace MyShaderAnalysis.codestash
             {
                 output.WriteLine($"DYNAMIC EXPRESSIONS({dynExpCount})    (name0,type0,type1,arg0,arg1,arg2,arg4,arg5 reprinted)");
                 output.DefineHeaders(new string[] { "param-index", "name0", "t0,t1,a0,a1,a2,a4,a5  ", "dyn-exp" });
-                foreach (var param in shaderFile.paramBlocks)
+                foreach (var param in shaderFile.ParamBlocks)
                 {
-                    if (param.lead0 != 6 && param.lead0 != 7)
+                    if (param.Lead0 != 6 && param.Lead0 != 7)
                     {
                         continue;
                     }
-                    string dynExpstring = ParseDynamicExpression(param.dynExp);
-                    output.AddTabulatedRow(new string[] { $"[{(""+param.blockIndex).PadLeft(indexPad)}]",
-                        $"{param.name0}",
-                        $"{param.type,2},{param.lead0,2},{BlankNegOne(param.arg0),2},{param.arg1,2},{param.arg2,2},{param.arg4,2},{BlankNegOne(param.arg5),2}",
+                    string dynExpstring = ParseDynamicExpression(param.DynExp);
+                    output.AddTabulatedRow(new string[] { $"[{(""+param.BlockIndex).PadLeft(indexPad)}]",
+                        $"{param.Name0}",
+                        $"{param.Type,2},{param.Lead0,2},{BlankNegOne(param.Arg0),2},{param.Arg1,2},{param.Arg2,2},{param.Arg4,2},{BlankNegOne(param.Arg5),2}",
                         $"{dynExpstring}" });
                 }
                 output.PrintTabulatedValues();
@@ -414,23 +414,23 @@ namespace MyShaderAnalysis.codestash
             output.WriteLine("(- indicates -infinity, + indicates +infinity, def. = default)");
             output.DefineHeaders(new string[] { "index", "name0", "t0,t1,a0,a1,a2,a4,a5  ", "ints-def.", "ints-min", "ints-max",
                 "floats-def.", "floats-min", "floats-max", "int-args0", "int-args1", "command0", "fileref", "dyn-exp"});
-            foreach (var param in shaderFile.paramBlocks)
+            foreach (var param in shaderFile.ParamBlocks)
             {
-                string fileref = param.fileref;
-                int[] r0 = param.ranges0;
-                int[] r1 = param.ranges1;
-                int[] r2 = param.ranges2;
-                float[] r3 = param.ranges3;
-                float[] r4 = param.ranges4;
-                float[] r5 = param.ranges5;
-                int[] r6 = param.ranges6;
-                int[] r7 = param.ranges7;
-                string hasFileRef = param.fileref.Length > 0 ? "true" : "";
-                string hasDynExp = param.lead0 == 6 || param.lead0 == 7 ? "true" : "";
-                output.AddTabulatedRow(new string[] { $"[{("" + param.blockIndex).PadLeft(indexPad)}]", $"{param.name0}",
-                    $"{param.type,2},{param.lead0,2},{BlankNegOne(param.arg0),2},{param.arg1,2},{param.arg2,2},{param.arg4,2},{BlankNegOne(param.arg5),2}",
+                string fileref = param.Fileref;
+                int[] r0 = param.Ranges0;
+                int[] r1 = param.Ranges1;
+                int[] r2 = param.Ranges2;
+                float[] r3 = param.Ranges3;
+                float[] r4 = param.Ranges4;
+                float[] r5 = param.Ranges5;
+                int[] r6 = param.Ranges6;
+                int[] r7 = param.Ranges7;
+                string hasFileRef = param.Fileref.Length > 0 ? "true" : "";
+                string hasDynExp = param.Lead0 == 6 || param.Lead0 == 7 ? "true" : "";
+                output.AddTabulatedRow(new string[] { $"[{("" + param.BlockIndex).PadLeft(indexPad)}]", $"{param.Name0}",
+                    $"{param.Type,2},{param.Lead0,2},{BlankNegOne(param.Arg0),2},{param.Arg1,2},{param.Arg2,2},{param.Arg4,2},{BlankNegOne(param.Arg5),2}",
                     $"{Comb(r0)}", $"{Comb(r1)}", $"{Comb(r2)}", $"{Comb(r3)}", $"{Comb(r4)}",
-                    $"{Comb(r5)}", $"{Comb(r6)}", $"{Comb(r7)}", $"{param.command0}", $"{hasFileRef}", $"{hasDynExp}"});
+                    $"{Comb(r5)}", $"{Comb(r6)}", $"{Comb(r7)}", $"{param.Command0}", $"{hasFileRef}", $"{hasDynExp}"});
             }
             output.PrintTabulatedValues(spacing: 1);
             output.BreakLine();
@@ -438,8 +438,8 @@ namespace MyShaderAnalysis.codestash
 
         private void PrintMipmapBlocks()
         {
-            output.WriteLine($"MIPMAP BLOCKS({shaderFile.mipmapBlocks.Count})");
-            if (shaderFile.mipmapBlocks.Count > 0)
+            output.WriteLine($"MIPMAP BLOCKS({shaderFile.MipmapBlocks.Count})");
+            if (shaderFile.MipmapBlocks.Count > 0)
             {
                 output.DefineHeaders(new string[] { "index", "name", "arg0", "arg1", "arg2", "arg3", "arg4", "arg5" });
             } else
@@ -447,11 +447,11 @@ namespace MyShaderAnalysis.codestash
                 output.DefineHeaders(Array.Empty<string>());
                 output.WriteLine("[none defined]");
             }
-            foreach (var mipmap in shaderFile.mipmapBlocks)
+            foreach (var mipmap in shaderFile.MipmapBlocks)
             {
-                output.AddTabulatedRow(new string[] { $"[{mipmap.blockIndex,2}]", $"{mipmap.name}",
-                    $"{BytesToString(mipmap.arg0),-14}", $"{mipmap.arg1,2}", $"{BlankNegOne(mipmap.arg2),2}",
-                    $"{BlankNegOne(mipmap.arg3),2}", $"{BlankNegOne(mipmap.arg4),2}", $"{mipmap.arg5,2}" });
+                output.AddTabulatedRow(new string[] { $"[{mipmap.BlockIndex,2}]", $"{mipmap.Name}",
+                    $"{BytesToString(mipmap.Arg0),-14}", $"{mipmap.Arg1,2}", $"{BlankNegOne(mipmap.Arg2),2}",
+                    $"{BlankNegOne(mipmap.Arg3),2}", $"{BlankNegOne(mipmap.Arg4),2}", $"{mipmap.Arg5,2}" });
             }
             output.PrintTabulatedValues();
             output.BreakLine();
@@ -459,20 +459,20 @@ namespace MyShaderAnalysis.codestash
 
         private void PrintBufferBlocks()
         {
-            if (shaderFile.bufferBlocks.Count == 0)
+            if (shaderFile.BufferBlocks.Count == 0)
             {
                 output.WriteLine("BUFFER-BLOCKS(0)");
                 output.WriteLine("[none defined]");
                 output.BreakLine();
                 return;
             }
-            foreach (var bufferBlock in shaderFile.bufferBlocks)
+            foreach (var bufferBlock in shaderFile.BufferBlocks)
             {
-                output.WriteLine($"BUFFER-BLOCK[{bufferBlock.blockIndex}]");
-                output.WriteLine($"{bufferBlock.name} size={bufferBlock.bufferSize} param-count={bufferBlock.paramCount}" +
-                    $" arg0={bufferBlock.arg0} crc32={bufferBlock.blockCrc:x08}");
+                output.WriteLine($"BUFFER-BLOCK[{bufferBlock.BlockIndex}]");
+                output.WriteLine($"{bufferBlock.Name} size={bufferBlock.BufferSize} param-count={bufferBlock.ParamCount}" +
+                    $" arg0={bufferBlock.Arg0} crc32={bufferBlock.BlockCrc:x08}");
                 output.DefineHeaders(new string[] { "       ", "name", "offset", "vertex-size", "attrib-count", "data-count" });
-                foreach (var bufferParams in bufferBlock.bufferParams)
+                foreach (var bufferParams in bufferBlock.BufferParams)
                 {
                     string name = bufferParams.Item1;
                     int bOffset = bufferParams.Item2;
@@ -489,8 +489,8 @@ namespace MyShaderAnalysis.codestash
 
         private void PrintVertexSymbolBuffers()
         {
-            output.WriteLine($"VERTEX-BUFFER-SYMBOLS({shaderFile.symbolBlocks.Count})");
-            if (shaderFile.symbolBlocks.Count == 0)
+            output.WriteLine($"VERTEX-BUFFER-SYMBOLS({shaderFile.SymbolBlocks.Count})");
+            if (shaderFile.SymbolBlocks.Count == 0)
             {
                 output.WriteLine("[none defined]");
                 output.BreakLine();
@@ -500,9 +500,9 @@ namespace MyShaderAnalysis.codestash
             int namePad = 0;
             int typePad = 0;
             int optionPad = 0;
-            foreach (var symbolBlock in shaderFile.symbolBlocks)
+            foreach (var symbolBlock in shaderFile.SymbolBlocks)
             {
-                foreach (var symbolsDef in symbolBlock.symbolsDefinition)
+                foreach (var symbolsDef in symbolBlock.SymbolsDefinition)
                 {
                     if (symbolsDef.Item1.Length > namePad)
                     {
@@ -518,12 +518,12 @@ namespace MyShaderAnalysis.codestash
                     }
                 }
             }
-            foreach (var symbolBlock in shaderFile.symbolBlocks)
+            foreach (var symbolBlock in shaderFile.SymbolBlocks)
             {
-                output.WriteLine($"VERTEX-SYMBOLS[{symbolBlock.blockIndex}] definitions={symbolBlock.symbolsCount}");
+                output.WriteLine($"VERTEX-SYMBOLS[{symbolBlock.BlockIndex}] definitions={symbolBlock.SymbolsCount}");
                 output.DefineHeaders(new string[] { "       ", "name".PadRight(namePad), "type".PadRight(typePad),
                     $"option".PadRight(optionPad), "semantic-index" });
-                foreach (var symbolsDef in symbolBlock.symbolsDefinition)
+                foreach (var symbolsDef in symbolBlock.SymbolsDefinition)
                 {
                     string name = symbolsDef.Item1;
                     string type = symbolsDef.Item2;
@@ -544,7 +544,7 @@ namespace MyShaderAnalysis.codestash
             if (shaderFile.GetZFrameCount() == 0)
             {
                 string infoText = "";
-                if (shaderFile.vcsProgramType == VcsProgramType.Features)
+                if (shaderFile.VcsProgramType == VcsProgramType.Features)
                 {
                     infoText = "(Features files in general don't contain zframes)";
                 }
@@ -552,21 +552,21 @@ namespace MyShaderAnalysis.codestash
                 output.BreakLine();
                 return;
             }
-            FileTokensOld fileTokens = new FileTokensOld(shaderFile.filenamepath);
+            FileTokensOld fileTokens = new FileTokensOld(shaderFile.FilenamePath);
             // print the config headers every 100 frames
             int zframeCount = 0;
             // print the zframes
-            string zFrameBaseDir = $"/vcs-all/{GetCoreOrDotaString(shaderFile.filenamepath)}/zsource/";
+            string zFrameBaseDir = $"/vcs-all/{GetCoreOrDotaString(shaderFile.FilenamePath)}/zsource/";
             // prepare the lookup to determine configuration state
             ConfigMappingSParams configGen = new(shaderFile);
             output.WriteLine(new string('-', zframesHeader.Length));
             // collect names in the order they appear
             List<string> sfNames = new();
             List<string> abbreviations = new();
-            foreach (var sfBlock in shaderFile.sfBlocks)
+            foreach (var sfBlock in shaderFile.SfBlocks)
             {
-                string sfShortName = ShortenShaderParam(sfBlock.name0).ToLower();
-                abbreviations.Add($"{sfBlock.name0}({sfShortName})");
+                string sfShortName = ShortenShaderParam(sfBlock.Name0).ToLower();
+                abbreviations.Add($"{sfBlock.Name0}({sfShortName})");
                 sfNames.Add(sfShortName);
             }
             string[] breakabbreviations = CombineValuesBreakString(abbreviations.ToArray(), 120);
@@ -577,7 +577,7 @@ namespace MyShaderAnalysis.codestash
             output.BreakLine();
             string configHeader = CombineStringsSpaceSep(sfNames.ToArray(), 6);
             configHeader = $"{new string(' ', 14)}{configHeader}";
-            foreach (var item in shaderFile.zframesLookup)
+            foreach (var item in shaderFile.ZframesLookup)
             {
                 if (zframeCount % 100 == 0)
                 {

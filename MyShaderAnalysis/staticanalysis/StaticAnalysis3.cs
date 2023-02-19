@@ -29,11 +29,11 @@ namespace MyShaderAnalysis.staticanalysis
             foreach (FileVcsTokens vcsFile in fileArchive.GetFileVcsTokens())
             {
                 ShaderFile shaderFile = vcsFile.GetShaderFile();
-                foreach (ParamBlock pBlock in shaderFile.paramBlocks)
+                foreach (ParamBlock pBlock in shaderFile.ParamBlocks)
                 {
                     // same as (kristiker)
                     // lead0, UiType, VfxType, ParamType
-                    string reportLine = $"{pBlock.lead0:00} {pBlock.type} {pBlock.arg1} {pBlock.arg2}";
+                    string reportLine = $"{pBlock.Lead0:00} {pBlock.Type} {pBlock.Arg1} {pBlock.Arg2}";
                     CollectStringValue(reportLine);
                 }
             }
@@ -46,11 +46,11 @@ namespace MyShaderAnalysis.staticanalysis
             foreach (FileVcsTokens vcsFile in fileArchive.GetFileVcsTokens())
             {
                 ShaderFile shaderFile = vcsFile.GetShaderFile();
-                foreach (SfBlock sfBlock in shaderFile.sfBlocks)
+                foreach (SfBlock sfBlock in shaderFile.SfBlocks)
                 {
                     // string reportLine = $"{sfBlock.name0,-40} {sfBlock.name1,-40} {sfBlock.arg2}";
                     // string reportLine = $"{sfBlock.name0,-40} {sfBlock.arg2}";
-                    string reportLine = $"{sfBlock.name0,-40} {sfBlock.arg3}";
+                    string reportLine = $"{sfBlock.Name0,-40} {sfBlock.Arg3}";
                     CollectStringValue(reportLine);
                 }
             }
@@ -70,7 +70,7 @@ namespace MyShaderAnalysis.staticanalysis
                     Debug.WriteLine($"");
                     lastFile = vcsFile.foldername;
                 }
-                Debug.WriteLine($"{vcsFile,-80} {vcsFile.GetShaderFile().mipmapBlocks.Count}");
+                Debug.WriteLine($"{vcsFile,-80} {vcsFile.GetShaderFile().MipmapBlocks.Count}");
             }
         }
 
@@ -84,8 +84,8 @@ namespace MyShaderAnalysis.staticanalysis
             foreach (FileVcsTokens vcsFile in fileArchive.GetFileVcsTokens())
             {
                 ShaderFile shaderFile = vcsFile.GetShaderFile();
-                Debug.WriteLine($"{vcsFile,-80} {shaderFile.dBlocks.Count}");
-                if (shaderFile.dBlocks.Count != 0)
+                Debug.WriteLine($"{vcsFile,-80} {shaderFile.DBlocks.Count}");
+                if (shaderFile.DBlocks.Count != 0)
                 {
                     throw new Exception("unecpexted value");
                 }

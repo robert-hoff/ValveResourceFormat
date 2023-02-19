@@ -38,20 +38,20 @@ namespace MyShaderAnalysis.codestash.snippetcode
                 ShaderFile shaderfile = InstantiateShaderFile(filenamepath);
 
                 // Console.WriteLine($"{filenamepath}");
-                foreach (var item in shaderfile.zframesLookup)
+                foreach (var item in shaderfile.ZframesLookup)
                 {
                     ZFrameDataDescription zframeData = item.Value;
-                    if (zframeData.uncompressedLength < 100000)
+                    if (zframeData.UncompressedLength < 100000)
                     {
-                        ZFrameFile zframeFile = new(zframeData.GetDecompressedZFrame(), filenamepath, zframeData.zframeId,
-                            shaderfile.vcsProgramType, shaderfile.vcsPlatformType, shaderfile.vcsShaderModelType);
+                        ZFrameFile zframeFile = new(zframeData.GetDecompressedZFrame(), filenamepath, zframeData.ZframeId,
+                            shaderfile.VcsProgramType, shaderfile.VcsPlatformType, shaderfile.VcsShaderModelType, shaderfile.VcsVersion);
                         foreach (var source in zframeFile.GpuSources)
                         {
                             // if ((source.offset1-1)%64==0 && source.offset1<500) {
-                            if (source.sourcebytes.Length < 5000)
+                            if (source.Sourcebytes.Length < 5000)
                             {
-                                Console.WriteLine($"{RemoveBaseDir(filenamepath)}   {zframeData.zframeId:x08}  " +
-                                    $"{source.sourcebytes.Length}  {source.GetEditorRefIdAsString()}");
+                                Console.WriteLine($"{RemoveBaseDir(filenamepath)}   {zframeData.ZframeId:x08}  " +
+                                    $"{source.Sourcebytes.Length}  {source.GetEditorRefIdAsString()}");
                             }
                         }
                     }

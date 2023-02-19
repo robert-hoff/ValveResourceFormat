@@ -118,33 +118,33 @@ namespace MyShaderAnalysis.codestash
             {
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
 
-                foreach (ParamBlock paramBlock in shaderFile.paramBlocks)
+                foreach (ParamBlock paramBlock in shaderFile.ParamBlocks)
                 {
-                    string name0 = paramBlock.name0;
-                    string name1 = paramBlock.name1;
-                    string name2 = paramBlock.name2;
-                    int tp = paramBlock.type;
-                    float res0 = paramBlock.res0;
-                    int main0 = paramBlock.lead0;
-                    int arg0 = paramBlock.arg0;
-                    int arg1 = paramBlock.arg1;
-                    int arg2 = paramBlock.arg2;
-                    int arg3 = paramBlock.arg3;
-                    int arg4 = paramBlock.arg4;
-                    int arg5 = paramBlock.arg5;
-                    string fileref = paramBlock.fileref;
-                    int[] r0 = paramBlock.ranges0;
-                    int[] r1 = paramBlock.ranges1;
-                    int[] r2 = paramBlock.ranges2;
-                    float[] r3 = paramBlock.ranges3;
-                    float[] r4 = paramBlock.ranges4;
-                    float[] r5 = paramBlock.ranges5;
-                    int[] r6 = paramBlock.ranges6;
-                    int[] r7 = paramBlock.ranges7;
-                    string c0 = paramBlock.command0;
-                    string c1 = paramBlock.command1;
+                    string name0 = paramBlock.Name0;
+                    string name1 = paramBlock.Name1;
+                    string name2 = paramBlock.Name2;
+                    int tp = paramBlock.Type;
+                    float res0 = paramBlock.Res0;
+                    int main0 = paramBlock.Lead0;
+                    int arg0 = paramBlock.Arg0;
+                    int arg1 = paramBlock.Arg1;
+                    int arg2 = paramBlock.Arg2;
+                    int arg3 = paramBlock.Arg3;
+                    int arg4 = paramBlock.Arg4;
+                    int arg5 = paramBlock.Arg5;
+                    string fileref = paramBlock.Fileref;
+                    int[] r0 = paramBlock.Ranges0;
+                    int[] r1 = paramBlock.Ranges1;
+                    int[] r2 = paramBlock.Ranges2;
+                    float[] r3 = paramBlock.Ranges3;
+                    float[] r4 = paramBlock.Ranges4;
+                    float[] r5 = paramBlock.Ranges5;
+                    int[] r6 = paramBlock.Ranges6;
+                    int[] r7 = paramBlock.Ranges7;
+                    string c0 = paramBlock.Command0;
+                    string c1 = paramBlock.Command1;
 
-                    byte[] dynExp = paramBlock.dynExp;
+                    byte[] dynExp = paramBlock.DynExp;
                     string dynExpstring = dynExp.Length > 0 ? new VfxEval(dynExp).DynamicExpressionResult : "";
 
 
@@ -208,31 +208,31 @@ namespace MyShaderAnalysis.codestash
             foreach (string filenamepath in vcsFiles)
             {
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
-                foreach (ParamBlock paramBlock in shaderFile.paramBlocks)
+                foreach (ParamBlock paramBlock in shaderFile.ParamBlocks)
                 {
-                    string name0 = paramBlock.name0;
-                    string name1 = paramBlock.name1;
-                    string name2 = paramBlock.name2;
-                    int tp = paramBlock.type;
-                    float res0 = paramBlock.res0;
-                    int main0 = paramBlock.lead0;
-                    int arg0 = paramBlock.arg0;
-                    int arg1 = paramBlock.arg1;
-                    int arg2 = paramBlock.arg2;
-                    int arg3 = paramBlock.arg3;
-                    int arg4 = paramBlock.arg4;
-                    int arg5 = paramBlock.arg5;
-                    string fileref = paramBlock.fileref;
-                    int[] r0 = paramBlock.ranges0;
-                    int[] r1 = paramBlock.ranges1;
-                    int[] r2 = paramBlock.ranges2;
-                    float[] r3 = paramBlock.ranges3;
-                    float[] r4 = paramBlock.ranges4;
-                    float[] r5 = paramBlock.ranges5;
-                    int[] r6 = paramBlock.ranges6;
-                    int[] r7 = paramBlock.ranges7;
-                    string c0 = paramBlock.command0;
-                    string c1 = paramBlock.command1;
+                    string name0 = paramBlock.Name0;
+                    string name1 = paramBlock.Name1;
+                    string name2 = paramBlock.Name2;
+                    int tp = paramBlock.Type;
+                    float res0 = paramBlock.Res0;
+                    int main0 = paramBlock.Lead0;
+                    int arg0 = paramBlock.Arg0;
+                    int arg1 = paramBlock.Arg1;
+                    int arg2 = paramBlock.Arg2;
+                    int arg3 = paramBlock.Arg3;
+                    int arg4 = paramBlock.Arg4;
+                    int arg5 = paramBlock.Arg5;
+                    string fileref = paramBlock.Fileref;
+                    int[] r0 = paramBlock.Ranges0;
+                    int[] r1 = paramBlock.Ranges1;
+                    int[] r2 = paramBlock.Ranges2;
+                    float[] r3 = paramBlock.Ranges3;
+                    float[] r4 = paramBlock.Ranges4;
+                    float[] r5 = paramBlock.Ranges5;
+                    int[] r6 = paramBlock.Ranges6;
+                    int[] r7 = paramBlock.Ranges7;
+                    string c0 = paramBlock.Command0;
+                    string c1 = paramBlock.Command1;
 
                     // CollectStringValue($"{name0,-40} {name1,-40}  {lead0},{lead1,3}     {name2,-40}");
                     //CollectStringValue($"{name0,-40} {lead0},{lead1,3} " +
@@ -336,9 +336,9 @@ namespace MyShaderAnalysis.codestash
             {
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
                 // FileTokens tokens = new(filenamepath);
-                foreach (var sfBlocks in shaderFile.sfBlocks)
+                foreach (var sfBlocks in shaderFile.SfBlocks)
                 {
-                    CollectStringValue($"{sfBlocks.arg0}  {sfBlocks.arg1}  {sfBlocks.arg2}  {sfBlocks.arg3}  {sfBlocks.arg4}  {sfBlocks.arg5}");
+                    CollectStringValue($"{sfBlocks.Arg0}  {sfBlocks.Arg1}  {sfBlocks.Arg2}  {sfBlocks.Arg3}  {sfBlocks.Arg4}  {sfBlocks.Arg5}");
                 }
             }
         }
@@ -358,14 +358,14 @@ namespace MyShaderAnalysis.codestash
             {
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
                 FileTokensOld tokens = new(filenamepath);
-                foreach (var sfBlocks in shaderFile.sfBlocks)
+                foreach (var sfBlocks in shaderFile.SfBlocks)
                 {
-                    if (sfBlocks.additionalParams.Count > 0)
+                    if (sfBlocks.AdditionalParams.Count > 0)
                     {
-                        OutputWriteLine($"<b>{RemoveBaseDir(shaderFile.filenamepath),-70}</b>        " +
+                        OutputWriteLine($"<b>{RemoveBaseDir(shaderFile.FilenamePath),-70}</b>        " +
                             $"<a href='{tokens.GetServerFilePath()}/{tokens.foldername}_ps-summary.html'>det.</a>");
-                        OutputWriteLine($"{sfBlocks.name0} ({sfBlocks.additionalParams.Count})     {sfBlocks.name1}");
-                        OutputWriteLine($"{CombineStringArray(sfBlocks.additionalParams.ToArray())}");
+                        OutputWriteLine($"{sfBlocks.Name0} ({sfBlocks.AdditionalParams.Count})     {sfBlocks.Name1}");
+                        OutputWriteLine($"{CombineStringArray(sfBlocks.AdditionalParams.ToArray())}");
                         OutputWriteLine($"");
                     }
                 }
@@ -387,10 +387,10 @@ namespace MyShaderAnalysis.codestash
                 // Console.WriteLine($"{shaderFile.featuresHeader.file_description}");
                 // Console.WriteLine($"{shader}");
 
-                int a0 = shaderFile.featuresHeader.arg0;
-                int a1 = shaderFile.featuresHeader.arg1;
-                int a2 = shaderFile.featuresHeader.arg2;
-                int a3 = shaderFile.featuresHeader.arg3;
+                int a0 = shaderFile.featuresHeader.DevShader;
+                int a1 = shaderFile.featuresHeader.Arg1;
+                int a2 = shaderFile.featuresHeader.Arg2;
+                int a3 = shaderFile.featuresHeader.Arg3;
                 //if (a2 == 0 && a3 == 0)
                 //{
                 //    Console.WriteLine($"{GetShortName(shaderFile.filenamepath)}");
@@ -404,7 +404,7 @@ namespace MyShaderAnalysis.codestash
                 if (a0 == 1 && a3 == 1)
                 {
                     CollectStringValue($"{CombineIntArray(new int[] { a0, a1, a2, a3 })}");
-                    Console.WriteLine($"{RemoveBaseDir(shaderFile.filenamepath)}");
+                    Console.WriteLine($"{RemoveBaseDir(shaderFile.FilenamePath)}");
                 }
             }
         }

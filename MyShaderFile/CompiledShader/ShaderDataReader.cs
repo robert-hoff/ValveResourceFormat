@@ -7,23 +7,12 @@ namespace ValveResourceFormat.CompiledShader
 
     public class ShaderDataReader : BinaryReader
     {
-        /*
-         * Pass a HandleOutputWrite delegate to redirect output
-         *
-         * Examples:
-         * Console.Write (default), same as (x)=>{Console.Write(x);}
-         * sw.Write (a StreamWriter), buffer.Write (a StringBuffer), (x)=>{} (disable output)
-         *
-         */
-        public HandleOutputWrite outputWriter { get; set; }
+        public HandleOutputWrite OutputWriter { get; set; }
 
+        // pass an OutputWriter to direct output somewhere else, Console.Write is assigned by default
         public ShaderDataReader(Stream input, HandleOutputWrite outputWriter = null) : base(input)
         {
-            this.outputWriter = outputWriter ?? Console.Write;
-        }
-        public ShaderDataReader(string filenamepath, HandleOutputWrite outputWriter = null) : base(new MemoryStream(File.ReadAllBytes(filenamepath)))
-        {
-            this.outputWriter = outputWriter ?? Console.Write;
+            OutputWriter = outputWriter ?? ((x) => { Console.Write(x); });
         }
 
 
@@ -171,7 +160,7 @@ namespace ValveResourceFormat.CompiledShader
 
         public void BreakLine()
         {
-            outputWriter("\n");
+            OutputWriter("\n");
         }
 
         public void Comment(string message)
@@ -181,17 +170,17 @@ namespace ValveResourceFormat.CompiledShader
 
         public void TabComment(string message, int tabLen = 4, bool useSlashes = true)
         {
-            outputWriter($"{"".PadLeft(tabLen)}{(useSlashes ? "// " : "")}{message}\n");
+            OutputWriter($"{"".PadLeft(tabLen)}{(useSlashes ? "// " : "")}{message}\n");
         }
 
         public void OutputWrite(string text)
         {
-            outputWriter(text);
+            OutputWriter(text);
         }
 
         public void OutputWriteLine(string text)
         {
-            outputWriter(text + "\n");
+            OutputWriter(text + "\n");
         }
     }
 }

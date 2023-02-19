@@ -23,9 +23,9 @@ namespace MyShaderAnalysis.utilhelpers.parsetrials
         public ParseV62ZFrame(byte[] data, ShaderFile shaderFile, HandleOutputWrite outputWriter = null) : base(new MemoryStream(data), outputWriter)
         {
             this.shaderFile = shaderFile;
-            this.vcsProgramType = shaderFile.vcsProgramType;
-            this.vcsPlatformType = shaderFile.vcsPlatformType;
-            this.vcsShaderModelType = shaderFile.vcsShaderModelType;
+            this.vcsProgramType = shaderFile.VcsProgramType;
+            this.vcsPlatformType = shaderFile.VcsPlatformType;
+            this.vcsShaderModelType = shaderFile.VcsShaderModelType;
         }
 
 
@@ -63,7 +63,7 @@ namespace MyShaderAnalysis.utilhelpers.parsetrials
                 //    throw new ShaderParserException("unexpected data");
                 //}
                 uint paramId = ReadUInt16AtPosition();
-                ShowBytes(2, $"{paramId,3}   {shaderFile.paramBlocks[(int)paramId].name0}");
+                ShowBytes(2, $"{paramId,3}   {shaderFile.ParamBlocks[(int)paramId].Name0}");
             }
             BreakLine();
             // uint nrHeaders = ReadUInt16AtPosition();

@@ -25,7 +25,7 @@ namespace MyShaderAnalysis.batchtesting2
             for (int i = 0; i < zFrameFile.GpuSourceCount; i++)
             {
                 VulkanSource vulkanSource = (VulkanSource)zFrameFile.GpuSources[i];
-                if (vulkanSource.arg0 == -1)
+                if (vulkanSource.Arg0 == -1)
                 {
                     // nothing to do
                     continue;

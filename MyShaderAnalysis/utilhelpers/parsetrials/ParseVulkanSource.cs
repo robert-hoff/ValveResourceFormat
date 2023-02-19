@@ -36,7 +36,7 @@ namespace MyShaderAnalysis.utilhelpers.parsetrials
         VulkanSource vulkanSource;
 
         public ParseVulkanSource(VulkanSource vulkanSource, HandleOutputWrite outputWriter = null) :
-            base(new MemoryStream(vulkanSource.sourcebytes), outputWriter)
+            base(new MemoryStream(vulkanSource.Sourcebytes), outputWriter)
         {
             this.vulkanSource = vulkanSource;
         }
@@ -45,16 +45,16 @@ namespace MyShaderAnalysis.utilhelpers.parsetrials
         public void PrintByteDetail()
         {
             BaseStream.Position = 0;
-            outputWriter($"{vulkanSource.arg0,-4} arg0\n");
-            outputWriter($"{vulkanSource.offset,-4} offset\n");
-            outputWriter($"{vulkanSource.metadataOffset,-4} offset2\n");
+            OutputWriter($"{vulkanSource.Arg0,-4} arg0\n");
+            OutputWriter($"{vulkanSource.Offset,-4} offset\n");
+            OutputWriter($"{vulkanSource.MetadataOffset,-4} offset2\n");
 
             // -- use this to write to file
             // byte[] databytes = ReadBytes(vulkanSource.offset2);
             // File.WriteAllBytes("X:/checkouts/SPIRV-Cross/vcs_vulkan_samples/source4.spv", databytes);
 
             Comment("spirv part");
-            ShowBytes(vulkanSource.metadataOffset);
+            ShowBytes(vulkanSource.MetadataOffset);
             BreakLine();
             ShowBytes(4000);
         }
@@ -64,20 +64,20 @@ namespace MyShaderAnalysis.utilhelpers.parsetrials
         public void PrintByteDetailSpirvReflection()
         {
             BaseStream.Position = 0;
-            outputWriter($"{vulkanSource.arg0,-4} arg0\n");
-            outputWriter($"{vulkanSource.offset,-4} offset\n");
-            outputWriter($"{vulkanSource.metadataOffset,-4} offset2\n");
+            OutputWriter($"{vulkanSource.Arg0,-4} arg0\n");
+            OutputWriter($"{vulkanSource.Offset,-4} offset\n");
+            OutputWriter($"{vulkanSource.MetadataOffset,-4} offset2\n");
 
-            if (vulkanSource.offset == 0)
+            if (vulkanSource.Offset == 0)
             {
-                outputWriter("empty source");
+                OutputWriter("empty source");
                 return;
             }
 
-            byte[] databytes = ReadBytes(vulkanSource.metadataOffset);
+            byte[] databytes = ReadBytes(vulkanSource.MetadataOffset);
             string source = DecompileSpirvDll.DecompileVulkan(databytes);
             BreakLine();
-            outputWriter(source);
+            OutputWriter(source);
             BreakLine();
             ShowBytes(4000);
         }

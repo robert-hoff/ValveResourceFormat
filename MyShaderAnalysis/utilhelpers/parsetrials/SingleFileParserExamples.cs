@@ -184,7 +184,7 @@ namespace MyShaderAnalysis.utilhelpers.parsetrials
             string filenamepath = GetFilenamepath(ARCHIVE.dota_game_pcgl_v64, "multiblend_pcgl_30_vs.vcs");
             var buffer = new StringWriter();
 
-            ShaderDataReader datareader = new ShaderDataReader(filenamepath, buffer.Write);
+            ShaderDataReader datareader = new ShaderDataReader(new MemoryStream(File.ReadAllBytes(filenamepath)), buffer.Write);
             datareader.ShowByteCount();
             datareader.ShowBytes(200);
             try

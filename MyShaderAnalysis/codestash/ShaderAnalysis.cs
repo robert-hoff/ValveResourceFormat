@@ -372,7 +372,7 @@ namespace MyShaderAnalysis.codestash
                 StreamWriter sw = new(outputFilenamepath);
                 Console.WriteLine($"parsing {vcsFile}");
                 Console.WriteLine($"writing to {outputFilenamepath}");
-                PrintZFrame(zframeDatabytes, shaderFile.vcsProgramType, shaderFile.vcsPlatformType, true, sw);
+                PrintZFrame(zframeDatabytes, shaderFile.VcsProgramType, shaderFile.VcsPlatformType, true, sw);
                 sw.Close();
 
                 break;
@@ -389,14 +389,14 @@ namespace MyShaderAnalysis.codestash
                 int nrToParse = zcount > 100 ? 100 : zcount;
                 if (nrToParse == 0)
                 {
-                    Console.WriteLine($"no zframes to parse for {RemoveBaseDir(shaderFile.filenamepath)}");
+                    Console.WriteLine($"no zframes to parse for {RemoveBaseDir(shaderFile.FilenamePath)}");
                     continue;
                 }
-                Console.WriteLine($"parsing {RemoveBaseDir(shaderFile.filenamepath)} frames [{0},{nrToParse})");
+                Console.WriteLine($"parsing {RemoveBaseDir(shaderFile.FilenamePath)} frames [{0},{nrToParse})");
                 for (int i = 0; i < nrToParse; i++)
                 {
                     byte[] zframeDatabytes = shaderFile.GetDecompressedZFrameByIndex(i);
-                    PrintZFrame(zframeDatabytes, shaderFile.vcsProgramType, shaderFile.vcsPlatformType, true);
+                    PrintZFrame(zframeDatabytes, shaderFile.VcsProgramType, shaderFile.VcsPlatformType, true);
                 }
             }
         }
@@ -410,7 +410,7 @@ namespace MyShaderAnalysis.codestash
             StreamWriter sw = new(outputFilenamepath);
             Console.WriteLine($"parsing {filenamepath}");
             Console.WriteLine($"writing to {outputFilenamepath}");
-            PrintZFrame(zframeDatabytes, shaderFile.vcsProgramType, shaderFile.vcsPlatformType, true, sw);
+            PrintZFrame(zframeDatabytes, shaderFile.VcsProgramType, shaderFile.VcsPlatformType, true, sw);
             sw.Close();
         }
 
@@ -425,7 +425,7 @@ namespace MyShaderAnalysis.codestash
             StreamWriter sw = new(outputFilenamepath);
             Console.WriteLine($"parsing {filenamepath}");
             Console.WriteLine($"writing to {outputFilenamepath}");
-            PrintZFrame(zframeDatabytes, shaderFile.vcsProgramType, shaderFile.vcsPlatformType, true, sw);
+            PrintZFrame(zframeDatabytes, shaderFile.VcsProgramType, shaderFile.VcsPlatformType, true, sw);
             sw.Close();
         }
 
@@ -450,7 +450,7 @@ namespace MyShaderAnalysis.codestash
         {
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             byte[] zframeDatabytes = shaderFile.GetDecompressedZFrameByIndex(zframeIndex);
-            PrintZFrame(zframeDatabytes, shaderFile.vcsProgramType, shaderFile.vcsPlatformType, disableOutput);
+            PrintZFrame(zframeDatabytes, shaderFile.VcsProgramType, shaderFile.VcsPlatformType, disableOutput);
         }
 
         static void PrintZFrame(byte[] databytes, VcsProgramType vcsFiletype, VcsPlatformType sourceType,

@@ -36,9 +36,9 @@ namespace MyShaderAnalysis.compat
             foreach (string filenamepath in allVcsFiles)
             {
                 ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
-                foreach (var item in shaderFile.sfBlocks)
+                foreach (var item in shaderFile.SfBlocks)
                 {
-                    map[item.name0] = 1;
+                    map[item.Name0] = 1;
                 }
             }
             foreach (var item in map)
@@ -62,15 +62,15 @@ namespace MyShaderAnalysis.compat
             string vcsFilenamepath = @$"{dir_game}/multiblend_pcgl_30_ps.vcs";
             ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(vcsFilenamepath);
 
-            offset = new int[shaderFile.sfBlocks.Count];
-            layers = new int[shaderFile.sfBlocks.Count];
+            offset = new int[shaderFile.SfBlocks.Count];
+            layers = new int[shaderFile.SfBlocks.Count];
 
             offset[0] = 1;
-            layers[0] = shaderFile.sfBlocks[0].arg2;
+            layers[0] = shaderFile.SfBlocks[0].Arg2;
 
-            for (int i = 1; i < shaderFile.sfBlocks.Count; i++)
+            for (int i = 1; i < shaderFile.SfBlocks.Count; i++)
             {
-                int curLayer = shaderFile.sfBlocks[i].arg2;
+                int curLayer = shaderFile.SfBlocks[i].Arg2;
                 layers[i] = curLayer;
                 offset[i] = offset[i - 1] * (layers[i - 1] + 1);
             }
@@ -156,7 +156,7 @@ namespace MyShaderAnalysis.compat
                 }
 
                 // Console.WriteLine($"{i}");
-                string parmDisplayName = $"{ShaderUtilHelpers.ShortenShaderParam(shaderFile.sfBlocks[i].name0)}{paramLayer}";
+                string parmDisplayName = $"{ShaderUtilHelpers.ShortenShaderParam(shaderFile.SfBlocks[i].Name0)}{paramLayer}";
                 // nameList += parmDisplayName.PadRight(7);
                 nameList += parmDisplayName.ToLower() + ", ";
             }

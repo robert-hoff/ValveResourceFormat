@@ -249,7 +249,7 @@ namespace MyGUI.Types.Viewers {
                     return;
                 }
                 long zframeId = Convert.ToInt64(linkText, 16);
-                var zframeTab = new TabPage($"{shaderFile.filenamepath.Split('_')[^1][..^4]}[{zframeId:x}]");
+                var zframeTab = new TabPage($"{shaderFile.FilenamePath.Split('_')[^1][..^4]}[{zframeId:x}]");
                 // var zframeRichTextBox = new ZFrameRichTextBox(tabControl, shaderFile, vrfGuiContext, zframeId);
                 var zframeRichTextBox = new ZFrameRichTextBox(tabControl, shaderFile, zframeId);
                 zframeRichTextBox.MouseEnter += new EventHandler(MouseEnterHandler);
@@ -296,7 +296,7 @@ namespace MyGUI.Types.Viewers {
                     // the target id is extracted from the text link, strictly dependent on the particular format used
                     // linkTokens[0].Split('-')[^2] evaluates as ZFRAME00000000, number is read as base 16
                     long zframeId = Convert.ToInt64(linkTokens[0].Split('-')[^2][6..], 16);
-                    var zframeTab = new TabPage($"{shaderFile.filenamepath.Split('_')[^1][..^4]}[{zframeId:x}] bytes");
+                    var zframeTab = new TabPage($"{shaderFile.FilenamePath.Split('_')[^1][..^4]}[{zframeId:x}] bytes");
                     var zframeRichTextBox = new ZFrameRichTextBox(tabControl, shaderFile, zframeId, byteVersion: true);
                     zframeRichTextBox.MouseEnter += new EventHandler(MouseEnterHandler);
                     zframeTab.Controls.Add(zframeRichTextBox);
@@ -311,7 +311,7 @@ namespace MyGUI.Types.Viewers {
                 // (the sourceId is not the same as the zframeId - a single zframe may contain more than 1 source,
                 // they are enumerated in each zframe file starting from 0)
                 int gpuSourceId = Convert.ToInt32(linkTokens[1], CultureInfo.InvariantCulture);
-                string gpuSourceTabTitle = $"{shaderFile.filenamepath.Split('_')[^1][..^4]}[{zframeFile.ZframeId:x}]({gpuSourceId})";
+                string gpuSourceTabTitle = $"{shaderFile.FilenamePath.Split('_')[^1][..^4]}[{zframeFile.ZframeId:x}]({gpuSourceId})";
 
                 var buffer  = new StringWriter(CultureInfo.InvariantCulture);
                 TabPage gpuSourceTab = null;
@@ -327,7 +327,7 @@ namespace MyGUI.Types.Viewers {
                     case DxbcSource:
                     case DxilSource: {
                             zframeFile.PrintGpuSource(gpuSourceId, buffer.Write);
-                            byte[] sourceBytes = zframeFile.GpuSources[gpuSourceId].sourcebytes;
+                            byte[] sourceBytes = zframeFile.GpuSources[gpuSourceId].Sourcebytes;
                             gpuSourceTab = CreateByteViewerTab(sourceBytes, buffer.ToString());
                             gpuSourceTab.Text = gpuSourceTabTitle;
                             break;
@@ -339,10 +339,10 @@ namespace MyGUI.Types.Viewers {
                             try {
                                 string reflectedSpirv = DecompileSpirv(vulkanSource.GetSpirvBytes());
                                 buffer.WriteLine(vulkanSource.GetSourceDetails());
-                                buffer.WriteLine($"// Spirv source ({vulkanSource.metadataOffset}), reflection performed with SPIRV-Cross, KhronosGroup\n");
+                                buffer.WriteLine($"// Spirv source ({vulkanSource.MetadataOffset}), reflection performed with SPIRV-Cross, KhronosGroup\n");
                                 buffer.WriteLine(reflectedSpirv);
-                                buffer.WriteLine($"// Source metadata (unknown encoding) ({vulkanSource.metadataLength})");
-                                buffer.WriteLine($"[{vulkanSource.metadataOffset}]");
+                                buffer.WriteLine($"// Source metadata (unknown encoding) ({vulkanSource.MetadataLength})");
+                                buffer.WriteLine($"[{vulkanSource.MetadataOffset}]");
                                 buffer.WriteLine($"{BytesToString(vulkanSource.GetMetadataBytes())}");
                                 gpuSourceTab = new TabPage(gpuSourceTabTitle);
                                 var glslRichTextBox = CreateRichTextBox(buffer.ToString());

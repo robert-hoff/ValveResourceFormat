@@ -41,7 +41,7 @@ namespace MyShaderAnalysis.batchtesting1
                     ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(zi);
                     for (int i = 0; i < Math.Min(zframeFile.GpuSourceCount, LIMIT_GPU_SOURCES); i++)
                     {
-                        Console.WriteLine($"{shaderFile.filenamepath} zi={zi} gpu={i}");
+                        Console.WriteLine($"{shaderFile.FilenamePath} zi={zi} gpu={i}");
                         VulkanSource vulkanSource = (VulkanSource)zframeFile.GpuSources[i];
                         try
                         {
@@ -84,7 +84,7 @@ namespace MyShaderAnalysis.batchtesting1
         {
             foreach (ShaderFile shaderFile in vcsArchive.GetShaderFiles())
             {
-                Console.WriteLine($"{shaderFile.filenamepath} zframe count = {shaderFile.GetZFrameCount()}");
+                Console.WriteLine($"{shaderFile.FilenamePath} zframe count = {shaderFile.GetZFrameCount()}");
             }
         }
 
@@ -101,7 +101,7 @@ namespace MyShaderAnalysis.batchtesting1
             FileArchive vcsArchive = new FileArchive(ARCHIVE.the_lab_pc_v62);
             foreach (ShaderFile shaderFile in vcsArchive.GetShaderFiles())
             {
-                Console.WriteLine($"{Path.GetFileName(shaderFile.filenamepath)} zframe count = {shaderFile.GetZFrameCount()}");
+                Console.WriteLine($"{Path.GetFileName(shaderFile.FilenamePath)} zframe count = {shaderFile.GetZFrameCount()}");
             }
         }
 
@@ -114,7 +114,7 @@ namespace MyShaderAnalysis.batchtesting1
             FileArchive vcsArchive = new FileArchive(ARCHIVE.the_lab_pc_v62);
             foreach (ShaderFile shaderFile in vcsArchive.GetShaderFiles())
             {
-                Console.WriteLine($"{shaderFile.filenamepath}");
+                Console.WriteLine($"{shaderFile.FilenamePath}");
                 shaderFile.PrintByteDetail(outputWriter: (x) => { });
             }
         }

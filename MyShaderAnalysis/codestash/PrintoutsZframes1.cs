@@ -107,7 +107,7 @@ namespace MyShaderAnalysis.codestash
             {
                 int zframeCount = 0;
                 ShaderFile shaderFile = InstantiateShaderFile(triple.vsFile.filenamepath);
-                foreach (var item in shaderFile.zframesLookup)
+                foreach (var item in shaderFile.ZframesLookup)
                 {
                     ZFileSummary(triple.vsFile, item.Key, writeFile: true, disableOutput: true);
                     CloseStreamWriter();
@@ -119,7 +119,7 @@ namespace MyShaderAnalysis.codestash
                 }
                 zframeCount = 0;
                 shaderFile = InstantiateShaderFile(triple.psFile.filenamepath);
-                foreach (var item in shaderFile.zframesLookup)
+                foreach (var item in shaderFile.ZframesLookup)
                 {
                     ZFileSummary(triple.psFile, item.Key, writeFile: true, disableOutput: true);
                     CloseStreamWriter();
@@ -270,7 +270,7 @@ namespace MyShaderAnalysis.codestash
 
         static void PrintDataBlocks3(ShaderFile shaderFile, ZFrameFile zframeFile, SortedDictionary<int, int> writeSequences)
         {
-            FileTokensOld fileTokens = new FileTokensOld(shaderFile.filenamepath);
+            FileTokensOld fileTokens = new FileTokensOld(shaderFile.FilenamePath);
 
             Dictionary<int, GpuSource> blockIdToSource = GetBlockIdToSource(zframeFile);
             string configHeader = $"D-Param configurations ({blockIdToSource.Count})";
@@ -281,9 +281,9 @@ namespace MyShaderAnalysis.codestash
 
 
             List<string> dParamNames = new();
-            foreach (DBlock dBlock in shaderFile.dBlocks)
+            foreach (DBlock dBlock in shaderFile.DBlocks)
             {
-                dParamNames.Add(ShortenShaderParam(dBlock.name0).ToLower());
+                dParamNames.Add(ShortenShaderParam(dBlock.Name0).ToLower());
             }
             string configNames = CombineStringsSpaceSep(dParamNames.ToArray(), 6);
             configNames = $"{new string(' ', 5)}{configNames}";
@@ -311,11 +311,11 @@ namespace MyShaderAnalysis.codestash
                 {
                     string urlText = $"source[{blockSource.GetEditorRefIdAsString()}]";
                     string sourceLink = $"<a href='{fileTokens.GetGlslHtmlUrl(blockSource.GetEditorRefIdAsString())}'>{urlText}</a>";
-                    OutputWriteLine($"    {sourceLink} {blockSource.sourcebytes.Length,12}  (bytes)");
+                    OutputWriteLine($"    {sourceLink} {blockSource.Sourcebytes.Length,12}  (bytes)");
                 } else
                 {
                     // todo - doesn't show id along with block name
-                    OutputWriteLine($"  {blockSource.GetBlockName().PadRight(20)} {blockSource.sourcebytes.Length,12} (bytes)");
+                    OutputWriteLine($"  {blockSource.GetBlockName().PadRight(20)} {blockSource.Sourcebytes.Length,12} (bytes)");
                 }
 
             }
@@ -355,16 +355,16 @@ namespace MyShaderAnalysis.codestash
             PrintAbbreviations(shaderFile);
             OutputWriteLine("");
             List<string> dParamNames = new();
-            foreach (DBlock dBlock in shaderFile.dBlocks)
+            foreach (DBlock dBlock in shaderFile.DBlocks)
             {
-                dParamNames.Add(ShortenShaderParam(dBlock.name0).ToLower());
+                dParamNames.Add(ShortenShaderParam(dBlock.Name0).ToLower());
             }
             string configNames = CombineStringsSpaceSep(dParamNames.ToArray(), 6);
             configNames = $"{new string(' ', 5)}{configNames}";
             int dBlockCount = 0;
             for (int blockId = 0; blockId < zframeFile.DataBlocks.Count; blockId++)
             {
-                if (zframeFile.DataBlocks[blockId].h0 == 0)
+                if (zframeFile.DataBlocks[blockId].H0 == 0)
                 {
                     continue;
                 }
@@ -380,7 +380,7 @@ namespace MyShaderAnalysis.codestash
                 GpuSource blockSource = blockIdToSource[blockId];
                 if (blockSource is GlslSource)
                 {
-                    OutputWriteLine($"    {GetSourceLink(shaderFile.filenamepath, (GlslSource)blockSource)} {blockSource.sourcebytes.Length,12}  (bytes)");
+                    OutputWriteLine($"    {GetSourceLink(shaderFile.FilenamePath, (GlslSource)blockSource)} {blockSource.Sourcebytes.Length,12}  (bytes)");
                 }
             }
             OutputWriteLine("");
@@ -400,9 +400,9 @@ namespace MyShaderAnalysis.codestash
         static void PrintAbbreviations(ShaderFile shaderFile)
         {
             List<string> abbreviations = new();
-            foreach (var dBlock in shaderFile.dBlocks)
+            foreach (var dBlock in shaderFile.DBlocks)
             {
-                string abbreviation = $"{dBlock.name0}({ShortenShaderParam(dBlock.name0).ToLower()})";
+                string abbreviation = $"{dBlock.Name0}({ShortenShaderParam(dBlock.Name0).ToLower()})";
                 abbreviations.Add(abbreviation);
             }
             if (abbreviations.Count == 0)
@@ -431,7 +431,7 @@ namespace MyShaderAnalysis.codestash
             OutputWriteLine(new string('-', headerText.Length));
 
             int lastseq = writeSequences[-1];
-            if (zframeFile.LeadingData.h0 > 0)
+            if (zframeFile.LeadingData.H0 > 0)
             {
                 OutputWriteLine("");
             }
@@ -439,7 +439,7 @@ namespace MyShaderAnalysis.codestash
 
             string seqName = $"WRITESEQ[{lastseq}] (default)";
             ValveResourceFormat.CompiledShader.ZDataBlock leadData = zframeFile.LeadingData;
-            PrintParamWriteSequence(shaderFile, leadData.dataload, leadData.h0, leadData.h1, leadData.h2, seqName: seqName);
+            PrintParamWriteSequence(shaderFile, leadData.Dataload, leadData.H0, leadData.H1, leadData.H2, seqName: seqName);
             OutputWriteLine("");
             foreach (var item in writeSequences)
             {
@@ -448,7 +448,7 @@ namespace MyShaderAnalysis.codestash
                     lastseq = item.Value;
                     ZDataBlock zBlock = zframeFile.DataBlocks[item.Key];
                     seqName = $"WRITESEQ[{lastseq}]";
-                    PrintParamWriteSequence(shaderFile, zBlock.dataload, zBlock.h0, zBlock.h1, zBlock.h2, seqName: seqName);
+                    PrintParamWriteSequence(shaderFile, zBlock.Dataload, zBlock.H0, zBlock.H1, zBlock.H2, seqName: seqName);
                     OutputWriteLine("");
                 }
             }
@@ -471,31 +471,31 @@ namespace MyShaderAnalysis.codestash
             SortedDictionary<int, int> sequencesMap = new();
             int seqCount = 0;
             // IMP the first entry is always set 0 regardless of whether the leading datablock carries any data
-            sequencesMap.Add(zframeFile.LeadingData.blockId, 0);
-            if (zframeFile.LeadingData.h0 == 0)
+            sequencesMap.Add(zframeFile.LeadingData.BlockId, 0);
+            if (zframeFile.LeadingData.H0 == 0)
             {
                 writeSequences.Add("", seqCount++);
             } else
             {
-                writeSequences.Add(BytesToString(zframeFile.LeadingData.dataload, -1), seqCount++);
+                writeSequences.Add(BytesToString(zframeFile.LeadingData.Dataload, -1), seqCount++);
             }
             foreach (ZDataBlock zBlock in zframeFile.DataBlocks)
             {
-                if (zBlock.dataload == null)
+                if (zBlock.Dataload == null)
                 {
-                    sequencesMap.Add(zBlock.blockId, -1);
+                    sequencesMap.Add(zBlock.BlockId, -1);
                     continue;
                 }
-                string dataloadStr = BytesToString(zBlock.dataload, -1);
+                string dataloadStr = BytesToString(zBlock.Dataload, -1);
                 int seq = writeSequences.GetValueOrDefault(dataloadStr, -1);
                 if (seq == -1)
                 {
                     writeSequences.Add(dataloadStr, seqCount);
-                    sequencesMap.Add(zBlock.blockId, seqCount);
+                    sequencesMap.Add(zBlock.BlockId, seqCount);
                     seqCount++;
                 } else
                 {
-                    sequencesMap.Add(zBlock.blockId, seq);
+                    sequencesMap.Add(zBlock.BlockId, seq);
                 }
 
             }
@@ -530,7 +530,7 @@ namespace MyShaderAnalysis.codestash
                 {
                     b3Text = $"  _ ({b2:X02})";
                 }
-                OutputWrite($"[{paramId,3}] {shaderFile.paramBlocks[paramId].name0,-30} {b2Text,-14} {b3Text}");
+                OutputWrite($"[{paramId,3}] {shaderFile.ParamBlocks[paramId].Name0,-30} {b2Text,-14} {b3Text}");
                 if (i + 1 == h0 && h0 != h2)
                 {
                     OutputWrite($"   // {h0}");
@@ -555,7 +555,7 @@ namespace MyShaderAnalysis.codestash
             PrintZBlock(shaderFile, zframeFile.LeadingData);
             for (int i = 0; i < zframeFile.DataBlocks.Count; i++)
             {
-                if (i > 0 && zframeFile.DataBlocks[i].h0 > 0 && zframeFile.DataBlocks[i - 1].h0 == 0)
+                if (i > 0 && zframeFile.DataBlocks[i].H0 > 0 && zframeFile.DataBlocks[i - 1].H0 == 0)
                 {
                     OutputWriteLine("");
                 }
@@ -565,16 +565,16 @@ namespace MyShaderAnalysis.codestash
 
         static void PrintZBlock(ShaderFile shaderFile, ZDataBlock zBlock)
         {
-            int h0 = zBlock.h0;
-            int h1 = zBlock.h1;
-            int h2 = zBlock.h2;
-            string blockName = zBlock.blockId == -1 ? "leading data" : $"data-block[{zBlock.blockId}]";
+            int h0 = zBlock.H0;
+            int h1 = zBlock.H1;
+            int h2 = zBlock.H2;
+            string blockName = zBlock.BlockId == -1 ? "leading data" : $"data-block[{zBlock.BlockId}]";
             OutputWriteLine($"{blockName} ({h0},{h1},{h2})");
-            if (zBlock.blockId > -1 && h0 == 0)
+            if (zBlock.BlockId > -1 && h0 == 0)
             {
                 return;
             }
-            PrintParamWriteSequence(shaderFile, zBlock.dataload, h0, h1, h2);
+            PrintParamWriteSequence(shaderFile, zBlock.Dataload, h0, h1, h2);
             OutputWriteLine("");
         }
 
@@ -625,7 +625,7 @@ namespace MyShaderAnalysis.codestash
             for (int i = 0; i < configState.Length; i++)
             {
                 // if (configState[i] > 0) {
-                OutputWriteLine($"{shaderFile.sfBlocks[i].name0,-30} {configState[i]}");
+                OutputWriteLine($"{shaderFile.SfBlocks[i].Name0,-30} {configState[i]}");
                 // }
             }
             if (configState.Length == 0)
@@ -656,7 +656,7 @@ namespace MyShaderAnalysis.codestash
             OutputWriteLine($"{headerText}");
             OutputWriteLine(new string('-', headerText.Length));
 
-            VcsProgramType vcsFiletype = shaderFile.vcsProgramType;
+            VcsProgramType vcsFiletype = shaderFile.VcsProgramType;
             if (vcsFiletype == VcsProgramType.VertexShader || vcsFiletype == VcsProgramType.GeometryShader)
             {
                 OutputWriteLine($"{zframeFile.VsEndBlocks.Count:X02} 00 00 00   // end blocks ({zframeFile.VsEndBlocks.Count})");

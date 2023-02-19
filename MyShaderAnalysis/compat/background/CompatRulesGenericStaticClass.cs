@@ -202,15 +202,15 @@ namespace MyShaderAnalysis.compat
         static void GenerateOffsetAndLayers(ShaderFile shaderFile)
         {
 
-            offsets = new int[shaderFile.sfBlocks.Count];
-            layers = new int[shaderFile.sfBlocks.Count];
+            offsets = new int[shaderFile.SfBlocks.Count];
+            layers = new int[shaderFile.SfBlocks.Count];
 
             offsets[0] = 1;
-            layers[0] = shaderFile.sfBlocks[0].arg2;
+            layers[0] = shaderFile.SfBlocks[0].Arg2;
 
-            for (int i = 1; i < shaderFile.sfBlocks.Count; i++)
+            for (int i = 1; i < shaderFile.SfBlocks.Count; i++)
             {
-                int curLayer = shaderFile.sfBlocks[i].arg2;
+                int curLayer = shaderFile.SfBlocks[i].Arg2;
                 layers[i] = curLayer;
                 offsets[i] = offsets[i - 1] * (layers[i - 1] + 1);
             }

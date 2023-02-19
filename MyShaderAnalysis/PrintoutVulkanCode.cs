@@ -55,10 +55,10 @@ namespace MyShaderAnalysis
             FileWriter fw = new FileWriter(FileArchives.GetServerTestFile());
             fw.WriteHtmlHeader("Spirv reflection", "Spirv reflection");
             fw.WriteText(vulkanSource.GetSourceDetails());
-            fw.WriteText($"// Spirv source ({vulkanSource.metadataOffset}), reflection performed with SPIRV-Cross, KhronosGroup\n");
+            fw.WriteText($"// Spirv source ({vulkanSource.MetadataOffset}), reflection performed with SPIRV-Cross, KhronosGroup\n");
             fw.WriteText($"{reflectedSpirv}");
-            fw.WriteText($"// Source metadata (unknown encoding) ({vulkanSource.metadataLength})");
-            fw.WriteText($"[{vulkanSource.metadataOffset}]");
+            fw.WriteText($"// Source metadata (unknown encoding) ({vulkanSource.MetadataLength})");
+            fw.WriteText($"[{vulkanSource.MetadataOffset}]");
             fw.WriteText($"{BytesToString(vulkanSource.GetMetadataBytes())}");
             fw.CloseStreamWriter();
         }
@@ -142,7 +142,7 @@ namespace MyShaderAnalysis
 
 
             VulkanSource vulkanSource = zframeFile.GpuSources[0] as VulkanSource;
-            byte[] sourceBytes = vulkanSource.sourcebytes;
+            byte[] sourceBytes = vulkanSource.Sourcebytes;
             string vulkanBytesAsString = BytesToString(sourceBytes);
             Console.WriteLine(vulkanBytesAsString); // prints the Vulkan source as a byte string
         }

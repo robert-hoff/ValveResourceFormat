@@ -64,16 +64,16 @@ namespace MyShaderAnalysis
 
             // Do spirv reflection if applicable
             var gpuSource = zframeFile.GpuSources[gpuSourceId];
-            if (gpuSource.sourcebytes.Length > 0 && gpuSource is VulkanSource)
+            if (gpuSource.Sourcebytes.Length > 0 && gpuSource is VulkanSource)
             {
                 VulkanSource vulkanSource = (VulkanSource)gpuSource;
                 var reflectedSpirv = DecompileSpirvDll.DecompileVulkan(vulkanSource.GetSpirvBytes());
                 textBuffer.GetStringBuilder().Clear();
                 textBuffer.WriteLine(vulkanSource.GetSourceDetails());
-                textBuffer.WriteLine($"// SPIR-V source ({vulkanSource.metadataOffset}), Glsl reflection with SPIRV-Cross, KhronosGroup\n");
+                textBuffer.WriteLine($"// SPIR-V source ({vulkanSource.MetadataOffset}), Glsl reflection with SPIRV-Cross, KhronosGroup\n");
                 textBuffer.WriteLine(reflectedSpirv);
-                textBuffer.WriteLine($"// Source metadata (unknown encoding) ({vulkanSource.metadataLength})");
-                textBuffer.WriteLine($"[{vulkanSource.metadataOffset}]");
+                textBuffer.WriteLine($"// Source metadata (unknown encoding) ({vulkanSource.MetadataLength})");
+                textBuffer.WriteLine($"[{vulkanSource.MetadataOffset}]");
                 textBuffer.WriteLine($"{BytesToString(vulkanSource.GetMetadataBytes())}");
             } else
             {
@@ -86,7 +86,7 @@ namespace MyShaderAnalysis
         public string GetGpuByteSource(ZFrameFile zframeFile, int gpuSourceId)
         {
             var gpuSource = zframeFile.GpuSources[gpuSourceId];
-            var sourceBytes = gpuSource.sourcebytes;
+            var sourceBytes = gpuSource.Sourcebytes;
             string byteRepresentation = BytesToString(sourceBytes);
             return byteRepresentation;
         }
