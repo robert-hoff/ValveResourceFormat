@@ -6,6 +6,7 @@ using MyShaderAnalysis.serverhtml;
 using MyShaderAnalysis.snippetcode;
 using MyShaderAnalysis.staticanalysis;
 using MyShaderAnalysis.util;
+using MyShaderFileKristiker.MyHelperClasses.ProgEntries;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -46,7 +47,7 @@ namespace MyShaderAnalysis
         // classes using the Kristiker shaders *only*
         public static void AnalysisKristiker()
         {
-            MyShaderFileKristiker.MyHelperClasses.RunKristiker.RunTrials();
+            RunKristiker.RunTrials();
         }
 
         public static void StaticAnalysisForKristiker()

@@ -1,6 +1,4 @@
-using MyShaderFileKristiker.MyHelperClasses.ProgEntries;
-
-namespace MyShaderFileKristiker.MyHelperClasses
+namespace MyShaderFileKristiker.MyHelperClasses.ProgEntries
 {
     public class RunKristiker
     {

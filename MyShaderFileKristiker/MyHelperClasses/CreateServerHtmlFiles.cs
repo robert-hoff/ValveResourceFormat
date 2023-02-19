@@ -14,6 +14,7 @@ namespace MyShaderFileKristiker.MyHelperClasses
         private const int ZCOUNT = 1;
         private const int GPU_COUNT = 1;
         private const bool CLEAR_DIRECTORY = true;
+        private const string USE_BASE_FOLDER = "GEN-output2";
 
         public static void RunTrials()
         {
@@ -47,9 +48,18 @@ namespace MyShaderFileKristiker.MyHelperClasses
             int zFramesToPrint = ZCOUNT,
             int gpuSourcesToPrint = GPU_COUNT,
             bool saveGpuByteDetail = false,
-            bool clearDirectory = CLEAR_DIRECTORY)
+            bool clearDirectory = CLEAR_DIRECTORY,
+            string useBaseFolder = USE_BASE_FOLDER)
         {
             List<FileVcsTokens> relatedVcs = FileVcsCollection.GetRelatedVcs(archive, shaderName);
+
+            if (useBaseFolder.Length > 0)
+            {
+                foreach (FileVcsTokens vcsTokens in relatedVcs)
+                {
+                    vcsTokens.targetsavedir = useBaseFolder;
+                }
+            }
             if (clearDirectory)
             {
                 RunSnippets.DeleteDirectoryContent(relatedVcs[0].GetServerFileDir());

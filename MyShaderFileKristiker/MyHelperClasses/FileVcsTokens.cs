@@ -13,6 +13,7 @@ namespace MyShaderFileKristiker.MyHelperClasses
         public VcsShaderModelType shaderModelType;
         public VcsPlatformType platformType;
         public string archivename { get; }      // dota-game-pcgl, dota-core-pcgl
+        public string targetsavedir { get; set; }      // use archivename as default, option in method to change
         public string filename { get; }         // multiblend_pcgl_30_ps.vcs
         public string filedir { get; }          // X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders/vfx/
         public string filenamepath { get; }     // X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders/vfx/multiblend_pcgl_30_ps.vcs
@@ -29,10 +30,11 @@ namespace MyShaderFileKristiker.MyHelperClasses
         // archivename
         // foldername
 
-        public FileVcsTokens(ARCHIVE archive, string filename)
+        public FileVcsTokens(ARCHIVE archive, string filename, string targetSaveDir = "")
         {
             this.archive = archive;
             archivename = archive.ToString();
+            this.targetsavedir = targetSaveDir.Length > 0 ? targetSaveDir : archivename;
             filename = Path.GetFileName(filename);
             this.filename = filename;
             this.filedir = $"{FileArchive.GetArchiveDir(archive)}/";
@@ -95,7 +97,7 @@ namespace MyShaderFileKristiker.MyHelperClasses
          */
         public string GetServerFileDir(bool createDirs = false)
         {
-            string serverFileDir = $"{serverdir}/{archivename}/{foldername}";
+            string serverFileDir = $"{serverdir}/{targetsavedir}/{foldername}";
             if (createDirs)
             {
                 Directory.CreateDirectory(serverFileDir);
@@ -120,7 +122,7 @@ namespace MyShaderFileKristiker.MyHelperClasses
          */
         public string GetServerFilePath()
         {
-            return $"/{archivename}/{foldername}";
+            return $"/{targetsavedir}/{foldername}";
         }
 
         /*
@@ -129,8 +131,8 @@ namespace MyShaderFileKristiker.MyHelperClasses
         public string GetServerFileUrl(string label = "")
         {
             return label.Length == 0 ?
-            $"/{archivename}/{foldername}/{name}.html" :
-            $"/{archivename}/{foldername}/{name}-{label}.html";
+            $"/{targetsavedir}/{foldername}/{name}.html" :
+            $"/{targetsavedir}/{foldername}/{name}-{label}.html";
         }
 
         /*
@@ -265,7 +267,7 @@ namespace MyShaderFileKristiker.MyHelperClasses
          */
         public string GetBaseName()
         {
-            return $"/{archivename}/{filename}";
+            return $"/{targetsavedir}/{filename}";
         }
 
         public string GetZFrameLinkIfOneExists(long zframeId, bool noBrackets = false)
