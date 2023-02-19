@@ -11,21 +11,23 @@ namespace RunVrf.MyShaderAnalysis
         // static string inputFile = $"{DOTA_PCGL_V64_GAME}cables_pcgl_40_vs.vcs"; static int zFrameIndex = 0;
         // static string inputFile = $"{DOTA_PCGL_V64_GAME}hero_pcgl_40_vs.vcs"; static int zFrameIndex = 0x17fa2;
         // static string inputFile = $"{DOTA_PCGL_V64_GAME}hero_pcgl_40_ps.vcs"; static int zFrameIndex = 0x18cbfb1;
-        // static string inputFile = $"{DOTA_PCGL_V64_GAME}spring_meteor_pcgl_30_vs.vcs"; static int zFrameIndex = 0;
+        static string inputFile = $"{DOTA_PCGL_V64_GAME}spring_meteor_pcgl_30_vs.vcs"; static int zFrameIndex = 0;
         // static string inputFile = $"{DOTA_PCGL_V64_GAME}crystal_pcgl_40_vs.vcs"; static int zFrameIndex = 0;
         // static string inputFile = $"{DOTA_PCGL_V64_GAME}crystal_pcgl_40_ps.vcs"; static int zFrameIndex = 0;
         // static string inputFile = $"{DOTA_PCGL_V64_GAME}crystal_pcgl_40_features.vcs"; static int zFrameIndex = 0;
-        static string inputFile = $"{DOTA_PCGL_V64_GAME}3dskyboxstencil_pcgl_40_ps.vcs"; static int zFrameIndex = 0;
+        // static string inputFile = $"{DOTA_PCGL_V64_GAME}3dskyboxstencil_pcgl_40_ps.vcs"; static int zFrameIndex = 0;
+        // static string inputFile = $"{DOTA_PCGL_V64_GAME}multiblend_pcgl_40_ps.vcs"; static int zFrameIndex = 0;
 
-        static bool writeToDefaultFile = true;
-        static string defaultFile = "output.html";
+        // static bool writeToDefaultFile = true;
+        static bool writeToDefaultFile = false;
+        static string defaultFile = "output2.html";
 
 
         public static void RunTrials()
         {
             // PrintShaderFileToHtml();
             PrintZframeToHtml();
-            // PrintZframeByteVersion();
+            PrintZframeToHtmlByteVersion();
             // ShowZFrameParameters();
         }
 
@@ -55,7 +57,7 @@ namespace RunVrf.MyShaderAnalysis
             fw.CloseStreamWriter();
         }
 
-        public static void PrintZframeByteVersion()
+        public static void PrintZframeToHtmlByteVersion()
         {
             string htmlTitle = $"Z[0x{zFrameIndex:x}]";
             string htmlHeader = $"{Path.GetFileName(inputFile)}  Z[0x{zFrameIndex:x}]";
@@ -101,11 +103,11 @@ namespace RunVrf.MyShaderAnalysis
         {
             ShaderFile shaderFile = GetShaderFile();
             ZFrameFile zFrameFile = GetZFrameFile(shaderFile);
-            Debug.WriteLine($"{zFrameFile.ZframeParams[0].HasStaticVal}");
-            Debug.WriteLine($"{zFrameFile.ZframeParams[0].StaticValBool}");
-            Debug.WriteLine($"{zFrameFile.ZframeParams[0].StaticValFloat}");
-            Debug.WriteLine($"{zFrameFile.ZframeParams[0].StaticValInt}");
-            Debug.WriteLine($"{zFrameFile.ZframeParams[0].HeaderOperator}");
+            Debug.WriteLine($"{zFrameFile.Attributes[0].HasStaticVal}");
+            Debug.WriteLine($"{zFrameFile.Attributes[0].StaticValBool}");
+            Debug.WriteLine($"{zFrameFile.Attributes[0].StaticValFloat}");
+            Debug.WriteLine($"{zFrameFile.Attributes[0].StaticValInt}");
+            Debug.WriteLine($"{zFrameFile.Attributes[0].HeaderOperator}");
         }
     }
 }

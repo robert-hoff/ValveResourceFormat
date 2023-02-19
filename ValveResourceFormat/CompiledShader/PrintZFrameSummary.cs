@@ -194,6 +194,8 @@ namespace ValveResourceFormat.CompiledShader
             {
                 for (int i = segStart; i < segEnd; i++)
                 {
+                    // Does this sometimes fail? What is [i*4+1]?
+                    // var paramId = dataload[i * 4] + 256 * dataload[i * 4 + 1];
                     var paramId = dataload[i * 4];
                     var arg0 = dataload[i * 4 + 2];
                     var arg1 = dataload[i * 4 + 3];
