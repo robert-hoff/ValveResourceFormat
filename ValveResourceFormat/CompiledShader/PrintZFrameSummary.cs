@@ -228,7 +228,7 @@ namespace ValveResourceFormat.CompiledShader
             foreach (var blockId in activeBlockIds)
             {
                 var dBlockConfig = shaderFile.GetDBlockConfig(blockId);
-                tabulatedConfigCombinations.AddTabulatedRow(IntArrayToStrings(dBlockConfig, nullValue: -1));
+                tabulatedConfigCombinations.AddTabulatedRow(IntArrayToStrings(dBlockConfig, nulledValue: -1));
             }
             var tabbedConfigs = new Stack<string>(tabulatedConfigCombinations.BuildTabulatedRows(reverse: true));
             if (tabbedConfigs.Count == 0)

@@ -148,12 +148,12 @@ namespace ValveResourceFormat.CompiledShader
             return $"{valueString}";
         }
 
-        public static string[] IntArrayToStrings(int[] ints, int nullValue = int.MaxValue)
+        public static string[] IntArrayToStrings(int[] ints, int nulledValue = int.MaxValue)
         {
             var stringTokens = new string[ints.Length];
             for (int i = 0; i < ints.Length; i++)
             {
-                stringTokens[i] = ints[i] == nullValue ? "_" : $"{ints[i]}";
+                stringTokens[i] = ints[i] == nulledValue ? "_" : $"{ints[i]}";
             }
             return stringTokens;
         }
