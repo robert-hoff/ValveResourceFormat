@@ -283,7 +283,7 @@ namespace MyShaderAnalysis.utilhelpers
 
             public int GetSourceCount(int queryIndex)
             {
-                return GetZFrameFile(queryIndex).gpuSourceCount;
+                return GetZFrameFile(queryIndex).GpuSourceCount;
             }
         }
     }

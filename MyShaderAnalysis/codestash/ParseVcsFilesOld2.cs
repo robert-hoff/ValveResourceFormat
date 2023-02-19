@@ -88,12 +88,12 @@ namespace MyShaderAnalysis.codestash
             string processedData = new PostProcessZframeFile(zframeFile, fileTokens).PostProcessZframeData(buffer.ToString());
 
 
-            string outputFilenamepath = fileTokens.GetZFrameHtmlFilenamepath(zframeFile.zframeId, "summary", createDirs: true);
+            string outputFilenamepath = fileTokens.GetZFrameHtmlFilenamepath(zframeFile.ZframeId, "summary", createDirs: true);
             FileWriter fileWriter = new FileWriter(outputFilenamepath, showOutputToConsole: false);
 
             // This emulates the zframe name in the VRF viewer - omitting {fileTokens.namelabel} (e.g. '3dskyboxstencil')
-            string htmlTitle = $"{fileTokens.vcstoken}[{zframeFile.zframeId:x}]";
-            string htmlHeader = fileTokens.GetZFrameHtmlFilename(zframeFile.zframeId)[..^5];
+            string htmlTitle = $"{fileTokens.vcstoken}[{zframeFile.ZframeId:x}]";
+            string htmlHeader = fileTokens.GetZFrameHtmlFilename(zframeFile.ZframeId)[..^5];
             fileWriter.WriteHtmlHeader(htmlTitle, htmlHeader);
 
             fileWriter.GetOutputWriter()(processedData);
@@ -264,15 +264,15 @@ namespace MyShaderAnalysis.codestash
         {
             if (fileTokens == null)
             {
-                fileTokens = new FileTokensOld(zframeFile.filenamepath);
+                fileTokens = new FileTokensOld(zframeFile.FilenamePath);
             }
-            string outputFilenamepath = fileTokens.GetZFrameHtmlFilenamepath(zframeFile.zframeId, "summary", createDirs: true);
+            string outputFilenamepath = fileTokens.GetZFrameHtmlFilenamepath(zframeFile.ZframeId, "summary", createDirs: true);
             FileWriter fileWriter = new FileWriter(outputFilenamepath, showOutputToConsole: false);
 
             // string htmlTitle = $"{fileTokens.namelabel}-{fileTokens.vcstoken}[{zframeFile.zframeId:x}]";
             // This emulates the name in the VRF viewer - omitting {fileTokens.namelabel}
-            string htmlTitle = $"{fileTokens.vcstoken}[{zframeFile.zframeId:x}]";
-            string htmlHeader = fileTokens.GetZFrameHtmlFilename(zframeFile.zframeId)[..^5];
+            string htmlTitle = $"{fileTokens.vcstoken}[{zframeFile.ZframeId:x}]";
+            string htmlHeader = fileTokens.GetZFrameHtmlFilename(zframeFile.ZframeId)[..^5];
             fileWriter.WriteHtmlHeader(htmlTitle, htmlHeader);
 
             // zframe.PrintByteDetail(outputWriter: fileWriter.GetOutputWriter());
@@ -285,13 +285,13 @@ namespace MyShaderAnalysis.codestash
         {
             if (fileTokens == null)
             {
-                fileTokens = new FileTokensOld(zframeFile.filenamepath);
+                fileTokens = new FileTokensOld(zframeFile.FilenamePath);
             }
-            string outputFilenamepath = fileTokens.GetZFrameHtmlFilenamepath(zframeFile.zframeId, "bytes", createDirs: true);
+            string outputFilenamepath = fileTokens.GetZFrameHtmlFilenamepath(zframeFile.ZframeId, "bytes", createDirs: true);
             FileWriter fileWriter = new FileWriter(outputFilenamepath, showOutputToConsole: false);
 
-            string htmlTitle = $"{fileTokens.namelabel}-Z[0x{zframeFile.zframeId:x}]";
-            string htmlHeader = fileTokens.GetZFrameHtmlFilename(zframeFile.zframeId, "bytes")[..^5];
+            string htmlTitle = $"{fileTokens.namelabel}-Z[0x{zframeFile.ZframeId:x}]";
+            string htmlHeader = fileTokens.GetZFrameHtmlFilename(zframeFile.ZframeId, "bytes")[..^5];
             fileWriter.WriteHtmlHeader(htmlTitle, htmlHeader);
 
             zframeFile.PrintByteDetail(outputWriter: fileWriter.GetOutputWriter());
@@ -314,7 +314,7 @@ namespace MyShaderAnalysis.codestash
 
         static void PrintGpuSource(ZFrameFile zframeFile, int sourceId, FileTokensOld fileTokens = null)
         {
-            var glslSource = zframeFile.gpuSources[sourceId];
+            var glslSource = zframeFile.GpuSources[sourceId];
             string glslServerDir = fileTokens.GetGlslServerDir(createDirs: true);
             string outputFilenamepath = $"{glslServerDir}/{fileTokens.GetGlslHtmlFilename(glslSource.GetEditorRefIdAsString())}";
 

@@ -45,7 +45,7 @@ namespace MyShaderAnalysis.codestash.snippetcode
                     {
                         ZFrameFile zframeFile = new(zframeData.GetDecompressedZFrame(), filenamepath, zframeData.zframeId,
                             shaderfile.vcsProgramType, shaderfile.vcsPlatformType, shaderfile.vcsShaderModelType);
-                        foreach (var source in zframeFile.gpuSources)
+                        foreach (var source in zframeFile.GpuSources)
                         {
                             // if ((source.offset1-1)%64==0 && source.offset1<500) {
                             if (source.sourcebytes.Length < 5000)

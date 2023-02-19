@@ -311,11 +311,11 @@ namespace MyGUI.Types.Viewers {
                 // (the sourceId is not the same as the zframeId - a single zframe may contain more than 1 source,
                 // they are enumerated in each zframe file starting from 0)
                 int gpuSourceId = Convert.ToInt32(linkTokens[1], CultureInfo.InvariantCulture);
-                string gpuSourceTabTitle = $"{shaderFile.filenamepath.Split('_')[^1][..^4]}[{zframeFile.zframeId:x}]({gpuSourceId})";
+                string gpuSourceTabTitle = $"{shaderFile.filenamepath.Split('_')[^1][..^4]}[{zframeFile.ZframeId:x}]({gpuSourceId})";
 
                 var buffer  = new StringWriter(CultureInfo.InvariantCulture);
                 TabPage gpuSourceTab = null;
-                switch (zframeFile.gpuSources[gpuSourceId]) {
+                switch (zframeFile.GpuSources[gpuSourceId]) {
                     case GlslSource: {
                             zframeFile.PrintGpuSource(gpuSourceId, buffer.Write);
                             gpuSourceTab = new TabPage(gpuSourceTabTitle);
@@ -327,14 +327,14 @@ namespace MyGUI.Types.Viewers {
                     case DxbcSource:
                     case DxilSource: {
                             zframeFile.PrintGpuSource(gpuSourceId, buffer.Write);
-                            byte[] sourceBytes = zframeFile.gpuSources[gpuSourceId].sourcebytes;
+                            byte[] sourceBytes = zframeFile.GpuSources[gpuSourceId].sourcebytes;
                             gpuSourceTab = CreateByteViewerTab(sourceBytes, buffer.ToString());
                             gpuSourceTab.Text = gpuSourceTabTitle;
                             break;
                         }
 
                     case VulkanSource: {
-                            VulkanSource vulkanSource = (VulkanSource)zframeFile.gpuSources[gpuSourceId];
+                            VulkanSource vulkanSource = (VulkanSource)zframeFile.GpuSources[gpuSourceId];
                             // attempt spirv reflection
                             try {
                                 string reflectedSpirv = DecompileSpirv(vulkanSource.GetSpirvBytes());
@@ -358,7 +358,7 @@ namespace MyGUI.Types.Viewers {
                         }
 
                     default:
-                        throw new InvalidDataException($"Unimplemented GPU source type {zframeFile.gpuSources[gpuSourceId].GetType()}");
+                        throw new InvalidDataException($"Unimplemented GPU source type {zframeFile.GpuSources[gpuSourceId].GetType()}");
                 }
 
                 tabControl.Controls.Add(gpuSourceTab);

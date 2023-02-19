@@ -49,8 +49,8 @@ namespace MyShaderAnalysis.utilhelpers
             Console.WriteLine($" * GetServerFileUrl(label)             {fileTokens.GetServerFileUrl("label")}");
             Console.WriteLine($" * GetGpuServerDir()                   {fileTokens.GetGpuServerDir()}");
             Console.WriteLine($" * GetGpuServerUrl()                   {fileTokens.GetGpuServerUrl()}");
-            Console.WriteLine($" * GetGpuHtmlFilename(refid) {fileTokens.GetGpuHtmlFilename(zframeFile.gpuSources[0].GetEditorRefIdAsString())}");
-            Console.WriteLine($" * GetGpuHtmlUrl(refid)      {fileTokens.GetGpuHtmlUrl(zframeFile.gpuSources[0].GetEditorRefIdAsString())}");
+            Console.WriteLine($" * GetGpuHtmlFilename(refid) {fileTokens.GetGpuHtmlFilename(zframeFile.GpuSources[0].GetEditorRefIdAsString())}");
+            Console.WriteLine($" * GetGpuHtmlUrl(refid)      {fileTokens.GetGpuHtmlUrl(zframeFile.GpuSources[0].GetEditorRefIdAsString())}");
 
             Console.WriteLine($" * GetZFramesServerDir()               {fileTokens.GetZFramesServerDir()}");
             Console.WriteLine($" * GetZFramesServerPath()              {fileTokens.GetZFramesServerPath()}");

@@ -63,7 +63,7 @@ namespace MyShaderAnalysis
             var textBuffer = new StringWriter(CultureInfo.InvariantCulture);
 
             // Do spirv reflection if applicable
-            var gpuSource = zframeFile.gpuSources[gpuSourceId];
+            var gpuSource = zframeFile.GpuSources[gpuSourceId];
             if (gpuSource.sourcebytes.Length > 0 && gpuSource is VulkanSource)
             {
                 VulkanSource vulkanSource = (VulkanSource)gpuSource;
@@ -85,7 +85,7 @@ namespace MyShaderAnalysis
 
         public string GetGpuByteSource(ZFrameFile zframeFile, int gpuSourceId)
         {
-            var gpuSource = zframeFile.gpuSources[gpuSourceId];
+            var gpuSource = zframeFile.GpuSources[gpuSourceId];
             var sourceBytes = gpuSource.sourcebytes;
             string byteRepresentation = BytesToString(sourceBytes);
             return byteRepresentation;
@@ -126,9 +126,9 @@ namespace MyShaderAnalysis
             {
                 zframeFormattedSummary = new PostProcessZframeFile(zframeFile, fileTokens).PostProcessZframeData(zframeFormattedSummary);
             }
-            string htmlTitle = $"{fileTokens.vcstoken}[{zframeFile.zframeId:x}]";
-            string htmlHeader = fileTokens.GetZFrameHtmlFilename(zframeFile.zframeId)[..^5];
-            string outputFilenamepath = fileTokens.GetZFrameHtmlFilenamepath(zframeFile.zframeId, "summary", createDirs: true);
+            string htmlTitle = $"{fileTokens.vcstoken}[{zframeFile.ZframeId:x}]";
+            string htmlHeader = fileTokens.GetZFrameHtmlFilename(zframeFile.ZframeId)[..^5];
+            string outputFilenamepath = fileTokens.GetZFrameHtmlFilenamepath(zframeFile.ZframeId, "summary", createDirs: true);
             WriteHtmlFile(outputFilenamepath, htmlTitle, htmlHeader, zframeFormattedSummary);
         }
 
@@ -150,9 +150,9 @@ namespace MyShaderAnalysis
         public void SaveZframeByteSummaryToHtml(ZFrameFile zframeFile)
         {
             string zframeByteDetail = GetZframeByteSummary(zframeFile);
-            string htmlTitle = $"{fileTokens.vcstoken}[{zframeFile.zframeId:x}] bytes";
-            string htmlHeader = fileTokens.GetZFrameHtmlFilename(zframeFile.zframeId, "bytes")[..^5];
-            string outputFilenamepath = fileTokens.GetZFrameHtmlFilenamepath(zframeFile.zframeId, "bytes", createDirs: true);
+            string htmlTitle = $"{fileTokens.vcstoken}[{zframeFile.ZframeId:x}] bytes";
+            string htmlHeader = fileTokens.GetZFrameHtmlFilename(zframeFile.ZframeId, "bytes")[..^5];
+            string outputFilenamepath = fileTokens.GetZFrameHtmlFilenamepath(zframeFile.ZframeId, "bytes", createDirs: true);
             WriteHtmlFile(outputFilenamepath, htmlTitle, htmlHeader, zframeByteDetail);
         }
 
@@ -175,9 +175,9 @@ namespace MyShaderAnalysis
         {
             string gpuSourceDetail = GetGpuSource(zframeFile, gpuSourceId);
             string gpuServerDir = fileTokens.GetGpuServerDir(createDirs: true);
-            string outputFilenamepath = $"{gpuServerDir}/{fileTokens.GetGpuHtmlFilename(zframeFile.gpuSources[gpuSourceId].GetEditorRefIdAsString())}";
+            string outputFilenamepath = $"{gpuServerDir}/{fileTokens.GetGpuHtmlFilename(zframeFile.GpuSources[gpuSourceId].GetEditorRefIdAsString())}";
 
-            GpuSource gpuSource = zframeFile.gpuSources[gpuSourceId];
+            GpuSource gpuSource = zframeFile.GpuSources[gpuSourceId];
             string headerText = "";
             if (gpuSource is not VulkanSource)
             {
@@ -185,7 +185,7 @@ namespace MyShaderAnalysis
             }
             headerText += "Source belongs to ";
             headerText += $"<a href='{fileTokens.GetServerFileUrl("summary2")}'>{fileTokens.filename}</a> ";
-            headerText += $"<a href='{fileTokens.GetZFrameUrl(zframeFile.zframeId, "summary")}'>zframe[0x{zframeFile.zframeId:x}]</a>\n";
+            headerText += $"<a href='{fileTokens.GetZFrameUrl(zframeFile.ZframeId, "summary")}'>zframe[0x{zframeFile.ZframeId:x}]</a>\n";
             string gpuByteSourceFilenamepath = $"{gpuServerDir}/" +
                 $"{fileTokens.GetGpuHtmlFilename(gpuSource.GetEditorRefIdAsString() + "-bytes")}";
             if (File.Exists(gpuByteSourceFilenamepath))
@@ -195,8 +195,8 @@ namespace MyShaderAnalysis
                 headerText += $"View byte detail <a href='{gpuSourceUrl}'>{gpuSource.GetEditorRefIdAsString()}-bytes<a>\n";
             }
             headerText += $"\n";
-            string htmlTitle = $"{fileTokens.vcstoken}[{zframeFile.zframeId:x}]({gpuSourceId})";
-            string htmlHeader = $"{fileTokens.filename} zframe[0x{zframeFile.zframeId:x}] source[{gpuSourceId}]";
+            string htmlTitle = $"{fileTokens.vcstoken}[{zframeFile.ZframeId:x}]({gpuSourceId})";
+            string htmlHeader = $"{fileTokens.filename} zframe[0x{zframeFile.ZframeId:x}] source[{gpuSourceId}]";
             WriteHtmlFile(outputFilenamepath, htmlTitle, htmlHeader, $"{headerText}{gpuSourceDetail}");
         }
 
@@ -211,8 +211,8 @@ namespace MyShaderAnalysis
             string gpuSourceDetail = textBuffer.ToString();
             string gpuServerDir = fileTokens.GetGpuServerDir(createDirs: true);
             string outputFilenamepath = $"{gpuServerDir}/" +
-                $"{fileTokens.GetGpuHtmlFilename(zframeFile.gpuSources[gpuSourceId].GetEditorRefIdAsString()+"-bytes")}";
-            string htmlTitle = $"{fileTokens.filename}[{zframeFile.zframeId:x}]({gpuSourceId})";
+                $"{fileTokens.GetGpuHtmlFilename(zframeFile.GpuSources[gpuSourceId].GetEditorRefIdAsString()+"-bytes")}";
+            string htmlTitle = $"{fileTokens.filename}[{zframeFile.ZframeId:x}]({gpuSourceId})";
             string htmlHeader = $"{fileTokens.sourceType}[{gpuSourceId}] {Path.GetFileName(outputFilenamepath)[0..^5]}";
             WriteHtmlFile(outputFilenamepath, htmlTitle, htmlHeader, gpuSourceDetail);
 
@@ -227,7 +227,7 @@ namespace MyShaderAnalysis
         }
         public void SaveGpuSourcesToHtml(ZFrameFile zframeFile, int requestedGpuSourcesToPrint, bool saveGpuByteDetail = false)
         {
-            int gpuSourcesToPrint = Math.Min(zframeFile.gpuSourceCount, requestedGpuSourcesToPrint);
+            int gpuSourcesToPrint = Math.Min(zframeFile.GpuSourceCount, requestedGpuSourcesToPrint);
             for (int i = 0; i < gpuSourcesToPrint; i++)
             {
                 if (saveGpuByteDetail)

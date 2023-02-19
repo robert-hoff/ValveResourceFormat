@@ -104,7 +104,7 @@ namespace MyShaderAnalysis.codestash
                 for (int zframeIndex = 0; zframeIndex < shaderFile.GetZFrameCount(); zframeIndex++)
                 {
                     ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(zframeIndex);
-                    foreach (var endBlock in zframeFile.psEndBlocks)
+                    foreach (var endBlock in zframeFile.PsEndBlocks)
                     {
                         //if (endBlock.data1 == null)
                         //{
@@ -135,8 +135,8 @@ namespace MyShaderAnalysis.codestash
                         // CollectStringValue($"{BytesToString(endBlock.data0)}    {f1} {f2}");
 
 
-                        string show0 = endBlock.data0 == null ? "".PadRight(47) : BytesToString(endBlock.data0);
-                        string show1 = endBlock.data1 == null ? "".PadRight(59) : BytesToString(endBlock.data1);
+                        string show0 = endBlock.Data0 == null ? "".PadRight(47) : BytesToString(endBlock.Data0);
+                        string show1 = endBlock.Data1 == null ? "".PadRight(59) : BytesToString(endBlock.Data1);
                         CollectStringValue($"{show0}   {show1}");
 
 
@@ -176,35 +176,35 @@ namespace MyShaderAnalysis.codestash
                 {
 
                     ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(zIndex);
-                    int[] configState = configMap.GetConfigState(zframeFile.zframeId);
-                    Console.WriteLine($"{zframeFile.filenamepath}       zframeId={zframeFile.zframeId:x08}");
+                    int[] configState = configMap.GetConfigState(zframeFile.ZframeId);
+                    Console.WriteLine($"{zframeFile.FilenamePath}       zframeId={zframeFile.ZframeId:x08}");
                     ShowIntArray(configState);
-                    foreach (var endBlock in zframeFile.psEndBlocks)
+                    foreach (var endBlock in zframeFile.PsEndBlocks)
                     {
 
                         byte[] sec0 = new byte[3];
-                        sec0[0] = endBlock.data2[0];
-                        sec0[1] = endBlock.data2[1];
-                        sec0[2] = endBlock.data2[2];
+                        sec0[0] = endBlock.Data2[0];
+                        sec0[1] = endBlock.Data2[1];
+                        sec0[2] = endBlock.Data2[2];
                         byte[] sec1 = new byte[24];
                         byte[] sec2 = new byte[32];
                         for (int i = 3; i < 27; i++)
                         {
-                            sec1[i - 3] = endBlock.data2[i];
+                            sec1[i - 3] = endBlock.Data2[i];
                         }
                         for (int i = 35; i < 67; i++)
                         {
-                            sec2[i - 35] = endBlock.data2[i];
+                            sec2[i - 35] = endBlock.Data2[i];
                         }
-                        if (endBlock.data1 == null)
+                        if (endBlock.Data1 == null)
                         {
                             // endBlock.data1 = new byte[] { };
                             continue;
                         }
-                        CollectStringValue($"{BytesToString(endBlock.data1, -1)}");
+                        CollectStringValue($"{BytesToString(endBlock.Data1, -1)}");
 
                         // Console.WriteLine($"{BytesToString(endBlock.data1, -1)}");
-                        Console.WriteLine($"[{endBlock.blockIdRef,2}] {BytesToString(sec0, -1)}  {BytesToString(sec1, -1)}     {BytesToString(sec2, -1)}");
+                        Console.WriteLine($"[{endBlock.BlockIdRef,2}] {BytesToString(sec0, -1)}  {BytesToString(sec1, -1)}     {BytesToString(sec2, -1)}");
                     }
                 }
             }
@@ -230,9 +230,9 @@ namespace MyShaderAnalysis.codestash
                 for (int zframeIndex = 0; zframeIndex < shaderFile.GetZFrameCount(); zframeIndex++)
                 {
                     ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(zframeIndex);
-                    foreach (var endBlock in zframeFile.psEndBlocks)
+                    foreach (var endBlock in zframeFile.PsEndBlocks)
                     {
-                        if (endBlock.data2 == null || endBlock.data2.Length == 0)
+                        if (endBlock.Data2 == null || endBlock.Data2.Length == 0)
                         {
                             continue;
                         }
@@ -240,15 +240,15 @@ namespace MyShaderAnalysis.codestash
                         byte[] sec2 = new byte[32];
                         for (int i = 3; i < 27; i++)
                         {
-                            sec1[i - 3] = endBlock.data2[i];
+                            sec1[i - 3] = endBlock.Data2[i];
                         }
                         for (int i = 35; i < 67; i++)
                         {
-                            sec2[i - 35] = endBlock.data2[i];
+                            sec2[i - 35] = endBlock.Data2[i];
                         }
                         // if (endBlock.data2[11] == 8)
                         // if (endBlock.data2[19] == 12)
-                        if (endBlock.data2[0] == 1)
+                        if (endBlock.Data2[0] == 1)
                         {
                             Console.WriteLine(vcsFilenamepath);
                             Console.WriteLine($"{BytesToString(sec1, -1)}     {BytesToString(sec2, -1)}");
@@ -277,9 +277,9 @@ namespace MyShaderAnalysis.codestash
                 for (int zframeIndex = 0; zframeIndex < shaderFile.GetZFrameCount(); zframeIndex++)
                 {
                     ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(zframeIndex);
-                    foreach (var endBlock in zframeFile.psEndBlocks)
+                    foreach (var endBlock in zframeFile.PsEndBlocks)
                     {
-                        if (endBlock.data2 == null || endBlock.data2.Length == 0)
+                        if (endBlock.Data2 == null || endBlock.Data2.Length == 0)
                         {
                             continue;
                         }
@@ -287,11 +287,11 @@ namespace MyShaderAnalysis.codestash
                         byte[] sec2 = new byte[32];
                         for (int i = 3; i < 27; i++)
                         {
-                            sec1[i - 3] = endBlock.data2[i];
+                            sec1[i - 3] = endBlock.Data2[i];
                         }
                         for (int i = 35; i < 67; i++)
                         {
-                            sec2[i - 35] = endBlock.data2[i];
+                            sec2[i - 35] = endBlock.Data2[i];
                         }
                         CollectStringValue($"{BytesToString(sec1, -1)}     {BytesToString(sec2, -1)}");
                     }
@@ -319,13 +319,13 @@ namespace MyShaderAnalysis.codestash
                 for (int zframeIndex = 0; zframeIndex < shaderFile.GetZFrameCount(); zframeIndex++)
                 {
                     ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(zframeIndex);
-                    foreach (var endBlock in zframeFile.psEndBlocks)
+                    foreach (var endBlock in zframeFile.PsEndBlocks)
                     {
-                        if (endBlock.data2 == null || endBlock.data2.Length == 0)
+                        if (endBlock.Data2 == null || endBlock.Data2.Length == 0)
                         {
                             continue;
                         }
-                        CollectStringValue($"{BytesToString(endBlock.data2, -1)}");
+                        CollectStringValue($"{BytesToString(endBlock.Data2, -1)}");
                     }
                 }
             }
@@ -435,8 +435,8 @@ namespace MyShaderAnalysis.codestash
                 }
 
                 ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(zframeIndex);
-                sourceReferencesCount += zframeFile.gpuSourceCount;
-                foreach (var item in zframeFile.gpuSources)
+                sourceReferencesCount += zframeFile.GpuSourceCount;
+                foreach (var item in zframeFile.GpuSources)
                 {
                     string glslSourceId = item.GetEditorRefIdAsString();
                     sourceLookup.TryGetValue(item.GetEditorRefIdAsString(), out int count);
@@ -472,7 +472,7 @@ namespace MyShaderAnalysis.codestash
                 {
                     ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(zframeIndex);
 
-                    foreach (int v in zframeFile.trailingSummary)
+                    foreach (int v in zframeFile.TrailingSummary)
                     {
                         CollectIntValue(v);
                     }
@@ -516,11 +516,11 @@ namespace MyShaderAnalysis.codestash
                 {
                     ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(zframeIndex);
 
-                    for (int i = 1; i < zframeFile.dataBlocks.Count; i++)
+                    for (int i = 1; i < zframeFile.DataBlocks.Count; i++)
                     {
 
-                        int h2last = zframeFile.dataBlocks[i - 1].h2;
-                        int h2cur = zframeFile.dataBlocks[i].h2;
+                        int h2last = zframeFile.DataBlocks[i - 1].h2;
+                        int h2cur = zframeFile.DataBlocks[i].h2;
 
                         if (h2cur > 0 && h2last > 0)
                         {
@@ -557,9 +557,9 @@ namespace MyShaderAnalysis.codestash
                     // Console.WriteLine($"");
                     // CollectStringValue(zframeFile.GetZFrameHeaderStringDescription());
 
-                    if (zframeFile.zframeParams.Count == 4)
+                    if (zframeFile.ZframeParams.Count == 4)
                     {
-                        Console.WriteLine($"{zframeFile.zframeId:X}");
+                        Console.WriteLine($"{zframeFile.ZframeId:X}");
                     }
                 }
             }
@@ -585,9 +585,9 @@ namespace MyShaderAnalysis.codestash
                 for (int zframeIndex = 0; zframeIndex < shaderFile.GetZFrameCount(); zframeIndex++)
                 {
                     ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(zframeIndex);
-                    if (zframeFile.zframeParams.Count == 5)
+                    if (zframeFile.ZframeParams.Count == 5)
                     {
-                        Console.WriteLine($"{zframeFile.zframeId:X}");
+                        Console.WriteLine($"{zframeFile.ZframeId:X}");
                     }
                 }
             }
@@ -605,7 +605,7 @@ namespace MyShaderAnalysis.codestash
                 {
                     ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(zframeIndex);
                     // Console.WriteLine($"zframeFile {zframeFile.zframeId}");
-                    foreach (ZDataBlock dataBlock in zframeFile.dataBlocks)
+                    foreach (ZDataBlock dataBlock in zframeFile.DataBlocks)
                     {
                         Dictionary<int, int> boundaryValues = new();
                         if (dataBlock.dataload != null)
@@ -621,7 +621,7 @@ namespace MyShaderAnalysis.codestash
                                 if (count > 0)
                                 {
                                     Console.WriteLine($"repeated value found");
-                                    Console.WriteLine($"{RemoveBaseDir(vcsFilenamepath)} {zframeFile.zframeId:x} {dataBlock.blockId}");
+                                    Console.WriteLine($"{RemoveBaseDir(vcsFilenamepath)} {zframeFile.ZframeId:x} {dataBlock.blockId}");
                                     break;
                                 }
                                 boundaryValues[combinedValue] = count + 1;
@@ -653,7 +653,7 @@ namespace MyShaderAnalysis.codestash
                 for (int zframeIndex = 0; zframeIndex < shaderFile.GetZFrameCount(); zframeIndex++)
                 {
                     ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(zframeIndex);
-                    foreach (ZDataBlock dataBlock in zframeFile.dataBlocks)
+                    foreach (ZDataBlock dataBlock in zframeFile.DataBlocks)
                     {
                         if (dataBlock.dataload != null)
                         {
@@ -691,7 +691,7 @@ namespace MyShaderAnalysis.codestash
                 {
                     ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(zframeIndex);
                     // Console.WriteLine($"zframeFile {zframeFile.zframeId}");
-                    foreach (ZDataBlock dataBlock in zframeFile.dataBlocks)
+                    foreach (ZDataBlock dataBlock in zframeFile.DataBlocks)
                     {
                         Dictionary<int, int> b0Values = new();
                         if (dataBlock.dataload != null)
@@ -702,7 +702,7 @@ namespace MyShaderAnalysis.codestash
                                 if (count > 0)
                                 {
                                     Console.WriteLine($"repeated value found");
-                                    Console.WriteLine($"{RemoveBaseDir(vcsFilenamepath)} {zframeFile.zframeId:x} {dataBlock.blockId}");
+                                    Console.WriteLine($"{RemoveBaseDir(vcsFilenamepath)} {zframeFile.ZframeId:x} {dataBlock.blockId}");
                                     break;
                                     //int b0 = dataBlock.dataload[i];
                                     //int b1 = dataBlock.dataload[i+1];
@@ -733,8 +733,8 @@ namespace MyShaderAnalysis.codestash
                 for (int zframeIndex = 0; zframeIndex < shaderFile.GetZFrameCount(); zframeIndex++)
                 {
                     ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(zframeIndex);
-                    Console.WriteLine($"zframeFile {zframeFile.zframeId}");
-                    foreach (ZDataBlock dataBlock in zframeFile.dataBlocks)
+                    Console.WriteLine($"zframeFile {zframeFile.ZframeId}");
+                    foreach (ZDataBlock dataBlock in zframeFile.DataBlocks)
                     {
                         if (dataBlock.dataload != null)
                         {
@@ -773,9 +773,9 @@ namespace MyShaderAnalysis.codestash
 
 
                     // CollectStringValue($"{zframeFile.glslSourceCount}  {zframeFile.nrEndBlocks}");
-                    if (zframeFile.nrEndBlocks != zframeFile.gpuSourceCount)
+                    if (zframeFile.NrEndBlocks != zframeFile.GpuSourceCount)
                     {
-                        Console.WriteLine($"{RemoveBaseDir(vcsFilenamepath)} {zframeFile.zframeId:x}");
+                        Console.WriteLine($"{RemoveBaseDir(vcsFilenamepath)} {zframeFile.ZframeId:x}");
                         break;
                     }
 
@@ -807,7 +807,7 @@ namespace MyShaderAnalysis.codestash
                 for (int i = 0; i < shaderFile.GetZFrameCount(); i++)
                 {
                     ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(0);
-                    CollectIntValue(zframeFile.dataBlocks.Count);
+                    CollectIntValue(zframeFile.DataBlocks.Count);
                 }
             }
         }
@@ -827,7 +827,7 @@ namespace MyShaderAnalysis.codestash
                     Console.WriteLine($"{i}");
                 }
                 ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(i);
-                CollectIntValue(zframeFile.dataBlocks.Count);
+                CollectIntValue(zframeFile.DataBlocks.Count);
             }
         }
 
@@ -848,10 +848,10 @@ namespace MyShaderAnalysis.codestash
                 for (int zframeId = 0; zframeId < shaderFile.GetZFrameCount(); zframeId++)
                 {
                     ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(zframeId);
-                    CollectIntValue(zframeFile.leadingData.h0);
-                    if (zframeFile.leadingData.h0 == 0)
+                    CollectIntValue(zframeFile.LeadingData.h0);
+                    if (zframeFile.LeadingData.h0 == 0)
                     {
-                        Console.WriteLine($"{ShortHandName(vcsFilenamepath),-70} {zframeFile.zframeId:x}");
+                        Console.WriteLine($"{ShortHandName(vcsFilenamepath),-70} {zframeFile.ZframeId:x}");
                         //foreach (ZDataBlock zBlock in zframeFile.dataBlocks) {
                         //    Console.WriteLine($"{zBlock.h0}");
                         //}
@@ -875,9 +875,9 @@ namespace MyShaderAnalysis.codestash
                 {
                     ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(zframeId);
 
-                    if (zframeFile.leadingData.h1 != 0)
+                    if (zframeFile.LeadingData.h1 != 0)
                     {
-                        CollectIntValue(zframeFile.leadingData.h2 - zframeFile.leadingData.h1);
+                        CollectIntValue(zframeFile.LeadingData.h2 - zframeFile.LeadingData.h1);
                         // Console.WriteLine($"{RemoveBaseDir(vcsFilenamepath)} {zframeFile.zframeId:x}");
                     }
 
@@ -908,16 +908,16 @@ namespace MyShaderAnalysis.codestash
             foreach (ZFrameFile zFrame in zFrames)
             {
                 // check h0,h2 values
-                foreach (ZDataBlock zBlock in zFrame.dataBlocks)
+                foreach (ZDataBlock zBlock in zFrame.DataBlocks)
                 {
                     CollectStringValue($"{zBlock.h0,-3:000} {zBlock.h2,-3}");
 
                     // if (zBlock.h2 == zBlock.h0 - 1)
                     // if (zBlock.h0 == 5 && zBlock.h2 == 5)
                     // if (zBlock.h0 >  == zBlock.h0 - 1)
-                    if (zFrame.leadingData.h1 > 2)
+                    if (zFrame.LeadingData.h1 > 2)
                     {
-                        Debug.WriteLine($"{zFrame.filenamepath} zframe=0x{zFrame.zframeId:x} h0={zBlock.h0} h2={zBlock.h2}");
+                        Debug.WriteLine($"{zFrame.FilenamePath} zframe=0x{zFrame.ZframeId:x} h0={zBlock.h0} h2={zBlock.h2}");
                         return;
                     }
                 }
@@ -951,14 +951,14 @@ namespace MyShaderAnalysis.codestash
                     //}
 
                     // check h0,h2 values
-                    foreach (ZDataBlock zBlock in zframeFile.dataBlocks)
+                    foreach (ZDataBlock zBlock in zframeFile.DataBlocks)
                     {
                         CollectStringValue($"{zBlock.h0,-3:000} {zBlock.h2,-3}");
 
                         // if (zBlock.h2 == zBlock.h0 - 1)
                         if (zBlock.h0 == 3 && zBlock.h2 == 0)
                         {
-                            Debug.WriteLine($"{zframeFile.filenamepath} zframe=0x{zframeFile.zframeId:x} h0={zBlock.h0} h2={zBlock.h2}");
+                            Debug.WriteLine($"{zframeFile.FilenamePath} zframe=0x{zframeFile.ZframeId:x} h0={zBlock.h0} h2={zBlock.h2}");
                             return;
                         }
                     }
@@ -1008,8 +1008,8 @@ namespace MyShaderAnalysis.codestash
                     Console.WriteLine($"{i}");
                 }
                 ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(i);
-                CollectIntValue(zframeFile.leadingData.h0 - zframeFile.leadingData.h2);
-                foreach (ZDataBlock zBlock in zframeFile.dataBlocks)
+                CollectIntValue(zframeFile.LeadingData.h0 - zframeFile.LeadingData.h2);
+                foreach (ZDataBlock zBlock in zframeFile.DataBlocks)
                 {
                     CollectIntValue(zBlock.h0 - zBlock.h2);
                 }
@@ -1033,7 +1033,7 @@ namespace MyShaderAnalysis.codestash
                 {
 
                     // zframeFile.ShowZFrameHeader();
-                    foreach (var zparam in zframeFile.zframeParams)
+                    foreach (var zparam in zframeFile.ZframeParams)
                     {
                         CollectStringValue(zparam.ToString());
                     }
@@ -1056,15 +1056,15 @@ namespace MyShaderAnalysis.codestash
                 }
                 foreach (ZFrameFile zframeFile in zframeFiles)
                 {
-                    for (int i = 3; i < zframeFile.leadingData.dataload.Length; i += 4)
+                    for (int i = 3; i < zframeFile.LeadingData.dataload.Length; i += 4)
                     {
-                        if (zframeFile.leadingData.dataload[i] == 0)
+                        if (zframeFile.LeadingData.dataload[i] == 0)
                         {
-                            CollectStringValue($"{zframeFile.leadingData.dataload[i - 1]:X02} {zframeFile.leadingData.dataload[i]:X02}");
-                            if (zframeFile.leadingData.dataload[i - 1] == 0x35 && zframeFile.leadingData.dataload[i] == 0)
+                            CollectStringValue($"{zframeFile.LeadingData.dataload[i - 1]:X02} {zframeFile.LeadingData.dataload[i]:X02}");
+                            if (zframeFile.LeadingData.dataload[i - 1] == 0x35 && zframeFile.LeadingData.dataload[i] == 0)
                             {
-                                Console.WriteLine($"{zframeFile.filenamepath}");
-                                Console.WriteLine($"{zframeFile.zframeId}");
+                                Console.WriteLine($"{zframeFile.FilenamePath}");
+                                Console.WriteLine($"{zframeFile.ZframeId}");
                                 goto breakhere;
                             }
                         }
@@ -1097,7 +1097,7 @@ breakhere: Console.WriteLine("");
                 }
                 foreach (ZFrameFile zframeFile in zframeFiles)
                 {
-                    CollectStringValue($"{zframeFile.leadingData.h0,2} {zframeFile.leadingData.h1,2} {zframeFile.leadingData.h2,2}");
+                    CollectStringValue($"{zframeFile.LeadingData.h0,2} {zframeFile.LeadingData.h1,2} {zframeFile.LeadingData.h2,2}");
                 }
             }
         }

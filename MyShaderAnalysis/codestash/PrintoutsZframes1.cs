@@ -190,17 +190,17 @@ namespace MyShaderAnalysis.codestash
         static Dictionary<int, GpuSource> GetBlockIdToSource(ZFrameFile zframeFile)
         {
             Dictionary<int, GpuSource> blockIdToSource = new();
-            if (zframeFile.vcsProgramType == VcsProgramType.VertexShader || zframeFile.vcsProgramType == VcsProgramType.GeometryShader)
+            if (zframeFile.VcsProgramType == VcsProgramType.VertexShader || zframeFile.VcsProgramType == VcsProgramType.GeometryShader)
             {
-                foreach (ZFrameFile.VsEndBlock vsEndBlock in zframeFile.vsEndBlocks)
+                foreach (ZFrameFile.VsEndBlock vsEndBlock in zframeFile.VsEndBlocks)
                 {
-                    blockIdToSource.Add(vsEndBlock.blockIdRef, zframeFile.gpuSources[vsEndBlock.sourceRef]);
+                    blockIdToSource.Add(vsEndBlock.BlockIdRef, zframeFile.GpuSources[vsEndBlock.SourceRef]);
                 }
             } else
             {
-                foreach (ZFrameFile.PsEndBlock psEndBlock in zframeFile.psEndBlocks)
+                foreach (ZFrameFile.PsEndBlock psEndBlock in zframeFile.PsEndBlocks)
                 {
-                    blockIdToSource.Add(psEndBlock.blockIdRef, zframeFile.gpuSources[psEndBlock.sourceRef]);
+                    blockIdToSource.Add(psEndBlock.BlockIdRef, zframeFile.GpuSources[psEndBlock.SourceRef]);
                 }
             }
             return blockIdToSource;
@@ -213,15 +213,15 @@ namespace MyShaderAnalysis.codestash
             string headerText = "source summary";
             OutputWriteLine(headerText);
             OutputWriteLine(new string('-', headerText.Length));
-            int b0 = zframeFile.flags0[0];
-            int b1 = zframeFile.flags0[1];
-            int b2 = zframeFile.flags0[2];
-            int b3 = zframeFile.flags0[3];
+            int b0 = zframeFile.Flags0[0];
+            int b1 = zframeFile.Flags0[1];
+            int b2 = zframeFile.Flags0[2];
+            int b3 = zframeFile.Flags0[3];
             OutputWrite($"{b0:X02} {b1:X02} {b2:X02} {b3:X02}");
             OutputWriteLine($"    // possible flags {ByteToBinary(b0)} {ByteToBinary(b1)}");
-            OutputWriteLine($"{zframeFile.flagbyte0}              // values seen 0,1");
-            OutputWriteLine($"{zframeFile.gpuSourceCount,-11}    // nr of source files");
-            OutputWriteLine($"{zframeFile.flagbyte1}              // values seen 0,1");
+            OutputWriteLine($"{zframeFile.Flagbyte0}              // values seen 0,1");
+            OutputWriteLine($"{zframeFile.GpuSourceCount,-11}    // nr of source files");
+            OutputWriteLine($"{zframeFile.Flagbyte1}              // values seen 0,1");
             OutputWriteLine("");
             OutputWriteLine("");
 
@@ -240,12 +240,12 @@ namespace MyShaderAnalysis.codestash
 
         static void PrintLeadSummary(ZFrameFile zframeFile)
         {
-            OutputWriteLine(PrintZFrameSummary.SummarizeBytes(zframeFile.leadingSummary));
+            OutputWriteLine(PrintZFrameSummary.SummarizeBytes(zframeFile.LeadingSummary));
             OutputWriteLine("");
         }
         static void PrintTailSummary(ZFrameFile zframeFile)
         {
-            OutputWriteLine(PrintZFrameSummary.SummarizeBytes(zframeFile.trailingSummary));
+            OutputWriteLine(PrintZFrameSummary.SummarizeBytes(zframeFile.TrailingSummary));
             OutputWriteLine("");
         }
 
@@ -256,7 +256,7 @@ namespace MyShaderAnalysis.codestash
             OutputWriteLine(headerText);
             OutputWriteLine(new string('-', headerText.Length));
             OutputWrite(zframeFile.ZFrameHeaderStringDescription());
-            if (zframeFile.zframeParams.Count == 0)
+            if (zframeFile.ZframeParams.Count == 0)
             {
                 OutputWriteLine("[empty frameheader]");
             }
@@ -327,17 +327,17 @@ namespace MyShaderAnalysis.codestash
         static List<int> GetActiveBlockIds(ZFrameFile zframeFile)
         {
             List<int> blockIds = new();
-            if (zframeFile.vcsProgramType == VcsProgramType.VertexShader || zframeFile.vcsProgramType == VcsProgramType.GeometryShader)
+            if (zframeFile.VcsProgramType == VcsProgramType.VertexShader || zframeFile.VcsProgramType == VcsProgramType.GeometryShader)
             {
-                foreach (ZFrameFile.VsEndBlock vsEndBlock in zframeFile.vsEndBlocks)
+                foreach (ZFrameFile.VsEndBlock vsEndBlock in zframeFile.VsEndBlocks)
                 {
-                    blockIds.Add(vsEndBlock.blockIdRef);
+                    blockIds.Add(vsEndBlock.BlockIdRef);
                 }
             } else
             {
-                foreach (ZFrameFile.PsEndBlock psEndBlock in zframeFile.psEndBlocks)
+                foreach (ZFrameFile.PsEndBlock psEndBlock in zframeFile.PsEndBlocks)
                 {
-                    blockIds.Add(psEndBlock.blockIdRef);
+                    blockIds.Add(psEndBlock.BlockIdRef);
                 }
             }
             return blockIds;
@@ -362,9 +362,9 @@ namespace MyShaderAnalysis.codestash
             string configNames = CombineStringsSpaceSep(dParamNames.ToArray(), 6);
             configNames = $"{new string(' ', 5)}{configNames}";
             int dBlockCount = 0;
-            for (int blockId = 0; blockId < zframeFile.dataBlocks.Count; blockId++)
+            for (int blockId = 0; blockId < zframeFile.DataBlocks.Count; blockId++)
             {
-                if (zframeFile.dataBlocks[blockId].h0 == 0)
+                if (zframeFile.DataBlocks[blockId].h0 == 0)
                 {
                     continue;
                 }
@@ -431,14 +431,14 @@ namespace MyShaderAnalysis.codestash
             OutputWriteLine(new string('-', headerText.Length));
 
             int lastseq = writeSequences[-1];
-            if (zframeFile.leadingData.h0 > 0)
+            if (zframeFile.LeadingData.h0 > 0)
             {
                 OutputWriteLine("");
             }
 
 
             string seqName = $"WRITESEQ[{lastseq}] (default)";
-            ValveResourceFormat.CompiledShader.ZDataBlock leadData = zframeFile.leadingData;
+            ValveResourceFormat.CompiledShader.ZDataBlock leadData = zframeFile.LeadingData;
             PrintParamWriteSequence(shaderFile, leadData.dataload, leadData.h0, leadData.h1, leadData.h2, seqName: seqName);
             OutputWriteLine("");
             foreach (var item in writeSequences)
@@ -446,7 +446,7 @@ namespace MyShaderAnalysis.codestash
                 if (item.Value > lastseq)
                 {
                     lastseq = item.Value;
-                    ZDataBlock zBlock = zframeFile.dataBlocks[item.Key];
+                    ZDataBlock zBlock = zframeFile.DataBlocks[item.Key];
                     seqName = $"WRITESEQ[{lastseq}]";
                     PrintParamWriteSequence(shaderFile, zBlock.dataload, zBlock.h0, zBlock.h1, zBlock.h2, seqName: seqName);
                     OutputWriteLine("");
@@ -471,15 +471,15 @@ namespace MyShaderAnalysis.codestash
             SortedDictionary<int, int> sequencesMap = new();
             int seqCount = 0;
             // IMP the first entry is always set 0 regardless of whether the leading datablock carries any data
-            sequencesMap.Add(zframeFile.leadingData.blockId, 0);
-            if (zframeFile.leadingData.h0 == 0)
+            sequencesMap.Add(zframeFile.LeadingData.blockId, 0);
+            if (zframeFile.LeadingData.h0 == 0)
             {
                 writeSequences.Add("", seqCount++);
             } else
             {
-                writeSequences.Add(BytesToString(zframeFile.leadingData.dataload, -1), seqCount++);
+                writeSequences.Add(BytesToString(zframeFile.LeadingData.dataload, -1), seqCount++);
             }
-            foreach (ZDataBlock zBlock in zframeFile.dataBlocks)
+            foreach (ZDataBlock zBlock in zframeFile.DataBlocks)
             {
                 if (zBlock.dataload == null)
                 {
@@ -552,14 +552,14 @@ namespace MyShaderAnalysis.codestash
 
         static void PrintDataBlocks1(ShaderFile shaderFile, ZFrameFile zframeFile)
         {
-            PrintZBlock(shaderFile, zframeFile.leadingData);
-            for (int i = 0; i < zframeFile.dataBlocks.Count; i++)
+            PrintZBlock(shaderFile, zframeFile.LeadingData);
+            for (int i = 0; i < zframeFile.DataBlocks.Count; i++)
             {
-                if (i > 0 && zframeFile.dataBlocks[i].h0 > 0 && zframeFile.dataBlocks[i - 1].h0 == 0)
+                if (i > 0 && zframeFile.DataBlocks[i].h0 > 0 && zframeFile.DataBlocks[i - 1].h0 == 0)
                 {
                     OutputWriteLine("");
                 }
-                PrintZBlock(shaderFile, zframeFile.dataBlocks[i]);
+                PrintZBlock(shaderFile, zframeFile.DataBlocks[i]);
             }
         }
 
@@ -659,48 +659,48 @@ namespace MyShaderAnalysis.codestash
             VcsProgramType vcsFiletype = shaderFile.vcsProgramType;
             if (vcsFiletype == VcsProgramType.VertexShader || vcsFiletype == VcsProgramType.GeometryShader)
             {
-                OutputWriteLine($"{zframeFile.vsEndBlocks.Count:X02} 00 00 00   // end blocks ({zframeFile.vsEndBlocks.Count})");
+                OutputWriteLine($"{zframeFile.VsEndBlocks.Count:X02} 00 00 00   // end blocks ({zframeFile.VsEndBlocks.Count})");
                 OutputWriteLine("");
-                foreach (ZFrameFile.VsEndBlock vsEndBlock in zframeFile.vsEndBlocks)
+                foreach (ZFrameFile.VsEndBlock vsEndBlock in zframeFile.VsEndBlocks)
                 {
-                    OutputWriteLine($"block-ref         {vsEndBlock.blockIdRef}");
-                    OutputWriteLine($"arg0              {vsEndBlock.arg0}");
-                    OutputWriteLine($"source-ref        {vsEndBlock.sourceRef}");
-                    OutputWriteLine($"source-pointer    {vsEndBlock.sourcePointer}");
-                    OutputWriteLine($"{BytesToString(vsEndBlock.databytes)}");
+                    OutputWriteLine($"block-ref         {vsEndBlock.BlockIdRef}");
+                    OutputWriteLine($"arg0              {vsEndBlock.Arg0}");
+                    OutputWriteLine($"source-ref        {vsEndBlock.SourceRef}");
+                    OutputWriteLine($"source-pointer    {vsEndBlock.SourcePointer}");
+                    OutputWriteLine($"{BytesToString(vsEndBlock.Databytes)}");
                     OutputWriteLine("");
                 }
             } else
             {
-                OutputWriteLine($"{zframeFile.psEndBlocks.Count:X02} 00 00 00   // end blocks ({zframeFile.psEndBlocks.Count})");
+                OutputWriteLine($"{zframeFile.PsEndBlocks.Count:X02} 00 00 00   // end blocks ({zframeFile.PsEndBlocks.Count})");
                 OutputWriteLine("");
-                foreach (ZFrameFile.PsEndBlock psEndBlock in zframeFile.psEndBlocks)
+                foreach (ZFrameFile.PsEndBlock psEndBlock in zframeFile.PsEndBlocks)
                 {
-                    OutputWriteLine($"block-ref         {psEndBlock.blockIdRef}");
-                    OutputWriteLine($"arg0              {psEndBlock.arg0}");
-                    OutputWriteLine($"source-ref        {psEndBlock.sourceRef}");
-                    OutputWriteLine($"source-pointer    {psEndBlock.sourcePointer}");
-                    OutputWriteLine($"has data ({psEndBlock.hasData0},{psEndBlock.hasData1},{psEndBlock.hasData2})");
-                    if (psEndBlock.hasData0)
+                    OutputWriteLine($"block-ref         {psEndBlock.BlockIdRef}");
+                    OutputWriteLine($"arg0              {psEndBlock.Arg0}");
+                    OutputWriteLine($"source-ref        {psEndBlock.SourceRef}");
+                    OutputWriteLine($"source-pointer    {psEndBlock.SourcePointer}");
+                    OutputWriteLine($"has data ({psEndBlock.HasData0},{psEndBlock.HasData1},{psEndBlock.HasData2})");
+                    if (psEndBlock.HasData0)
                     {
                         OutputWriteLine("// data-section 0");
-                        OutputWriteLine($"{BytesToString(psEndBlock.data0)}");
+                        OutputWriteLine($"{BytesToString(psEndBlock.Data0)}");
                     }
-                    if (psEndBlock.hasData1)
+                    if (psEndBlock.HasData1)
                     {
                         OutputWriteLine("// data-section 1");
-                        OutputWriteLine($"{BytesToString(psEndBlock.data1)}");
+                        OutputWriteLine($"{BytesToString(psEndBlock.Data1)}");
                     }
-                    if (psEndBlock.hasData2)
+                    if (psEndBlock.HasData2)
                     {
                         OutputWriteLine("// data-section 2");
-                        OutputWriteLine($"{BytesToString(psEndBlock.data2[0..3])}");
+                        OutputWriteLine($"{BytesToString(psEndBlock.Data2[0..3])}");
                         // OutputWriteLine($"{BytesToString(psEndBlock.data2[3..11])}");
                         // OutputWriteLine($"{BytesToString(psEndBlock.data2[11..75])}");
 
-                        OutputWriteLine($"{BytesToString(psEndBlock.data2[3..27])}");
-                        OutputWriteLine($"{BytesToString(psEndBlock.data2[27..51])}");
-                        OutputWriteLine($"{BytesToString(psEndBlock.data2[51..75])}");
+                        OutputWriteLine($"{BytesToString(psEndBlock.Data2[3..27])}");
+                        OutputWriteLine($"{BytesToString(psEndBlock.Data2[27..51])}");
+                        OutputWriteLine($"{BytesToString(psEndBlock.Data2[51..75])}");
                     }
                     OutputWriteLine("");
                 }

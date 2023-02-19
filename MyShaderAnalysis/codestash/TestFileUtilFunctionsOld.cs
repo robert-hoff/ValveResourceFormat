@@ -47,8 +47,8 @@ namespace MyShaderAnalysis.codestash
             Console.WriteLine($"GetServerFilePath()                 {fileToken.GetServerFilePath()}");
             Console.WriteLine($"GetServerFileUrl(label)             {fileToken.GetServerFileUrl("label")}");
             Console.WriteLine($"GetGlslServerDir()                  {fileToken.GetGlslServerDir()}");
-            Console.WriteLine($"GetGlslHtmlFilename(gpuSource) {fileToken.GetGlslHtmlFilename(zframeFile.gpuSources[0].GetEditorRefIdAsString())}");
-            Console.WriteLine($"GetGlslHtmlUrl(gpusource)      {fileToken.GetGlslHtmlUrl(zframeFile.gpuSources[0].GetEditorRefIdAsString())}");
+            Console.WriteLine($"GetGlslHtmlFilename(gpuSource) {fileToken.GetGlslHtmlFilename(zframeFile.GpuSources[0].GetEditorRefIdAsString())}");
+            Console.WriteLine($"GetGlslHtmlUrl(gpusource)      {fileToken.GetGlslHtmlUrl(zframeFile.GpuSources[0].GetEditorRefIdAsString())}");
 
 
             Console.WriteLine($"GetZFramesServerDir()               {fileToken.GetZFramesServerDir()}");
@@ -216,7 +216,7 @@ namespace MyShaderAnalysis.codestash
             ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(0);
 
             // NOTE - the gles sources are assigned as the class GlslSource
-            GpuSource gpuSource = zframeFile.gpuSources[0];
+            GpuSource gpuSource = zframeFile.GpuSources[0];
             if (gpuSource is not GlslSource)
             {
                 Console.WriteLine($"this source is not considered a GlslSource");

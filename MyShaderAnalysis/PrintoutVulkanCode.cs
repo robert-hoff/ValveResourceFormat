@@ -48,7 +48,7 @@ namespace MyShaderAnalysis
             ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(0);
 
 
-            VulkanSource vulkanSource = (VulkanSource)zframeFile.gpuSources[gpuIndex];
+            VulkanSource vulkanSource = (VulkanSource)zframeFile.GpuSources[gpuIndex];
             string reflectedSpirv = DecompileSpirvDll.DecompileVulkan(vulkanSource.GetSpirvBytes());
 
 
@@ -141,7 +141,7 @@ namespace MyShaderAnalysis
             // Well -> regarding printing the sourcebytes as text, I'm pretty sure that won't have a good result
 
 
-            VulkanSource vulkanSource = zframeFile.gpuSources[0] as VulkanSource;
+            VulkanSource vulkanSource = zframeFile.GpuSources[0] as VulkanSource;
             byte[] sourceBytes = vulkanSource.sourcebytes;
             string vulkanBytesAsString = BytesToString(sourceBytes);
             Console.WriteLine(vulkanBytesAsString); // prints the Vulkan source as a byte string

@@ -39,10 +39,10 @@ namespace MyShaderAnalysis.batchtesting1
                 for (int zi = 0; zi < Math.Min(shaderFile.GetZFrameCount(), LIMIT_ZFRAMES); zi++)
                 {
                     ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(zi);
-                    for (int i = 0; i < Math.Min(zframeFile.gpuSourceCount, LIMIT_GPU_SOURCES); i++)
+                    for (int i = 0; i < Math.Min(zframeFile.GpuSourceCount, LIMIT_GPU_SOURCES); i++)
                     {
                         Console.WriteLine($"{shaderFile.filenamepath} zi={zi} gpu={i}");
-                        VulkanSource vulkanSource = (VulkanSource)zframeFile.gpuSources[i];
+                        VulkanSource vulkanSource = (VulkanSource)zframeFile.GpuSources[i];
                         try
                         {
                             new ParseVulkanSource(vulkanSource, outputWriter: (x) => { }).PrintByteDetailSpirvReflection();

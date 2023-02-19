@@ -70,7 +70,7 @@ namespace MyShaderAnalysis.postprocessing
                 throw new ShaderParserException($"Unrecognised link \\\\{groups[1]}\\{groups[2]}");
             }
             int gpuSourceId = Convert.ToInt32(groups[2].ToString(), CultureInfo.InvariantCulture);
-            string gpuHtmlFilename = fileTokens.GetGpuHtmlFilename(zframeFile.gpuSources[gpuSourceId].GetEditorRefIdAsString());
+            string gpuHtmlFilename = fileTokens.GetGpuHtmlFilename(zframeFile.GpuSources[gpuSourceId].GetEditorRefIdAsString());
 
             // omits printing the link if the source file is not found on the server
             // (but always prints the gpuSourceId == 0 link for reference)

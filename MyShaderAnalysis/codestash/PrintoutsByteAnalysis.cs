@@ -140,7 +140,7 @@ namespace MyShaderAnalysis.codestash
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(0);
 
-            GpuSource gpuSource = zframeFile.gpuSources[0];
+            GpuSource gpuSource = zframeFile.GpuSources[0];
             // gpuSource.sourcebytes
         }
 
@@ -191,13 +191,13 @@ namespace MyShaderAnalysis.codestash
         {
             if (fileTokens == null)
             {
-                fileTokens = new FileTokensOld(zframe.filenamepath);
+                fileTokens = new FileTokensOld(zframe.FilenamePath);
             }
-            string outputFilenamepath = fileTokens.GetZFrameHtmlFilenamepath(zframe.zframeId, "bytes", createDirs: true);
+            string outputFilenamepath = fileTokens.GetZFrameHtmlFilenamepath(zframe.ZframeId, "bytes", createDirs: true);
             FileWriter fileWriter = new FileWriter(outputFilenamepath, showOutputToConsole: false);
 
-            string htmlTitle = $"{fileTokens.namelabel}-Z[0x{zframe.zframeId:x}]";
-            string htmlHeader = fileTokens.GetZFrameHtmlFilename(zframe.zframeId, "bytes")[..^5];
+            string htmlTitle = $"{fileTokens.namelabel}-Z[0x{zframe.ZframeId:x}]";
+            string htmlHeader = fileTokens.GetZFrameHtmlFilename(zframe.ZframeId, "bytes")[..^5];
             fileWriter.WriteHtmlHeader(htmlTitle, htmlHeader);
 
             zframe.PrintByteDetail(outputWriter: fileWriter.GetOutputWriter());
@@ -218,11 +218,11 @@ namespace MyShaderAnalysis.codestash
             ZFrameFile zframe = shaderFile.GetZFrameFileByIndex(zframeIndex);
 
             FileTokensOld fileTokens = new FileTokensOld(filenamepath);
-            string outputFilenamepath = fileTokens.GetZFrameHtmlFilenamepath(zframe.zframeId, "bytes", createDirs: true);
+            string outputFilenamepath = fileTokens.GetZFrameHtmlFilenamepath(zframe.ZframeId, "bytes", createDirs: true);
             FileWriter fileWriter = new FileWriter(outputFilenamepath, showOutputToConsole: false);
 
-            string htmlTitle = $"{fileTokens.namelabel}-Z[0x{zframe.zframeId:x}]";
-            string htmlHeader = fileTokens.GetZFrameHtmlFilename(zframe.zframeId, "bytes")[..^5];
+            string htmlTitle = $"{fileTokens.namelabel}-Z[0x{zframe.ZframeId:x}]";
+            string htmlHeader = fileTokens.GetZFrameHtmlFilename(zframe.ZframeId, "bytes")[..^5];
             fileWriter.WriteHtmlHeader(htmlTitle, htmlHeader);
 
             zframe.PrintByteDetail(outputWriter: fileWriter.GetOutputWriter());
@@ -309,10 +309,10 @@ namespace MyShaderAnalysis.codestash
                 for (int i = 0; i < zframesToPrint; i++)
                 {
                     ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(i);
-                    int gpuSourceToPrint = Math.Min(zframeFile.gpuSources.Count, LIMIT_GPU_SOURCES_TO_PRINT);
+                    int gpuSourceToPrint = Math.Min(zframeFile.GpuSources.Count, LIMIT_GPU_SOURCES_TO_PRINT);
                     for (int j = 0; j < gpuSourceToPrint; j++)
                     {
-                        var glslSource = zframeFile.gpuSources[j];
+                        var glslSource = zframeFile.GpuSources[j];
                         string outputFilenamepath = $"{glslServerDir}/{fileTokens.GetGlslHtmlFilename(glslSource.GetEditorRefIdAsString())}";
                         WriteBytesToFile(glslSource.sourcebytes, outputFilenamepath);
                     }
@@ -354,10 +354,10 @@ namespace MyShaderAnalysis.codestash
             {
                 ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(i);
 
-                int gpuSourceToPrint = Math.Min(zframeFile.gpuSources.Count, LIMIT_GPU_SOURCES_TO_PRINT);
+                int gpuSourceToPrint = Math.Min(zframeFile.GpuSources.Count, LIMIT_GPU_SOURCES_TO_PRINT);
                 for (int j = 0; j < gpuSourceToPrint; j++)
                 {
-                    var glslSource = zframeFile.gpuSources[j];
+                    var glslSource = zframeFile.GpuSources[j];
                     string outputFilenamepath = $"{glslServerDir}/{fileTokens.GetGlslHtmlFilename(glslSource.GetEditorRefIdAsString())}";
                     WriteBytesToFile(glslSource.sourcebytes, outputFilenamepath);
                 }

@@ -16,15 +16,15 @@ namespace MyShaderAnalysis.batchtesting2
         public DecompileSpirvTester(ZFrameFile zFrameFile, int MAX_SOURCES = 10)
         {
             this.zFrameFile = zFrameFile;
-            int sourceCount = zFrameFile.gpuSourceCount;
+            int sourceCount = zFrameFile.GpuSourceCount;
             if (sourceCount > MAX_SOURCES)
             {
                 sourceCount = MAX_SOURCES;
             }
 
-            for (int i = 0; i < zFrameFile.gpuSourceCount; i++)
+            for (int i = 0; i < zFrameFile.GpuSourceCount; i++)
             {
-                VulkanSource vulkanSource = (VulkanSource)zFrameFile.gpuSources[i];
+                VulkanSource vulkanSource = (VulkanSource)zFrameFile.GpuSources[i];
                 if (vulkanSource.arg0 == -1)
                 {
                     // nothing to do
@@ -37,7 +37,7 @@ namespace MyShaderAnalysis.batchtesting2
                     string decompiledSource = DecompileSpirvDll.DecompileVulkan(spirvBytes);
                 } catch (Exception)
                 {
-                    Debug.WriteLine($"spirv failed for {zFrameFile.filenamepath} zframeId[{zFrameFile.zframeId:x}] " +
+                    Debug.WriteLine($"spirv failed for {zFrameFile.FilenamePath} zframeId[{zFrameFile.ZframeId:x}] " +
                         $"source[{i}] source-size={spirvBytes.Length}");
                 }
 
