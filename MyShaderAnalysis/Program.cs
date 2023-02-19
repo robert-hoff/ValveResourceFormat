@@ -1,5 +1,6 @@
 using MyShaderAnalysis.batchtesting;
 using MyShaderAnalysis.codestash;
+using MyShaderAnalysis.filearchive;
 using MyShaderAnalysis.parsing;
 using MyShaderAnalysis.serverhtml;
 using MyShaderAnalysis.snippetcode;
@@ -34,13 +35,14 @@ namespace MyShaderAnalysis
             // -- Jan 2023
             // RunStaticAnalysis();
             // BatchProcessFiles();
-            // OldStaticAnalysisSummaries();
             // -- Earlier
-            // BatchTesting1()
-            // BatchProcessHtmlServerFiles(); // <-- create server files
+            // HtmlServerDumps(); // <-- create server files
+            TestFileArchives();
             // ParserSnippets();
-            BasicFunctionalitySnippets();
+            // OldStaticAnalysisSummaries(); // garbage
+            // BasicFunctionalitySnippets();
             // CSharpSnippets();
+            // TestConstraintRules();
         }
 
         public static void StaticAnalysisForKristiker()
@@ -59,35 +61,32 @@ namespace MyShaderAnalysis
 
         public static void BatchProcessFiles()
         {
-            TestSpirvReflection.Run();
-            // TestBatchQueries.Run();
+            TestBatchQueries.Run();
+            // TestSpirvReflection.Run();
 
             // from an earlier effort analysing the data in zframes
             // I'd like to do something similar for the Vulkan source code ..
             // StaticAnalysisZframes.RunTrials();
-        }
+            // TestSingleFileParsing.RunTrials();
 
-        // TestSingleFileParsing.RunTrials();
-
-        // -- "comprehensive" tests against archive names (all files)
-        // R: yea, but not very user friendly!
-        public static void BatchTesting1()
-        {
-            TestFileArchive.RunTrials();
-
-            // 2022 sometime ..
+            // -- 2022 sometime ..
             // TestBatchParsing.RunTrials();
-
             // TIDY NEEDED HERE
             // -- fall 2021
             // there is variously still some useful code among these files ..
             // ProgramEntriesOld.RunTrials();
         }
 
-        public static void BatchProcessHtmlServerFiles()
+        public static void HtmlServerDumps()
         {
             // -- revise how files are managed as collections
             CreateHtmlServerFiles.RunTrials();
+        }
+
+        public static void TestFileArchives()
+        {
+            // SomeRandomTesting.RunTrials();
+            TestFileArchive.RunTrials();
         }
 
         public static void ParserSnippets()

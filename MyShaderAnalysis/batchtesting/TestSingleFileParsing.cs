@@ -17,15 +17,12 @@ namespace MyShaderAnalysis.batchtesting
             // RunTestZFrameBytePrintout1();
             // RunTestZFrameBytePrintout2();
             // ShowZFrameCount();
-
             // RunZframeBytesSetExample2();
             // RunZframeBytesSetExample1();
-
             // RunBatchTestZFramesSuppressOutput();
             // RunTestZFrameBytePrintoutV62BatchSuppressOutput();
             // RunTestZFrameBytePrintoutV62Batch();
             // RunTestZFrameBytePrintoutV62();
-
             ShowGpuSource();
         }
 
@@ -129,6 +126,7 @@ namespace MyShaderAnalysis.batchtesting
             Console.Write($"parsing zframe[0x{zframeId:x08}]");
             dataReaderZframe.PrintByteDetail();
         }
+
         static void RunTestZFrameBytePrintoutV62BatchSuppressOutput()
         {
             // string filenamepath = GetFilenamepath(ARCHIVE.dota_game_pcgl_v62, "multiblend_pcgl_30_features.vcs");
@@ -181,6 +179,7 @@ namespace MyShaderAnalysis.batchtesting
                 // Console.WriteLine($"");
             }
         }
+
         static void RunTestZFrameBytePrintoutV62Batch()
         {
             string filenamepath = GetFilenamepath(ARCHIVE.dota_game_pcgl_v62, "multiblend_pcgl_30_features.vcs");
@@ -199,6 +198,7 @@ namespace MyShaderAnalysis.batchtesting
                 Console.WriteLine($"");
             }
         }
+
         static void RunTestZFrameBytePrintoutV62()
         {
             // string filenamepath = GetFilenamepath(ARCHIVE.dota_game_pcgl_v62, "bloom_dota_pcgl_30_features.vcs"); int zframeIndex = 0;

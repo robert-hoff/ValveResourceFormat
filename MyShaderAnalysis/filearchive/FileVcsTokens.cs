@@ -34,6 +34,7 @@ namespace MyShaderAnalysis.filearchive
         public VcsPlatformType platformType;
         public string archivename { get; }      // dota-game-pcgl, dota-core-pcgl
         public string filename { get; }         // multiblend_pcgl_30_ps.vcs
+        public string filedir { get; }          // X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders/vfx/
         public string filenamepath { get; }     // X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders/vfx/multiblend_pcgl_30_ps.vcs
         public string serverdir { get; }        // Z:/dev/www/vcs.codecreation.dev (base dir of the server)
         public string name { get; }             // name without the file extension, e.g. spritecard_pcgl_30_ps
@@ -49,7 +50,8 @@ namespace MyShaderAnalysis.filearchive
             archivename = archive.ToString();
             filename = Path.GetFileName(filename);
             this.filename = filename;
-            filenamepath = $"{FileArchive.GetArchiveDir(archive)}/{filename}";
+            this.filedir = $"{FileArchive.GetArchiveDir(archive)}/";
+            filenamepath = $"{filedir}{filename}";
             if (!File.Exists(filenamepath))
             {
                 throw new ShaderParserException("file doesn't exist");

@@ -16,20 +16,32 @@ namespace MyShaderAnalysis.parsing
     {
         public static void RunTrials()
         {
-            DecompileVulkanSource();
-
+            TestShaderFilesBytesShowOutput();
+            // -- earlier (2022)
+            // DecompileVulkanSource();
             // ParseV44FileIntoHtml();
             // ParseV44FileToConsole();
-
             // V62ExampleFiles();
             // ParseV62File();
             // ManualZFrameDecompression();
             // ShowVcsFilesForGivenArchive();
             // PrintZframeToHtml();
             // ShowFilenamePath();
-
             // WriteBytesToStringBuffer();
         }
+
+
+
+        public static void TestShaderFilesBytesShowOutput()
+        {
+            FileArchive vcsArchive = new FileArchive(ARCHIVE.dota_testset_pcgl_v64, VcsProgramType.VertexShader, VcsShaderModelType._30);
+            foreach (FileVcsTokens vcsTokens in vcsArchive.GetFileVcsTokens())
+            {
+                new DataReaderVcsBytes(vcsTokens.filenamepath).PrintByteDetail();
+            }
+        }
+
+        // -- earlier (2022)
 
         static void DecompileVulkanSource()
         {

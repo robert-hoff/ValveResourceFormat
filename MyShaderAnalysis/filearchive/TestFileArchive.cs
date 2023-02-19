@@ -1,8 +1,7 @@
-using MyShaderAnalysis.util;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using ValveResourceFormat.CompiledShader;
-using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
 namespace MyShaderAnalysis.filearchive
 {
@@ -10,23 +9,19 @@ namespace MyShaderAnalysis.filearchive
     {
         public static void RunTrials()
         {
-            // ShowFileTokenDetail2();
+            // ShowFileArchiveDirectory();
             // ShowFileTokenDetail1();
-            // ShowRelatedFilesInVcsCollection(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30");
-            // ShowRelatedFilesInVcsCollection(ARCHIVE.dotagame_pcgl, "hero_pcgl_30");
+            // ShowRelatedFilesInVcsCollection(ARCHIVE.dota_game_pcgl_v64, "multiblend_pcgl_30");
+            // ShowRelatedFilesInVcsCollection(ARCHIVE.dota_game_pcgl_v64, "hero_pcgl_30");
             // TestShaderInstantiation();
-            // TestFileRetrievalHelper();
+            ShowFileListing();
+            // ShowAllFilesForArchive();
         }
 
-        static void TestComputeVcsFilename()
-        {
-            ComputeVCSFileName("sadf");
-        }
-
-        static void ShowFileTokenDetail2()
+        static void ShowFileArchiveDirectory()
         {
             FileVcsTokens fileTokens = new FileVcsTokens(ARCHIVE.dota_game_pcgl_v64, "multiblend_pcgl_30_ps.vcs");
-            // Console.WriteLine($"{fileTokens.sourcedir}");
+            Console.WriteLine($"{fileTokens.filedir}");
         }
 
         static void ShowFileTokenDetail1()
@@ -65,18 +60,31 @@ namespace MyShaderAnalysis.filearchive
 
         static void TestShaderInstantiation()
         {
-            FileVcsTokens spritecard_ps = new(ARCHIVE.dota_game_pcgl_v64, "spritecard_pcgl_30_ps.vcs");
+            FileVcsTokens spritecard_ps = new FileVcsTokens(ARCHIVE.dota_game_pcgl_v64, "spritecard_pcgl_30_ps.vcs");
             ShaderFile shaderFile = spritecard_ps.GetShaderFile();
             // shows the spritecard_ps file has 22560 zframes (quite a lot)
             Console.WriteLine($"spritecard_ps has {shaderFile.GetZFrameCount()} zframes");
         }
 
-        static void TestFileRetrievalHelper()
+        const VcsProgramType VS = VcsProgramType.VertexShader;
+        const VcsProgramType PS = VcsProgramType.PixelShader;
+        public static void ShowFileListing()
         {
-            List<string> vcsFiles = MyShaderUtilHelpers.GetVcsFiles(FileArchive.GetArchiveDir(ARCHIVE.alyx_hlvr_vulkan_v64), VcsProgramType.Undetermined);
-            foreach (var f in vcsFiles)
+            FileArchive fileArchive = new FileArchive(ARCHIVE.alyx_hlvr_vulkan_v64, VS, PS);
+            foreach (var fileTokens in fileArchive.GetFileVcsTokens())
             {
-                Console.WriteLine($"{f}");
+                Debug.WriteLine($"{fileTokens}");
+            }
+        }
+
+        public static void ShowAllFilesForArchive()
+        {
+            FileArchive vcsArchive = new FileArchive(ARCHIVE.dota_game_pcgl_v64);
+            // FileArchive vcsArchive = new FileArchive(ARCHIVE.dota_game_pcgl_v64, VcsProgramType.Features, VcsShaderModelType._30);
+            // FileArchive vcsArchive = new FileArchive(ARCHIVE.the_lab_pc_v62);
+            foreach (FileVcsTokens vcsTokens in vcsArchive.GetFileVcsTokens())
+            {
+                Console.WriteLine($"{vcsTokens}");
             }
         }
     }

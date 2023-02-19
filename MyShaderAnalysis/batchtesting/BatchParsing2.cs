@@ -1,12 +1,13 @@
 using MyShaderAnalysis.filearchive;
 using MyShaderAnalysis.parsing;
 using System;
+using System.Diagnostics;
 using System.IO;
 using ValveResourceFormat.CompiledShader;
 
 namespace MyShaderAnalysis.batchtesting
 {
-    public class TestFileArchive
+    public class BatchParsing2
     {
         public static void RunTrials()
         {
@@ -18,6 +19,35 @@ namespace MyShaderAnalysis.batchtesting
             // TestShaderFilesBytes1();
             // TestShaderFilesBytesShowOutput();
             // ShowVcsFiles();
+        }
+
+
+        const VcsProgramType VS = VcsProgramType.VertexShader;
+        const VcsProgramType PS = VcsProgramType.PixelShader;
+        public static void ShowSingleZFrame()
+        {
+            FileArchive fileArchive = new(ARCHIVE.alyx_hlvr_vulkan_v64, VS, PS, useModularLookup: true);
+            ZFrameFile zFrame = fileArchive.GetZFrameFile(10, 100);
+            // Debug.WriteLine($"{zFrame.PrintByteDetail}");
+            zFrame.PrintByteDetail();
+        }
+
+        /*
+         * -- outputs
+         * cables_vulkan_50_ps.vcs zFrameCount = 34
+         * cables_vulkan_50_vs.vcs zFrameCount = 6
+         * debug_wireframe_2d_vulkan_50_ps.vcs zFrameCount = 1
+         * debug_wireframe_2d_vulkan_50_vs.vcs zFrameCount = 2
+         * // ...
+         *
+         */
+        public static void ShowZFrameCountForArchive()
+        {
+            FileArchive fileArchive = new(ARCHIVE.alyx_hlvr_vulkan_v64, VS, PS, useModularLookup: true);
+            for (int i = 0; i < fileArchive.GetFileCount() + 1; i++)
+            {
+                Debug.WriteLine($"{fileArchive.GetFileVcsTokens(i)} zFrameCount = {fileArchive.GetZFrameCount(i)}");
+            }
         }
 
         public static void TestVulkanGpuSources()
@@ -121,25 +151,6 @@ namespace MyShaderAnalysis.batchtesting
                 {
                     Console.WriteLine($"Error couldn't parse {vcsTokens.filename} {e.Message}");
                 }
-            }
-        }
-
-        public static void TestShaderFilesBytesShowOutput()
-        {
-            FileArchive vcsArchive = new FileArchive(ARCHIVE.dota_testset_pcgl_v64, VcsProgramType.VertexShader, VcsShaderModelType._30);
-            foreach (FileVcsTokens vcsTokens in vcsArchive.GetFileVcsTokens())
-            {
-                new DataReaderVcsBytes(vcsTokens.filenamepath).PrintByteDetail();
-            }
-        }
-
-        public static void ShowVcsFiles()
-        {
-            // FileArchive vcsArchive = new FileArchive(ARCHIVE.dota_game_pcgl_v64, VcsProgramType.Features, VcsShaderModelType._30);
-            FileArchive vcsArchive = new FileArchive(ARCHIVE.the_lab_pc_v62);
-            foreach (FileVcsTokens vcsTokens in vcsArchive.GetFileVcsTokens())
-            {
-                Console.WriteLine($"{vcsTokens}");
             }
         }
     }

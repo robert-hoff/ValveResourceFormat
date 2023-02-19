@@ -15,7 +15,7 @@ using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
  */
 namespace MyShaderAnalysis.batchtesting
 {
-    public class TestBatchParsing
+    public class BatchParsing1
     {
         public static void RunTrials()
         {
