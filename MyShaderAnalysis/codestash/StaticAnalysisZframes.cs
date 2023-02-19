@@ -913,7 +913,9 @@ namespace MyShaderAnalysis.codestash
                     CollectStringValue($"{zBlock.h0,-3:000} {zBlock.h2,-3}");
 
                     // if (zBlock.h2 == zBlock.h0 - 1)
-                    if (zBlock.h0 == 5 && zBlock.h2 == 5)
+                    // if (zBlock.h0 == 5 && zBlock.h2 == 5)
+                    // if (zBlock.h0 >  == zBlock.h0 - 1)
+                    if (zFrame.leadingData.h1 > 2)
                     {
                         Debug.WriteLine($"{zFrame.filenamepath} zframe=0x{zFrame.zframeId:x} h0={zBlock.h0} h2={zBlock.h2}");
                         return;

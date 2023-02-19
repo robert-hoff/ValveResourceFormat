@@ -54,8 +54,8 @@ namespace MyShaderAnalysis
         public static void RunTrials()
         {
             // PrintFileDirectoryGivenArchive();
-            // SaveAllServerFilesFromArchive();
-            SaveServerSets();
+            SaveAllServerFilesFromArchive();
+            // SaveServerSets();
             // SingleFileExamples2();
             // SingleFileExamples1();
         }
@@ -92,22 +92,24 @@ namespace MyShaderAnalysis
 
         public static void SaveAllServerFilesFromArchive()
         {
+
             // ARCHIVE archive = ARCHIVE.alyx_hlvr_vulkan_v64;
             // ARCHIVE archive = ARCHIVE.dota_game_vulkan_v65;
             //FileArchive fileArchive = new(archive, useModularLookup: true);
 
+            ARCHIVE archive = ARCHIVE.dota_core_pcgl_v64;
             // ARCHIVE archive = ARCHIVE.dota_game_pcgl_v64;
-            ARCHIVE archive = ARCHIVE.dota_game_pc_v65;
+            // ARCHIVE archive = ARCHIVE.dota_game_pc_v65;
             FileArchive fileArchive = new(archive, VcsShaderModelType._40, useModularLookup: true);
 
             int fileCount = fileArchive.GetFileCount();
             for (int i = 0; i < fileCount; i++)
             {
-                CreateHtmlServerFiles.SaveAllServerFiles(archive, fileArchive.GetFileVcsTokens(i).filename, 5, 5, saveGpuByteDetail: true);
-            if (i==2)
-                {
-                    break;
-                   }
+                CreateHtmlServerFiles.SaveAllServerFiles(archive, fileArchive.GetFileVcsTokens(i).filename, 5, 5, saveGpuByteDetail: false);
+            //if (i==2)
+            //    {
+            //        break;
+            //       }
             }
         }
 
