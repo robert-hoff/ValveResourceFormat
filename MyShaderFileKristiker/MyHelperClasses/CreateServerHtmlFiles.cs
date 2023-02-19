@@ -2,7 +2,7 @@ using ValveResourceFormat.CompiledShader;
 
 namespace MyShaderFileKristiker.MyHelperClasses
 {
-    internal class CreateServerHtmlFiles
+    public class CreateServerHtmlFiles
     {
         public static void RunTrials()
         {
@@ -39,7 +39,7 @@ namespace MyShaderFileKristiker.MyHelperClasses
             fileWriter.Dispose();
         }
 
-        public static void SaveAllServerFilesFromArchive()
+        public static void SaveAllServerFilesFromArchive(int limitFileCount = 1000)
         {
             // ARCHIVE archive = ARCHIVE.alyx_hlvr_vulkan_v64;
             // ARCHIVE archive = ARCHIVE.dota_game_vulkan_v65;
@@ -48,16 +48,16 @@ namespace MyShaderFileKristiker.MyHelperClasses
             ARCHIVE archive = ARCHIVE.dota_core_pcgl_v64;
             // ARCHIVE archive = ARCHIVE.dota_game_pcgl_v64;
             // ARCHIVE archive = ARCHIVE.dota_game_pc_v65;
-            FileArchive fileArchive = new(archive, VcsShaderModelType._40, useModularLookup: true);
+            FileArchive fileArchive = new(archive, VcsShaderModelType._40);
 
             int fileCount = fileArchive.GetFileCount();
             for (int i = 0; i < fileCount; i++)
             {
                 SaveAllServerFiles(archive, fileArchive.GetFileVcsTokens(i).filename, 5, 5, saveGpuByteDetail: false);
-                //if (i==2)
-                //    {
-                //        break;
-                //       }
+                if (i == limitFileCount)
+                {
+                    break;
+                }
             }
         }
 

@@ -1,9 +1,9 @@
-using System;
-using ValveResourceFormat.CompiledShader;
 using MyShaderFileKristiker.MyHelperClasses;
-using static MyShaderFileKristiker.MyHelperClasses.FileArchive;
+using System;
 using System.Diagnostics;
 using System.IO;
+using ValveResourceFormat.CompiledShader;
+using static MyShaderFileKristiker.MyHelperClasses.FileArchive;
 
 namespace MyShaderAnalysis.statickristiker
 {
@@ -27,12 +27,19 @@ namespace MyShaderAnalysis.statickristiker
 
         public static void RunTrials()
         {
+            SaveAllServerFilesFromArchive();
             // PrintShaderFileToHtml();
-            PrintZframeToHtml();
+            // PrintZframeToHtml();
             // PrintZframeToHtmlByteVersion();
             // ShowZFrameParameters();
             // ShowZFrameCount();
         }
+
+        public static void SaveAllServerFilesFromArchive()
+        {
+            CreateServerHtmlFiles.SaveAllServerFilesFromArchive();
+        }
+
 
         public static void PrintShaderFileToHtml()
         {

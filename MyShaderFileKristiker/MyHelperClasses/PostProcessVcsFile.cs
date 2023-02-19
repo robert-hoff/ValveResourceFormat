@@ -26,11 +26,11 @@ namespace MyShaderFileKristiker.MyHelperClasses
      */
     class PostProcessVcsFile
     {
-        private FileVcsTokens fileTokens;
+        private FileVcsTokens fileVcsTokens;
 
         public PostProcessVcsFile(FileVcsTokens fileTokens)
         {
-            this.fileTokens = fileTokens;
+            this.fileVcsTokens = fileTokens;
         }
 
         public string PostProcessVcsData(string data)
@@ -52,7 +52,7 @@ namespace MyShaderFileKristiker.MyHelperClasses
             switch (groups[2].ToString())
             {
                 case "bytes":
-                    return $"<a href='{fileTokens.GetServerFileUrl("bytes")}'>{fileTokens.filename}/bytes</a>";
+                    return $"<a href='{fileVcsTokens.GetServerFileUrl("bytes")}'>{fileVcsTokens.filename}/bytes</a>";
 
                 default:
                     throw new ShaderParserException($"Unrecognised link token: {groups[2].ToString()}"); ;
@@ -63,16 +63,18 @@ namespace MyShaderFileKristiker.MyHelperClasses
         private string ReplaceVcsSingleToken(Match m)
         {
             GroupCollection groups = m.Groups;
-            VcsProgramType programType = ComputeVcsProgramType(groups[1].ToString());
-            if (programType != VcsProgramType.Undetermined)
+            string[] fileStrTokens = Path.GetFileNameWithoutExtension(groups[1].ToString()).Split("_");
+            if (fileStrTokens.Length >= 4)
             {
-                return $"<a href='{fileTokens.GetServerFilePath()}/{groups[1].ToString()[..^4]}-summary2.html'>{groups[1]}</a>";
+                VcsProgramType programType = ComputeVcsProgramType(fileStrTokens[^1]);
+                return $"<a href='{fileVcsTokens.GetServerFilePath()}/{programType}-summary2.html'>{groups[1]}</a>";
             }
             else
             {
                 long zframeId = Convert.ToInt64(groups[1].ToString(), 16);
-                return fileTokens.GetBestZframesLink(zframeId, noBrackets: true);
+                return fileVcsTokens.GetBestZframesLink(zframeId, noBrackets: true);
             }
         }
     }
 }
+

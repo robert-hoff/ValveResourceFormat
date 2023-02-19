@@ -49,7 +49,7 @@ namespace MyShaderFileKristiker.MyHelperClasses
             sourceVersion = filename.Split('_')[^2];
             sourceType = GetSourceDescription(platformType, shaderModelType);
 
-            vcstoken = ComputeVcsProgramType(filenamepath) switch
+            vcstoken = programType switch
             {
                 VcsProgramType.Features => "ft",
                 VcsProgramType.VertexShader => "vs",
