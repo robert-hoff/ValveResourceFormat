@@ -48,6 +48,7 @@ namespace MyShaderAnalysis
         // classes using the Kristiker shaders *only*
         public static void AnalysisKristiker()
         {
+            PrintoutSummaries.RunTrials();
             TestStuff.RunTrials();
         }
 
