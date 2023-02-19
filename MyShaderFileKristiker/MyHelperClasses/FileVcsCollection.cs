@@ -39,6 +39,10 @@ namespace MyShaderFileKristiker.MyHelperClasses
 
         public static List<FileVcsTokens> GetRelatedVcs(ARCHIVE archive, string vcsCollectionName)
         {
+            if (vcsCollectionName[^4..].ToLower().Equals(".vcs"))
+            {
+                vcsCollectionName = vcsCollectionName.Substring(0, vcsCollectionName.LastIndexOf('_'));
+            }
             List<string> relatedFiles = GetRelatedFiles(archive, vcsCollectionName);
             List<FileVcsTokens> relatedVcs = new();
             foreach (string filename in relatedFiles)

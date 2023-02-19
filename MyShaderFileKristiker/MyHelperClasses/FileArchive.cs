@@ -2,6 +2,16 @@ using System.Collections;
 using System.Reflection;
 using ValveResourceFormat.CompiledShader;
 
+
+
+/*
+ * -- list all features files for given archive
+ *
+ *
+ *
+ *
+ *
+ */
 namespace MyShaderFileKristiker.MyHelperClasses
 {
     public class FileArchive

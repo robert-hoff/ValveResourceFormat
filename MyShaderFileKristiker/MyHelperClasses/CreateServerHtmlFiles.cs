@@ -1,40 +1,137 @@
 using MyShaderFileKristiker.MyHelperClasses.ProgEntries;
 using System.Diagnostics;
+using System.IO.Enumeration;
 using ValveResourceFormat.CompiledShader;
+using static MyShaderFileKristiker.MyHelperClasses.ARCHIVE;
 
 namespace MyShaderFileKristiker.MyHelperClasses
 {
     public class CreateServerHtmlFiles
     {
-        //private static ARCHIVE archive = ARCHIVE.alyx_hlvr_vulkan_v64;
-        //private static ARCHIVE archive = ARCHIVE.dota_game_vulkan_v65;
-        //private static ARCHIVE archive = ARCHIVE.dota_game_pc_v65;
-        //private static ARCHIVE archive = ARCHIVE.dota_core_pcgl_v64;
-        private static ARCHIVE archive = ARCHIVE.dota_game_pcgl_v64;
+        //private static ARCHIVE archive = alyx_hlvr_vulkan_v64;
+        //private static ARCHIVE archive = dota_game_vulkan_v65;
+        //private static ARCHIVE archive = dota_game_pc_v65;
+        //private static ARCHIVE archive = dota_core_pcgl_v64;
+        // static ARCHIVE archive = dota_game_pcgl_v64; static string filename = "crystal_pcgl_40_vs.vcs";
+        // static ARCHIVE archive = dota_game_pcgl_v64; static string filename = "crystal_pcgl_40_vs.vcs";
+        static ARCHIVE archive = dota_game_pcgl_v64; static string filename = "multiblend_pcgl_40_vs.vcs";
+
+        // -- constants applied throughout
+        private const int COLLECTION_LIMIT = 10;
         private const int ZCOUNT = 1;
         private const int GPU_COUNT = 1;
         private const bool CLEAR_DIRECTORY = true;
         private const string USE_BASE_FOLDER = "GEN-output2";
+        // private const string USE_BASE_FOLDER = "";
+        private const int ZFRAME_ID = 0;
+        private const bool PRINT_ZFRAME_BYTES = false;
+        private const bool PRINT_GPU_BYTES = false;
+        private const bool PRINT_INDEX = true;
+
+        private static int[] printFilesfor = { ZFRAME, COLLECTION, ALL, LIST_DIR };
+
+        // --
+        private static int DO_OPERATION = printFilesfor[COLLECTION];
+        // --
 
         public static void RunTrials()
         {
-            // SaveAllServerFilesForArchive();
-            SaveVcsCollection(ARCHIVE.dota_game_pcgl_v64, "crystal_pcgl_40", zFramesToPrint: ZCOUNT, gpuSourcesToPrint: GPU_COUNT);
-            // CreateServerHtmlFiles.SaveServerSets();
-            // CreateServerHtmlFiles.SaveAllServerFilesFromArchive(limitFileCount: 2);
+            switch (DO_OPERATION)
+            {
+                case ZFRAME:
+                    FileVcsTokens vcsTokens = new FileVcsTokens(archive, filename);
+                    SaveZframeSummary(
+                        vcsFileTokens: vcsTokens,
+                        zframeId: ZFRAME_ID,
+                        gpuCount: GPU_COUNT,
+                        useBaseFolder: USE_BASE_FOLDER,
+                        printZframeByteVersion: PRINT_ZFRAME_BYTES);
+                    break;
+
+                case COLLECTION:
+                    SaveVcsCollection(
+                        archive,
+                        filename,
+                        zFramesToPrint: ZCOUNT,
+                        gpuSourcesToPrint: GPU_COUNT,
+                        saveGpuByteDetail: false,
+                        clearDirectory: CLEAR_DIRECTORY,
+                        useBaseFolder: USE_BASE_FOLDER);
+                    break;
+
+                case ALL:
+                    SaveAllServerFilesForArchive(
+                        archive,
+                        vcsCollectionLimit: COLLECTION_LIMIT,
+                        zFramesToPrint: ZCOUNT,
+                        gpuSourcesToPrint: GPU_COUNT);
+                    break;
+
+                case LIST_DIR:
+                    FileArchive fileArchive = new FileArchive(archive, VcsProgramType.Features, VcsShaderModelType._40);
+                    foreach (FileVcsTokens f in fileArchive.GetFileVcsTokens())
+                    {
+                        Debug.WriteLine($"{f}");
+                    }
+                    break;
+            }
         }
 
-        public static void SaveAllServerFilesForArchive(ARCHIVE archive, int limitFileCount = 1000)
+        // save ONE zframe
+        public static void SaveZframeSummary(
+            FileVcsTokens vcsFileTokens,
+            int zframeId,
+            int gpuCount = 5,
+            string useBaseFolder = "",
+            bool printZframeByteVersion = PRINT_ZFRAME_BYTES,
+            bool printGpuByteVersion = PRINT_GPU_BYTES)
+        {
+            if (useBaseFolder.Length > 0)
+            {
+                vcsFileTokens.targetsavedir = useBaseFolder;
+            }
+            ParseVcsFile vcsFile = new ParseVcsFile(vcsFileTokens, convertLinksToHtml: true);
+            ZFrameFile zFrame = vcsFileTokens.GetZframeFile(zframeId);
+            // byte version
+            if (printZframeByteVersion)
+            {
+                if (printGpuByteVersion)
+                {
+                    for (int i = 0; i < Math.Min(gpuCount, zFrame.GpuSourceCount); i++)
+                    {
+                        vcsFile.SaveGpuByteSourceToHtml(zframeId, i);
+                    }
+                }
+                vcsFile.SaveZframeByteSummaryToHtml(zframeId, useBaseFolder: useBaseFolder);
+            }
+            // normal version
+            for (int i = 0; i < Math.Min(gpuCount, zFrame.GpuSourceCount); i++)
+            {
+                vcsFile.SaveGpuSourceToHtml(zframeId, i);
+            }
+            vcsFile.SaveZframeSummaryToHtml(zFrame, useBaseFolder: useBaseFolder);
+        }
+
+        public static void SaveAllServerFilesForArchive(
+            ARCHIVE archive,
+            int vcsCollectionLimit = 5,
+            int zFramesToPrint = 20,
+            int gpuSourcesToPrint = 20)
         {
             FileArchive fileArchive = new(archive, VcsProgramType.Features, VcsShaderModelType._40);
             int fileCount = fileArchive.GetFileCount();
-            for (int i = 0; i < fileCount; i++)
+            for (int i = 0; i < Math.Min(vcsCollectionLimit, fileCount); i++)
             {
-                SaveVcsCollection(archive, fileArchive.GetFileVcsTokens(i).filename, 1, 1, saveGpuByteDetail: false);
-                if (i == limitFileCount)
-                {
-                    break;
-                }
+                SaveVcsCollection(
+                    archive,
+                    fileArchive.GetFileVcsTokens(i).filename,
+                    zFramesToPrint,
+                    zFramesToPrint,
+                    saveGpuByteDetail: false);
+            }
+            if (PRINT_INDEX)
+            {
+                CreateHtmlIndexForArchive(archive);
             }
         }
 
@@ -76,66 +173,25 @@ namespace MyShaderFileKristiker.MyHelperClasses
          * are actually active.
          *
          */
-        public static void CreateHtmlIndexForArchive()
+        public static void CreateHtmlIndexForArchive(ARCHIVE archive)
         {
-            ARCHIVE archive = ARCHIVE.dota_game_pcgl_v64;
             FileArchive fileArchive = new(archive, VcsShaderModelType._40, useModularLookup: true);
-
-            // ARCHIVE archive = ARCHIVE.alyx_hlvr_vulkan_v64;
-            // ARCHIVE archive = ARCHIVE.dota_game_vulkan_v65;
-            // FileArchive fileArchive = new(archive, useModularLookup: true);
-
             string filenamepath = $"Z:\\dev\\www\\vcs.codecreation.dev\\{fileArchive.archive}\\index.html";
             FileWriter fileWriter = new FileWriter(filenamepath, showOutputToConsole: false);
             fileWriter.WriteHtmlHeader($"{fileArchive.archive}", $"{fileArchive.archive}");
             foreach (FileVcsTokens fileVcs in fileArchive.GetFileVcsTokens())
             {
-                // Debug.WriteLine($"<a href='{fileVcs.GetServerFileUrl("summary2")}'>{fileVcs}</a>");
-                fileWriter.WriteLine($"<a href='{fileVcs.GetServerFileUrl("summary2")}'>{fileVcs}</a>");
+                fileWriter.WriteLine($"<a href='{fileVcs.GetServerFileUrl()}'>{fileVcs}</a>");
             }
             fileWriter.CloseStreamWriter();
             fileWriter.Dispose();
         }
-
-        public static void SingleFileExamples2()
-        {
-            // FileVcsTokens vcsTokens = new(ARCHIVE.the_lab_pc_v62, "bilateral_blur_pc_30_features.vcs");
-            FileVcsTokens vcsTokens = new(ARCHIVE.dota_game_pcgl_v64, "multiblend_pc_30_vs.vcs");
-
-            ParseVcsFile vcsFile = new ParseVcsFile(vcsTokens);
-            // vcsFile.SaveVcsSummaryToHtml();
-            vcsFile.SaveVcsByteSummaryToHtml();
-        }
-
-        public static void SingleFileExamples1()
-        {
-            // FileVcsTokens vcsTokens = new(ARCHIVE.dota_game_pcgl_v64, "multiblend_pc_30_vs.vcs");
-            FileVcsTokens vcsTokens = new(ARCHIVE.dota_game_vulkan_v65, "blur_cs_vulkan_50_cs.vcs");
-
-            SaveVcsBytesAndSummary(vcsTokens);
-            //SaveZframeSummary(vcsTokens, zframeId: 0);
-            //SaveZframeSummaries(vcsTokens, zframesToPrint: 20);
-            //SaveGpuSource(vcsTokens, zframeId: 0, gpuSourceId: 0);
-            //SaveGpuSources(vcsTokens, zframeId: 0, gpuSourcesToPrint: 2);
-            //SaveGpuSources(vcsTokens, zframeId: 0, gpuSourcesToPrint: 1, saveGpuByteSource: true);
-            //SaveGpuSources(vcsTokens, zframeId: 0, gpuSourcesToPrint: 1, saveGpuByteSource: false);
-            //SaveGpuSources(vcsTokens, zframeId: 0, gpuSourcesToPrint: 1, saveGpuByteSource: true);
-        }
-
 
         public static void SaveVcsBytesAndSummary(FileVcsTokens vcsFileTokens)
         {
             ParseVcsFile vcsFile = new ParseVcsFile(vcsFileTokens, convertLinksToHtml: true);
             vcsFile.SaveVcsByteSummaryToHtml();
             vcsFile.SaveVcsSummaryToHtml();
-        }
-
-        // save ONE zframe
-        public static void SaveZframeSummary(FileVcsTokens vcsFileTokens, int zframeId)
-        {
-            ParseVcsFile vcsFile = new ParseVcsFile(vcsFileTokens, convertLinksToHtml: true);
-            vcsFile.SaveZframeByteSummaryToHtml(zframeId);
-            vcsFile.SaveZframeSummaryToHtml(zframeId);
         }
 
         // save more than one
@@ -158,6 +214,12 @@ namespace MyShaderFileKristiker.MyHelperClasses
             ParseVcsFile vcsFile = new ParseVcsFile(vcsFileTokens, convertLinksToHtml: true);
             vcsFile.SaveGpuSourcesToHtml(zframeId, gpuSourcesToPrint, saveGpuByteSource);
         }
+
+        private const int ZFRAME = 0;
+        private const int COLLECTION = 1;
+        private const int ALL = 2;
+        private const int LIST_DIR = 3;
+        private const string DEFAULT_BASE_FOLDER = "GEN-output";
     }
 }
 

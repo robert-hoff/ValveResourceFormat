@@ -6,7 +6,7 @@ namespace MyShaderFileKristiker.MyHelperClasses
 {
     public class FileVcsTokens
     {
-        private const string SERVER_BASEDIR = "Z:/dev/www/vcs.codecreation.dev";
+        public static string SERVER_BASEDIR = "Z:/dev/www/vcs.codecreation.dev/";
 
         public ARCHIVE archive { get; }
         public VcsProgramType programType;
@@ -208,12 +208,14 @@ namespace MyShaderFileKristiker.MyHelperClasses
         /*
          * Z:/dev/www/vcs.codecreation.dev/dota-game-pcgl-v64/multiblend_pcgl_30/zframes/multiblend_pcgl_30_ps-ZFRAME00000000-label.html
          */
-        public string GetZFrameHtmlFilenamepath(long zframeId, string label = "", bool createDirs = true)
+        public string GetZFrameHtmlFilenamepath(long zframeId, string label = "", bool createDirs = true, string newBaseDir = "")
         {
+            string baseDir = newBaseDir.Length > 0 ? $"{SERVER_BASEDIR}{newBaseDir}" : GetZFramesServerDir(createDirs);
+
             return label.Length == 0 ?
-            $"{GetZFramesServerDir(createDirs)}/{name}-Z{zframeId:x08}.html"
+            $"{baseDir}/{name}-Z{zframeId:x08}.html"
                 :
-            $"{GetZFramesServerDir(createDirs)}/{name}-Z{zframeId:x08}-{label}.html";
+            $"{baseDir}/{name}-Z{zframeId:x08}-{label}.html";
         }
 
         /*

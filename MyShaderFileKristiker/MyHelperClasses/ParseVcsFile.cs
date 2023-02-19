@@ -108,21 +108,21 @@ namespace MyShaderFileKristiker.MyHelperClasses
         }
 
         // may throw 'KeyNotFoundException'
-        public void SaveZframeSummaryToHtml(int zframeId)
+        public void SaveZframeSummaryToHtml(int zframeId, string useBaseFolder = "")
         {
-            SaveZframeSummaryToHtml(shaderFile.GetZFrameFile(zframeId));
+            SaveZframeSummaryToHtml(shaderFile.GetZFrameFile(zframeId), useBaseFolder);
         }
 
-        public void SaveZframeSummaryToHtml(ZFrameFile zframeFile)
+        public void SaveZframeSummaryToHtml(ZFrameFile zframeFile, string useBaseFolder = "")
         {
             string zframeFormattedSummary = GetZframeSummary(zframeFile);
             if (convertLinksToHtml)
             {
                 zframeFormattedSummary = new PostProcessZframeFile(zframeFile, fileTokens).PostProcessZframeData(zframeFormattedSummary);
             }
-            string htmlTitle = $"{fileTokens.vcstoken}[{zframeFile.ZframeId:x}]";
-            string htmlHeader = fileTokens.GetZFrameHtmlFilename(zframeFile.ZframeId)[..^5];
-            string outputFilenamepath = fileTokens.GetZFrameHtmlFilenamepath(zframeFile.ZframeId, "", createDirs: true);
+            string htmlTitle = $"Z[0x{zframeFile.ZframeId:x}]";
+            string htmlHeader = $"{Path.GetFileName(zframeFile.FilenamePath[..^4])}  Z[0x{zframeFile.ZframeId:x}]";
+            string outputFilenamepath = fileTokens.GetZFrameHtmlFilenamepath(zframeFile.ZframeId, "", createDirs: true, newBaseDir: useBaseFolder);
             WriteHtmlFile(outputFilenamepath, htmlTitle, htmlHeader, zframeFormattedSummary);
         }
 
@@ -136,17 +136,17 @@ namespace MyShaderFileKristiker.MyHelperClasses
             }
         }
 
-        public void SaveZframeByteSummaryToHtml(long zframeId)
+        public void SaveZframeByteSummaryToHtml(long zframeId, string useBaseFolder = "")
         {
-            SaveZframeByteSummaryToHtml(shaderFile.GetZFrameFile(zframeId));
+            SaveZframeByteSummaryToHtml(shaderFile.GetZFrameFile(zframeId), useBaseFolder);
         }
 
-        public void SaveZframeByteSummaryToHtml(ZFrameFile zframeFile)
+        public void SaveZframeByteSummaryToHtml(ZFrameFile zframeFile, string useBaseFolder = "")
         {
             string zframeByteDetail = GetZframeByteSummary(zframeFile);
             string htmlTitle = $"{fileTokens.vcstoken}[{zframeFile.ZframeId:x}] bytes";
             string htmlHeader = fileTokens.GetZFrameHtmlFilename(zframeFile.ZframeId, "bytes")[..^5];
-            string outputFilenamepath = fileTokens.GetZFrameHtmlFilenamepath(zframeFile.ZframeId, "bytes", createDirs: true);
+            string outputFilenamepath = fileTokens.GetZFrameHtmlFilenamepath(zframeFile.ZframeId, "bytes", createDirs: true, newBaseDir: useBaseFolder);
             WriteHtmlFile(outputFilenamepath, htmlTitle, htmlHeader, zframeByteDetail);
         }
 
