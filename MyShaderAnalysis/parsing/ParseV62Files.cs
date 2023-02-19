@@ -4,6 +4,8 @@ using System.IO;
 using ValveResourceFormat.CompiledShader;
 using static MyShaderAnalysis.codestash.FileSystemOld;
 using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
+using static MyShaderAnalysis.filearchive.ReadShaderFile;
+using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
 /*
  * Almost identical to DataReaderVcsBytes - all relevant changes were written into DataReaderVcsBytes since

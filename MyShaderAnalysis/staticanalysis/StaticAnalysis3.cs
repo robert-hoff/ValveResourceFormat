@@ -2,7 +2,7 @@ using MyShaderAnalysis.filearchive;
 using System;
 using System.Diagnostics;
 using ValveResourceFormat.CompiledShader;
-using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
+using static MyShaderAnalysis.util.DataCollectAcrossQueries;
 
 namespace MyShaderAnalysis.staticanalysis
 {

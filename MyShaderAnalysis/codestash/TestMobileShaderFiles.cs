@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using ValveResourceFormat.CompiledShader;
 using static MyShaderAnalysis.codestash.FileSystemOld;
-using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
+using static MyShaderAnalysis.filearchive.ReadShaderFile;
 
 namespace MyShaderAnalysis.codestash
 {

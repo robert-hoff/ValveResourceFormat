@@ -4,6 +4,10 @@ using System.IO;
 using ValveResourceFormat.CompiledShader;
 using ValveResourceFormat.Serialization.VfxEval;
 using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
+using static MyShaderAnalysis.filearchive.FileArchive;
+using static MyShaderAnalysis.filearchive.ReadShaderFile;
+using static MyShaderAnalysis.util.DataCollectAcrossQueries;
+using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
 namespace MyShaderAnalysis.codestash
 {

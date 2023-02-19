@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using ValveResourceFormat.CompiledShader;
 using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
+using static MyShaderAnalysis.filearchive.ReadShaderFile;
 
 /*
  *

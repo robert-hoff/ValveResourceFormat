@@ -1,11 +1,10 @@
 using MyShaderAnalysis.filearchive;
 using MyShaderAnalysis.parsing;
-using MyShaderAnalysis.util;
 using System;
 using System.Collections.Generic;
 using ValveResourceFormat.CompiledShader;
+using static MyShaderAnalysis.codestash.FileSystemOld;
 using static MyShaderAnalysis.filearchive.FileArchive;
-using static MyShaderAnalysis.util.MyShaderUtilHelpers;
 
 namespace MyShaderAnalysis.batchtesting
 {

@@ -1,8 +1,9 @@
-using MyShaderAnalysis.util;
 using System.Collections.Generic;
 using System.IO;
 using ValveResourceFormat.CompiledShader;
+using static MyShaderAnalysis.codestash.FileSystemOld;
 using static MyShaderAnalysis.filearchive.ReadShaderFile;
+using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
 /*
  * GetServerFileDir()                  Z:/dev/www/vcs.codecreation.dev/dota-game-pcgl-v64/multiblend_pcgl_30
@@ -61,15 +62,15 @@ namespace MyShaderAnalysis.filearchive
             foldername = name.Substring(0, name.LastIndexOf('_'));
             namelabel = filename.Split('_')[0];
 
-            (VcsProgramType, VcsPlatformType, VcsShaderModelType) vcsTypes = MyShaderUtilHelpers.ComputeVCSFileName(filenamepath);
+            (VcsProgramType, VcsPlatformType, VcsShaderModelType) vcsTypes = ComputeVCSFileName(filenamepath);
             programType = vcsTypes.Item1;
             platformType = vcsTypes.Item2;
             shaderModelType = vcsTypes.Item3;
 
             sourceVersion = filename.Split('_')[^2];
-            sourceType = MyShaderUtilHelpers.GetSourceType(platformType, shaderModelType);
+            sourceType = GetSourceDescription(platformType, shaderModelType);
 
-            vcstoken = MyShaderUtilHelpers.ComputeVcsProgramType(filenamepath) switch
+            vcstoken = ComputeVcsProgramType(filenamepath) switch
             {
                 VcsProgramType.Features => "ft",
                 VcsProgramType.VertexShader => "vs",
@@ -302,6 +303,42 @@ namespace MyShaderAnalysis.filearchive
         public override string ToString()
         {
             return $"{filename}";
+        }
+
+        public static string GetSourceDescription(VcsPlatformType vcsPlatformType, VcsShaderModelType vcsShaderModelType)
+        {
+            if (vcsPlatformType == VcsPlatformType.PC)
+            {
+                switch (vcsShaderModelType)
+                {
+                    case VcsShaderModelType._20:
+                    case VcsShaderModelType._2b:
+                    case VcsShaderModelType._30:
+                    case VcsShaderModelType._31:
+                        return "dxil";
+                    case VcsShaderModelType._40:
+                    case VcsShaderModelType._41:
+                    case VcsShaderModelType._50:
+                    case VcsShaderModelType._60:
+                        return "dxbc";
+                    default:
+                        throw new ShaderParserException($"Unknown or unsupported model type {vcsPlatformType} {vcsShaderModelType}");
+                }
+            } else
+            {
+                switch (vcsPlatformType)
+                {
+                    case VcsPlatformType.PCGL:
+                    case VcsPlatformType.MOBILE_GLES:
+                        return "glsl";
+                    case VcsPlatformType.VULKAN:
+                    case VcsPlatformType.ANDROID_VULKAN:
+                    case VcsPlatformType.IOS_VULKAN:
+                        return "vulkan";
+                    default:
+                        throw new ShaderParserException($"Unknown or unsupported source type {vcsPlatformType}");
+                }
+            }
         }
     }
 }

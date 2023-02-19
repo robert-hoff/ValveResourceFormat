@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using ValveResourceFormat.CompiledShader;
-using static MyShaderAnalysis.util.MyShaderUtilHelpers;
+using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
 namespace MyShaderAnalysis.parsing
 {

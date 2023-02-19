@@ -1,12 +1,6 @@
-using System;
-using System.IO;
-using System.Collections.Generic;
-using ValveResourceFormat.ThirdParty;
-using ValveResourceFormat.CompiledShader;
-using ValveResourceFormat.Serialization.VfxEval;
-using static MyShaderAnalysis.util.MyShaderUtilHelpers;
-using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 using MyShaderAnalysis.vulkanreflect;
+using System.IO;
+using ValveResourceFormat.CompiledShader;
 
 /*
  * Jan 2023 recap
@@ -18,15 +12,6 @@ using MyShaderAnalysis.vulkanreflect;
  * SPIR-V magic number is 0x07230203
  * Version = 0x00010000 = 0.1.0.0
  * Generator 0x0008000A
- *
- *
- *
- *
- *
- *
- *
- *
- *
  *
  *
  */
