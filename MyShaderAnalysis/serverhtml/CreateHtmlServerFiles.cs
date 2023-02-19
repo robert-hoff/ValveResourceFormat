@@ -1,6 +1,6 @@
 using MyShaderAnalysis.filearchive;
 using MyShaderAnalysis.util;
-using ValveResourceFormat.CompiledShader;
+using MyShaderFile.CompiledShader;
 
 /*
  *

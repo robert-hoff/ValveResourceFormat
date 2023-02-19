@@ -5,6 +5,7 @@ using MyShaderAnalysis.parsing;
 using MyShaderAnalysis.serverhtml;
 using MyShaderAnalysis.snippetcode;
 using MyShaderAnalysis.staticanalysis;
+using MyShaderAnalysis.statickristiker;
 using MyShaderAnalysis.util;
 using MyShaderAnalysis.vulkanreflect;
 using System;
@@ -31,8 +32,9 @@ namespace MyShaderAnalysis
         {
             Console.SetOut(new ToDebugWriter());
 
-            // StaticAnalysisForKristiker(); // analyse zfrme data ahead of parsing
-            RunStaticAnalysis();
+            // AnalysisKristiker();
+            StaticAnalysisForKristiker(); // analyse zfrme data ahead of parsing
+            // RunStaticAnalysis();
             // BatchProcessFiles();
             // ServerHtml(); // <-- create server files
             // TestFileArchives();
@@ -41,6 +43,12 @@ namespace MyShaderAnalysis
             // BasicFunctionalitySnippets();
             // CSharpSnippets();
             // TestConstraintRules();
+        }
+
+        // classes using the Kristiker shaders *only*
+        public static void AnalysisKristiker()
+        {
+            TestStuff.RunTrials();
         }
 
         public static void StaticAnalysisForKristiker()

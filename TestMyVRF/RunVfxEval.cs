@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ValveResourceFormat.Serialization.VfxEval;
+using MyShaderFile.Serialization.VfxEval;
 
 namespace TestMyVRF {
     class RunVfxEval {

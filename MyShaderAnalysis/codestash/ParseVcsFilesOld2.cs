@@ -4,7 +4,7 @@ using MyShaderAnalysis.util;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using ValveResourceFormat.CompiledShader;
+using MyShaderFile.CompiledShader;
 using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
 using static MyShaderAnalysis.filearchive.ReadShaderFile;
 

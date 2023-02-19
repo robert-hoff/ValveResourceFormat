@@ -1,6 +1,6 @@
 using System;
 
-namespace ValveResourceFormat.Utils
+namespace MyShaderFile.Utils
 {
 #pragma warning disable CA1032 // Implement standard exception constructors
     public class UnexpectedMagicException : Exception

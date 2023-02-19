@@ -1,5 +1,5 @@
 using System;
-using ValveResourceFormat.ThirdParty;
+using MyShaderFile.ThirdParty;
 
 namespace MyShaderAnalysis.snippetcode
 {

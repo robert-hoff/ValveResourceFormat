@@ -1,7 +1,7 @@
 
-using ValveResourceFormat.Utils;
+using MyShaderFile.Utils;
 
-namespace ValveResourceFormat.CompiledShader
+namespace MyShaderFile.CompiledShader
 {
     public abstract class ShaderDataBlock
     {

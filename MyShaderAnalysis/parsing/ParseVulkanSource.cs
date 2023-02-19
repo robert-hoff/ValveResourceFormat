@@ -1,6 +1,6 @@
 using MyShaderAnalysis.vulkanreflect;
 using System.IO;
-using ValveResourceFormat.CompiledShader;
+using MyShaderFile.CompiledShader;
 
 /*
  * Jan 2023 recap

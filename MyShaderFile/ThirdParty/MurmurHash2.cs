@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace ValveResourceFormat.ThirdParty
+namespace MyShaderFile.ThirdParty
 {
     public static class MurmurHash2
     {

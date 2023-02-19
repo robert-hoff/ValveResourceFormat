@@ -4,8 +4,8 @@ using MyShaderAnalysis.snippetcode;
 using System;
 using System.Diagnostics;
 using System.IO;
-using ValveResourceFormat.CompiledShader;
-using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
+using MyShaderFile.CompiledShader;
+using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 
 namespace MyShaderAnalysis.vulkanreflect
 {

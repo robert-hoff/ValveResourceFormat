@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using ZstdSharp;
-using static ValveResourceFormat.CompiledShader.ShaderDataReader;
-using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
+using static MyShaderFile.CompiledShader.ShaderDataReader;
+using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 using LzmaDecoder = SevenZip.Compression.LZMA.Decoder;
 
-namespace ValveResourceFormat.CompiledShader
+namespace MyShaderFile.CompiledShader
 {
     public class ShaderFile : IDisposable
     {

@@ -102,7 +102,7 @@
  */
 using System;
 
-namespace ValveResourceFormat.CompiledShader
+namespace MyShaderFile.CompiledShader
 {
     public static class ZstdDictionary
     {

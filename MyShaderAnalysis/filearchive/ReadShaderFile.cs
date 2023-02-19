@@ -1,6 +1,6 @@
 using System;
 using System.IO;
-using ValveResourceFormat.CompiledShader;
+using MyShaderFile.CompiledShader;
 
 namespace MyShaderAnalysis.filearchive
 {

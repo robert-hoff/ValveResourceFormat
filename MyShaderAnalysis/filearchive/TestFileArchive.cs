@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using ValveResourceFormat.CompiledShader;
+using MyShaderFile.CompiledShader;
 
 namespace MyShaderAnalysis.filearchive
 {

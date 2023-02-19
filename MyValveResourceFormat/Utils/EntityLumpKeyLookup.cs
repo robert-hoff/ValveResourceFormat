@@ -1,5 +1,5 @@
 using System.Collections.Concurrent;
-using ValveResourceFormat.ThirdParty;
+using MyShaderFile.ThirdParty;
 
 namespace MyValveResourceFormat.Utils {
     public static class EntityLumpKeyLookup {

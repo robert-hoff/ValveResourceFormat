@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using ValveResourceFormat.CompiledShader;
+using MyShaderFile.CompiledShader;
 using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
 using static MyShaderAnalysis.filearchive.ReadShaderFile;
-using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
+using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 
 /*
  *

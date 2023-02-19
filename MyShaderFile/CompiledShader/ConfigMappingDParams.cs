@@ -1,7 +1,7 @@
 using System;
-using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
+using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 
-namespace ValveResourceFormat.CompiledShader
+namespace MyShaderFile.CompiledShader
 {
     public class ConfigMappingDParams
     {

@@ -1,4 +1,4 @@
-namespace ValveResourceFormat.CompiledShader
+namespace MyShaderFile.CompiledShader
 {
     public enum VcsProgramType
     {

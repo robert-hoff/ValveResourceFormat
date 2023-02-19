@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using ValveResourceFormat.CompiledShader;
+using MyShaderFile.CompiledShader;
 
 namespace MyShaderAnalysis.snippetcode
 {

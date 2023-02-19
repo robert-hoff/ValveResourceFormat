@@ -1,7 +1,7 @@
 using System;
 using System.Globalization;
 
-namespace ValveResourceFormat.CompiledShader
+namespace MyShaderFile.CompiledShader
 {
     public class ZDataBlock : ShaderDataBlock
     {

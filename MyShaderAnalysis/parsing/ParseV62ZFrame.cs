@@ -1,7 +1,7 @@
 using System.IO;
-using ValveResourceFormat.CompiledShader;
-using ValveResourceFormat.ThirdParty;
-using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
+using MyShaderFile.CompiledShader;
+using MyShaderFile.ThirdParty;
+using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 
 namespace MyShaderAnalysis.parsing
 {

@@ -25,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MyShaderFileKristiker\MyShaderFileKristiker.csproj" />
     <ProjectReference Include="..\MyShaderFile\MyShaderFile.csproj" />
   </ItemGroup>
 

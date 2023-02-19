@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using ValveResourceFormat.Utils;
-using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
+using MyShaderFile.Utils;
+using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 
-namespace ValveResourceFormat.CompiledShader
+namespace MyShaderFile.CompiledShader
 {
     public class FeaturesHeaderBlock : ShaderDataBlock
     {

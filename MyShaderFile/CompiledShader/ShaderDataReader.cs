@@ -2,7 +2,7 @@ using System;
 using System.Globalization;
 using System.IO;
 
-namespace ValveResourceFormat.CompiledShader
+namespace MyShaderFile.CompiledShader
 {
     public delegate void HandleOutputWrite(string s);
     public class ShaderDataReader : BinaryReader

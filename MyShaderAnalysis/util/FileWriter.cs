@@ -1,6 +1,6 @@
 using System;
 using System.IO;
-using HandleOutputWrite = ValveResourceFormat.CompiledShader.HandleOutputWrite;
+using HandleOutputWrite = MyShaderFile.CompiledShader.HandleOutputWrite;
 
 namespace MyShaderAnalysis.util
 {

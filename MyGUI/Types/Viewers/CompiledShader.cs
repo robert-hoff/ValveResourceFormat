@@ -9,8 +9,8 @@ using System.Text;
 using System.Windows.Forms;
 using MyGUI.Utils;
 using SteamDatabase.ValvePak;
-using ValveResourceFormat.CompiledShader;
-using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
+using MyShaderFile.CompiledShader;
+using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 using VrfPackage = SteamDatabase.ValvePak.Package;
 
 

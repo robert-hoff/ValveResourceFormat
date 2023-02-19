@@ -1,6 +1,6 @@
 using System;
 
-namespace ValveResourceFormat.CompiledShader
+namespace MyShaderFile.CompiledShader
 {
     public class ShaderParserException : Exception
     {

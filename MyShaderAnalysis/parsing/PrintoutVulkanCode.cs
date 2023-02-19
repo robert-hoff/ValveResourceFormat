@@ -3,8 +3,8 @@ using MyShaderAnalysis.serverhtml;
 using MyShaderAnalysis.util;
 using MyShaderAnalysis.vulkanreflect;
 using System;
-using ValveResourceFormat.CompiledShader;
-using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
+using MyShaderFile.CompiledShader;
+using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 
 /*
  * 8 April 2022

@@ -16,7 +16,7 @@ using MyValveResourceFormat.Blocks;
 using MyValveResourceFormat.IO;
 using MyValveResourceFormat.ResourceTypes;
 using MyValveResourceFormat.ToolsAssetInfo;
-using ValveResourceFormat.CompiledShader;
+using MyShaderFile.CompiledShader;
 
 namespace MyDecompiler {
     [Command(Name = "vrf_decompiler", Description = "A test bed command line interface for the VRF library")]

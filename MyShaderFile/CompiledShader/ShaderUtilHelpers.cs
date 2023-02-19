@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using ValveResourceFormat.Serialization.VfxEval;
-using static ValveResourceFormat.CompiledShader.ShaderDataReader;
+using MyShaderFile.Serialization.VfxEval;
+using static MyShaderFile.CompiledShader.ShaderDataReader;
 
-namespace ValveResourceFormat.CompiledShader
+namespace MyShaderFile.CompiledShader
 {
     public static class ShaderUtilHelpers
     {

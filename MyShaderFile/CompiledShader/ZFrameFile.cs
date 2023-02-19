@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using ValveResourceFormat.ThirdParty;
-using static ValveResourceFormat.CompiledShader.ShaderDataReader;
-using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
+using MyShaderFile.ThirdParty;
+using static MyShaderFile.CompiledShader.ShaderDataReader;
+using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 
-namespace ValveResourceFormat.CompiledShader
+namespace MyShaderFile.CompiledShader
 {
     public class ZFrameFile : IDisposable
     {

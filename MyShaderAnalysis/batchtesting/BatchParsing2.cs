@@ -3,7 +3,7 @@ using MyShaderAnalysis.parsing;
 using System;
 using System.Diagnostics;
 using System.IO;
-using ValveResourceFormat.CompiledShader;
+using MyShaderFile.CompiledShader;
 
 namespace MyShaderAnalysis.batchtesting
 {

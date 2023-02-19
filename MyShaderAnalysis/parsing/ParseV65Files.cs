@@ -3,11 +3,11 @@ using MyShaderAnalysis.serverhtml;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using ValveResourceFormat.CompiledShader;
+using MyShaderFile.CompiledShader;
 using static MyShaderAnalysis.codestash.FileSystemOld;
 using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
 using static MyShaderAnalysis.filearchive.FileArchive;
-using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
+using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 
 /*
  * Almost identical to DataReaderVcsBytes - all relevant changes were written into DataReaderVcsBytes since

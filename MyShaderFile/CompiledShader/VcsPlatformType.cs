@@ -1,4 +1,4 @@
-namespace ValveResourceFormat.CompiledShader
+namespace MyShaderFile.CompiledShader
 {
     /*
      * PCGL and MOBILE_GLES are working

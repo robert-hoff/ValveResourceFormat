@@ -1,7 +1,7 @@
 using MyShaderAnalysis.filearchive;
 using System;
 using System.Diagnostics;
-using ValveResourceFormat.CompiledShader;
+using MyShaderFile.CompiledShader;
 using static MyShaderAnalysis.util.DataCollectAcrossQueries;
 
 namespace MyShaderAnalysis.staticanalysis

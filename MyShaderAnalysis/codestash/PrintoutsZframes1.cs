@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using ValveResourceFormat.CompiledShader;
+using MyShaderFile.CompiledShader;
 using static MyShaderAnalysis.codestash.FileSystemOld;
 using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
 using static MyShaderAnalysis.filearchive.FileArchive;
 using static MyShaderAnalysis.filearchive.ReadShaderFile;
 using static MyShaderAnalysis.util.DataCollectAcrossQueries;
-using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
+using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 
 /*
  *
@@ -384,7 +384,7 @@ namespace MyShaderAnalysis.codestash
             }
 
             string seqName = $"WRITESEQ[{lastseq}] (default)";
-            ValveResourceFormat.CompiledShader.ZDataBlock leadData = zframeFile.LeadingData;
+            MyShaderFile.CompiledShader.ZDataBlock leadData = zframeFile.LeadingData;
             PrintParamWriteSequence(shaderFile, leadData.Dataload, leadData.H0, leadData.H1, leadData.H2, seqName: seqName);
             OutputWriteLine("");
             foreach (var item in writeSequences)

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using ValveResourceFormat.CompiledShader;
+using MyShaderFile.CompiledShader;
 using MyValveResourceFormat.Blocks;
 using MyValveResourceFormat.Blocks.ResourceEditInfoStructs;
 using MyValveResourceFormat.ResourceTypes;

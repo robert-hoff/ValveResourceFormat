@@ -1,9 +1,9 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using ValveResourceFormat.ThirdParty;
+using MyShaderFile.ThirdParty;
 
-namespace ValveResourceFormat.Serialization.VfxEval
+namespace MyShaderFile.Serialization.VfxEval
 {
     public class VfxEval
     {

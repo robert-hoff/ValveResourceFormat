@@ -1,6 +1,6 @@
 using System;
 using System.Diagnostics;
-using ValveResourceFormat.CompiledShader;
+using MyShaderFile.CompiledShader;
 
 namespace MyShaderAnalysis.vulkanreflect
 {

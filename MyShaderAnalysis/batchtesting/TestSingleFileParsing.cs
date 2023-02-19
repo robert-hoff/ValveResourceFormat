@@ -2,7 +2,7 @@ using MyShaderAnalysis.filearchive;
 using MyShaderAnalysis.parsing;
 using System;
 using System.Collections.Generic;
-using ValveResourceFormat.CompiledShader;
+using MyShaderFile.CompiledShader;
 using static MyShaderAnalysis.codestash.FileSystemOld;
 using static MyShaderAnalysis.filearchive.FileArchive;
 

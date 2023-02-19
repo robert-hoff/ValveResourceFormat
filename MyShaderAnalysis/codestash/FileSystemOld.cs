@@ -1,6 +1,6 @@
 using System.IO;
-using ShaderParserException = ValveResourceFormat.CompiledShader.ShaderParserException;
-using VcsProgramType = ValveResourceFormat.CompiledShader.VcsProgramType;
+using ShaderParserException = MyShaderFile.CompiledShader.ShaderParserException;
+using VcsProgramType = MyShaderFile.CompiledShader.VcsProgramType;
 
 /*
  * NOTE - use forward slashes in ALL cases because this is what HTML wants,

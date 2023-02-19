@@ -5,7 +5,7 @@ using SteamDatabase.ValvePak;
 using MyValveResourceFormat;
 using MyValveResourceFormat.Blocks;
 using MyValveResourceFormat.ResourceTypes;
-using ValveResourceFormat.ThirdParty;
+using MyShaderFile.ThirdParty;
 using MyValveResourceFormat.Serialization;
 
 namespace TestMyVRF {

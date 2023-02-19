@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using static ValveResourceFormat.CompiledShader.ShaderDataReader;
-using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
+using static MyShaderFile.CompiledShader.ShaderDataReader;
+using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 
-namespace ValveResourceFormat.CompiledShader
+namespace MyShaderFile.CompiledShader
 {
     public class PrintVcsFileSummary
     {

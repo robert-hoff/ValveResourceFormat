@@ -1,6 +1,6 @@
 using MyShaderAnalysis.filearchive;
 using System;
-using ValveResourceFormat.CompiledShader;
+using MyShaderFile.CompiledShader;
 
 namespace MyShaderAnalysis.compat
 {
