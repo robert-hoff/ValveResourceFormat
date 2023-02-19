@@ -1,9 +1,8 @@
-using MyShaderFileKristiker.MyHelperClasses;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using ValveResourceFormat.CompiledShader;
 
-namespace MyShaderFileKristiker
+namespace MyShaderFileKristiker.MyHelperClasses
 {
     /*
      * Replace RichTextBox links. There are only two types of Zframe links
@@ -43,7 +42,7 @@ namespace MyShaderFileKristiker
         private string getBackLink()
         {
             string linkName = $"{fileTokens.GetServerFilePath()}_{fileTokens.vcstoken}.vcs";
-            return $"Zframe belongs to <a href='{fileTokens.GetServerFileUrl("summary2")}'>{linkName}</a>\n";
+            return $"Zframe belongs to <a href='{fileTokens.GetServerFileUrl()}'>{linkName}</a>\n";
         }
 
         /*

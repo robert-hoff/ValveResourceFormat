@@ -67,12 +67,12 @@ namespace MyShaderFileKristiker.MyHelperClasses
             if (fileStrTokens.Length >= 4)
             {
                 VcsProgramType programType = ComputeVcsProgramType(fileStrTokens[^1]);
-                return $"<a href='{fileVcsTokens.GetServerFilePath()}/{programType}-summary2.html'>{groups[1]}</a>";
+                return $"<a href='{fileVcsTokens.GetServerFilePath()}/{groups[1].ToString()[..^4]}.html'>{groups[1]}</a>";
             }
             else
             {
                 long zframeId = Convert.ToInt64(groups[1].ToString(), 16);
-                return fileVcsTokens.GetBestZframesLink(zframeId, noBrackets: true);
+                return fileVcsTokens.GetZFrameLinkIfOneExists(zframeId, noBrackets: true);
             }
         }
     }

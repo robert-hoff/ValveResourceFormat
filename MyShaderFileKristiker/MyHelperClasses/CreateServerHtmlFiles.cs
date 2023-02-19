@@ -45,21 +45,40 @@ namespace MyShaderFileKristiker.MyHelperClasses
             // ARCHIVE archive = ARCHIVE.dota_game_vulkan_v65;
             //FileArchive fileArchive = new(archive, useModularLookup: true);
 
-            ARCHIVE archive = ARCHIVE.dota_core_pcgl_v64;
-            // ARCHIVE archive = ARCHIVE.dota_game_pcgl_v64;
+            // ARCHIVE archive = ARCHIVE.dota_core_pcgl_v64;
+            ARCHIVE archive = ARCHIVE.dota_game_pcgl_v64;
             // ARCHIVE archive = ARCHIVE.dota_game_pc_v65;
             FileArchive fileArchive = new(archive, VcsShaderModelType._40);
 
             int fileCount = fileArchive.GetFileCount();
             for (int i = 0; i < fileCount; i++)
             {
-                SaveAllServerFiles(archive, fileArchive.GetFileVcsTokens(i).filename, 5, 5, saveGpuByteDetail: false);
+                SaveAllServerFiles(archive, fileArchive.GetFileVcsTokens(i).filename, 1, 1, saveGpuByteDetail: false);
                 if (i == limitFileCount)
                 {
                     break;
                 }
             }
         }
+
+        /*
+         * shaderName is in the form 'multiblend_pcgl_30'
+         *
+         */
+        public static void SaveVcsCollection(ARCHIVE archive, string shaderName,
+            int zFramesToPrint = 5, int gpuSourcesToPrint = 5, bool saveGpuByteDetail = false)
+        {
+
+            List<string> relatedFiles = FileVcsCollection.GetRelatedFiles(archive, shaderName);
+            // List<FileVcsTokens> vcsTokens = new();
+            foreach (string filename in relatedFiles)
+            {
+                // vcsTokens.Add(new FileVcsTokens(archive, filename));
+                ParseVcsFile vcsFile = new ParseVcsFile(archive, filename, convertLinksToHtml: true);
+                vcsFile.SaveAllServerFiles(zFramesToPrint, gpuSourcesToPrint, saveGpuByteDetail);
+            }
+        }
+
 
         public static void SaveServerSets()
         {
@@ -88,7 +107,7 @@ namespace MyShaderFileKristiker.MyHelperClasses
             // SaveAllServerFiles(ARCHIVE.dota_game_pc_v65, "multiblend_pc_40_vs.vcs", zframesToPrint: 10, gpuSourcesToPrint: 10, saveGpuByteDetail: false);
 
             // SaveAllServerFiles(ARCHIVE.dota_game_pcgl_v64, "crystal_pcgl_40_vs.vcs", zframesToPrint: 10000, gpuSourcesToPrint: 10000);
-            SaveAllServerFiles(ARCHIVE.dota_game_pcgl_v64, "crystal_pcgl_40_ps.vcs", zframesToPrint: 10000, gpuSourcesToPrint: 10000);
+            SaveAllServerFiles(ARCHIVE.dota_game_pcgl_v64, "crystal_pcgl_40_ps.vcs", zframesToPrint: 4, gpuSourcesToPrint: 4);
 
             // SaveAllServerFiles(ARCHIVE.dota_game_pc_v64, "multiblend_pc_30_ps.vcs", zframesToPrint: 30, gpuSourcesToPrint: 30);
             // SaveAllServerFiles(ARCHIVE.dota_game_pcgl_v64, "spritecard_pcgl_30_ps.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
@@ -112,6 +131,8 @@ namespace MyShaderFileKristiker.MyHelperClasses
             ParseVcsFile vcsFile = new ParseVcsFile(archive, filename, convertLinksToHtml: true);
             vcsFile.SaveAllServerFiles(zframesToPrint, gpuSourcesToPrint, saveGpuByteDetail);
         }
+
+
 
         public static void SingleFileExamples2()
         {

@@ -94,7 +94,7 @@ namespace MyShaderFileKristiker.MyHelperClasses
             }
             string htmlTitle = fileTokens.GetShortName();
             string htmlHeader = fileTokens.GetBaseName();
-            string outputFilenamepath = $"{fileTokens.GetServerFilenamepath("summary2", createDirs: true)}";
+            string outputFilenamepath = $"{fileTokens.GetServerFilenamepath("", createDirs: true)}";
             WriteHtmlFile(outputFilenamepath, htmlTitle, htmlHeader, vcsFormattedSummary);
         }
 
@@ -122,7 +122,7 @@ namespace MyShaderFileKristiker.MyHelperClasses
             }
             string htmlTitle = $"{fileTokens.vcstoken}[{zframeFile.ZframeId:x}]";
             string htmlHeader = fileTokens.GetZFrameHtmlFilename(zframeFile.ZframeId)[..^5];
-            string outputFilenamepath = fileTokens.GetZFrameHtmlFilenamepath(zframeFile.ZframeId, "summary", createDirs: true);
+            string outputFilenamepath = fileTokens.GetZFrameHtmlFilenamepath(zframeFile.ZframeId, "", createDirs: true);
             WriteHtmlFile(outputFilenamepath, htmlTitle, htmlHeader, zframeFormattedSummary);
         }
 
@@ -178,8 +178,8 @@ namespace MyShaderFileKristiker.MyHelperClasses
                 headerText += $"Source ref. {gpuSource.GetEditorRefIdAsString()}\n";
             }
             headerText += "Source belongs to ";
-            headerText += $"<a href='{fileTokens.GetServerFileUrl("summary2")}'>{fileTokens.filename}</a> ";
-            headerText += $"<a href='{fileTokens.GetZFrameUrl(zframeFile.ZframeId, "summary")}'>zframe[0x{zframeFile.ZframeId:x}]</a>\n";
+            headerText += $"<a href='{fileTokens.GetServerFileUrl("")}'>{fileTokens.filename}</a> ";
+            headerText += $"<a href='{fileTokens.GetZFrameUrl(zframeFile.ZframeId, "")}'>zframe[0x{zframeFile.ZframeId:x}]</a>\n";
             string gpuByteSourceFilenamepath = $"{gpuServerDir}/" +
                 $"{fileTokens.GetGpuHtmlFilename(gpuSource.GetEditorRefIdAsString() + "-bytes")}";
             if (File.Exists(gpuByteSourceFilenamepath))

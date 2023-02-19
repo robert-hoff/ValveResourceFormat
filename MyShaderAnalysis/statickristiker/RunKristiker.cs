@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using ValveResourceFormat.CompiledShader;
 using static MyShaderFileKristiker.MyHelperClasses.FileArchive;
+using static MyShaderFileKristiker.MyHelperClasses.CreateServerHtmlFiles;
 
 namespace MyShaderAnalysis.statickristiker
 {
@@ -27,6 +28,7 @@ namespace MyShaderAnalysis.statickristiker
 
         public static void RunTrials()
         {
+            // RunTestsOnKristikerShaders();
             SaveAllServerFilesFromArchive();
             // PrintShaderFileToHtml();
             // PrintZframeToHtml();
@@ -35,9 +37,17 @@ namespace MyShaderAnalysis.statickristiker
             // ShowZFrameCount();
         }
 
+
+        public static void RunTestsOnKristikerShaders()
+        {
+            TestHelperClasses.RunTrials();
+        }
+
         public static void SaveAllServerFilesFromArchive()
         {
-            CreateServerHtmlFiles.SaveAllServerFilesFromArchive();
+            SaveVcsCollection(ARCHIVE.dota_game_pcgl_v64, "crystal_pcgl_40", zFramesToPrint: 1, gpuSourcesToPrint: 1);
+            // CreateServerHtmlFiles.SaveServerSets();
+            // CreateServerHtmlFiles.SaveAllServerFilesFromArchive(limitFileCount: 2);
         }
 
 

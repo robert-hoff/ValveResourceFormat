@@ -24,6 +24,11 @@ namespace MyShaderFileKristiker.MyHelperClasses
         public string sourceType { get; }       // glsl, dxil, dxbc or vulkan (names gles, vulkan, android_vulkan, ios_vulkan are not used)
         public string vcstoken { get; }         // ft, vs, ps, psrs or gs
 
+
+        // To print to a target location, seeking to change
+        // archivename
+        // foldername
+
         public FileVcsTokens(ARCHIVE archive, string filename)
         {
             this.archive = archive;
@@ -102,9 +107,12 @@ namespace MyShaderFileKristiker.MyHelperClasses
          * Z:/dev/www/vcs.codecreation.dev/dota-game-pcgl-v64/multiblend_pcgl_30/multiblend_pcgl_30_ps-label.html
          *
          */
-        public string GetServerFilenamepath(string label, bool createDirs = false)
+        public string GetServerFilenamepath(string label = "", bool createDirs = false)
         {
-            return $"{GetServerFileDir(createDirs)}/{name}-{label}.html";
+            return label.Length == 0 ?
+            $"{GetServerFileDir(createDirs)}/{name}.html"
+            :
+            $"{GetServerFileDir(createDirs)}/{name}-{label}.html";
         }
 
         /*
@@ -118,9 +126,11 @@ namespace MyShaderFileKristiker.MyHelperClasses
         /*
          * /dota-game-pcgl-v64/multiblend_pcgl_30/multiblend_pcgl_30_ps-label.html
          */
-        public string GetServerFileUrl(string label)
+        public string GetServerFileUrl(string label = "")
         {
-            return $"/{archivename}/{foldername}/{name}-{label}.html";
+            return label.Length == 0 ?
+            $"/{archivename}/{foldername}/{name}.html" :
+            $"/{archivename}/{foldername}/{name}-{label}.html";
         }
 
         /*
@@ -196,21 +206,23 @@ namespace MyShaderFileKristiker.MyHelperClasses
         /*
          * Z:/dev/www/vcs.codecreation.dev/dota-game-pcgl-v64/multiblend_pcgl_30/zframes/multiblend_pcgl_30_ps-ZFRAME00000000-label.html
          */
-        public string GetZFrameHtmlFilenamepath(long zframeId, string label, bool createDirs = true)
+        public string GetZFrameHtmlFilenamepath(long zframeId, string label = "", bool createDirs = true)
         {
-            return $"{GetZFramesServerDir(createDirs)}/{name}-ZFRAME{zframeId:x08}-{label}.html";
+            return label.Length == 0 ?
+            $"{GetZFramesServerDir(createDirs)}/{name}-Z{zframeId:x08}.html"
+                :
+            $"{GetZFramesServerDir(createDirs)}/{name}-Z{zframeId:x08}-{label}.html";
         }
 
         /*
-         * multiblend_pcgl_30_ps-ZFRAME00000000-label.html
+         * multiblend_pcgl_30_ps-Z00000000-label.html
          */
         public string GetZFrameHtmlFilename(long zframeId, string label = "")
         {
-            if (label.Length > 0)
-            {
-                label = $"-{label}";
-            }
-            return $"{name}-ZFRAME{zframeId:x08}{label}.html";
+            return label.Length == 0 ?
+            $"{name}-Z{zframeId:x08}.html"
+                :
+            $"{name}-Z{zframeId:x08}-{label}.html";
         }
 
         /*
@@ -218,11 +230,10 @@ namespace MyShaderFileKristiker.MyHelperClasses
          */
         public string GetZFrameUrl(long zframeId, string label)
         {
-            if (label.Length > 0)
-            {
-                label = $"-{label}";
-            }
-            return $"{GetZFramesServerPath()}/{name}-ZFRAME{zframeId:x08}{label}.html";
+            return label.Length == 0 ?
+            $"{GetZFramesServerPath()}/{name}-Z{zframeId:x08}.html"
+                :
+            $"{GetZFramesServerPath()}/{name}-Z{zframeId:x08}-{label}.html";
         }
 
         // Do this later, if bothered
@@ -257,14 +268,13 @@ namespace MyShaderFileKristiker.MyHelperClasses
             return $"/{archivename}/{filename}";
         }
 
-        // todo - this is a bit weird
-        public string GetBestZframesLink(long zframeId, bool noBrackets = false)
+        public string GetZFrameLinkIfOneExists(long zframeId, bool noBrackets = false)
         {
-            if (File.Exists(GetZFrameHtmlFilenamepath(zframeId, "summary")))
+            if (File.Exists(GetZFrameHtmlFilenamepath(zframeId, "")))
             {
                 return noBrackets ?
-                    $"<a href='{GetZFrameUrl(zframeId, "summary")}'>{zframeId:x08}</a>" :
-                    $"<a href='{GetZFrameUrl(zframeId, "summary")}'>Z[{zframeId:x08}]</a>";
+                    $"<a href='{GetZFrameUrl(zframeId, "")}'>{zframeId:x08}</a>" :
+                    $"<a href='{GetZFrameUrl(zframeId, "")}'>Z[{zframeId:x08}]</a>";
             }
             // no zframe exists return plaintext
             return noBrackets ? $"{zframeId:x08}" : $"Z[{zframeId:x08}]";
