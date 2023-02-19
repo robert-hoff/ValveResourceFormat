@@ -1,14 +1,11 @@
-using MyShaderFileKristiker.MyHelperClasses;
-using System;
 using System.Diagnostics;
-using System.IO;
 using ValveResourceFormat.CompiledShader;
 using static MyShaderFileKristiker.MyHelperClasses.FileArchive;
 using static MyShaderFileKristiker.MyHelperClasses.CreateServerHtmlFiles;
 
-namespace MyShaderAnalysis.statickristiker
+namespace MyShaderFileKristiker.MyHelperClasses.ProgEntries
 {
-    public class RunKristiker
+    public class RunServerHtml
     {
         static string DOTA_PCGL_V64_GAME = @"X:\dota-2-VRF-exports\dota2-export-shaders-pcgl\shaders\vfx\";
 
@@ -28,19 +25,12 @@ namespace MyShaderAnalysis.statickristiker
 
         public static void RunTrials()
         {
-            // RunTestsOnKristikerShaders();
             SaveAllServerFilesFromArchive();
             // PrintShaderFileToHtml();
             // PrintZframeToHtml();
             // PrintZframeToHtmlByteVersion();
             // ShowZFrameParameters();
             // ShowZFrameCount();
-        }
-
-
-        public static void RunTestsOnKristikerShaders()
-        {
-            TestHelperClasses.RunTrials();
         }
 
         public static void SaveAllServerFilesFromArchive()
@@ -101,7 +91,6 @@ namespace MyShaderAnalysis.statickristiker
             return shaderFile.GetZFrameFile(zFrameIndex);
         }
 
-
         private static string OutputFilenameShaderFile()
         {
             return $"{Path.GetFileNameWithoutExtension(inputFile)}.html";
@@ -137,5 +126,6 @@ namespace MyShaderAnalysis.statickristiker
             ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
             Console.WriteLine($"{shaderFile.GetZFrameCount()} zframes");
         }
+
     }
 }
