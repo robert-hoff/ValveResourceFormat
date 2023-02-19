@@ -155,7 +155,7 @@ namespace ValveResourceFormat.CompiledShader
 
             tabulatedData.AddTabulatedRow(new string[] { "WRITESEQ[0]", "", "", "" });
             var dataBlock0 = zframeFile.LeadingData;
-            PrintParamWriteSequence(shaderFile, dataBlock0.Dataload, dataBlock0.H0, dataBlock0.H1, dataBlock0.H2, tabulatedData);
+            PrintParamWriteSequence(dataBlock0.Dataload, dataBlock0.H0, dataBlock0.H1, dataBlock0.H2, tabulatedData);
             tabulatedData.AddTabulatedRow(new string[] { "", "", "", "" });
 
             var lastSeq = writeSequences[-1];
@@ -166,7 +166,7 @@ namespace ValveResourceFormat.CompiledShader
                     lastSeq = item.Value;
                     var dataBlock = zframeFile.DataBlocks[item.Key];
                     tabulatedData.AddTabulatedRow(new string[] { $"WRITESEQ[{lastSeq}]", "", "", "" });
-                    PrintParamWriteSequence(shaderFile, dataBlock.Dataload, dataBlock.H0, dataBlock.H1, dataBlock.H2, tabulatedData);
+                    PrintParamWriteSequence(dataBlock.Dataload, dataBlock.H0, dataBlock.H1, dataBlock.H2, tabulatedData);
                     tabulatedData.AddTabulatedRow(new string[] { "", "", "", "" });
                 }
             }
@@ -174,7 +174,7 @@ namespace ValveResourceFormat.CompiledShader
             OutputWriteLine("");
         }
 
-        private void PrintParamWriteSequence(ShaderFile shaderFile, byte[] dataload, int h0, int h1, int h2,
+        private void PrintParamWriteSequence(byte[] dataload, int h0, int h1, int h2,
             OutputFormatterTabulatedData tabulatedData)
         {
             if (h0 == 0)
@@ -194,7 +194,7 @@ namespace ValveResourceFormat.CompiledShader
             {
                 for (int i = segStart; i < segEnd; i++)
                 {
-                    var paramId = dataload[i * 4] + 256 * dataload[i * 4 + 1];
+                    var paramId = dataload[i * 4];
                     var arg0 = dataload[i * 4 + 2];
                     var arg1 = dataload[i * 4 + 3];
                     var segmentDesc = i == segStart ? $"seg_{segId}" : "";
