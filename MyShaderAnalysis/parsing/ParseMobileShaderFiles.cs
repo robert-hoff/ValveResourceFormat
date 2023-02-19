@@ -4,7 +4,7 @@ using ValveResourceFormat.CompiledShader;
 using static MyShaderAnalysis.codestash.FileSystemOld;
 using static MyShaderAnalysis.filearchive.ReadShaderFile;
 
-namespace MyShaderAnalysis.codestash
+namespace MyShaderAnalysis.parsing
 {
     public class TestMobileShaderFiles
     {

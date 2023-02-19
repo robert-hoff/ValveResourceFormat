@@ -21,7 +21,6 @@ namespace MyShaderAnalysis.batchtesting
             // ShowVcsFiles();
         }
 
-
         const VcsProgramType VS = VcsProgramType.VertexShader;
         const VcsProgramType PS = VcsProgramType.PixelShader;
         public static void ShowSingleZFrame()

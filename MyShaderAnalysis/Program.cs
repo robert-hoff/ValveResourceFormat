@@ -33,11 +33,11 @@ namespace MyShaderAnalysis
 
             // StaticAnalysisForKristiker(); // analyse zfrme data ahead of parsing
             // -- Jan 2023
-            // RunStaticAnalysis();
+            RunStaticAnalysis();
             // BatchProcessFiles();
             // -- Earlier
             // HtmlServerDumps(); // <-- create server files
-            TestFileArchives();
+            // TestFileArchives();
             // ParserSnippets();
             // OldStaticAnalysisSummaries(); // garbage
             // BasicFunctionalitySnippets();

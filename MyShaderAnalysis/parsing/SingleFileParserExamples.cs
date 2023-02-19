@@ -30,8 +30,6 @@ namespace MyShaderAnalysis.parsing
             // WriteBytesToStringBuffer();
         }
 
-
-
         public static void TestShaderFilesBytesShowOutput()
         {
             FileArchive vcsArchive = new FileArchive(ARCHIVE.dota_testset_pcgl_v64, VcsProgramType.VertexShader, VcsShaderModelType._30);

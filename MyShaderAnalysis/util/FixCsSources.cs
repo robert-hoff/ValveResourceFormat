@@ -15,9 +15,9 @@ namespace MyShaderAnalysis.util
 
         public static void Run()
         {
-            // FixAllFiles();
+            FixAllFiles();
             // FixStylesForFile(TEST_FILE);
-            ShowFixesForFile(TEST_FILE);
+            // ShowFixesForFile(TEST_FILE);
             // ShowAllCsfiles();
         }
 

@@ -5,7 +5,6 @@ namespace MyShaderAnalysis.util
 {
     public class DataCollectAcrossQueries
     {
-
         // --- collect int and string mechanisms
 
         public static SortedDictionary<int, int> collectValuesInt = new();
