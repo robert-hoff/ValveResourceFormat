@@ -30,18 +30,16 @@ namespace MyShaderAnalysis
         {
             Console.SetOut(new ToDebugWriter());
 
-            StaticAnalysisForKristiker(); // analyse zfrme data ahead of parsing
-
-            // Jan 2023
+            // StaticAnalysisForKristiker(); // analyse zfrme data ahead of parsing
+            // -- Jan 2023
             // RunStaticAnalysis();
             // BatchProcessFiles();
             // OldStaticAnalysisSummaries();
-
-            // Earlier
+            // -- Earlier
             // BatchTesting1()
             // BatchProcessHtmlServerFiles(); // <-- create server files
             // ParserSnippets();
-            // BasicFunctionalitySnippets();
+            BasicFunctionalitySnippets();
             // CSharpSnippets();
         }
 
@@ -75,13 +73,12 @@ namespace MyShaderAnalysis
         // R: yea, but not very user friendly!
         public static void BatchTesting1()
         {
-            // 2022 sometime ..
             TestFileArchive.RunTrials();
+
+            // 2022 sometime ..
             // TestBatchParsing.RunTrials();
 
-            // R: Jan 2023 - cannot find this file
-            // TestSpirvDll.RunTrials();
-
+            // TIDY NEEDED HERE
             // -- fall 2021
             // there is variously still some useful code among these files ..
             // ProgramEntriesOld.RunTrials();
@@ -101,8 +98,9 @@ namespace MyShaderAnalysis
 
         public static void OldStaticAnalysisSummaries()
         {
+            // TIDY NEEDED HERE
             // -- all garbage
-            StaticAnalysis.RunTrials();
+            // StaticAnalysis.RunTrials();
 
             // StaticAnalysis2.RunTrials();
         }
@@ -111,7 +109,7 @@ namespace MyShaderAnalysis
         {
             // ByteSequenceToString.Run();
             // -- Looking at dynamic expressions
-            // ParseDynamicExpression.RunTrials();
+            ParseDynamicExpression.RunTrials();
             // EncodeZstdDictAsString.RunTrials();
             // CrcTrialsSha1.RunTrials();
             // CrcTrialsMurmur32.RunTrials();
