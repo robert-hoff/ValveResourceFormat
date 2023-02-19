@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using ZstdSharp;
 using static ValveResourceFormat.CompiledShader.ShaderDataReader;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
@@ -567,7 +571,6 @@ namespace ValveResourceFormat.CompiledShader
                         {
                             throw new ShaderParserException("Decompressed zframe doesn't match expected size");
                         }
-                        zstdDecoder.Dispose();
                         return zframeUncompressed.ToArray();
                     }
 

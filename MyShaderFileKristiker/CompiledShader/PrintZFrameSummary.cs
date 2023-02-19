@@ -1,3 +1,7 @@
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using static ValveResourceFormat.CompiledShader.ShaderDataReader;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
 
@@ -174,7 +178,7 @@ namespace ValveResourceFormat.CompiledShader
         {
             if (segEnd > segStart)
             {
-                for (int i = segStart; i < segEnd; i++)
+                for (var i = segStart; i < segEnd; i++)
                 {
                     // What is [i*4+1] - does this sometimes fail?
                     // var paramId = dataload[i * 4] + 256 * dataload[i * 4 + 1];
@@ -197,10 +201,10 @@ namespace ValveResourceFormat.CompiledShader
         private void PrintDynamicConfigurations(SortedDictionary<int, int> writeSequences)
         {
             var blockIdToSource = GetBlockIdToSource(zframeFile);
-
             var abbreviations = DConfigsAbbreviations();
             var hasOnlyDefaultConfiguration = blockIdToSource.Count == 1;
             var hasNoDConfigsDefined = abbreviations.Count == 0;
+            var isVertexShader = zframeFile.VcsProgramType == VcsProgramType.VertexShader;
 
             var configsDefined = hasOnlyDefaultConfiguration ? "" : $" ({blockIdToSource.Count} defined)";
             var configHeader = $"Dynamic (D-Param) configurations{configsDefined}";
@@ -224,7 +228,7 @@ namespace ValveResourceFormat.CompiledShader
             foreach (var blockId in activeBlockIds)
             {
                 var dBlockConfig = shaderFile.GetDBlockConfig(blockId);
-                tabulatedConfigCombinations.AddTabulatedRow(IntArrayToStrings(dBlockConfig));
+                tabulatedConfigCombinations.AddTabulatedRow(IntArrayToStrings(dBlockConfig, nulledValue: 0));
             }
             var tabbedConfigs = new Stack<string>(tabulatedConfigCombinations.BuildTabulatedRows(reverse: true));
             if (tabbedConfigs.Count == 0)
@@ -239,19 +243,21 @@ namespace ValveResourceFormat.CompiledShader
             var dNamesHeader = hasNoDConfigsDefined ? "" : tabbedConfigs.Pop();
             var gpuSourceName = zframeFile.GpuSources[0].GetBlockName().ToLower();
             var sourceHeader = $"{gpuSourceName}-source";
-            string[] dConfigHeaders = zframeFile.VcsProgramType == VcsProgramType.VertexShader ?
+            string[] dConfigHeaders = isVertexShader ?
                     new string[] { "config-id", dNamesHeader, "write-seq.", sourceHeader, "gpu-inputs", "unknown-arg" } :
                     new string[] { "config-id", dNamesHeader, "write-seq.", sourceHeader, "unknown-arg" };
-
             OutputFormatterTabulatedData tabulatedConfigFull = new(OutputWriter);
             tabulatedConfigFull.DefineHeaders(dConfigHeaders);
+
             var dBlockCount = 0;
             foreach (var blockId in activeBlockIds)
             {
                 dBlockCount++;
                 if (dBlockCount % 100 == 0)
                 {
-                    tabulatedConfigFull.AddTabulatedRow(dConfigHeaders);
+                    tabulatedConfigFull.AddTabulatedRow(isVertexShader ?
+                        new string[] { "", dNamesHeader, "", "", "", "" } :
+                        new string[] { "", dNamesHeader, "", "", "" });
                 }
                 var configIdText = $"0x{blockId:x}";
                 var configCombText = hasNoDConfigsDefined ? $"{"(default)",-14}" : tabbedConfigs.Pop();
@@ -260,15 +266,16 @@ namespace ValveResourceFormat.CompiledShader
                 var sourceLink = showRichTextBoxLinks ?
                     @$"\\source\{blockSource.SourceId}" :
                     $"{gpuSourceName}[{blockSource.GetEditorRefIdAsString()}]";
-                var vsInputs = zframeFile.VcsProgramType == VcsProgramType.VertexShader ?
+                var vsInputs = isVertexShader ?
                     zframeFile.VShaderInputs[blockId] : -1;
                 var gpuInputText = vsInputs >= 0 ? $"VS-symbols[{zframeFile.VShaderInputs[blockId]}]" : "[none]";
                 var arg0Text = $"{zframeFile.UnknownArg[blockId]}";
                 tabulatedConfigFull.AddTabulatedRow(
-                    zframeFile.VcsProgramType == VcsProgramType.VertexShader ?
+                    isVertexShader ?
                     new string[] { configIdText, configCombText, writeSeqText, sourceLink, gpuInputText, arg0Text } :
                     new string[] { configIdText, configCombText, writeSeqText, sourceLink, arg0Text });
             }
+
             tabulatedConfigFull.PrintTabulatedValues();
             if (!hasNoDConfigsDefined)
             {
@@ -331,22 +338,6 @@ namespace ValveResourceFormat.CompiledShader
             return blockIdToSource;
         }
 
-
-        public static string SummarizeBytes(int[] bytes)
-        {
-            var summaryDesc = "";
-            for (var i = 0; i < bytes.Length; i++)
-            {
-                if (i > 0 && i % 16 == 0)
-                {
-                    summaryDesc += "\n";
-                }
-                summaryDesc += bytes[i] > -1 ? $"{bytes[i],-8}" : "_  ".PadRight(8);
-            }
-            return summaryDesc.Trim();
-        }
-
-
         private void PrintSourceSummary()
         {
             var headerText = "source bytes/flags";
@@ -367,17 +358,6 @@ namespace ValveResourceFormat.CompiledShader
             OutputWriteLine("");
             OutputWriteLine("");
         }
-
-        /*
-        private static string ByteToBinary(int b0)
-        {
-            var byteString = "";
-            byteString += $"{Convert.ToString(b0 >> 4, 2).PadLeft(4, '0')}";
-            byteString += " ";
-            byteString += $"{Convert.ToString(b0 & 0xf, 2).PadLeft(4, '0')}";
-            return byteString;
-        }
-        */
 
         private void PrintEndBlocks()
         {
