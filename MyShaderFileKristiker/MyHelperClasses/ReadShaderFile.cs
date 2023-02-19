@@ -1,6 +1,6 @@
 using ValveResourceFormat.CompiledShader;
 
-namespace ValveResourceFormat.MyHelperClasses
+namespace MyShaderFileKristiker.MyHelperClasses
 {
     public class ReadShaderFile
     {

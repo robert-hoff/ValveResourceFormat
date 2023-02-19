@@ -1,7 +1,7 @@
 using System;
 using ValveResourceFormat.CompiledShader;
-using ValveResourceFormat.MyHelperClasses;
-using static ValveResourceFormat.MyHelperClasses.FileArchive;
+using MyShaderFileKristiker.MyHelperClasses;
+using static MyShaderFileKristiker.MyHelperClasses.FileArchive;
 
 namespace MyShaderAnalysis.statickristiker
 {

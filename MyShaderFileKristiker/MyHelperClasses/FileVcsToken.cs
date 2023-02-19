@@ -1,8 +1,8 @@
 using ValveResourceFormat.CompiledShader;
+using static MyShaderFileKristiker.MyHelperClasses.ReadShaderFile;
 using static ValveResourceFormat.CompiledShader.ShaderUtilHelpers;
-using static ValveResourceFormat.MyHelperClasses.ReadShaderFile;
 
-namespace ValveResourceFormat.MyHelperClasses
+namespace MyShaderFileKristiker.MyHelperClasses
 {
     public class FileVcsTokens
     {

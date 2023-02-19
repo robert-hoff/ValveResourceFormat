@@ -1,4 +1,4 @@
-namespace ValveResourceFormat.MyHelperClasses
+namespace MyShaderFileKristiker.MyHelperClasses
 {
     public class FileVcsCollection
     {

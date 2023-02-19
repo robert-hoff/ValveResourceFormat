@@ -2,7 +2,7 @@ using System.Collections;
 using System.Reflection;
 using ValveResourceFormat.CompiledShader;
 
-namespace ValveResourceFormat.MyHelperClasses
+namespace MyShaderFileKristiker.MyHelperClasses
 {
     public class FileArchive
     {

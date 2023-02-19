@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace ValveResourceFormat.MyHelperClasses
+namespace MyShaderFileKristiker.MyHelperClasses
 {
     public class FileWriter : IDisposable
     {

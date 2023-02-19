@@ -1,7 +1,7 @@
 using System;
 
 #pragma warning disable CA1813 // Avoid unsealed attributes
-namespace ValveResourceFormat.MyHelperClasses
+namespace MyShaderFileKristiker.MyHelperClasses
 {
     /*
      * The name of the enum can be used as the base folder for exporting any given archive
