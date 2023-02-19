@@ -13,17 +13,20 @@ namespace MyShaderFileKristiker.MyHelperClasses
         //private static ARCHIVE archive = dota_game_pc_v65;
         //private static ARCHIVE archive = dota_core_pcgl_v64;
         // static ARCHIVE archive = dota_game_pcgl_v64; static string filename = "crystal_pcgl_40_vs.vcs";
-        // static ARCHIVE archive = dota_game_pcgl_v64; static string filename = "crystal_pcgl_40_vs.vcs";
-        static ARCHIVE archive = dota_game_pcgl_v64; static string filename = "multiblend_pcgl_40_vs.vcs";
+        // static ARCHIVE archive = dota_game_pcgl_v64; static string filename = "crystal_pcgl_40_ps.vcs"; static int zFrameId = 4;
+        static ARCHIVE archive = dota_game_pcgl_v64; static string filename = "hero_pcgl_40_ps.vcs"; static int zFrameId = 0x018cbfb1;
+        // static ARCHIVE archive = dota_game_pcgl_v64; static string filename = "bloom_dota_pcgl_40_vs.vcs"; static int zFrameId = 0;
+        // static ARCHIVE archive = dota_game_pcgl_v64; static string filename = "multiblend_pcgl_40_vs.vcs";
+        // static ARCHIVE archive = dota_game_pcgl_v64; static string filename = "spring_meteor_pcgl_40_vs.vcs"; static int zFrameId = 0;
 
         // -- constants applied throughout
-        private const int COLLECTION_LIMIT = 10;
+        private const int COLLECTION_LIMIT = 1;
         private const int ZCOUNT = 1;
-        private const int GPU_COUNT = 1;
+        private const int GPU_COUNT = 0;
         private const bool CLEAR_DIRECTORY = true;
         private const string USE_BASE_FOLDER = "GEN-output2";
         // private const string USE_BASE_FOLDER = "";
-        private const int ZFRAME_ID = 0;
+        private const int ZFRAME_ID = 3;
         private const bool PRINT_ZFRAME_BYTES = false;
         private const bool PRINT_GPU_BYTES = false;
         private const bool PRINT_INDEX = true;
@@ -31,7 +34,7 @@ namespace MyShaderFileKristiker.MyHelperClasses
         private static int[] printFilesfor = { ZFRAME, COLLECTION, ALL, LIST_DIR };
 
         // --
-        private static int DO_OPERATION = printFilesfor[COLLECTION];
+        private static int DO_OPERATION = printFilesfor[ZFRAME];
         // --
 
         public static void RunTrials()
@@ -42,7 +45,7 @@ namespace MyShaderFileKristiker.MyHelperClasses
                     FileVcsTokens vcsTokens = new FileVcsTokens(archive, filename);
                     SaveZframeSummary(
                         vcsFileTokens: vcsTokens,
-                        zframeId: ZFRAME_ID,
+                        zframeId: zFrameId >= 0 ? zFrameId : ZFRAME_ID,
                         gpuCount: GPU_COUNT,
                         useBaseFolder: USE_BASE_FOLDER,
                         printZframeByteVersion: PRINT_ZFRAME_BYTES);

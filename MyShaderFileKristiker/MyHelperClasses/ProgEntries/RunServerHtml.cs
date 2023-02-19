@@ -13,11 +13,13 @@ namespace MyShaderFileKristiker.MyHelperClasses.ProgEntries
         // static string inputFile = $"{DOTA_PCGL_V64_GAME}hero_pcgl_40_vs.vcs"; static int zFrameIndex = 0x17fa2;
         // static string inputFile = $"{DOTA_PCGL_V64_GAME}hero_pcgl_40_ps.vcs"; static int zFrameIndex = 0x18cbfb1;
         // static string inputFile = $"{DOTA_PCGL_V64_GAME}spring_meteor_pcgl_30_vs.vcs"; static int zFrameIndex = 0;
-        static string inputFile = $"{DOTA_PCGL_V64_GAME}crystal_pcgl_40_vs.vcs"; static int zFrameIndex = 2;
+        // static string inputFile = $"{DOTA_PCGL_V64_GAME}crystal_pcgl_40_vs.vcs"; static int zFrameIndex = 2;
+        static string inputFile = $"{DOTA_PCGL_V64_GAME}bloom_dota_pcgl_40_vs.vcs"; static int zFrameIndex = 0;
         // static string inputFile = $"{DOTA_PCGL_V64_GAME}crystal_pcgl_40_ps.vcs"; static int zFrameIndex = 0;
         // static string inputFile = $"{DOTA_PCGL_V64_GAME}crystal_pcgl_40_features.vcs"; static int zFrameIndex = 0;
         // static string inputFile = $"{DOTA_PCGL_V64_GAME}3dskyboxstencil_pcgl_40_ps.vcs"; static int zFrameIndex = 0;
         // static string inputFile = $"{DOTA_PCGL_V64_GAME}multiblend_pcgl_40_ps.vcs"; static int zFrameIndex = 0;
+
 
         // static bool writeToDefaultFile = true;
         static bool writeToDefaultFile = false;

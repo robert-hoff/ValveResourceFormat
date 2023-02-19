@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using MyShaderFile.CompiledShader;
 using static MyShaderAnalysis.codestash.FileSystemOld;
 using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
@@ -827,15 +828,22 @@ namespace MyShaderAnalysis.codestash
                 // check h0,h2 values
                 foreach (ZDataBlock zBlock in zFrame.DataBlocks)
                 {
-                    CollectStringValue($"{zBlock.H0,-3:000} {zBlock.H2,-3}");
+                    // CollectStringValue($"{zBlock.H0,-3:000} {zBlock.H2,-3}");
+                    // CollectStringValue($"{zFrame.DataBlocks.Count}");
+                    // CollectStringValue($"{zFrame.DataBlocks[0].Dataload == null}");
 
                     // if (zBlock.h2 == zBlock.h0 - 1)
                     // if (zBlock.h0 == 5 && zBlock.h2 == 5)
                     // if (zBlock.h0 >  == zBlock.h0 - 1)
-                    if (zFrame.LeadingData.H1 > 2)
-                    {
-                        Debug.WriteLine($"{zFrame.FilenamePath} zframe=0x{zFrame.ZframeId:x} h0={zBlock.H0} h2={zBlock.H2}");
-                        return;
+                    //if (zFrame.LeadingData.H1 > 2)
+                    //{
+                    //    Debug.WriteLine($"{zFrame.FilenamePath} zframe=0x{zFrame.ZframeId:x} h0={zBlock.H0} h2={zBlock.H2}");
+                    //    return;
+                    //}
+
+                    if (zFrame.DataBlocks[0].Dataload == null)
+                     {
+                       Debug.WriteLine($"{zFrame.FilenamePath} zframe=0x{zFrame.ZframeId:x} h0={zBlock.H0} h2={zBlock.H2}");
                     }
                 }
             }
