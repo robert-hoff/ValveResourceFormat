@@ -12,6 +12,10 @@ namespace MyShaderAnalysis.filearchive
 
     public enum ARCHIVE
     {
+        [ArchiveDirectory("X:/dota-2-VRF-exports/dota2-export-shaders-vulkan-v66/game")]
+        dota_game_vulkan_v66,
+        [ArchiveDirectory("X:/dota-2-VRF-exports/dota2-export-shaders-vulkan-v66/core")]
+        dota_core_vulkan_v66,
         [ArchiveDirectory("X:/dota-2-VRF-exports/dota2-export-shaders-pc-V65/shaders/vfx")]
         dota_game_pc_v65,
         [ArchiveDirectory("X:/dota-2-VRF-exports/dota2-export-shaders-pc-V65/shaders-core/vfx")]

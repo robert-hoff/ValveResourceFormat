@@ -6,6 +6,7 @@ using MyShaderAnalysis.serverhtml;
 using MyShaderAnalysis.snippetcode;
 using MyShaderAnalysis.staticanalysis;
 using MyShaderAnalysis.util;
+using MyShaderAnalysis.vulkanreflect;
 using MyShaderFileKristiker.MyHelperClasses.ProgEntries;
 using System;
 using System.Diagnostics;
@@ -31,13 +32,13 @@ namespace MyShaderAnalysis
         {
             Console.SetOut(new ToDebugWriter());
 
-            AnalysisKristiker();
+            // AnalysisKristiker();
             // StaticAnalysisForKristiker(); // analyse zfrme data ahead of parsing
             // RunStaticAnalysis();
             // BatchProcessFiles();
             // ServerHtml(); // <-- create server files
-            // TestFileArchives();
-            // ParserSnippets();
+            // FileArchives();
+            Parsing();
             // OldStaticAnalysisSummaries(); // garbage
             // BasicFunctionalitySnippets();
             // CSharpSnippets();
@@ -57,25 +58,24 @@ namespace MyShaderAnalysis
             // StaticAnalysis2.RunTrials();
         }
 
-        public static void RunStaticAnalysis()
+        public static void StaticAnalysis()
         {
             StaticAnalysis3.Run();
+            // StaticAnalysisZframes.RunTrials();
+
+            // -- tidy/refactor-out needed on these
             // StaticAnalysis2.RunTrials();
             // StaticAnalysis.RunTrials();
         }
 
         public static void BatchProcessFiles()
         {
-            BatchParsing1.RunTrials();
-            // TestSpirvReflection.Run();
-
-            // from an earlier effort analysing the data in zframes
-            // I'd like to do something similar for the Vulkan source code ..
-            // StaticAnalysisZframes.RunTrials();
+            // BatchParsing2.RunTrials();
+            // -- not logical to have this item in batch processing
             // TestSingleFileParsing.RunTrials();
 
-            // -- 2022 sometime ..
-            // TestBatchParsing.RunTrials();
+            // -- 2022 sometime (this one is still relevant)
+            BatchParsing1.RunTrials();
             // TIDY NEEDED HERE
             // -- fall 2021
             // there is variously still some useful code among these files ..
@@ -89,25 +89,21 @@ namespace MyShaderAnalysis
             TestWriteHtmlFile.Run();
         }
 
-        public static void TestFileArchives()
+        public static void FileArchives()
         {
             // SomeRandomTesting.RunTrials();
             TestFileArchive.RunTrials();
         }
 
-        public static void ParserSnippets()
+        public static void Parsing()
         {
             SingleFileParserExamples.RunTrials();
             // PrintoutVulkanCode.RunTrials();
         }
 
-        public static void OldStaticAnalysisSummaries()
+        public static void vulkanReflect()
         {
-            // TIDY NEEDED HERE
-            // -- all garbage
-            // StaticAnalysis.RunTrials();
-
-            // StaticAnalysis2.RunTrials();
+            TestSpirvReflection.Run();
         }
 
         public static void BasicFunctionalitySnippets()

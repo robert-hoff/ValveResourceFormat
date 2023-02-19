@@ -21,7 +21,8 @@ namespace MyShaderAnalysis.parsing
     {
         public static void RunTrials()
         {
-            TestShaderFilesBytesShowOutput();
+            ParseV66Files.RunTrials();
+            // TestShaderFilesBytesShowOutput();
             // -- earlier (2022)
             // DecompileVulkanSource();
             // ParseV44FileIntoHtml();
