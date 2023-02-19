@@ -32,11 +32,9 @@ namespace MyShaderAnalysis
             Console.SetOut(new ToDebugWriter());
 
             // StaticAnalysisForKristiker(); // analyse zfrme data ahead of parsing
-            // -- Jan 2023
             RunStaticAnalysis();
             // BatchProcessFiles();
-            // -- Earlier
-            // HtmlServerDumps(); // <-- create server files
+            // ServerHtml(); // <-- create server files
             // TestFileArchives();
             // ParserSnippets();
             // OldStaticAnalysisSummaries(); // garbage
@@ -77,10 +75,11 @@ namespace MyShaderAnalysis
             // ProgramEntriesOld.RunTrials();
         }
 
-        public static void HtmlServerDumps()
+        public static void ServerHtml()
         {
             // -- revise how files are managed as collections
-            CreateHtmlServerFiles.RunTrials();
+            // CreateHtmlServerFiles.RunTrials();
+            TestWriteHtmlFile.Run();
         }
 
         public static void TestFileArchives()
