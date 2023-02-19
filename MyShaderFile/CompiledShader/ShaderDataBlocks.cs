@@ -107,98 +107,98 @@ namespace ValveResourceFormat.CompiledShader
 
         public void PrintByteDetail()
         {
-            Datareader.BaseStream.Position = start;
-            Datareader.ShowByteCount("vcs file");
-            Datareader.ShowBytes(4, "\"vcs2\"");
-            int vcs_version = Datareader.ReadInt32AtPosition();
-            Datareader.ShowBytes(4, $"version {vcs_version}");
-            Datareader.BreakLine();
-            Datareader.ShowByteCount("features header");
+            DataReader.BaseStream.Position = start;
+            DataReader.ShowByteCount("vcs file");
+            DataReader.ShowBytes(4, "\"vcs2\"");
+            int vcs_version = DataReader.ReadInt32AtPosition();
+            DataReader.ShowBytes(4, $"version {vcs_version}");
+            DataReader.BreakLine();
+            DataReader.ShowByteCount("features header");
             int has_psrs_file = 0;
             if (vcs_version >= 64)
             {
-                has_psrs_file = Datareader.ReadInt32AtPosition();
-                Datareader.ShowBytes(4, "has_psrs_file = " + (has_psrs_file > 0 ? "True" : "False"));
+                has_psrs_file = DataReader.ReadInt32AtPosition();
+                DataReader.ShowBytes(4, "has_psrs_file = " + (has_psrs_file > 0 ? "True" : "False"));
             }
-            int unknown_val = Datareader.ReadInt32AtPosition();
-            Datareader.ShowBytes(4, $"unknown_val = {unknown_val} (usually 0)");
-            int len_name_description = Datareader.ReadInt32AtPosition();
-            Datareader.ShowBytes(4, $"{len_name_description} len of name");
-            Datareader.BreakLine();
-            string name_desc = Datareader.ReadNullTermStringAtPosition();
-            Datareader.ShowByteCount(name_desc);
-            Datareader.ShowBytes(len_name_description + 1);
-            Datareader.BreakLine();
-            Datareader.ShowByteCount();
-            uint arg0 = Datareader.ReadUInt32AtPosition(0);
-            uint arg1 = Datareader.ReadUInt32AtPosition(4);
-            uint arg2 = Datareader.ReadUInt32AtPosition(8);
-            uint arg3 = Datareader.ReadUInt32AtPosition(12);
-            Datareader.ShowBytes(16, 4, breakLine: false);
-            Datareader.TabComment($"({arg0},{arg1},{arg2},{arg3})");
-            uint arg4 = Datareader.ReadUInt32AtPosition(0);
-            uint arg5 = Datareader.ReadUInt32AtPosition(4);
-            uint arg6 = Datareader.ReadUInt32AtPosition(8);
+            int unknown_val = DataReader.ReadInt32AtPosition();
+            DataReader.ShowBytes(4, $"unknown_val = {unknown_val} (usually 0)");
+            int len_name_description = DataReader.ReadInt32AtPosition();
+            DataReader.ShowBytes(4, $"{len_name_description} len of name");
+            DataReader.BreakLine();
+            string name_desc = DataReader.ReadNullTermStringAtPosition();
+            DataReader.ShowByteCount(name_desc);
+            DataReader.ShowBytes(len_name_description + 1);
+            DataReader.BreakLine();
+            DataReader.ShowByteCount();
+            uint arg0 = DataReader.ReadUInt32AtPosition(0);
+            uint arg1 = DataReader.ReadUInt32AtPosition(4);
+            uint arg2 = DataReader.ReadUInt32AtPosition(8);
+            uint arg3 = DataReader.ReadUInt32AtPosition(12);
+            DataReader.ShowBytes(16, 4, breakLine: false);
+            DataReader.TabComment($"({arg0},{arg1},{arg2},{arg3})");
+            uint arg4 = DataReader.ReadUInt32AtPosition(0);
+            uint arg5 = DataReader.ReadUInt32AtPosition(4);
+            uint arg6 = DataReader.ReadUInt32AtPosition(8);
             if (vcs_version >= 64)
             {
-                uint arg7 = Datareader.ReadUInt32AtPosition(12);
-                Datareader.ShowBytes(16, 4, breakLine: false);
-                Datareader.TabComment($"({arg4},{arg5},{arg6},{arg7})");
+                uint arg7 = DataReader.ReadUInt32AtPosition(12);
+                DataReader.ShowBytes(16, 4, breakLine: false);
+                DataReader.TabComment($"({arg4},{arg5},{arg6},{arg7})");
             }
             else
             {
-                Datareader.ShowBytes(12, 4, breakLine: false);
-                Datareader.TabComment($"({arg4},{arg5},{arg6})");
+                DataReader.ShowBytes(12, 4, breakLine: false);
+                DataReader.TabComment($"({arg4},{arg5},{arg6})");
             }
 
-            Datareader.BreakLine();
-            Datareader.ShowByteCount();
-            int argument_count = Datareader.ReadInt32AtPosition();
-            Datareader.ShowBytes(4, $"argument_count = {argument_count}");
+            DataReader.BreakLine();
+            DataReader.ShowByteCount();
+            int argument_count = DataReader.ReadInt32AtPosition();
+            DataReader.ShowBytes(4, $"argument_count = {argument_count}");
             if (has_psrs_file == 1)
             {
                 // nr_of_arguments becomes overwritten
-                argument_count = Datareader.ReadInt32AtPosition();
-                Datareader.ShowBytes(4, $"argument_count = {argument_count} (overridden)");
+                argument_count = DataReader.ReadInt32AtPosition();
+                DataReader.ShowBytes(4, $"argument_count = {argument_count} (overridden)");
             }
-            Datareader.BreakLine();
-            Datareader.ShowByteCount();
+            DataReader.BreakLine();
+            DataReader.ShowByteCount();
             for (int i = 0; i < argument_count; i++)
             {
-                string default_name = Datareader.ReadNullTermStringAtPosition();
-                Datareader.Comment($"{default_name}");
-                Datareader.ShowBytes(128);
-                uint has_s_argument = Datareader.ReadUInt32AtPosition();
-                Datareader.ShowBytes(4);
+                string default_name = DataReader.ReadNullTermStringAtPosition();
+                DataReader.Comment($"{default_name}");
+                DataReader.ShowBytes(128);
+                uint has_s_argument = DataReader.ReadUInt32AtPosition();
+                DataReader.ShowBytes(4);
                 if (has_s_argument > 0)
                 {
-                    uint sSymbolArgValue = Datareader.ReadUInt32AtPosition(64);
-                    string sSymbolName = Datareader.ReadNullTermStringAtPosition();
-                    Datareader.Comment($"{sSymbolName}");
-                    Datareader.ShowBytes(68);
+                    uint sSymbolArgValue = DataReader.ReadUInt32AtPosition(64);
+                    string sSymbolName = DataReader.ReadNullTermStringAtPosition();
+                    DataReader.Comment($"{sSymbolName}");
+                    DataReader.ShowBytes(68);
                 }
             }
-            Datareader.BreakLine();
-            Datareader.ShowByteCount("Editor/Shader stack for generating the file");
-            Datareader.ShowBytes(16, "Editor ref. ID0 (produces this file)");
-            Datareader.ShowBytes(16, breakLine: false);
-            Datareader.TabComment($"Editor ref. ID1 - usually a ref to the vs file ({VcsProgramType.VertexShader})");
-            Datareader.ShowBytes(16, breakLine: false);
-            Datareader.TabComment($"Editor ref. ID2 - usually a ref to the ps file ({VcsProgramType.PixelShader})");
-            Datareader.ShowBytes(16, "Editor ref. ID3");
-            Datareader.ShowBytes(16, "Editor ref. ID4");
-            Datareader.ShowBytes(16, "Editor ref. ID5");
-            Datareader.ShowBytes(16, "Editor ref. ID6");
+            DataReader.BreakLine();
+            DataReader.ShowByteCount("Editor/Shader stack for generating the file");
+            DataReader.ShowBytes(16, "Editor ref. ID0 (produces this file)");
+            DataReader.ShowBytes(16, breakLine: false);
+            DataReader.TabComment($"Editor ref. ID1 - usually a ref to the vs file ({VcsProgramType.VertexShader})");
+            DataReader.ShowBytes(16, breakLine: false);
+            DataReader.TabComment($"Editor ref. ID2 - usually a ref to the ps file ({VcsProgramType.PixelShader})");
+            DataReader.ShowBytes(16, "Editor ref. ID3");
+            DataReader.ShowBytes(16, "Editor ref. ID4");
+            DataReader.ShowBytes(16, "Editor ref. ID5");
+            DataReader.ShowBytes(16, "Editor ref. ID6");
             if (vcs_version >= 64 && has_psrs_file == 0)
             {
-                Datareader.ShowBytes(16, "Editor ref. ID7 - common editor reference shared by multiple files");
+                DataReader.ShowBytes(16, "Editor ref. ID7 - common editor reference shared by multiple files");
             }
             if (vcs_version >= 64 && has_psrs_file == 1)
             {
-                Datareader.ShowBytes(16, $"Editor ref. ID7 - reference to psrs file ({VcsProgramType.PixelShaderRenderState})");
-                Datareader.ShowBytes(16, "Editor ref. ID8 - common editor reference shared by multiple files");
+                DataReader.ShowBytes(16, $"Editor ref. ID7 - reference to psrs file ({VcsProgramType.PixelShaderRenderState})");
+                DataReader.ShowBytes(16, "Editor ref. ID8 - common editor reference shared by multiple files");
             }
-            Datareader.BreakLine();
+            DataReader.BreakLine();
         }
     }
 
@@ -238,22 +238,22 @@ namespace ValveResourceFormat.CompiledShader
 
         public void PrintByteDetail()
         {
-            Datareader.BaseStream.Position = start;
-            Datareader.ShowByteCount("vcs file");
-            Datareader.ShowBytes(4, "\"vcs2\"");
-            int vcs_version = Datareader.ReadInt32AtPosition();
-            Datareader.ShowBytes(4, $"version {vcs_version}");
-            Datareader.BreakLine();
-            Datareader.ShowByteCount("ps/vs header");
+            DataReader.BaseStream.Position = start;
+            DataReader.ShowByteCount("vcs file");
+            DataReader.ShowBytes(4, "\"vcs2\"");
+            int vcs_version = DataReader.ReadInt32AtPosition();
+            DataReader.ShowBytes(4, $"version {vcs_version}");
+            DataReader.BreakLine();
+            DataReader.ShowByteCount("ps/vs header");
             if (vcs_version >= 64)
             {
-                int has_psrs_file = Datareader.ReadInt32AtPosition();
-                Datareader.ShowBytes(4, $"has_psrs_file = {(has_psrs_file > 0 ? "True" : "False")}");
+                int has_psrs_file = DataReader.ReadInt32AtPosition();
+                DataReader.ShowBytes(4, $"has_psrs_file = {(has_psrs_file > 0 ? "True" : "False")}");
             }
-            Datareader.BreakLine();
-            Datareader.ShowByteCount("Editor/Shader stack for generating the file");
-            Datareader.ShowBytes(16, "Editor ref. ID0 (produces this file)");
-            Datareader.ShowBytes(16, "Editor ref. ID1 - common editor reference shared by multiple files");
+            DataReader.BreakLine();
+            DataReader.ShowByteCount("Editor/Shader stack for generating the file");
+            DataReader.ShowBytes(16, "Editor ref. ID0 (produces this file)");
+            DataReader.ShowBytes(16, "Editor ref. ID1 - common editor reference shared by multiple files");
         }
     }
 
@@ -291,41 +291,41 @@ namespace ValveResourceFormat.CompiledShader
         }
         public void PrintByteDetail()
         {
-            Datareader.BaseStream.Position = start;
-            Datareader.ShowByteCount();
+            DataReader.BaseStream.Position = start;
+            DataReader.ShowByteCount();
             for (int i = 0; i < 2; i++)
             {
-                string name1 = Datareader.ReadNullTermStringAtPosition();
+                string name1 = DataReader.ReadNullTermStringAtPosition();
                 if (name1.Length > 0)
                 {
-                    Datareader.Comment($"{name1}");
+                    DataReader.Comment($"{name1}");
                 }
-                Datareader.ShowBytes(64);
+                DataReader.ShowBytes(64);
             }
-            int arg0 = Datareader.ReadInt32AtPosition(0);
-            int arg1 = Datareader.ReadInt32AtPosition(4);
-            int arg2 = Datareader.ReadInt32AtPosition(8);
-            int arg3 = Datareader.ReadInt32AtPosition(12);
-            int arg4 = Datareader.ReadInt32AtPosition(16);
-            int arg5 = Datareader.ReadInt32AtPosition(20);
-            Datareader.ShowBytes(16, 4, breakLine: false);
-            Datareader.TabComment($"({arg0},{arg1},{arg2},{arg3})");
-            Datareader.ShowBytes(4, $"({arg4}) known values [-1,28]");
-            Datareader.ShowBytes(4, $"{arg5} additional string params");
-            int string_offset = (int)Datareader.BaseStream.Position;
+            int arg0 = DataReader.ReadInt32AtPosition(0);
+            int arg1 = DataReader.ReadInt32AtPosition(4);
+            int arg2 = DataReader.ReadInt32AtPosition(8);
+            int arg3 = DataReader.ReadInt32AtPosition(12);
+            int arg4 = DataReader.ReadInt32AtPosition(16);
+            int arg5 = DataReader.ReadInt32AtPosition(20);
+            DataReader.ShowBytes(16, 4, breakLine: false);
+            DataReader.TabComment($"({arg0},{arg1},{arg2},{arg3})");
+            DataReader.ShowBytes(4, $"({arg4}) known values [-1,28]");
+            DataReader.ShowBytes(4, $"{arg5} additional string params");
+            int string_offset = (int)DataReader.BaseStream.Position;
             List<string> names = new();
             for (int i = 0; i < arg5; i++)
             {
-                string paramname = Datareader.ReadNullTermStringAtPosition(string_offset, rel: false);
+                string paramname = DataReader.ReadNullTermStringAtPosition(string_offset, rel: false);
                 names.Add(paramname);
                 string_offset += paramname.Length + 1;
             }
             if (names.Count > 0)
             {
                 PrintStringList(names);
-                Datareader.ShowBytes(string_offset - (int)Datareader.BaseStream.Position);
+                DataReader.ShowBytes(string_offset - (int)DataReader.BaseStream.Position);
             }
-            Datareader.BreakLine();
+            DataReader.BreakLine();
         }
         private void PrintStringList(List<string> names)
         {
@@ -333,12 +333,12 @@ namespace ValveResourceFormat.CompiledShader
             {
                 return;
             }
-            Datareader.OutputWrite($"// {names[0]}");
+            DataReader.OutputWrite($"// {names[0]}");
             for (int i = 1; i < names.Count; i++)
             {
-                Datareader.OutputWrite($", {names[i]}");
+                DataReader.OutputWrite($", {names[i]}");
             }
-            Datareader.BreakLine();
+            DataReader.BreakLine();
         }
     }
 
@@ -376,27 +376,27 @@ namespace ValveResourceFormat.CompiledShader
         private int[] ReadIntRange()
         {
             List<int> ints0 = new();
-            while (Datareader.ReadInt32AtPosition() >= 0)
+            while (DataReader.ReadInt32AtPosition() >= 0)
             {
-                ints0.Add(Datareader.ReadInt32());
+                ints0.Add(DataReader.ReadInt32());
             }
             return ints0.ToArray();
         }
         private int[] ReadByteFlags()
         {
             int count = 0;
-            long savedPosition = Datareader.BaseStream.Position;
-            while (Datareader.ReadByte() > 0 && count < 16)
+            long savedPosition = DataReader.BaseStream.Position;
+            while (DataReader.ReadByte() > 0 && count < 16)
             {
                 count++;
             }
             int[] byteFlags = new int[count];
-            Datareader.BaseStream.Position = savedPosition;
+            DataReader.BaseStream.Position = savedPosition;
             for (int i = 0; i < count; i++)
             {
-                byteFlags[i] = Datareader.ReadByte();
+                byteFlags[i] = DataReader.ReadByte();
             }
-            Datareader.BaseStream.Position = savedPosition + 16;
+            DataReader.BaseStream.Position = savedPosition + 16;
             return byteFlags;
         }
         public string RelRuleDescribe()
@@ -409,13 +409,13 @@ namespace ValveResourceFormat.CompiledShader
         }
         public void PrintByteDetail()
         {
-            Datareader.BaseStream.Position = start;
-            Datareader.ShowByteCount($"SF-CONTRAINTS-BLOCK[{BlockIndex}]");
-            Datareader.ShowBytes(216);
-            string name1 = Datareader.ReadNullTermStringAtPosition();
-            Datareader.OutputWriteLine($"[{Datareader.BaseStream.Position}] {name1}");
-            Datareader.ShowBytes(256);
-            Datareader.BreakLine();
+            DataReader.BaseStream.Position = start;
+            DataReader.ShowByteCount($"SF-CONTRAINTS-BLOCK[{BlockIndex}]");
+            DataReader.ShowBytes(216);
+            string name1 = DataReader.ReadNullTermStringAtPosition();
+            DataReader.OutputWriteLine($"[{DataReader.BaseStream.Position}] {name1}");
+            DataReader.ShowBytes(256);
+            DataReader.BreakLine();
         }
     }
 
@@ -447,14 +447,14 @@ namespace ValveResourceFormat.CompiledShader
         }
         public void PrintByteDetail()
         {
-            Datareader.BaseStream.Position = start;
-            string dBlockName = Datareader.ReadNullTermStringAtPosition();
-            Datareader.ShowByteCount($"D-BLOCK[{BlockIndex}]");
-            Datareader.Comment(dBlockName);
-            Datareader.ShowBytes(128);
-            Datareader.ShowBytes(12, 4);
-            Datareader.ShowBytes(12);
-            Datareader.BreakLine();
+            DataReader.BaseStream.Position = start;
+            string dBlockName = DataReader.ReadNullTermStringAtPosition();
+            DataReader.ShowByteCount($"D-BLOCK[{BlockIndex}]");
+            DataReader.Comment(dBlockName);
+            DataReader.ShowBytes(128);
+            DataReader.ShowBytes(12, 4);
+            DataReader.ShowBytes(12);
+            DataReader.BreakLine();
         }
     }
 
@@ -500,28 +500,28 @@ namespace ValveResourceFormat.CompiledShader
         private int[] ReadIntRange()
         {
             List<int> ints0 = new();
-            while (Datareader.ReadInt32AtPosition() >= 0)
+            while (DataReader.ReadInt32AtPosition() >= 0)
             {
-                ints0.Add(Datareader.ReadInt32());
+                ints0.Add(DataReader.ReadInt32());
             }
             return ints0.ToArray();
         }
         private int[] ReadByteFlags()
         {
             int count = 0;
-            long savedPosition = Datareader.BaseStream.Position;
-            while (Datareader.ReadByte() > 0 && count < 16)
+            long savedPosition = DataReader.BaseStream.Position;
+            while (DataReader.ReadByte() > 0 && count < 16)
             {
                 count++;
             }
             int[] byteFlags = new int[count];
-            Datareader.BaseStream.Position = savedPosition;
+            DataReader.BaseStream.Position = savedPosition;
             for (int i = 0; i < count; i++)
             {
-                byteFlags[i] = Datareader.ReadByte();
+                byteFlags[i] = DataReader.ReadByte();
             }
-            Datareader.BaseStream.Position = savedPosition;
-            Datareader.BaseStream.Position += 16;
+            DataReader.BaseStream.Position = savedPosition;
+            DataReader.BaseStream.Position += 16;
             return byteFlags;
         }
         public string ReadByteFlagsAsString()
@@ -576,10 +576,10 @@ namespace ValveResourceFormat.CompiledShader
         }
         public void PrintByteDetail()
         {
-            Datareader.BaseStream.Position = start;
-            Datareader.ShowByteCount($"D-CONSTRAINTS-BLOCK[{BlockIndex}]");
-            Datareader.ShowBytes(472);
-            Datareader.BreakLine();
+            DataReader.BaseStream.Position = start;
+            DataReader.ShowByteCount($"D-CONSTRAINTS-BLOCK[{BlockIndex}]");
+            DataReader.ShowBytes(472);
+            DataReader.BreakLine();
         }
     }
 
@@ -696,130 +696,130 @@ namespace ValveResourceFormat.CompiledShader
 
         public void PrintByteDetail(int vcsVersion)
         {
-            Datareader.BaseStream.Position = start;
-            Datareader.ShowByteCount($"PARAM-BLOCK[{BlockIndex}]");
-            string name1 = Datareader.ReadNullTermStringAtPosition();
-            Datareader.OutputWriteLine($"// {name1}");
-            Datareader.ShowBytes(64);
-            string name2 = Datareader.ReadNullTermStringAtPosition();
+            DataReader.BaseStream.Position = start;
+            DataReader.ShowByteCount($"PARAM-BLOCK[{BlockIndex}]");
+            string name1 = DataReader.ReadNullTermStringAtPosition();
+            DataReader.OutputWriteLine($"// {name1}");
+            DataReader.ShowBytes(64);
+            string name2 = DataReader.ReadNullTermStringAtPosition();
             if (name2.Length > 0)
             {
-                Datareader.OutputWriteLine($"// {name2}");
+                DataReader.OutputWriteLine($"// {name2}");
             }
-            Datareader.ShowBytes(64);
-            Datareader.ShowBytes(8);
-            string name3 = Datareader.ReadNullTermStringAtPosition();
+            DataReader.ShowBytes(64);
+            DataReader.ShowBytes(8);
+            string name3 = DataReader.ReadNullTermStringAtPosition();
             if (name3.Length > 0)
             {
-                Datareader.OutputWriteLine($"// {name3}");
+                DataReader.OutputWriteLine($"// {name3}");
             }
-            Datareader.ShowBytes(64);
-            uint paramType = Datareader.ReadUInt32AtPosition();
-            Datareader.OutputWriteLine($"// param-type, 6 or 7 lead dynamic-exp. Known values: 0,1,5,6,7,8,10,11,13");
-            Datareader.ShowBytes(4);
+            DataReader.ShowBytes(64);
+            uint paramType = DataReader.ReadUInt32AtPosition();
+            DataReader.OutputWriteLine($"// param-type, 6 or 7 lead dynamic-exp. Known values: 0,1,5,6,7,8,10,11,13");
+            DataReader.ShowBytes(4);
             if (paramType == 6 || paramType == 7)
             {
-                int dynLength = Datareader.ReadInt32AtPosition();
-                Datareader.ShowBytes(4, breakLine: false);
-                Datareader.TabComment("dyn-exp len", 1);
-                Datareader.TabComment("dynamic expression");
-                Datareader.ShowBytes(dynLength);
+                int dynLength = DataReader.ReadInt32AtPosition();
+                DataReader.ShowBytes(4, breakLine: false);
+                DataReader.TabComment("dyn-exp len", 1);
+                DataReader.TabComment("dynamic expression");
+                DataReader.ShowBytes(dynLength);
             }
 
             // check to see if this reads 'SBMS' (unknown what this is, instance found in v65 hero_pc_40_features.vcs file)
-            byte[] checkSBMS = Datareader.ReadBytesAtPosition(0, 4);
+            byte[] checkSBMS = DataReader.ReadBytesAtPosition(0, 4);
             if (checkSBMS[0] == 0x53 && checkSBMS[1] == 0x42 && checkSBMS[2] == 0x4D && checkSBMS[3] == 0x53)
             {
-                Datareader.ShowBytes(4, "SBMS");
-                int dynLength = Datareader.ReadInt32AtPosition();
-                Datareader.ShowBytes(4, "dyn-exp len");
-                Datareader.ShowBytes(dynLength, "dynamic expression", 1);
+                DataReader.ShowBytes(4, "SBMS");
+                int dynLength = DataReader.ReadInt32AtPosition();
+                DataReader.ShowBytes(4, "dyn-exp len");
+                DataReader.ShowBytes(dynLength, "dynamic expression", 1);
             }
 
             // 5 or 6 int arguments follow depending on version
-            Datareader.ShowBytes(20, 4);
+            DataReader.ShowBytes(20, 4);
             // v64,65 has an additional argument
             if (vcsVersion >= 64)
             {
-                Datareader.ShowBytes(4);
+                DataReader.ShowBytes(4);
             }
 
             // a rarely seen file reference
-            string name4 = Datareader.ReadNullTermStringAtPosition();
+            string name4 = DataReader.ReadNullTermStringAtPosition();
             if (name4.Length > 0)
             {
-                Datareader.OutputWriteLine($"// {name4}");
+                DataReader.OutputWriteLine($"// {name4}");
             }
-            Datareader.ShowBytes(64);
+            DataReader.ShowBytes(64);
             // float or int arguments
-            int a0 = Datareader.ReadInt32AtPosition(0);
-            int a1 = Datareader.ReadInt32AtPosition(4);
-            int a2 = Datareader.ReadInt32AtPosition(8);
-            int a3 = Datareader.ReadInt32AtPosition(12);
-            Datareader.ShowBytes(16, breakLine: false);
-            Datareader.TabComment($"ints   ({Fmt(a0)},{Fmt(a1)},{Fmt(a2)},{Fmt(a3)})", 10);
-            a0 = Datareader.ReadInt32AtPosition(0);
-            a1 = Datareader.ReadInt32AtPosition(4);
-            a2 = Datareader.ReadInt32AtPosition(8);
-            a3 = Datareader.ReadInt32AtPosition(12);
-            Datareader.ShowBytes(16, breakLine: false);
-            Datareader.TabComment($"ints   ({Fmt(a0)},{Fmt(a1)},{Fmt(a2)},{Fmt(a3)})", 10);
-            a0 = Datareader.ReadInt32AtPosition(0);
-            a1 = Datareader.ReadInt32AtPosition(4);
-            a2 = Datareader.ReadInt32AtPosition(8);
-            a3 = Datareader.ReadInt32AtPosition(12);
-            Datareader.ShowBytes(16, breakLine: false);
-            Datareader.TabComment($"ints   ({Fmt(a0)},{Fmt(a1)},{Fmt(a2)},{Fmt(a3)})", 10);
-            float f0 = Datareader.ReadSingleAtPosition(0);
-            float f1 = Datareader.ReadSingleAtPosition(4);
-            float f2 = Datareader.ReadSingleAtPosition(8);
-            float f3 = Datareader.ReadSingleAtPosition(12);
-            Datareader.ShowBytes(16, breakLine: false);
-            Datareader.TabComment($"floats ({Fmt(f0)},{Fmt(f1)},{Fmt(f2)},{Fmt(f3)})", 10);
-            f0 = Datareader.ReadSingleAtPosition(0);
-            f1 = Datareader.ReadSingleAtPosition(4);
-            f2 = Datareader.ReadSingleAtPosition(8);
-            f3 = Datareader.ReadSingleAtPosition(12);
-            Datareader.ShowBytes(16, breakLine: false);
-            Datareader.TabComment($"floats ({Fmt(f0)},{Fmt(f1)},{Fmt(f2)},{Fmt(f3)})", 10);
-            f0 = Datareader.ReadSingleAtPosition(0);
-            f1 = Datareader.ReadSingleAtPosition(4);
-            f2 = Datareader.ReadSingleAtPosition(8);
-            f3 = Datareader.ReadSingleAtPosition(12);
-            Datareader.ShowBytes(16, breakLine: false);
-            Datareader.TabComment($"floats ({Fmt(f0)},{Fmt(f1)},{Fmt(f2)},{Fmt(f3)})", 10);
-            a0 = Datareader.ReadInt32AtPosition(0);
-            a1 = Datareader.ReadInt32AtPosition(4);
-            a2 = Datareader.ReadInt32AtPosition(8);
-            a3 = Datareader.ReadInt32AtPosition(12);
-            Datareader.ShowBytes(16, breakLine: false);
-            Datareader.TabComment($"ints   ({Fmt(a0)},{Fmt(a1)},{Fmt(a2)},{Fmt(a3)})", 10);
-            a0 = Datareader.ReadInt32AtPosition(0);
-            a1 = Datareader.ReadInt32AtPosition(4);
-            a2 = Datareader.ReadInt32AtPosition(8);
-            a3 = Datareader.ReadInt32AtPosition(12);
-            Datareader.ShowBytes(16, breakLine: false);
-            Datareader.TabComment($"ints   ({Fmt(a0)},{Fmt(a1)},{Fmt(a2)},{Fmt(a3)})", 10);
+            int a0 = DataReader.ReadInt32AtPosition(0);
+            int a1 = DataReader.ReadInt32AtPosition(4);
+            int a2 = DataReader.ReadInt32AtPosition(8);
+            int a3 = DataReader.ReadInt32AtPosition(12);
+            DataReader.ShowBytes(16, breakLine: false);
+            DataReader.TabComment($"ints   ({Fmt(a0)},{Fmt(a1)},{Fmt(a2)},{Fmt(a3)})", 10);
+            a0 = DataReader.ReadInt32AtPosition(0);
+            a1 = DataReader.ReadInt32AtPosition(4);
+            a2 = DataReader.ReadInt32AtPosition(8);
+            a3 = DataReader.ReadInt32AtPosition(12);
+            DataReader.ShowBytes(16, breakLine: false);
+            DataReader.TabComment($"ints   ({Fmt(a0)},{Fmt(a1)},{Fmt(a2)},{Fmt(a3)})", 10);
+            a0 = DataReader.ReadInt32AtPosition(0);
+            a1 = DataReader.ReadInt32AtPosition(4);
+            a2 = DataReader.ReadInt32AtPosition(8);
+            a3 = DataReader.ReadInt32AtPosition(12);
+            DataReader.ShowBytes(16, breakLine: false);
+            DataReader.TabComment($"ints   ({Fmt(a0)},{Fmt(a1)},{Fmt(a2)},{Fmt(a3)})", 10);
+            float f0 = DataReader.ReadSingleAtPosition(0);
+            float f1 = DataReader.ReadSingleAtPosition(4);
+            float f2 = DataReader.ReadSingleAtPosition(8);
+            float f3 = DataReader.ReadSingleAtPosition(12);
+            DataReader.ShowBytes(16, breakLine: false);
+            DataReader.TabComment($"floats ({Fmt(f0)},{Fmt(f1)},{Fmt(f2)},{Fmt(f3)})", 10);
+            f0 = DataReader.ReadSingleAtPosition(0);
+            f1 = DataReader.ReadSingleAtPosition(4);
+            f2 = DataReader.ReadSingleAtPosition(8);
+            f3 = DataReader.ReadSingleAtPosition(12);
+            DataReader.ShowBytes(16, breakLine: false);
+            DataReader.TabComment($"floats ({Fmt(f0)},{Fmt(f1)},{Fmt(f2)},{Fmt(f3)})", 10);
+            f0 = DataReader.ReadSingleAtPosition(0);
+            f1 = DataReader.ReadSingleAtPosition(4);
+            f2 = DataReader.ReadSingleAtPosition(8);
+            f3 = DataReader.ReadSingleAtPosition(12);
+            DataReader.ShowBytes(16, breakLine: false);
+            DataReader.TabComment($"floats ({Fmt(f0)},{Fmt(f1)},{Fmt(f2)},{Fmt(f3)})", 10);
+            a0 = DataReader.ReadInt32AtPosition(0);
+            a1 = DataReader.ReadInt32AtPosition(4);
+            a2 = DataReader.ReadInt32AtPosition(8);
+            a3 = DataReader.ReadInt32AtPosition(12);
+            DataReader.ShowBytes(16, breakLine: false);
+            DataReader.TabComment($"ints   ({Fmt(a0)},{Fmt(a1)},{Fmt(a2)},{Fmt(a3)})", 10);
+            a0 = DataReader.ReadInt32AtPosition(0);
+            a1 = DataReader.ReadInt32AtPosition(4);
+            a2 = DataReader.ReadInt32AtPosition(8);
+            a3 = DataReader.ReadInt32AtPosition(12);
+            DataReader.ShowBytes(16, breakLine: false);
+            DataReader.TabComment($"ints   ({Fmt(a0)},{Fmt(a1)},{Fmt(a2)},{Fmt(a3)})", 10);
             // a command word, or pair of these
-            string name5 = Datareader.ReadNullTermStringAtPosition();
+            string name5 = DataReader.ReadNullTermStringAtPosition();
             if (name5.Length > 0)
             {
-                Datareader.OutputWriteLine($"// {name5}");
+                DataReader.OutputWriteLine($"// {name5}");
             }
-            Datareader.ShowBytes(32);
-            string name6 = Datareader.ReadNullTermStringAtPosition();
+            DataReader.ShowBytes(32);
+            string name6 = DataReader.ReadNullTermStringAtPosition();
             if (name6.Length > 0)
             {
-                Datareader.OutputWriteLine($"// {name6}");
+                DataReader.OutputWriteLine($"// {name6}");
             }
-            Datareader.ShowBytes(32);
+            DataReader.ShowBytes(32);
 
             if (vcsVersion == 65)
             {
-                Datareader.ShowBytes(6, "unknown bytes specific to vcs version 65");
+                DataReader.ShowBytes(6, "unknown bytes specific to vcs version 65");
             }
 
-            Datareader.BreakLine();
+            DataReader.BreakLine();
         }
         private static string Fmt(float val)
         {
@@ -861,13 +861,13 @@ namespace ValveResourceFormat.CompiledShader
         }
         public void PrintByteDetail()
         {
-            Datareader.BaseStream.Position = start;
-            Datareader.ShowByteCount($"MIPMAP-BLOCK[{BlockIndex}]");
-            Datareader.ShowBytes(24, 4);
-            string name1 = Datareader.ReadNullTermStringAtPosition();
-            Datareader.Comment($"{name1}");
-            Datareader.ShowBytes(256);
-            Datareader.BreakLine();
+            DataReader.BaseStream.Position = start;
+            DataReader.ShowByteCount($"MIPMAP-BLOCK[{BlockIndex}]");
+            DataReader.ShowBytes(24, 4);
+            string name1 = DataReader.ReadNullTermStringAtPosition();
+            DataReader.Comment($"{name1}");
+            DataReader.ShowBytes(256);
+            DataReader.BreakLine();
         }
     }
 
@@ -903,32 +903,32 @@ namespace ValveResourceFormat.CompiledShader
         }
         public void PrintByteDetail()
         {
-            Datareader.BaseStream.Position = start;
-            string blockname = Datareader.ReadNullTermStringAtPosition();
-            Datareader.ShowByteCount($"BUFFER-BLOCK[{BlockIndex}] {blockname}");
-            Datareader.ShowBytes(64);
-            uint bufferSize = Datareader.ReadUInt32AtPosition();
-            Datareader.ShowBytes(4, $"{bufferSize} buffer-size");
-            Datareader.ShowBytes(4);
-            uint paramCount = Datareader.ReadUInt32AtPosition();
-            Datareader.ShowBytes(4, $"{paramCount} param-count");
+            DataReader.BaseStream.Position = start;
+            string blockname = DataReader.ReadNullTermStringAtPosition();
+            DataReader.ShowByteCount($"BUFFER-BLOCK[{BlockIndex}] {blockname}");
+            DataReader.ShowBytes(64);
+            uint bufferSize = DataReader.ReadUInt32AtPosition();
+            DataReader.ShowBytes(4, $"{bufferSize} buffer-size");
+            DataReader.ShowBytes(4);
+            uint paramCount = DataReader.ReadUInt32AtPosition();
+            DataReader.ShowBytes(4, $"{paramCount} param-count");
             for (int i = 0; i < paramCount; i++)
             {
-                string paramname = Datareader.ReadNullTermStringAtPosition();
-                Datareader.OutputWriteLine($"// {paramname}");
-                Datareader.ShowBytes(64);
-                uint paramIndex = Datareader.ReadUInt32AtPosition();
-                Datareader.ShowBytes(4, breakLine: false);
-                Datareader.TabComment($"{paramIndex} buffer-offset", 28);
-                uint vertexSize = Datareader.ReadUInt32AtPosition();
-                uint attributeCount = Datareader.ReadUInt32AtPosition(4);
-                uint size = Datareader.ReadUInt32AtPosition(8);
-                Datareader.ShowBytes(12, $"({vertexSize},{attributeCount},{size}) (vertex-size, attribute-count, length)");
+                string paramname = DataReader.ReadNullTermStringAtPosition();
+                DataReader.OutputWriteLine($"// {paramname}");
+                DataReader.ShowBytes(64);
+                uint paramIndex = DataReader.ReadUInt32AtPosition();
+                DataReader.ShowBytes(4, breakLine: false);
+                DataReader.TabComment($"{paramIndex} buffer-offset", 28);
+                uint vertexSize = DataReader.ReadUInt32AtPosition();
+                uint attributeCount = DataReader.ReadUInt32AtPosition(4);
+                uint size = DataReader.ReadUInt32AtPosition(8);
+                DataReader.ShowBytes(12, $"({vertexSize},{attributeCount},{size}) (vertex-size, attribute-count, length)");
             }
-            Datareader.BreakLine();
-            Datareader.ShowBytes(4, "bufferID (some kind of crc/check)");
-            Datareader.BreakLine();
-            Datareader.BreakLine();
+            DataReader.BreakLine();
+            DataReader.ShowBytes(4, "bufferID (some kind of crc/check)");
+            DataReader.BreakLine();
+            DataReader.BreakLine();
         }
     }
 
@@ -953,22 +953,22 @@ namespace ValveResourceFormat.CompiledShader
         }
         public void PrintByteDetail()
         {
-            Datareader.BaseStream.Position = start;
-            Datareader.ShowByteCount($"SYMBOL-NAMES-BLOCK[{BlockIndex}]");
-            uint symbolGroupCount = Datareader.ReadUInt32AtPosition();
-            Datareader.ShowBytes(4, $"{symbolGroupCount} string groups in this block");
+            DataReader.BaseStream.Position = start;
+            DataReader.ShowByteCount($"SYMBOL-NAMES-BLOCK[{BlockIndex}]");
+            uint symbolGroupCount = DataReader.ReadUInt32AtPosition();
+            DataReader.ShowBytes(4, $"{symbolGroupCount} string groups in this block");
             for (int i = 0; i < symbolGroupCount; i++)
             {
                 for (int j = 0; j < 3; j++)
                 {
-                    string symbolname = Datareader.ReadNullTermStringAtPosition();
-                    Datareader.OutputWriteLine($"// {symbolname}");
-                    Datareader.ShowBytes(symbolname.Length + 1);
+                    string symbolname = DataReader.ReadNullTermStringAtPosition();
+                    DataReader.OutputWriteLine($"// {symbolname}");
+                    DataReader.ShowBytes(symbolname.Length + 1);
                 }
-                Datareader.ShowBytes(4);
-                Datareader.BreakLine();
+                DataReader.ShowBytes(4);
+                DataReader.BreakLine();
             }
-            if (symbolGroupCount == 0) Datareader.BreakLine();
+            if (symbolGroupCount == 0) DataReader.BreakLine();
         }
 
     }

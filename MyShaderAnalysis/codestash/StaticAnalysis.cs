@@ -673,7 +673,7 @@ namespace MyShaderAnalysis.codestash
                 {
                     for (int i = 0; i < 8; i += 4)
                     {
-                        int val = uBlock.Datareader.ReadInt32AtPosition(i);
+                        int val = uBlock.DataReader.ReadInt32AtPosition(i);
                         int curVal = values[i / 4].GetValueOrDefault(val, 0);
                         values[i / 4][val] = curVal + 1;
                     }
@@ -685,7 +685,7 @@ namespace MyShaderAnalysis.codestash
                     }
                     for (int i = 24; i < 216; i += 4)
                     {
-                        int val = uBlock.Datareader.ReadInt32AtPosition(i);
+                        int val = uBlock.DataReader.ReadInt32AtPosition(i);
                         int curVal = values[i / 4].GetValueOrDefault(val, 0);
                         values[i / 4][val] = curVal + 1;
                     }
@@ -766,7 +766,7 @@ namespace MyShaderAnalysis.codestash
                 {
                     for (int i = ARG_OFFSET; i < ARG_OFFSET + 24; i += 4)
                     {
-                        int val = dBlock.Datareader.ReadInt32AtPosition(i);
+                        int val = dBlock.DataReader.ReadInt32AtPosition(i);
                         int curVal = values[(i - ARG_OFFSET) / 4].GetValueOrDefault(val, 0);
                         values[(i - ARG_OFFSET) / 4][val] = curVal + 1;
 
@@ -1370,7 +1370,7 @@ namespace MyShaderAnalysis.codestash
                     int[] ints0 = new int[count];
                     for (int i = 0; i < count; i++)
                     {
-                        ints0[i] = cBlock.Datareader.ReadInt32AtPosition(offset + i * 4);
+                        ints0[i] = cBlock.DataReader.ReadInt32AtPosition(offset + i * 4);
                     }
                     string intsStr = CombineValues(ints0);
                     int parmCount = intrange.GetValueOrDefault(intsStr, 0);
@@ -1410,7 +1410,7 @@ namespace MyShaderAnalysis.codestash
                 {
                     for (int i = 0; i < 8; i += 4)
                     {
-                        int val = cBlock.Datareader.ReadInt32AtPosition(i);
+                        int val = cBlock.DataReader.ReadInt32AtPosition(i);
                         int curVal = values[i / 4].GetValueOrDefault(val, 0);
                         values[i / 4][val] = curVal + 1;
                     }
@@ -1422,7 +1422,7 @@ namespace MyShaderAnalysis.codestash
                     }
                     for (int i = 24; i < 216; i += 4)
                     {
-                        int val = cBlock.Datareader.ReadInt32AtPosition(i);
+                        int val = cBlock.DataReader.ReadInt32AtPosition(i);
                         int curVal = values[i / 4].GetValueOrDefault(val, 0);
                         values[i / 4][val] = curVal + 1;
                     }
@@ -1463,7 +1463,7 @@ namespace MyShaderAnalysis.codestash
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
                 foreach (SfConstraintsBlock cBlock in shaderFile.SfConstraintsBlocks)
                 {
-                    int val = cBlock.Datareader.ReadInt32AtPosition(offset);
+                    int val = cBlock.DataReader.ReadInt32AtPosition(offset);
                     int curVal = values.GetValueOrDefault(val, offset);
                     values[val] = curVal + 1;
                 }
@@ -1487,7 +1487,7 @@ namespace MyShaderAnalysis.codestash
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
                 foreach (SfConstraintsBlock cBlock in shaderFile.SfConstraintsBlocks)
                 {
-                    int val = cBlock.Datareader.ReadInt32AtPosition(0);
+                    int val = cBlock.DataReader.ReadInt32AtPosition(0);
                     int curVal = values.GetValueOrDefault(val, 0);
                     values[val] = curVal + 1;
                 }
@@ -1579,13 +1579,13 @@ namespace MyShaderAnalysis.codestash
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
 
             SfConstraintsBlock block0 = shaderFile.SfConstraintsBlocks[0];
-            Console.WriteLine($"{block0.Datareader.ReadInt32AtPosition(0)}");
-            Console.WriteLine($"{block0.Datareader.ReadInt32AtPosition(4)}");
+            Console.WriteLine($"{block0.DataReader.ReadInt32AtPosition(0)}");
+            Console.WriteLine($"{block0.DataReader.ReadInt32AtPosition(4)}");
             Console.WriteLine($"{block0.GetByteFlagsAsString()}");
 
             for (int i = 24; i <= 215; i += 4)
             {
-                Console.WriteLine($"{block0.Datareader.ReadInt32AtPosition(i)}");
+                Console.WriteLine($"{block0.DataReader.ReadInt32AtPosition(i)}");
             }
 
             // if present, the bytes following contain a string decription of the block
