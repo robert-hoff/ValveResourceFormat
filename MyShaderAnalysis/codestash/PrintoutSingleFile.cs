@@ -77,7 +77,7 @@ namespace MyShaderAnalysis.codestash
 
         private void PrintFeaturesHeader()
         {
-            output.WriteLine($"Valve Compiled Shader 2 (vcs2), version {shaderFile.featuresHeader.VcsFileVersion}");
+            output.WriteLine($"Valve Compiled Shader 2 (vcs2), version {shaderFile.FeaturesHeader.VcsFileVersion}");
             output.BreakLine();
             output.Write($"Features Detail ({Path.GetFileName(shaderFile.FilenamePath)})");
             output.WriteLine($" (byte version <a href='{fileTokens.GetServerFileUrl("bytes")}'>{fileTokens.filename}</a>)");
@@ -92,11 +92,11 @@ namespace MyShaderAnalysis.codestash
                 }
                 output.BreakLine();
             }
-            output.WriteLine($"VFX File Desc: {shaderFile.featuresHeader.FileDescription}");
+            output.WriteLine($"VFX File Desc: {shaderFile.FeaturesHeader.FileDescription}");
             output.BreakLine();
-            output.WriteLine($"has_psrs_file = {shaderFile.featuresHeader.HasPsrsFile}");
-            output.WriteLine($"unknown_val = {shaderFile.featuresHeader.Version} values seen (0,1) (likely editor related)");
-            var ftHeader = shaderFile.featuresHeader;
+            output.WriteLine($"has_psrs_file = {shaderFile.FeaturesHeader.HasPsrsFile}");
+            output.WriteLine($"unknown_val = {shaderFile.FeaturesHeader.Version} values seen (0,1) (likely editor related)");
+            var ftHeader = shaderFile.FeaturesHeader;
             output.WriteLine($"bool flags = ({ftHeader.DevShader},{ftHeader.Arg1},{ftHeader.Arg2},{ftHeader.Arg3}," +
                 $"{ftHeader.Arg4},{ftHeader.Arg5},{ftHeader.Arg6},{ftHeader.Arg7}) (related to editor dependencies)");
             output.WriteLine($"probable minor version = {shaderFile.PossibleEditorDescription}");
@@ -383,7 +383,7 @@ namespace MyShaderAnalysis.codestash
                 output.AddTabulatedRow(new string[] {$"[{(""+param.BlockIndex).PadLeft(indexPad)}]", $"{nameCondensed}", $"{param.Type}",
                     $"{param.Lead0}", $"{param.Res0}", $"{BlankNegOne(param.Arg0),2}", $"{param.Arg1,2}", $"{param.Arg2}",
                     $"{Pow2Rep(param.Arg3),4}", $"{param.Arg4,2}", $"{BlankNegOne(param.Arg5),2}",
-                    $"{dynExpExists}", $"{c0}", $"{param.Fileref}"});
+                    $"{dynExpExists}", $"{c0}", $"{param.FileRef}"});
             }
             output.PrintTabulatedValues(spacing: 1);
             output.BreakLine();
@@ -416,7 +416,7 @@ namespace MyShaderAnalysis.codestash
                 "floats-def.", "floats-min", "floats-max", "int-args0", "int-args1", "command0", "fileref", "dyn-exp"});
             foreach (var param in shaderFile.ParamBlocks)
             {
-                string fileref = param.Fileref;
+                string fileref = param.FileRef;
                 int[] r0 = param.Ranges0;
                 int[] r1 = param.Ranges1;
                 int[] r2 = param.Ranges2;
@@ -425,7 +425,7 @@ namespace MyShaderAnalysis.codestash
                 float[] r5 = param.Ranges5;
                 int[] r6 = param.Ranges6;
                 int[] r7 = param.Ranges7;
-                string hasFileRef = param.Fileref.Length > 0 ? "true" : "";
+                string hasFileRef = param.FileRef.Length > 0 ? "true" : "";
                 string hasDynExp = param.Lead0 == 6 || param.Lead0 == 7 ? "true" : "";
                 output.AddTabulatedRow(new string[] { $"[{("" + param.BlockIndex).PadLeft(indexPad)}]", $"{param.Name0}",
                     $"{param.Type,2},{param.Lead0,2},{BlankNegOne(param.Arg0),2},{param.Arg1,2},{param.Arg2,2},{param.Arg4,2},{BlankNegOne(param.Arg5),2}",

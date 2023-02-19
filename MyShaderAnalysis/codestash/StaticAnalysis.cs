@@ -75,7 +75,7 @@ namespace MyShaderAnalysis.codestash
             foreach (string filenamepath in featuresFiles)
             {
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
-                FeaturesHeaderBlock featuresHeader = shaderFile.featuresHeader;
+                FeaturesHeaderBlock featuresHeader = shaderFile.FeaturesHeader;
                 //string featuresArgs = $"{RemoveBaseDir(filenamepath).PadRight(80)} {featuresHeader.arg0} " +
                 //    $"{featuresHeader.arg1} {featuresHeader.arg2} {featuresHeader.arg3}";
 
@@ -1649,7 +1649,7 @@ namespace MyShaderAnalysis.codestash
                 OutputWriteLine($"{title}");
                 OutputWriteLine(new string('-', title.Length));
                 ShaderFile ftFile = InstantiateShaderFile(triple.ftFile.filenamepath);
-                OutputWriteLine($"{ftFile.featuresHeader.FileDescription}");
+                OutputWriteLine($"{ftFile.FeaturesHeader.FileDescription}");
                 Dictionary<int, string[]> p = new();
                 for (int i = 0; i < 30; i++)
                 {
@@ -1696,15 +1696,15 @@ namespace MyShaderAnalysis.codestash
 
 
                 // features-header
-                int ftHeaderNrArguments = ftFile.featuresHeader.MainParams.Count;
+                int ftHeaderNrArguments = ftFile.FeaturesHeader.MainParams.Count;
                 OutputWriteLine($"<span style='color: #3783ed'>Arguments in {triple.ftFile.filename} header ({ftHeaderNrArguments})</span>");
                 // print the features main args
                 int max_len = 0;
-                foreach (var mp in ftFile.featuresHeader.MainParams)
+                foreach (var mp in ftFile.FeaturesHeader.MainParams)
                 {
                     max_len = mp.Item1.Length > max_len ? mp.Item1.Length : max_len;
                 }
-                foreach (var mp in ftFile.featuresHeader.MainParams)
+                foreach (var mp in ftFile.FeaturesHeader.MainParams)
                 {
                     OutputWriteLine($"<span style='color: #3783ed'>{mp.Item1.PadRight(max_len)} {mp.Item2}</span>");
                 }
@@ -1960,7 +1960,7 @@ namespace MyShaderAnalysis.codestash
             foreach (string filenamepath in featuresFiles)
             {
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
-                FeaturesHeaderBlock featuresHeader = shaderFile.featuresHeader;
+                FeaturesHeaderBlock featuresHeader = shaderFile.FeaturesHeader;
                 Console.WriteLine($"{RemoveBaseDir(filenamepath)}");
                 // featuresHeader.ShowMainParams();
                 foreach (var parampair in featuresHeader.MainParams)
@@ -1995,7 +1995,7 @@ namespace MyShaderAnalysis.codestash
             foreach (string filenamepath in featuresFiles)
             {
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
-                FeaturesHeaderBlock featuresHeader = shaderFile.featuresHeader;
+                FeaturesHeaderBlock featuresHeader = shaderFile.FeaturesHeader;
                 //string featuresArgs = $"{RemoveBaseDir(filenamepath).PadRight(80)} {featuresHeader.arg0} " +
                 //    $"{featuresHeader.arg1} {featuresHeader.arg2} {featuresHeader.arg3}";
 

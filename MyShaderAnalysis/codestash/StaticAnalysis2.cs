@@ -132,7 +132,7 @@ namespace MyShaderAnalysis.codestash
                     int arg3 = paramBlock.Arg3;
                     int arg4 = paramBlock.Arg4;
                     int arg5 = paramBlock.Arg5;
-                    string fileref = paramBlock.Fileref;
+                    string fileref = paramBlock.FileRef;
                     int[] r0 = paramBlock.Ranges0;
                     int[] r1 = paramBlock.Ranges1;
                     int[] r2 = paramBlock.Ranges2;
@@ -222,7 +222,7 @@ namespace MyShaderAnalysis.codestash
                     int arg3 = paramBlock.Arg3;
                     int arg4 = paramBlock.Arg4;
                     int arg5 = paramBlock.Arg5;
-                    string fileref = paramBlock.Fileref;
+                    string fileref = paramBlock.FileRef;
                     int[] r0 = paramBlock.Ranges0;
                     int[] r1 = paramBlock.Ranges1;
                     int[] r2 = paramBlock.Ranges2;
@@ -384,13 +384,13 @@ namespace MyShaderAnalysis.codestash
             {
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
                 // - show all descriptions
-                // Console.WriteLine($"{shaderFile.featuresHeader.file_description}");
+                // Console.WriteLine($"{shaderFile.FeaturesHeader.file_description}");
                 // Console.WriteLine($"{shader}");
 
-                int a0 = shaderFile.featuresHeader.DevShader;
-                int a1 = shaderFile.featuresHeader.Arg1;
-                int a2 = shaderFile.featuresHeader.Arg2;
-                int a3 = shaderFile.featuresHeader.Arg3;
+                int a0 = shaderFile.FeaturesHeader.DevShader;
+                int a1 = shaderFile.FeaturesHeader.Arg1;
+                int a2 = shaderFile.FeaturesHeader.Arg2;
+                int a3 = shaderFile.FeaturesHeader.Arg3;
                 //if (a2 == 0 && a3 == 0)
                 //{
                 //    Console.WriteLine($"{GetShortName(shaderFile.filenamepath)}");

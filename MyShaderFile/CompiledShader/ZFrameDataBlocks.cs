@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 
 namespace ValveResourceFormat.CompiledShader
 {
@@ -11,7 +12,7 @@ namespace ValveResourceFormat.CompiledShader
         public byte[] Dataload { get; }
         public ZDataBlock(ShaderDataReader datareader, int blockId) : base(datareader)
         {
-            this.BlockId = blockId;
+            BlockId = blockId;
             H0 = datareader.ReadInt32();
             H1 = datareader.ReadInt32();
             H2 = datareader.ReadInt32();
@@ -30,12 +31,12 @@ namespace ValveResourceFormat.CompiledShader
         public byte[] EditorRefId { get; protected set; }
         protected GpuSource(ShaderDataReader datareader, int sourceId) : base(datareader)
         {
-            this.SourceId = sourceId;
+            SourceId = sourceId;
         }
         public string GetEditorRefIdAsString()
         {
-            string stringId = ShaderUtilHelpers.BytesToString(EditorRefId);
-            stringId = stringId.Replace(" ", "").ToLower();
+            var stringId = ShaderUtilHelpers.BytesToString(EditorRefId);
+            stringId = stringId.Replace(" ", "", StringComparison.InvariantCulture).ToLowerInvariant();
             return stringId;
         }
         public string GetSourceDetails()
@@ -58,7 +59,7 @@ namespace ValveResourceFormat.CompiledShader
             {
                 Arg0 = datareader.ReadInt32();
                 Offset2 = datareader.ReadInt32();
-                Sourcebytes = datareader.ReadBytes(Offset2-1); // -1 because the sourcebytes are null-term
+                Sourcebytes = datareader.ReadBytes(Offset2 - 1); // -1 because the sourcebytes are null-term
                 datareader.BaseStream.Position += 1;
             }
             EditorRefId = datareader.ReadBytes(16);
@@ -105,7 +106,7 @@ namespace ValveResourceFormat.CompiledShader
     {
         public DxbcSource(ShaderDataReader datareader, int sourceId) : base(datareader, sourceId)
         {
-            this.Offset = datareader.ReadInt32();
+            Offset = datareader.ReadInt32();
             if (Offset > 0)
             {
                 Sourcebytes = datareader.ReadBytes(Offset);
