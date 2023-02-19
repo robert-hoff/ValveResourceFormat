@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using ValveResourceFormat.CompiledShader;
 using static MyShaderAnalysis.filearchive.FileArchive;
+using static MyShaderAnalysis.util.MyShaderUtilHelpers;
 
 namespace MyShaderAnalysis.batchtesting
 {
@@ -149,7 +150,7 @@ namespace MyShaderAnalysis.batchtesting
             // ARCHIVE archive = ARCHIVE.dotagame_pcgl_v62;
             ARCHIVE archive = ARCHIVE.dota_core_pcgl_v62;
             // ARCHIVE archive = ARCHIVE.the_lab_v62;
-            List<string> vcsFiles = MyShaderUtilHelpers.GetVcsFiles(GetArchiveDir(archive), VcsProgramType.Features);
+            List<string> vcsFiles = GetVcsFiles(GetArchiveDir(archive), VcsProgramType.Features);
             foreach (var filenamepath in vcsFiles)
             {
                 Console.WriteLine($"{filenamepath}");

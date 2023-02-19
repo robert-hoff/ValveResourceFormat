@@ -4,7 +4,7 @@ using MyShaderAnalysis.util;
 using System;
 using System.Collections.Generic;
 using ValveResourceFormat.CompiledShader;
-using static MyShaderAnalysis.util.MyShaderUtilHelpers;
+using static MyShaderAnalysis.filearchive.FileArchive;
 
 //  17      16      15    14     13   12     11   10   9     8   7   6   5  4  3  2  1  0
 // 98304  49152  24576  12288  6144  2048  1024  512  256  128  64  32  16  8  4  2  1  1

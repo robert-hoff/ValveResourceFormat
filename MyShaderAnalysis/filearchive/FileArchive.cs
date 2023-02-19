@@ -296,6 +296,102 @@ namespace MyShaderAnalysis.filearchive
         {
             return $"{GetArchiveDir(archive)}/{filename}";
         }
+
+        // Old file lookups, should really fix these
+        public static List<string> GetVcsFiles(string dir1, VcsProgramType fileType,
+            int numEnding = -1, bool sortFiles = true, int LIMIT_NR = 1000)
+        {
+            return GetVcsFiles(dir1, null, fileType, numEnding, sortFiles, LIMIT_NR);
+        }
+
+        public static List<string> GetVcsFiles(string dir1, string dir2 = null,
+            VcsProgramType fileType = VcsProgramType.Undetermined,
+            int numEnding = -1, bool sortFiles = true, int LIMIT_NR = 1000)
+        {
+            List<string> filesFound = new();
+            if (fileType == VcsProgramType.Features || fileType == VcsProgramType.Undetermined)
+            {
+                string endsWith = numEnding > -1 ? $"{numEnding}_features.vcs" : "features.vcs";
+                filesFound.AddRange(GetAllFilesWithEnding(dir1, endsWith));
+                filesFound.AddRange(GetAllFilesWithEnding(dir2, endsWith));
+            }
+            if (fileType == VcsProgramType.VertexShader || fileType == VcsProgramType.Undetermined)
+            {
+                string endsWith = numEnding > -1 ? $"{numEnding}_vs.vcs" : "vs.vcs";
+                filesFound.AddRange(GetAllFilesWithEnding(dir1, endsWith));
+                filesFound.AddRange(GetAllFilesWithEnding(dir2, endsWith));
+            }
+            if (fileType == VcsProgramType.PixelShader || fileType == VcsProgramType.Undetermined)
+            {
+                string endsWith = numEnding > -1 ? $"{numEnding}_ps.vcs" : "ps.vcs";
+                filesFound.AddRange(GetAllFilesWithEnding(dir1, endsWith));
+                filesFound.AddRange(GetAllFilesWithEnding(dir2, endsWith));
+            }
+            if (fileType == VcsProgramType.GeometryShader || fileType == VcsProgramType.Undetermined)
+            {
+                string endsWith = numEnding > -1 ? $"{numEnding}_gs.vcs" : "gs.vcs";
+                filesFound.AddRange(GetAllFilesWithEnding(dir1, endsWith));
+                filesFound.AddRange(GetAllFilesWithEnding(dir2, endsWith));
+            }
+            if (fileType == VcsProgramType.PixelShaderRenderState || fileType == VcsProgramType.Undetermined)
+            {
+                string endsWith = numEnding > -1 ? $"{numEnding}_psrs.vcs" : "psrs.vcs";
+                filesFound.AddRange(GetAllFilesWithEnding(dir1, endsWith));
+                filesFound.AddRange(GetAllFilesWithEnding(dir2, endsWith));
+            }
+            if (fileType == VcsProgramType.DomainShader || fileType == VcsProgramType.Undetermined)
+            {
+                string endsWith = numEnding > -1 ? $"{numEnding}_ds.vcs" : "ds.vcs";
+                filesFound.AddRange(GetAllFilesWithEnding(dir1, endsWith));
+                filesFound.AddRange(GetAllFilesWithEnding(dir2, endsWith));
+            }
+            if (fileType == VcsProgramType.HullShader || fileType == VcsProgramType.Undetermined)
+            {
+                string endsWith = numEnding > -1 ? $"{numEnding}_hs.vcs" : "hs.vcs";
+                filesFound.AddRange(GetAllFilesWithEnding(dir1, endsWith));
+                filesFound.AddRange(GetAllFilesWithEnding(dir2, endsWith));
+            }
+            if (fileType == VcsProgramType.RaytracingShader || fileType == VcsProgramType.Undetermined)
+            {
+                string endsWith = numEnding > -1 ? $"{numEnding}_rtx.vcs" : "rtx.vcs";
+                filesFound.AddRange(GetAllFilesWithEnding(dir1, endsWith));
+                filesFound.AddRange(GetAllFilesWithEnding(dir2, endsWith));
+            }
+            if (sortFiles)
+            {
+                filesFound.Sort();
+            }
+            if (filesFound.Count <= LIMIT_NR)
+            {
+                return filesFound;
+            } else
+            {
+                List<string> returnFiles = new();
+                for (int i = 0; i < LIMIT_NR; i++)
+                {
+                    returnFiles.Add(filesFound[i]);
+                }
+                return returnFiles;
+            }
+        }
+
+        public static List<string> GetAllFilesWithEnding(string dir, string endsWith)
+        {
+            List<string> filesFound = new();
+            if (dir == null)
+            {
+                return filesFound;
+            }
+
+            foreach (string filenamepath in Directory.GetFiles(dir))
+            {
+                if (filenamepath.EndsWith(endsWith))
+                {
+                    filesFound.Add(filenamepath.Replace("\\", "/"));
+                }
+            }
+            return filesFound;
+        }
     }
 }
 

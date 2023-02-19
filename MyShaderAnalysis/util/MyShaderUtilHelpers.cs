@@ -2,106 +2,37 @@ using System.Collections.Generic;
 using System.IO;
 using ValveResourceFormat.CompiledShader;
 
+/*
+ * NOTE - Contains duplicate methods of the production class
+ *
+ */
 namespace MyShaderAnalysis.util
 {
     class MyShaderUtilHelpers
     {
-        public static List<string> GetVcsFiles(string dir1, VcsProgramType fileType,
-            int numEnding = -1, bool sortFiles = true, int LIMIT_NR = 1000)
+        public static string BytesToString(byte[] databytes, int breakLen = 32)
         {
-            return GetVcsFiles(dir1, null, fileType, numEnding, sortFiles, LIMIT_NR);
-        }
-
-        public static List<string> GetVcsFiles(string dir1, string dir2 = null,
-            VcsProgramType fileType = VcsProgramType.Undetermined,
-            int numEnding = -1, bool sortFiles = true, int LIMIT_NR = 1000)
-        {
-            List<string> filesFound = new();
-            if (fileType == VcsProgramType.Features || fileType == VcsProgramType.Undetermined)
+            if (databytes == null || databytes.Length == 0)
             {
-                string endsWith = numEnding > -1 ? $"{numEnding}_features.vcs" : "features.vcs";
-                filesFound.AddRange(GetAllFilesWithEnding(dir1, endsWith));
-                filesFound.AddRange(GetAllFilesWithEnding(dir2, endsWith));
+                return "";
             }
-            if (fileType == VcsProgramType.VertexShader || fileType == VcsProgramType.Undetermined)
+            if (breakLen == -1)
             {
-                string endsWith = numEnding > -1 ? $"{numEnding}_vs.vcs" : "vs.vcs";
-                filesFound.AddRange(GetAllFilesWithEnding(dir1, endsWith));
-                filesFound.AddRange(GetAllFilesWithEnding(dir2, endsWith));
+                breakLen = int.MaxValue;
             }
-            if (fileType == VcsProgramType.PixelShader || fileType == VcsProgramType.Undetermined)
+            var count = 0;
+            var bytestring = "";
+            for (var i = 0; i < databytes.Length; i++)
             {
-                string endsWith = numEnding > -1 ? $"{numEnding}_ps.vcs" : "ps.vcs";
-                filesFound.AddRange(GetAllFilesWithEnding(dir1, endsWith));
-                filesFound.AddRange(GetAllFilesWithEnding(dir2, endsWith));
-            }
-            if (fileType == VcsProgramType.GeometryShader || fileType == VcsProgramType.Undetermined)
-            {
-                string endsWith = numEnding > -1 ? $"{numEnding}_gs.vcs" : "gs.vcs";
-                filesFound.AddRange(GetAllFilesWithEnding(dir1, endsWith));
-                filesFound.AddRange(GetAllFilesWithEnding(dir2, endsWith));
-            }
-            if (fileType == VcsProgramType.PixelShaderRenderState || fileType == VcsProgramType.Undetermined)
-            {
-                string endsWith = numEnding > -1 ? $"{numEnding}_psrs.vcs" : "psrs.vcs";
-                filesFound.AddRange(GetAllFilesWithEnding(dir1, endsWith));
-                filesFound.AddRange(GetAllFilesWithEnding(dir2, endsWith));
-            }
-            if (fileType == VcsProgramType.DomainShader || fileType == VcsProgramType.Undetermined)
-            {
-                string endsWith = numEnding > -1 ? $"{numEnding}_ds.vcs" : "ds.vcs";
-                filesFound.AddRange(GetAllFilesWithEnding(dir1, endsWith));
-                filesFound.AddRange(GetAllFilesWithEnding(dir2, endsWith));
-            }
-            if (fileType == VcsProgramType.HullShader || fileType == VcsProgramType.Undetermined)
-            {
-                string endsWith = numEnding > -1 ? $"{numEnding}_hs.vcs" : "hs.vcs";
-                filesFound.AddRange(GetAllFilesWithEnding(dir1, endsWith));
-                filesFound.AddRange(GetAllFilesWithEnding(dir2, endsWith));
-            }
-            if (fileType == VcsProgramType.RaytracingShader || fileType == VcsProgramType.Undetermined)
-            {
-                string endsWith = numEnding > -1 ? $"{numEnding}_rtx.vcs" : "rtx.vcs";
-                filesFound.AddRange(GetAllFilesWithEnding(dir1, endsWith));
-                filesFound.AddRange(GetAllFilesWithEnding(dir2, endsWith));
-            }
-            if (sortFiles)
-            {
-                filesFound.Sort();
-            }
-            if (filesFound.Count <= LIMIT_NR)
-            {
-                return filesFound;
-            } else
-            {
-                List<string> returnFiles = new();
-                for (int i = 0; i < LIMIT_NR; i++)
+                bytestring += $"{databytes[i]:X02} ";
+                if (++count % breakLen == 0)
                 {
-                    returnFiles.Add(filesFound[i]);
-                }
-                return returnFiles;
-            }
-        }
-
-        private static List<string> GetAllFilesWithEnding(string dir, string endsWith)
-        {
-            List<string> filesFound = new();
-            if (dir == null)
-            {
-                return filesFound;
-            }
-
-            foreach (string filenamepath in Directory.GetFiles(dir))
-            {
-                if (filenamepath.EndsWith(endsWith))
-                {
-                    filesFound.Add(filenamepath.Replace("\\", "/"));
+                    bytestring += "\n";
                 }
             }
-            return filesFound;
+            return bytestring.Trim();
         }
 
-        // todo - duplicates from MyShaderFile.CompiledShader.ShaderUtilHelpers, but it's better to have these separated
         public static (VcsProgramType p1, VcsPlatformType p2, VcsShaderModelType p3) ComputeVCSFileName(string filenamepath)
         {
             VcsProgramType vcsProgramType = VcsProgramType.Undetermined;

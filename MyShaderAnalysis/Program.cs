@@ -61,7 +61,7 @@ namespace MyShaderAnalysis
 
         public static void BatchProcessFiles()
         {
-            TestBatchQueries.Run();
+            BatchParsing1.RunTrials();
             // TestSpirvReflection.Run();
 
             // from an earlier effort analysing the data in zframes
