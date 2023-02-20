@@ -127,6 +127,11 @@ namespace MyShaderFile.CompiledShader
             {
                 throw new ShaderParserException($"Can't parse this filetype: {VcsProgramType}");
             }
+
+
+            DataReader.ShowBytes(1000);
+
+            return;
             PossibleEditorDescription = DataReader.ReadInt32();
             var sfBlockCount = DataReader.ReadInt32();
             for (var i = 0; i < sfBlockCount; i++)

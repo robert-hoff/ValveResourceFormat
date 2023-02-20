@@ -39,7 +39,8 @@ namespace MyShaderAnalysis.parsing
             // ParseV44FileIntoHtml();
             // ParseV44FileToConsole();
             // V62ExampleFiles();
-            ParseV62File();
+            ParseV62FileUsingDataReader();
+            // ParseV62File();
             // ManualZFrameDecompression();
             // ShowVcsFilesForGivenArchive();
             // PrintZframeToHtml();
@@ -120,7 +121,9 @@ namespace MyShaderAnalysis.parsing
 
         static void ParseV62FileUsingDataReader()
         {
-            ParseV62Files.Trial1();
+            string filenamepath = "X:/Steam/steamapps/common/The Lab/RobotRepair/core/shaders/vfx/aerial_perspective_pc_30_features.vcs";
+            ShaderFile shaderFile = new ShaderFile();
+            shaderFile.Read(filenamepath);
 
 
         }
