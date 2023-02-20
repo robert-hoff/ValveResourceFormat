@@ -64,17 +64,14 @@ namespace ValveResourceFormat.CompiledShader
                 Arg7 = datareader.ReadInt32();
             }
 
-            if (AdditionalFiles == VcsAdditionalFiles.Psrs)
+            var modeCount = datareader.ReadInt32();
+            for (var i = VcsAdditionalFiles.None; i < AdditionalFiles; i++)
             {
-                datareader.BaseStream.Position += 4;
-            }
-            else if (AdditionalFiles == VcsAdditionalFiles.Rtx)
-            {
-                datareader.BaseStream.Position += 8;
-            }
+                // Note the modeCount is overwritten
+                modeCount = datareader.ReadInt32();
+            };
 
-            var mode_count = datareader.ReadInt32();
-            for (var i = 0; i < mode_count; i++)
+            for (var i = 0; i < modeCount; i++)
             {
                 var name = datareader.ReadNullTermStringAtPosition();
                 datareader.BaseStream.Position += 64;
