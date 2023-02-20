@@ -91,22 +91,13 @@ namespace ValveResourceFormat.CompiledShader
             }
 
             // Editor Id bytes, the length in-so-far is 16 bytes * (6 + AdditionalFiles + 1)
-            for (var program = VcsProgramType.Features; program <= VcsProgramType.Undetermined; program++)
+            var maxFileReference = (int)VcsProgramType.PixelShaderRenderState + (int)AdditionalFiles;
+            for (var i = 0; i < maxFileReference; i++)
             {
-                if (program == VcsProgramType.Undetermined)
-                {
-                    EditorIDs.Add(($"{datareader.ReadBytesAsString(16)}", $"// Editor ref - common editor reference shared by multiple files "));
-                    continue;
-                }
-
-                if ((AdditionalFiles == VcsAdditionalFiles.None && program > VcsProgramType.ComputeShader)
-                || (AdditionalFiles == VcsAdditionalFiles.Psrs && program > VcsProgramType.PixelShaderRenderState))
-                {
-                    continue;
-                }
-
-                EditorIDs.Add(($"{datareader.ReadBytesAsString(16)}", $"// Editor ref to {program}"));
+                EditorIDs.Add((datareader.ReadBytesAsString(16), $"// Editor ref {i} to program {(VcsProgramType)i}"));
             }
+            EditorIDs.Add((datareader.ReadBytesAsString(16),
+                $"// Editor ref {maxFileReference} - common editor reference shared by multiple files"));
         }
 
         public void PrintByteDetail()
