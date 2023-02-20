@@ -23,7 +23,7 @@ namespace MyShaderAnalysis.batchtesting
             // TestSingleVcsFile();
             // TestSingleFileBytes();
 
-            // RunTestZframeBytesByArchive();
+            RunTestZframeBytesByArchive();
             // RunTestSingleZframeBytesSilent();
             // RunTestSingleZframeBytes();
             // RunTestSingleZframeBytesSingleId();
@@ -32,7 +32,7 @@ namespace MyShaderAnalysis.batchtesting
 
 
             // TestArchivesShaderFile();
-            TestArchivesShaderFileSummarize();
+            // TestArchivesShaderFileSummarize();
             // TestArchivesBytes();
         }
 
@@ -62,9 +62,9 @@ namespace MyShaderAnalysis.batchtesting
 
         public static void RunTestZframeBytesByArchive()
         {
-            // TestZframeBytesByArchive(ARCHIVE.dota_game_vulkan_v65);
-            // TestZframeBytesByArchive(ARCHIVE.dota_core_vulkan_v66);
-            // TestZframeBytesByArchive(ARCHIVE.dota_core_pc_v65);
+            TestZframeBytesByArchive(ARCHIVE.dota_game_vulkan_v66);
+            TestZframeBytesByArchive(ARCHIVE.dota_core_vulkan_v66);
+            TestZframeBytesByArchive(ARCHIVE.dota_core_pc_v65);
             TestZframeBytesByArchive(ARCHIVE.dota_game_pc_v65);
             TestZframeBytesByArchive(ARCHIVE.dota_core_vulkan_v65);
             TestZframeBytesByArchive(ARCHIVE.dota_game_vulkan_v65);
@@ -111,7 +111,7 @@ namespace MyShaderAnalysis.batchtesting
                 // NOTE - ignoring parsing errors at the shader - level
                 catch (Exception shaderFileException)
                 {
-                    // Console.WriteLine($"ERROR in {i} {e.Message}");
+                    Console.WriteLine($"ERROR in {f} {shaderFileException.Message}");
                 }
             }
         }
@@ -197,24 +197,28 @@ namespace MyShaderAnalysis.batchtesting
 
         public static void RunTestZframeParserArchive()
         {
-            //TestZframeParserArchive(ARCHIVE.dotagame_pc_v65);
-            //TestZframeParserArchive(ARCHIVE.dotacore_pc_v65);
-            //TestZframeParserArchive(ARCHIVE.dotacore_vulkan_v65);
-            //TestZframeParserArchive(ARCHIVE.dotagame_vulkan_v65);
-            //TestZframeParserArchive(ARCHIVE.dotagame_pcgl);
-            //TestZframeParserArchive(ARCHIVE.dotacore_pcgl);
-            //TestZframeParserArchive(ARCHIVE.dotagame_pc);
-            //TestZframeParserArchive(ARCHIVE.dotacore_pc);
-            //TestZframeParserArchive(ARCHIVE.dota_core_gles);
-            //TestZframeParserArchive(ARCHIVE.dota_dac_gles);
-            //TestZframeParserArchive(ARCHIVE.dota_core_android_vulkan);
-            //TestZframeParserArchive(ARCHIVE.dota_dac_android_vulkan);
-            //TestZframeParserArchive(ARCHIVE.artifact_classiccore_pc);
-            //TestZframeParserArchive(ARCHIVE.artifact_classicdcg_pc);
+
+            TestZframeParserArchive(ARCHIVE.dota_game_vulkan_v65);
+            TestZframeParserArchive(ARCHIVE.dota_core_vulkan_v66);
+            TestZframeParserArchive(ARCHIVE.dota_core_pc_v65);
+            TestZframeParserArchive(ARCHIVE.dota_game_pc_v65);
+            TestZframeParserArchive(ARCHIVE.dota_core_vulkan_v65);
+            TestZframeParserArchive(ARCHIVE.dota_game_vulkan_v65);
+            TestZframeParserArchive(ARCHIVE.dota_game_pcgl_v64);
+            TestZframeParserArchive(ARCHIVE.dota_core_pcgl_v64);
+            TestZframeParserArchive(ARCHIVE.dota_game_pc_v64);
+            TestZframeParserArchive(ARCHIVE.dota_core_pc_v64);
+            TestZframeParserArchive(ARCHIVE.dota_core_mobile_gles_v64);
+            TestZframeParserArchive(ARCHIVE.dota_dac_mobile_gles_v64);
+            TestZframeParserArchive(ARCHIVE.dota_core_android_vulkan_v64);
+            TestZframeParserArchive(ARCHIVE.dota_dac_android_vulkan_v64);
+            TestZframeParserArchive(ARCHIVE.artifact_classic_core_pc_v64);
+            TestZframeParserArchive(ARCHIVE.artifact_classic_dcg_pc_v64);
+            TestZframeParserArchive(ARCHIVE.alyx_core_vulkan_v64);
             TestZframeParserArchive(ARCHIVE.alyx_core_vulkan_v64);
             TestZframeParserArchive(ARCHIVE.alyx_hlvr_vulkan_v64);
-            TestZframeParserArchive(ARCHIVE.the_lab_pc_v62);
-            TestZframeParserArchive(ARCHIVE.the_lab_pc_v62);
+            //TestZframeParserArchive(ARCHIVE.exampleset_pc_v62);
+            //TestZframeParserArchive(ARCHIVE.the_lab_pc_v62);
         }
 
         public static void TestZframeParserArchive(ARCHIVE archive)
@@ -322,14 +326,16 @@ namespace MyShaderAnalysis.batchtesting
 
         public static void TestArchivesShaderFileSummarize()
         {
-            TestArchiveShaderFileSummarise(ARCHIVE.dota_game_pc_v65);
+            TestArchiveShaderFileSummarise(ARCHIVE.dota_core_vulkan_v66);
+            TestArchiveShaderFileSummarise(ARCHIVE.dota_game_vulkan_v66);
             TestArchiveShaderFileSummarise(ARCHIVE.dota_core_pc_v65);
+            TestArchiveShaderFileSummarise(ARCHIVE.dota_game_pc_v65);
             TestArchiveShaderFileSummarise(ARCHIVE.dota_core_vulkan_v65);
             TestArchiveShaderFileSummarise(ARCHIVE.dota_game_vulkan_v65);
-            TestArchiveShaderFileSummarise(ARCHIVE.dota_game_pcgl_v64);
             TestArchiveShaderFileSummarise(ARCHIVE.dota_core_pcgl_v64);
-            TestArchiveShaderFileSummarise(ARCHIVE.dota_game_pc_v64);
+            TestArchiveShaderFileSummarise(ARCHIVE.dota_game_pcgl_v64);
             TestArchiveShaderFileSummarise(ARCHIVE.dota_core_pc_v64);
+            TestArchiveShaderFileSummarise(ARCHIVE.dota_game_pc_v64);
             TestArchiveShaderFileSummarise(ARCHIVE.dota_core_mobile_gles_v64);
             TestArchiveShaderFileSummarise(ARCHIVE.dota_dac_mobile_gles_v64);
             TestArchiveShaderFileSummarise(ARCHIVE.dota_core_android_vulkan_v64);
@@ -339,8 +345,8 @@ namespace MyShaderAnalysis.batchtesting
             TestArchiveShaderFileSummarise(ARCHIVE.alyx_core_vulkan_v64);
             TestArchiveShaderFileSummarise(ARCHIVE.alyx_core_vulkan_v64);
             TestArchiveShaderFileSummarise(ARCHIVE.alyx_hlvr_vulkan_v64);
-            TestArchiveShaderFileSummarise(ARCHIVE.exampleset_pc_v62);
-            TestArchiveShaderFileSummarise(ARCHIVE.the_lab_pc_v62);
+            // TestArchiveShaderFileSummarise(ARCHIVE.exampleset_pc_v62);
+            // TestArchiveShaderFileSummarise(ARCHIVE.the_lab_pc_v62);
         }
 
         public static void TestArchiveShaderFileSummarise(ARCHIVE archive, bool showSuccesses = false)

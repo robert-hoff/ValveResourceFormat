@@ -38,10 +38,13 @@ namespace MyShaderFile.CompiledShader
                 AdditionalFiles = (AdditionalFiles) datareader.ReadInt32();
                 if (!AdditionalFiles.IsDefined(AdditionalFiles))
                 {
-                    // -- note it doesn't print any useful information when it fails
-                    throw new UnexpectedMagicException($"Unexpected value", (int)AdditionalFiles, nameof(AdditionalFiles));
+                    // throw the exception
                 }
             }
+
+
+            // -- note it doesn't print any useful information when it fails
+            // throw new UnexpectedMagicException($"Unexpected value", (int)AdditionalFiles, nameof(AdditionalFiles));
 
             // this makes no sense
             //else if (AdditionalFiles == AdditionalFiles.Rtx) // sbox
