@@ -93,8 +93,13 @@ namespace ValveResourceFormat.CompiledShader
             {
                 EditorIDs.Add((datareader.ReadBytesAsString(16), $"// Editor ref {i} to program {(VcsProgramType)i}"));
             }
-            EditorIDs.Add((datareader.ReadBytesAsString(16),
-                $"// Editor ref {maxFileReference} - common editor reference shared by multiple files"));
+
+            if (VcsFileVersion >= 64)
+            {
+                EditorIDs.Add((datareader.ReadBytesAsString(16),
+                               $"// Editor ref {maxFileReference} - common editor reference shared by multiple files"));
+            }
+
         }
 
         public void PrintByteDetail()
