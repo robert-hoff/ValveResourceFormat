@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using RunVrf.MyShaderAnalysis;
+using RunVrf.UtilHelpers;
 
 namespace RunVrf
 {
@@ -26,8 +27,11 @@ namespace RunVrf
 
             // StaticAnalysis();
             // StaticSingleFileInspection();
-            SingleFilePrintouts();
+            BatchTestFiles();
+            // SingleFilePrintouts();
         }
+
+
 
         static void StaticAnalysis()
         {
@@ -40,6 +44,10 @@ namespace RunVrf
             // StaticSingleSF.RunTrials();
         }
 
+        static void BatchTestFiles()
+        {
+            BatchTestShaderFiless.RunTrials();
+        }
 
         static void SingleFilePrintouts()
         {
