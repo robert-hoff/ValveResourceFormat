@@ -121,7 +121,7 @@ namespace MyShaderAnalysis.batchtesting
 
             byte[] zframeBytes = shaderFile.GetDecompressedZFrameByIndex(zframeIndex);
             DataReaderZFrameBytes dataReaderZframe = new DataReaderZFrameBytes(zframeBytes,
-                shaderFile.VcsProgramType, shaderFile.VcsPlatformType, shaderFile.VcsShaderModelType);
+                shaderFile.VcsProgramType, shaderFile.VcsPlatformType, shaderFile.VcsShaderModelType, shaderFile.VcsVersion);
             long zframeId = shaderFile.GetZFrameIdByIndex(zframeIndex);
             Console.Write($"parsing zframe[0x{zframeId:x08}]");
             dataReaderZframe.PrintByteDetail();

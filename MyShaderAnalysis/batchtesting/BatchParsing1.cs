@@ -23,15 +23,16 @@ namespace MyShaderAnalysis.batchtesting
             // TestSingleVcsFile();
             // TestSingleFileBytes();
 
-            RunTestZframeBytesByArchive();
+            // RunTestZframeBytesByArchive();
             // RunTestSingleZframeBytesSilent();
             // RunTestSingleZframeBytes();
             // RunTestSingleZframeBytesSingleId();
             // RunTestZframeParserArchive();
             // RunTestSingleZframeParser();
 
+
             // TestArchivesShaderFile();
-            // TestArchivesShaderFileSummarize();
+            TestArchivesShaderFileSummarize();
             // TestArchivesBytes();
         }
 
@@ -62,26 +63,26 @@ namespace MyShaderAnalysis.batchtesting
         public static void RunTestZframeBytesByArchive()
         {
             // TestZframeBytesByArchive(ARCHIVE.dota_game_vulkan_v65);
-            TestZframeBytesByArchive(ARCHIVE.dota_core_vulkan_v66);
-            //TestZframeBytesByArchive(ARCHIVE.dota_core_pc_v65);
-            //TestZframeBytesByArchive(ARCHIVE.dota_game_pc_v65);
-            //TestZframeBytesByArchive(ARCHIVE.dota_core_vulkan_v65);
-            //TestZframeBytesByArchive(ARCHIVE.dota_game_vulkan_v65);
-            //TestZframeBytesByArchive(ARCHIVE.dota_game_pcgl_v64);
-            //TestZframeBytesByArchive(ARCHIVE.dota_core_pcgl_v64);
-            //TestZframeBytesByArchive(ARCHIVE.dota_game_pc_v64);
-            //TestZframeBytesByArchive(ARCHIVE.dota_core_pc_v64);
-            //TestZframeBytesByArchive(ARCHIVE.dota_core_mobile_gles_v64);
-            //TestZframeBytesByArchive(ARCHIVE.dota_dac_mobile_gles_v64);
-            //TestZframeBytesByArchive(ARCHIVE.dota_core_android_vulkan_v64);
-            //TestZframeBytesByArchive(ARCHIVE.dota_dac_android_vulkan_v64);
-            //TestZframeBytesByArchive(ARCHIVE.artifact_classic_core_pc_v64);
-            //TestZframeBytesByArchive(ARCHIVE.artifact_classic_dcg_pc_v64);
-            //TestZframeBytesByArchive(ARCHIVE.alyx_core_vulkan_v64);
-            //TestZframeBytesByArchive(ARCHIVE.alyx_core_vulkan_v64);
-            //TestZframeBytesByArchive(ARCHIVE.alyx_hlvr_vulkan_v64);
-            //TestZframeBytesByArchive(ARCHIVE.exampleset_pc_v62);
-            // TestZframeBytesByArchive(ARCHIVE.the_lab_pc_v62);
+            // TestZframeBytesByArchive(ARCHIVE.dota_core_vulkan_v66);
+            // TestZframeBytesByArchive(ARCHIVE.dota_core_pc_v65);
+            TestZframeBytesByArchive(ARCHIVE.dota_game_pc_v65);
+            TestZframeBytesByArchive(ARCHIVE.dota_core_vulkan_v65);
+            TestZframeBytesByArchive(ARCHIVE.dota_game_vulkan_v65);
+            TestZframeBytesByArchive(ARCHIVE.dota_game_pcgl_v64);
+            TestZframeBytesByArchive(ARCHIVE.dota_core_pcgl_v64);
+            TestZframeBytesByArchive(ARCHIVE.dota_game_pc_v64);
+            TestZframeBytesByArchive(ARCHIVE.dota_core_pc_v64);
+            TestZframeBytesByArchive(ARCHIVE.dota_core_mobile_gles_v64);
+            TestZframeBytesByArchive(ARCHIVE.dota_dac_mobile_gles_v64);
+            TestZframeBytesByArchive(ARCHIVE.dota_core_android_vulkan_v64);
+            TestZframeBytesByArchive(ARCHIVE.dota_dac_android_vulkan_v64);
+            TestZframeBytesByArchive(ARCHIVE.artifact_classic_core_pc_v64);
+            TestZframeBytesByArchive(ARCHIVE.artifact_classic_dcg_pc_v64);
+            TestZframeBytesByArchive(ARCHIVE.alyx_core_vulkan_v64);
+            TestZframeBytesByArchive(ARCHIVE.alyx_core_vulkan_v64);
+            TestZframeBytesByArchive(ARCHIVE.alyx_hlvr_vulkan_v64);
+            TestZframeBytesByArchive(ARCHIVE.exampleset_pc_v62);
+            TestZframeBytesByArchive(ARCHIVE.the_lab_pc_v62);
         }
 
         // public static void TestZframeBytesByArchive(ARCHIVE archive, VcsProgramType vcsProgramType = VcsProgramType.DomainShader)
@@ -97,8 +98,8 @@ namespace MyShaderAnalysis.batchtesting
             foreach (var f in vcsFiles)
             {
                 // string reportString = $"/{archiveName}/{Path.GetFileName(f)}".PadRight(100);
-                //try
-                //{
+                try
+                {
                     ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(f);
                     // Console.WriteLine($"/{archiveName}/{Path.GetFileName(f)} zframe-count={shaderFile.GetZFrameCount()}");
                     for (int i = 0; i < Math.Min(shaderFile.GetZFrameCount(), LIMIT_ZFRAME_COUNT); i++)
@@ -106,12 +107,12 @@ namespace MyShaderAnalysis.batchtesting
                         // Debug.WriteLine($"TESTING {shaderFile.FilenamePath} zframe = {i}");
                         TestSingleZframeBytesSilent(shaderFile, i);
                     }
-                //}
-                // NOTE - ignoring parsing errors at the shader-level
-                //catch (Exception shaderFileException)
-                //{
-                //Console.WriteLine($"ERROR in {i} {e.Message}");
-                //}
+                }
+                // NOTE - ignoring parsing errors at the shader - level
+                catch (Exception shaderFileException)
+                {
+                    // Console.WriteLine($"ERROR in {i} {e.Message}");
+                }
             }
         }
 
@@ -133,15 +134,16 @@ namespace MyShaderAnalysis.batchtesting
         {
             byte[] zframeBytes = shaderFile.GetDecompressedZFrameByIndex(zFrameIndex);
             DataReaderZFrameBytes dataReaderZframeBytes = new DataReaderZFrameBytes(zframeBytes, shaderFile.VcsProgramType,
-                shaderFile.VcsPlatformType, shaderFile.VcsShaderModelType, showStatusMessage: false, outputWriter: (x) => { });
-            //try
-            //{
-            dataReaderZframeBytes.PrintByteDetail();
-            //} catch (Exception e)
-            //{
-            //    long zframeId = shaderFile.GetZFrameIdByIndex(zFrameIndex);
-            //    Console.WriteLine($"ERROR in Z[0x{zframeId:x08}] zframeIndex={zFrameIndex} {e.Message}");
-            //}
+                shaderFile.VcsPlatformType, shaderFile.VcsShaderModelType, shaderFile.VcsVersion,
+                outputWriter: (x) => { }, showStatusMessage: false);
+            try
+            {
+                dataReaderZframeBytes.PrintByteDetail();
+            } catch (Exception e)
+            {
+                long zframeId = shaderFile.GetZFrameIdByIndex(zFrameIndex);
+                Console.WriteLine($"ERROR in Z[0x{zframeId:x08}] zframeIndex={zFrameIndex} {e.Message}");
+            }
         }
 
         public static void RunTestSingleZframeBytes()
@@ -183,7 +185,8 @@ namespace MyShaderAnalysis.batchtesting
             // Console.WriteLine($"{zframeBytes.Length}");
 
             DataReaderZFrameBytes dataReaderZframe = new DataReaderZFrameBytes(zframeBytes,
-                shaderFile.VcsProgramType, shaderFile.VcsPlatformType, shaderFile.VcsShaderModelType, showStatusMessage: false,
+                shaderFile.VcsProgramType, shaderFile.VcsPlatformType, shaderFile.VcsShaderModelType,
+                shaderFile.VcsVersion, showStatusMessage: false,
                 // outputWriter: (x) => { });
                 outputWriter: null);
 

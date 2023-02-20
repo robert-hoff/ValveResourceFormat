@@ -38,10 +38,10 @@ namespace MyShaderAnalysis
             // RunStaticAnalysis();
 
             // SingleFileParserExamples.RunTrials();
-            // BatchProcessFiles();
+            BatchProcessFiles();
             // ServerHtml(); // <-- create server files
             // FileArchives();
-            Parsing();
+            // Parsing();
             // OldStaticAnalysisSummaries(); // garbage
             // BasicFunctionalitySnippets();
             // CSharpSnippets();

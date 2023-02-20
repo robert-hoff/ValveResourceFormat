@@ -38,7 +38,7 @@ namespace MyShaderAnalysis.codestash
             byte[] zframeDatabytes = shaderFile.GetDecompressedZFrame(zId);
             var vcsFileProperties = ComputeVCSFileName(filenamepath);
             DataReaderZFrameBytes datareader = new(zframeDatabytes,
-                vcsFileProperties.Item1, vcsFileProperties.Item2, vcsFileProperties.Item3);
+                vcsFileProperties.Item1, vcsFileProperties.Item2, vcsFileProperties.Item3, shaderFile.VcsVersion);
             datareader.PrintByteDetail();
         }
 
@@ -55,7 +55,8 @@ namespace MyShaderAnalysis.codestash
             string filenamepath = $"{DOTA_GAME_PC_SOURCE}/multiblend_pc_30_ps.vcs";
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             byte[] zframeDatabytes = shaderFile.GetDecompressedZFrame(0x1a1);
-            DataReaderZFrameBytes datareader = new(zframeDatabytes, shaderFile.VcsProgramType, shaderFile.VcsPlatformType, shaderFile.VcsShaderModelType);
+            DataReaderZFrameBytes datareader = new(zframeDatabytes, shaderFile.VcsProgramType,
+                shaderFile.VcsPlatformType, shaderFile.VcsShaderModelType, shaderFile.VcsVersion);
             datareader.PrintByteDetail();
         }
 

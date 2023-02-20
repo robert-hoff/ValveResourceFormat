@@ -11,15 +11,16 @@ namespace MyShaderAnalysis.parsing
         private VcsProgramType vcsProgramType;
         private VcsPlatformType vcsPlatformType;
         private VcsShaderModelType vcsShaderModelType;
-
-        private bool showStatusMessage;
+        private int vcsVersion;
+        bool showStatusMessage;
 
         public DataReaderZFrameBytes(byte[] data, VcsProgramType vcsProgramType, VcsPlatformType vcsPlatformType,
-            VcsShaderModelType vcsShaderModelType, HandleOutputWrite outputWriter = null, bool showStatusMessage = false) : base(new MemoryStream(data), outputWriter)
+            VcsShaderModelType vcsShaderModelType, int vcsVersion, bool showStatusMessage = false, HandleOutputWrite outputWriter = null) : base(new MemoryStream(data), outputWriter)
         {
             this.vcsProgramType = vcsProgramType;
             this.vcsPlatformType = vcsPlatformType;
             this.vcsShaderModelType = vcsShaderModelType;
+            this.vcsVersion = vcsVersion;
             this.showStatusMessage = showStatusMessage;
         }
 
@@ -32,10 +33,10 @@ namespace MyShaderAnalysis.parsing
             if (vcsProgramType == VcsProgramType.Features)
             {
                 Comment("Zframe byte data (encoding for features files has not been determined)");
-                if (showStatusMessage)
-                {
-                    Console.WriteLine($"Zframe byte data (encoding for features files has not been determined)");
-                }
+                //if (showStatusMessage)
+                //{
+                //    Console.WriteLine($"Zframe byte data (encoding for features files has not been determined)");
+                //}
                 return;
             }
 
@@ -78,6 +79,10 @@ namespace MyShaderAnalysis.parsing
             ShowBytes(1, "always 0");
             ShowBytes(1, "always 0");
             ShowBytes(1, "values seen (0,1)");
+            if (vcsVersion >= 66)
+            {
+                ShowBytes(1, "added with v66");
+            }
             BreakLine();
             ShowByteCount($"Start of source section, {BaseStream.Position} is " +
                 $"the base offset for end-section source pointers");
@@ -128,12 +133,15 @@ namespace MyShaderAnalysis.parsing
                 vcsProgramType == VcsProgramType.ComputeShader || vcsProgramType == VcsProgramType.DomainShader)
             {
                 ShowZAllEndBlocksTypeVs();
-            } else if (vcsProgramType == VcsProgramType.HullShader)
+            } else if (vcsProgramType == VcsProgramType.HullShader ||
+                vcsProgramType == VcsProgramType.RaytracingShader)
             {
                 ShowZAllEndBlocksTypeHs();
             }
             //  End blocks for ps and psrs files
-            else if (vcsProgramType == VcsProgramType.PixelShader || vcsProgramType == VcsProgramType.PixelShaderRenderState)
+            else if (
+                vcsProgramType == VcsProgramType.PixelShader ||
+                vcsProgramType == VcsProgramType.PixelShaderRenderState)
             {
                 ShowByteCount();
                 int nrEndBlocks = ReadInt32AtPosition();

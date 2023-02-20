@@ -235,7 +235,7 @@ namespace MyShaderAnalysis.parsing
             // zFile.PrintByteDetail();
             byte[] zframeBytes = shaderFile.GetDecompressedZFrame(zFrameId);
             DataReaderZFrameBytes reader = new DataReaderZFrameBytes(zframeBytes, shaderFile.VcsProgramType,
-                shaderFile.VcsPlatformType, shaderFile.VcsShaderModelType);
+                shaderFile.VcsPlatformType, shaderFile.VcsShaderModelType, shaderFile.VcsVersion);
             reader.PrintByteDetail();
         }
 
