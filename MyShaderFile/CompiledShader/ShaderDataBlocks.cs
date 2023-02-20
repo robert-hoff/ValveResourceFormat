@@ -192,7 +192,7 @@ namespace MyShaderFile.CompiledShader
     public class VsPsHeaderBlock : ShaderDataBlock
     {
         public int VcsFileVersion { get; }
-        public bool HasPsrsFile { get; }
+        public AdditionalFiles AdditionalFiles { get; } = AdditionalFiles.None;
         public string FileID0 { get; }
         public string FileID1 { get; }
         public VsPsHeaderBlock(ShaderDataReader datareader) : base(datareader)
@@ -203,20 +203,17 @@ namespace MyShaderFile.CompiledShader
                 throw new UnexpectedMagicException($"Wrong magic ID, VCS expects 0x{ShaderFile.MAGIC:x}",
                     vcsMagicId, nameof(vcsMagicId));
             }
-
             VcsFileVersion = datareader.ReadInt32();
             ThrowIfNotSupported(VcsFileVersion);
-
-            var psrs_arg = 0;
             if (VcsFileVersion >= 64)
             {
-                psrs_arg = datareader.ReadInt32();
-                if (psrs_arg != 0 && psrs_arg != 1)
+                AdditionalFiles = (AdditionalFiles)datareader.ReadInt32();
+                if (!AdditionalFiles.IsDefined(AdditionalFiles))
                 {
-                    throw new ShaderParserException($"Unexpected value psrs_arg = {psrs_arg}");
+                    // -- note it doesn't print any useful information when it fails
+                    throw new UnexpectedMagicException($"Unexpected value", (int)AdditionalFiles, nameof(AdditionalFiles));
                 }
             }
-            HasPsrsFile = psrs_arg > 0;
             FileID0 = datareader.ReadBytesAsString(16);
             FileID1 = datareader.ReadBytesAsString(16);
         }

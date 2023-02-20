@@ -37,15 +37,11 @@ namespace MyShaderAnalysis
             // StaticAnalysisForKristiker(); // analyse zfrme data ahead of parsing
             // RunStaticAnalysis();
 
-
-            SingleFileParserExamples.RunTrials();
+            // SingleFileParserExamples.RunTrials();
             // BatchProcessFiles();
-
-
-
             // ServerHtml(); // <-- create server files
             // FileArchives();
-            // Parsing();
+            Parsing();
             // OldStaticAnalysisSummaries(); // garbage
             // BasicFunctionalitySnippets();
             // CSharpSnippets();
@@ -92,8 +88,8 @@ namespace MyShaderAnalysis
         public static void ServerHtml()
         {
             // -- revise how files are managed as collections
-            // CreateHtmlServerFiles.RunTrials();
-            TestWriteHtmlFile.Run();
+            CreateHtmlServerFiles.RunTrials();
+            // TestWriteHtmlFile.Run();
         }
 
         public static void FileArchives()

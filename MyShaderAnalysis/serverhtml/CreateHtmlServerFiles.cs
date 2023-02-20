@@ -35,9 +35,9 @@ namespace MyShaderAnalysis.serverhtml
     {
         public static void RunTrials()
         {
-            // PrintFileDirectoryGivenArchive();
-            SaveAllServerFilesFromArchive();
-            // SaveServerSets();
+            
+            // SaveAllServerFilesFromArchive();
+            SaveServerSets();
             // SingleFileExamples2();
             // SingleFileExamples1();
         }
@@ -117,7 +117,7 @@ namespace MyShaderAnalysis.serverhtml
             // SaveAllServerFiles(ARCHIVE.dota_game_pc_v65, "multiblend_pc_40_vs.vcs", zframesToPrint: 10, gpuSourcesToPrint: 10, saveGpuByteDetail: false);
 
             // SaveAllServerFiles(ARCHIVE.dota_game_pcgl_v64, "crystal_pcgl_40_vs.vcs", zframesToPrint: 10000, gpuSourcesToPrint: 10000);
-            SaveAllServerFiles(ARCHIVE.dota_game_pcgl_v64, "crystal_pcgl_40_ps.vcs", zframesToPrint: 10000, gpuSourcesToPrint: 10000);
+            // SaveAllServerFiles(ARCHIVE.dota_game_pcgl_v64, "crystal_pcgl_40_ps.vcs", zframesToPrint: 10000, gpuSourcesToPrint: 10000);
 
             // SaveAllServerFiles(ARCHIVE.dota_game_pc_v64, "multiblend_pc_30_ps.vcs", zframesToPrint: 30, gpuSourcesToPrint: 30);
             // SaveAllServerFiles(ARCHIVE.dota_game_pcgl_v64, "spritecard_pcgl_30_ps.vcs", zframesToPrint: 5, gpuSourcesToPrint: 5);
@@ -134,6 +134,9 @@ namespace MyShaderAnalysis.serverhtml
             // SaveAllServerFiles(ARCHIVE.alyx_hlvr_vulkan_v64, "vr_xen_foliage_vulkan_50_features.vcs", zframesToPrint: 30, gpuSourcesToPrint: 30);
             // SaveAllServerFiles(ARCHIVE.alyx_hlvr_vulkan_v64, "vr_xen_foliage_vulkan_50_vs.vcs", zframesToPrint: 30, gpuSourcesToPrint: 30);
             // SaveAllServerFiles(ARCHIVE.alyx_hlvr_vulkan_v64, "vr_xen_foliage_vulkan_50_ps.vcs", zframesToPrint: 30, gpuSourcesToPrint: 30);
+
+            // SaveAllServerFiles(ARCHIVE.dota_core_vulkan_v66, "aoproxy_splat_vulkan_50_ps.vcs", zframesToPrint: 1, gpuSourcesToPrint: 1);
+            SaveAllServerFiles(ARCHIVE.dota_core_vulkan_v66, "aoproxy_splat_vulkan_50_vs.vcs", zframesToPrint: 1, gpuSourcesToPrint: 1);
         }
 
         public static void SaveAllServerFiles(ARCHIVE archive, string filename, int zframesToPrint, int gpuSourcesToPrint, bool saveGpuByteDetail = false)

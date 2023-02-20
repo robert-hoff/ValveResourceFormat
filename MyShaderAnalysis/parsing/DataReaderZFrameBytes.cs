@@ -393,8 +393,8 @@ namespace MyShaderAnalysis.parsing
                     int endOfSourceOffset = (int)BaseStream.Position + offsetToEditorId;
                     int arg0 = ReadInt32AtPosition();
                     ShowBytes(4, $"({arg0}) values seen for Vulkan sources are (2,3)");
-                    int offset2 = ReadInt32AtPosition();
-                    ShowBytes(4, $"({offset2}) - looks like an offset, unknown significance");
+                    int metaDataOffset = ReadInt32AtPosition();
+                    ShowBytes(4, $"({metaDataOffset}) - meta data offset");
                     BreakLine();
                     ShowByteCount($"VULKAN-SOURCE[{i}]");
                     int sourceSize = offsetToEditorId - 8;

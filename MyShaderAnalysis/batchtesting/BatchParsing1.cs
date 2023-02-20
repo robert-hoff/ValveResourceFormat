@@ -8,6 +8,7 @@ using System.IO;
 using MyShaderFile.CompiledShader;
 using static MyShaderAnalysis.filearchive.FileArchive;
 using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
+using System.Diagnostics;
 
 /*
  * sometime around fall 2021 beginning 2022
@@ -22,14 +23,14 @@ namespace MyShaderAnalysis.batchtesting
             // TestSingleVcsFile();
             // TestSingleFileBytes();
 
-            // RunTestZframeBytesByArchive();
+            RunTestZframeBytesByArchive();
             // RunTestSingleZframeBytesSilent();
             // RunTestSingleZframeBytes();
             // RunTestSingleZframeBytesSingleId();
             // RunTestZframeParserArchive();
             // RunTestSingleZframeParser();
 
-            TestArchivesShaderFile();
+            // TestArchivesShaderFile();
             // TestArchivesShaderFileSummarize();
             // TestArchivesBytes();
         }
@@ -96,20 +97,21 @@ namespace MyShaderAnalysis.batchtesting
             foreach (var f in vcsFiles)
             {
                 // string reportString = $"/{archiveName}/{Path.GetFileName(f)}".PadRight(100);
-                try
-                {
+                //try
+                //{
                     ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(f);
-                    Console.WriteLine($"/{archiveName}/{Path.GetFileName(f)} zframe-count={shaderFile.GetZFrameCount()}");
+                    // Console.WriteLine($"/{archiveName}/{Path.GetFileName(f)} zframe-count={shaderFile.GetZFrameCount()}");
                     for (int i = 0; i < Math.Min(shaderFile.GetZFrameCount(), LIMIT_ZFRAME_COUNT); i++)
                     {
+                        // Debug.WriteLine($"TESTING {shaderFile.FilenamePath} zframe = {i}");
                         TestSingleZframeBytesSilent(shaderFile, i);
                     }
-                }
+                //}
                 // NOTE - ignoring parsing errors at the shader-level
-                catch (Exception shaderFileException)
-                {
-                    // Console.WriteLine($"ERROR in {i} {e.Message}");
-                }
+                //catch (Exception shaderFileException)
+                //{
+                //Console.WriteLine($"ERROR in {i} {e.Message}");
+                //}
             }
         }
 
@@ -132,14 +134,14 @@ namespace MyShaderAnalysis.batchtesting
             byte[] zframeBytes = shaderFile.GetDecompressedZFrameByIndex(zFrameIndex);
             DataReaderZFrameBytes dataReaderZframeBytes = new DataReaderZFrameBytes(zframeBytes, shaderFile.VcsProgramType,
                 shaderFile.VcsPlatformType, shaderFile.VcsShaderModelType, showStatusMessage: false, outputWriter: (x) => { });
-            try
-            {
-                dataReaderZframeBytes.PrintByteDetail();
-            } catch (Exception e)
-            {
-                long zframeId = shaderFile.GetZFrameIdByIndex(zFrameIndex);
-                Console.WriteLine($"ERROR in Z[0x{zframeId:x08}] zframeIndex={zFrameIndex} {e.Message}");
-            }
+            //try
+            //{
+            dataReaderZframeBytes.PrintByteDetail();
+            //} catch (Exception e)
+            //{
+            //    long zframeId = shaderFile.GetZFrameIdByIndex(zFrameIndex);
+            //    Console.WriteLine($"ERROR in Z[0x{zframeId:x08}] zframeIndex={zFrameIndex} {e.Message}");
+            //}
         }
 
         public static void RunTestSingleZframeBytes()
@@ -268,10 +270,10 @@ namespace MyShaderAnalysis.batchtesting
 
         public static void TestArchivesShaderFile()
         {
-            TestArchiveShader(ARCHIVE.dota_game_vulkan_v66);
-            TestArchiveShader(ARCHIVE.dota_core_vulkan_v66);
-            // TestArchiveShader(ARCHIVE.dota_game_pc_v65);
-            // TestArchiveShader(ARCHIVE.dota_core_pc_v65);
+            // TestArchiveShader(ARCHIVE.dota_game_vulkan_v66);
+            // TestArchiveShader(ARCHIVE.dota_core_vulkan_v66);
+            TestArchiveShader(ARCHIVE.dota_game_pc_v65);
+            TestArchiveShader(ARCHIVE.dota_core_pc_v65);
             //TestArchiveShader(ARCHIVE.dota_core_vulkan_v65);
             //TestArchiveShader(ARCHIVE.dota_game_vulkan_v65);
             //TestArchiveShader(ARCHIVE.dota_game_pcgl_v64);

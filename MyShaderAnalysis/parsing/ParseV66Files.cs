@@ -20,9 +20,9 @@ namespace MyShaderAnalysis.parsing
             // string filenamepath = GetFilenamepath(ARCHIVE.dota_game_pc_v65, "cables_pc_40_ps.vcs");
             // string filenamepath = GetFilenamepath(ARCHIVE.dota_game_pc_v65, "hero_pc_40_vs.vcs");
             // string filenamepath = GetFilenamepath(ARCHIVE.dota_game_pc_v65, "hero_pc_40_features.vcs");
-
             // string filenamepath = GetFilenamepath(ARCHIVE.dota_game_vulkan_v66, "cables_vulkan_40_features.vcs");
-            string filenamepath = GetFilenamepath(ARCHIVE.dota_core_vulkan_v66, "rtx_binlights_vulkan_60_features.vcs");
+            // string filenamepath = GetFilenamepath(ARCHIVE.dota_core_vulkan_v66, "rtx_binlights_vulkan_60_features.vcs");
+            string filenamepath = GetFilenamepath(ARCHIVE.dota_core_vulkan_v66, "rtx_binlights_vulkan_60_rtx.vcs");
             new ParseV66Files(filenamepath);
         }
 
@@ -190,10 +190,10 @@ namespace MyShaderAnalysis.parsing
             ShowBytes(4, $"version {version}");
             BreakLine();
             ShowByteCount("ps/vs header");
-            if (version == 64 || version == 65)
+            if (version >= 64)
             {
-                int has_psrs_file = ReadInt32AtPosition();
-                ShowBytes(4, $"has_psrs_file = {(has_psrs_file > 0 ? "True" : "False")}");
+                AdditionalFiles AdditionalFiles = (AdditionalFiles) ReadInt32AtPosition();
+                ShowBytes(4, $"hadAdditionalFiles = {AdditionalFiles}");
             }
             ShowBytes(16, "file ID0");
             ShowBytes(16, "file ID1 - shared by all Valve v64 vcs files");

@@ -324,6 +324,7 @@ namespace MyGUI.Types.Viewers {
                             break;
                         }
 
+                    case VulkanSource:
                     case DxbcSource:
                     case DxilSource: {
                             zframeFile.PrintGpuSource(gpuSourceId, buffer.Write);
@@ -332,7 +333,7 @@ namespace MyGUI.Types.Viewers {
                             gpuSourceTab.Text = gpuSourceTabTitle;
                             break;
                         }
-
+                        /*
                     case VulkanSource: {
                             VulkanSource vulkanSource = (VulkanSource)zframeFile.GpuSources[gpuSourceId];
                             // attempt spirv reflection
@@ -356,6 +357,7 @@ namespace MyGUI.Types.Viewers {
                             }
                             break;
                         }
+                        */
 
                     default:
                         throw new InvalidDataException($"Unimplemented GPU source type {zframeFile.GpuSources[gpuSourceId].GetType()}");

@@ -24,11 +24,16 @@ namespace MyShaderAnalysis.parsing
         {
 
             // ParseAndPrintFile(ARCHIVE.dota_game_vulkan_v66, "cables_vulkan_40_features.vcs");
-            ParseAndPrintFile(ARCHIVE.dota_core_vulkan_v66, "rtx_binlights_vulkan_60_features.vcs");
+            // ParseAndPrintFile(ARCHIVE.dota_core_vulkan_v66, "rtx_binlights_vulkan_60_features.vcs");
+            // ParseAndPrintFile(ARCHIVE.dota_core_vulkan_v66, "rtx_binlights_vulkan_60_rtx.vcs");
+            // ParseAndPrintFile(ARCHIVE.dota_core_vulkan_v66, "aoproxy_splat_vulkan_50_ps.vcs");
 
+            // ParseAndPrintFile(ARCHIVE.dota_core_vulkan_v66, "aoproxy_splat_vulkan_50_ps.vcs");
+            ParseAndPrintZFile(ARCHIVE.dota_core_vulkan_v66, "aoproxy_splat_vulkan_50_ps.vcs", zFrameId: 0);
 
             // ParseV66Files.RunTrials();
             // TestShaderFilesBytesShowOutput();
+
             // -- earlier (2022)
             // DecompileVulkanSource();
             // ParseV44FileIntoHtml();
@@ -40,6 +45,7 @@ namespace MyShaderAnalysis.parsing
             // PrintZframeToHtml();
             // ShowFilenamePath();
             // WriteBytesToStringBuffer();
+
         }
 
         public static void TestShaderFilesBytesShowOutput()
@@ -220,9 +226,21 @@ namespace MyShaderAnalysis.parsing
         }
 
 
+
+        public static void ParseAndPrintZFile(ARCHIVE archive, string filename, int zFrameId)
+        {
+            FileVcsTokens vcsTokens = new(archive, filename);
+            ShaderFile shaderFile = vcsTokens.GetShaderFile();
+            ZFrameFile zFile = shaderFile.GetZFrameFile(zFrameId);
+            // zFile.PrintByteDetail();
+            byte[] zframeBytes = shaderFile.GetDecompressedZFrame(zFrameId);
+            DataReaderZFrameBytes reader = new DataReaderZFrameBytes(zframeBytes, shaderFile.VcsProgramType,
+                shaderFile.VcsPlatformType, shaderFile.VcsShaderModelType);
+            reader.PrintByteDetail();
+        }
+
         public static void ParseAndPrintFile(ARCHIVE archive, string filename)
         {
-
             FileVcsTokens vcsTokens = new(archive, filename);
             ShaderFile shaderFile = vcsTokens.GetShaderFile();
             new PrintVcsFileSummary(shaderFile);
