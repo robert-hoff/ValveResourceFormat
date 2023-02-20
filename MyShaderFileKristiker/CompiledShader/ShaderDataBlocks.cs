@@ -7,7 +7,7 @@ namespace ValveResourceFormat.CompiledShader
     public class FeaturesHeaderBlock : ShaderDataBlock
     {
         public int VcsFileVersion { get; }
-        public AdditionalFiles AdditionalFiles { get; }
+        public VcsAdditionalFiles AdditionalFiles { get; }
         public int Version { get; }
         public string FileDescription { get; }
         public int DevShader { get; }
@@ -34,19 +34,21 @@ namespace ValveResourceFormat.CompiledShader
 
             if (VcsFileVersion >= 64)
             {
-                AdditionalFiles = (AdditionalFiles)datareader.ReadInt32();
+                AdditionalFiles = (VcsAdditionalFiles)datareader.ReadInt32();
             }
 
-            if (AdditionalFiles < AdditionalFiles.None || AdditionalFiles > AdditionalFiles.Rtx)
+            if (!Enum.IsDefined(AdditionalFiles))
             {
                 throw new UnexpectedMagicException("Unexpected v64 value", (int)AdditionalFiles, nameof(AdditionalFiles));
             }
-            else if (AdditionalFiles == AdditionalFiles.Rtx) // sbox
-            {
-                datareader.BaseStream.Position += 4;
-                AdditionalFiles = AdditionalFiles.None;
-                VcsFileVersion = 64;
-            }
+
+            // this makes no sense
+            //else if (AdditionalFiles == VcsAdditionalFiles.Rtx) // sbox
+            //{
+            //    datareader.BaseStream.Position += 4;
+            //    AdditionalFiles = VcsAdditionalFiles.None;
+            //    VcsFileVersion = 64;
+            //}
 
             Version = datareader.ReadInt32();
             datareader.BaseStream.Position += 4; // length of name, but not needed because it's always null-term
@@ -64,17 +66,14 @@ namespace ValveResourceFormat.CompiledShader
                 Arg7 = datareader.ReadInt32();
             }
 
-            if (AdditionalFiles == AdditionalFiles.Psrs)
+            var modeCount = datareader.ReadInt32();
+            for (var i = VcsAdditionalFiles.None; i < AdditionalFiles; i++)
             {
-                datareader.BaseStream.Position += 4;
-            }
-            else if (AdditionalFiles == AdditionalFiles.Rtx)
-            {
-                datareader.BaseStream.Position += 8;
-            }
+                // Note the modeCount is overwritten
+                modeCount = datareader.ReadInt32();
+            };
 
-            var mode_count = datareader.ReadInt32();
-            for (var i = 0; i < mode_count; i++)
+            for (var i = 0; i < modeCount; i++)
             {
                 var name = datareader.ReadNullTermStringAtPosition();
                 datareader.BaseStream.Position += 64;
@@ -91,22 +90,18 @@ namespace ValveResourceFormat.CompiledShader
             }
 
             // Editor Id bytes, the length in-so-far is 16 bytes * (6 + AdditionalFiles + 1)
-            for (var program = VcsProgramType.Features; program <= VcsProgramType.Undetermined; program++)
+            var maxFileReference = (int)VcsProgramType.PixelShaderRenderState + (int)AdditionalFiles;
+            for (var i = 0; i < maxFileReference; i++)
             {
-                if (program == VcsProgramType.Undetermined)
-                {
-                    EditorIDs.Add(($"{datareader.ReadBytesAsString(16)}", $"// Editor ref - common editor reference shared by multiple files "));
-                    continue;
-                }
-
-                if ((AdditionalFiles == AdditionalFiles.None && program > VcsProgramType.ComputeShader)
-                || (AdditionalFiles == AdditionalFiles.Psrs && program > VcsProgramType.PixelShaderRenderState))
-                {
-                    continue;
-                }
-
-                EditorIDs.Add(($"{datareader.ReadBytesAsString(16)}", $"// Editor ref to {program}"));
+                EditorIDs.Add((datareader.ReadBytesAsString(16), $"// Editor ref {i} to program {(VcsProgramType)i}"));
             }
+
+            if (VcsFileVersion >= 64)
+            {
+                EditorIDs.Add((datareader.ReadBytesAsString(16),
+                               $"// Editor ref {maxFileReference} - common editor reference shared by multiple files"));
+            }
+
         }
 
         public void PrintByteDetail()
@@ -223,15 +218,15 @@ namespace ValveResourceFormat.CompiledShader
             VcsFileVersion = datareader.ReadInt32();
             ThrowIfNotSupported(VcsFileVersion);
 
-            var extraFile = AdditionalFiles.None;
+            var extraFile = VcsAdditionalFiles.None;
             if (VcsFileVersion >= 64)
             {
-                extraFile = (AdditionalFiles)datareader.ReadInt32();
-                if (extraFile < AdditionalFiles.None || extraFile > AdditionalFiles.Rtx)
+                extraFile = (VcsAdditionalFiles)datareader.ReadInt32();
+                if (extraFile < VcsAdditionalFiles.None || extraFile > VcsAdditionalFiles.Rtx)
                 {
-                    throw new UnexpectedMagicException("unexpected v64 value", (int)extraFile, nameof(AdditionalFiles));
+                    throw new UnexpectedMagicException("unexpected v64 value", (int)extraFile, nameof(VcsAdditionalFiles));
                 }
-                if (extraFile == AdditionalFiles.Rtx)
+                if (extraFile == VcsAdditionalFiles.Rtx)
                 {
                     datareader.BaseStream.Position += 4;
                     VcsFileVersion--;

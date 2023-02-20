@@ -31,6 +31,14 @@ namespace MyShaderAnalysis.parsing
             // ParseAndPrintFile(ARCHIVE.dota_core_vulkan_v66, "aoproxy_splat_vulkan_50_ps.vcs");
             // ParseAndPrintZFile(ARCHIVE.dota_core_vulkan_v66, "aoproxy_splat_vulkan_50_ps.vcs", zFrameId: 0);
 
+            // ParseAndPrintZFile(ARCHIVE.kristiker_bad_shaders, "example_shader_pc_50_ps.vcs", zFrameId: 0);
+            ParseAndPrintZFile(ARCHIVE.kristiker_bad_shaders, "example_shader_pc_50_vs.vcs", zFrameId: 0);
+            // ParseAllZframes(ARCHIVE.kristiker_bad_shaders, "example_shader_pc_50_ps.vcs");
+            // ParseAllZframes(ARCHIVE.kristiker_bad_shaders, "example_shader_pc_50_vs.vcs");
+
+            // X:\dota-2-VRF-exports\bad-zframe-files-from-kristiker
+
+
             // ParseV66Files.RunTrials();
             // TestShaderFilesBytesShowOutput();
 
@@ -39,7 +47,7 @@ namespace MyShaderAnalysis.parsing
             // ParseV44FileIntoHtml();
             // ParseV44FileToConsole();
             // V62ExampleFiles();
-            ParseV62FileUsingDataReader();
+            // ParseV62FileUsingDataReader();
             // ParseV62File();
             // ManualZFrameDecompression();
             // ShowVcsFilesForGivenArchive();
@@ -239,6 +247,13 @@ namespace MyShaderAnalysis.parsing
         }
 
 
+
+        public static void ParseAllZframes(ARCHIVE archive, string filename)
+        {
+            FileVcsTokens vcsTokens = new(archive, filename);
+            ShaderFile shaderFile = vcsTokens.GetShaderFile();
+            Debug.WriteLine($"{shaderFile.GetZFrameCount()}");
+        }
 
         public static void ParseAndPrintZFile(ARCHIVE archive, string filename, int zFrameId)
         {

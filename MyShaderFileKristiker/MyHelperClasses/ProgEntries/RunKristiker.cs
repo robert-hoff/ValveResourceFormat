@@ -4,7 +4,8 @@ namespace MyShaderFileKristiker.MyHelperClasses.ProgEntries
     {
         public static void RunTrials()
         {
-            RunServerHtml.RunTrials();
+            RunBatchTests.RunTrials();
+            // RunServerHtml.RunTrials();
             // RunSnippets.RunTrials();
         }
     }

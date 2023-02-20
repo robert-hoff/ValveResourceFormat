@@ -45,14 +45,21 @@ namespace MyShaderFile.CompiledShader
 
             // -- note it doesn't print any useful information when it fails
             // throw new UnexpectedMagicException($"Unexpected value", (int)AdditionalFiles, nameof(AdditionalFiles));
-
             // this makes no sense
-            //else if (AdditionalFiles == AdditionalFiles.Rtx) // sbox
-            //{
-            //    datareader.BaseStream.Position += 4;
-            //    AdditionalFiles = AdditionalFiles.None;
-            //    VcsFileVersion = 64;
-            //}
+
+
+
+
+            else if (AdditionalFiles == AdditionalFiles.Rtx) // sbox
+            {
+                datareader.BaseStream.Position += 4;
+                AdditionalFiles = AdditionalFiles.None;
+                VcsFileVersion = 64;
+            }
+
+
+
+
 
             Version = datareader.ReadInt32();
             datareader.ReadInt32(); // length of name, but not needed because it's always null-term
@@ -91,8 +98,11 @@ namespace MyShaderFile.CompiledShader
             {
                 EditorIDs.Add((datareader.ReadBytesAsString(16), $"// Editor ref {i} programType {(VcsProgramType)i}"));
             }
-            EditorIDs.Add((datareader.ReadBytesAsString(16),
-                $"// Editor ref {maxFileReference} - common editor reference shared by multiple files"));
+            if (VcsFileVersion >= 64)
+            {
+                EditorIDs.Add((datareader.ReadBytesAsString(16),
+                    $"// Editor ref {maxFileReference} - common editor reference shared by multiple files"));
+            }
         }
 
         public void PrintByteDetail()
