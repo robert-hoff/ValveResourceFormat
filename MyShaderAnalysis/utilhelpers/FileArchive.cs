@@ -22,6 +22,8 @@ namespace MyShaderAnalysis.utilhelpers
         private ShaderFileDetail[] cachedShaderFileDetail;
         private Boolean useModularLookup;
 
+        public string archivefilePath;
+
         /*
          * Collects all the vcs files in the given archive as FileVcsTokens
          * vcs files must follow the expected naming convention
@@ -39,10 +41,12 @@ namespace MyShaderAnalysis.utilhelpers
             bool useModularLookup = false,
             int maxFiles = 10000)
         {
+            this.archivefilePath = FileArchives.GetArchiveDir(archive);
+
             this.archive = archive;
             this.useModularLookup = useModularLookup;
             int count = 0;
-            foreach (string filenamepath in Directory.GetFiles(FileArchives.GetArchiveDir(archive)))
+            foreach (string filenamepath in Directory.GetFiles(archivefilePath))
             {
                 if (count++ > maxFiles)
                 {

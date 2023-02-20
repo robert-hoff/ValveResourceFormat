@@ -17,7 +17,8 @@ namespace MyShaderAnalysis.vcstesting
 
         public static void RunTrials()
         {
-            TestV62Set();
+            SinglefileV62();
+            // TestV62Set();
             // TestVulkanGpuSources();
             // RunTestShaderFilesSelectedArchives();
             // RunTestShaderFilesAllArchives();
@@ -27,6 +28,23 @@ namespace MyShaderAnalysis.vcstesting
             // TestShaderFilesBytesShowOutput();
             // ShowVcsFiles();
         }
+
+        public static void SinglefileV62()
+        {
+            // FileArchive vcsArchive = new FileArchive(ARCHIVE.the_lab_pc_v62);
+            string archivefilePath = "X:/Steam/steamapps/common/The Lab/RobotRepair/core/shaders/vfx/";
+            string filenamepath = $"{archivefilePath}aerial_perspective_pc_30_features.vcs";
+
+            // new ParseV62Files(filenamepath);
+            ShaderFile shaderFile = new ShaderFile();
+            shaderFile.Read(filenamepath);
+
+
+        }
+
+
+
+
 
         public static void TestV62Set()
         {
