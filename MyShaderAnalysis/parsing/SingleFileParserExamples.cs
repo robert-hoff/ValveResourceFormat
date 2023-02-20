@@ -29,7 +29,7 @@ namespace MyShaderAnalysis.parsing
             // ParseAndPrintFile(ARCHIVE.dota_core_vulkan_v66, "aoproxy_splat_vulkan_50_ps.vcs");
 
             // ParseAndPrintFile(ARCHIVE.dota_core_vulkan_v66, "aoproxy_splat_vulkan_50_ps.vcs");
-            ParseAndPrintZFile(ARCHIVE.dota_core_vulkan_v66, "aoproxy_splat_vulkan_50_ps.vcs", zFrameId: 0);
+            // ParseAndPrintZFile(ARCHIVE.dota_core_vulkan_v66, "aoproxy_splat_vulkan_50_ps.vcs", zFrameId: 0);
 
             // ParseV66Files.RunTrials();
             // TestShaderFilesBytesShowOutput();
@@ -39,7 +39,7 @@ namespace MyShaderAnalysis.parsing
             // ParseV44FileIntoHtml();
             // ParseV44FileToConsole();
             // V62ExampleFiles();
-            // ParseV62File();
+            ParseV62File();
             // ManualZFrameDecompression();
             // ShowVcsFilesForGivenArchive();
             // PrintZframeToHtml();
@@ -116,6 +116,16 @@ namespace MyShaderAnalysis.parsing
             string filenamepath = GetFilenamepath(ARCHIVE.the_lab_pc_v62, "aerial_perspective_pc_30_features.vcs");
             new ParseV62Files(filenamepath);
         }
+
+
+        static void ParseV62FileUsingDataReader()
+        {
+            ParseV62Files.Trial1();
+
+
+        }
+
+
 
         // two ways to print the byte analysis (keep these both functionally identical)
         static void ParseV62File()

@@ -53,7 +53,7 @@ namespace MyShaderAnalysis.parsing
             shaderFile.PrintByteDetail();
         }
 
-        static void Trial1()
+        public static void Trial1()
         {
             // string filenamepath = $"{V65_EXAMPLES_SOURCE}/cables_pc_40_features.vcs";
             // string filenamepath = $"{V65_EXAMPLES_SOURCE}/cables_pc_40_ps.vcs";
