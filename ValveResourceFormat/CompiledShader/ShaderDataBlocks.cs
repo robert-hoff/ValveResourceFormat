@@ -7,7 +7,7 @@ namespace ValveResourceFormat.CompiledShader
     public class FeaturesHeaderBlock : ShaderDataBlock
     {
         public int VcsFileVersion { get; }
-        public AdditionalFiles AdditionalFiles { get; }
+        public VcsAdditionalFiles AdditionalFiles { get; }
         public int Version { get; }
         public string FileDescription { get; }
         public int DevShader { get; }
@@ -34,17 +34,17 @@ namespace ValveResourceFormat.CompiledShader
 
             if (VcsFileVersion >= 64)
             {
-                AdditionalFiles = (AdditionalFiles)datareader.ReadInt32();
+                AdditionalFiles = (VcsAdditionalFiles)datareader.ReadInt32();
             }
 
-            if (AdditionalFiles < AdditionalFiles.None || AdditionalFiles > AdditionalFiles.Rtx)
+            if (!Enum.IsDefined(AdditionalFiles))
             {
                 throw new UnexpectedMagicException("Unexpected v64 value", (int)AdditionalFiles, nameof(AdditionalFiles));
             }
-            else if (AdditionalFiles == AdditionalFiles.Rtx) // sbox
+            else if (AdditionalFiles == VcsAdditionalFiles.Rtx) // sbox
             {
                 datareader.BaseStream.Position += 4;
-                AdditionalFiles = AdditionalFiles.None;
+                AdditionalFiles = VcsAdditionalFiles.None;
                 VcsFileVersion = 64;
             }
 
@@ -64,11 +64,11 @@ namespace ValveResourceFormat.CompiledShader
                 Arg7 = datareader.ReadInt32();
             }
 
-            if (AdditionalFiles == AdditionalFiles.Psrs)
+            if (AdditionalFiles == VcsAdditionalFiles.Psrs)
             {
                 datareader.BaseStream.Position += 4;
             }
-            else if (AdditionalFiles == AdditionalFiles.Rtx)
+            else if (AdditionalFiles == VcsAdditionalFiles.Rtx)
             {
                 datareader.BaseStream.Position += 8;
             }
@@ -99,8 +99,8 @@ namespace ValveResourceFormat.CompiledShader
                     continue;
                 }
 
-                if ((AdditionalFiles == AdditionalFiles.None && program > VcsProgramType.ComputeShader)
-                || (AdditionalFiles == AdditionalFiles.Psrs && program > VcsProgramType.PixelShaderRenderState))
+                if ((AdditionalFiles == VcsAdditionalFiles.None && program > VcsProgramType.ComputeShader)
+                || (AdditionalFiles == VcsAdditionalFiles.Psrs && program > VcsProgramType.PixelShaderRenderState))
                 {
                     continue;
                 }
@@ -223,15 +223,15 @@ namespace ValveResourceFormat.CompiledShader
             VcsFileVersion = datareader.ReadInt32();
             ThrowIfNotSupported(VcsFileVersion);
 
-            var extraFile = AdditionalFiles.None;
+            var extraFile = VcsAdditionalFiles.None;
             if (VcsFileVersion >= 64)
             {
-                extraFile = (AdditionalFiles)datareader.ReadInt32();
-                if (extraFile < AdditionalFiles.None || extraFile > AdditionalFiles.Rtx)
+                extraFile = (VcsAdditionalFiles)datareader.ReadInt32();
+                if (extraFile < VcsAdditionalFiles.None || extraFile > VcsAdditionalFiles.Rtx)
                 {
-                    throw new UnexpectedMagicException("unexpected v64 value", (int)extraFile, nameof(AdditionalFiles));
+                    throw new UnexpectedMagicException("unexpected v64 value", (int)extraFile, nameof(VcsAdditionalFiles));
                 }
-                if (extraFile == AdditionalFiles.Rtx)
+                if (extraFile == VcsAdditionalFiles.Rtx)
                 {
                     datareader.BaseStream.Position += 4;
                     VcsFileVersion--;
