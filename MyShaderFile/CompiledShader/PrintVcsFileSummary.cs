@@ -41,6 +41,8 @@ namespace MyShaderFile.CompiledShader
 
         private void PrintFeaturesHeader(ShaderFile shaderFile)
         {
+            bool hasPsrs = shaderFile.FeaturesHeader.AdditionalFiles == AdditionalFiles.Psrs;
+
             output.WriteLine($"Valve Compiled Shader 2 (vcs2), version {shaderFile.FeaturesHeader.VcsFileVersion}");
             output.BreakLine();
             output.Write($"Showing {shaderFile.VcsProgramType}: {Path.GetFileName(shaderFile.FilenamePath)}");
@@ -65,7 +67,7 @@ namespace MyShaderFile.CompiledShader
 
             output.WriteLine($"VFX File Desc: {shaderFile.FeaturesHeader.FileDescription}");
             output.BreakLine();
-            output.WriteLine($"has_psrs_file = {shaderFile.FeaturesHeader.HasPsrsFile}");
+            output.WriteLine($"has_psrs_file = {hasPsrs}");
             output.WriteLine($"{nameof(shaderFile.FeaturesHeader.Version)} = {shaderFile.FeaturesHeader.Version}");
             var ftHeader = shaderFile.FeaturesHeader;
             output.WriteLine($"{nameof(ftHeader.DevShader)} = {ftHeader.DevShader}");

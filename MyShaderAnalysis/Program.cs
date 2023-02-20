@@ -11,6 +11,7 @@ using MyShaderFileKristiker.MyHelperClasses.ProgEntries;
 using System;
 using System.Diagnostics;
 using System.IO;
+using ValveResourceFormat.CompiledShader;
 
 namespace MyShaderAnalysis
 {
@@ -35,10 +36,16 @@ namespace MyShaderAnalysis
             // AnalysisKristiker();
             // StaticAnalysisForKristiker(); // analyse zfrme data ahead of parsing
             // RunStaticAnalysis();
+
+
+            SingleFileParserExamples.RunTrials();
             // BatchProcessFiles();
+
+
+
             // ServerHtml(); // <-- create server files
             // FileArchives();
-            Parsing();
+            // Parsing();
             // OldStaticAnalysisSummaries(); // garbage
             // BasicFunctionalitySnippets();
             // CSharpSnippets();
@@ -99,6 +106,7 @@ namespace MyShaderAnalysis
         {
             SingleFileParserExamples.RunTrials();
             // PrintoutVulkanCode.RunTrials();
+
         }
 
         public static void vulkanReflect()

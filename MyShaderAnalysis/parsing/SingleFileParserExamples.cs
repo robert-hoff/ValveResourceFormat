@@ -9,6 +9,7 @@ using static MyShaderAnalysis.codestash.FileSystemOld;
 using static MyShaderAnalysis.filearchive.FileArchive;
 using static MyShaderAnalysis.filearchive.ReadShaderFile;
 using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
+using System.Diagnostics;
 
 /*
  * SINGLE FILE PARSING ALSO IN
@@ -21,7 +22,12 @@ namespace MyShaderAnalysis.parsing
     {
         public static void RunTrials()
         {
-            ParseV66Files.RunTrials();
+
+            // ParseAndPrintFile(ARCHIVE.dota_game_vulkan_v66, "cables_vulkan_40_features.vcs");
+            ParseAndPrintFile(ARCHIVE.dota_core_vulkan_v66, "rtx_binlights_vulkan_60_features.vcs");
+
+
+            // ParseV66Files.RunTrials();
             // TestShaderFilesBytesShowOutput();
             // -- earlier (2022)
             // DecompileVulkanSource();
@@ -212,6 +218,17 @@ namespace MyShaderAnalysis.parsing
         {
             return "</pre>\n</html>";
         }
+
+
+        public static void ParseAndPrintFile(ARCHIVE archive, string filename)
+        {
+
+            FileVcsTokens vcsTokens = new(archive, filename);
+            ShaderFile shaderFile = vcsTokens.GetShaderFile();
+            new PrintVcsFileSummary(shaderFile);
+        }
+
+
     }
 }
 

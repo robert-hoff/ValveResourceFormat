@@ -28,8 +28,6 @@ dotnet_diagnostic.IDE0044.severity = none
 # unecessary assignment
 dotnet_diagnostic.IDE0059.severity = none
 
-
-
 # unused member
 dotnet_diagnostic.IDE0051.severity = none
 
@@ -54,7 +52,7 @@ dotnet_diagnostic.IDE0060.severity = none
 # Use discard
 dotnet_diagnostic.IDE0058.severity = none
 
-
+# R: need some more for newer version
 dotnet_diagnostic.CA1806.severity = none
 dotnet_diagnostic.CS0219.severity = none
 dotnet_diagnostic.CA1822.severity = none
@@ -79,6 +77,8 @@ dotnet_diagnostic.CS0162.severity = none
 dotnet_diagnostic.CA1812.severity = none
 dotnet_diagnostic.CA1825.severity = none
 dotnet_diagnostic.CS0168.severity = none
+dotnet_diagnostic.CS0414.severity = none
+dotnet_diagnostic.CS0642.severity = none
 
 
 # CA1051 - do not declare visible instance fields

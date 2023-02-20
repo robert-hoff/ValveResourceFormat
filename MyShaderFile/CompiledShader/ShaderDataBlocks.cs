@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using MyShaderFile.Utils;
 using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 
@@ -8,7 +9,7 @@ namespace MyShaderFile.CompiledShader
     public class FeaturesHeaderBlock : ShaderDataBlock
     {
         public int VcsFileVersion { get; }
-        public bool HasPsrsFile { get; }
+        public AdditionalFiles AdditionalFiles { get; } = AdditionalFiles.None;
         public int Version { get; }
         public string FileDescription { get; }
         public int DevShader { get; }
@@ -26,24 +27,30 @@ namespace MyShaderFile.CompiledShader
             var vcsMagicId = datareader.ReadInt32();
             if (vcsMagicId != ShaderFile.MAGIC)
             {
-                throw new UnexpectedMagicException($"Wrong magic ID, VCS expects 0x{ShaderFile.MAGIC:x}",
+                throw new UnexpectedMagicException($"Wrong magic ID for Attribute{ShaderFile.MAGIC:x}",
                     vcsMagicId, nameof(vcsMagicId));
             }
 
             VcsFileVersion = datareader.ReadInt32();
             ThrowIfNotSupported(VcsFileVersion);
-
-            var psrs_arg = 0;
             if (VcsFileVersion >= 64)
             {
-                psrs_arg = datareader.ReadInt32();
+                AdditionalFiles = (AdditionalFiles) datareader.ReadInt32();
+                if (!AdditionalFiles.IsDefined(AdditionalFiles))
+                {
+                    // -- note it doesn't print any useful information when it fails
+                    throw new UnexpectedMagicException($"Unexpected value", (int)AdditionalFiles, nameof(AdditionalFiles));
+                }
             }
 
-            if (psrs_arg != 0 && psrs_arg != 1)
-            {
-                throw new ShaderParserException($"unexpected value psrs_arg = {psrs_arg}");
-            }
-            HasPsrsFile = psrs_arg > 0;
+            // this makes no sense
+            //else if (AdditionalFiles == AdditionalFiles.Rtx) // sbox
+            //{
+            //    datareader.BaseStream.Position += 4;
+            //    AdditionalFiles = AdditionalFiles.None;
+            //    VcsFileVersion = 64;
+            //}
+
             Version = datareader.ReadInt32();
             datareader.ReadInt32(); // length of name, but not needed because it's always null-term
             FileDescription = datareader.ReadNullTermString();
@@ -54,19 +61,17 @@ namespace MyShaderFile.CompiledShader
             Arg4 = datareader.ReadInt32();
             Arg5 = datareader.ReadInt32();
             Arg6 = datareader.ReadInt32();
-
             if (VcsFileVersion >= 64)
             {
                 Arg7 = datareader.ReadInt32();
             }
-
-            var nr_of_arguments = datareader.ReadInt32();
-            if (HasPsrsFile)
+            var nrArguments = datareader.ReadInt32();
+            for (int i = 0; i < (int)AdditionalFiles; i++)
             {
-                // nr_of_arguments is overwritten
-                nr_of_arguments = datareader.ReadInt32();
+                // NOTE nr_of_arguments is overwritten
+                nrArguments = datareader.ReadInt32();
             }
-            for (var i = 0; i < nr_of_arguments; i++)
+            for (var i = 0; i < nrArguments; i++)
             {
                 var string_arg0 = datareader.ReadNullTermStringAtPosition();
                 var string_arg1 = "";
@@ -78,28 +83,13 @@ namespace MyShaderFile.CompiledShader
                 }
                 MainParams.Add((string_arg0, string_arg1));
             }
-            EditorIDs.Add(($"{datareader.ReadBytesAsString(16)}", "// Editor ref. ID0 (produces this file)"));
-            EditorIDs.Add(($"{datareader.ReadBytesAsString(16)}", $"// Editor ref. ID1 - usually a ref to the vs file ({VcsProgramType.VertexShader})"));
-            EditorIDs.Add(($"{datareader.ReadBytesAsString(16)}", $"// Editor ref. ID2 - usually a ref to the ps file ({VcsProgramType.PixelShader})"));
-            EditorIDs.Add(($"{datareader.ReadBytesAsString(16)}", "// Editor ref. ID3"));
-            EditorIDs.Add(($"{datareader.ReadBytesAsString(16)}", "// Editor ref. ID4"));
-            EditorIDs.Add(($"{datareader.ReadBytesAsString(16)}", "// Editor ref. ID5"));
-            EditorIDs.Add(($"{datareader.ReadBytesAsString(16)}", "// Editor ref. ID6"));
-
-            if (VcsFileVersion >= 64)
+            int maxFileReference = (int)VcsProgramType.PixelShaderRenderState + (int)AdditionalFiles;
+            for (int i = 0; i < maxFileReference; i++)
             {
-                if (HasPsrsFile)
-                {
-                    EditorIDs.Add(($"{datareader.ReadBytesAsString(16)}", $"// Editor ref. ID7 - ref to psrs file ({VcsProgramType.PixelShaderRenderState})"));
-                    EditorIDs.Add(($"{datareader.ReadBytesAsString(16)}",
-                        $"// Editor ref. ID8 - common editor reference shared by multiple files "));
-                }
-                else
-                {
-                    EditorIDs.Add(($"{datareader.ReadBytesAsString(16)}",
-                        "// Editor ref. ID7- common editor reference shared by multiple files"));
-                }
+                EditorIDs.Add((datareader.ReadBytesAsString(16), $"// Editor ref {i} programType {(VcsProgramType)i}"));
             }
+            EditorIDs.Add((datareader.ReadBytesAsString(16),
+                $"// Editor ref {maxFileReference} - common editor reference shared by multiple files"));
         }
 
         public void PrintByteDetail()

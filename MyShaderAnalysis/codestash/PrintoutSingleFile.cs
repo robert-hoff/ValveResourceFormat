@@ -84,7 +84,7 @@ namespace MyShaderAnalysis.codestash
             }
             output.WriteLine($"VFX File Desc: {shaderFile.FeaturesHeader.FileDescription}");
             output.BreakLine();
-            output.WriteLine($"has_psrs_file = {shaderFile.FeaturesHeader.HasPsrsFile}");
+            output.WriteLine($"has_psrs_file = {shaderFile.FeaturesHeader.AdditionalFiles == AdditionalFiles.Psrs}");
             output.WriteLine($"unknown_val = {shaderFile.FeaturesHeader.Version} values seen (0,1) (likely editor related)");
             var ftHeader = shaderFile.FeaturesHeader;
             output.WriteLine($"bool flags = ({ftHeader.DevShader},{ftHeader.Arg1},{ftHeader.Arg2},{ftHeader.Arg3}," +

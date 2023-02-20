@@ -22,14 +22,14 @@ namespace MyShaderAnalysis.batchtesting
             // TestSingleVcsFile();
             // TestSingleFileBytes();
 
-            RunTestZframeBytesByArchive();
+            // RunTestZframeBytesByArchive();
             // RunTestSingleZframeBytesSilent();
             // RunTestSingleZframeBytes();
             // RunTestSingleZframeBytesSingleId();
             // RunTestZframeParserArchive();
             // RunTestSingleZframeParser();
 
-            // TestArchivesShaderFile();
+            TestArchivesShaderFile();
             // TestArchivesShaderFileSummarize();
             // TestArchivesBytes();
         }
@@ -268,25 +268,27 @@ namespace MyShaderAnalysis.batchtesting
 
         public static void TestArchivesShaderFile()
         {
-            TestArchiveShader(ARCHIVE.dota_game_pc_v65);
-            TestArchiveShader(ARCHIVE.dota_core_pc_v65);
-            TestArchiveShader(ARCHIVE.dota_core_vulkan_v65);
-            TestArchiveShader(ARCHIVE.dota_game_vulkan_v65);
-            TestArchiveShader(ARCHIVE.dota_game_pcgl_v64);
-            TestArchiveShader(ARCHIVE.dota_core_pcgl_v64);
-            TestArchiveShader(ARCHIVE.dota_game_pc_v64);
-            TestArchiveShader(ARCHIVE.dota_core_pc_v64);
-            TestArchiveShader(ARCHIVE.dota_core_mobile_gles_v64);
-            TestArchiveShader(ARCHIVE.dota_dac_mobile_gles_v64);
-            TestArchiveShader(ARCHIVE.dota_core_android_vulkan_v64);
-            TestArchiveShader(ARCHIVE.dota_dac_android_vulkan_v64);
-            TestArchiveShader(ARCHIVE.artifact_classic_core_pc_v64);
-            TestArchiveShader(ARCHIVE.artifact_classic_dcg_pc_v64);
-            TestArchiveShader(ARCHIVE.alyx_core_vulkan_v64);
-            TestArchiveShader(ARCHIVE.alyx_core_vulkan_v64);
-            TestArchiveShader(ARCHIVE.alyx_hlvr_vulkan_v64);
-            TestArchiveShader(ARCHIVE.exampleset_pc_v62);
-            TestArchiveShader(ARCHIVE.the_lab_pc_v62);
+            TestArchiveShader(ARCHIVE.dota_game_vulkan_v66);
+            TestArchiveShader(ARCHIVE.dota_core_vulkan_v66);
+            // TestArchiveShader(ARCHIVE.dota_game_pc_v65);
+            // TestArchiveShader(ARCHIVE.dota_core_pc_v65);
+            //TestArchiveShader(ARCHIVE.dota_core_vulkan_v65);
+            //TestArchiveShader(ARCHIVE.dota_game_vulkan_v65);
+            //TestArchiveShader(ARCHIVE.dota_game_pcgl_v64);
+            //TestArchiveShader(ARCHIVE.dota_core_pcgl_v64);
+            //TestArchiveShader(ARCHIVE.dota_game_pc_v64);
+            //TestArchiveShader(ARCHIVE.dota_core_pc_v64);
+            //TestArchiveShader(ARCHIVE.dota_core_mobile_gles_v64);
+            //TestArchiveShader(ARCHIVE.dota_dac_mobile_gles_v64);
+            //TestArchiveShader(ARCHIVE.dota_core_android_vulkan_v64);
+            //TestArchiveShader(ARCHIVE.dota_dac_android_vulkan_v64);
+            //TestArchiveShader(ARCHIVE.artifact_classic_core_pc_v64);
+            //TestArchiveShader(ARCHIVE.artifact_classic_dcg_pc_v64);
+            //TestArchiveShader(ARCHIVE.alyx_core_vulkan_v64);
+            //TestArchiveShader(ARCHIVE.alyx_core_vulkan_v64);
+            //TestArchiveShader(ARCHIVE.alyx_hlvr_vulkan_v64);
+            //TestArchiveShader(ARCHIVE.exampleset_pc_v62);
+            //TestArchiveShader(ARCHIVE.the_lab_pc_v62);
         }
 
         public static void TestArchiveShader(ARCHIVE archive)

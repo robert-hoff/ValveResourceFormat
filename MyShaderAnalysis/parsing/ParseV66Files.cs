@@ -21,12 +21,9 @@ namespace MyShaderAnalysis.parsing
             // string filenamepath = GetFilenamepath(ARCHIVE.dota_game_pc_v65, "hero_pc_40_vs.vcs");
             // string filenamepath = GetFilenamepath(ARCHIVE.dota_game_pc_v65, "hero_pc_40_features.vcs");
 
-
-            string filenamepath = GetFilenamepath(ARCHIVE.dota_game_vulkan_v66, "cables_vulkan_40_features.vcs");
-
-
-
-            new ParseV65Files(filenamepath);
+            // string filenamepath = GetFilenamepath(ARCHIVE.dota_game_vulkan_v66, "cables_vulkan_40_features.vcs");
+            string filenamepath = GetFilenamepath(ARCHIVE.dota_core_vulkan_v66, "rtx_binlights_vulkan_60_features.vcs");
+            new ParseV66Files(filenamepath);
         }
 
         private VcsProgramType vcsProgramType;
@@ -35,6 +32,7 @@ namespace MyShaderAnalysis.parsing
 
         public ParseV66Files(string filenamepath) : base(new MemoryStream(File.ReadAllBytes(filenamepath)))
         {
+
             vcsProgramType = ComputeVCSFileName(filenamepath).Item1;
             vcsFilename = filenamepath;
 
@@ -52,10 +50,12 @@ namespace MyShaderAnalysis.parsing
                 throw new ShaderParserException($"can't parse this filetype: {vcsProgramType}");
             }
 
+
+
+
             ShowByteCount();
             ShowBytes(4, $"block DELIM always 17, or minor version? (but stayed the same for v65 and v64)");
             BreakLine();
-
             PrintAllSfBlocks();
             PrintAllCompatibilityBlocks();
             PrintAllDBlocks();
@@ -63,7 +63,6 @@ namespace MyShaderAnalysis.parsing
             PrintAllParamBlocks();
             PrintAllMipmapBlocks();
             PrintAllBufferBlocks();
-
             // for some reason only features and vs files observe symbol blocks
             if (vcsProgramType == VcsProgramType.Features || vcsProgramType == VcsProgramType.VertexShader)
             {
@@ -75,6 +74,7 @@ namespace MyShaderAnalysis.parsing
                 return;
             }
             ShowEndOfFile();
+
         }
 
         // private bool shortenOutput = true;
@@ -100,56 +100,63 @@ namespace MyShaderAnalysis.parsing
             ShowBytes(4, $"version {version}");
             BreakLine();
             ShowByteCount("features header");
-            int has_psrs_file = 0;
-            if (version == 64 || version == 65)
+
+            AdditionalFiles AdditionalFiles = AdditionalFiles.None;
+            if (version >= 64)
             {
-                has_psrs_file = ReadInt32AtPosition();
-                ShowBytes(4, "has_psrs_file = " + (has_psrs_file > 0 ? "True" : "False"));
+                AdditionalFiles = (AdditionalFiles)ReadInt32AtPosition();
+                // ShowBytes(4, "has_psrs_file = " + (has_psrs_file > 0 ? "True" : "False"));
+                ShowBytes(4, "PSRS or RTX file if > 0");
             }
             int unknown_val = ReadInt32AtPosition();
             ShowBytes(4, $"unknown_val = {unknown_val} (usually 0)");
             int len_name_description = ReadInt32AtPosition();
             ShowBytes(4, $"{len_name_description} len of name");
+
+
+
+
             BreakLine();
             string name_desc = ReadNullTermStringAtPosition();
             ShowByteCount(name_desc);
             ShowBytes(len_name_description + 1);
             BreakLine();
             ShowByteCount();
-            uint arg1 = ReadUInt32AtPosition(0);
-            uint arg2 = ReadUInt32AtPosition(4);
-            uint arg3 = ReadUInt32AtPosition(8);
-            uint arg4 = ReadUInt32AtPosition(12);
+            uint devShader = ReadUInt32AtPosition(0); // Kristiker incremented the arg indexes!!
+            uint arg1 = ReadUInt32AtPosition(4);
+            uint arg2 = ReadUInt32AtPosition(8);
+            uint arg3 = ReadUInt32AtPosition(12);
             ShowBytes(16, 4, breakLine: false);
-            TabComment($"({arg1},{arg2},{arg3},{arg4})");
-            uint arg5 = ReadUInt32AtPosition(0);
-            uint arg6 = ReadUInt32AtPosition(4);
-            uint arg7 = ReadUInt32AtPosition(8);
-            if (version == 64 || version == 65)
+            TabComment($"({arg1},{arg2},{arg3})");
+            uint arg4 = ReadUInt32AtPosition(0);
+            uint arg5 = ReadUInt32AtPosition(4);
+            uint arg6 = ReadUInt32AtPosition(8);
+            if (version >= 64)
             {
-                uint arg8 = ReadUInt32AtPosition(12);
+                uint arg7 = ReadUInt32AtPosition(12);
                 ShowBytes(16, 4, breakLine: false);
-                TabComment($"({arg5},{arg6},{arg7},{arg8})");
+                TabComment($"({arg4},{arg5},{arg6},{arg7})");
             } else
             {
                 ShowBytes(12, 4, breakLine: false);
-                TabComment($"({arg5},{arg6},{arg7})");
+                TabComment($"({arg4},{arg5},{arg6})");
             }
 
             BreakLine();
             ShowByteCount();
 
-            int nr_of_arguments = ReadInt32AtPosition();
-            ShowBytes(4, $"nr of arguments {nr_of_arguments}");
-            if (has_psrs_file == 1)
+            int nrArguments = ReadInt32AtPosition();
+            ShowBytes(4, $"nr of arguments {nrArguments}");
+            for (int i = 0; i < (int)AdditionalFiles; i++)
             {
                 // NOTE nr_of_arguments is overwritten
-                nr_of_arguments = ReadInt32AtPosition();
-                ShowBytes(4, $"nr of arguments overriden ({nr_of_arguments})");
+                nrArguments = ReadInt32AtPosition();
+                ShowBytes(4, $"nr of arguments overriden ({nrArguments})");
             }
+
             BreakLine();
             ShowByteCount();
-            for (int i = 0; i < nr_of_arguments; i++)
+            for (int i = 0; i < nrArguments; i++)
             {
                 string default_name = ReadNullTermStringAtPosition();
                 Comment($"{default_name}");
@@ -166,38 +173,13 @@ namespace MyShaderAnalysis.parsing
             }
             BreakLine();
             ShowByteCount("File IDs");
-            ShowBytes(16, "file ID0");
-            if (writeHtmlLinks)
+
+            int maxFileReference = (int)VcsProgramType.PixelShaderRenderState + (int)AdditionalFiles;
+            for (int i = 0; i < maxFileReference; i++)
             {
-                // OutputWrite($"{GetVsHtmlLink(vcsFilename, ReadBytesAsString(16))}");
-                OutputWrite($"VS-LINK{ReadBytesAsString(16)}");
-            } else
-            {
-                ShowBytes(16, breakLine: false);
+                ShowBytes(16, $"file ID{i} programType {(VcsProgramType) i}");
             }
-            TabComment("file ID1 - ref to vs file");
-            if (writeHtmlLinks)
-            {
-                OutputWrite($"PS-LINK{ReadBytesAsString(16)}");
-            } else
-            {
-                ShowBytes(16, breakLine: false);
-            }
-            TabComment("file ID2 - ref to ps file");
-            ShowBytes(16, "file ID3");
-            ShowBytes(16, "file ID4");
-            ShowBytes(16, "file ID5");
-            ShowBytes(16, "file ID6");
-            if ((version == 64 || version == 65) && has_psrs_file == 0)
-            {
-                ShowBytes(16, "file ID7 - shared by all Dota2 vcs files");
-            }
-            if ((version == 64 || version == 65) && has_psrs_file == 1)
-            {
-                ShowBytes(16, "file ID7 - reference to psrs file");
-                ShowBytes(16, "file ID8 - shared by all Dota2 vcs files");
-            }
-            BreakLine();
+            ShowBytes(16, $"file ID{maxFileReference} // common editor reference shared by multiple files");
         }
 
         private int PrintVsPsHeader()
@@ -251,7 +233,7 @@ namespace MyShaderAnalysis.parsing
             int arg5 = ReadInt32AtPosition(20);
             ShowBytes(16, 4, breakLine: false);
             TabComment($"({arg0},{arg1},{arg2},{arg3})");
-            ShowBytes(4, $"({arg4}) known values [-1,28]");
+            ShowBytes(4, $"({arg4}) Features index");
             ShowBytes(4, $"{arg5} additional string params");
             int string_offset = (int)BaseStream.Position;
             List<string> names = new();
@@ -357,7 +339,7 @@ namespace MyShaderAnalysis.parsing
             {
                 PrintParameterBlock(i);
 
-                //if (i == 81)
+                //if (i == 1)
                 //{
                 //    break;
                 //}
@@ -376,7 +358,7 @@ namespace MyShaderAnalysis.parsing
                 OutputWriteLine($"// {name2}");
             }
             ShowBytes(64);
-            ShowBytes(8);
+            ShowBytes(8, 4);
             string name3 = ReadNullTermStringAtPosition();
             if (name3.Length > 0)
             {
@@ -405,9 +387,10 @@ namespace MyShaderAnalysis.parsing
             }
 
             // 6 int parameters follow the dynamic expression
-            if (version == 64 || version == 65)
+            if (version >= 64)
             {
-                ShowBytes(24, 4);
+                ShowBytes(20, 4);
+                ShowBytes(4);
             } else
             {
                 ShowBytes(20, 4);
@@ -483,7 +466,7 @@ namespace MyShaderAnalysis.parsing
             }
             ShowBytes(32);
 
-            if (version == 65)
+            if (version >= 65)
             {
                 ShowBytes(6);
             }

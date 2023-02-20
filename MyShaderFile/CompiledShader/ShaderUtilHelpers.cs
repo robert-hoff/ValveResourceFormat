@@ -10,12 +10,11 @@ namespace MyShaderFile.CompiledShader
     {
         public static (VcsProgramType, VcsPlatformType, VcsShaderModelType) ComputeVCSFileName(string filenamepath)
         {
-            var fileTokens = Path.GetFileName(filenamepath).Split("_");
+            var fileTokens = Path.GetFileName(filenamepath.Trim()).Split("_");
             if (fileTokens.Length < 4)
             {
                 throw new ShaderParserException($"Filetype type unknown or not supported {filenamepath}");
             }
-
             var vcsProgramType = fileTokens[^1].ToLowerInvariant() switch
             {
                 "features.vcs" => VcsProgramType.Features,
@@ -29,6 +28,7 @@ namespace MyShaderFile.CompiledShader
                 "rtx.vcs" => VcsProgramType.RaytracingShader,
                 _ => VcsProgramType.Undetermined
             };
+
 
             var vcsPlatformType = fileTokens[^3].ToLowerInvariant() switch
             {
