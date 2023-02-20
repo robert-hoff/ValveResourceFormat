@@ -34,10 +34,10 @@ namespace MyShaderAnalysis
             Console.SetOut(new ToDebugWriter());
 
             // Jan 2023
-            BatchProcessFiles();
+            // BatchProcessFiles();
 
             // Earlier
-            // BatchTesting1()
+            BatchTesting1();
             // BatchProcessHtmlServerFiles();
             // ParserSnippets();
 
@@ -46,8 +46,8 @@ namespace MyShaderAnalysis
 
         public static void BatchProcessFiles()
         {
-            TestSpirvReflection.Run();
-            // TestBatchQueries.Run();
+            // TestSpirvReflection.Run();
+            TestBatchQueries.Run();
 
             // from an earlier effort analysing the data in zframes
             // I'd like to do something similar for the Vulkan source code ..

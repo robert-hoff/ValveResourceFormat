@@ -3,6 +3,7 @@ using MyShaderAnalysis.utilhelpers.parsetrials;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -16,7 +17,8 @@ namespace MyShaderAnalysis.vcstesting
 
         public static void RunTrials()
         {
-            TestVulkanGpuSources();
+            TestV62Set();
+            // TestVulkanGpuSources();
             // RunTestShaderFilesSelectedArchives();
             // RunTestShaderFilesAllArchives();
             // TestShaderFiles();
@@ -26,6 +28,27 @@ namespace MyShaderAnalysis.vcstesting
             // ShowVcsFiles();
         }
 
+        public static void TestV62Set()
+        {
+            int LIMIT_ZFRAMES = 20;
+            int LIMIT_GPU_SOURCES = 20;
+
+            // FileArchive vcsArchive = new FileArchive(ARCHIVE.alyx_hlvr_vulkan_v64, maxFiles: 20000);
+            FileArchive vcsArchive = new FileArchive(ARCHIVE.the_lab_pc_v62, maxFiles: 20000);
+
+            for (int i = 0; i < vcsArchive.GetFileCount(); i++)
+            {
+                try
+                {
+                    ShaderFile shaderFile = vcsArchive.GetShaderFile(i);
+                    Debug.WriteLine($"shader file {Path.GetFileName(shaderFile.filenamepath)}");
+                } catch (Exception e)
+                {
+                    Debug.WriteLine($"problem in file {vcsArchive.GetFileVcsTokens(i)}");
+                }
+            }
+
+        }
 
         public static void TestVulkanGpuSources()
         {
@@ -59,7 +82,7 @@ namespace MyShaderAnalysis.vcstesting
         public static void RunTestShaderFilesSelectedArchives()
         {
             // ARCHIVE[] archives = { ARCHIVE.dota_core_pcgl_v64, ARCHIVE.dota_game_pcgl_v64 };
-            ARCHIVE[] archives = { ARCHIVE.the_lab_pc_v62};
+            ARCHIVE[] archives = { ARCHIVE.the_lab_pc_v62 };
             foreach (ARCHIVE archive in archives)
             {
                 // FileArchive vcsArchive = new FileArchive(archive, VcsProgramType.Features, VcsShaderModelType._30);
