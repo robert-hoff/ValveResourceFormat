@@ -447,20 +447,21 @@ public sealed class ShaderExtract
 
     private void HandleCombos(ConditionalType comboType, List<ICombo> combos, IndentedTextWriter writer)
     {
-        foreach (var staticCombo in combos)
+        foreach (var combo in combos)
         {
-            if (staticCombo.FeatureIndex != -1)
+            if (combo.FeatureIndex != -1)
             {
-                writer.WriteLine($"{comboType}Combo( {staticCombo.Name}, {FeatureNames[staticCombo.FeatureIndex]}, Sys( ALL ) );");
+                var fromFeature = comboType == ConditionalType.Dynamic ? "FromFeature" : string.Empty;
+                writer.WriteLine($"{comboType}Combo{fromFeature}( {combo.Name}, {FeatureNames[combo.FeatureIndex]}, Sys( ALL ) );");
                 continue;
             }
-            else if (staticCombo.RangeMax != 0)
+            else if (combo.RangeMax != 0)
             {
-                writer.WriteLine($"{comboType}Combo( {staticCombo.Name}, {staticCombo.RangeMin}..{staticCombo.RangeMax}, Sys( ALL ) );");
+                writer.WriteLine($"{comboType}Combo( {combo.Name}, {combo.RangeMin}..{combo.RangeMax}, Sys( ALL ) );");
             }
             else
             {
-                writer.WriteLine($"{comboType}Combo( {staticCombo.Name}, {staticCombo.RangeMax}, Sys( {staticCombo.Sys} ) );");
+                writer.WriteLine($"{comboType}Combo( {combo.Name}, {combo.RangeMax}, Sys( {combo.Sys} ) );");
             }
         }
     }
