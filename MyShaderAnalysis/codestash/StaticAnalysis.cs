@@ -158,54 +158,113 @@ namespace MyShaderAnalysis.codestash
                     // check on the rules that have range2 = (0,1)
                     if (uknBlock.Range2[0] == 0)
                     {
-                        Console.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {uknBlock.GetConciseDescription(new int[] { 8, 4, 7, 5 })}" +
+                        Console.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {GetConciseDescription(uknBlock, new int[] { 8, 4, 7, 5 })}" +
                             $"{shaderFile.DBlocks[0].Name0,-33}");
                     }
 
-                    if (uknBlock.RelRule == 2 && uknBlock.AllFlagsAre3())
+                    if (uknBlock.RelRule == 2 && AllFlagsAre3(uknBlock))
                     {
-                        Console.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {uknBlock.GetConciseDescription(new int[] { 8, 4, 7, 5 })}" +
+                        Console.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {GetConciseDescription(uknBlock, new int[] { 8, 4, 7, 5 })}" +
                             $"{shaderFile.DBlocks[0].Name0,-33} {shaderFile.DBlocks[1].Name0}");
                     }
 
-                    if (uknBlock.RelRule == 3 && uknBlock.AllFlagsAre3() && uknBlock.Flags.Length >= 2)
+                    if (uknBlock.RelRule == 3 && AllFlagsAre3(uknBlock) && uknBlock.Flags.Length >= 2)
                     {
-                        Console.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-44} {uknBlock.GetConciseDescription(new int[] { 8, 4, 12, 5 })} " +
-                            $"{uknBlock.GetResolvedNames(shaderFile.SfBlocks, shaderFile.DBlocks)}");
+                        Console.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-44} {GetConciseDescription(uknBlock, new int[] { 8, 4, 12, 5 })} " +
+                            $"{GetResolvedNames(uknBlock, shaderFile.SfBlocks, shaderFile.DBlocks)}");
                     }
 
                     if (uknBlock.RelRule == 2 && uknBlock.Flags.Length == 2 && uknBlock.Flags[1] == 2 && uknBlock.Range1.Length == 1)
                     {
-                        Console.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {uknBlock.GetConciseDescription(new int[] { 8, 4, 12, 5 })} " +
-                            $"{uknBlock.GetResolvedNames(shaderFile.SfBlocks, shaderFile.DBlocks)}");
+                        Console.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {GetConciseDescription(uknBlock, new int[] { 8, 4, 12, 5 })} " +
+                            $"{GetResolvedNames(uknBlock, shaderFile.SfBlocks, shaderFile.DBlocks)}");
                     }
 
                     if (uknBlock.Range1.Length == 1 && uknBlock.Range1[0] == 0)
                     {
-                        Console.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {uknBlock.GetConciseDescription(new int[] { 8, 4, 12, 5 })} " +
-                            $"{uknBlock.GetResolvedNames(shaderFile.SfBlocks, shaderFile.DBlocks)}");
+                        Console.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {GetConciseDescription(uknBlock, new int[] { 8, 4, 12, 5 })} " +
+                            $"{GetResolvedNames(uknBlock, shaderFile.SfBlocks, shaderFile.DBlocks)}");
                     }
 
                     if (uknBlock.Range1.Length > 1)
                     {
-                        Console.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {uknBlock.GetConciseDescription(new int[] { 8, 4, 12, 5 })} " +
-                            $"{uknBlock.GetResolvedNames(shaderFile.SfBlocks, shaderFile.DBlocks)}");
+                        Console.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {GetConciseDescription(uknBlock, new int[] { 8, 4, 12, 5 })} " +
+                            $"{GetResolvedNames(uknBlock, shaderFile.SfBlocks, shaderFile.DBlocks)}");
                     }
 
                     if (uknBlock.RelRule == 2 && uknBlock.Range1.Length == 0 && uknBlock.Flags.Length >= 3)
                     {
-                        Console.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {uknBlock.GetConciseDescription(new int[] { 8, 4, 12, 5 })} " +
-                            $"{uknBlock.GetResolvedNames(shaderFile.SfBlocks, shaderFile.DBlocks)}");
+                        Console.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {GetConciseDescription(uknBlock, new int[] { 8, 4, 12, 5 })} " +
+                            $"{GetResolvedNames(uknBlock, shaderFile.SfBlocks, shaderFile.DBlocks)}");
                     }
 
                     if (uknBlock.Arg1 > -1)
                     {
-                        Console.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {uknBlock.GetConciseDescription(new int[] { 8, 4, 12, 5 })} " +
-                            $"{uknBlock.GetResolvedNames(shaderFile.SfBlocks, shaderFile.DBlocks)}");
+                        Console.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {GetConciseDescription(uknBlock, new int[] { 8, 4, 12, 5 })} " +
+                            $"{GetResolvedNames(uknBlock, shaderFile.SfBlocks, shaderFile.DBlocks)}");
                     }
                 }
             }
         }
+
+        public static bool AllFlagsAre3(DConstraintsBlock dRuleBlock)
+        {
+            var flagsAre3 = true;
+            foreach (var flag in dRuleBlock.Flags)
+            {
+                if (flag != 3)
+                {
+                    flagsAre3 = false;
+                }
+            }
+            return flagsAre3;
+        }
+
+        public static string GetConciseDescription(DConstraintsBlock uknBlock, int[] usePadding = null)
+        {
+            int[] p = { 10, 8, 15, 5 };
+            if (usePadding != null)
+            {
+                p = usePadding;
+            }
+            var relRuleKeyDesciption = $"{RelRuleDescribe(uknBlock).PadRight(p[0])}{CombineIntArray(uknBlock.Range1).PadRight(p[1])}" +
+                $"{CombineIntArray(uknBlock.Flags, includeParenth: true).PadRight(p[2])}{CombineIntArray(uknBlock.Range2).PadRight(p[3])}";
+            return relRuleKeyDesciption;
+        }
+
+        public static string GetResolvedNames(DConstraintsBlock dRuleBlock, List<SfBlock> sfBlocks, List<DBlock> dBlocks)
+        {
+            List<string> names = new();
+            for (var i = 0; i < dRuleBlock.Flags.Length; i++)
+            {
+                if (dRuleBlock.Flags[i] == 2)
+                {
+                    names.Add(sfBlocks[dRuleBlock.Range0[i]].Name0);
+                    continue;
+                }
+                if (dRuleBlock.Flags[i] == 3)
+                {
+                    names.Add(dBlocks[dRuleBlock.Range0[i]].Name0);
+                    continue;
+                }
+                throw new ShaderParserException("this cannot happen!");
+            }
+            return CombineStringArray(names.ToArray());
+        }
+        public static string RelRuleDescribe(DConstraintsBlock dRuleBlock)
+        {
+            return dRuleBlock.RelRule == 3 ? "EXC(3)" : $"INC({dRuleBlock.RelRule})";
+        }
+
+        public static string RelRuleDescribe(SfConstraintsBlock sRuleBlock)
+        {
+            return sRuleBlock.RelRule == 3 ? "EXC(3)" : $"INC({sRuleBlock.RelRule})";
+        }
+        public static string GetByteFlagsAsString(SfConstraintsBlock sRuleBlock)
+        {
+            return CombineIntArray(sRuleBlock.Flags);
+        }
+
 
         static void DBlockRuleKeyDescriptionSurvey()
         {
@@ -215,7 +274,7 @@ namespace MyShaderAnalysis.codestash
                 ShaderFile shaderFile = InstantiateShaderFile(vcsFilenamepath);
                 foreach (DConstraintsBlock unkBlock in shaderFile.DConstraintsBlocks)
                 {
-                    string relRuleKeyDesciption = $"{unkBlock.RelRuleDescribe(),-10} {CombineValues2(unkBlock.Range1),-8} " +
+                    string relRuleKeyDesciption = $"{RelRuleDescribe(unkBlock),-10} {CombineValues2(unkBlock.Range1),-8} " +
                         $"{CombineValues2(unkBlock.Flags, includeParenth: true),-15} {CombineValues2(unkBlock.Range2)}";
                     CollectStringValue(relRuleKeyDesciption);
                 }
@@ -248,7 +307,7 @@ namespace MyShaderAnalysis.codestash
                 ShaderFile shaderFile = InstantiateShaderFile(vcsFilenamepath);
                 foreach (SfConstraintsBlock cBlock in shaderFile.SfConstraintsBlocks)
                 {
-                    string relRuleKeyDesciption = $"{cBlock.RelRuleDescribe(),-10} {CombineValues2(cBlock.Range1),-7} {CombineValues2(cBlock.Range2)}";
+                    string relRuleKeyDesciption = $"{RelRuleDescribe(cBlock),-10} {CombineValues2(cBlock.Range1),-7} {CombineValues2(cBlock.Range2)}";
                     CollectStringValue(relRuleKeyDesciption);
                 }
             }
@@ -549,7 +608,7 @@ namespace MyShaderAnalysis.codestash
                 string s0 = $"[{uBlock.BlockIndex,2}]";
                 string s1 = (uBlock.RelRule == 1 || uBlock.RelRule == 2) ? $"INC({uBlock.RelRule})" : $"EXC({uBlock.RelRule})";
                 // string s2 = $"{cBlock.arg0}";
-                string s3 = $"{uBlock.ReadByteFlagsAsString()}";
+                string s3 = $"{CombineIntArray(uBlock.Flags)}";
                 // string s4 = $"{CombineValues(uknNames)}";
                 string s4 = $"{breakNames[0]}";
                 // string s4 = "NAMES HERE";
@@ -597,7 +656,7 @@ namespace MyShaderAnalysis.codestash
                     }
                     {
                         // 16 bytes long, so these are skipped in the next part
-                        string val = uBlock.ReadByteFlagsAsString();
+                        string val = CombineIntArray(uBlock.Flags);
                         int curVal = byteflags.GetValueOrDefault(val, 0);
                         byteflags[val] = curVal + 1;
                     }
@@ -1011,7 +1070,7 @@ namespace MyShaderAnalysis.codestash
                 string s0 = $"[{cBlock.BlockIndex,2}]";
                 string s1 = (cBlock.RelRule == 1 || cBlock.RelRule == 2) ? $"INC({cBlock.RelRule})" : $"EXC({cBlock.RelRule})";
                 // string s2 = $"{cBlock.arg0}";
-                string s3 = $"{cBlock.GetByteFlagsAsString()}";
+                string s3 = $"{GetByteFlagsAsString(cBlock)}";
                 // string s4 = $"{CombineValues(sfNames)}";
                 string s4 = $"{breakNames[0]}";
                 string s5 = $"{CombineValues2(cBlock.Range0)}";
@@ -1112,7 +1171,7 @@ namespace MyShaderAnalysis.codestash
                 string s0 = $"[{cBlock.BlockIndex,2}]";
                 string s1 = $"{cBlock.RelRule}";
                 string s2 = $"{cBlock.Arg0}";
-                string s3 = $"{cBlock.GetByteFlagsAsString()}";
+                string s3 = $"{GetByteFlagsAsString(cBlock)}";
                 string s4 = $"{CombineValues2(cBlock.Range0)}";
                 string s5 = $"{CombineValues2(cBlock.Range1)}";
                 string s6 = $"{CombineValues2(cBlock.Range2)}";
@@ -1177,7 +1236,7 @@ namespace MyShaderAnalysis.codestash
                 OutputWriteLine($"rule = {cBlock.RelRule}");
                 OutputWriteLine($"arg1 = {cBlock.Arg0}");
                 // OutputWriteLine($"{CombineValues(cBlock.flags)}");
-                OutputWriteLine($"      {cBlock.GetByteFlagsAsString()}");
+                OutputWriteLine($"      {GetByteFlagsAsString(cBlock)}");
                 OutputWriteLine($"{CombineValues(cBlock.Range0)}");
                 OutputWriteLine($"{CombineValues(cBlock.Range1)}");
                 OutputWriteLine($"{CombineValues(cBlock.Range2)}");
@@ -1254,7 +1313,7 @@ namespace MyShaderAnalysis.codestash
                     }
                     {
                         // 16 bytes long, so these are skipped in the next part
-                        string val = cBlock.GetByteFlagsAsString();
+                        string val = GetByteFlagsAsString(cBlock);
                         int curVal = byteflags.GetValueOrDefault(val, 0);
                         byteflags[val] = curVal + 1;
                     }
@@ -1404,7 +1463,7 @@ namespace MyShaderAnalysis.codestash
             SfConstraintsBlock block0 = shaderFile.SfConstraintsBlocks[0];
             Console.WriteLine($"{block0.DataReader.ReadInt32AtPosition(0)}");
             Console.WriteLine($"{block0.DataReader.ReadInt32AtPosition(4)}");
-            Console.WriteLine($"{block0.GetByteFlagsAsString()}");
+            Console.WriteLine($"{GetByteFlagsAsString(block0)}");
 
             for (int i = 24; i <= 215; i += 4)
             {

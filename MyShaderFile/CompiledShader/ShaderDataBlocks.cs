@@ -394,14 +394,6 @@ namespace MyShaderFile.CompiledShader
             DataReader.BaseStream.Position = savedPosition + 16;
             return byteFlags;
         }
-        public string RelRuleDescribe()
-        {
-            return RelRule == 3 ? "EXC(3)" : $"INC({RelRule})";
-        }
-        public string GetByteFlagsAsString()
-        {
-            return CombineIntArray(Flags);
-        }
         public void PrintByteDetail()
         {
             DataReader.BaseStream.Position = Start;
@@ -518,56 +510,6 @@ namespace MyShaderFile.CompiledShader
             DataReader.BaseStream.Position = savedPosition;
             DataReader.BaseStream.Position += 16;
             return byteFlags;
-        }
-        public string ReadByteFlagsAsString()
-        {
-            return CombineIntArray(Flags);
-        }
-        public bool AllFlagsAre3()
-        {
-            var flagsAre3 = true;
-            foreach (var flag in Flags)
-            {
-                if (flag != 3)
-                {
-                    flagsAre3 = false;
-                }
-            }
-            return flagsAre3;
-        }
-        public string GetConciseDescription(int[] usePadding = null)
-        {
-            int[] p = { 10, 8, 15, 5 };
-            if (usePadding != null)
-            {
-                p = usePadding;
-            }
-            var relRuleKeyDesciption = $"{RelRuleDescribe().PadRight(p[0])}{CombineIntArray(Range1).PadRight(p[1])}" +
-                $"{CombineIntArray(Flags, includeParenth: true).PadRight(p[2])}{CombineIntArray(Range2).PadRight(p[3])}";
-            return relRuleKeyDesciption;
-        }
-        public string GetResolvedNames(List<SfBlock> sfBlocks, List<DBlock> dBlocks)
-        {
-            List<string> names = new();
-            for (var i = 0; i < Flags.Length; i++)
-            {
-                if (Flags[i] == 2)
-                {
-                    names.Add(sfBlocks[Range0[i]].Name0);
-                    continue;
-                }
-                if (Flags[i] == 3)
-                {
-                    names.Add(dBlocks[Range0[i]].Name0);
-                    continue;
-                }
-                throw new ShaderParserException("this cannot happen!");
-            }
-            return CombineStringArray(names.ToArray());
-        }
-        public string RelRuleDescribe()
-        {
-            return RelRule == 3 ? "EXC(3)" : $"INC({RelRule})";
         }
         public void PrintByteDetail()
         {

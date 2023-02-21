@@ -293,7 +293,7 @@ namespace MyShaderFile.CompiledShader
                 var breakNames = CombineValuesBreakString(dRuleName, BL);
                 var s0 = $"[{dRuleBlock.BlockIndex,2}]";
                 var s1 = (dRuleBlock.RelRule == 1 || dRuleBlock.RelRule == 2) ? $"INC({dRuleBlock.RelRule})" : $"EXC({dRuleBlock.RelRule})";
-                var s3 = $"{dRuleBlock.ReadByteFlagsAsString()}";
+                var s3 = $"{CombineIntArray(dRuleBlock.Flags)}";
                 var s4 = $"{breakNames[0]}";
                 var s5 = $"{CombineIntArray(dRuleBlock.Range0)}";
                 var s6 = $"{CombineIntArray(dRuleBlock.Range1)}";
