@@ -39,6 +39,8 @@ dotnet_diagnostic.IDE0052.severity = suggestion
 dotnet_diagnostic.IDE0058.severity = none
 # IDE0059: unecessary assignment                                                  _
 dotnet_diagnostic.IDE0059.severity = suggestion
+# IDE0071: Simplify interpolation                                                 _
+dotnet_diagnostic.IDE0071.severity = suggestion
 # IDE0060: Remove unused parameter                                                _
 dotnet_diagnostic.IDE0060.severity = suggestion
 # IDE0090: Simplify new expression                                                _
@@ -175,11 +177,11 @@ dotnet_diagnostic.SA1001.severity = none
 dotnet_diagnostic.SA1002.severity = none
 # Symbols should be spaced correctly                                             _1
 dotnet_diagnostic.SA1003.severity = none
-# Documentation lines should begin with single space                              _
-dotnet_diagnostic.SA1004.severity = none
-# Single line comments should begin with single space                             _
-dotnet_diagnostic.SA1005.severity = none
-# Preprocessor keywords should not be preceded by space                           _
+# Documentation lines should begin with single space                      ENABLED_1
+dotnet_diagnostic.SA1004.severity = suggestion
+# Single line comments should begin with single space                     ENABLED_1
+dotnet_diagnostic.SA1005.severity = suggestion
+# Preprocessor keywords should not be preceeded by space                          _
 dotnet_diagnostic.SA1006.severity = none
 # Operator keyword should be followed by space                                    _
 dotnet_diagnostic.SA1007.severity = none
@@ -217,19 +219,21 @@ dotnet_diagnostic.SA1022.severity = none
 dotnet_diagnostic.SA1023.severity = none
 # Colons should be spaced correctly                                               _
 dotnet_diagnostic.SA1024.severity = none
-# Code should not contain multiple whitespace in a row                            _
+# Code should not contain multiple whitespace in a row                           _0.1
+# (this would be acceptable if it didn't also apply to tabular comments)
 dotnet_diagnostic.SA1025.severity = none
-# Code should not contain space after new or stackalloc keyword in implicitly typed array allocation _
+# Code should not contain space after new or stackalloc                           _
+# keyword in implicitly typed array allocation
 dotnet_diagnostic.SA1026.severity = none
-# Use tabs correctly                                                              _
+# Use tabs correctly                                                             _?
 dotnet_diagnostic.SA1027.severity = none
-# Code should not contain trailing whitespace                                     _
-dotnet_diagnostic.SA1028.severity = none
-# Do not prefix calls with base unless local implementation exists                _
+# Code should not contain trailing whitespace                             ENABLED_5        _
+dotnet_diagnostic.SA1028.severity = warning
+# Do not prefix calls with base unless local implementation exists               _?
 dotnet_diagnostic.SA1100.severity = none
-# Prefix local calls with this                                                    _
+# Prefix local calls with this                                                   _x
 dotnet_diagnostic.SA1101.severity = none
-# Query clause should follow previous clause                                      _
+# Query clause should follow previous clause                                     _?
 dotnet_diagnostic.SA1102.severity = none
 # Query clauses should be on separate lines or all on one line                    _
 dotnet_diagnostic.SA1103.severity = none
@@ -249,11 +253,11 @@ dotnet_diagnostic.SA1109.severity = none
 dotnet_diagnostic.SA1110.severity = none
 # Closing parenthesis should be on line of last parameter                         _
 dotnet_diagnostic.SA1111.severity = none
-# Closing parenthesis should be on line of opening parenthesis                    _
-dotnet_diagnostic.SA1112.severity = none
+# Closing parenthesis should be on line of opening parenthesis                   _3
+dotnet_diagnostic.SA1112.severity = warning
 # Comma should be on the same line as previous parameter                         _1
 dotnet_diagnostic.SA1113.severity = none
-# Parameter list should follow declaration                                        _
+# Parameter list should follow declaration                                       _?
 dotnet_diagnostic.SA1114.severity = none
 # Parameter should follow comma                                                  _1
 dotnet_diagnostic.SA1115.severity = none
@@ -261,13 +265,13 @@ dotnet_diagnostic.SA1115.severity = none
 dotnet_diagnostic.SA1116.severity = none
 # Parameters should be on same line or separate lines                            _0.5
 dotnet_diagnostic.SA1117.severity = none
-# Parameter should not span multiple lines                                        _
+# Parameter should not span multiple lines                                       _?
 dotnet_diagnostic.SA1118.severity = none
-# Statement should not use unnecessary parenthesis                                _
+# Statement should not use unnecessary parenthesis                               _0.4
 dotnet_diagnostic.SA1119.severity = none
 # Comments should contain text                                                   _x
 dotnet_diagnostic.SA1120.severity = none
-# Use built-in type alias                                                         _
+# Use built-in type alias                                                        _1
 dotnet_diagnostic.SA1121.severity = none
 # Use string.Empty for empty strings                                             _0.5
 dotnet_diagnostic.SA1122.severity = none
@@ -279,43 +283,43 @@ dotnet_diagnostic.SA1124.severity = none
 dotnet_diagnostic.SA1125.severity = none
 # Prefix calls correctly                                                         _?
 dotnet_diagnostic.SA1126.severity = none
-# Generic type constraints should be on their own line                            _
+# Generic type constraints should be on their own line                           _?
 dotnet_diagnostic.SA1127.severity = none
 # Put constructor initializers on their own line                                 _?
 dotnet_diagnostic.SA1128.severity = none
 # Do not use default value type constructor                                      _?
 dotnet_diagnostic.SA1129.severity = none
-# Use lambda syntax                                                               _
+# Use lambda syntax                                                              _?
 dotnet_diagnostic.SA1130.severity = none
-# Use readable conditions                                                         _
+# Use readable conditions                                                        _?
 dotnet_diagnostic.SA1131.severity = none
 # Do not combine fields                                                          _?
 dotnet_diagnostic.SA1132.severity = none
-# Do not combine attributes                                                       _
+# Do not combine attributes                                                      _?
 dotnet_diagnostic.SA1133.severity = none
-# Attributes should not share line                                                _
+# Attributes should not share line                                               _1
 dotnet_diagnostic.SA1134.severity = none
-# Using directives should be qualified                                            _
+# Using directives should be qualified                                           _?
 dotnet_diagnostic.SA1135.severity = none
-# Enum values should be on separate lines                                         _
+# Enum values should be on separate lines                                        _0.2
 dotnet_diagnostic.SA1136.severity = none
-# Elements should have the same indentation                                       _
+# Elements should have the same indentation                                      _?x
 dotnet_diagnostic.SA1137.severity = none
-# Use literal suffix notation instead of casting                                  _
+# Use literal suffix notation instead of casting                                 _?
 dotnet_diagnostic.SA1139.severity = none
-# Using directives should be placed correctly                                     _
-dotnet_diagnostic.SA1200.severity = none
-# Elements should appear in the correct order                                     _
+# Using directives should be placed correctly                             ENABLED_1
+dotnet_diagnostic.SA1200.severity = warning
+# Elements should appear in the correct order                                    _?
 dotnet_diagnostic.SA1201.severity = none
-# Elements should be ordered by access                                            _
+# Elements should be ordered by access                                           _?
 dotnet_diagnostic.SA1202.severity = none
-# Constants should appear before fields                                           _
+# Constants should appear before fields                                          _0.2
 dotnet_diagnostic.SA1203.severity = none
-# Static elements should appear before instance elements                          _
+# Static elements should appear before instance elements                         _0.2
 dotnet_diagnostic.SA1204.severity = none
-# Partial elements should declare access                                          _
+# Partial elements should declare access                                         _?
 dotnet_diagnostic.SA1205.severity = none
-# Declaration keywords should follow order                                        _
+# Declaration keywords should follow order                                       _?
 dotnet_diagnostic.SA1206.severity = none
 # Protected should come before internal                                          _1
 dotnet_diagnostic.SA1207.severity = none
@@ -331,10 +335,10 @@ dotnet_diagnostic.SA1211.severity = none
 dotnet_diagnostic.SA1212.severity = none
 # Event accessors should follow order                                             _
 dotnet_diagnostic.SA1213.severity = none
-# Readonly fields should appear before non-readonly fields                       _x
+# Readonly fields should appear before non-readonly fields                       _0.8
 dotnet_diagnostic.SA1214.severity = none
-# Using static directives should be placed at the correct location                _
-dotnet_diagnostic.SA1216.severity = none
+# Using static directives should be placed at the correct location               _1
+dotnet_diagnostic.SA1216.severity = warning
 # Using static directives should be ordered alphabetically                        _
 dotnet_diagnostic.SA1217.severity = none
 # Element should begin with upper-case letter                                     _
@@ -391,26 +395,26 @@ dotnet_diagnostic.SA1409.severity = none
 dotnet_diagnostic.SA1410.severity = none
 # Attribute constructor should not use unnecessary parenthesis                    _
 dotnet_diagnostic.SA1411.severity = none
-# Store files as UTF-8 with byte order mark                                       _
+# Store files as UTF-8 with byte order mark                                      _0.2
 dotnet_diagnostic.SA1412.severity = none
 # Use trailing comma in multi-line initializers                                  _1
 dotnet_diagnostic.SA1413.severity = none
-# Braces for multi-line statements should not share line                          -
+# Braces for multi-line statements should not share line                         _1
 dotnet_diagnostic.SA1500.severity = none
 # Statement should not be on a single line                                       _?
 dotnet_diagnostic.SA1501.severity = none
-# Element should not be on a single line                                          _
+# Element should not be on a single line                                         _?
 dotnet_diagnostic.SA1502.severity = none
-# Braces should not be omitted                                                   _2
+# Braces should not be omitted                                                   _4
 dotnet_diagnostic.SA1503.severity = none
 # All accessors should be single-line or multi-line                               _
 dotnet_diagnostic.SA1504.severity = none
 # Opening braces should not be followed by blank line                     ENABLED_4
 dotnet_diagnostic.SA1505.severity = warning
-# Element documentation headers should not be followed by blank line              _
-dotnet_diagnostic.SA1506.severity = none
-# Code should not contain multiple blank lines in a row                           _
-dotnet_diagnostic.SA1507.severity = none
+# Element documentation headers should not be followed by blank line      ENABLED_2
+dotnet_diagnostic.SA1506.severity = warning
+# Code should not contain multiple blank lines in a row                   ENABLED_4
+dotnet_diagnostic.SA1507.severity = warning
 # Closing braces should not be preceded by blank line                     ENABLED_4
 dotnet_diagnostic.SA1508.severity = warning
 # Opening braces should not be preceded by blank line                             _
@@ -541,11 +545,11 @@ dotnet_diagnostic.SA1649.severity = none
 dotnet_diagnostic.SA1650.severity = none
 # Do not use placeholder elements                                                 _
 dotnet_diagnostic.SA1651.severity = none
-# Do not prefix local calls with 'this.'                                         _x
+# Do not prefix local calls with 'this.'                                          x
 dotnet_diagnostic.SX1101.severity = none
-# Field names should begin with underscore                                       _xx
+# Field names should begin with underscore                                        x-
 dotnet_diagnostic.SX1309.severity = none
-# Static field names should begin with underscore                                _xx
+# Static field names should begin with underscore                                 x-
 dotnet_diagnostic.SX1309S.severity = none
 
 

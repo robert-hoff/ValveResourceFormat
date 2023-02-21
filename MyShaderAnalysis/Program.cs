@@ -1,24 +1,20 @@
-// <copyright file="Program.cs" company="PlaceholderCompany">
-// Copyright (c) PlaceholderCompany. All rights reserved.
-// </copyright>
+using System;
+using System.Diagnostics;
+using System.IO;
+using System.Net.Security;
+using MyShaderAnalysis.batchtesting;
+using MyShaderAnalysis.codestash;
+using MyShaderAnalysis.filearchive;
+using MyShaderAnalysis.parsing;
+using MyShaderAnalysis.serverhtml;
+using MyShaderAnalysis.snippetcode;
+using MyShaderAnalysis.staticanalysis;
+using MyShaderAnalysis.util;
+using MyShaderAnalysis.vulkanreflect;
+using MyShaderFileKristiker.MyHelperClasses.ProgEntries;
 
 namespace MyShaderAnalysis
 {
-    using System;
-    using System.Diagnostics;
-    using System.IO;
-    using MyShaderAnalysis.batchtesting;
-    using MyShaderAnalysis.codestash;
-    using MyShaderAnalysis.filearchive;
-    using MyShaderAnalysis.parsing;
-    using MyShaderAnalysis.serverhtml;
-    using MyShaderAnalysis.snippetcode;
-    using MyShaderAnalysis.staticanalysis;
-    using MyShaderAnalysis.util;
-    using MyShaderAnalysis.vulkanreflect;
-    using MyShaderFileKristiker.MyHelperClasses.ProgEntries;
-    using ValveResourceFormat.CompiledShader;
-
     class Program
     {
         public class ToDebugWriter : StringWriter

@@ -13,7 +13,6 @@ namespace MyShaderAnalysis.util
 
         private static string TEST_FILE = @"../../Program.cs";
 
-
         public static void Run()
         {
             // FixAllFiles();
@@ -22,10 +21,7 @@ namespace MyShaderAnalysis.util
             ShowCsFilesWalkDirectory();
         }
 
-
         public static void CopyOverEditorConfigs() { }
-
-
 
         public static void FixAllFiles()
         {

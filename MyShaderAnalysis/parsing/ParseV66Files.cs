@@ -51,9 +51,6 @@ namespace MyShaderAnalysis.parsing
                 throw new ShaderParserException($"can't parse this filetype: {vcsProgramType}");
             }
 
-
-
-
             ShowByteCount();
             ShowBytes(4, $"block DELIM always 17, or minor version? (but stayed the same for v65 and v64)");
             BreakLine();
@@ -112,9 +109,6 @@ namespace MyShaderAnalysis.parsing
             ShowBytes(4, $"unknown_val = {unknown_val} (usually 0)");
             int len_name_description = ReadInt32AtPosition();
             ShowBytes(4, $"{len_name_description} len of name");
-
-
-
 
             BreakLine();
             string name_desc = ReadNullTermStringAtPosition();

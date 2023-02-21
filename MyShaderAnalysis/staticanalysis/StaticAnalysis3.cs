@@ -64,7 +64,6 @@ namespace MyShaderAnalysis.staticanalysis
             }
         }
 
-
         public static void ShowDRulesForFile()
         {
             // FileVcsTokens vcsTokens = new(ARCHIVE.alyx_hlvr_vulkan_v64, "vr_complex_vulkan_50_vs.vcs");
@@ -115,9 +114,6 @@ namespace MyShaderAnalysis.staticanalysis
             outputter.PrintTabulatedValues();
         }
 
-
-
-
         public static void DRuleBlocksFindGivenPattern()
         {
             FileArchive fileArchive = new(ARCHIVE.the_lab_pc_v62, FEAT, VS, PS);
@@ -139,8 +135,6 @@ namespace MyShaderAnalysis.staticanalysis
                 catch (Exception) { }
             }
         }
-
-
 
         public static void DRuleBlocks()
         {
@@ -199,8 +193,6 @@ namespace MyShaderAnalysis.staticanalysis
             PrintReport(showCount: false);
         }
 
-
-
         public static void CollectAllParameterNames()
         {
             List<FileArchive> fileArchives = new List<FileArchive>();
@@ -229,7 +221,6 @@ namespace MyShaderAnalysis.staticanalysis
             }
             PrintReport(showCount: false);
         }
-
 
         public static void Parameters()
         {

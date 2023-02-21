@@ -22,14 +22,14 @@ namespace MyShaderAnalysis.codestash
     {
         // const string PCGL_DIR_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders-core/vfx";
         // const string PCGL_DIR_NOT_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders/vfx";
-        //const string PC_DIR_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pc/shaders-core/vfx";
-        //const string PC_DIR_NOT_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pc/shaders/vfx";
+        // const string PC_DIR_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pc/shaders-core/vfx";
+        // const string PC_DIR_NOT_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pc/shaders/vfx";
         // const string ARTIFACT_CLASSIC_CORE_PC_SOURCE = "X:/artifact-classic-exports/artifact-shaders-pc-core";
         // const string ARTIFACT_CLASSIC_DCG_PC_SOURCE = "X:/artifact-classic-exports/artifact-shaders-pc-dcg";
-        //const string OUTPUT_DIR = @"Z:/active/projects/dota2-sourcesdk-modding/shader-analysis-vcs-format/OUTPUT_DUMP";
+        // const string OUTPUT_DIR = @"Z:/active/projects/dota2-sourcesdk-modding/shader-analysis-vcs-format/OUTPUT_DUMP";
         // const string SERVER_OUTPUT_DIR = @"Z:/dev/www/vcs.codecreation.dev/GEN-output";
-        //const string SERVER_BASEDIR = @"Z:/dev/www/vcs.codecreation.dev";
-        //const string OUTPUT_SUB_DIR = @"/GEN-output";
+        // const string SERVER_BASEDIR = @"Z:/dev/www/vcs.codecreation.dev";
+        // const string OUTPUT_SUB_DIR = @"/GEN-output";
 
         public static void RunTrials()
         {
@@ -106,11 +106,11 @@ namespace MyShaderAnalysis.codestash
                         break;
                     }
                 }
-                //count++;
-                //if (count == 2)
-                //{
+                // count++;
+                // if (count == 2)
+                // {
                 //    break;
-                //}
+                // }
             }
             swWriterAlreadyClosed = true;
         }
@@ -521,13 +521,13 @@ namespace MyShaderAnalysis.codestash
             OutputWriteLine("");
         }
 
-        //static void PrintZBlock(ZDataBlock zBlock) {
+        // static void PrintZBlock(ZDataBlock zBlock) {
         //    int h0 = zframeFile.leadingData.h0;
         //    int h1 = zframeFile.leadingData.h1;
         //    int h2 = zframeFile.leadingData.h2;
         //    OutputWriteLine($"leading data ({h0},{h1},{h2})");
 
-        //    string b2Desc = "dest";
+        // string b2Desc = "dest";
         //    string b3Desc = "control";
         //    string dataBlockHeader = $"{new string(' ', 5)} {new string(' ', 28)} {b2Desc,-11} {b3Desc}";
         //    OutputWriteLine(dataBlockHeader);
@@ -549,7 +549,7 @@ namespace MyShaderAnalysis.codestash
         //        }
         //        OutputWriteLine("");
         //    }
-        //}
+        // }
 
         static void PrintConfigurationState(ShaderFile shaderFile, long zframeId)
         {
@@ -714,8 +714,6 @@ namespace MyShaderAnalysis.codestash
                 OutputWriteLine("");
             }
         }
-
-
 
         private static StreamWriter sw = null;
         private static bool DisableOutput = false;

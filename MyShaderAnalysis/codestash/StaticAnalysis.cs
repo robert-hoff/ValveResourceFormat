@@ -58,7 +58,7 @@ namespace MyShaderAnalysis.codestash
             {
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
                 FeaturesHeaderBlock featuresHeader = shaderFile.FeaturesHeader;
-                //string featuresArgs = $"{RemoveBaseDir(filenamepath).PadRight(80)} {featuresHeader.arg0} " +
+                // string featuresArgs = $"{RemoveBaseDir(filenamepath).PadRight(80)} {featuresHeader.arg0} " +
                 //    $"{featuresHeader.arg1} {featuresHeader.arg2} {featuresHeader.arg3}";
 
                 // string featuresArgs = $"({featuresHeader.arg0} {featuresHeader.arg1} {featuresHeader.arg2} {featuresHeader.arg3})";
@@ -137,7 +137,6 @@ namespace MyShaderAnalysis.codestash
             // CompatRuleKeyDescriptionSurvey();
             // CompatRuleKeyValuesAnalysis();
             // DBlockRuleKeyDescriptionSurvey();
-
 
             // CompatBlockDetailsConcise(PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_ps.vcs");
             // DBlockRuleKeyValuesAnalysis();
@@ -228,7 +227,7 @@ namespace MyShaderAnalysis.codestash
             {
                 p = usePadding;
             }
-            //var relRuleKeyDesciption = $"{RelRuleDescribe(uknBlock).PadRight(p[0])}{CombineIntArray(uknBlock.Values).PadRight(p[1])}" +
+            // var relRuleKeyDesciption = $"{RelRuleDescribe(uknBlock).PadRight(p[0])}{CombineIntArray(uknBlock.Values).PadRight(p[1])}" +
             //    $"{CombineIntArray(uknBlock.ConditionalTypes, includeParenth: true).PadRight(p[2])}{CombineIntArray(uknBlock.Range2).PadRight(p[3])}";
             string relRuleKeyDesciption = $"{RelRuleDescribe(uknBlock).PadRight(p[0])}{CombineIntArray(uknBlock.Values).PadRight(p[1])}" +
                 $"{CombineIntArray(Array.ConvertAll(uknBlock.ConditionalTypes, x => (int) x), includeParenth: true).PadRight(p[2])}" +
@@ -264,7 +263,6 @@ namespace MyShaderAnalysis.codestash
         {
             return CombineIntArray(Array.ConvertAll(sRuleBlock.ConditionalTypes, x => (int) x));
         }
-
 
         static void DBlockRuleKeyDescriptionSurvey()
         {
@@ -460,10 +458,10 @@ namespace MyShaderAnalysis.codestash
                             $"{sfBlock.Name,-25} {ShortHandName(filenamepath)}");
                     }
 
-                    //if (sfBlock.arg0 == 1) {
+                    // if (sfBlock.arg0 == 1) {
                     //    Console.Write($"{sfBlock.arg0} {sfBlock.arg1} {sfBlock.arg2} {sfBlock.arg3}    ");
                     //    Console.WriteLine($"{sfBlock.name0,-25}    {RemoveBaseDir(filenamepath)}");
-                    //}
+                    // }
 
                     // Console.WriteLine($"{sfBlock.arg0,3} {sfBlock.arg2,3} {sfBlock.arg3,3} {sfBlock.arg4,3}        {sfBlock.name0}");
                 }
@@ -504,12 +502,12 @@ namespace MyShaderAnalysis.codestash
             // List<string> allVcsFiles = GetVcsFiles(DOTA_CORE_MOBILE_GLES_SOURCE, DOTA_DAC_MOBILE_GLES_SOURCE, VcsProgramType.Undetermined, -1);
             // List<string> allVcsFiles = GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsProgramType.Undetermined, -1);
 
-            //List<string> allVcsFiles = new();
-            //allVcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsFileType.Features, -1));
-            //allVcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsFileType.PixelShader, -1));
-            //allVcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsFileType.VertexShader, -1));
-            //allVcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsFileType.PixelShaderRenderState, -1));
-            //allVcsFiles.Sort();
+            // List<string> allVcsFiles = new();
+            // allVcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsFileType.Features, -1));
+            // allVcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsFileType.PixelShader, -1));
+            // allVcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsFileType.VertexShader, -1));
+            // allVcsFiles.AddRange(GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsFileType.PixelShaderRenderState, -1));
+            // allVcsFiles.Sort();
 
             foreach (string filenamepath in allVcsFiles)
             {
@@ -540,7 +538,7 @@ namespace MyShaderAnalysis.codestash
             int sCount = shaderFile.SymbolBlocks.Count;
             int zCount = shaderFile.ZframesLookup.Count;
             const int pad = 8;
-            //OutputWriteLine($"{RemoveBaseDir(shaderFile.filenamepath),-70}{sfCount,pad}{cCount,pad}{dCount,pad}" +
+            // OutputWriteLine($"{RemoveBaseDir(shaderFile.filenamepath),-70}{sfCount,pad}{cCount,pad}{dCount,pad}" +
             //    $"{uCount,pad}{pCount,pad}{mCount,pad}{bCount,pad}{sCount,pad}{zCount,pad}");
 
             int filepadlength = 55 - Path.GetFileName(filenamepath).Length;
@@ -584,10 +582,10 @@ namespace MyShaderAnalysis.codestash
                 }
                 newFile = false;
 
-                //string[] sfNames = new string[uBlock.range0.Length];
-                //for (int i = 0; i < sfNames.Length; i++) {
+                // string[] sfNames = new string[uBlock.range0.Length];
+                // for (int i = 0; i < sfNames.Length; i++) {
                 //    sfNames[i] = shaderFile.SfBlocks[uBlock.range0[i]].name0;
-                //}
+                // }
 
                 string[] uknNames = new string[uBlock.ConditionalTypes.Length];
                 for (int i = 0; i < uknNames.Length; i++)
@@ -749,14 +747,14 @@ namespace MyShaderAnalysis.codestash
             {
                 OutputWriteLine($"  ({i * 4,3})       {CombineValues(values[i])}");
             }
-            //OutputWriteLine($"  ({8,3})      {CombineValues(byteflags)}");
-            //for (int i = 6; i < 54; i++) {
+            // OutputWriteLine($"  ({8,3})      {CombineValues(byteflags)}");
+            // for (int i = 6; i < 54; i++) {
             //    string tab = "";
             //    if (!values[i].ContainsKey(-1)) {
             //        tab = "    ";
             //    }
             //    OutputWriteLine($"  ({i * 4,3})   {tab}{CombineValues(values[i])}");
-            //}
+            // }
         }
 
         /*
@@ -839,7 +837,7 @@ namespace MyShaderAnalysis.codestash
             OutputWriteLine("");
         }
 
-        //static void FileSummaryVsPSFile((string, string, string) triple, FILETYPE targetFileType, string title = "summary",
+        // static void FileSummaryVsPSFile((string, string, string) triple, FILETYPE targetFileType, string title = "summary",
         //        string outputFilenamepath = null, bool writeFile = false) {
 
         static void FileSummaryVsPSFile(FileTriple triple, VcsProgramType targetFileType, string title = "summary",
@@ -1017,9 +1015,9 @@ namespace MyShaderAnalysis.codestash
             // allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_vs.vcs");
             // allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_ps.vcs");
 
-            //allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/hero_pcgl_30_features.vcs");
-            //allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/hero_pcgl_30_vs.vcs");
-            //allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/hero_pcgl_30_ps.vcs");
+            // allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/hero_pcgl_30_features.vcs");
+            // allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/hero_pcgl_30_vs.vcs");
+            // allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/hero_pcgl_30_ps.vcs");
 
             allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/global_lit_simple_pcgl_30_features.vcs");
             allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/global_lit_simple_pcgl_30_vs.vcs");
@@ -1126,13 +1124,13 @@ namespace MyShaderAnalysis.codestash
                 WriteHtmlFile("Cblock details", "Compatibility blocks summary");
             }
             List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsProgramType.Undetermined, -1);
-            //List<string> allVcsFiles = new();
-            //allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_features.vcs");
-            //allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_vs.vcs");
-            //allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_ps.vcs");
-            //allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/hero_pcgl_30_features.vcs");
-            //allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/hero_pcgl_30_vs.vcs");
-            //allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/hero_pcgl_30_ps.vcs");
+            // List<string> allVcsFiles = new();
+            // allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_features.vcs");
+            // allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_vs.vcs");
+            // allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_ps.vcs");
+            // allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/hero_pcgl_30_features.vcs");
+            // allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/hero_pcgl_30_vs.vcs");
+            // allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/hero_pcgl_30_ps.vcs");
 
             string h0 = "Block";
             string h1 = "Rule";
@@ -1146,7 +1144,7 @@ namespace MyShaderAnalysis.codestash
             OutputWriteLine(header);
             OutputWriteLine(new string('-', header.Length));
 
-            //OutputWrite($"{s0.PadRight(10)} {s1.PadRight(6)} {s2.PadRight(6)} {s3.PadRight(14)} " +
+            // OutputWrite($"{s0.PadRight(10)} {s1.PadRight(6)} {s2.PadRight(6)} {s3.PadRight(14)} " +
             //    $"{s4.PadRight(20)} {s5.PadRight(8)} {s6.PadRight(8)}");
 
             foreach (string filenamepath in allVcsFiles)
@@ -1165,7 +1163,6 @@ namespace MyShaderAnalysis.codestash
             // OutputWriteLine("");
             // OutputWriteLine($"<a href='../vcs-all/{Path.GetFileName(filenamepath)[0..^4]}-analysis.html'>{RemoveBaseDir(filenamepath)}</a>");
             // OutputWriteLine(new string('-', 100));
-
             // OutputWriteLine($"{RemoveBaseDir(filenamepath)}");
 
             bool newFile = true;
@@ -1179,8 +1176,9 @@ namespace MyShaderAnalysis.codestash
                 string s4 = $"{CombineValues2(cBlock.Indices)}";
                 string s5 = $"{CombineValues2(cBlock.Values)}";
                 string s6 = $"{CombineValues2(cBlock.Range2)}";
-                // string blockSummary = $"{s0.PadRight(10)} {s1.PadRight(6)} {s2.PadRight(6)} {s3.PadRight(18)} s4.PadRight(20)} {s5.PadRight(8)} {s6.PadRight(8)}";
-                string blockSummary = $"{s0.PadRight(7)}{s1.PadRight(6)}{s2.PadRight(6)}{s4.PadRight(16)}{s5.PadRight(8)}{s6.PadRight(8)}";
+                // string blockSummary = $"{s0.PadRight(10)} {s1.PadRight(6)} {s2.PadRight(6)} {s3.PadRight(18)} " +
+                //    $"{s4.PadRight(20)} {s5.PadRight(8)} {s6.PadRight(8)}";
+                string blockSummary = $"{s0.PadRight(7)}{s1.PadRight(6)}{s2,-6}{s4.PadRight(16)}{s5.PadRight(8)}{s6.PadRight(8)}";
 
                 OutputWrite($"{blockSummary}");
 
@@ -1262,9 +1260,9 @@ namespace MyShaderAnalysis.codestash
             // List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.any, -1);
             // List<string> allVcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, FILETYPE.features_file, -1);
             List<string> allVcsFiles = new();
-            //allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/hero_pcgl_30_features.vcs");
-            //allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/hero_pcgl_30_vs.vcs");
-            //allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/hero_pcgl_30_ps.vcs");
+            // allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/hero_pcgl_30_features.vcs");
+            // allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/hero_pcgl_30_vs.vcs");
+            // allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/hero_pcgl_30_ps.vcs");
             // allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_features.vcs");
             // allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_vs.vcs");
             allVcsFiles.Add(PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_ps.vcs");
@@ -1835,7 +1833,7 @@ namespace MyShaderAnalysis.codestash
             {
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
                 FeaturesHeaderBlock featuresHeader = shaderFile.FeaturesHeader;
-                //string featuresArgs = $"{RemoveBaseDir(filenamepath).PadRight(80)} {featuresHeader.arg0} " +
+                // string featuresArgs = $"{RemoveBaseDir(filenamepath).PadRight(80)} {featuresHeader.arg0} " +
                 //    $"{featuresHeader.arg1} {featuresHeader.arg2} {featuresHeader.arg3}";
 
                 // string featuresArgs = $"({featuresHeader.arg0} {featuresHeader.arg1} {featuresHeader.arg2} {featuresHeader.arg3})";

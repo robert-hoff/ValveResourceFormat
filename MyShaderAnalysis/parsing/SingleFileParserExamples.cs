@@ -38,7 +38,6 @@ namespace MyShaderAnalysis.parsing
 
             // X:\dota-2-VRF-exports\bad-zframe-files-from-kristiker
 
-
             // ParseV66Files.RunTrials();
             // TestShaderFilesBytesShowOutput();
 
@@ -125,15 +124,12 @@ namespace MyShaderAnalysis.parsing
             new ParseV62Files(filenamepath);
         }
 
-
         static void ParseV62FileUsingDataReader()
         {
             string filenamepath = "X:/Steam/steamapps/common/The Lab/RobotRepair/core/shaders/vfx/aerial_perspective_pc_30_features.vcs";
             ShaderFile shaderFile = new ShaderFile();
             shaderFile.Read(filenamepath);
         }
-
-
 
         // two ways to print the byte analysis (keep these both functionally identical)
         static void ParseV62File()
@@ -243,8 +239,6 @@ namespace MyShaderAnalysis.parsing
         {
             return "</pre>\n</html>";
         }
-
-
 
         public static void ParseAllZframes(ARCHIVE archive, string filename)
         {

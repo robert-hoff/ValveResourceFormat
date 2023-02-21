@@ -18,13 +18,11 @@ namespace MyShaderAnalysis.snippetcode
             // Trial3();
             // Trial4();
 
-
             // WriteOutMurmurStringsForParams();
             // ReadParameterNames();
 
             // Debug.WriteLine($"{Murmur32("$TRANS_OFFSET_V"):x08}");
         }
-
 
         static void WriteOutMurmurStringsForParams()
         {
@@ -40,7 +38,6 @@ namespace MyShaderAnalysis.snippetcode
                 Debug.WriteLine($"{murmurString}");
             }
         }
-
 
         static void Trial5()
         {
@@ -139,7 +136,6 @@ namespace MyShaderAnalysis.snippetcode
                 "04 00 00 00 01 00 00 00 01 00 00 00";
             return ParseString(bytestring);
         }
-
 
         public static uint Murmur32(string input)
         {

@@ -57,9 +57,9 @@ namespace MyShaderAnalysis.codestash
         static string Pow2Rep(int val)
         {
             int orig = val;
-            //if (val==6144) {
+            // if (val==6144) {
             //    return "(3)(2^11)";
-            //}
+            // }
             int pow = 0;
             while (val > 1 && (val & 1) == 0)
             {
@@ -205,7 +205,7 @@ namespace MyShaderAnalysis.codestash
                     string c1 = paramBlock.ImageProcessor;
 
                     // CollectStringValue($"{name0,-40} {name1,-40}  {lead0},{lead1,3}     {name2,-40}");
-                    //CollectStringValue($"{name0,-40} {lead0},{lead1,3} " +
+                    // CollectStringValue($"{name0,-40} {lead0},{lead1,3} " +
                     //    $"{arg0,-3} {arg1,-3} {arg2,-3} {arg3,-3} {arg4,-5} {arg5,-3}  " +
                     //    $"{comb(r0)} {comb(r1)} {comb(r2)} {comb(r3)} {comb(r4)} {comb(r5)} {comb(r6)} {comb(r7)} " +
                     //    $"{c0} {c1}   |    {name1} {fileref}");
@@ -230,9 +230,9 @@ namespace MyShaderAnalysis.codestash
                     //
                     if (name1.Length > 0 && name2.Length > 0)
                     {
-                        //Console.WriteLine($"{RemoveBaseDir(shaderFile.filenamepath)}");
-                        //paramBlock.ShowBlock();
-                        //Console.WriteLine($"");
+                        // Console.WriteLine($"{RemoveBaseDir(shaderFile.filenamepath)}");
+                        // paramBlock.ShowBlock();
+                        // Console.WriteLine($"");
                     }
                 }
             }
@@ -342,15 +342,15 @@ namespace MyShaderAnalysis.codestash
                 int a1 = shaderFile.FeaturesHeader.Arg1;
                 int a2 = shaderFile.FeaturesHeader.Arg2;
                 int a3 = shaderFile.FeaturesHeader.Arg3;
-                //if (a2 == 0 && a3 == 0)
-                //{
+                // if (a2 == 0 && a3 == 0)
+                // {
                 //    Console.WriteLine($"{GetShortName(shaderFile.filenamepath)}");
-                //}
+                // }
 
-                //if (a0 == 0) {
-                //CollectStringValue($"{CombineIntArray(new int[] { a0, a1, a2, a3 })}");
+                // if (a0 == 0) {
+                // CollectStringValue($"{CombineIntArray(new int[] { a0, a1, a2, a3 })}");
                 //    Console.WriteLine($"{RemoveBaseDir(shaderFile.filenamepath)}");
-                //}
+                // }
 
                 if (a0 == 1 && a3 == 1)
                 {
