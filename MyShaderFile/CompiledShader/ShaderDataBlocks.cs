@@ -338,115 +338,8 @@ namespace MyShaderFile.CompiledShader
     }
 
     // SfConstraintsBlocks are always 472 bytes long
-    public class SfConstraintsBlock : ShaderDataBlock
-    {
-        public int BlockIndex { get; }
-        public int RelRule { get; }  // 1 = dependency-rule (feature file), 2 = dependency-rule (other files), 3 = exclusion
-        public int Arg0 { get; } // this is just 1 for features files and 2 for all other files
-        public int[] Flags { get; }
-        public int[] Range0 { get; }
-        public int[] Range1 { get; }
-        public int[] Range2 { get; }
-        public string Description { get; }
-        public SfConstraintsBlock(ShaderDataReader datareader, int blockIndex) : base(datareader)
-        {
-            BlockIndex = blockIndex;
-            RelRule = datareader.ReadInt32();
-            Arg0 = datareader.ReadInt32();
-            // flags are at (8)
-            Flags = ReadByteFlags();
-            // range 0 at (24)
-            Range0 = ReadIntRange();
-            datareader.BaseStream.Position += 68 - Range0.Length * 4;
-            // range 1 at (92)
-            Range1 = ReadIntRange();
-
-            datareader.BaseStream.Position += 60 - Range1.Length * 4;
-            // range 2 at (152)
-            Range2 = ReadIntRange();
-            datareader.BaseStream.Position += 64 - Range2.Length * 4;
-            Description = datareader.ReadNullTermStringAtPosition();
-            datareader.BaseStream.Position += 256;
-        }
-        private int[] ReadIntRange()
-        {
-            List<int> ints0 = new();
-            while (DataReader.ReadInt32AtPosition() >= 0)
-            {
-                ints0.Add(DataReader.ReadInt32());
-            }
-            return ints0.ToArray();
-        }
-        private int[] ReadByteFlags()
-        {
-            var count = 0;
-            var savedPosition = DataReader.BaseStream.Position;
-            while (DataReader.ReadByte() > 0 && count < 16)
-            {
-                count++;
-            }
-            var byteFlags = new int[count];
-            DataReader.BaseStream.Position = savedPosition;
-            for (var i = 0; i < count; i++)
-            {
-                byteFlags[i] = DataReader.ReadByte();
-            }
-            DataReader.BaseStream.Position = savedPosition + 16;
-            return byteFlags;
-        }
-        public void PrintByteDetail()
-        {
-            DataReader.BaseStream.Position = Start;
-            DataReader.ShowByteCount($"SF-CONTRAINTS-BLOCK[{BlockIndex}]");
-            DataReader.ShowBytes(216);
-            var name1 = DataReader.ReadNullTermStringAtPosition();
-            DataReader.OutputWriteLine($"[{DataReader.BaseStream.Position}] {name1}");
-            DataReader.ShowBytes(256);
-            DataReader.BreakLine();
-        }
-    }
-
-    // DBlocks are always 152 bytes long
-    public class DBlock : ShaderDataBlock
-    {
-        public int BlockIndex { get; }
-        public string Name0 { get; }
-        public string Name1 { get; } // it looks like d-blocks might have the provision for 2 strings (but not seen in use)
-        public int Arg0 { get; }
-        public int Arg1 { get; }
-        public int Arg2 { get; }
-        public int Arg3 { get; }
-        public int Arg4 { get; }
-        public int Arg5 { get; }
-        public DBlock(ShaderDataReader datareader, int blockIndex) : base(datareader)
-        {
-            BlockIndex = blockIndex;
-            Name0 = datareader.ReadNullTermStringAtPosition();
-            datareader.BaseStream.Position += 64;
-            Name1 = datareader.ReadNullTermStringAtPosition();
-            datareader.BaseStream.Position += 64;
-            Arg0 = datareader.ReadInt32();
-            Arg1 = datareader.ReadInt32();
-            Arg2 = datareader.ReadInt32();
-            Arg3 = datareader.ReadInt32();
-            Arg4 = datareader.ReadInt32();
-            Arg5 = datareader.ReadInt32();
-        }
-        public void PrintByteDetail()
-        {
-            DataReader.BaseStream.Position = Start;
-            var dBlockName = DataReader.ReadNullTermStringAtPosition();
-            DataReader.ShowByteCount($"D-BLOCK[{BlockIndex}]");
-            DataReader.Comment(dBlockName);
-            DataReader.ShowBytes(128);
-            DataReader.ShowBytes(12, 4);
-            DataReader.ShowBytes(12);
-            DataReader.BreakLine();
-        }
-    }
-
     // DConstraintsBlock are always 472 bytes long
-    public class DConstraintsBlock : ShaderDataBlock
+    public class ConstraintsBlock : ShaderDataBlock
     {
         public int BlockIndex { get; }
         public int Rule { get; }  // 2 = dependency-rule (other files), 3 = exclusion (1 not present, as in the compat-blocks)
@@ -458,12 +351,12 @@ namespace MyShaderFile.CompiledShader
         public int[] Range2 { get; }
         public string Description { get; }
 
-        public DConstraintsBlock(ShaderDataReader datareader, int blockIndex) : base(datareader)
+        public ConstraintsBlock(ShaderDataReader datareader, int blockIndex) : base(datareader)
         {
             BlockIndex = blockIndex;
             Rule = datareader.ReadInt32();
             BlockType = datareader.ReadInt32();
-            if (BlockType != 3)
+            if (BlockType < 1 || BlockType > 3)
             {
                 throw new ShaderParserException("unexpected value!");
             }
@@ -514,8 +407,50 @@ namespace MyShaderFile.CompiledShader
         public void PrintByteDetail()
         {
             DataReader.BaseStream.Position = Start;
-            DataReader.ShowByteCount($"D-CONSTRAINTS-BLOCK[{BlockIndex}]");
-            DataReader.ShowBytes(472);
+            DataReader.ShowByteCount($"CONSTRAINTS-BLOCK[{BlockIndex}]");
+            DataReader.ShowBytes(216);
+            var name1 = DataReader.ReadNullTermStringAtPosition();
+            DataReader.OutputWriteLine($"[{DataReader.BaseStream.Position}] {name1}");
+            DataReader.ShowBytes(256);
+            DataReader.BreakLine();
+        }
+    }
+
+    // DBlocks are always 152 bytes long
+    public class DBlock : ShaderDataBlock
+    {
+        public int BlockIndex { get; }
+        public string Name0 { get; }
+        public string Name1 { get; } // it looks like d-blocks might have the provision for 2 strings (but not seen in use)
+        public int Arg0 { get; }
+        public int Arg1 { get; }
+        public int Arg2 { get; }
+        public int Arg3 { get; }
+        public int Arg4 { get; }
+        public int Arg5 { get; }
+        public DBlock(ShaderDataReader datareader, int blockIndex) : base(datareader)
+        {
+            BlockIndex = blockIndex;
+            Name0 = datareader.ReadNullTermStringAtPosition();
+            datareader.BaseStream.Position += 64;
+            Name1 = datareader.ReadNullTermStringAtPosition();
+            datareader.BaseStream.Position += 64;
+            Arg0 = datareader.ReadInt32();
+            Arg1 = datareader.ReadInt32();
+            Arg2 = datareader.ReadInt32();
+            Arg3 = datareader.ReadInt32();
+            Arg4 = datareader.ReadInt32();
+            Arg5 = datareader.ReadInt32();
+        }
+        public void PrintByteDetail()
+        {
+            DataReader.BaseStream.Position = Start;
+            var dBlockName = DataReader.ReadNullTermStringAtPosition();
+            DataReader.ShowByteCount($"D-BLOCK[{BlockIndex}]");
+            DataReader.Comment(dBlockName);
+            DataReader.ShowBytes(128);
+            DataReader.ShowBytes(12, 4);
+            DataReader.ShowBytes(12);
             DataReader.BreakLine();
         }
     }

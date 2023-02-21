@@ -32,9 +32,9 @@ namespace MyShaderAnalysis.staticanalysis
         {
             List<FileArchive> fileArchives = new List<FileArchive>();
             // fileArchives.Add(new FileArchive(ARCHIVE.alyx_hlvr_vulkan_v64, FEAT, VS, PS));
-            // fileArchives.Add(new FileArchive(ARCHIVE.dota_game_vulkan_v66, FEAT, VS, PS));
+            fileArchives.Add(new FileArchive(ARCHIVE.dota_game_vulkan_v66, FEAT, VS, PS));
             // fileArchives.Add(new FileArchive(ARCHIVE.dota_game_vulkan_v65, FEAT, VS, PS));
-            fileArchives.Add(new FileArchive(ARCHIVE.the_lab_pc_v62, FEAT, VS, PS));
+            // fileArchives.Add(new FileArchive(ARCHIVE.the_lab_pc_v62, FEAT, VS, PS));
             // fileArchives.Add(new FileArchive(ARCHIVE.dota_game_pcgl_v64, FEAT, VS, PS));
             // fileArchives.Add(new FileArchive(ARCHIVE.dota_core_pcgl_v64, FEAT, VS, PS));
             OutputFormatterTabulatedData outputter = new OutputFormatterTabulatedData();
@@ -47,13 +47,16 @@ namespace MyShaderAnalysis.staticanalysis
                     try
                     {
                         ShaderFile shaderFile = vcsFile.GetShaderFile();
-                        foreach (DConstraintsBlock dRuleBlock in shaderFile.DConstraintsBlocks)
+                        foreach (ConstraintsBlock dRuleBlock in shaderFile.SfConstraintsBlocks)
                         {
                             // if (dRuleBlock.Values.Length > 0)
-                            if (dRuleBlock.Arg1 > -1)
+                            // if (dRuleBlock.Arg1 > -1)
+                            if (dRuleBlock.BlockType == 1 && dRuleBlock.Description.Length > 0)
+                            // if (dRuleBlock.Description.Length == 0 && shaderFile.VcsProgramType == VcsProgramType.Features)
+                            // if (shaderFile.VcsProgramType == VcsProgramType.Features)
                             {
                                 Debug.WriteLine($"\n\n-- {shaderFile.FilenamePath}");
-                                ShowDBlockRules(shaderFile);
+                                ShowSfBlockRules(shaderFile);
                             }
                         }
                     } catch (Exception) { }
@@ -72,25 +75,44 @@ namespace MyShaderAnalysis.staticanalysis
 
         public static void ShowDBlockRules(ShaderFile shaderFile)
         {
+            ShowConstraintRules(shaderFile, ConditionalType.Dynamic);
+        }
+
+        public static void ShowSfBlockRules(ShaderFile shaderFile)
+        {
+            ShowConstraintRules(shaderFile, ConditionalType.Static);
+        }
+
+        public static void ShowConstraintRules(ShaderFile shaderFile, ConditionalType type)
+        {
+            List<ConstraintsBlock> rules = (type) switch
+            {
+                ConditionalType.Feature => shaderFile.SfConstraintsBlocks,
+                ConditionalType.Static => shaderFile.SfConstraintsBlocks,
+                ConditionalType.Dynamic => shaderFile.DConstraintsBlocks,
+                _ => throw new Exception("can't happen")
+            };
             OutputFormatterTabulatedData outputter = new OutputFormatterTabulatedData();
             outputter.DefineHeaders(new string[] { "BlockIndex", "Rule", "Arg1", "BlockType", "ConditionalTypes",
                 "Indices", "Values", "Range2", "Desc." });
-            foreach (DConstraintsBlock dRuleBlock in shaderFile.DConstraintsBlocks)
+            foreach (ConstraintsBlock ruleBlock in rules)
             {
-                string biText = $"{dRuleBlock.BlockIndex:00}";
-                string ruleText = $"{dRuleBlock.Rule}";
-                string a1Text = $"{dRuleBlock.Arg1,2}";
-                string btText = $"{dRuleBlock.BlockType}";
-                string ctText = $"{CombineIntArray(dRuleBlock.ConditionalTypes)}";
-                string indText = $"{CombineIntArray(dRuleBlock.Indices)}";
-                string valText = $"{CombineIntArray(dRuleBlock.Values)}";
-                string ran2Text = $"{CombineIntArray(dRuleBlock.Range2)}";
-                string descText = $"{dRuleBlock.Description}";
+                string biText = $"{ruleBlock.BlockIndex:00}";
+                string ruleIncExc = ruleBlock.Rule == 2 ? "inc" : "exc";
+                string ruleText = $"{ruleIncExc}({ruleBlock.Rule})";
+                string a1Text = $"{ruleBlock.Arg1,2}";
+                string btText = $"{ruleBlock.BlockType}";
+                string ctText = $"{CombineIntArray(ruleBlock.ConditionalTypes)}";
+                string indText = $"{CombineIntArray(ruleBlock.Indices)}";
+                string valText = $"{CombineIntArray(ruleBlock.Values)}";
+                string ran2Text = $"{CombineIntArray(ruleBlock.Range2)}";
+                string descText = $"{ruleBlock.Description}";
                 outputter.AddTabulatedRow(new string[] { biText, ruleText,
                                 a1Text, btText, ctText, indText, valText, ran2Text, descText });
             }
             outputter.PrintTabulatedValues();
         }
+
 
 
 
@@ -102,7 +124,7 @@ namespace MyShaderAnalysis.staticanalysis
                 try
                 {
                     ShaderFile shaderFile = vcsFile.GetShaderFile();
-                    foreach (DConstraintsBlock dRuleBlock in shaderFile.DConstraintsBlocks)
+                    foreach (ConstraintsBlock dRuleBlock in shaderFile.DConstraintsBlocks)
                     {
                         // if (dRuleBlock.Indices.Length > 6)
                         if (dRuleBlock.Arg1 == 2)
@@ -137,7 +159,7 @@ namespace MyShaderAnalysis.staticanalysis
                     try
                     {
                         ShaderFile shaderFile = vcsFile.GetShaderFile();
-                        foreach (DConstraintsBlock dRuleBlock in shaderFile.DConstraintsBlocks)
+                        foreach (ConstraintsBlock dRuleBlock in shaderFile.DConstraintsBlocks)
                         {
                             //string reportLine = $"{StaticAnalysis1.GetConciseDescription(dRuleBlock)} {dRuleBlock.Arg1}  " +
                             //    $"{ShaderUtilHelpers.CombineIntArray(dRuleBlock.Indices)}";

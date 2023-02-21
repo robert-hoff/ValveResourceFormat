@@ -204,20 +204,20 @@ namespace MyShaderFile.CompiledShader
             }
             foreach (var sfRuleBlock in shaderFile.SfConstraintsBlocks)
             {
-                var sfNames = new string[sfRuleBlock.Range0.Length];
+                var sfNames = new string[sfRuleBlock.Indices.Length];
                 for (var i = 0; i < sfNames.Length; i++)
                 {
-                    sfNames[i] = shaderFile.SfBlocks[sfRuleBlock.Range0[i]].Name0;
+                    sfNames[i] = shaderFile.SfBlocks[sfRuleBlock.Indices[i]].Name0;
                 }
                 const int BL = 70;
                 var breakNames = CombineValuesBreakString(sfNames, BL);
                 var s0 = $"[{sfRuleBlock.BlockIndex,2}]";
-                var s1 = (sfRuleBlock.RelRule == 1 || sfRuleBlock.RelRule == 2) ? $"INC({sfRuleBlock.RelRule})" : $"EXC({sfRuleBlock.RelRule})";
+                var s1 = (sfRuleBlock.Rule == 1 || sfRuleBlock.Rule == 2) ? $"INC({sfRuleBlock.Rule})" : $"EXC({sfRuleBlock.Rule})";
                 // var s3 = $"{GetByteFlagsAsString(sfRuleBlock)}";
                 var s3 = $"MISSING XXXXXXXXXXXX";
                 var s4 = $"{breakNames[0]}";
-                var s5 = $"{CombineIntArray(sfRuleBlock.Range0)}";
-                var s6 = $"{CombineIntArray(sfRuleBlock.Range1)}";
+                var s5 = $"{CombineIntArray(sfRuleBlock.Indices)}";
+                var s6 = $"{CombineIntArray(sfRuleBlock.Values)}";
                 var s7 = $"{CombineIntArray(sfRuleBlock.Range2)}";
                 var blockSummary = $"{s0,-7}{s1,-10}{s5,-16}{s4,-BL}{s6,-8}{s7,-8}";
                 for (var i = 1; i < breakNames.Length; i++)

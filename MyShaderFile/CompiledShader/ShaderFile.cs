@@ -30,9 +30,9 @@ namespace MyShaderFile.CompiledShader
         public int VcsVersion { get; private set; }
         public int PossibleEditorDescription { get; private set; } // 17 for all up to date files. 14 seen in old test files
         public List<SfBlock> SfBlocks { get; private set; } = new();
-        public List<SfConstraintsBlock> SfConstraintsBlocks { get; private set; } = new();
+        public List<ConstraintsBlock> SfConstraintsBlocks { get; private set; } = new();
         public List<DBlock> DBlocks { get; private set; } = new();
-        public List<DConstraintsBlock> DConstraintsBlocks { get; private set; } = new();
+        public List<ConstraintsBlock> DConstraintsBlocks { get; private set; } = new();
         public List<ParamBlock> ParamBlocks { get; private set; } = new();
         public List<MipmapBlock> MipmapBlocks { get; private set; } = new();
         public List<BufferBlock> BufferBlocks { get; private set; } = new();
@@ -137,7 +137,7 @@ namespace MyShaderFile.CompiledShader
             var sfConstraintsBlockCount = DataReader.ReadInt32();
             for (var i = 0; i < sfConstraintsBlockCount; i++)
             {
-                SfConstraintsBlock nextSfConstraintsBlock = new(DataReader, i);
+                ConstraintsBlock nextSfConstraintsBlock = new(DataReader, i);
                 SfConstraintsBlocks.Add(nextSfConstraintsBlock);
             }
             var dBlockCount = DataReader.ReadInt32();
@@ -149,7 +149,7 @@ namespace MyShaderFile.CompiledShader
             var dConstraintsBlockCount = DataReader.ReadInt32();
             for (var i = 0; i < dConstraintsBlockCount; i++)
             {
-                DConstraintsBlock nextDConstraintsBlock = new(DataReader, i);
+                ConstraintsBlock nextDConstraintsBlock = new(DataReader, i);
                 DConstraintsBlocks.Add(nextDConstraintsBlock);
             }
 
