@@ -25,7 +25,7 @@ dotnet_diagnostic.IDE0008.severity = error
 # IDE0011: Add braces to if statemetns (excellent suggestion)
 dotnet_diagnostic.IDE0011.severity = none
 # IDE0044: make member read only
-dotnet_diagnostic.IDE0044.severity = suggestion
+dotnet_diagnostic.IDE0044.severity = none
 # IDE0051: unused member
 dotnet_diagnostic.IDE0051.severity = none
 # IDE0052: member can be removed as its never used
@@ -171,7 +171,9 @@ dotnet_diagnostic.IDE0055.severity = warning
 # -----------------------
 
 # Sort using and Import directives with System.* appearing first
+# TEST THIS ONE
 dotnet_separate_import_directive_groups = false:suggestion
+
 # Avoid "this." and "Me." if not necessary
 # R: setting these to none doesn't stop the refactoring, maybe a bug?
 # dotnet_style_qualification_for_field = false:none
@@ -184,11 +186,14 @@ dotnet_style_predefined_type_for_locals_parameters_members = true:suggestion
 dotnet_style_predefined_type_for_member_access = true:suggestion
 
 # Suggest more modern language features when available
-dotnet_style_object_initializer = true:suggestion
-dotnet_style_collection_initializer = true:suggestion
-dotnet_style_coalesce_expression = true:suggestion
-dotnet_style_null_propagation = true:suggestion
-dotnet_style_explicit_tuple_names = true:suggestion
+dotnet_style_object_initializer = true
+dotnet_style_collection_initializer = true
+dotnet_style_coalesce_expression = true
+dotnet_style_null_propagation = true
+dotnet_style_explicit_tuple_names = true
+
+# Match namespace to folder structure
+dotnet_style_namespace_match_folder = true:warning
 
 # style settings (csharp)
 # -----------------------

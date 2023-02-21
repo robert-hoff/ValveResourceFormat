@@ -237,11 +237,11 @@ namespace MyShaderAnalysis.codestash
             {
                 return ARCHIVE_OLD.hl_hlvr_vulkan;
             }
-            if (Path.GetDirectoryName(vcsFileName).EndsWith("dota2-export-shaders-vulkan-V65\\shaders-core\\vfx")) ;
+            if (Path.GetDirectoryName(vcsFileName).EndsWith("dota2-export-shaders-vulkan-V65\\shaders-core\\vfx"))
             {
                 return ARCHIVE_OLD.dota_core_vulkan_v65;
             }
-            if (Path.GetDirectoryName(vcsFileName).EndsWith("dota2-export-shaders-vulkan-V65\\shaders-game\\vfx")) ;
+            if (Path.GetDirectoryName(vcsFileName).EndsWith("dota2-export-shaders-vulkan-V65\\shaders-game\\vfx"))
             {
                 return ARCHIVE_OLD.dota_core_vulkan_v65;
             }

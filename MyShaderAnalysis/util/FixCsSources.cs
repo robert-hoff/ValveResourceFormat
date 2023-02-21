@@ -7,20 +7,33 @@ namespace MyShaderAnalysis.util
 {
     internal class FixCsSources
     {
-        private static string SOURCE_DIR = @"../../";
+
+        // MyShaderAnalysis directory
+        // private static string SOURCE_DIR = @"../../";
+        private static string SOURCE_DIR = @"../../../TestVRF";
+
         private static string TEST_FILE = @"../../Program.cs";
+
 
         public static void Run()
         {
-            FixAllFiles();
+            // FixAllFiles();
             // FixStylesForFile(TEST_FILE);
             // ShowFixesForFile(TEST_FILE);
-            // ShowAllCsfiles();
+            ShowCsFilesWalkDirectory();
         }
+
+
+        public static void CopyOverEditorConfigs()
+        {
+
+        }
+
+
 
         public static void FixAllFiles()
         {
-            foreach (string filenamepath in FindCsFiles(SOURCE_DIR))
+            foreach (string filenamepath in GetCsFilesWalkDirectory(SOURCE_DIR))
             {
                 FixStylesForFile(filenamepath);
             }
@@ -183,19 +196,6 @@ namespace MyShaderAnalysis.util
             return modifiedLines;
         }
 
-        public static void ShowAllCsfiles()
-        {
-            foreach (string file in FindCsFiles(SOURCE_DIR))
-            {
-                Debug.WriteLine($"{file}");
-            }
-        }
-
-        public static string[] FindCsFiles(string path)
-        {
-            return Directory.GetFileSystemEntries(path, "*.cs", SearchOption.AllDirectories);
-        }
-
         public static List<string> ReadFileAsStringList(string filenamepath, bool omitEmptyLines = false)
         {
             List<string> data = new();
@@ -209,5 +209,21 @@ namespace MyShaderAnalysis.util
             }
             return data;
         }
+
+        public static void ShowCsFilesWalkDirectory()
+        {
+            foreach (string file in GetCsFilesWalkDirectory(SOURCE_DIR))
+            {
+                Debug.WriteLine($"{file}");
+            }
+        }
+
+        public static string[] GetCsFilesWalkDirectory(string path)
+        {
+            return Directory.GetFileSystemEntries(path, "*.cs", SearchOption.AllDirectories);
+        }
+
+
+
     }
 }

@@ -363,7 +363,7 @@ namespace MyShaderAnalysis.codestash
             }
 
             string[] breakabbreviations = CombineValuesBreakString(abbreviations.ToArray(), 120);
-            if (breakabbreviations.Length == 1 && breakabbreviations[0] == "")
+            if (breakabbreviations.Length == 1 && string.IsNullOrEmpty(breakabbreviations[0]))
             {
                 return;
             }

@@ -1,20 +1,24 @@
-using MyShaderAnalysis.batchtesting;
-using MyShaderAnalysis.codestash;
-using MyShaderAnalysis.filearchive;
-using MyShaderAnalysis.parsing;
-using MyShaderAnalysis.serverhtml;
-using MyShaderAnalysis.snippetcode;
-using MyShaderAnalysis.staticanalysis;
-using MyShaderAnalysis.util;
-using MyShaderAnalysis.vulkanreflect;
-using MyShaderFileKristiker.MyHelperClasses.ProgEntries;
-using System;
-using System.Diagnostics;
-using System.IO;
-using ValveResourceFormat.CompiledShader;
+// <copyright file="Program.cs" company="PlaceholderCompany">
+// Copyright (c) PlaceholderCompany. All rights reserved.
+// </copyright>
 
 namespace MyShaderAnalysis
 {
+    using System;
+    using System.Diagnostics;
+    using System.IO;
+    using MyShaderAnalysis.batchtesting;
+    using MyShaderAnalysis.codestash;
+    using MyShaderAnalysis.filearchive;
+    using MyShaderAnalysis.parsing;
+    using MyShaderAnalysis.serverhtml;
+    using MyShaderAnalysis.snippetcode;
+    using MyShaderAnalysis.staticanalysis;
+    using MyShaderAnalysis.util;
+    using MyShaderAnalysis.vulkanreflect;
+    using MyShaderFileKristiker.MyHelperClasses.ProgEntries;
+    using ValveResourceFormat.CompiledShader;
+
     class Program
     {
         public class ToDebugWriter : StringWriter
@@ -122,10 +126,10 @@ namespace MyShaderAnalysis
         public static void CSharpSnippets()
         {
             // -- fix some style issues
-            // FixCsSources.Run();
+            FixCsSources.Run();
             // RegexExamples.RunTrials();
             // Snippetcode.RunTrials();
-            CrcTrialsMurmur32.RunTrials();
+            // CrcTrialsMurmur32.RunTrials();
         }
 
         public static void TestConstraintRules()
