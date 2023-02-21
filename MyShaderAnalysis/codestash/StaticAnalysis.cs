@@ -1563,15 +1563,15 @@ namespace MyShaderAnalysis.codestash
                 }
 
                 // features-header
-                int ftHeaderNrArguments = ftFile.FeaturesHeader.MainParams.Count;
+                int ftHeaderNrArguments = ftFile.FeaturesHeader.Modes.Count;
                 OutputWriteLine($"<span style='color: #3783ed'>Arguments in {triple.ftFile.filename} header ({ftHeaderNrArguments})</span>");
                 // print the features main args
                 int max_len = 0;
-                foreach (var mp in ftFile.FeaturesHeader.MainParams)
+                foreach (var mp in ftFile.FeaturesHeader.Modes)
                 {
                     max_len = mp.Item1.Length > max_len ? mp.Item1.Length : max_len;
                 }
-                foreach (var mp in ftFile.FeaturesHeader.MainParams)
+                foreach (var mp in ftFile.FeaturesHeader.Modes)
                 {
                     OutputWriteLine($"<span style='color: #3783ed'>{mp.Item1.PadRight(max_len)} {mp.Item2}</span>");
                 }
@@ -1800,7 +1800,7 @@ namespace MyShaderAnalysis.codestash
                 FeaturesHeaderBlock featuresHeader = shaderFile.FeaturesHeader;
                 Console.WriteLine($"{RemoveBaseDir(filenamepath)}");
                 // featuresHeader.ShowMainParams();
-                foreach (var parampair in featuresHeader.MainParams)
+                foreach (var parampair in featuresHeader.Modes)
                 {
                     Console.WriteLine($"         {parampair.Item1.PadRight(35)} {parampair.Item2.PadRight(35)}");
                     // CollectStringValue($"{parampair.Item1.PadRight(35)} {parampair.Item2.PadRight(35)}");

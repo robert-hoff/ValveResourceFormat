@@ -41,7 +41,7 @@ namespace MyShaderFile.CompiledShader
 
         private void PrintFeaturesHeader(ShaderFile shaderFile)
         {
-            bool hasPsrs = shaderFile.FeaturesHeader.AdditionalFiles == AdditionalFiles.Psrs;
+            bool hasPsrs = shaderFile.FeaturesHeader.AdditionalFiles == VcsAdditionalFiles.Psrs;
 
             output.WriteLine($"Valve Compiled Shader 2 (vcs2), version {shaderFile.FeaturesHeader.VcsFileVersion}");
             output.BreakLine();
@@ -83,13 +83,13 @@ namespace MyShaderFile.CompiledShader
             output.WriteLine($"{ftHeader.EditorIDs[^1].Item1}    // Editor ref. ID{ftHeader.EditorIDs.Count - 1} " +
                 $"- common editor reference shared by multiple files");
             output.BreakLine();
-            if (ftHeader.MainParams.Count == 0)
+            if (ftHeader.Modes.Count == 0)
             {
                 output.WriteLine("Primary modes");
                 output.WriteLine("[default only]");
                 return;
             }
-            if (ftHeader.MainParams.Count > 1)
+            if (ftHeader.Modes.Count > 1)
             {
                 output.WriteLine($"Primary static modes (one of these should be selected)");
             }
@@ -99,7 +99,7 @@ namespace MyShaderFile.CompiledShader
             }
             output.DefineHeaders(new string[] { "name", "mode", "config-states" });
             output.AddTabulatedRow(new string[] { "----", "----", "-------------" });
-            foreach (var mainParam in ftHeader.MainParams)
+            foreach (var mainParam in ftHeader.Modes)
             {
                 var arg2 = mainParam.Item2.Length == 0 ? "(default)" : mainParam.Item2;
                 var configs = mainParam.Item2.Length == 0 ? "(implicit)" : "0,1";

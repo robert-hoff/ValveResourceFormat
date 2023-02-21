@@ -9,7 +9,7 @@ namespace MyShaderFile.CompiledShader
     public class FeaturesHeaderBlock : ShaderDataBlock
     {
         public int VcsFileVersion { get; }
-        public AdditionalFiles AdditionalFiles { get; } = AdditionalFiles.None;
+        public VcsAdditionalFiles AdditionalFiles { get; } = VcsAdditionalFiles.None;
         public int Version { get; }
         public string FileDescription { get; }
         public int DevShader { get; }
@@ -20,7 +20,7 @@ namespace MyShaderFile.CompiledShader
         public int Arg5 { get; }
         public int Arg6 { get; }
         public int Arg7 { get; } = -1;
-        public List<(string, string)> MainParams { get; } = new();
+        public List<(string, string)> Modes { get; } = new();
         public List<(string, string)> EditorIDs { get; } = new();
         public FeaturesHeaderBlock(ShaderDataReader datareader) : base(datareader)
         {
@@ -33,33 +33,26 @@ namespace MyShaderFile.CompiledShader
 
             VcsFileVersion = datareader.ReadInt32();
             ThrowIfNotSupported(VcsFileVersion);
+
             if (VcsFileVersion >= 64)
             {
-                AdditionalFiles = (AdditionalFiles) datareader.ReadInt32();
-                if (!AdditionalFiles.IsDefined(AdditionalFiles))
-                {
-                    // throw the exception
-                }
+                AdditionalFiles = (VcsAdditionalFiles)datareader.ReadInt32();
             }
 
+            if (!Enum.IsDefined(AdditionalFiles))
+            {
+                throw new UnexpectedMagicException("Unexpected v64 value", (int)AdditionalFiles, nameof(AdditionalFiles));
+            }
 
             // -- note it doesn't print any useful information when it fails
             // throw new UnexpectedMagicException($"Unexpected value", (int)AdditionalFiles, nameof(AdditionalFiles));
             // this makes no sense
-
-
-
-
-            else if (AdditionalFiles == AdditionalFiles.Rtx) // sbox
-            {
-                datareader.BaseStream.Position += 4;
-                AdditionalFiles = AdditionalFiles.None;
-                VcsFileVersion = 64;
-            }
-
-
-
-
+            //else if (AdditionalFiles == VcsAdditionalFiles.Rtx) // sbox
+            //{
+            //    datareader.BaseStream.Position += 4;
+            //    AdditionalFiles = VcsAdditionalFiles.None;
+            //    VcsFileVersion = 64;
+            //}
 
             Version = datareader.ReadInt32();
             datareader.ReadInt32(); // length of name, but not needed because it's always null-term
@@ -75,13 +68,14 @@ namespace MyShaderFile.CompiledShader
             {
                 Arg7 = datareader.ReadInt32();
             }
-            var nrArguments = datareader.ReadInt32();
+
+            var modeCount = datareader.ReadInt32();
             for (int i = 0; i < (int)AdditionalFiles; i++)
             {
-                // NOTE nr_of_arguments is overwritten
-                nrArguments = datareader.ReadInt32();
+                // Note the modeCount is overwritten
+                modeCount = datareader.ReadInt32();
             }
-            for (var i = 0; i < nrArguments; i++)
+            for (var i = 0; i < modeCount; i++)
             {
                 var string_arg0 = datareader.ReadNullTermStringAtPosition();
                 var string_arg1 = "";
@@ -91,7 +85,7 @@ namespace MyShaderFile.CompiledShader
                     string_arg1 = datareader.ReadNullTermStringAtPosition();
                     datareader.BaseStream.Position += 68;
                 }
-                MainParams.Add((string_arg0, string_arg1));
+                Modes.Add((string_arg0, string_arg1));
             }
             int maxFileReference = (int)VcsProgramType.PixelShaderRenderState + (int)AdditionalFiles;
             for (int i = 0; i < maxFileReference; i++)
@@ -205,7 +199,6 @@ namespace MyShaderFile.CompiledShader
     public class VsPsHeaderBlock : ShaderDataBlock
     {
         public int VcsFileVersion { get; }
-        public AdditionalFiles AdditionalFiles { get; } = AdditionalFiles.None;
         public string FileID0 { get; }
         public string FileID1 { get; }
         public VsPsHeaderBlock(ShaderDataReader datareader) : base(datareader)
@@ -218,13 +211,15 @@ namespace MyShaderFile.CompiledShader
             }
             VcsFileVersion = datareader.ReadInt32();
             ThrowIfNotSupported(VcsFileVersion);
+
+            var extraFile = VcsAdditionalFiles.None;
             if (VcsFileVersion >= 64)
             {
-                AdditionalFiles = (AdditionalFiles)datareader.ReadInt32();
-                if (!AdditionalFiles.IsDefined(AdditionalFiles))
+                extraFile = (VcsAdditionalFiles)datareader.ReadInt32();
+                if (!VcsAdditionalFiles.IsDefined(extraFile))
                 {
                     // -- note it doesn't print any useful information when it fails
-                    throw new UnexpectedMagicException($"Unexpected value", (int)AdditionalFiles, nameof(AdditionalFiles));
+                    throw new UnexpectedMagicException($"Unexpected value", (int)extraFile, nameof(extraFile));
                 }
             }
             FileID0 = datareader.ReadBytesAsString(16);
@@ -252,7 +247,12 @@ namespace MyShaderFile.CompiledShader
         }
     }
 
-    // SfBlocks are usually 152 bytes long, occasionally they have extra string parameters
+    /// <summary>
+    /// Contains a definition for a feature or static configuration.
+    /// </summary>
+    /// <remarks>
+    /// These are usually 152 bytes long. Features may contain names describing each state
+    /// </remarks>
     public class SfBlock : ShaderDataBlock
     {
         public int BlockIndex { get; }

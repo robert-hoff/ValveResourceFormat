@@ -1,6 +1,6 @@
 namespace MyShaderFile.CompiledShader;
 
-public enum AdditionalFiles
+public enum VcsAdditionalFiles
 {
     None = 0,
     Psrs,

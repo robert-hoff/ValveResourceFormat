@@ -101,10 +101,10 @@ namespace MyShaderAnalysis.parsing
             BreakLine();
             ShowByteCount("features header");
 
-            AdditionalFiles AdditionalFiles = AdditionalFiles.None;
+            VcsAdditionalFiles AdditionalFiles = VcsAdditionalFiles.None;
             if (version >= 64)
             {
-                AdditionalFiles = (AdditionalFiles)ReadInt32AtPosition();
+                AdditionalFiles = (VcsAdditionalFiles)ReadInt32AtPosition();
                 // ShowBytes(4, "has_psrs_file = " + (has_psrs_file > 0 ? "True" : "False"));
                 ShowBytes(4, "PSRS or RTX file if > 0");
             }
@@ -192,7 +192,7 @@ namespace MyShaderAnalysis.parsing
             ShowByteCount("ps/vs header");
             if (version >= 64)
             {
-                AdditionalFiles AdditionalFiles = (AdditionalFiles) ReadInt32AtPosition();
+                VcsAdditionalFiles AdditionalFiles = (VcsAdditionalFiles) ReadInt32AtPosition();
                 ShowBytes(4, $"hadAdditionalFiles = {AdditionalFiles}");
             }
             ShowBytes(16, "file ID0");
