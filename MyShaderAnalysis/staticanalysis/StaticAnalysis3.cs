@@ -32,9 +32,9 @@ namespace MyShaderAnalysis.staticanalysis
         {
             List<FileArchive> fileArchives = new List<FileArchive>();
             // fileArchives.Add(new FileArchive(ARCHIVE.alyx_hlvr_vulkan_v64, FEAT, VS, PS));
-            fileArchives.Add(new FileArchive(ARCHIVE.dota_game_vulkan_v66, FEAT, VS, PS));
+            // fileArchives.Add(new FileArchive(ARCHIVE.dota_game_vulkan_v66, FEAT, VS, PS));
             // fileArchives.Add(new FileArchive(ARCHIVE.dota_game_vulkan_v65, FEAT, VS, PS));
-            // fileArchives.Add(new FileArchive(ARCHIVE.the_lab_pc_v62, FEAT, VS, PS));
+            fileArchives.Add(new FileArchive(ARCHIVE.the_lab_pc_v62, FEAT, VS, PS));
             // fileArchives.Add(new FileArchive(ARCHIVE.dota_game_pcgl_v64, FEAT, VS, PS));
             // fileArchives.Add(new FileArchive(ARCHIVE.dota_core_pcgl_v64, FEAT, VS, PS));
             OutputFormatterTabulatedData outputter = new OutputFormatterTabulatedData();
@@ -49,10 +49,10 @@ namespace MyShaderAnalysis.staticanalysis
                         ShaderFile shaderFile = vcsFile.GetShaderFile();
                         foreach (DConstraintsBlock dRuleBlock in shaderFile.DConstraintsBlocks)
                         {
-                            if (dRuleBlock.Values.Length > 0)
-                            // if (dRuleBlock.Arg1 > -1)
+                            // if (dRuleBlock.Values.Length > 0)
+                            if (dRuleBlock.Arg1 > -1)
                             {
-                                Debug.WriteLine($"\n\n-- file {shaderFile.FilenamePath}");
+                                Debug.WriteLine($"\n\n-- {shaderFile.FilenamePath}");
                                 ShowDBlockRules(shaderFile);
                             }
                         }
@@ -64,7 +64,8 @@ namespace MyShaderAnalysis.staticanalysis
 
         public static void ShowDRulesForFile()
         {
-            FileVcsTokens vcsTokens = new(ARCHIVE.alyx_hlvr_vulkan_v64, "vr_complex_vulkan_50_vs.vcs");
+            // FileVcsTokens vcsTokens = new(ARCHIVE.alyx_hlvr_vulkan_v64, "vr_complex_vulkan_50_vs.vcs");
+            FileVcsTokens vcsTokens = new(ARCHIVE.the_lab_pc_v62, "vr_warp_pc_50_ps.vcs");
             ShaderFile shaderFile = vcsTokens.GetShaderFile();
             ShowDBlockRules(shaderFile);
         }
@@ -103,7 +104,8 @@ namespace MyShaderAnalysis.staticanalysis
                     ShaderFile shaderFile = vcsFile.GetShaderFile();
                     foreach (DConstraintsBlock dRuleBlock in shaderFile.DConstraintsBlocks)
                     {
-                        if (dRuleBlock.Indices.Length > 6)
+                        // if (dRuleBlock.Indices.Length > 6)
+                        if (dRuleBlock.Arg1 == 2)
                         {
                             Debug.WriteLine($"{shaderFile.FilenamePath}");
                             break;
