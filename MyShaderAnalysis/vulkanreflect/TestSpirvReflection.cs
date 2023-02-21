@@ -1,10 +1,10 @@
+using System;
+using System.Diagnostics;
+using System.IO;
 using MyShaderAnalysis.filearchive;
 using MyShaderAnalysis.serverhtml;
 using MyShaderAnalysis.snippetcode;
 using MyShaderFile.CompiledShader;
-using System;
-using System.Diagnostics;
-using System.IO;
 using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 
 namespace MyShaderAnalysis.vulkanreflect

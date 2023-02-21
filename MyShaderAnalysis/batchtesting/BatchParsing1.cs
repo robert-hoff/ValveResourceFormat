@@ -1,10 +1,10 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
 using MyShaderAnalysis.filearchive;
 using MyShaderAnalysis.parsing;
 using MyShaderAnalysis.snippetcode;
 using MyShaderFile.CompiledShader;
-using System;
-using System.Collections.Generic;
-using System.IO;
 using static MyShaderAnalysis.filearchive.FileArchive;
 using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 

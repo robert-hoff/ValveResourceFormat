@@ -1,6 +1,6 @@
-using MyShaderFile.CompiledShader;
 using System;
 using System.Diagnostics;
+using MyShaderFile.CompiledShader;
 
 namespace MyShaderAnalysis.vulkanreflect
 {

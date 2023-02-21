@@ -1,5 +1,5 @@
-using MyShaderFile.CompiledShader;
 using System.Collections.Generic;
+using MyShaderFile.CompiledShader;
 
 namespace MyShaderAnalysis.snippetcode
 {

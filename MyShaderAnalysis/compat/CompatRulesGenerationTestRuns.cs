@@ -1,6 +1,6 @@
+using System.Collections.Generic;
 using MyShaderAnalysis.filearchive;
 using MyShaderFile.CompiledShader;
-using System.Collections.Generic;
 using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 
 namespace MyShaderAnalysis.compat

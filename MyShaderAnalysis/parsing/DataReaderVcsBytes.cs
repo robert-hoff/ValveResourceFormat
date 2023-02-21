@@ -1,7 +1,7 @@
-using MyShaderFile.CompiledShader;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using MyShaderFile.CompiledShader;
 using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 
 namespace MyShaderAnalysis.parsing

@@ -1,9 +1,9 @@
+using System;
 using MyShaderAnalysis.filearchive;
 using MyShaderAnalysis.serverhtml;
 using MyShaderAnalysis.util;
 using MyShaderAnalysis.vulkanreflect;
 using MyShaderFile.CompiledShader;
-using System;
 using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 
 /*

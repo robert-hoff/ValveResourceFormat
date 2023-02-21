@@ -1,9 +1,9 @@
-using MyShaderAnalysis.filearchive;
-using MyShaderAnalysis.parsing;
-using MyShaderFile.CompiledShader;
 using System;
 using System.Diagnostics;
 using System.IO;
+using MyShaderAnalysis.filearchive;
+using MyShaderAnalysis.parsing;
+using MyShaderFile.CompiledShader;
 
 namespace MyShaderAnalysis.batchtesting
 {

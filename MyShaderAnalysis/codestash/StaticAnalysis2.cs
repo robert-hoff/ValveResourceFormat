@@ -1,8 +1,8 @@
-using MyShaderFile.CompiledShader;
-using MyShaderFile.Serialization.VfxEval;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using MyShaderFile.CompiledShader;
+using MyShaderFile.Serialization.VfxEval;
 using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
 using static MyShaderAnalysis.filearchive.FileArchive;
 using static MyShaderAnalysis.filearchive.ReadShaderFile;

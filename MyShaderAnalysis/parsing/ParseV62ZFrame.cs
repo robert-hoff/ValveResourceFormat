@@ -1,6 +1,6 @@
+using System.IO;
 using MyShaderFile.CompiledShader;
 using MyShaderFile.ThirdParty;
-using System.IO;
 using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 
 namespace MyShaderAnalysis.parsing

@@ -1,7 +1,7 @@
-using MyShaderFile.CompiledShader;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using MyShaderFile.CompiledShader;
 
 namespace MyShaderAnalysis.filearchive
 {

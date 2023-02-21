@@ -1,8 +1,8 @@
-using MyShaderAnalysis.filearchive;
-using MyShaderFile.CompiledShader;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using MyShaderAnalysis.filearchive;
+using MyShaderFile.CompiledShader;
 using static MyShaderAnalysis.util.DataCollectAcrossQueries;
 using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 

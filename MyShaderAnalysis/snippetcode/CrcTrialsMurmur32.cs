@@ -1,8 +1,8 @@
-using MyShaderAnalysis.util;
-using MyShaderFile.ThirdParty;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using MyShaderAnalysis.util;
+using MyShaderFile.ThirdParty;
 
 namespace MyShaderAnalysis.snippetcode
 {

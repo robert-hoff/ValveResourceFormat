@@ -1,6 +1,6 @@
+using System;
 using MyShaderAnalysis.parsing;
 using MyShaderFile.CompiledShader;
-using System;
 using static MyShaderAnalysis.codestash.FileSystemOld;
 using static MyShaderAnalysis.filearchive.ReadShaderFile;
 using static MyShaderFile.CompiledShader.ShaderUtilHelpers;

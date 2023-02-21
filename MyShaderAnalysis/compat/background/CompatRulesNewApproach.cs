@@ -1,6 +1,6 @@
+using System;
 using MyShaderAnalysis.filearchive;
 using MyShaderFile.CompiledShader;
-using System;
 
 namespace MyShaderAnalysis.compat
 {

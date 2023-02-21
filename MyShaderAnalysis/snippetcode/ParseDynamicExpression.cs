@@ -1,5 +1,5 @@
-using MyShaderFile.Serialization.VfxEval;
 using System;
+using MyShaderFile.Serialization.VfxEval;
 
 namespace MyShaderAnalysis.snippetcode
 {

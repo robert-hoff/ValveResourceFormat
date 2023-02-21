@@ -1,5 +1,5 @@
-using MyShaderFile.CompiledShader;
 using System;
+using MyShaderFile.CompiledShader;
 using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 
 namespace MyShaderAnalysis.compat

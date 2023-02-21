@@ -1,8 +1,8 @@
-using MyShaderAnalysis.util;
-using MyShaderFile.CompiledShader;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using MyShaderAnalysis.util;
+using MyShaderFile.CompiledShader;
 using static MyShaderAnalysis.codestash.FileSystemOld;
 using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
 using static MyShaderAnalysis.filearchive.FileArchive;
