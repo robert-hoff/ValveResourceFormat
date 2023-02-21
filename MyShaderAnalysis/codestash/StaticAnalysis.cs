@@ -19,7 +19,7 @@ using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
  */
 namespace MyShaderAnalysis.codestash
 {
-    public class StaticAnalysis
+    public class StaticAnalysis1
     {
         const string PCGL_DIR_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders-core/vfx";
         const string PCGL_DIR_NOT_CORE = @"X:/dota-2-VRF-exports/dota2-export-shaders-pcgl/shaders/vfx";
@@ -91,13 +91,12 @@ namespace MyShaderAnalysis.codestash
 
             // -- these methods aren't particularly valuable (should upgrade and remove)
             // Trial1();
-            FeaturesHeaderFirstFour();
+            // FeaturesHeaderFirstFour();
             // MainParamsInFeaturesFiles();
             // SfBlockInspections();
             // AllFiles();
             // ShowFileTriples();
             // SfBlockInspections2();
-            // CompatBlockDetailsConcise(PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_ps.vcs");
 
             // -- setting up comprehensive summary for particular file (NEEDS UPDATE)
             // FileSummaryMultiblendPs();
@@ -138,7 +137,10 @@ namespace MyShaderAnalysis.codestash
             // CompatRuleKeyDescriptionSurvey();
             // CompatRuleKeyValuesAnalysis();
             // DBlockRuleKeyDescriptionSurvey();
-            // DBlockRuleKeyValuesAnalysis();
+
+
+            // CompatBlockDetailsConcise(PCGL_DIR_NOT_CORE + @"/multiblend_pcgl_30_ps.vcs");
+            DBlockRuleKeyValuesAnalysis();
 
             PrintReport();
             CloseStreamWriter();
@@ -154,40 +156,47 @@ namespace MyShaderAnalysis.codestash
                 foreach (DConstraintsBlock uknBlock in shaderFile.DConstraintsBlocks)
                 {
                     // check on the rules that have range2 = (0,1)
-                    //if (uknBlock.range2[0] == 0) {
-                    //    Console.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {uknBlock.GetConciseDescription(new int[] { 8, 4, 7, 5 })}" +
-                    //        $"{shaderFile.dBlocks[0].name0,-33}");
-                    //}
+                    if (uknBlock.Range2[0] == 0)
+                    {
+                        Console.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {uknBlock.GetConciseDescription(new int[] { 8, 4, 7, 5 })}" +
+                            $"{shaderFile.DBlocks[0].Name0,-33}");
+                    }
 
-                    //if (uknBlock.relRule == 2 && uknBlock.AllFlagsAre3()) {
-                    //    Console.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {uknBlock.GetConciseDescription(new int[] {8, 4, 7, 5})}" +
-                    //        $"{shaderFile.dBlocks[0].name0,-33} {shaderFile.dBlocks[1].name0}");
-                    //}
+                    if (uknBlock.RelRule == 2 && uknBlock.AllFlagsAre3())
+                    {
+                        Console.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {uknBlock.GetConciseDescription(new int[] { 8, 4, 7, 5 })}" +
+                            $"{shaderFile.DBlocks[0].Name0,-33} {shaderFile.DBlocks[1].Name0}");
+                    }
 
-                    //if (uknBlock.relRule == 3 && uknBlock.AllFlagsAre3() && uknBlock.flags.Length>=2) {
-                    //    Console.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-44} {uknBlock.GetConciseDescription(new int[] {8, 4, 12, 5})} " +
-                    //        $"{uknBlock.GetResolvedNames(shaderFile.sfBlocks, shaderFile.dBlocks)}");
-                    //}
+                    if (uknBlock.RelRule == 3 && uknBlock.AllFlagsAre3() && uknBlock.Flags.Length >= 2)
+                    {
+                        Console.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-44} {uknBlock.GetConciseDescription(new int[] { 8, 4, 12, 5 })} " +
+                            $"{uknBlock.GetResolvedNames(shaderFile.SfBlocks, shaderFile.DBlocks)}");
+                    }
 
-                    //if (uknBlock.relRule == 2 && uknBlock.flags.Length==2 && uknBlock.flags[1]==2 && uknBlock.range1.Length==1) {
-                    //    Console.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {uknBlock.GetConciseDescription(new int[] {8, 4, 12, 5})} " +
-                    //        $"{uknBlock.GetResolvedNames(shaderFile.sfBlocks, shaderFile.dBlocks)}");
-                    //}
+                    if (uknBlock.RelRule == 2 && uknBlock.Flags.Length == 2 && uknBlock.Flags[1] == 2 && uknBlock.Range1.Length == 1)
+                    {
+                        Console.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {uknBlock.GetConciseDescription(new int[] { 8, 4, 12, 5 })} " +
+                            $"{uknBlock.GetResolvedNames(shaderFile.SfBlocks, shaderFile.DBlocks)}");
+                    }
 
-                    //if (uknBlock.range1.Length == 1 && uknBlock.range1[0] == 0) {
-                    //    Console.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {uknBlock.GetConciseDescription(new int[] {8, 4, 12, 5})} " +
-                    //        $"{uknBlock.GetResolvedNames(shaderFile.sfBlocks, shaderFile.dBlocks)}");
-                    //}
+                    if (uknBlock.Range1.Length == 1 && uknBlock.Range1[0] == 0)
+                    {
+                        Console.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {uknBlock.GetConciseDescription(new int[] { 8, 4, 12, 5 })} " +
+                            $"{uknBlock.GetResolvedNames(shaderFile.SfBlocks, shaderFile.DBlocks)}");
+                    }
 
-                    //if (uknBlock.range1.Length > 1) {
-                    //    Console.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {uknBlock.GetConciseDescription(new int[] {8, 4, 12, 5})} " +
-                    //        $"{uknBlock.GetResolvedNames(shaderFile.sfBlocks, shaderFile.dBlocks)}");
-                    //}
+                    if (uknBlock.Range1.Length > 1)
+                    {
+                        Console.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {uknBlock.GetConciseDescription(new int[] { 8, 4, 12, 5 })} " +
+                            $"{uknBlock.GetResolvedNames(shaderFile.SfBlocks, shaderFile.DBlocks)}");
+                    }
 
-                    //if (uknBlock.relRule == 2 && uknBlock.range1.Length == 0 && uknBlock.flags.Length >= 3) {
-                    //    Console.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {uknBlock.GetConciseDescription(new int[] {8, 4, 12, 5})} " +
-                    //        $"{uknBlock.GetResolvedNames(shaderFile.sfBlocks, shaderFile.dBlocks)}");
-                    //}
+                    if (uknBlock.RelRule == 2 && uknBlock.Range1.Length == 0 && uknBlock.Flags.Length >= 3)
+                    {
+                        Console.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {uknBlock.GetConciseDescription(new int[] { 8, 4, 12, 5 })} " +
+                            $"{uknBlock.GetResolvedNames(shaderFile.SfBlocks, shaderFile.DBlocks)}");
+                    }
 
                     if (uknBlock.Arg1 > -1)
                     {
@@ -516,7 +525,7 @@ namespace MyShaderAnalysis.codestash
 
                 //string[] sfNames = new string[uBlock.range0.Length];
                 //for (int i = 0; i < sfNames.Length; i++) {
-                //    sfNames[i] = shaderFile.sfBlocks[uBlock.range0[i]].name0;
+                //    sfNames[i] = shaderFile.SfBlocks[uBlock.range0[i]].name0;
                 //}
 
                 string[] uknNames = new string[uBlock.Flags.Length];

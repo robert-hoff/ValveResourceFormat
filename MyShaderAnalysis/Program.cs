@@ -35,13 +35,13 @@ namespace MyShaderAnalysis
 
             // AnalysisKristiker();
             // StaticAnalysisForKristiker(); // analyse zfrme data ahead of parsing
-            // RunStaticAnalysis();
+            StaticAnalysis();
 
             // SingleFileParserExamples.RunTrials();
             // BatchProcessFiles();
             // ServerHtml(); // <-- create server files
             // FileArchives();
-            Parsing();
+            // Parsing();
             // OldStaticAnalysisSummaries(); // garbage
             // BasicFunctionalitySnippets();
             // CSharpSnippets();
@@ -63,12 +63,12 @@ namespace MyShaderAnalysis
 
         public static void StaticAnalysis()
         {
-            StaticAnalysis3.Run();
+            // StaticAnalysis3.Run();
             // StaticAnalysisZframes.RunTrials();
 
             // -- tidy/refactor-out needed on these
             // StaticAnalysis2.RunTrials();
-            // StaticAnalysis.RunTrials();
+            StaticAnalysis1.RunTrials();
         }
 
         public static void BatchProcessFiles()
