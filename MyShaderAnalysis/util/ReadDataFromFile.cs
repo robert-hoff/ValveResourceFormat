@@ -51,7 +51,6 @@ namespace MyShaderAnalysis.util
             fileWriter.CloseStreamWriter();
 
             Debug.WriteLine($"data written to {filenamepath}");
-
         }
     }
 }

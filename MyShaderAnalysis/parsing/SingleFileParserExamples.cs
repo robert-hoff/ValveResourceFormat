@@ -23,7 +23,6 @@ namespace MyShaderAnalysis.parsing
     {
         public static void RunTrials()
         {
-
             // ParseAndPrintFile(ARCHIVE.dota_game_vulkan_v66, "cables_vulkan_40_features.vcs");
             // ParseAndPrintFile(ARCHIVE.dota_core_vulkan_v66, "rtx_binlights_vulkan_60_features.vcs");
             // ParseAndPrintFile(ARCHIVE.dota_core_vulkan_v66, "rtx_binlights_vulkan_60_rtx.vcs");
@@ -55,7 +54,6 @@ namespace MyShaderAnalysis.parsing
             // PrintZframeToHtml();
             // ShowFilenamePath();
             // WriteBytesToStringBuffer();
-
         }
 
         public static void TestShaderFilesBytesShowOutput()
@@ -133,8 +131,6 @@ namespace MyShaderAnalysis.parsing
             string filenamepath = "X:/Steam/steamapps/common/The Lab/RobotRepair/core/shaders/vfx/aerial_perspective_pc_30_features.vcs";
             ShaderFile shaderFile = new ShaderFile();
             shaderFile.Read(filenamepath);
-
-
         }
 
 
@@ -275,8 +271,6 @@ namespace MyShaderAnalysis.parsing
             ShaderFile shaderFile = vcsTokens.GetShaderFile();
             new PrintVcsFileSummary(shaderFile);
         }
-
-
     }
 }
 

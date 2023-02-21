@@ -7,7 +7,6 @@ namespace MyShaderAnalysis.util
 {
     internal class FixCsSources
     {
-
         // MyShaderAnalysis directory
         // private static string SOURCE_DIR = @"../../";
         private static string SOURCE_DIR = @"../../../TestVRF";
@@ -24,10 +23,7 @@ namespace MyShaderAnalysis.util
         }
 
 
-        public static void CopyOverEditorConfigs()
-        {
-
-        }
+        public static void CopyOverEditorConfigs() { }
 
 
 
@@ -222,8 +218,5 @@ namespace MyShaderAnalysis.util
         {
             return Directory.GetFileSystemEntries(path, "*.cs", SearchOption.AllDirectories);
         }
-
-
-
     }
 }

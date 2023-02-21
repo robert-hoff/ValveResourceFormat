@@ -32,7 +32,6 @@ namespace MyShaderAnalysis.parsing
 
         public ParseV66Files(string filenamepath) : base(new MemoryStream(File.ReadAllBytes(filenamepath)))
         {
-
             vcsProgramType = ComputeVCSFileName(filenamepath).Item1;
             vcsFilename = filenamepath;
 
@@ -76,7 +75,6 @@ namespace MyShaderAnalysis.parsing
                 return;
             }
             ShowEndOfFile();
-
         }
 
         // private bool shortenOutput = true;

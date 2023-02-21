@@ -105,7 +105,6 @@ namespace MyShaderAnalysis
         {
             SingleFileParserExamples.RunTrials();
             // PrintoutVulkanCode.RunTrials();
-
         }
 
         public static void vulkanReflect()

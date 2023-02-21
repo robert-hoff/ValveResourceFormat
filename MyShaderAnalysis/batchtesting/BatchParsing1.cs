@@ -196,7 +196,6 @@ namespace MyShaderAnalysis.batchtesting
 
         public static void RunTestZframeParserArchive()
         {
-
             TestZframeParserArchive(ARCHIVE.dota_game_vulkan_v65);
             TestZframeParserArchive(ARCHIVE.dota_core_vulkan_v66);
             TestZframeParserArchive(ARCHIVE.dota_core_pc_v65);
