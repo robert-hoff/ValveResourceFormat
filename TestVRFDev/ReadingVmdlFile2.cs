@@ -76,7 +76,7 @@ namespace TestVRFDev {
             };
 
             string filename = "zombie_hanging.vmdl_c";
-            exporter.ExportToFile(filename, EXPORT_DIR + "\\" + filename, (Model)resource.DataBlock);
+            exporter.ExportToFile(filename, EXPORT_DIR + "\\" + filename, (Model)resource.DataBlock, null);
         }
 
 
@@ -103,7 +103,7 @@ namespace TestVRFDev {
             };
 
             string filename = "zombie_classic.vmdl_c";
-            exporter.ExportToFile(filename, EXPORT_DIR + "\\" + filename, (Model)resource.DataBlock);
+            exporter.ExportToFile(filename, EXPORT_DIR + "\\" + filename, (Model)resource.DataBlock, null);
         }
 
 
@@ -135,7 +135,7 @@ namespace TestVRFDev {
             // because it seems the outpath is sent to it as stated here
             string fileNameOutput = @"C:\Users\R\Desktop\temttemp\armor_of_reckless_vigor_weapon.gltf";
             // string fileNameOutput = @"C:\Users\R\Desktop\temttemp\armor_of_reckless_vigor_weapon.vmdl_c";
-            exporter.ExportToFile(resourceName, fileNameOutput, (Model)resource.DataBlock);
+            exporter.ExportToFile(resourceName, fileNameOutput, (Model)resource.DataBlock, null);
 
         }
 

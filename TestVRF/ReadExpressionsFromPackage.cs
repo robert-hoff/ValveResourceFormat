@@ -125,7 +125,10 @@ namespace TestVRF {
                 NTROValue[] ntro_values = new NTROValue[2];
                 ntro_object.Values.CopyTo(ntro_values, 0);
 
-                if (ntro_values[0].Type == DataType.Byte && ntro_values[1].Type == DataType.String)
+                // -- this used to be, but the new SchemaFieldType doesn't recognize String as a members
+                // (changed to Char, which seems like the closest)
+                // if (ntro_values[0].Type == DataType.Byte && ntro_values[1].Type == DataType.String)
+                if (ntro_values[0].Type == SchemaFieldType.Byte && ntro_values[1].Type == SchemaFieldType.Char)
                 {
                     byte[] databytes = (byte[])ntro_values[0].ValueObject;
                     string paramname = (string)ntro_values[1].ValueObject;

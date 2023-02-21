@@ -138,7 +138,7 @@ namespace TestVRFDev {
 
 
 
-            exporter.ExportToFile(filename, EXPORT_DIR + "\\" + filename, (Model)resource.DataBlock);
+            exporter.ExportToFile(filename, EXPORT_DIR + "\\" + filename, (Model)resource.DataBlock, null);
 
 
 
