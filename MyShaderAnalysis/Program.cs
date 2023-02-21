@@ -35,8 +35,7 @@ namespace MyShaderAnalysis
 
             // AnalysisKristiker();
             // StaticAnalysisForKristiker(); // analyse zfrme data ahead of parsing
-            StaticAnalysis();
-
+            // StaticAnalysis();
             // SingleFileParserExamples.RunTrials();
             // BatchProcessFiles();
             // ServerHtml(); // <-- create server files
@@ -44,7 +43,7 @@ namespace MyShaderAnalysis
             // Parsing();
             // OldStaticAnalysisSummaries(); // garbage
             // BasicFunctionalitySnippets();
-            // CSharpSnippets();
+            CSharpSnippets();
             // TestConstraintRules();
         }
 
@@ -123,9 +122,10 @@ namespace MyShaderAnalysis
         public static void CSharpSnippets()
         {
             // -- fix some style issues
-            FixCsSources.Run();
+            // FixCsSources.Run();
             // RegexExamples.RunTrials();
             // Snippetcode.RunTrials();
+            CrcTrialsMurmur32.RunTrials();
         }
 
         public static void TestConstraintRules()

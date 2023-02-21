@@ -1,24 +1,58 @@
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using MyShaderAnalysis.util;
 using MyShaderFile.ThirdParty;
 
 namespace MyShaderAnalysis.snippetcode
 {
     class CrcTrialsMurmur32
     {
+        private const uint MURMUR2SEED = 0x31415926; // It's pi!
+
         public static void RunTrials()
         {
+            // Trial5();
             // Trial1();
-            Trial2();
+            // Trial2();
             // Trial3();
             // Trial4();
+
+
+            // WriteOutMurmurStringsForParams();
+            // ReadParameterNames();
+
+            // Debug.WriteLine($"{Murmur32("$TRANS_OFFSET_V"):x08}");
+        }
+
+
+        static void WriteOutMurmurStringsForParams()
+        {
+            List<string> murmurs = new();
+            foreach (string paramname in ReadParameterNames())
+            {
+                uint murmur32 = Murmur32(paramname);
+                murmurs.Add($"{murmur32:x08} {paramname}");
+            }
+            murmurs.Sort();
+            foreach (string murmurString in murmurs) {
+                Debug.WriteLine($"{murmurString}");
+            }
+        }
+
+
+        static void Trial5()
+        {
+            // string myStr = "g_flRimLightScale";
+            string myStr = "g_flAmbientScale";
+            uint murmur32 = MurmurHash2.Hash(myStr.ToLower(), MURMUR2SEED);
+            Console.WriteLine($"{murmur32:X08}");
         }
 
         static void Trial1()
         {
             string databytes = "53 68 61 64 6F 77 73 4F 6E 6C 79"; // ShadowsOnly
             string theword = ByteStringtoString(databytes);
-
-            uint MURMUR2SEED = 0x31415926; // It's pi!
             uint murmur32 = MurmurHash2.Hash(theword.ToLower(), MURMUR2SEED);
 
             Console.WriteLine(theword);
@@ -31,7 +65,6 @@ namespace MyShaderAnalysis.snippetcode
          */
         static void Trial2()
         {
-            uint MURMUR2SEED = 0x31415926; // It's pi!
             // uint murmur32 = MurmurHash2.Hash("r", MURMUR2SEED);
             // uint murmur32 = MurmurHash2.Hash("representativetexture", MURMUR2SEED);
             uint murmur32 = MurmurHash2.Hash("g_flDetailBlendToFull".ToLower(), MURMUR2SEED);
@@ -57,7 +90,6 @@ namespace MyShaderAnalysis.snippetcode
 
         static void Trial4()
         {
-            uint MURMUR2SEED = 0x31415926;
             byte[] databytes = getDatabytesExample1();
             uint murmur32 = MurmurHash2.Hash(databytes, MURMUR2SEED);
             Console.WriteLine($"{murmur32:X08}");
@@ -105,6 +137,18 @@ namespace MyShaderAnalysis.snippetcode
                 "00 00 00 00 " +
                 "04 00 00 00 01 00 00 00 01 00 00 00";
             return ParseString(bytestring);
+        }
+
+
+        public static uint Murmur32(string input)
+        {
+            return MurmurHash2.Hash(input.ToLower(), MURMUR2SEED);
+        }
+
+        public static List<string> ReadParameterNames()
+        {
+            List<string> data = ReadDataFromFile.ReadSingleColumnStringData("param-names.txt");
+            return data;
         }
     }
 }

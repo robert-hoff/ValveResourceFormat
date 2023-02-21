@@ -17,9 +17,10 @@ namespace MyShaderAnalysis.staticanalysis
         public static void Run()
         {
             // ShowDblocksForFilesOfInterest();
-            ShowDRulesForFile();
+            // ShowDRulesForFile();
             // DRuleBlocksFindGivenPattern();
             // DRuleBlocks();
+            CollectAllParameterNames();
             // Parameters();
             // ConfigurationHeaders();
             // MipMapCountFileSets();
@@ -66,7 +67,8 @@ namespace MyShaderAnalysis.staticanalysis
         public static void ShowDRulesForFile()
         {
             // FileVcsTokens vcsTokens = new(ARCHIVE.alyx_hlvr_vulkan_v64, "vr_complex_vulkan_50_vs.vcs");
-            FileVcsTokens vcsTokens = new(ARCHIVE.the_lab_pc_v62, "vr_warp_pc_50_ps.vcs");
+            // FileVcsTokens vcsTokens = new(ARCHIVE.the_lab_pc_v62, "vr_warp_pc_50_ps.vcs");
+            FileVcsTokens vcsTokens = new(ARCHIVE.dota_game_pcgl_v64, "hero_pcgl_40_ps.vcs");
             ShaderFile shaderFile = vcsTokens.GetShaderFile();
             ShowDBlockRules(shaderFile);
         }
@@ -97,7 +99,7 @@ namespace MyShaderAnalysis.staticanalysis
             {
                 string biText = $"{ruleBlock.BlockIndex:00}";
                 string ruleIncExc = ruleBlock.Rule == ConditionalRule.Requires ? "inc" : "exc";
-                string ruleText = $"{ruleIncExc}({(int) ruleBlock.Rule})";
+                string ruleText = $"{ruleIncExc}({(int)ruleBlock.Rule})";
                 string a1Text = $"{ruleBlock.Arg1,2}";
                 string btText = $"{ruleBlock.BlockType}";
                 // string ctText = $"{CombineIntArray(ruleBlock.ConditionalTypes)}";
@@ -194,6 +196,35 @@ namespace MyShaderAnalysis.staticanalysis
             PrintReport(showCount: false);
         }
 
+
+
+        public static void CollectAllParameterNames()
+        {
+            List<FileArchive> fileArchives = new List<FileArchive>();
+            fileArchives.Add(new FileArchive(ARCHIVE.alyx_hlvr_vulkan_v64, FEAT, VS, PS));
+            fileArchives.Add(new FileArchive(ARCHIVE.dota_game_vulkan_v66, FEAT, VS, PS));
+            fileArchives.Add(new FileArchive(ARCHIVE.dota_game_vulkan_v65, FEAT, VS, PS));
+            fileArchives.Add(new FileArchive(ARCHIVE.the_lab_pc_v62, FEAT, VS, PS));
+            fileArchives.Add(new FileArchive(ARCHIVE.dota_game_pcgl_v64, FEAT, VS, PS));
+            fileArchives.Add(new FileArchive(ARCHIVE.dota_core_pcgl_v64, FEAT, VS, PS));
+
+            foreach (var fileArchive in fileArchives)
+            {
+                Debug.WriteLine($"parsing {fileArchive.ArchiveName()}");
+                foreach (FileVcsTokens vcsFile in fileArchive.GetFileVcsTokens())
+                {
+                    try
+                    {
+                        ShaderFile shaderFile = vcsFile.GetShaderFile();
+                        foreach (var pBlock in shaderFile.ParamBlocks)
+                        {
+                            CollectStringValue($"{pBlock.Name}");
+                        }
+                    } catch (Exception) { }
+                }
+            }
+            PrintReport(showCount: false);
+        }
 
 
         public static void Parameters()

@@ -159,6 +159,11 @@ namespace MyShaderAnalysis.filearchive
             this.useModularLookup = useModularLookup;
         }
 
+        public string ArchiveName()
+        {
+            return archive.ToString();
+        }
+
         public IEnumerable GetFileVcsTokens()
         {
             foreach (var vcsFile in vcsFiles)
