@@ -63,12 +63,12 @@ namespace MyShaderAnalysis
 
         public static void StaticAnalysis()
         {
-            // StaticAnalysis3.Run();
+            StaticAnalysis3.Run();
             // StaticAnalysisZframes.RunTrials();
 
             // -- tidy/refactor-out needed on these
             // StaticAnalysis2.RunTrials();
-            StaticAnalysis1.RunTrials();
+            // StaticAnalysis1.RunTrials();
         }
 
         public static void BatchProcessFiles()

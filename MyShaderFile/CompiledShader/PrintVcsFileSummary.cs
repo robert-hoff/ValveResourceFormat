@@ -213,7 +213,8 @@ namespace MyShaderFile.CompiledShader
                 var breakNames = CombineValuesBreakString(sfNames, BL);
                 var s0 = $"[{sfRuleBlock.BlockIndex,2}]";
                 var s1 = (sfRuleBlock.RelRule == 1 || sfRuleBlock.RelRule == 2) ? $"INC({sfRuleBlock.RelRule})" : $"EXC({sfRuleBlock.RelRule})";
-                var s3 = $"{sfRuleBlock.GetByteFlagsAsString()}";
+                // var s3 = $"{GetByteFlagsAsString(sfRuleBlock)}";
+                var s3 = $"MISSING XXXXXXXXXXXX";
                 var s4 = $"{breakNames[0]}";
                 var s5 = $"{CombineIntArray(sfRuleBlock.Range0)}";
                 var s6 = $"{CombineIntArray(sfRuleBlock.Range1)}";
@@ -274,29 +275,29 @@ namespace MyShaderFile.CompiledShader
             }
             foreach (var dRuleBlock in shaderFile.DConstraintsBlocks)
             {
-                var dRuleName = new string[dRuleBlock.Flags.Length];
+                var dRuleName = new string[dRuleBlock.ConditionalTypes.Length];
                 for (var i = 0; i < dRuleName.Length; i++)
                 {
-                    if (dRuleBlock.Flags[i] == 3)
+                    if (dRuleBlock.ConditionalTypes[i] == 3)
                     {
-                        dRuleName[i] = shaderFile.DBlocks[dRuleBlock.Range0[i]].Name0;
+                        dRuleName[i] = shaderFile.DBlocks[dRuleBlock.Indices[i]].Name0;
                         continue;
                     }
-                    if (dRuleBlock.Flags[i] == 2)
+                    if (dRuleBlock.ConditionalTypes[i] == 2)
                     {
-                        dRuleName[i] = shaderFile.SfBlocks[dRuleBlock.Range0[i]].Name0;
+                        dRuleName[i] = shaderFile.SfBlocks[dRuleBlock.Indices[i]].Name0;
                         continue;
                     }
-                    throw new ShaderParserException($"unknown flag value {dRuleBlock.Flags[i]}");
+                    throw new ShaderParserException($"unknown flag value {dRuleBlock.ConditionalTypes[i]}");
                 }
                 const int BL = 70;
                 var breakNames = CombineValuesBreakString(dRuleName, BL);
                 var s0 = $"[{dRuleBlock.BlockIndex,2}]";
-                var s1 = (dRuleBlock.RelRule == 1 || dRuleBlock.RelRule == 2) ? $"INC({dRuleBlock.RelRule})" : $"EXC({dRuleBlock.RelRule})";
-                var s3 = $"{CombineIntArray(dRuleBlock.Flags)}";
+                var s1 = (dRuleBlock.Rule == 1 || dRuleBlock.Rule == 2) ? $"INC({dRuleBlock.Rule})" : $"EXC({dRuleBlock.Rule})";
+                var s3 = $"{CombineIntArray(dRuleBlock.ConditionalTypes)}";
                 var s4 = $"{breakNames[0]}";
-                var s5 = $"{CombineIntArray(dRuleBlock.Range0)}";
-                var s6 = $"{CombineIntArray(dRuleBlock.Range1)}";
+                var s5 = $"{CombineIntArray(dRuleBlock.Indices)}";
+                var s6 = $"{CombineIntArray(dRuleBlock.Values)}";
                 var s7 = $"{CombineIntArray(dRuleBlock.Range2)}";
                 var blockSummary = $"{s0,-7}{s1,-10}{s3,-15}{s5,-16}{s4,-BL}{s6,-10}{s7,-8}";
                 for (var i = 1; i < breakNames.Length; i++)

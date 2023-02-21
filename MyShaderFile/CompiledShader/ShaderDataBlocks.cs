@@ -449,34 +449,34 @@ namespace MyShaderFile.CompiledShader
     public class DConstraintsBlock : ShaderDataBlock
     {
         public int BlockIndex { get; }
-        public int RelRule { get; }  // 2 = dependency-rule (other files), 3 = exclusion (1 not present, as in the compat-blocks)
-        public int Arg0 { get; } // ALWAYS 3 (for sf-constraint-blocks this value is 1 for features files and 2 for all other files)
+        public int Rule { get; }  // 2 = dependency-rule (other files), 3 = exclusion (1 not present, as in the compat-blocks)
+        public int BlockType { get; } // ALWAYS 3 (for sf-constraint-blocks this value is 1 for features files and 2 for all other files)
         public int Arg1 { get; } // arg1 at (88) sometimes has a value > -1 (in compat-blocks this value is always seen to be -1)
-        public int[] Flags { get; }
-        public int[] Range0 { get; }
-        public int[] Range1 { get; }
+        public int[] ConditionalTypes { get; }
+        public int[] Indices { get; }
+        public int[] Values { get; }
         public int[] Range2 { get; }
         public string Description { get; }
 
         public DConstraintsBlock(ShaderDataReader datareader, int blockIndex) : base(datareader)
         {
             BlockIndex = blockIndex;
-            RelRule = datareader.ReadInt32();
-            Arg0 = datareader.ReadInt32();
-            if (Arg0 != 3)
+            Rule = datareader.ReadInt32();
+            BlockType = datareader.ReadInt32();
+            if (BlockType != 3)
             {
                 throw new ShaderParserException("unexpected value!");
             }
             // flags at (8)
-            Flags = ReadByteFlags();
+            ConditionalTypes = ReadByteFlags();
             // range0 at (24)
-            Range0 = ReadIntRange();
-            datareader.BaseStream.Position += 64 - Range0.Length * 4;
+            Indices = ReadIntRange();
+            datareader.BaseStream.Position += 64 - Indices.Length * 4;
             // integer at (88)
             Arg1 = datareader.ReadInt32();
             // range1 at (92)
-            Range1 = ReadIntRange();
-            datareader.BaseStream.Position += 60 - Range1.Length * 4;
+            Values = ReadIntRange();
+            datareader.BaseStream.Position += 60 - Values.Length * 4;
             // range1 at (152)
             Range2 = ReadIntRange();
             datareader.BaseStream.Position += 64 - Range2.Length * 4;
