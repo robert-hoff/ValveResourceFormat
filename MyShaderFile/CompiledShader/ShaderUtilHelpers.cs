@@ -160,8 +160,17 @@ namespace MyShaderFile.CompiledShader
                 var intPadded = $"{(v != 0 ? v : "_")}".PadLeft(padding);
                 valueString += $"{intPadded}";
             }
-            // return $"{valueString[0..^padding]}";
             return $"{valueString}";
+        }
+
+        public static string[] IntArrayToStrings(int[] ints, int nulledValue = int.MaxValue)
+        {
+            var stringTokens = new string[ints.Length];
+            for (int i = 0; i < ints.Length; i++)
+            {
+                stringTokens[i] = ints[i] == nulledValue ? "_" : $"{ints[i]}";
+            }
+            return stringTokens;
         }
 
         public static string CombineStringsSpaceSep(string[] strings0, int padding = 5)
