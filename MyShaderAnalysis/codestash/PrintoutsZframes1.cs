@@ -240,7 +240,7 @@ namespace MyShaderAnalysis.codestash
             List<string> dParamNames = new();
             foreach (DBlock dBlock in shaderFile.DBlocks)
             {
-                dParamNames.Add(ShortenShaderParam(dBlock.Name0).ToLower());
+                dParamNames.Add(ShortenShaderParam(dBlock.Name).ToLower());
             }
             string configNames = CombineStringsSpaceSep(dParamNames.ToArray(), 6);
             configNames = $"{new string(' ', 5)}{configNames}";
@@ -308,7 +308,7 @@ namespace MyShaderAnalysis.codestash
             List<string> dParamNames = new();
             foreach (DBlock dBlock in shaderFile.DBlocks)
             {
-                dParamNames.Add(ShortenShaderParam(dBlock.Name0).ToLower());
+                dParamNames.Add(ShortenShaderParam(dBlock.Name).ToLower());
             }
             string configNames = CombineStringsSpaceSep(dParamNames.ToArray(), 6);
             configNames = $"{new string(' ', 5)}{configNames}";
@@ -351,7 +351,7 @@ namespace MyShaderAnalysis.codestash
             List<string> abbreviations = new();
             foreach (var dBlock in shaderFile.DBlocks)
             {
-                string abbreviation = $"{dBlock.Name0}({ShortenShaderParam(dBlock.Name0).ToLower()})";
+                string abbreviation = $"{dBlock.Name}({ShortenShaderParam(dBlock.Name).ToLower()})";
                 abbreviations.Add(abbreviation);
             }
             if (abbreviations.Count == 0)
@@ -471,7 +471,7 @@ namespace MyShaderAnalysis.codestash
                 {
                     b3Text = $"  _ ({b2:X02})";
                 }
-                OutputWrite($"[{paramId,3}] {shaderFile.ParamBlocks[paramId].Name0,-30} {b2Text,-14} {b3Text}");
+                OutputWrite($"[{paramId,3}] {shaderFile.ParamBlocks[paramId].Name,-30} {b2Text,-14} {b3Text}");
                 if (i + 1 == h0 && h0 != h2)
                 {
                     OutputWrite($"   // {h0}");
@@ -556,7 +556,7 @@ namespace MyShaderAnalysis.codestash
             for (int i = 0; i < configState.Length; i++)
             {
                 // if (configState[i] > 0) {
-                OutputWriteLine($"{shaderFile.SfBlocks[i].Name0,-30} {configState[i]}");
+                OutputWriteLine($"{shaderFile.SfBlocks[i].Name,-30} {configState[i]}");
                 // }
             }
             if (configState.Length == 0)

@@ -154,21 +154,21 @@ namespace MyShaderFile.CompiledShader
             foreach (var item in shaderFile.SfBlocks)
             {
                 var configStates = "_";
-                if (item.Arg2 > 0)
+                if (item.RangeMax > 0)
                 {
                     configStates = "0";
                 }
-                for (var i = 1; i <= item.Arg2; i++)
+                for (var i = 1; i <= item.RangeMax; i++)
                 {
                     configStates += $",{i}";
                 }
                 var configStates2 = "";
-                if (item.Arg2 > 1)
+                if (item.RangeMax > 1)
                 {
-                    configStates2 = $"{CombineStringArray(item.AdditionalParams.ToArray())}";
+                    configStates2 = $"{CombineStringArray(item.CheckboxNames.ToArray())}";
                 }
 
-                output.AddTabulatedRow(new string[] {$"[{item.BlockIndex,2}]", $"{item.Name0}", $"{item.Arg2+1}",
+                output.AddTabulatedRow(new string[] {$"[{item.BlockIndex,2}]", $"{item.Name}", $"{item.RangeMax+1}",
                     $"{configStates}", $"{configStates2}"});
             }
             output.PrintTabulatedValues();
@@ -187,7 +187,7 @@ namespace MyShaderFile.CompiledShader
             output.DefineHeaders(new string[] { "index", "name", "arg2", "arg3", "arg4" });
             foreach (var item in shaderFile.SfBlocks)
             {
-                output.AddTabulatedRow(new string[] { $"[{item.BlockIndex,2}]", $"{item.Name0}", $"{item.Arg2}", $"{item.Arg3}", $"{item.Arg4,2}" });
+                output.AddTabulatedRow(new string[] { $"[{item.BlockIndex,2}]", $"{item.Name}", $"{item.RangeMax}", $"{item.Sys}", $"{item.FeatureIndex,2}" });
             }
             output.PrintTabulatedValues();
             output.BreakLine();
@@ -207,7 +207,7 @@ namespace MyShaderFile.CompiledShader
                 var sfNames = new string[sfRuleBlock.Indices.Length];
                 for (var i = 0; i < sfNames.Length; i++)
                 {
-                    sfNames[i] = shaderFile.SfBlocks[sfRuleBlock.Indices[i]].Name0;
+                    sfNames[i] = shaderFile.SfBlocks[sfRuleBlock.Indices[i]].Name;
                 }
                 const int BL = 70;
                 var breakNames = CombineValuesBreakString(sfNames, BL);
@@ -251,10 +251,10 @@ namespace MyShaderFile.CompiledShader
             foreach (var dBlock in shaderFile.DBlocks)
             {
                 var v0 = $"[{dBlock.BlockIndex,2}]";
-                var v1 = dBlock.Name0;
-                var v2 = "" + dBlock.Arg2;
-                var v3 = "" + dBlock.Arg3;
-                var v4 = $"{dBlock.Arg4,2}";
+                var v1 = dBlock.Name;
+                var v2 = "" + dBlock.RangeMax;
+                var v3 = "" + dBlock.Sys;
+                var v4 = $"{dBlock.FeatureIndex,2}";
                 var blockSummary = $"{v0.PadRight(pad[0])} {v1.PadRight(pad[1])} {v2.PadRight(pad[2])} {v3.PadRight(pad[3])} {v4.PadRight(pad[4])}";
                 output.WriteLine(blockSummary);
             }
@@ -281,8 +281,8 @@ namespace MyShaderFile.CompiledShader
                 {
                     dRuleName[i] = dRuleBlock.ConditionalTypes[i] switch
                     {
-                        ConditionalType.Dynamic => shaderFile.DBlocks[dRuleBlock.Indices[i]].Name0,
-                        ConditionalType.Static => shaderFile.SfBlocks[dRuleBlock.Indices[i]].Name0,
+                        ConditionalType.Dynamic => shaderFile.DBlocks[dRuleBlock.Indices[i]].Name,
+                        ConditionalType.Static => shaderFile.SfBlocks[dRuleBlock.Indices[i]].Name,
                         ConditionalType.Feature => throw new InvalidOperationException("Dynamic combos can't be constrained by features!"),
                         _ => throw new ShaderParserException($"Unknown {nameof(ConditionalType)} {dRuleBlock.ConditionalTypes[i]}")
                     };
@@ -326,14 +326,14 @@ namespace MyShaderFile.CompiledShader
                 "arg2", "arg3", "arg4", "arg5", "dyn-exp*", "command 0|1", "fileref"});
             foreach (var param in shaderFile.ParamBlocks)
             {
-                var nameCondensed = param.Name0;
-                if (param.Name1.Length > 0)
+                var nameCondensed = param.Name;
+                if (param.UiGroup.Length > 0)
                 {
-                    nameCondensed += $" | {param.Name1}";
+                    nameCondensed += $" | {param.UiGroup}";
                 }
-                if (param.Name2.Length > 0)
+                if (param.AttributeName.Length > 0)
                 {
-                    nameCondensed += $" | {param.Name2}(2)";
+                    nameCondensed += $" | {param.AttributeName}(2)";
                 }
                 if (nameCondensed.Length > 65)
                 {
@@ -349,15 +349,15 @@ namespace MyShaderFile.CompiledShader
                 {
                     dynExpCount++;
                 }
-                var c0 = param.Command0;
-                var c1 = param.Command1;
+                var c0 = param.ImageSuffix;
+                var c1 = param.ImageProcessor;
                 if (c1.Length > 0)
                 {
                     c0 += $" | {c1}";
                 }
-                output.AddTabulatedRow(new string[] {$"[{(""+param.BlockIndex).PadLeft(indexPad)}]", $"{nameCondensed}", $"{param.Type}",
-                    $"{param.Lead0}", $"{param.Res0}", $"{BlankNegOne(param.Arg0),2}", $"{param.Arg1,2}", $"{param.Arg2}",
-                    $"{Pow2Rep(param.Arg3),4}", $"{param.Arg4,2}", $"{BlankNegOne(param.Arg5),2}",
+                output.AddTabulatedRow(new string[] {$"[{(""+param.BlockIndex).PadLeft(indexPad)}]", $"{nameCondensed}", $"{param.UiType}",
+                    $"{param.Lead0}", $"{param.Res0}", $"{BlankNegOne(param.Arg0),2}", $"{param.VfxType,2}", $"{param.ParamType}",
+                    $"{Pow2Rep(param.Arg3),4}", $"{param.VecSize,2}", $"{BlankNegOne(param.Arg5),2}",
                     $"{dynExpExists}", $"{c0}", $"{param.FileRef}"});
             }
             output.PrintTabulatedValues(spacing: 1);
@@ -379,8 +379,8 @@ namespace MyShaderFile.CompiledShader
                     }
                     var dynExpstring = ParseDynamicExpression(param.DynExp);
                     output.AddTabulatedRow(new string[] { $"[{(""+param.BlockIndex).PadLeft(indexPad)}]",
-                        $"{param.Name0}",
-                        $"{param.Type,2},{param.Lead0,2},{BlankNegOne(param.Arg0),2},{param.Arg1,2},{param.Arg2,2},{param.Arg4,2},{BlankNegOne(param.Arg5),2}",
+                        $"{param.Name}",
+                        $"{param.UiType,2},{param.Lead0,2},{BlankNegOne(param.Arg0),2},{param.VfxType,2},{param.ParamType,2},{param.VecSize,2},{BlankNegOne(param.Arg5),2}",
                         $"{dynExpstring}" });
                 }
                 output.PrintTabulatedValues();
@@ -393,20 +393,20 @@ namespace MyShaderFile.CompiledShader
             foreach (var param in shaderFile.ParamBlocks)
             {
                 var fileref = param.FileRef;
-                var r0 = param.Ranges0;
-                var r1 = param.Ranges1;
-                var r2 = param.Ranges2;
-                var r3 = param.Ranges3;
-                var r4 = param.Ranges4;
-                var r5 = param.Ranges5;
+                var r0 = param.IntDefs;
+                var r1 = param.IntMins;
+                var r2 = param.IntMaxs;
+                var r3 = param.FloatDefs;
+                var r4 = param.FloatMins;
+                var r5 = param.FloatMaxs;
                 var r6 = param.Ranges6;
                 var r7 = param.Ranges7;
                 var hasFileRef = param.FileRef.Length > 0 ? "true" : "";
                 var hasDynExp = param.Lead0 == 6 || param.Lead0 == 7 ? "true" : "";
-                output.AddTabulatedRow(new string[] { $"[{("" + param.BlockIndex).PadLeft(indexPad)}]", $"{param.Name0}",
-                    $"{param.Type,2},{param.Lead0,2},{BlankNegOne(param.Arg0),2},{param.Arg1,2},{param.Arg2,2},{param.Arg4,2},{BlankNegOne(param.Arg5),2}",
+                output.AddTabulatedRow(new string[] { $"[{("" + param.BlockIndex).PadLeft(indexPad)}]", $"{param.Name}",
+                    $"{param.UiType,2},{param.Lead0,2},{BlankNegOne(param.Arg0),2},{param.VfxType,2},{param.ParamType,2},{param.VecSize,2},{BlankNegOne(param.Arg5),2}",
                     $"{Comb(r0)}", $"{Comb(r1)}", $"{Comb(r2)}", $"{Comb(r3)}", $"{Comb(r4)}",
-                    $"{Comb(r5)}", $"{Comb(r6)}", $"{Comb(r7)}", $"{param.Command0}", $"{hasFileRef}", $"{hasDynExp}"});
+                    $"{Comb(r5)}", $"{Comb(r6)}", $"{Comb(r7)}", $"{param.ImageSuffix}", $"{hasFileRef}", $"{hasDynExp}"});
             }
             output.PrintTabulatedValues(spacing: 1);
             output.BreakLine();
@@ -530,8 +530,8 @@ namespace MyShaderFile.CompiledShader
             List<string> abbreviations = new();
             foreach (var sfBlock in shaderFile.SfBlocks)
             {
-                var sfShortName = ShortenShaderParam(sfBlock.Name0).ToLowerInvariant();
-                abbreviations.Add($"{sfBlock.Name0}({sfShortName})");
+                var sfShortName = ShortenShaderParam(sfBlock.Name).ToLowerInvariant();
+                abbreviations.Add($"{sfBlock.Name}({sfShortName})");
                 sfNames.Add(sfShortName);
             }
             var breakabbreviations = CombineValuesBreakString(abbreviations.ToArray(), 120);

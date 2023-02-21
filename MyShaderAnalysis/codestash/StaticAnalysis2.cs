@@ -96,29 +96,29 @@ namespace MyShaderAnalysis.codestash
 
                 foreach (ParamBlock paramBlock in shaderFile.ParamBlocks)
                 {
-                    string name0 = paramBlock.Name0;
-                    string name1 = paramBlock.Name1;
-                    string name2 = paramBlock.Name2;
-                    int tp = paramBlock.Type;
+                    string name0 = paramBlock.Name;
+                    string name1 = paramBlock.UiGroup;
+                    string name2 = paramBlock.AttributeName;
+                    int tp = paramBlock.UiType;
                     float res0 = paramBlock.Res0;
                     int main0 = paramBlock.Lead0;
                     int arg0 = paramBlock.Arg0;
-                    int arg1 = paramBlock.Arg1;
-                    int arg2 = paramBlock.Arg2;
+                    int arg1 = paramBlock.VfxType;
+                    int arg2 = paramBlock.ParamType;
                     int arg3 = paramBlock.Arg3;
-                    int arg4 = paramBlock.Arg4;
+                    int arg4 = paramBlock.VecSize;
                     int arg5 = paramBlock.Arg5;
                     string fileref = paramBlock.FileRef;
-                    int[] r0 = paramBlock.Ranges0;
-                    int[] r1 = paramBlock.Ranges1;
-                    int[] r2 = paramBlock.Ranges2;
-                    float[] r3 = paramBlock.Ranges3;
-                    float[] r4 = paramBlock.Ranges4;
-                    float[] r5 = paramBlock.Ranges5;
+                    int[] r0 = paramBlock.IntDefs;
+                    int[] r1 = paramBlock.IntMins;
+                    int[] r2 = paramBlock.IntMaxs;
+                    float[] r3 = paramBlock.FloatDefs;
+                    float[] r4 = paramBlock.FloatMins;
+                    float[] r5 = paramBlock.FloatMaxs;
                     int[] r6 = paramBlock.Ranges6;
                     int[] r7 = paramBlock.Ranges7;
-                    string c0 = paramBlock.Command0;
-                    string c1 = paramBlock.Command1;
+                    string c0 = paramBlock.ImageSuffix;
+                    string c1 = paramBlock.ImageProcessor;
 
                     byte[] dynExp = paramBlock.DynExp;
                     string dynExpstring = dynExp.Length > 0 ? new VfxEval(dynExp).DynamicExpressionResult : "";
@@ -179,29 +179,29 @@ namespace MyShaderAnalysis.codestash
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
                 foreach (ParamBlock paramBlock in shaderFile.ParamBlocks)
                 {
-                    string name0 = paramBlock.Name0;
-                    string name1 = paramBlock.Name1;
-                    string name2 = paramBlock.Name2;
-                    int tp = paramBlock.Type;
+                    string name0 = paramBlock.Name;
+                    string name1 = paramBlock.UiGroup;
+                    string name2 = paramBlock.AttributeName;
+                    int tp = paramBlock.UiType;
                     float res0 = paramBlock.Res0;
                     int main0 = paramBlock.Lead0;
                     int arg0 = paramBlock.Arg0;
-                    int arg1 = paramBlock.Arg1;
-                    int arg2 = paramBlock.Arg2;
+                    int arg1 = paramBlock.VfxType;
+                    int arg2 = paramBlock.ParamType;
                     int arg3 = paramBlock.Arg3;
-                    int arg4 = paramBlock.Arg4;
+                    int arg4 = paramBlock.VecSize;
                     int arg5 = paramBlock.Arg5;
                     string fileref = paramBlock.FileRef;
-                    int[] r0 = paramBlock.Ranges0;
-                    int[] r1 = paramBlock.Ranges1;
-                    int[] r2 = paramBlock.Ranges2;
-                    float[] r3 = paramBlock.Ranges3;
-                    float[] r4 = paramBlock.Ranges4;
-                    float[] r5 = paramBlock.Ranges5;
+                    int[] r0 = paramBlock.IntDefs;
+                    int[] r1 = paramBlock.IntMins;
+                    int[] r2 = paramBlock.IntMaxs;
+                    float[] r3 = paramBlock.FloatDefs;
+                    float[] r4 = paramBlock.FloatMins;
+                    float[] r5 = paramBlock.FloatMaxs;
                     int[] r6 = paramBlock.Ranges6;
                     int[] r7 = paramBlock.Ranges7;
-                    string c0 = paramBlock.Command0;
-                    string c1 = paramBlock.Command1;
+                    string c0 = paramBlock.ImageSuffix;
+                    string c1 = paramBlock.ImageProcessor;
 
                     // CollectStringValue($"{name0,-40} {name1,-40}  {lead0},{lead1,3}     {name2,-40}");
                     //CollectStringValue($"{name0,-40} {lead0},{lead1,3} " +
@@ -293,7 +293,7 @@ namespace MyShaderAnalysis.codestash
                 // FileTokens tokens = new(filenamepath);
                 foreach (var sfBlocks in shaderFile.SfBlocks)
                 {
-                    CollectStringValue($"{sfBlocks.Arg0}  {sfBlocks.Arg1}  {sfBlocks.Arg2}  {sfBlocks.Arg3}  {sfBlocks.Arg4}  {sfBlocks.Arg5}");
+                    CollectStringValue($"{sfBlocks.Arg0}  {sfBlocks.RangeMin}  {sfBlocks.RangeMax}  {sfBlocks.Sys}  {sfBlocks.FeatureIndex}  {sfBlocks.Arg5}");
                 }
             }
         }
@@ -312,12 +312,12 @@ namespace MyShaderAnalysis.codestash
                 FileTokensOld tokens = new(filenamepath);
                 foreach (var sfBlocks in shaderFile.SfBlocks)
                 {
-                    if (sfBlocks.AdditionalParams.Count > 0)
+                    if (sfBlocks.CheckboxNames.Count > 0)
                     {
                         OutputWriteLine($"<b>{RemoveBaseDir(shaderFile.FilenamePath),-70}</b>        " +
                             $"<a href='{tokens.GetServerFilePath()}/{tokens.foldername}_ps-summary.html'>det.</a>");
-                        OutputWriteLine($"{sfBlocks.Name0} ({sfBlocks.AdditionalParams.Count})     {sfBlocks.Name1}");
-                        OutputWriteLine($"{CombineStringArray(sfBlocks.AdditionalParams.ToArray())}");
+                        OutputWriteLine($"{sfBlocks.Name} ({sfBlocks.CheckboxNames.Count})     {sfBlocks.Category}");
+                        OutputWriteLine($"{CombineStringArray(sfBlocks.CheckboxNames.ToArray())}");
                         OutputWriteLine($"");
                     }
                 }

@@ -55,7 +55,7 @@ namespace MyShaderAnalysis.parsing
                 //    throw new ShaderParserException("unexpected data");
                 //}
                 uint paramId = ReadUInt16AtPosition();
-                ShowBytes(2, $"{paramId,3}   {shaderFile.ParamBlocks[(int)paramId].Name0}");
+                ShowBytes(2, $"{paramId,3}   {shaderFile.ParamBlocks[(int)paramId].Name}");
             }
             BreakLine();
             // uint nrHeaders = ReadUInt16AtPosition();

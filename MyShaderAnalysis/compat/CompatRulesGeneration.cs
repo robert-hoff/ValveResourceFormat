@@ -40,11 +40,11 @@ namespace MyShaderAnalysis.compat
             layers = new int[shaderFile.SfBlocks.Count];
 
             offsets[0] = 1;
-            layers[0] = shaderFile.SfBlocks[0].Arg2;
+            layers[0] = shaderFile.SfBlocks[0].RangeMax;
 
             for (int i = 1; i < shaderFile.SfBlocks.Count; i++)
             {
-                int curLayer = shaderFile.SfBlocks[i].Arg2;
+                int curLayer = shaderFile.SfBlocks[i].RangeMax;
                 layers[i] = curLayer;
                 offsets[i] = offsets[i - 1] * (layers[i - 1] + 1);
             }

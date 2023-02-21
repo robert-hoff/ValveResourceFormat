@@ -32,7 +32,7 @@ namespace MyShaderAnalysis.compat
                 ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
                 foreach (var item in shaderFile.SfBlocks)
                 {
-                    map[item.Name0] = 1;
+                    map[item.Name] = 1;
                 }
             }
             foreach (var item in map)
@@ -57,11 +57,11 @@ namespace MyShaderAnalysis.compat
             layers = new int[shaderFile.SfBlocks.Count];
 
             offset[0] = 1;
-            layers[0] = shaderFile.SfBlocks[0].Arg2;
+            layers[0] = shaderFile.SfBlocks[0].RangeMax;
 
             for (int i = 1; i < shaderFile.SfBlocks.Count; i++)
             {
-                int curLayer = shaderFile.SfBlocks[i].Arg2;
+                int curLayer = shaderFile.SfBlocks[i].RangeMax;
                 layers[i] = curLayer;
                 offset[i] = offset[i - 1] * (layers[i - 1] + 1);
             }
@@ -142,7 +142,7 @@ namespace MyShaderAnalysis.compat
                 }
 
                 // Console.WriteLine($"{i}");
-                string parmDisplayName = $"{ShaderUtilHelpers.ShortenShaderParam(shaderFile.SfBlocks[i].Name0)}{paramLayer}";
+                string parmDisplayName = $"{ShaderUtilHelpers.ShortenShaderParam(shaderFile.SfBlocks[i].Name)}{paramLayer}";
                 // nameList += parmDisplayName.PadRight(7);
                 nameList += parmDisplayName.ToLower() + ", ";
             }

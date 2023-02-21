@@ -19,7 +19,7 @@ namespace MyShaderAnalysis.compat
             ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
             foreach (var sfBlock in shaderFile.SfBlocks)
             {
-                Console.WriteLine($"{sfBlock.Name0}");
+                Console.WriteLine($"{sfBlock.Name}");
             }
         }
 

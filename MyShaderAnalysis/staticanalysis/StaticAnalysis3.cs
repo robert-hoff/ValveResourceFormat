@@ -206,7 +206,7 @@ namespace MyShaderAnalysis.staticanalysis
                 {
                     // same as (kristiker)
                     // lead0, UiType, VfxType, ParamType
-                    string reportLine = $"{pBlock.Lead0:00} {pBlock.Type} {pBlock.Arg1} {pBlock.Arg2}";
+                    string reportLine = $"{pBlock.Lead0:00} {pBlock.UiType} {pBlock.VfxType} {pBlock.ParamType}";
                     CollectStringValue(reportLine);
                 }
             }
@@ -223,7 +223,7 @@ namespace MyShaderAnalysis.staticanalysis
                 {
                     // string reportLine = $"{sfBlock.name0,-40} {sfBlock.name1,-40} {sfBlock.arg2}";
                     // string reportLine = $"{sfBlock.name0,-40} {sfBlock.arg2}";
-                    string reportLine = $"{sfBlock.Name0,-40} {sfBlock.Arg3}";
+                    string reportLine = $"{sfBlock.Name,-40} {sfBlock.Sys}";
                     CollectStringValue(reportLine);
                 }
             }
