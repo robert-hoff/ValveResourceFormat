@@ -18,8 +18,8 @@ namespace MyShaderAnalysis.staticanalysis
 
         public static void Run()
         {
-            ShowDblocksForFilesOfInterest();
-            // ShowDRulesForFile();
+            // ShowDblocksForFilesOfInterest();
+            ShowDRulesForFile();
             // DRuleBlocksFindGivenPattern();
             // DRuleBlocks();
             // Parameters();
@@ -99,7 +99,7 @@ namespace MyShaderAnalysis.staticanalysis
             {
                 string biText = $"{ruleBlock.BlockIndex:00}";
                 string ruleIncExc = ruleBlock.Rule == ConditionalRule.Requires ? "inc" : "exc";
-                string ruleText = $"{ruleIncExc}({ruleBlock.Rule})";
+                string ruleText = $"{ruleIncExc}({(int) ruleBlock.Rule})";
                 string a1Text = $"{ruleBlock.Arg1,2}";
                 string btText = $"{ruleBlock.BlockType}";
                 // string ctText = $"{CombineIntArray(ruleBlock.ConditionalTypes)}";
@@ -167,7 +167,8 @@ namespace MyShaderAnalysis.staticanalysis
                             // CollectStringValue(reportLine);
                             // string biText = $"{dRuleBlock.BlockIndex:00}";
                             string biText = $".";
-                            string ruleText = $"{dRuleBlock.Rule}";
+                            string ruleIncExc = dRuleBlock.Rule == ConditionalRule.Requires ? "inc" : "exc";
+                            string ruleText = $"{ruleIncExc}({(int)dRuleBlock.Rule})";
                             string a1Text = $"{dRuleBlock.Arg1,2}";
                             string btText = $"{dRuleBlock.BlockType}";
                             /// string ctText = $"{CombineIntArray(dRuleBlock.ConditionalTypes)}";

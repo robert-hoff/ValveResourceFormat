@@ -730,7 +730,7 @@ namespace MyShaderFile.CompiledShader
     }
 
     // MipmapBlocks are always 280 bytes long
-    public class MipmapBlock : ShaderDataBlock
+    public class ChannelBlock : ShaderDataBlock
     {
         public int BlockIndex { get; }
         public string Name { get; }
@@ -741,7 +741,7 @@ namespace MyShaderFile.CompiledShader
         public int Arg4 { get; }
         public int Arg5 { get; }
 
-        public MipmapBlock(ShaderDataReader datareader, int blockIndex) : base(datareader)
+        public ChannelBlock(ShaderDataReader datareader, int blockIndex) : base(datareader)
         {
             BlockIndex = blockIndex;
             Arg0 = datareader.ReadBytes(4);

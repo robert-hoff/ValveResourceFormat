@@ -34,7 +34,7 @@ namespace MyShaderFile.CompiledShader
         public List<DBlock> DBlocks { get; private set; } = new();
         public List<ConstraintsBlock> DConstraintsBlocks { get; private set; } = new();
         public List<ParamBlock> ParamBlocks { get; private set; } = new();
-        public List<MipmapBlock> MipmapBlocks { get; private set; } = new();
+        public List<ChannelBlock> MipmapBlocks { get; private set; } = new();
         public List<BufferBlock> BufferBlocks { get; private set; } = new();
         public List<VertexSymbolsBlock> SymbolBlocks { get; private set; } = new();
 
@@ -166,7 +166,7 @@ namespace MyShaderFile.CompiledShader
             var mipmapBlockCount = DataReader.ReadInt32();
             for (var i = 0; i < mipmapBlockCount; i++)
             {
-                MipmapBlock nextMipmapBlock = new(DataReader, i);
+                ChannelBlock nextMipmapBlock = new(DataReader, i);
                 MipmapBlocks.Add(nextMipmapBlock);
             }
             var bufferBlockCount = DataReader.ReadInt32();
