@@ -342,10 +342,10 @@ namespace MyShaderFile.CompiledShader
     public class ConstraintsBlock : ShaderDataBlock
     {
         public int BlockIndex { get; }
-        public int Rule { get; }  // 2 = dependency-rule (other files), 3 = exclusion (1 not present, as in the compat-blocks)
-        public int BlockType { get; } // ALWAYS 3 (for sf-constraint-blocks this value is 1 for features files and 2 for all other files)
+        public ConditionalRule Rule { get; }  // 2 = dependency-rule (other files), 3 = exclusion (1 not present, as in the compat-blocks)
+        public ConditionalType BlockType { get; } // ALWAYS 3 (for sf-constraint-blocks this value is 1 for features files and 2 for all other files)
         public int Arg1 { get; } // arg1 at (88) sometimes has a value > -1 (in compat-blocks this value is always seen to be -1)
-        public int[] ConditionalTypes { get; }
+        public ConditionalType[] ConditionalTypes { get; }
         public int[] Indices { get; }
         public int[] Values { get; }
         public int[] Range2 { get; }
@@ -354,14 +354,10 @@ namespace MyShaderFile.CompiledShader
         public ConstraintsBlock(ShaderDataReader datareader, int blockIndex) : base(datareader)
         {
             BlockIndex = blockIndex;
-            Rule = datareader.ReadInt32();
-            BlockType = datareader.ReadInt32();
-            if (BlockType < 1 || BlockType > 3)
-            {
-                throw new ShaderParserException("unexpected value!");
-            }
+            Rule = (ConditionalRule) datareader.ReadInt32();
+            BlockType = (ConditionalType)datareader.ReadInt32();
             // flags at (8)
-            ConditionalTypes = ReadByteFlags();
+            ConditionalTypes = Array.ConvertAll(ReadByteFlags(), x => (ConditionalType)x);
             // range0 at (24)
             Indices = ReadIntRange();
             datareader.BaseStream.Position += 64 - Indices.Length * 4;
@@ -377,6 +373,15 @@ namespace MyShaderFile.CompiledShader
             Description = datareader.ReadNullTermStringAtPosition();
             datareader.BaseStream.Position += 256;
         }
+        public ConstraintsBlock(ShaderDataReader datareader, int blockIndex, ConditionalType conditionalTypeVerify)
+            : this(datareader, blockIndex)
+        {
+            if (BlockType != conditionalTypeVerify)
+            {
+                throw new UnexpectedMagicException($"Expected {conditionalTypeVerify} constraint block", BlockType.ToString(), nameof(BlockType));
+            }
+        }
+
         private int[] ReadIntRange()
         {
             List<int> ints0 = new();

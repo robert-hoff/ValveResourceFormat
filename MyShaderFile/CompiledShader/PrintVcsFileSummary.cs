@@ -212,9 +212,10 @@ namespace MyShaderFile.CompiledShader
                 const int BL = 70;
                 var breakNames = CombineValuesBreakString(sfNames, BL);
                 var s0 = $"[{sfRuleBlock.BlockIndex,2}]";
-                var s1 = (sfRuleBlock.Rule == 1 || sfRuleBlock.Rule == 2) ? $"INC({sfRuleBlock.Rule})" : $"EXC({sfRuleBlock.Rule})";
-                // var s3 = $"{GetByteFlagsAsString(sfRuleBlock)}";
-                var s3 = $"MISSING XXXXXXXXXXXX";
+                var s1 = (sfRuleBlock.Rule == ConditionalRule.Requires || sfRuleBlock.Rule == ConditionalRule.Allow) ?
+                    $"INC({sfRuleBlock.Rule})" : $"EXC({sfRuleBlock.Rule})";
+                // var s3 = $"{CombineIntArray(sfRuleBlock.ConditionalTypes)}";
+                var s3 = "";
                 var s4 = $"{breakNames[0]}";
                 var s5 = $"{CombineIntArray(sfRuleBlock.Indices)}";
                 var s6 = $"{CombineIntArray(sfRuleBlock.Values)}";
@@ -278,23 +279,21 @@ namespace MyShaderFile.CompiledShader
                 var dRuleName = new string[dRuleBlock.ConditionalTypes.Length];
                 for (var i = 0; i < dRuleName.Length; i++)
                 {
-                    if (dRuleBlock.ConditionalTypes[i] == 3)
+                    dRuleName[i] = dRuleBlock.ConditionalTypes[i] switch
                     {
-                        dRuleName[i] = shaderFile.DBlocks[dRuleBlock.Indices[i]].Name0;
-                        continue;
-                    }
-                    if (dRuleBlock.ConditionalTypes[i] == 2)
-                    {
-                        dRuleName[i] = shaderFile.SfBlocks[dRuleBlock.Indices[i]].Name0;
-                        continue;
-                    }
-                    throw new ShaderParserException($"unknown flag value {dRuleBlock.ConditionalTypes[i]}");
+                        ConditionalType.Dynamic => shaderFile.DBlocks[dRuleBlock.Indices[i]].Name0,
+                        ConditionalType.Static => shaderFile.SfBlocks[dRuleBlock.Indices[i]].Name0,
+                        ConditionalType.Feature => throw new InvalidOperationException("Dynamic combos can't be constrained by features!"),
+                        _ => throw new ShaderParserException($"Unknown {nameof(ConditionalType)} {dRuleBlock.ConditionalTypes[i]}")
+                    };
                 }
                 const int BL = 70;
                 var breakNames = CombineValuesBreakString(dRuleName, BL);
                 var s0 = $"[{dRuleBlock.BlockIndex,2}]";
-                var s1 = (dRuleBlock.Rule == 1 || dRuleBlock.Rule == 2) ? $"INC({dRuleBlock.Rule})" : $"EXC({dRuleBlock.Rule})";
-                var s3 = $"{CombineIntArray(dRuleBlock.ConditionalTypes)}";
+                var s1 = (dRuleBlock.Rule == ConditionalRule.Requires || dRuleBlock.Rule == ConditionalRule.Allow) ?
+                    $"INC({dRuleBlock.Rule})" : $"EXC({dRuleBlock.Rule})";
+                // var s3 = $"{CombineIntArray(dRuleBlock.ConditionalTypes)}";
+                var s3 = "";
                 var s4 = $"{breakNames[0]}";
                 var s5 = $"{CombineIntArray(dRuleBlock.Indices)}";
                 var s6 = $"{CombineIntArray(dRuleBlock.Values)}";

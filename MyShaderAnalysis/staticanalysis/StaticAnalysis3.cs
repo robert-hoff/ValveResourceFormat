@@ -51,7 +51,7 @@ namespace MyShaderAnalysis.staticanalysis
                         {
                             // if (dRuleBlock.Values.Length > 0)
                             // if (dRuleBlock.Arg1 > -1)
-                            if (dRuleBlock.BlockType == 1 && dRuleBlock.Description.Length > 0)
+                            if (dRuleBlock.BlockType == ConditionalType.Feature && dRuleBlock.Description.Length > 0)
                             // if (dRuleBlock.Description.Length == 0 && shaderFile.VcsProgramType == VcsProgramType.Features)
                             // if (shaderFile.VcsProgramType == VcsProgramType.Features)
                             {
@@ -98,11 +98,12 @@ namespace MyShaderAnalysis.staticanalysis
             foreach (ConstraintsBlock ruleBlock in rules)
             {
                 string biText = $"{ruleBlock.BlockIndex:00}";
-                string ruleIncExc = ruleBlock.Rule == 2 ? "inc" : "exc";
+                string ruleIncExc = ruleBlock.Rule == ConditionalRule.Requires ? "inc" : "exc";
                 string ruleText = $"{ruleIncExc}({ruleBlock.Rule})";
                 string a1Text = $"{ruleBlock.Arg1,2}";
                 string btText = $"{ruleBlock.BlockType}";
-                string ctText = $"{CombineIntArray(ruleBlock.ConditionalTypes)}";
+                // string ctText = $"{CombineIntArray(ruleBlock.ConditionalTypes)}";
+                string ctText = CombineIntArray(Array.ConvertAll(ruleBlock.ConditionalTypes, x => (int)x));
                 string indText = $"{CombineIntArray(ruleBlock.Indices)}";
                 string valText = $"{CombineIntArray(ruleBlock.Values)}";
                 string ran2Text = $"{CombineIntArray(ruleBlock.Range2)}";
@@ -169,7 +170,8 @@ namespace MyShaderAnalysis.staticanalysis
                             string ruleText = $"{dRuleBlock.Rule}";
                             string a1Text = $"{dRuleBlock.Arg1,2}";
                             string btText = $"{dRuleBlock.BlockType}";
-                            string ctText = $"{CombineIntArray(dRuleBlock.ConditionalTypes)}";
+                            /// string ctText = $"{CombineIntArray(dRuleBlock.ConditionalTypes)}";
+                            string ctText = CombineIntArray(Array.ConvertAll(dRuleBlock.ConditionalTypes, x => (int)x));
                             string indText = $"{CombineIntArray(dRuleBlock.Indices)}";
                             // string indText = $".";
                             string valText = $"{CombineIntArray(dRuleBlock.Values)}";

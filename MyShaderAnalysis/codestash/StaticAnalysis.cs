@@ -162,19 +162,20 @@ namespace MyShaderAnalysis.codestash
                             $"{shaderFile.DBlocks[0].Name0,-33}");
                     }
 
-                    if (uknBlock.Rule == 2 && AllFlagsAre3(uknBlock))
+                    if (uknBlock.Rule == ConditionalRule.Requires && AllFlagsAre3(uknBlock))
                     {
                         Console.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {GetConciseDescription(uknBlock, new int[] { 8, 4, 7, 5 })}" +
                             $"{shaderFile.DBlocks[0].Name0,-33} {shaderFile.DBlocks[1].Name0}");
                     }
 
-                    if (uknBlock.Rule == 3 && AllFlagsAre3(uknBlock) && uknBlock.ConditionalTypes.Length >= 2)
+                    if (uknBlock.Rule == ConditionalRule.Allow && AllFlagsAre3(uknBlock) && uknBlock.ConditionalTypes.Length >= 2)
                     {
                         Console.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-44} {GetConciseDescription(uknBlock, new int[] { 8, 4, 12, 5 })} " +
                             $"{GetResolvedNames(uknBlock, shaderFile.SfBlocks, shaderFile.DBlocks)}");
                     }
 
-                    if (uknBlock.Rule == 2 && uknBlock.ConditionalTypes.Length == 2 && uknBlock.ConditionalTypes[1] == 2 && uknBlock.Values.Length == 1)
+                    if (uknBlock.Rule == ConditionalRule.Requires && uknBlock.ConditionalTypes.Length == 2 &&
+                        uknBlock.ConditionalTypes[1] == ConditionalType.Static && uknBlock.Values.Length == 1)
                     {
                         Console.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {GetConciseDescription(uknBlock, new int[] { 8, 4, 12, 5 })} " +
                             $"{GetResolvedNames(uknBlock, shaderFile.SfBlocks, shaderFile.DBlocks)}");
@@ -192,7 +193,7 @@ namespace MyShaderAnalysis.codestash
                             $"{GetResolvedNames(uknBlock, shaderFile.SfBlocks, shaderFile.DBlocks)}");
                     }
 
-                    if (uknBlock.Rule == 2 && uknBlock.Values.Length == 0 && uknBlock.ConditionalTypes.Length >= 3)
+                    if (uknBlock.Rule == ConditionalRule.Requires && uknBlock.Values.Length == 0 && uknBlock.ConditionalTypes.Length >= 3)
                     {
                         Console.WriteLine($"{ShortHandName(vcsFilenamepath)[1..],-55} {GetConciseDescription(uknBlock, new int[] { 8, 4, 12, 5 })} " +
                             $"{GetResolvedNames(uknBlock, shaderFile.SfBlocks, shaderFile.DBlocks)}");
@@ -212,7 +213,7 @@ namespace MyShaderAnalysis.codestash
             var flagsAre3 = true;
             foreach (var flag in dRuleBlock.ConditionalTypes)
             {
-                if (flag != 3)
+                if (flag != ConditionalType.Dynamic)
                 {
                     flagsAre3 = false;
                 }
@@ -227,8 +228,12 @@ namespace MyShaderAnalysis.codestash
             {
                 p = usePadding;
             }
+            //var relRuleKeyDesciption = $"{RelRuleDescribe(uknBlock).PadRight(p[0])}{CombineIntArray(uknBlock.Values).PadRight(p[1])}" +
+            //    $"{CombineIntArray(uknBlock.ConditionalTypes, includeParenth: true).PadRight(p[2])}{CombineIntArray(uknBlock.Range2).PadRight(p[3])}";
             var relRuleKeyDesciption = $"{RelRuleDescribe(uknBlock).PadRight(p[0])}{CombineIntArray(uknBlock.Values).PadRight(p[1])}" +
-                $"{CombineIntArray(uknBlock.ConditionalTypes, includeParenth: true).PadRight(p[2])}{CombineIntArray(uknBlock.Range2).PadRight(p[3])}";
+                $"{CombineIntArray(Array.ConvertAll(uknBlock.ConditionalTypes, x => (int)x), includeParenth: true).PadRight(p[2])}" +
+                $"{CombineIntArray(uknBlock.Range2).PadRight(p[3])}";
+
             return relRuleKeyDesciption;
         }
 
@@ -237,12 +242,12 @@ namespace MyShaderAnalysis.codestash
             List<string> names = new();
             for (var i = 0; i < dRuleBlock.ConditionalTypes.Length; i++)
             {
-                if (dRuleBlock.ConditionalTypes[i] == 2)
+                if (dRuleBlock.ConditionalTypes[i] == ConditionalType.Static)
                 {
                     names.Add(sfBlocks[dRuleBlock.Indices[i]].Name0);
                     continue;
                 }
-                if (dRuleBlock.ConditionalTypes[i] == 3)
+                if (dRuleBlock.ConditionalTypes[i] == ConditionalType.Dynamic)
                 {
                     names.Add(dBlocks[dRuleBlock.Indices[i]].Name0);
                     continue;
@@ -253,11 +258,11 @@ namespace MyShaderAnalysis.codestash
         }
         public static string RelRuleDescribe(ConstraintsBlock dRuleBlock)
         {
-            return dRuleBlock.Rule == 3 ? "EXC(3)" : $"INC({dRuleBlock.Rule})";
+            return dRuleBlock.Rule == ConditionalRule.Allow ? "EXC(3)" : $"INC({dRuleBlock.Rule})";
         }
         public static string GetByteFlagsAsString(ConstraintsBlock sRuleBlock)
         {
-            return CombineIntArray(sRuleBlock.ConditionalTypes);
+            return CombineIntArray(Array.ConvertAll(sRuleBlock.ConditionalTypes, x => (int)x));
         }
 
 
@@ -270,7 +275,8 @@ namespace MyShaderAnalysis.codestash
                 foreach (ConstraintsBlock unkBlock in shaderFile.DConstraintsBlocks)
                 {
                     string relRuleKeyDesciption = $"{RelRuleDescribe(unkBlock),-10} {CombineValues2(unkBlock.Values),-8} " +
-                        $"{CombineValues2(unkBlock.ConditionalTypes, includeParenth: true),-15} {CombineValues2(unkBlock.Range2)}";
+                        $"{CombineValues2(Array.ConvertAll(unkBlock.ConditionalTypes, x => (int)x), includeParenth: true),-15} " +
+                        $"{CombineValues2(unkBlock.Range2)}";
                     CollectStringValue(relRuleKeyDesciption);
                 }
             }
@@ -585,12 +591,12 @@ namespace MyShaderAnalysis.codestash
                 string[] uknNames = new string[uBlock.ConditionalTypes.Length];
                 for (int i = 0; i < uknNames.Length; i++)
                 {
-                    if (uBlock.ConditionalTypes[i] == 3)
+                    if (uBlock.ConditionalTypes[i] == ConditionalType.Dynamic)
                     {
                         uknNames[i] = shaderFile.DBlocks[uBlock.Indices[i]].Name0;
                         continue;
                     }
-                    if (uBlock.ConditionalTypes[i] == 2)
+                    if (uBlock.ConditionalTypes[i] == ConditionalType.Static)
                     {
                         uknNames[i] = shaderFile.SfBlocks[uBlock.Indices[i]].Name0;
                         continue;
@@ -601,9 +607,9 @@ namespace MyShaderAnalysis.codestash
                 const int BL = 70;
                 string[] breakNames = CombineValuesBreakString(uknNames, BL);
                 string s0 = $"[{uBlock.BlockIndex,2}]";
-                string s1 = (uBlock.Rule == 1 || uBlock.Rule == 2) ? $"INC({uBlock.Rule})" : $"EXC({uBlock.Rule})";
+                string s1 = uBlock.Rule == ConditionalRule.Requires ? $"INC({uBlock.Rule})" : $"EXC({uBlock.Rule})";
                 // string s2 = $"{cBlock.arg0}";
-                string s3 = $"{CombineIntArray(uBlock.ConditionalTypes)}";
+                string s3 = $"{CombineIntArray(Array.ConvertAll(uBlock.ConditionalTypes, x => (int)x))}";
                 // string s4 = $"{CombineValues(uknNames)}";
                 string s4 = $"{breakNames[0]}";
                 // string s4 = "NAMES HERE";
@@ -651,7 +657,7 @@ namespace MyShaderAnalysis.codestash
                     }
                     {
                         // 16 bytes long, so these are skipped in the next part
-                        string val = CombineIntArray(uBlock.ConditionalTypes);
+                        string val = CombineIntArray(Array.ConvertAll(uBlock.ConditionalTypes, x => (int)x));
                         int curVal = byteflags.GetValueOrDefault(val, 0);
                         byteflags[val] = curVal + 1;
                     }
@@ -693,7 +699,7 @@ namespace MyShaderAnalysis.codestash
                 OutputWriteLine($"rule = {uBlock.Rule}");
                 OutputWriteLine($"arg1 = {uBlock.BlockType}");
                 // OutputWriteLine($"{CombineValues(cBlock.flags)}");
-                OutputWriteLine($"      {CombineValues(uBlock.ConditionalTypes)}");
+                OutputWriteLine($"      {CombineValues(Array.ConvertAll(uBlock.ConditionalTypes, x => (int)x))}");
                 OutputWriteLine($"{CombineValues(uBlock.Indices)}");
                 OutputWriteLine($"{CombineValues(uBlock.Values)}");
                 OutputWriteLine($"{CombineValues(uBlock.Range2)}");
@@ -1063,7 +1069,7 @@ namespace MyShaderAnalysis.codestash
                 string[] breakNames = CombineValuesBreakString(sfNames, BL);
 
                 string s0 = $"[{cBlock.BlockIndex,2}]";
-                string s1 = (cBlock.Rule == 1 || cBlock.Rule == 2) ? $"INC({cBlock.Rule})" : $"EXC({cBlock.Rule})";
+                string s1 = (cBlock.Rule == ConditionalRule.Requires) ? $"INC({cBlock.Rule})" : $"EXC({cBlock.Rule})";
                 // string s2 = $"{cBlock.arg0}";
                 string s3 = $"{GetByteFlagsAsString(cBlock)}";
                 // string s4 = $"{CombineValues(sfNames)}";
@@ -1096,12 +1102,12 @@ namespace MyShaderAnalysis.codestash
                         Console.WriteLine($"ERROR!");
                     }
 
-                    if (cBlock.BlockType == 1 && shaderFile.VcsProgramType != VcsProgramType.Features)
+                    if (cBlock.BlockType == ConditionalType.Feature && shaderFile.VcsProgramType != VcsProgramType.Features)
                     {
                         Console.WriteLine($"error!");
                     }
 
-                    if (cBlock.BlockType == 2)
+                    if (cBlock.BlockType == ConditionalType.Static)
                     {
                         Console.WriteLine($"{filenamepath}");
                     }
