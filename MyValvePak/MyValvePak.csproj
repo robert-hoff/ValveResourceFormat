@@ -5,21 +5,21 @@
     <TargetFramework>net5.0</TargetFramework>
     <ApplicationIcon />
     <StartupObject />
-    <RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
     <EnableNETAnalyzers>false</EnableNETAnalyzers>
+    <RunAnalyzersDuringLiveAnalysis>false</RunAnalyzersDuringLiveAnalysis>
+    <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <WarningLevel>0</WarningLevel>
-    <NoWarn />
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <WarningsAsErrors />
+    <WarningLevel>0</WarningLevel>
+    <NoWarn>NETSDK1138</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <WarningsAsErrors />
+    <WarningLevel>0</WarningLevel>
+    <NoWarn>NETSDK1138</NoWarn>
   </PropertyGroup>
-
 
 </Project>

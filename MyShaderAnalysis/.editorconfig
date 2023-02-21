@@ -10,7 +10,7 @@ trim_trailing_whitespace = true
 [*.cs]
 
 # R: use *explicit* type instead of var
-dotnet_diagnostic.IDE0008.severity = error
+dotnet_diagnostic.IDE0008.severity = suggestion
 
 # R: my additions
 # Some uselss simplication tip

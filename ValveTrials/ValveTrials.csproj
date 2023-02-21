@@ -1,4 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net6.0-windows</TargetFramework>
@@ -12,16 +13,20 @@
     <StartupObject>ValveTrials.Program</StartupObject>
     <AssemblyName>VRF</AssemblyName>
     <ValidateExecutableReferencesMatchSelfContained>false</ValidateExecutableReferencesMatchSelfContained>
+    <RunAnalyzersDuringLiveAnalysis>false</RunAnalyzersDuringLiveAnalysis>
+    <EnforceCodeStyleInBuild>false</EnforceCodeStyleInBuild>
   </PropertyGroup>
+
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <WarningsAsErrors />
-    <WarningLevel>0</WarningLevel>
-    <NoWarn>1701;1702;2008;NU1701</NoWarn>
+    <NoWarn>NU1701;MSB3290</NoWarn>
   </PropertyGroup>
+
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <NoWarn>1701;1702;NU1701</NoWarn>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <NoWarn>NU1701;MSB3290</NoWarn>
   </PropertyGroup>
+
   <ItemGroup>
     <COMReference Include="{215d64d2-031c-33c7-96e3-61794cd1ee61}">
       <WrapperTool>tlbimp</WrapperTool>
@@ -30,6 +35,7 @@
       <Guid>215d64d2-031c-33c7-96e3-61794cd1ee61</Guid>
     </COMReference>
   </ItemGroup>
+
   <ItemGroup>
   <!--
     <PackageReference Include="NAudio" Version="2.0.1" />
@@ -59,4 +65,5 @@
     </Compile>
   </ItemGroup>
   -->
+
 </Project>
