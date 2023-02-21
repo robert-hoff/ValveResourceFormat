@@ -77,7 +77,7 @@ namespace MyShaderAnalysis.util
                     }
                     lastBracketFound = i;
                 }
-                if (lines[i].Trim().Equals("") && i > (lastBracketFound + 1))
+                if (string.IsNullOrEmpty(lines[i].Trim()) && i > (lastBracketFound + 1))
                 {
                     removeLines[i] = true;
                 }
@@ -99,7 +99,7 @@ namespace MyShaderAnalysis.util
                 {
                     prevSingleBracket = i;
                 }
-                if (prevSingleBracket == i + 1 && lines[i].Trim().Equals(""))
+                if (prevSingleBracket == i + 1 && string.IsNullOrEmpty(lines[i].Trim()))
                 {
                     removeLines[i] = true;
                     prevSingleBracket = i;
@@ -122,7 +122,7 @@ namespace MyShaderAnalysis.util
                 {
                     prevSingleBracket = i;
                 }
-                if (prevSingleBracket == i - 1 && lines[i].Trim().Equals(""))
+                if (prevSingleBracket == i - 1 && string.IsNullOrEmpty(lines[i].Trim()))
                 {
                     removeLines[i] = true;
                     prevSingleBracket = i;
@@ -142,7 +142,7 @@ namespace MyShaderAnalysis.util
             int prevBlank = -1;
             for (int i = 0; i < lines.Count; i++)
             {
-                if (lines[i].Trim().Equals(""))
+                if (string.IsNullOrEmpty(lines[i].Trim()))
                 {
                     if (i - 1 == prevBlank)
                     {
@@ -202,7 +202,7 @@ namespace MyShaderAnalysis.util
             string[] lines = File.ReadAllLines($"{filenamepath}");
             foreach (string line in lines)
             {
-                if (!omitEmptyLines || !line.Trim().Equals(""))
+                if (!omitEmptyLines || !string.IsNullOrEmpty(line.Trim()))
                 {
                     data.Add(line);
                 }

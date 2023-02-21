@@ -1624,12 +1624,12 @@ namespace MyShaderAnalysis.codestash
                         int e1len = 0;
                         int e2len = 0;
                         int e3len = 0;
-                        if (e1 == "")
+                        if (string.IsNullOrEmpty(e1))
                         {
                             e1 = $"<span style='color:#999'>({i})</span>";
                             e1len = e1.Length - 2 - nd(i);
                         }
-                        if (e2 == "")
+                        if (string.IsNullOrEmpty(e2))
                         {
                             e2 = $"<span style='color:#999'>({i})</span>";
                             e2len = e2.Length - 2 - nd(i);
@@ -1637,7 +1637,7 @@ namespace MyShaderAnalysis.codestash
                         else
                         {
                         }
-                        if (e3 == "")
+                        if (string.IsNullOrEmpty(e3))
                         {
                             e3 = $"<span style='color:#999'>({i})</span>";
                             e3len = e3.Length - 2 - nd(i);

@@ -5,186 +5,163 @@ indent_style = space
 indent_size = 4
 charset = utf-8
 trim_trailing_whitespace = true
-# insert_final_newline = true
+insert_final_newline = true
 
 [*.cs]
 
-# use *explicit* type instead of var
-dotnet_diagnostic.IDE0008.severity = warning
+# dotnet_diagnostic.IDE0011.severity = none
+# dotnet_diagnostic.IDE0071.severity = none
+# dotnet_diagnostic.IDE1006.severity = none
+# dotnet_diagnostic.CA1304.severity = none
+# dotnet_diagnostic.CA1825.severity = none
+# dotnet_diagnostic.CA2225.severity = none
+# dotnet_diagnostic.CA5350.severity = none
+# dotnet_diagnostic.CS0219.severity = none
+# dotnet_diagnostic.CS0642.severity = none
+# dotnet_diagnostic.CS0414.severity = none
 
-# Simplify new expression (IDE0090)
+
+# --
+dotnet_diagnostic.IDE0003.severity = none
+# IDE0007: Prefer use of 'var'
+dotnet_diagnostic.IDE0007.severity = none
+# IDE0008: use *explicit* type instead of var
+dotnet_diagnostic.IDE0008.severity = error
+# IDE0011: Add braces to if statemetns (excellent suggestion)
+dotnet_diagnostic.IDE0011.severity = none
+# IDE0044: make member read only
+dotnet_diagnostic.IDE0044.severity = suggestion
+# IDE0051: unused member
+dotnet_diagnostic.IDE0051.severity = none
+# IDE0052: member can be removed as its never used
+dotnet_diagnostic.IDE0052.severity = suggestion
+# IDE0058: Use discard
+dotnet_diagnostic.IDE0058.severity = none
+# IDE0059: unecessary assignment
+dotnet_diagnostic.IDE0059.severity = suggestion
+# IDE0060: Remove unused parameter
+dotnet_diagnostic.IDE0060.severity = suggestion
+# IDE0090: Simplify new expression
 dotnet_diagnostic.IDE0090.severity = none
-
+# CA1024: User properties where appropriate
+dotnet_diagnostic.CA1024.severity = suggestion
+# CA1051: do not declare visible instance fields (reasonable suggestion)
+dotnet_diagnostic.CA1051.severity = suggestion
+# CA1052@ Static holder type
+dotnet_diagnostic.CA1052.severity = none
+# CA1054: URI parameters should not be strings
+dotnet_diagnostic.CA1054.severity = none
+# CA1055: URI return values should not be strings
+dotnet_diagnostic.CA1055.severity = none
+# CA1305: behaviour of string parsing could vary
+dotnet_diagnostic.CA1305.severity = none
+# CA1307: Specify StringComparison for clarity
+dotnet_diagnostic.CA1307.severity = suggestion
+# CA1309: Use ordinal StringComparison
+dotnet_diagnostic.CA1309.severity = suggestion
+# CA1310: Specify StringComparison for correctness
+dotnet_diagnostic.CA1310.severity = none
+# CA1801 unused parameters
+dotnet_diagnostic.CA1801.severity = none
+# CA1805: Member is explicitly initialized to its default value
+dotnet_diagnostic.CA1805.severity = none
+# CA1812: Avoid uninstantiated internal classes (reasonable tip)
+dotnet_diagnostic.CA1812.severity = suggestion
+# CA1820: Test for empty strings using string length
+dotnet_diagnostic.CA1820.severity = warning
+# CA1822: Mark members (methods) as static if appropriate
+dotnet_diagnostic.CA1822.severity = suggestion
+# CA1823: unused field
+dotnet_diagnostic.CA1823.severity = none
+# CA2201: Going on about Exceptions needing to be specific
+dotnet_diagnostic.CA2201.severity = none
 # CA2213: Disposable fields should be disposed
 dotnet_diagnostic.CA2213.severity = none
+# CA2211: Non-constant fields should not be visible (decent tip)
+dotnet_diagnostic.CA2211.severity = suggestion
 
-# Some uselss simplication tip
-dotnet_diagnostic.IDE0003.severity = none
 
-# Static holder type
-dotnet_diagnostic.CA1052.severity = none
-
-# unused field
-dotnet_diagnostic.CA1823.severity = none
-
-# member can be removed as its never used
-dotnet_diagnostic.IDE0052.severity = none
-
-# make member read only
-dotnet_diagnostic.IDE0044.severity = none
-
-# unecessary assignment
-dotnet_diagnostic.IDE0059.severity = none
-
-# unused member
-dotnet_diagnostic.IDE0051.severity = none
-
-# Member is explicitly initialized to its default value
-dotnet_diagnostic.CA1805.severity = none
-
-# Going on about Exceptions needing to be specific
-dotnet_diagnostic.CA2201.severity = none
-
+# --- Compiler Warning (level 2) CS0162
+# CS0162: unreacable code detected
+dotnet_diagnostic.CS0162.severity = suggestion
+# Compiler Warning (level 3) CS0162
+# ---------------------------------
+# ** Why do some of these have the same message? **
+# CA0168: variable declared but never used
+dotnet_diagnostic.CS0168.severity = suggestion
 # Field is never used
-dotnet_diagnostic.CS0169.severity = none
-
-# behaviour of string parsing could vary
-dotnet_diagnostic.CA1305.severity = none
-
-# unused parameters
-dotnet_diagnostic.CA1801.severity = none
-
-# Remove unused parameter
-dotnet_diagnostic.IDE0060.severity = suggestion
-
-# Use discard
-dotnet_diagnostic.IDE0058.severity = none
-
-# R: need some more for newer version
-dotnet_diagnostic.CA1806.severity = none
-dotnet_diagnostic.CS0219.severity = none
-dotnet_diagnostic.CA1822.severity = none
-dotnet_diagnostic.CA1310.severity = none
-dotnet_diagnostic.CA1304.severity = none
-dotnet_diagnostic.CA1024.severity = none
-dotnet_diagnostic.CA1054.severity = none
-dotnet_diagnostic.CA2225.severity = none
-dotnet_diagnostic.CA1309.severity = none
-dotnet_diagnostic.CA1307.severity = none
-dotnet_diagnostic.CA1820.severity = none
-dotnet_diagnostic.IDE0071.severity = none
-dotnet_diagnostic.CA1055.severity = none
-dotnet_diagnostic.CA5350.severity = none
-dotnet_diagnostic.IDE0007.severity = none
-dotnet_diagnostic.IDE0011.severity = none
-dotnet_diagnostic.IDE1006.severity = none
-dotnet_diagnostic.CA2211.severity = none
-dotnet_diagnostic.CS0162.severity = none
-dotnet_diagnostic.CA1812.severity = none
-dotnet_diagnostic.CA1825.severity = none
-dotnet_diagnostic.CS0168.severity = none
-dotnet_diagnostic.CS0414.severity = none
-dotnet_diagnostic.CS0642.severity = none
-
-
-# CA1051 - do not declare visible instance fields
-# do not declare visible instance fields
-# dotnet_diagnostic.CA1051.severity = error
-dotnet_diagnostic.CA1051.severity = none
-
-
-# CA1014: Mark assemblies with CLSCompliant
-dotnet_diagnostic.CA1014.severity = none
-
+dotnet_diagnostic.CS0169.severity = suggestion
+# CS0219: this is also 'variable declared but never used'
+dotnet_diagnostic.CS0219.severity = suggestion
+# CS0414: field is assigned but never used
+dotnet_diagnostic.CS0414.severity = suggestion
+# CS0642: Possible mistaken empty statement
+dotnet_diagnostic.CS0642.severity = suggestion
+# CA1806: variable declared but never used
+dotnet_diagnostic.CA1806.severity = suggestion
 
 
 
 # ----------- these definitions came with VRF
 
+# CA1014: Mark assemblies with CLSCompliant
+dotnet_diagnostic.CA1014.severity = none
 # CA1002: Do not expose generic lists.
 dotnet_diagnostic.CA1002.severity = none
-
 # CA1003: Use generic event handler instances
 dotnet_diagnostic.CA1003.severity = suggestion
-
 # CA1008: Enums should have zero value
 dotnet_diagnostic.CA1008.severity = none
-
 # CA1010: Type directly or indirectly inherits 'ICollection' without implementing 'ICollection<T>'
 dotnet_diagnostic.CA1010.severity = none
-
 # CA1031: Do not catch general exception types
 dotnet_diagnostic.CA1031.severity = none
-
 # CA1034: Nested types should not be visible
 dotnet_diagnostic.CA1034.severity = none
-
 # CA1062: Validate arguments of public methods
 dotnet_diagnostic.CA1062.severity = none
-
 # CA1303: Do not pass literals as localized parameters
 dotnet_diagnostic.CA1303.severity = none
-
 # CA1304: Specify CultureInfo
 dotnet_diagnostic.CA1304.severity = none
-
 # CA1305: Specify IFormatProvider
 # dotnet_diagnostic.CA1305.severity = suggestion
-
 # CA1307: Specify StringComparison
 # dotnet_diagnostic.CA1307.severity = suggestion
-
 # CA1310: Specify StringComparison for correctness
 # dotnet_diagnostic.CA1310.severity = suggestion
-
 # CA1508: Avoid dead conditional code
 dotnet_diagnostic.CA1508.severity = none
-
 # CA1707: Remove the underscores from member name
 dotnet_diagnostic.CA1707.severity = none
-
 # CA1710: Rename to end in 'Dictionary'.
 dotnet_diagnostic.CA1710.severity = none
-
 # CA1711: Identifiers should not have incorrect suffix
 dotnet_diagnostic.CA1711.severity = suggestion
-
 # CA1720: Identifier contains type name
 dotnet_diagnostic.CA1720.severity = none
-
 # CA1721: The property name is confusing given the existence of method. Rename or remove one of these members.
 dotnet_diagnostic.CA1721.severity = none
-
 # CA1724: The type name ClosedCaptions conflicts in whole or in part with the namespace name
 dotnet_diagnostic.CA1724.severity = none
-
 # CA1814: is a multidimensional array. Replace it with a jagged array if possible.
 dotnet_diagnostic.CA1814.severity = none
-
 # CA1815: Override equals and operator equals on value types
 dotnet_diagnostic.CA1815.severity = none
-
 # CA1819: Properties should not return arrays
 dotnet_diagnostic.CA1819.severity = none
-
 # CA2000: Dispose objects before losing scope
 dotnet_diagnostic.CA2000.severity = none
-
 # CA2008: Do not create tasks without passing a TaskScheduler
 dotnet_diagnostic.CA2008.severity = none
-
 # CA2119: Seal methods that satisfy private interfaces
 dotnet_diagnostic.CA2119.severity = none
-
 # CA2201: Do not raise reserved exception types
 # dotnet_diagnostic.CA2201.severity = suggestion
-
 # CA2214: Do not call overridable methods in constructors
 dotnet_diagnostic.CA2214.severity = none
-
 # CA5394: Do not use insecure randomness
 dotnet_diagnostic.CA5394.severity = suggestion
-
 # use pattern matching
 dotnet_diagnostic.IDE0038.severity = warning
 
@@ -215,9 +192,6 @@ dotnet_style_collection_initializer = true:suggestion
 dotnet_style_coalesce_expression = true:suggestion
 dotnet_style_null_propagation = true:suggestion
 dotnet_style_explicit_tuple_names = true:suggestion
-
-
-
 
 #
 # CSharp code style settings:
@@ -278,10 +252,7 @@ csharp_style_throw_expression = true:suggestion
 csharp_style_conditional_delegate_call = true:suggestion
 
 # Space preferences
-# R: changing suggestion to warning or error doesn't do anything
-# csharp_space_after_cast = true:sugges
 csharp_space_after_cast = true
-
 csharp_space_after_colon_in_inheritance_clause = true:suggestion
 csharp_space_after_comma = true:suggestion
 csharp_space_after_dot = false:suggestion
