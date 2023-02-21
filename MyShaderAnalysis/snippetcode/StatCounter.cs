@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using MyShaderFile.CompiledShader;
+using System.Collections.Generic;
 
 namespace MyShaderAnalysis.snippetcode
 {
@@ -40,7 +40,7 @@ namespace MyShaderAnalysis.snippetcode
             int nrTotal = totalTally.Item2;
 
             string detailString = "";
-            foreach (var fileStat in stats)
+            foreach (KeyValuePair<VcsProgramType, (int, int)> fileStat in stats)
             {
                 detailString += getVcsStatToken(fileStat);
             }

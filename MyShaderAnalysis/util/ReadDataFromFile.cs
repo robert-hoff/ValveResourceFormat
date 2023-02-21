@@ -14,7 +14,7 @@ namespace MyShaderAnalysis.util
         {
             List<int> data = new();
             string[] lines = File.ReadAllLines($"{folder}/{filename}");
-            foreach (var line in lines)
+            foreach (string line in lines)
             {
                 data.Add(int.Parse(line));
             }

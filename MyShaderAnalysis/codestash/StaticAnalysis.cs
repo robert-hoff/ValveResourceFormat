@@ -1,7 +1,7 @@
+using MyShaderFile.CompiledShader;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using MyShaderFile.CompiledShader;
 using static MyShaderAnalysis.codestash.FileSystemOld;
 using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
 using static MyShaderAnalysis.filearchive.FileArchive;
@@ -210,8 +210,8 @@ namespace MyShaderAnalysis.codestash
 
         public static bool AllFlagsAre3(ConstraintsBlock dRuleBlock)
         {
-            var flagsAre3 = true;
-            foreach (var flag in dRuleBlock.ConditionalTypes)
+            bool flagsAre3 = true;
+            foreach (ConditionalType flag in dRuleBlock.ConditionalTypes)
             {
                 if (flag != ConditionalType.Dynamic)
                 {
@@ -230,7 +230,7 @@ namespace MyShaderAnalysis.codestash
             }
             //var relRuleKeyDesciption = $"{RelRuleDescribe(uknBlock).PadRight(p[0])}{CombineIntArray(uknBlock.Values).PadRight(p[1])}" +
             //    $"{CombineIntArray(uknBlock.ConditionalTypes, includeParenth: true).PadRight(p[2])}{CombineIntArray(uknBlock.Range2).PadRight(p[3])}";
-            var relRuleKeyDesciption = $"{RelRuleDescribe(uknBlock).PadRight(p[0])}{CombineIntArray(uknBlock.Values).PadRight(p[1])}" +
+            string relRuleKeyDesciption = $"{RelRuleDescribe(uknBlock).PadRight(p[0])}{CombineIntArray(uknBlock.Values).PadRight(p[1])}" +
                 $"{CombineIntArray(Array.ConvertAll(uknBlock.ConditionalTypes, x => (int)x), includeParenth: true).PadRight(p[2])}" +
                 $"{CombineIntArray(uknBlock.Range2).PadRight(p[3])}";
 
@@ -240,7 +240,7 @@ namespace MyShaderAnalysis.codestash
         public static string GetResolvedNames(ConstraintsBlock dRuleBlock, List<SfBlock> sfBlocks, List<DBlock> dBlocks)
         {
             List<string> names = new();
-            for (var i = 0; i < dRuleBlock.ConditionalTypes.Length; i++)
+            for (int i = 0; i < dRuleBlock.ConditionalTypes.Length; i++)
             {
                 if (dRuleBlock.ConditionalTypes[i] == ConditionalType.Static)
                 {
@@ -332,7 +332,7 @@ namespace MyShaderAnalysis.codestash
             string filenamepath = @$"{PCGL_DIR_NOT_CORE}/water_dota_pcgl_30_ps.vcs";
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
 
-            foreach (var item in shaderFile.ZframesLookup)
+            foreach (KeyValuePair<long, ZFrameDataDescription> item in shaderFile.ZframesLookup)
             {
                 // Console.WriteLine($"{item.Key:x04}");
 
@@ -340,7 +340,7 @@ namespace MyShaderAnalysis.codestash
                 // Console.WriteLine($"{binaryString}");
 
                 string spacedOutBinary = "";
-                foreach (var item2 in binaryString.ToCharArray())
+                foreach (char item2 in binaryString.ToCharArray())
                 {
                     spacedOutBinary += $"{item2}    ";
                 }
@@ -406,7 +406,7 @@ namespace MyShaderAnalysis.codestash
             List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, -1);
             // List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(DOTA_CORE_MOBILE_GLES_SOURCE, DOTA_DAC_MOBILE_GLES_SOURCE, -1);
             // List<FileTriple> triples = FileTriple.GetFeaturesVsPsFileTriple(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, -1);
-            foreach (var triple in triples)
+            foreach (FileTriple triple in triples)
             {
                 WriteVsPsFileSummary(triple, VcsProgramType.VertexShader, disableOutput: true);
                 CloseStreamWriter();
@@ -443,7 +443,7 @@ namespace MyShaderAnalysis.codestash
             foreach (string filenamepath in allVcsFiles)
             {
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
-                foreach (var sfBlock in shaderFile.SfBlocks)
+                foreach (SfBlock sfBlock in shaderFile.SfBlocks)
                 {
                     // Console.WriteLine($"{sfBlock.arg3}");
                     // if (sfBlock.arg2 != 1 && sfBlock.arg3 != 0) {
@@ -522,7 +522,7 @@ namespace MyShaderAnalysis.codestash
             ShaderFile shaderFile = null;
             try
             {
-            shaderFile = InstantiateShaderFile(filenamepath);
+                shaderFile = InstantiateShaderFile(filenamepath);
             } catch (Exception)
             {
                 Console.WriteLine($"ERROR! couldn't parse this file {filenamepath}");
@@ -576,7 +576,7 @@ namespace MyShaderAnalysis.codestash
                     OutputWriteLine("D-BLOCK RULES");
                     if (showLink)
                     {
-                        OutputWriteLine(GetHtmlLink(filenamepath,""));
+                        OutputWriteLine(GetHtmlLink(filenamepath, ""));
                     }
                     // OutputWriteLine(RemoveBaseDir(filenamepath));
                     // OutputWriteLine("");
@@ -803,7 +803,7 @@ namespace MyShaderAnalysis.codestash
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             if (showLink)
             {
-                OutputWriteLine($"SF params for {GetHtmlLink(filenamepath,"")}");
+                OutputWriteLine($"SF params for {GetHtmlLink(filenamepath, "")}");
             } else
             {
                 OutputWriteLine($"SF params for {ShortHandName(filenamepath)}");
@@ -815,7 +815,7 @@ namespace MyShaderAnalysis.codestash
             string h3 = "arg3";
             string blockHeader = $"{h0.PadRight(pad[0])} {h1.PadRight(pad[1])} {h2.PadRight(pad[2])} {h3.PadRight(pad[3])}";
             OutputWriteLine(blockHeader);
-            foreach (var sfBlock in shaderFile.SfBlocks)
+            foreach (SfBlock sfBlock in shaderFile.SfBlocks)
             {
                 string v0 = $"[{sfBlock.BlockIndex,2}]";
                 string v1 = sfBlock.Name;
@@ -889,7 +889,7 @@ namespace MyShaderAnalysis.codestash
             configHeader = $"{new string(' ', 14)}{configHeader}";
             // OutputWriteLine(configHeader);
 
-            foreach (var item in shaderFile.ZframesLookup)
+            foreach (KeyValuePair<long, ZFrameDataDescription> item in shaderFile.ZframesLookup)
             {
                 if (zframeCount % 100 == 0)
                 {
@@ -940,7 +940,7 @@ namespace MyShaderAnalysis.codestash
             OutputWriteLine("--------------");
             string[] abbreviations = new string[abbreviationsUsed.Count];
             int ind = 0;
-            foreach (var item in abbreviationsUsed)
+            foreach (KeyValuePair<string, int> item in abbreviationsUsed)
             {
                 abbreviations[ind++] = item.Key;
             }
@@ -969,7 +969,7 @@ namespace MyShaderAnalysis.codestash
             configHeader = $"{new string(' ', 14)}{configHeader}";
             // OutputWriteLine(configHeader);
 
-            foreach (var item in shaderFile.ZframesLookup)
+            foreach (KeyValuePair<long, ZFrameDataDescription> item in shaderFile.ZframesLookup)
             {
                 if (zframeCount % 100 == 0)
                 {
@@ -980,7 +980,7 @@ namespace MyShaderAnalysis.codestash
 
                 if (File.Exists(triple.psFile.GetZFrameHtmlFilenamepath(item.Key, "summary")))
                 {
-                    zframeLink = $"* <a href='{triple.psFile.GetZFrameLink(item.Key,"")}'>Z[0x{item.Key:x08}]</a>";
+                    zframeLink = $"* <a href='{triple.psFile.GetZFrameLink(item.Key, "")}'>Z[0x{item.Key:x08}]</a>";
                 }
 
                 OutputWriteLine($"{zframeLink} {CombineIntsSpaceSep(configState, 6)}");
@@ -1051,7 +1051,7 @@ namespace MyShaderAnalysis.codestash
             {
                 if (newFile && showLink)
                 {
-                    OutputWriteLine($"Compatibility rules for {GetHtmlLink(filenamepath,"")}");
+                    OutputWriteLine($"Compatibility rules for {GetHtmlLink(filenamepath, "")}");
                     // OutputWriteLine(RemoveBaseDir(filenamepath));
                     OutputWriteLine("");
                 } else if (newFile)
@@ -1095,7 +1095,7 @@ namespace MyShaderAnalysis.codestash
             foreach (string filenamepath in allVcsFiles)
             {
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
-                foreach (var cBlock in shaderFile.SfConstraintsBlocks)
+                foreach (ConstraintsBlock cBlock in shaderFile.SfConstraintsBlocks)
                 {
                     if (cBlock.Range2[1] != cBlock.Indices.Length)
                     {
@@ -1183,7 +1183,7 @@ namespace MyShaderAnalysis.codestash
 
                 if (newFile)
                 {
-                    OutputWrite(GetHtmlLink(filenamepath,"") + " ");
+                    OutputWrite(GetHtmlLink(filenamepath, "") + " ");
                 } else
                 {
                     OutputWrite("");
@@ -1280,7 +1280,7 @@ namespace MyShaderAnalysis.codestash
                 }
             }
 
-            foreach (var item in intrange)
+            foreach (KeyValuePair<string, int> item in intrange)
             {
                 Console.WriteLine($"{item.Key,5}                 {item.Value}");
             }
@@ -1392,7 +1392,7 @@ namespace MyShaderAnalysis.codestash
         {
             string[] @string = { "D_SPECULAR_GBUFFER_DISABLED", "S_MODE_FORWARD", "S_MODE_DEPTH", "S_MODE_TOOLS_VIS", "S_MODE_TOOLS_WIREFRAME" };
             string[] result = CombineValuesBreakString(@string, 70);
-            foreach (var str in result)
+            foreach (string str in result)
             {
                 Console.WriteLine($"{str}");
             }
@@ -1424,7 +1424,7 @@ namespace MyShaderAnalysis.codestash
         static string CombineValues(SortedDictionary<int, int> values)
         {
             string valueString = "";
-            foreach (var item in values)
+            foreach (KeyValuePair<int, int> item in values)
             {
                 valueString += $"{item.Key}, ";
             }
@@ -1434,7 +1434,7 @@ namespace MyShaderAnalysis.codestash
         static string CombineValues(SortedDictionary<string, int> values)
         {
             string valueString = "";
-            foreach (var item in values)
+            foreach (KeyValuePair<string, int> item in values)
             {
                 valueString += $"{item.Key}, ";
             }
@@ -1444,7 +1444,7 @@ namespace MyShaderAnalysis.codestash
         static string CombineValues(string[] values)
         {
             string valueString = "";
-            foreach (var item in values)
+            foreach (string item in values)
             {
                 valueString += $"{item}, ";
             }
@@ -1511,7 +1511,7 @@ namespace MyShaderAnalysis.codestash
         // static void SfSummaryOfFileTriple(List<(string, string, string)> triples) {
         static void SfSummaryOfFileTriples(List<FileTriple> triples)
         {
-            foreach (var triple in triples)
+            foreach (FileTriple triple in triples)
             {
                 string title = $"{triple.ftFile.RemoveBaseDir()} + vs, ps files";
                 OutputWriteLine($"{title}");
@@ -1530,11 +1530,11 @@ namespace MyShaderAnalysis.codestash
                 List<string> ps_items = new();
 
                 int count = 0;
-                foreach (var sfBlock in ftFile.SfBlocks)
+                foreach (SfBlock sfBlock in ftFile.SfBlocks)
                 {
                     p[count++][0] = $"{sfBlock.Name}({sfBlock.FeatureIndex})";
                 }
-                foreach (var sfBlock in vsFile.SfBlocks)
+                foreach (SfBlock sfBlock in vsFile.SfBlocks)
                 {
                     vs_items.Add(sfBlock.Name);
                     if (sfBlock.FeatureIndex >= 0)
@@ -1547,7 +1547,7 @@ namespace MyShaderAnalysis.codestash
                         n[sfBlock.Name] = 1;
                     }
                 }
-                foreach (var sfBlock in psFile.SfBlocks)
+                foreach (SfBlock sfBlock in psFile.SfBlocks)
                 {
                     ps_items.Add(sfBlock.Name);
                     if (sfBlock.FeatureIndex >= 0)
@@ -1567,11 +1567,11 @@ namespace MyShaderAnalysis.codestash
                 OutputWriteLine($"<span style='color: #3783ed'>Arguments in {triple.ftFile.filename} header ({ftHeaderNrArguments})</span>");
                 // print the features main args
                 int max_len = 0;
-                foreach (var mp in ftFile.FeaturesHeader.Modes)
+                foreach ((string, string) mp in ftFile.FeaturesHeader.Modes)
                 {
                     max_len = mp.Item1.Length > max_len ? mp.Item1.Length : max_len;
                 }
-                foreach (var mp in ftFile.FeaturesHeader.Modes)
+                foreach ((string, string) mp in ftFile.FeaturesHeader.Modes)
                 {
                     OutputWriteLine($"<span style='color: #3783ed'>{mp.Item1.PadRight(max_len)} {mp.Item2}</span>");
                 }
@@ -1580,7 +1580,7 @@ namespace MyShaderAnalysis.codestash
                 string headerText = $"{"[FEATURES-FILE]".PadRight(52)} ";
 
                 // OutputWrite(headerText.Replace("[", $"<a href='{triple.ftFile.GetBytePath()}'>").Replace("]", "</a>"));
-                OutputWrite(headerText.Replace("[", "").Replace("]",""));
+                OutputWrite(headerText.Replace("[", "").Replace("]", ""));
                 headerText = $"{"[VS-FILE]".PadRight(52)} ";
                 OutputWrite(headerText.Replace("[", $"<a href='{triple.vsFile.GetSummariesPath()}'>").Replace("]", "</a>"));
                 headerText = $"{"[PS-FILE]".PadRight(52)}\n";
@@ -1588,7 +1588,7 @@ namespace MyShaderAnalysis.codestash
                 OutputWriteLine($"{"-------------".PadRight(50)} {"-------".PadRight(50)} {"-------".PadRight(50)}");
 
                 // print the negative values
-                foreach (var item in n)
+                foreach (KeyValuePair<string, int> item in n)
                 {
                     string e1 = "";
                     string e2 = "";
@@ -1712,7 +1712,7 @@ namespace MyShaderAnalysis.codestash
 
         static void PrintStringList(List<string> strList)
         {
-            foreach (var s in strList)
+            foreach (string s in strList)
             {
                 Console.Write($"{s.PadRight(20)}");
             }
@@ -1722,7 +1722,7 @@ namespace MyShaderAnalysis.codestash
         static void ShowFileTriples()
         {
             List<(string, string, string)> shadFiles = GetFeaturesVsPsFileTriples();
-            foreach (var sFiles in shadFiles)
+            foreach ((string, string, string) sFiles in shadFiles)
             {
                 string directory = Path.GetDirectoryName(RemoveBaseDir(sFiles.Item1));
                 string file1 = Path.GetFileName(sFiles.Item1);
@@ -1748,7 +1748,7 @@ namespace MyShaderAnalysis.codestash
             foreach (string filenamepath in files)
             {
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
-                foreach (var sfBlock in shaderFile.SfBlocks)
+                foreach (SfBlock sfBlock in shaderFile.SfBlocks)
                 {
                     CollectStringValue($"{sfBlock.Name} ({sfBlock.FeatureIndex})");
                 }
@@ -1784,7 +1784,7 @@ namespace MyShaderAnalysis.codestash
                     filetype = "      PS       ";
                 }
 
-                foreach (var sfBlock in shaderFile.SfBlocks)
+                foreach (SfBlock sfBlock in shaderFile.SfBlocks)
                 {
                     CollectStringValue($"{sfBlock.Name.PadRight(35)[2..]} {filetype}    {sfBlock.Category.PadRight(35)}");
                 }
@@ -1800,7 +1800,7 @@ namespace MyShaderAnalysis.codestash
                 FeaturesHeaderBlock featuresHeader = shaderFile.FeaturesHeader;
                 Console.WriteLine($"{RemoveBaseDir(filenamepath)}");
                 // featuresHeader.ShowMainParams();
-                foreach (var parampair in featuresHeader.Modes)
+                foreach ((string, string) parampair in featuresHeader.Modes)
                 {
                     Console.WriteLine($"         {parampair.Item1.PadRight(35)} {parampair.Item2.PadRight(35)}");
                     // CollectStringValue($"{parampair.Item1.PadRight(35)} {parampair.Item2.PadRight(35)}");

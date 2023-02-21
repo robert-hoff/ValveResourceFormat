@@ -1,8 +1,8 @@
 using MyShaderAnalysis.parsing;
+using MyShaderFile.CompiledShader;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using MyShaderFile.CompiledShader;
 using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
 using static MyShaderAnalysis.filearchive.FileArchive;
 using static MyShaderAnalysis.filearchive.ReadShaderFile;
@@ -97,7 +97,7 @@ namespace MyShaderAnalysis.codestash
 
             string[] filenames = { triple.Item1, triple.Item2, triple.Item3 };
             // foreach (var filename in filenames) {
-            foreach (var filenamepath in filenames)
+            foreach (string filenamepath in filenames)
             {
                 // string filenamepath = @$"{directoryToUse}/{filename}";
                 WriteVcsByteAnalysisToHtml(filenamepath, writeHtmlLinks: true);

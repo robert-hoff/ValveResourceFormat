@@ -1,14 +1,12 @@
 using MyShaderAnalysis.filearchive;
 using MyShaderAnalysis.parsing;
 using MyShaderAnalysis.snippetcode;
-using MyShaderAnalysis.util;
+using MyShaderFile.CompiledShader;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using MyShaderFile.CompiledShader;
 using static MyShaderAnalysis.filearchive.FileArchive;
 using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
-using System.Diagnostics;
 
 /*
  * sometime around fall 2021 beginning 2022
@@ -95,7 +93,7 @@ namespace MyShaderAnalysis.batchtesting
             Console.WriteLine(headerText);
             Console.WriteLine(new string('-', headerText.Length));
 
-            foreach (var f in vcsFiles)
+            foreach (string f in vcsFiles)
             {
                 // string reportString = $"/{archiveName}/{Path.GetFileName(f)}".PadRight(100);
                 try
@@ -230,7 +228,7 @@ namespace MyShaderAnalysis.batchtesting
             Console.WriteLine(headerText);
             Console.WriteLine(new string('-', headerText.Length));
 
-            foreach (var f in vcsFiles)
+            foreach (string f in vcsFiles)
             {
                 try
                 {
@@ -309,7 +307,7 @@ namespace MyShaderAnalysis.batchtesting
             Console.WriteLine(headerText);
             Console.WriteLine(new string('-', headerText.Length));
 
-            foreach (var f in vcsFiles)
+            foreach (string f in vcsFiles)
             {
                 string reportString = $"     /{archiveName}/{Path.GetFileName(f)}".PadRight(100);
                 try
@@ -360,7 +358,7 @@ namespace MyShaderAnalysis.batchtesting
             Console.WriteLine(new string('-', headerText.Length));
 
             StatCounter statCounter = new();
-            foreach (var f in vcsFiles)
+            foreach (string f in vcsFiles)
             {
                 VcsProgramType vcsProgType = ComputeVcsProgramType(f);
                 string reportString = $"     /{archiveName}/{Path.GetFileName(f)}".PadRight(100);
@@ -414,7 +412,7 @@ namespace MyShaderAnalysis.batchtesting
         {
             string archiveName = archive.ToString();
             List<string> vcsFiles = GetVcsFiles(FileArchive.GetArchiveDir(archive), VcsProgramType.Undetermined);
-            foreach (var f in vcsFiles)
+            foreach (string f in vcsFiles)
             {
                 // new DataReaderVcsBytes(f, outputWriter: (x) => { }, showStatusMessage: true).PrintByteDetail(archiveName);
 

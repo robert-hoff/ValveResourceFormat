@@ -1,7 +1,7 @@
+using MyShaderFile.CompiledShader;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using MyShaderFile.CompiledShader;
 using static MyShaderAnalysis.codestash.FileSystemOld;
 using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
 using static MyShaderAnalysis.filearchive.FileArchive;
@@ -80,11 +80,11 @@ namespace MyShaderAnalysis.codestash
 
             int count = 0;
 
-            foreach (var triple in triples)
+            foreach (FileTriple triple in triples)
             {
                 int zframeCount = 0;
                 ShaderFile shaderFile = InstantiateShaderFile(triple.vsFile.filenamepath);
-                foreach (var item in shaderFile.ZframesLookup)
+                foreach (KeyValuePair<long, ZFrameDataDescription> item in shaderFile.ZframesLookup)
                 {
                     ZFileSummary(triple.vsFile, item.Key, writeFile: true, disableOutput: true);
                     CloseStreamWriter();
@@ -96,7 +96,7 @@ namespace MyShaderAnalysis.codestash
                 }
                 zframeCount = 0;
                 shaderFile = InstantiateShaderFile(triple.psFile.filenamepath);
-                foreach (var item in shaderFile.ZframesLookup)
+                foreach (KeyValuePair<long, ZFrameDataDescription> item in shaderFile.ZframesLookup)
                 {
                     ZFileSummary(triple.psFile, item.Key, writeFile: true, disableOutput: true);
                     CloseStreamWriter();
@@ -349,7 +349,7 @@ namespace MyShaderAnalysis.codestash
         static void PrintAbbreviations(ShaderFile shaderFile)
         {
             List<string> abbreviations = new();
-            foreach (var dBlock in shaderFile.DBlocks)
+            foreach (DBlock dBlock in shaderFile.DBlocks)
             {
                 string abbreviation = $"{dBlock.Name}({ShortenShaderParam(dBlock.Name).ToLower()})";
                 abbreviations.Add(abbreviation);
@@ -387,7 +387,7 @@ namespace MyShaderAnalysis.codestash
             MyShaderFile.CompiledShader.ZDataBlock leadData = zframeFile.LeadingData;
             PrintParamWriteSequence(shaderFile, leadData.Dataload, leadData.H0, leadData.H1, leadData.H2, seqName: seqName);
             OutputWriteLine("");
-            foreach (var item in writeSequences)
+            foreach (KeyValuePair<int, int> item in writeSequences)
             {
                 if (item.Value > lastseq)
                 {
@@ -645,12 +645,12 @@ namespace MyShaderAnalysis.codestash
 
             Dictionary<FileTokensOld, List<long>> zframesFound = new();
             List<string> coreFiles = GetVcsFiles(DOTA_GAME_PCGL_SOURCE, null, VcsProgramType.Undetermined, 30);
-            foreach (var filenamepath in coreFiles)
+            foreach (string filenamepath in coreFiles)
             {
                 FileTokensOld vcsFile = new(ARCHIVE_OLD.dotacore_pcgl, filenamepath);
                 List<long> zframeIds = new();
                 zframesFound.Add(vcsFile, zframeIds);
-                foreach (var item in vcsFile.GetZFrameListing())
+                foreach (string item in vcsFile.GetZFrameListing())
                 {
                     long zframeId = Convert.ToInt64(item[^13..^5], 16);
                     zframeIds.Add(zframeId);
@@ -658,19 +658,19 @@ namespace MyShaderAnalysis.codestash
             }
 
             List<string> gameFiles = GetVcsFiles(DOTA_CORE_PCGL_SOURCE, null, VcsProgramType.Undetermined, 30);
-            foreach (var filenamepath in gameFiles)
+            foreach (string filenamepath in gameFiles)
             {
                 FileTokensOld vcsFile = new(ARCHIVE_OLD.dotagame_pcgl, filenamepath);
                 List<long> zframeIds = new();
                 zframesFound.Add(vcsFile, zframeIds);
-                foreach (var item in vcsFile.GetZFrameListing())
+                foreach (string item in vcsFile.GetZFrameListing())
                 {
                     long zframeId = Convert.ToInt64(item[^13..^5], 16);
                     zframeIds.Add(zframeId);
                 }
             }
 
-            foreach (var item in zframesFound)
+            foreach (KeyValuePair<FileTokensOld, List<long>> item in zframesFound)
             {
                 FileTokensOld vcsFile = item.Key;
                 List<long> zframeIds = item.Value;

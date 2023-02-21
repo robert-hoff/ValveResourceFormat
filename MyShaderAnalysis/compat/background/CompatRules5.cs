@@ -122,7 +122,7 @@ namespace MyShaderAnalysis.compat
                 // for (int i = 2048; i < 4096; i++) {
                 // for (int i = 0; i < 5000; i++) {
                 bool exclude = false;
-                foreach (var exclRule in exclusions)
+                foreach ((int, int) exclRule in exclusions)
                 {
                     int b0 = exclRule.Item1;
                     int b1 = exclRule.Item2;
@@ -131,7 +131,7 @@ namespace MyShaderAnalysis.compat
                         exclude = true;
                     }
                 }
-                foreach (var incRule in inclusions)
+                foreach ((int, int) incRule in inclusions)
                 {
                     int b0 = incRule.Item1;
                     int b1 = incRule.Item2;
@@ -141,7 +141,7 @@ namespace MyShaderAnalysis.compat
                     }
                 }
 
-                foreach (var incRule in inclusionsTriple)
+                foreach ((int, int, int) incRule in inclusionsTriple)
                 {
                     int b0 = incRule.Item1;
                     int b1 = incRule.Item2;
@@ -322,7 +322,7 @@ namespace MyShaderAnalysis.compat
                 // for (int i = 2048; i < 4096; i++) {
                 // for (int i = 0; i < 5000; i++) {
                 bool exclude = false;
-                foreach (var exclRule in exclusions)
+                foreach ((int, int) exclRule in exclusions)
                 {
                     int b0 = exclRule.Item1;
                     int b1 = exclRule.Item2;
@@ -331,7 +331,7 @@ namespace MyShaderAnalysis.compat
                         exclude = true;
                     }
                 }
-                foreach (var incRule in inclusions)
+                foreach ((int, int) incRule in inclusions)
                 {
                     int b0 = incRule.Item1;
                     int b1 = incRule.Item2;
@@ -341,7 +341,7 @@ namespace MyShaderAnalysis.compat
                     }
                 }
 
-                foreach (var incRule in inclusionsTriple)
+                foreach ((int, int, int) incRule in inclusionsTriple)
                 {
                     int b0 = incRule.Item1;
                     int b1 = incRule.Item2;

@@ -1,8 +1,8 @@
+using MyShaderFile.CompiledShader;
+using MyShaderFile.Serialization.VfxEval;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using MyShaderFile.CompiledShader;
-using MyShaderFile.Serialization.VfxEval;
 using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
 using static MyShaderAnalysis.filearchive.FileArchive;
 using static MyShaderAnalysis.filearchive.ReadShaderFile;
@@ -244,7 +244,7 @@ namespace MyShaderAnalysis.codestash
             OutputWriteLine("                                       type       res  m0  a0  a1  a2      " +
                 "a3   a4  a5           i0             i6           i7      command(0,1)");
             List<string> strings0 = new();
-            foreach (var item in collectValuesString)
+            foreach (KeyValuePair<string, int> item in collectValuesString)
             {
                 OutputWriteLine(item.Key[cutstring..]);
             }
@@ -291,7 +291,7 @@ namespace MyShaderAnalysis.codestash
             {
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
                 // FileTokens tokens = new(filenamepath);
-                foreach (var sfBlocks in shaderFile.SfBlocks)
+                foreach (SfBlock sfBlocks in shaderFile.SfBlocks)
                 {
                     CollectStringValue($"{sfBlocks.Arg0}  {sfBlocks.RangeMin}  {sfBlocks.RangeMax}  {sfBlocks.Sys}  {sfBlocks.FeatureIndex}  {sfBlocks.Arg5}");
                 }
@@ -310,7 +310,7 @@ namespace MyShaderAnalysis.codestash
             {
                 ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
                 FileTokensOld tokens = new(filenamepath);
-                foreach (var sfBlocks in shaderFile.SfBlocks)
+                foreach (SfBlock sfBlocks in shaderFile.SfBlocks)
                 {
                     if (sfBlocks.CheckboxNames.Count > 0)
                     {

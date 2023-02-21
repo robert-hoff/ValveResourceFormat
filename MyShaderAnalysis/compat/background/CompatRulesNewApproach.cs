@@ -1,6 +1,6 @@
 using MyShaderAnalysis.filearchive;
-using System;
 using MyShaderFile.CompiledShader;
+using System;
 
 namespace MyShaderAnalysis.compat
 {
@@ -17,7 +17,7 @@ namespace MyShaderAnalysis.compat
         {
             string filenamepath = @$"{PCGL_DIR_NOT_CORE}/water_dota_pcgl_30_ps.vcs";
             ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
-            foreach (var sfBlock in shaderFile.SfBlocks)
+            foreach (SfBlock sfBlock in shaderFile.SfBlocks)
             {
                 Console.WriteLine($"{sfBlock.Name}");
             }

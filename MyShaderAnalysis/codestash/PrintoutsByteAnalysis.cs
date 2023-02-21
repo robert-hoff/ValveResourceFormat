@@ -1,8 +1,8 @@
 using MyShaderAnalysis.util;
+using MyShaderFile.CompiledShader;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using MyShaderFile.CompiledShader;
 using static MyShaderAnalysis.codestash.FileSystemOld;
 using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
 using static MyShaderAnalysis.filearchive.FileArchive;
@@ -44,7 +44,7 @@ namespace MyShaderAnalysis.codestash
 
         static void BatchPrintVcsBytes(List<string> vcsFiles)
         {
-            foreach (var filenamepath in vcsFiles)
+            foreach (string filenamepath in vcsFiles)
             {
                 PrintVcsFilesAsBytes(filenamepath);
             }
@@ -134,7 +134,7 @@ namespace MyShaderAnalysis.codestash
             // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_MOBILE_GLES_SOURCE, DOTA_DAC_MOBILE_GLES_SOURCE, VcsFileType.Any, 30);
             // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_MOBILE_GLES_SOURCE, DOTA_DAC_MOBILE_GLES_SOURCE, VcsProgramType.Undetermined, -1);
             // List<string> vcsFiles = GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsProgramType.Undetermined, -1);
-            foreach (var filenamepath in vcsFiles)
+            foreach (string filenamepath in vcsFiles)
             {
                 BatchPrintZframeBytes(filenamepath, LIMIT_ZFRAME_PRINTOUT);
             }
@@ -264,7 +264,7 @@ namespace MyShaderAnalysis.codestash
             // List<string> vcsFiles = GetVcsFiles(DOTA_DAC_MOBILE_GLES_SOURCE, DOTA_CORE_MOBILE_GLES_SOURCE, VcsProgramType.Undetermined, 30, LIMIT_NR: 20);
             // List<string> vcsFiles = GetVcsFiles(DOTA_DAC_MOBILE_GLES_SOURCE, DOTA_CORE_MOBILE_GLES_SOURCE, VcsProgramType.Undetermined, -1, LIMIT_NR: 20);
 
-            foreach (var filenamepath in vcsFiles)
+            foreach (string filenamepath in vcsFiles)
             {
                 FileTokensOld fileTokens = new FileTokensOld(filenamepath);
                 if (!fileTokens.sourceType.Equals("glsl") && !fileTokens.sourceType.Equals("gles"))
@@ -280,7 +280,7 @@ namespace MyShaderAnalysis.codestash
                     int gpuSourceToPrint = Math.Min(zframeFile.GpuSources.Count, LIMIT_GPU_SOURCES_TO_PRINT);
                     for (int j = 0; j < gpuSourceToPrint; j++)
                     {
-                        var glslSource = zframeFile.GpuSources[j];
+                        GpuSource glslSource = zframeFile.GpuSources[j];
                         string outputFilenamepath = $"{glslServerDir}/{fileTokens.GetGlslHtmlFilename(glslSource.GetEditorRefIdAsString())}";
                         WriteBytesToFile(glslSource.Sourcebytes, outputFilenamepath);
                     }
@@ -321,7 +321,7 @@ namespace MyShaderAnalysis.codestash
                 int gpuSourceToPrint = Math.Min(zframeFile.GpuSources.Count, LIMIT_GPU_SOURCES_TO_PRINT);
                 for (int j = 0; j < gpuSourceToPrint; j++)
                 {
-                    var glslSource = zframeFile.GpuSources[j];
+                    GpuSource glslSource = zframeFile.GpuSources[j];
                     string outputFilenamepath = $"{glslServerDir}/{fileTokens.GetGlslHtmlFilename(glslSource.GetEditorRefIdAsString())}";
                     WriteBytesToFile(glslSource.Sourcebytes, outputFilenamepath);
                 }
@@ -360,8 +360,7 @@ namespace MyShaderAnalysis.codestash
                 databytesFileWriter.WriteLine($"{GetHtmlFooter()}");
                 databytesFileWriter.Flush();
                 databytesFileWriter.Close();
-            }
-            else
+            } else
             {
                 File.WriteAllBytes(outputFilenamepath, databytes);
             }

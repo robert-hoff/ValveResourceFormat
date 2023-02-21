@@ -1,9 +1,9 @@
 using MyShaderAnalysis.filearchive;
 using MyShaderAnalysis.parsing;
+using MyShaderFile.CompiledShader;
 using System;
 using System.Diagnostics;
 using System.IO;
-using MyShaderFile.CompiledShader;
 
 namespace MyShaderAnalysis.batchtesting
 {
@@ -80,7 +80,7 @@ namespace MyShaderAnalysis.batchtesting
         public static void RunTestShaderFilesSelectedArchives()
         {
             // ARCHIVE[] archives = { ARCHIVE.dota_core_pcgl_v64, ARCHIVE.dota_game_pcgl_v64 };
-            ARCHIVE[] archives = { ARCHIVE.the_lab_pc_v62};
+            ARCHIVE[] archives = { ARCHIVE.the_lab_pc_v62 };
             foreach (ARCHIVE archive in archives)
             {
                 // FileArchive vcsArchive = new FileArchive(archive, VcsProgramType.Features, VcsShaderModelType._30);
@@ -91,7 +91,7 @@ namespace MyShaderAnalysis.batchtesting
 
         public static void RunTestShaderFilesAllArchives()
         {
-            var archives = Enum.GetValues(typeof(ARCHIVE));
+            Array archives = Enum.GetValues(typeof(ARCHIVE));
             foreach (ARCHIVE archive in archives)
             {
                 FileArchive vcsArchive = new FileArchive(archive, VcsProgramType.Undetermined);

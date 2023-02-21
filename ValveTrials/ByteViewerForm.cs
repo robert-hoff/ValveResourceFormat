@@ -1,8 +1,6 @@
 using System;
-using System.Drawing;
-using System.Collections;
-using System.ComponentModel;
 using System.ComponentModel.Design;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace ValveTrials
@@ -54,7 +52,7 @@ namespace ValveTrials
                 Anchor = AnchorStyles.Left | AnchorStyles.Bottom | AnchorStyles.Top,
                 // Click += formClickEvent,
 
-        };
+            };
             byteviewer.SetBytes(new byte[] { });
 
 

@@ -39,7 +39,7 @@ namespace MyShaderAnalysis.staticanalysis
             OutputFormatterTabulatedData outputter = new OutputFormatterTabulatedData();
             outputter.DefineHeaders(new string[] { "BlockIndex", "Rule", "Arg1", "BlockType", "ConditionalTypes",
                 "Indices", "Values", "Range2", "Desc." });
-            foreach (var fileArchive in fileArchives)
+            foreach (FileArchive fileArchive in fileArchives)
             {
                 foreach (FileVcsTokens vcsFile in fileArchive.GetFileVcsTokens())
                 {
@@ -153,7 +153,7 @@ namespace MyShaderAnalysis.staticanalysis
             OutputFormatterTabulatedData outputter = new OutputFormatterTabulatedData();
             outputter.DefineHeaders(new string[] { "BlockIndex", "Rule", "Arg1", "BlockType", "ConditionalTypes",
                 "Indices", "Values", "Range2", "Desc." });
-            foreach (var fileArchive in fileArchives)
+            foreach (FileArchive fileArchive in fileArchives)
             {
                 foreach (FileVcsTokens vcsFile in fileArchive.GetFileVcsTokens())
                 {
@@ -189,7 +189,7 @@ namespace MyShaderAnalysis.staticanalysis
                 }
             }
             List<string> rows = outputter.BuildTabulatedRows();
-            foreach (var row in rows)
+            foreach (string row in rows)
             {
                 CollectStringValue(row);
             }
@@ -208,7 +208,7 @@ namespace MyShaderAnalysis.staticanalysis
             fileArchives.Add(new FileArchive(ARCHIVE.dota_game_pcgl_v64, FEAT, VS, PS));
             fileArchives.Add(new FileArchive(ARCHIVE.dota_core_pcgl_v64, FEAT, VS, PS));
 
-            foreach (var fileArchive in fileArchives)
+            foreach (FileArchive fileArchive in fileArchives)
             {
                 Debug.WriteLine($"parsing {fileArchive.ArchiveName()}");
                 foreach (FileVcsTokens vcsFile in fileArchive.GetFileVcsTokens())
@@ -216,7 +216,7 @@ namespace MyShaderAnalysis.staticanalysis
                     try
                     {
                         ShaderFile shaderFile = vcsFile.GetShaderFile();
-                        foreach (var pBlock in shaderFile.ParamBlocks)
+                        foreach (ParamBlock pBlock in shaderFile.ParamBlocks)
                         {
                             CollectStringValue($"{pBlock.Name}");
                         }

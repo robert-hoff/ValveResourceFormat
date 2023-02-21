@@ -1,9 +1,9 @@
+using MyShaderFile.CompiledShader;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using MyShaderFile.CompiledShader;
 using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 
 namespace MyShaderAnalysis.snippetcode
@@ -106,7 +106,7 @@ namespace MyShaderAnalysis.snippetcode
 
         static void DumbTest6()
         {
-            var add = (int x, int y) => x + y;
+            Func<int, int, int> add = (int x, int y) => x + y;
             Console.WriteLine($"{add(10, 20)}");
         }
 
@@ -128,7 +128,7 @@ namespace MyShaderAnalysis.snippetcode
             string filenamepath = "debugoverlay_wireframe_pc_40_gs.vcs";
             var fetch = (string a, out VcsProgramType p1, out VcsPlatformType p2, out VcsShaderModelType p3) =>
             {
-                var items = ComputeVCSFileName(a); p1 = items.Item1; p2 = items.Item2; p3 = items.Item3;
+                (VcsProgramType ProgramType, VcsPlatformType PlatformType, VcsShaderModelType ShaderModelType) items = ComputeVCSFileName(a); p1 = items.Item1; p2 = items.Item2; p3 = items.Item3;
             };
             fetch(filenamepath, out VcsProgramType p1, out VcsPlatformType p2, out VcsShaderModelType p3);
             Console.WriteLine($"{p1}");
@@ -149,8 +149,8 @@ namespace MyShaderAnalysis.snippetcode
         static void GettingGsDataOut2()
         {
             string filenamepath = "debugoverlay_wireframe_pc_40_gs.vcs";
-            var vcsProg = (string a) => ComputeVCSFileName(a);
-            var res = vcsProg(filenamepath);
+            Func<string, (VcsProgramType ProgramType, VcsPlatformType PlatformType, VcsShaderModelType ShaderModelType)> vcsProg = (string a) => ComputeVCSFileName(a);
+            (VcsProgramType ProgramType, VcsPlatformType PlatformType, VcsShaderModelType ShaderModelType) res = vcsProg(filenamepath);
             Console.WriteLine($"{res.Item1}");
         }
 
@@ -171,13 +171,13 @@ namespace MyShaderAnalysis.snippetcode
 
         static void AddTwoNumbers()
         {
-            var add = (int x, int y) => x + y;
+            Func<int, int, int> add = (int x, int y) => x + y;
             Console.WriteLine($"{add(10, 20)}");
         }
 
         static void ConvertIntToByteString()
         {
-            var toByteString = (byte[] b) => $"{b[0]:x02} {b[1]:x02} {b[2]:x02} {b[3]:x02}";
+            Func<byte[], string> toByteString = (byte[] b) => $"{b[0]:x02} {b[1]:x02} {b[2]:x02} {b[3]:x02}";
             string byteString = toByteString(BitConverter.GetBytes(1010));
             Console.WriteLine($"{byteString}");
         }
@@ -278,7 +278,7 @@ namespace MyShaderAnalysis.snippetcode
 
             string assembleString = "";
             int count = 0;
-            foreach (var hexcode in input3.Split(' '))
+            foreach (string hexcode in input3.Split(' '))
             {
                 int hexChar = Convert.ToInt32(hexcode, 16);
                 if (hexChar >= 32 && hexChar <= 126)

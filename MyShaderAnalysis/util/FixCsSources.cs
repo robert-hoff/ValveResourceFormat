@@ -2,9 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MyShaderAnalysis.util
 {
@@ -44,7 +41,7 @@ namespace MyShaderAnalysis.util
         public static void ShowFixesForFile(string filenamepath)
         {
             List<string> sourceLines = GetModifiedSourceLines(filenamepath);
-            foreach (var item in sourceLines)
+            foreach (string item in sourceLines)
             {
                 Debug.WriteLine($"{item}");
             }
@@ -80,7 +77,7 @@ namespace MyShaderAnalysis.util
                     }
                     lastBracketFound = i;
                 }
-                if (lines[i].Trim().Equals("") && i >(lastBracketFound + 1))
+                if (lines[i].Trim().Equals("") && i > (lastBracketFound + 1))
                 {
                     removeLines[i] = true;
                 }
@@ -203,7 +200,7 @@ namespace MyShaderAnalysis.util
         {
             List<string> data = new();
             string[] lines = File.ReadAllLines($"{filenamepath}");
-            foreach (var line in lines)
+            foreach (string line in lines)
             {
                 if (!omitEmptyLines || !line.Trim().Equals(""))
                 {

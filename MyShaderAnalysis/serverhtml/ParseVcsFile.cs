@@ -2,10 +2,10 @@ using MyShaderAnalysis.filearchive;
 using MyShaderAnalysis.postprocessing;
 using MyShaderAnalysis.util;
 using MyShaderAnalysis.vulkanreflect;
+using MyShaderFile.CompiledShader;
 using System;
 using System.Globalization;
 using System.IO;
-using MyShaderFile.CompiledShader;
 using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 
 namespace MyShaderAnalysis.serverhtml
@@ -29,7 +29,7 @@ namespace MyShaderAnalysis.serverhtml
 
         public string GetVcsSummary()
         {
-            var buffer = new StringWriter(CultureInfo.InvariantCulture);
+            StringWriter buffer = new StringWriter(CultureInfo.InvariantCulture);
             new PrintVcsFileSummary(shaderFile, buffer.Write, showRichTextBoxLinks, fileTokens.GetRelatedFiles());
             return buffer.ToString();
         }
@@ -37,35 +37,35 @@ namespace MyShaderAnalysis.serverhtml
         public string GetVcsByteSummary()
         {
             // Console.WriteLine($"parsing {shaderFile.filenamepath} byte version");
-            var buffer = new StringWriter(CultureInfo.InvariantCulture);
+            StringWriter buffer = new StringWriter(CultureInfo.InvariantCulture);
             shaderFile.PrintByteDetail(outputWriter: buffer.Write);
             return buffer.ToString();
         }
 
         public string GetZframeSummary(ZFrameFile zframeFile)
         {
-            var buffer = new StringWriter(CultureInfo.InvariantCulture);
+            StringWriter buffer = new StringWriter(CultureInfo.InvariantCulture);
             new PrintZFrameSummary(shaderFile, zframeFile, outputWriter: buffer.Write, showRichTextBoxLinks);
             return buffer.ToString();
         }
 
         public string GetZframeByteSummary(ZFrameFile zframeFile)
         {
-            var buffer = new StringWriter(CultureInfo.InvariantCulture);
+            StringWriter buffer = new StringWriter(CultureInfo.InvariantCulture);
             zframeFile.PrintByteDetail(outputWriter: buffer.Write);
             return buffer.ToString();
         }
 
         public string GetGpuSource(ZFrameFile zframeFile, int gpuSourceId)
         {
-            var textBuffer = new StringWriter(CultureInfo.InvariantCulture);
+            StringWriter textBuffer = new StringWriter(CultureInfo.InvariantCulture);
 
             // Do spirv reflection if applicable
-            var gpuSource = zframeFile.GpuSources[gpuSourceId];
+            GpuSource gpuSource = zframeFile.GpuSources[gpuSourceId];
             if (gpuSource.Sourcebytes.Length > 0 && gpuSource is VulkanSource)
             {
                 VulkanSource vulkanSource = (VulkanSource)gpuSource;
-                var reflectedSpirv = DecompileSpirvDll.DecompileVulkan(vulkanSource.GetSpirvBytes());
+                string reflectedSpirv = DecompileSpirvDll.DecompileVulkan(vulkanSource.GetSpirvBytes());
                 textBuffer.GetStringBuilder().Clear();
                 textBuffer.WriteLine(vulkanSource.GetSourceDetails());
                 textBuffer.WriteLine($"// SPIR-V source ({vulkanSource.MetadataOffset}), Glsl reflection with SPIRV-Cross, KhronosGroup\n");
@@ -82,8 +82,8 @@ namespace MyShaderAnalysis.serverhtml
 
         public string GetGpuByteSource(ZFrameFile zframeFile, int gpuSourceId)
         {
-            var gpuSource = zframeFile.GpuSources[gpuSourceId];
-            var sourceBytes = gpuSource.Sourcebytes;
+            GpuSource gpuSource = zframeFile.GpuSources[gpuSourceId];
+            byte[] sourceBytes = gpuSource.Sourcebytes;
             string byteRepresentation = BytesToString(sourceBytes);
             return byteRepresentation;
         }

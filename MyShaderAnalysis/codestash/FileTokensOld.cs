@@ -1,6 +1,6 @@
+using MyShaderFile.CompiledShader;
 using System.Collections.Generic;
 using System.IO;
-using MyShaderFile.CompiledShader;
 using static MyShaderAnalysis.codestash.FileSystemOld;
 using static MyShaderAnalysis.filearchive.FileArchive;
 using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
@@ -170,7 +170,7 @@ namespace MyShaderAnalysis.codestash
 
         public string GetZFrameHtmlFilename(long zframeId, string label = "")
         {
-            if (label.Length>0)
+            if (label.Length > 0)
             {
                 label = $"-{label}";
             }
@@ -179,7 +179,7 @@ namespace MyShaderAnalysis.codestash
 
         public string GetZFrameLink(long zframeId, string label)
         {
-            if (label.Length>0)
+            if (label.Length > 0)
             {
                 label = $"-{label}";
             }
@@ -194,7 +194,7 @@ namespace MyShaderAnalysis.codestash
                 return zframeFiles;
             } else
             {
-                foreach (var zframeFile in Directory.GetFiles(GetZFramesServerDir()))
+                foreach (string zframeFile in Directory.GetFiles(GetZFramesServerDir()))
                 {
                     if (Path.GetFileName(zframeFile).StartsWith(name))
                     {
@@ -264,7 +264,7 @@ namespace MyShaderAnalysis.codestash
             {
                 return noBrackets ?
                     $"<a href='{GetZFrameLink(zframeId, "summary")}'>{zframeId:x08}</a>" :
-                    $"<a href='{GetZFrameLink(zframeId,"summary")}'>Z[{zframeId:x08}]</a>";
+                    $"<a href='{GetZFrameLink(zframeId, "summary")}'>Z[{zframeId:x08}]</a>";
             }
             // no zframe exists return plaintext
             return noBrackets ? $"{zframeId:x08}" : $"Z[{zframeId:x08}]";

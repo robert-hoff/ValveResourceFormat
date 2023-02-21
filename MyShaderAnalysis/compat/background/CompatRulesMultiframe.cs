@@ -1,9 +1,9 @@
 using MyShaderAnalysis.filearchive;
 using MyShaderAnalysis.serverhtml;
 using MyShaderAnalysis.util;
+using MyShaderFile.CompiledShader;
 using System;
 using System.Collections.Generic;
-using MyShaderFile.CompiledShader;
 using static MyShaderAnalysis.filearchive.FileArchive;
 
 //  17      16      15    14     13   12     11   10   9     8   7   6   5  4  3  2  1  0
@@ -30,12 +30,12 @@ namespace MyShaderAnalysis.compat
             foreach (string filenamepath in allVcsFiles)
             {
                 ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
-                foreach (var item in shaderFile.SfBlocks)
+                foreach (SfBlock item in shaderFile.SfBlocks)
                 {
                     map[item.Name] = 1;
                 }
             }
-            foreach (var item in map)
+            foreach (KeyValuePair<string, int> item in map)
             {
                 Console.WriteLine($"{item.Key,-60} {ShaderUtilHelpers.ShortenShaderParam(item.Key)}");
             }

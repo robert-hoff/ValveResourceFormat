@@ -1,5 +1,6 @@
 using MyShaderAnalysis.filearchive;
 using MyShaderFile.CompiledShader;
+using System.Collections.Generic;
 using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 
 namespace MyShaderAnalysis.compat
@@ -26,7 +27,7 @@ namespace MyShaderAnalysis.compat
             ConfigMappingSParams configGen = new(shaderFile);
             // zframeGen.ShowOffsetAndLayersArrays();
 
-            foreach (var item in shaderFile.ZframesLookup)
+            foreach (KeyValuePair<long, ZFrameDataDescription> item in shaderFile.ZframesLookup)
             {
                 int[] state = configGen.GetConfigState(item.Key);
                 ShowIntArray(state);

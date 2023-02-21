@@ -14,7 +14,7 @@ namespace MyShaderAnalysis.snippetcode
         {
             string[] byteTokens = byteSequence.Split();
             string resultStr = "";
-            foreach (var byteToken in byteTokens)
+            foreach (string byteToken in byteTokens)
             {
                 int intValue = int.Parse(byteToken, NumberStyles.HexNumber);
                 resultStr += (char)intValue;

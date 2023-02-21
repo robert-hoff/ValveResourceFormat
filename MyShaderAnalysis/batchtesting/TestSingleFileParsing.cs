@@ -1,8 +1,8 @@
 using MyShaderAnalysis.filearchive;
 using MyShaderAnalysis.parsing;
+using MyShaderFile.CompiledShader;
 using System;
 using System.Collections.Generic;
-using MyShaderFile.CompiledShader;
 using static MyShaderAnalysis.codestash.FileSystemOld;
 using static MyShaderAnalysis.filearchive.FileArchive;
 
@@ -150,7 +150,7 @@ namespace MyShaderAnalysis.batchtesting
             ARCHIVE archive = ARCHIVE.dota_core_pcgl_v62;
             // ARCHIVE archive = ARCHIVE.the_lab_v62;
             List<string> vcsFiles = GetVcsFiles(GetArchiveDir(archive), VcsProgramType.Features);
-            foreach (var filenamepath in vcsFiles)
+            foreach (string filenamepath in vcsFiles)
             {
                 Console.WriteLine($"{filenamepath}");
 

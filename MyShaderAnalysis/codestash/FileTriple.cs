@@ -1,6 +1,6 @@
+using MyShaderFile.CompiledShader;
 using System.Collections.Generic;
 using System.IO;
-using MyShaderFile.CompiledShader;
 using static MyShaderAnalysis.codestash.FileSystemOld;
 using static MyShaderAnalysis.filearchive.FileArchive;
 using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
@@ -87,7 +87,7 @@ namespace MyShaderAnalysis.codestash
         {
             List<FileTriple> fileTriples = new();
             List<string> featuresFiles = new();
-            foreach (var vcsFile in vcsFiles)
+            foreach (string vcsFile in vcsFiles)
             {
                 if (ComputeVcsProgramType(vcsFile) == VcsProgramType.Features)
                 {

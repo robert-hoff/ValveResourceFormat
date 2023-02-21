@@ -1,9 +1,9 @@
+using MyShaderFile.CompiledShader;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using MyShaderFile.CompiledShader;
 
 /*
  *
@@ -166,7 +166,7 @@ namespace MyShaderAnalysis.filearchive
 
         public IEnumerable GetFileVcsTokens()
         {
-            foreach (var vcsFile in vcsFiles)
+            foreach (FileVcsTokens vcsFile in vcsFiles)
             {
                 yield return vcsFile;
             }

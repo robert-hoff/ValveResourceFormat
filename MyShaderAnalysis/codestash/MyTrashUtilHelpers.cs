@@ -1,6 +1,6 @@
+using MyShaderFile.CompiledShader;
 using System.Collections.Generic;
 using System.IO;
-using MyShaderFile.CompiledShader;
 using static MyShaderAnalysis.filearchive.FileArchive;
 using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 
@@ -272,7 +272,7 @@ namespace MyShaderAnalysis.codestash
             string collectionName = filename.Substring(0, filename.LastIndexOf('_'));
             List<string> relatedFiles = new();
             string featuresFile = null;
-            foreach (var f in Directory.GetFiles(Path.GetDirectoryName(filenamepath)))
+            foreach (string f in Directory.GetFiles(Path.GetDirectoryName(filenamepath)))
             {
                 // if (Path.GetFileName(f).StartsWith(collectionName) && !Path.GetFileName(f).Equals(filename))
                 if (Path.GetFileName(f).StartsWith(collectionName))
@@ -308,7 +308,7 @@ namespace MyShaderAnalysis.codestash
             string filename = Path.GetFileName(filenamepath);
             string vcsCollectionName = filename.Substring(0, filename.LastIndexOf('_')); // in the form water_dota_pcgl_40
             List<string> relatedFiles = new();
-            foreach (var f in Directory.GetFiles(Path.GetDirectoryName(filenamepath)))
+            foreach (string f in Directory.GetFiles(Path.GetDirectoryName(filenamepath)))
             {
                 if (Path.GetFileName(f).StartsWith(vcsCollectionName))
                 {

@@ -1,6 +1,6 @@
 using MyShaderAnalysis.parsing;
-using System;
 using MyShaderFile.CompiledShader;
+using System;
 using static MyShaderAnalysis.codestash.FileSystemOld;
 using static MyShaderAnalysis.filearchive.ReadShaderFile;
 using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
@@ -36,7 +36,7 @@ namespace MyShaderAnalysis.codestash
             // string filenamepath = $"{ARTIFACT_CLASSIC_DCG_PC_SOURCE}/visualize_physics_pc_30_ps.vcs"; long zId = 0x10;
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             byte[] zframeDatabytes = shaderFile.GetDecompressedZFrame(zId);
-            var vcsFileProperties = ComputeVCSFileName(filenamepath);
+            (VcsProgramType, VcsPlatformType, VcsShaderModelType) vcsFileProperties = ComputeVCSFileName(filenamepath);
             DataReaderZFrameBytes datareader = new(zframeDatabytes,
                 vcsFileProperties.Item1, vcsFileProperties.Item2, vcsFileProperties.Item3, shaderFile.VcsVersion);
             datareader.PrintByteDetail();

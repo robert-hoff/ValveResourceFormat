@@ -24,7 +24,7 @@ namespace MyShaderAnalysis.compat
             for (int i = 0; i < 512; i++)
             {
                 Boolean exclude = false;
-                foreach (var exclRule in exclusions)
+                foreach ((int, int) exclRule in exclusions)
                 {
                     int b0 = exclRule.Item1;
                     int b1 = exclRule.Item2;
@@ -33,7 +33,7 @@ namespace MyShaderAnalysis.compat
                         exclude = true;
                     }
                 }
-                foreach (var incRule in inclusions)
+                foreach ((int, int) incRule in inclusions)
                 {
                     int b0 = incRule.Item1;
                     int b1 = incRule.Item2;
@@ -141,7 +141,7 @@ namespace MyShaderAnalysis.compat
             for (int i = 0; i < 262144; i++)
             {
                 Boolean exclude = false;
-                foreach (var exclRule in exclusions)
+                foreach ((int, int) exclRule in exclusions)
                 {
                     int b0 = exclRule.Item1;
                     int b1 = exclRule.Item2;
@@ -150,7 +150,7 @@ namespace MyShaderAnalysis.compat
                         exclude = true;
                     }
                 }
-                foreach (var incRule in inclusions)
+                foreach ((int, int) incRule in inclusions)
                 {
                     int b0 = incRule.Item1;
                     int b1 = incRule.Item2;
@@ -159,7 +159,7 @@ namespace MyShaderAnalysis.compat
                         exclude = true;
                     }
                 }
-                foreach (var incRule in inclusionsTriples)
+                foreach ((int, int, int) incRule in inclusionsTriples)
                 {
                     int b0 = incRule.Item1;
                     int b1 = incRule.Item2;

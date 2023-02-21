@@ -9,10 +9,15 @@ trim_trailing_whitespace = true
 
 [*.cs]
 
-# R: use *explicit* type instead of var
-dotnet_diagnostic.IDE0008.severity = suggestion
+# use *explicit* type instead of var
+dotnet_diagnostic.IDE0008.severity = warning
 
-# R: my additions
+# Simplify new expression (IDE0090)
+dotnet_diagnostic.IDE0090.severity = none
+
+# CA2213: Disposable fields should be disposed
+dotnet_diagnostic.CA2213.severity = none
+
 # Some uselss simplication tip
 dotnet_diagnostic.IDE0003.severity = none
 

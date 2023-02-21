@@ -1,6 +1,6 @@
+using MyShaderFile.CompiledShader;
 using System;
 using System.Collections.Generic;
-using MyShaderFile.CompiledShader;
 using static MyShaderAnalysis.codestash.FileSystemOld;
 using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
 using static MyShaderAnalysis.filearchive.FileArchive;
@@ -44,9 +44,9 @@ namespace MyShaderAnalysis.codestash
             Console.WriteLine($"GetZFramesServerDir()               {fileToken.GetZFramesServerDir()}");
             // Console.WriteLine($"CreateZFramesDirectory()         {fileToken.CreateZFramesDirectory()}"); // returns void
             Console.WriteLine($"GetZFramesServerPath()              {fileToken.GetZFramesServerPath()}");
-            Console.WriteLine($"GetZFrameHtmlFilenamepath(id,label) {fileToken.GetZFrameHtmlFilenamepath(0,"label")}");
-            Console.WriteLine($"GetZFrameHtmlFilename(id,label)     {fileToken.GetZFrameHtmlFilename(0,"label")}");
-            Console.WriteLine($"GetZFrameLink(id,label)             {fileToken.GetZFrameLink(0,"label")}");
+            Console.WriteLine($"GetZFrameHtmlFilenamepath(id,label) {fileToken.GetZFrameHtmlFilenamepath(0, "label")}");
+            Console.WriteLine($"GetZFrameHtmlFilename(id,label)     {fileToken.GetZFrameHtmlFilename(0, "label")}");
+            Console.WriteLine($"GetZFrameLink(id,label)             {fileToken.GetZFrameLink(0, "label")}");
             Console.WriteLine($"GetShortHandName()                  {fileToken.GetShortHandName()}");
         }
 
@@ -62,7 +62,7 @@ namespace MyShaderAnalysis.codestash
             // List<string> vcsFiles = GetVcsFiles(DOTA_CORE_MOBILE_GLES_SOURCE, DOTA_DAC_MOBILE_GLES_SOURCE, VcsProgramType.Undetermined, -1);
             // List<string> vcsFiles = GetVcsFiles(ARTIFACT_CLASSIC_CORE_PC_SOURCE, ARTIFACT_CLASSIC_DCG_PC_SOURCE, VcsProgramType.Undetermined, -1);
 
-            foreach (var filenamepath in vcsFiles)
+            foreach (string filenamepath in vcsFiles)
             {
                 FileTokensOld fileTokens = new FileTokensOld(filenamepath);
                 string outputFilenamepath = $"{fileTokens.GetServerFilenamepath("summary2", createDirs: false)}";
@@ -102,7 +102,7 @@ namespace MyShaderAnalysis.codestash
         static void TestCreateDirectoryStructures()
         {
             List<string> vcsFiles = GetVcsFiles(DOTA_CORE_PCGL_SOURCE, null, VcsProgramType.Features, 40);
-            foreach (var filenamepath in vcsFiles)
+            foreach (string filenamepath in vcsFiles)
             {
                 FileTokensOld fileTokens = new FileTokensOld(filenamepath);
                 string outputFilenamepath = $"{fileTokens.GetServerFilenamepath("summary2", createDirs: true)}";
@@ -140,7 +140,7 @@ namespace MyShaderAnalysis.codestash
             // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/hero_pcgl_30_ps.vcs";
             // string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/hero_pcgl_30_vs.vcs";
             string filenamepath = $"{DOTA_GAME_PCGL_SOURCE}/hero_pcgl_30_psrs.vcs";
-            foreach (var f in GetRelatedFiles(filenamepath))
+            foreach (string f in GetRelatedFiles(filenamepath))
             {
                 Console.WriteLine($"{f}");
             }
@@ -242,7 +242,7 @@ namespace MyShaderAnalysis.codestash
         {
             FileTokensOld spritecard = new(ARCHIVE_OLD.dotacore_pcgl, "spritecard_pcgl_30_ps.vcs");
             List<string> filenames = spritecard.GetZFrameListing();
-            foreach (var f in filenames)
+            foreach (string f in filenames)
             {
                 Console.WriteLine($"{f}");
             }

@@ -1,7 +1,7 @@
+using MyShaderFile.CompiledShader;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using MyShaderFile.CompiledShader;
 
 namespace MyShaderAnalysis.filearchive
 {
@@ -52,7 +52,7 @@ namespace MyShaderAnalysis.filearchive
         static void ShowRelatedFilesInVcsCollection(ARCHIVE archive, string vcsCollectionName)
         {
             List<string> relatedFiles = FileVcsCollection.GetRelatedFiles(archive, vcsCollectionName);
-            foreach (var filename in relatedFiles)
+            foreach (string filename in relatedFiles)
             {
                 Console.WriteLine($"{filename}");
             }
@@ -71,7 +71,7 @@ namespace MyShaderAnalysis.filearchive
         public static void ShowFileListing()
         {
             FileArchive fileArchive = new FileArchive(ARCHIVE.alyx_hlvr_vulkan_v64, VS, PS);
-            foreach (var fileTokens in fileArchive.GetFileVcsTokens())
+            foreach (object fileTokens in fileArchive.GetFileVcsTokens())
             {
                 Debug.WriteLine($"{fileTokens}");
             }

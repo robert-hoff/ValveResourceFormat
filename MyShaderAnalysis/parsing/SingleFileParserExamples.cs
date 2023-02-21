@@ -1,15 +1,16 @@
 using MyShaderAnalysis.filearchive;
 using MyShaderAnalysis.util;
 using MyShaderAnalysis.vulkanreflect;
+using MyShaderFile.CompiledShader;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
-using MyShaderFile.CompiledShader;
+using ZstdSharp;
 using static MyShaderAnalysis.codestash.FileSystemOld;
 using static MyShaderAnalysis.filearchive.FileArchive;
 using static MyShaderAnalysis.filearchive.ReadShaderFile;
 using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
-using System.Diagnostics;
 
 /*
  * SINGLE FILE PARSING ALSO IN
@@ -170,7 +171,7 @@ namespace MyShaderAnalysis.parsing
         static byte[] DecompressZstdFrame(byte[] compressedZstdFrame)
         {
             byte[] zstdDict = ZstdDictionary.GetDictionary();
-            var zstdDecoder = new ZstdSharp.Decompressor();
+            Decompressor zstdDecoder = new ZstdSharp.Decompressor();
             zstdDecoder.LoadDictionary(zstdDict);
             byte[] decompressedData = zstdDecoder.Unwrap(compressedZstdFrame).ToArray();
             return decompressedData;
@@ -181,7 +182,7 @@ namespace MyShaderAnalysis.parsing
             // gets all files ending with 40_vs.vcs from the given directory
             List<string> vcsFiles = GetVcsFiles(GetArchiveDir(ARCHIVE.dota_game_pcgl_v64), null, VcsProgramType.VertexShader, 40);
 
-            foreach (var filenamepath in vcsFiles)
+            foreach (string filenamepath in vcsFiles)
             {
                 Console.WriteLine(filenamepath);
             }
@@ -214,7 +215,7 @@ namespace MyShaderAnalysis.parsing
         static void WriteBytesToStringBuffer()
         {
             string filenamepath = GetFilenamepath(ARCHIVE.dota_game_pcgl_v64, "multiblend_pcgl_30_vs.vcs");
-            var buffer = new StringWriter();
+            StringWriter buffer = new StringWriter();
 
             ShaderDataReader datareader = new ShaderDataReader(new MemoryStream(File.ReadAllBytes(filenamepath)), buffer.Write);
             datareader.ShowByteCount();

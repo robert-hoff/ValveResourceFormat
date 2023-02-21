@@ -1,10 +1,9 @@
-using MyShaderAnalysis.util;
+using MyShaderFile.CompiledShader;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using MyShaderFile.CompiledShader;
-using static MyShaderAnalysis.filearchive.ReadShaderFile;
 using static MyShaderAnalysis.filearchive.FileArchive;
+using static MyShaderAnalysis.filearchive.ReadShaderFile;
 
 namespace MyShaderAnalysis.snippetcode
 {
@@ -23,19 +22,19 @@ namespace MyShaderAnalysis.snippetcode
         static void SearchForSmallGlsl()
         {
             List<string> vcsFiles = GetVcsFiles(PCGL_DIR_CORE, PCGL_DIR_NOT_CORE, VcsProgramType.Undetermined, -1);
-            foreach (var filenamepath in vcsFiles)
+            foreach (string filenamepath in vcsFiles)
             {
                 ShaderFile shaderfile = InstantiateShaderFile(filenamepath);
 
                 // Console.WriteLine($"{filenamepath}");
-                foreach (var item in shaderfile.ZframesLookup)
+                foreach (KeyValuePair<long, ZFrameDataDescription> item in shaderfile.ZframesLookup)
                 {
                     ZFrameDataDescription zframeData = item.Value;
                     if (zframeData.UncompressedLength < 100000)
                     {
                         ZFrameFile zframeFile = new(zframeData.GetDecompressedZFrame(), filenamepath, zframeData.ZframeId,
                             shaderfile.VcsProgramType, shaderfile.VcsPlatformType, shaderfile.VcsShaderModelType, shaderfile.VcsVersion);
-                        foreach (var source in zframeFile.GpuSources)
+                        foreach (GpuSource source in zframeFile.GpuSources)
                         {
                             // if ((source.offset1-1)%64==0 && source.offset1<500) {
                             if (source.Sourcebytes.Length < 5000)
@@ -226,9 +225,9 @@ namespace MyShaderAnalysis.snippetcode
 
         static byte[] ParseString(string bytestring)
         {
-            var tokens = bytestring.Split(" ");
-            var databytes = new byte[tokens.Length];
-            for (var i = 0; i < tokens.Length; i++)
+            string[] tokens = bytestring.Split(" ");
+            byte[] databytes = new byte[tokens.Length];
+            for (int i = 0; i < tokens.Length; i++)
             {
                 databytes[i] = Convert.ToByte(tokens[i], 16);
             }
@@ -237,9 +236,9 @@ namespace MyShaderAnalysis.snippetcode
 
         static byte[] ParseStringReverse(string bytestring)
         {
-            var tokens = bytestring.Split(" ");
-            var databytes = new byte[tokens.Length];
-            for (var i = 0; i < tokens.Length; i++)
+            string[] tokens = bytestring.Split(" ");
+            byte[] databytes = new byte[tokens.Length];
+            for (int i = 0; i < tokens.Length; i++)
             {
                 databytes[tokens.Length - i - 1] = Convert.ToByte(tokens[i], 16);
             }

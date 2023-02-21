@@ -1,6 +1,6 @@
+using MyShaderFile.CompiledShader;
 using System;
 using System.IO;
-using MyShaderFile.CompiledShader;
 using static MyShaderAnalysis.codestash.FileSystemOld;
 using static MyShaderAnalysis.filearchive.ReadShaderFile;
 
@@ -52,7 +52,7 @@ namespace MyShaderAnalysis.parsing
             // string dir = DOTA_CORE_IOS_VULKAN_SOURCE;
             // string dir = DOTA_DAC_IOS_VULKAN_SOURCE;
 
-            foreach (var d in Directory.GetFiles(dir))
+            foreach (string d in Directory.GetFiles(dir))
             {
                 Console.WriteLine($"{d}");
             }

@@ -1,6 +1,6 @@
 using MyShaderAnalysis.filearchive;
-using System.IO;
 using MyShaderFile.CompiledShader;
+using System.IO;
 using static MyShaderAnalysis.codestash.FileSystemOld;
 using static MyShaderAnalysis.filearchive.FileArchive;
 using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
@@ -32,7 +32,7 @@ namespace MyShaderAnalysis.parsing
 
         public DataReaderV62(string filenamepath) : base(new MemoryStream(File.ReadAllBytes(filenamepath)))
         {
-            var VcsFileProperties = ComputeVCSFileName(filenamepath);
+            (VcsProgramType, VcsPlatformType, VcsShaderModelType) VcsFileProperties = ComputeVCSFileName(filenamepath);
             vcsProgramType = VcsFileProperties.Item1;
             vcsSourceType = VcsFileProperties.Item2;
             vcsModelType = VcsFileProperties.Item3;
