@@ -33,7 +33,7 @@ namespace MyShaderFile.CompiledShader
             PrintDynamicConfigurations(shaderFile);
             PrintDynamicConstraints(shaderFile);
             PrintParameters(shaderFile);
-            PrintMipmapBlocks(shaderFile);
+            PrintChannelBlocks(shaderFile);
             PrintBufferBlocks(shaderFile);
             PrintVertexSymbolBuffers(shaderFile);
             PrintZFrames(shaderFile);
@@ -412,10 +412,10 @@ namespace MyShaderFile.CompiledShader
             output.BreakLine();
         }
 
-        private void PrintMipmapBlocks(ShaderFile shaderFile)
+        private void PrintChannelBlocks(ShaderFile shaderFile)
         {
-            output.WriteLine($"MIPMAP BLOCKS({shaderFile.MipmapBlocks.Count})");
-            if (shaderFile.MipmapBlocks.Count > 0)
+            output.WriteLine($"MIPMAP BLOCKS({shaderFile.ChannelBlocks.Count})");
+            if (shaderFile.ChannelBlocks.Count > 0)
             {
                 output.DefineHeaders(new string[] { "index", "name", "arg0", "arg1", "arg2", "arg3", "arg4", "arg5" });
             }
@@ -424,7 +424,7 @@ namespace MyShaderFile.CompiledShader
                 output.DefineHeaders(Array.Empty<string>());
                 output.WriteLine("[none defined]");
             }
-            foreach (var mipmap in shaderFile.MipmapBlocks)
+            foreach (var mipmap in shaderFile.ChannelBlocks)
             {
                 output.AddTabulatedRow(new string[] { $"[{mipmap.BlockIndex,2}]", $"{mipmap.Name}",
                     $"{BytesToString(mipmap.Arg0),-14}", $"{mipmap.Arg1,2}", $"{BlankNegOne(mipmap.Arg2),2}",

@@ -1,12 +1,10 @@
 using MyShaderAnalysis.filearchive;
-using System;
-using System.Diagnostics;
 using MyShaderFile.CompiledShader;
-using static MyShaderAnalysis.util.DataCollectAcrossQueries;
-using MyShaderAnalysis.codestash;
-using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
+using System;
 using System.Collections.Generic;
-using System.Net.Http.Headers;
+using System.Diagnostics;
+using static MyShaderAnalysis.util.DataCollectAcrossQueries;
+using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 
 namespace MyShaderAnalysis.staticanalysis
 {
@@ -245,7 +243,7 @@ namespace MyShaderAnalysis.staticanalysis
                     Debug.WriteLine($"");
                     lastFile = vcsFile.foldername;
                 }
-                Debug.WriteLine($"{vcsFile,-80} {vcsFile.GetShaderFile().MipmapBlocks.Count}");
+                Debug.WriteLine($"{vcsFile,-80} {vcsFile.GetShaderFile().ChannelBlocks.Count}");
             }
         }
 

@@ -534,7 +534,7 @@ namespace MyShaderAnalysis.codestash
             int dCount = shaderFile.DBlocks.Count;
             int uCount = shaderFile.DConstraintsBlocks.Count;
             int pCount = shaderFile.ParamBlocks.Count;
-            int mCount = shaderFile.MipmapBlocks.Count;
+            int mCount = shaderFile.ChannelBlocks.Count;
             int bCount = shaderFile.BufferBlocks.Count;
             int sCount = shaderFile.SymbolBlocks.Count;
             int zCount = shaderFile.ZframesLookup.Count;

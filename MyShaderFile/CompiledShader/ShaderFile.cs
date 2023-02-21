@@ -1,3 +1,4 @@
+using MyShaderFile.CompiledShader;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -34,7 +35,7 @@ namespace MyShaderFile.CompiledShader
         public List<DBlock> DBlocks { get; private set; } = new();
         public List<ConstraintsBlock> DConstraintsBlocks { get; private set; } = new();
         public List<ParamBlock> ParamBlocks { get; private set; } = new();
-        public List<ChannelBlock> MipmapBlocks { get; private set; } = new();
+        public List<ChannelBlock> ChannelBlocks { get; private set; } = new();
         public List<BufferBlock> BufferBlocks { get; private set; } = new();
         public List<VertexSymbolsBlock> SymbolBlocks { get; private set; } = new();
 
@@ -106,9 +107,9 @@ namespace MyShaderFile.CompiledShader
         private void ParseFile()
         {
             var vcsFileProperties = ComputeVCSFileName(FilenamePath);
-            VcsProgramType = vcsFileProperties.Item1;
-            VcsPlatformType = vcsFileProperties.Item2;
-            VcsShaderModelType = vcsFileProperties.Item3;
+            VcsProgramType = vcsFileProperties.ProgramType;
+            VcsPlatformType = vcsFileProperties.PlatformType;
+            VcsShaderModelType = vcsFileProperties.ShaderModelType;
             // There's a chance HullShader, DomainShader and RaytracingShader work but they haven't been tested
             if (VcsProgramType == VcsProgramType.Features)
             {
@@ -127,29 +128,37 @@ namespace MyShaderFile.CompiledShader
             {
                 throw new ShaderParserException($"Can't parse this filetype: {VcsProgramType}");
             }
+
             PossibleEditorDescription = DataReader.ReadInt32();
+
             var sfBlockCount = DataReader.ReadInt32();
             for (var i = 0; i < sfBlockCount; i++)
             {
                 SfBlock nextSfBlock = new(DataReader, i);
                 SfBlocks.Add(nextSfBlock);
             }
+
             var sfConstraintsBlockCount = DataReader.ReadInt32();
             for (var i = 0; i < sfConstraintsBlockCount; i++)
             {
-                ConstraintsBlock nextSfConstraintsBlock = new(DataReader, i);
+                ConstraintsBlock nextSfConstraintsBlock = VcsProgramType == VcsProgramType.Features
+                    ? new(DataReader, i, ConditionalType.Feature)
+                    : new(DataReader, i, ConditionalType.Static);
+
                 SfConstraintsBlocks.Add(nextSfConstraintsBlock);
             }
+
             var dBlockCount = DataReader.ReadInt32();
             for (var i = 0; i < dBlockCount; i++)
             {
                 DBlock nextDBlock = new(DataReader, i);
                 DBlocks.Add(nextDBlock);
             }
+
             var dConstraintsBlockCount = DataReader.ReadInt32();
             for (var i = 0; i < dConstraintsBlockCount; i++)
             {
-                ConstraintsBlock nextDConstraintsBlock = new(DataReader, i);
+                ConstraintsBlock nextDConstraintsBlock = new(DataReader, i, ConditionalType.Dynamic);
                 DConstraintsBlocks.Add(nextDConstraintsBlock);
             }
 
@@ -163,18 +172,21 @@ namespace MyShaderFile.CompiledShader
                 ParamBlock nextParamBlock = new(DataReader, i, VcsVersion);
                 ParamBlocks.Add(nextParamBlock);
             }
-            var mipmapBlockCount = DataReader.ReadInt32();
-            for (var i = 0; i < mipmapBlockCount; i++)
+
+            var ChannelBlockCount = DataReader.ReadInt32();
+            for (var i = 0; i < ChannelBlockCount; i++)
             {
-                ChannelBlock nextMipmapBlock = new(DataReader, i);
-                MipmapBlocks.Add(nextMipmapBlock);
+                ChannelBlock nextChannelBlock = new(DataReader, i);
+                ChannelBlocks.Add(nextChannelBlock);
             }
+
             var bufferBlockCount = DataReader.ReadInt32();
             for (var i = 0; i < bufferBlockCount; i++)
             {
                 BufferBlock nextBufferBlock = new(DataReader, i);
                 BufferBlocks.Add(nextBufferBlock);
             }
+
             if (VcsProgramType == VcsProgramType.Features || VcsProgramType == VcsProgramType.VertexShader)
             {
                 var symbolsBlockCount = DataReader.ReadInt32();
@@ -283,8 +295,6 @@ namespace MyShaderFile.CompiledShader
         }
 #pragma warning restore CA1024
 
-        private uint zFrameCount;
-
         public void PrintByteDetail(bool shortenOutput = true, HandleOutputWrite outputWriter = null)
         {
             DataReader.OutputWriter = outputWriter ?? ((x) => { Console.Write(x); });
@@ -346,12 +356,12 @@ namespace MyShaderFile.CompiledShader
                 paramBlock.PrintByteDetail(VcsVersion);
             }
             DataReader.ShowByteCount();
-            var mipmapBlockCount = DataReader.ReadUInt32AtPosition();
-            DataReader.ShowBytes(4, $"{mipmapBlockCount} Mipmap blocks (280 bytes each)");
+            var ChannelBlockCount = DataReader.ReadUInt32AtPosition();
+            DataReader.ShowBytes(4, $"{ChannelBlockCount} Mipmap blocks (280 bytes each)");
             DataReader.BreakLine();
-            foreach (var mipmapBlock in MipmapBlocks)
+            foreach (var ChannelBlock in ChannelBlocks)
             {
-                mipmapBlock.PrintByteDetail();
+                ChannelBlock.PrintByteDetail();
             }
             DataReader.ShowByteCount();
             var bufferBlockCount = DataReader.ReadUInt32AtPosition();
@@ -374,7 +384,7 @@ namespace MyShaderFile.CompiledShader
                 DataReader.BreakLine();
             }
 
-            PrintZframes(shortenOutput);
+            PrintZframes(shortenOutput, out var zFrameCount);
             if (shortenOutput && zFrameCount > SKIP_ZFRAMES_IF_MORE_THAN)
             {
                 DataReader.Comment("rest of data contains compressed zframes");
@@ -392,7 +402,7 @@ namespace MyShaderFile.CompiledShader
         private const int SKIP_ZFRAMES_IF_MORE_THAN = 10;
         private const int MAX_ZFRAME_BYTES_TO_SHOW = 96;
 
-        private void PrintZframes(bool shortenOutput)
+        private void PrintZframes(bool shortenOutput, out uint zFrameCount)
         {
             //
             // The zFrameIds and zFrameDataOffsets are read as two separate lists before the data section starts
@@ -562,7 +572,6 @@ namespace MyShaderFile.CompiledShader
                         {
                             throw new ShaderParserException("Decompressed zframe doesn't match expected size");
                         }
-                        zstdDecoder.Dispose();
                         return zframeUncompressed.ToArray();
                     }
 
