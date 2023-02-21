@@ -209,6 +209,11 @@ namespace GUI
                 CloseAllTabs();
             }
 
+            if (keyData == Keys.Escape)
+            {
+                Close();
+            }
+
             //if the user presses CTRL + E, close all tabs to the right of the active tab
             if (keyData == (Keys.Control | Keys.E))
             {
