@@ -16,6 +16,9 @@ dotnet_diagnostic.IDE0003.severity = none
 # Static holder type
 dotnet_diagnostic.CA1052.severity = none
 
+# CA2213: Disposable fields should be disposed
+dotnet_diagnostic.CA2213.severity = none
+
 # unused field
 dotnet_diagnostic.CA1823.severity = none
 

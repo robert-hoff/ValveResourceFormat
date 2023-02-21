@@ -20,7 +20,8 @@ namespace MyShaderAnalysis.codestash
             if (File.Exists(vs) && File.Exists(ps))
             {
                 return (ft, vs, ps);
-            } else
+            }
+            else
             {
                 return (null, null, null);
                 // throw new System.Exception($"ps/vs files don't exist for {ft}");
@@ -51,10 +52,12 @@ namespace MyShaderAnalysis.codestash
             if (dirname.EndsWith(@"/shaders/vfx"))
             {
                 return @"/shaders/vfx/" + filename;
-            } else if (dirname.EndsWith(@"/shaders-core/vfx"))
+            }
+            else if (dirname.EndsWith(@"/shaders-core/vfx"))
             {
                 return @"/shaders-core/vfx/" + filename;
-            } else
+            }
+            else
             {
                 return filenamepath;
             }
@@ -68,10 +71,12 @@ namespace MyShaderAnalysis.codestash
             if (dirname.EndsWith(@"/shaders/vfx"))
             {
                 return @"/dota/" + filename;
-            } else if (dirname.EndsWith(@"/shaders-core/vfx"))
+            }
+            else if (dirname.EndsWith(@"/shaders-core/vfx"))
             {
                 return @"/core/" + filename;
-            } else
+            }
+            else
             {
                 return filenamepath;
             }
@@ -249,7 +254,8 @@ namespace MyShaderAnalysis.codestash
             if (File.Exists($"{serverdir}/{basedir}/{zframeHtmlFilename}"))
             {
                 return $"  <a href='{basedir}{GetZframeHtmlFilename(zframeId, label, Path.GetFileName(vcsFilenamepath))}'>{zframeName}</a>";
-            } else
+            }
+            else
             {
                 return $"  {zframeName}";
             }
@@ -280,10 +286,12 @@ namespace MyShaderAnalysis.codestash
                     if (f.EndsWith("features.vcs"))
                     {
                         featuresFile = f.Replace("\\", "/");
-                    } else if (f.EndsWith("vs.vcs"))
+                    }
+                    else if (f.EndsWith("vs.vcs"))
                     {
                         relatedFiles.Insert(0, f.Replace("\\", "/"));
-                    } else
+                    }
+                    else
                     {
                         relatedFiles.Add(f.Replace("\\", "/"));
                     }

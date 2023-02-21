@@ -221,7 +221,8 @@ namespace MyShaderAnalysis.filearchive
             try
             {
                 return GetShaderFileDetail(queryIndex).shaderFile;
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 throw new ShaderParserException($"FileArchive.GetShaderFile error parsing file {vcsFiles[queryIndex % vcsFiles.Count]}");
             }
@@ -294,7 +295,7 @@ namespace MyShaderAnalysis.filearchive
         {
             FieldInfo fieldInfo = typeof(ARCHIVE).GetField(archive.ToString());
             object[] attributes = fieldInfo.GetCustomAttributes(typeof(ArchiveDirectoryAttribute), true);
-            return ((ArchiveDirectoryAttribute)attributes[0]).dirName;
+            return ((ArchiveDirectoryAttribute) attributes[0]).dirName;
         }
 
         public static string GetFilenamepath(ARCHIVE archive, string filename)
@@ -369,7 +370,8 @@ namespace MyShaderAnalysis.filearchive
             if (filesFound.Count <= LIMIT_NR)
             {
                 return filesFound;
-            } else
+            }
+            else
             {
                 List<string> returnFiles = new();
                 for (int i = 0; i < LIMIT_NR; i++)

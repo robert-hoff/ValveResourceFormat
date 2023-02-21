@@ -223,7 +223,8 @@ namespace MyShaderAnalysis.parsing
             try
             {
                 datareader.ShowEndOfFile();
-            } catch (Exception) { }
+            }
+            catch (Exception) { }
 
             Console.WriteLine($"{buffer}");
         }

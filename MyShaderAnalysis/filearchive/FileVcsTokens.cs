@@ -324,7 +324,8 @@ namespace MyShaderAnalysis.filearchive
                     default:
                         throw new ShaderParserException($"Unknown or unsupported model type {vcsPlatformType} {vcsShaderModelType}");
                 }
-            } else
+            }
+            else
             {
                 switch (vcsPlatformType)
                 {

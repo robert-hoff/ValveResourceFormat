@@ -1,6 +1,6 @@
+using MyShaderFile.CompiledShader;
 using System;
 using System.Diagnostics;
-using MyShaderFile.CompiledShader;
 
 namespace MyShaderAnalysis.vulkanreflect
 {
@@ -19,7 +19,7 @@ namespace MyShaderAnalysis.vulkanreflect
 
             for (int i = 0; i < zFrameFile.GpuSourceCount; i++)
             {
-                VulkanSource vulkanSource = (VulkanSource)zFrameFile.GpuSources[i];
+                VulkanSource vulkanSource = (VulkanSource) zFrameFile.GpuSources[i];
                 if (vulkanSource.Arg0 == -1)
                 {
                     // nothing to do
@@ -30,7 +30,8 @@ namespace MyShaderAnalysis.vulkanreflect
                 try
                 {
                     string decompiledSource = DecompileSpirvDll.DecompileVulkan(spirvBytes);
-                } catch (Exception)
+                }
+                catch (Exception)
                 {
                     Debug.WriteLine($"spirv failed for {zFrameFile.FilenamePath} zframeId[{zFrameFile.ZframeId:x}] " +
                         $"source[{i}] source-size={spirvBytes.Length}");

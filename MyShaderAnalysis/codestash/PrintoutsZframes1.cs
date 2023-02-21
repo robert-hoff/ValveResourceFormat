@@ -164,7 +164,8 @@ namespace MyShaderAnalysis.codestash
                 {
                     blockIdToSource.Add(vsEndBlock.BlockIdRef, zframeFile.GpuSources[vsEndBlock.SourceRef]);
                 }
-            } else
+            }
+            else
             {
                 foreach (ZFrameFile.PsEndBlock psEndBlock in zframeFile.PsEndBlocks)
                 {
@@ -268,7 +269,8 @@ namespace MyShaderAnalysis.codestash
                     string urlText = $"source[{blockSource.GetEditorRefIdAsString()}]";
                     string sourceLink = $"<a href='{fileTokens.GetGlslHtmlUrl(blockSource.GetEditorRefIdAsString())}'>{urlText}</a>";
                     OutputWriteLine($"    {sourceLink} {blockSource.Sourcebytes.Length,12}  (bytes)");
-                } else
+                }
+                else
                 {
                     // todo - doesn't show id along with block name
                     OutputWriteLine($"  {blockSource.GetBlockName().PadRight(20)} {blockSource.Sourcebytes.Length,12} (bytes)");
@@ -287,7 +289,8 @@ namespace MyShaderAnalysis.codestash
                 {
                     blockIds.Add(vsEndBlock.BlockIdRef);
                 }
-            } else
+            }
+            else
             {
                 foreach (ZFrameFile.PsEndBlock psEndBlock in zframeFile.PsEndBlocks)
                 {
@@ -329,9 +332,9 @@ namespace MyShaderAnalysis.codestash
                 string writeSeqText = $"WRITESEQ[{writeSequences[blockId]}]";
                 OutputWrite($"[{blockId:X02}] {configStr}    {writeSeqText,14}");
                 GpuSource blockSource = blockIdToSource[blockId];
-                if (blockSource is GlslSource)
+                if (blockSource is GlslSource source)
                 {
-                    OutputWriteLine($"    {GetSourceLink(shaderFile.FilenamePath, (GlslSource)blockSource)} {blockSource.Sourcebytes.Length,12}  (bytes)");
+                    OutputWriteLine($"    {GetSourceLink(shaderFile.FilenamePath, source)} {blockSource.Sourcebytes.Length,12}  (bytes)");
                 }
             }
             OutputWriteLine("");
@@ -418,7 +421,8 @@ namespace MyShaderAnalysis.codestash
             if (zframeFile.LeadingData.H0 == 0)
             {
                 writeSequences.Add("", seqCount++);
-            } else
+            }
+            else
             {
                 writeSequences.Add(BytesToString(zframeFile.LeadingData.Dataload, -1), seqCount++);
             }
@@ -436,7 +440,8 @@ namespace MyShaderAnalysis.codestash
                     writeSequences.Add(dataloadStr, seqCount);
                     sequencesMap.Add(zBlock.BlockId, seqCount);
                     seqCount++;
-                } else
+                }
+                else
                 {
                     sequencesMap.Add(zBlock.BlockId, seq);
                 }
@@ -597,7 +602,8 @@ namespace MyShaderAnalysis.codestash
                     OutputWriteLine($"{BytesToString(vsEndBlock.Databytes)}");
                     OutputWriteLine("");
                 }
-            } else
+            }
+            else
             {
                 OutputWriteLine($"{zframeFile.PsEndBlocks.Count:X02} 00 00 00   // end blocks ({zframeFile.PsEndBlocks.Count})");
                 OutputWriteLine("");
@@ -681,7 +687,8 @@ namespace MyShaderAnalysis.codestash
                 {
                     htmlName = htmlName.Replace("[", $"<a href='{htmlLink}'>");
                     htmlName = htmlName.Replace("]", "</a>");
-                } else
+                }
+                else
                 {
                     htmlName = htmlName.Replace("[", "");
                     htmlName = htmlName.Replace("]", "");
@@ -707,6 +714,8 @@ namespace MyShaderAnalysis.codestash
                 OutputWriteLine("");
             }
         }
+
+
 
         private static StreamWriter sw = null;
         private static bool DisableOutput = false;
@@ -749,10 +758,7 @@ namespace MyShaderAnalysis.codestash
             {
                 Console.Write(text);
             }
-            if (sw != null)
-            {
-                sw.Write(text);
-            }
+            sw?.Write(text);
         }
         public static void OutputWriteLine(string text)
         {

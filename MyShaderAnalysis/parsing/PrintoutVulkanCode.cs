@@ -2,8 +2,8 @@ using MyShaderAnalysis.filearchive;
 using MyShaderAnalysis.serverhtml;
 using MyShaderAnalysis.util;
 using MyShaderAnalysis.vulkanreflect;
-using System;
 using MyShaderFile.CompiledShader;
+using System;
 using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 
 /*
@@ -41,7 +41,7 @@ namespace MyShaderAnalysis.parsing
             ShaderFile shaderFile = fileTokens.GetShaderFile();
             ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(0);
 
-            VulkanSource vulkanSource = (VulkanSource)zframeFile.GpuSources[gpuIndex];
+            VulkanSource vulkanSource = (VulkanSource) zframeFile.GpuSources[gpuIndex];
             string reflectedSpirv = DecompileSpirvDll.DecompileVulkan(vulkanSource.GetSpirvBytes());
 
             FileWriter fw = new FileWriter(ServerNames.GetServerTestFile());

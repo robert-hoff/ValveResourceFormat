@@ -64,11 +64,12 @@ namespace MyShaderAnalysis.batchtesting
                     for (int i = 0; i < Math.Min(zframeFile.GpuSourceCount, LIMIT_GPU_SOURCES); i++)
                     {
                         Console.WriteLine($"{shaderFile.FilenamePath} zi={zi} gpu={i}");
-                        VulkanSource vulkanSource = (VulkanSource)zframeFile.GpuSources[i];
+                        VulkanSource vulkanSource = (VulkanSource) zframeFile.GpuSources[i];
                         try
                         {
                             new ParseVulkanSource(vulkanSource, outputWriter: (x) => { }).PrintByteDetailSpirvReflection();
-                        } catch (Exception e)
+                        }
+                        catch (Exception e)
                         {
                             Console.WriteLine($"Error {e.Message}");
                         }
@@ -146,7 +147,8 @@ namespace MyShaderAnalysis.batchtesting
                 {
                     new DataReaderVcsBytes(vcsTokens.filenamepath, outputWriter: (x) => { }).PrintByteDetail();
                     Console.WriteLine($"{vcsTokens.filename} OK");
-                } catch (Exception e)
+                }
+                catch (Exception e)
                 {
                     Console.WriteLine($"Error couldn't parse {vcsTokens.filename} {e.Message}");
                 }

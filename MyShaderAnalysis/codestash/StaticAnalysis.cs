@@ -231,7 +231,7 @@ namespace MyShaderAnalysis.codestash
             //var relRuleKeyDesciption = $"{RelRuleDescribe(uknBlock).PadRight(p[0])}{CombineIntArray(uknBlock.Values).PadRight(p[1])}" +
             //    $"{CombineIntArray(uknBlock.ConditionalTypes, includeParenth: true).PadRight(p[2])}{CombineIntArray(uknBlock.Range2).PadRight(p[3])}";
             string relRuleKeyDesciption = $"{RelRuleDescribe(uknBlock).PadRight(p[0])}{CombineIntArray(uknBlock.Values).PadRight(p[1])}" +
-                $"{CombineIntArray(Array.ConvertAll(uknBlock.ConditionalTypes, x => (int)x), includeParenth: true).PadRight(p[2])}" +
+                $"{CombineIntArray(Array.ConvertAll(uknBlock.ConditionalTypes, x => (int) x), includeParenth: true).PadRight(p[2])}" +
                 $"{CombineIntArray(uknBlock.Range2).PadRight(p[3])}";
 
             return relRuleKeyDesciption;
@@ -262,7 +262,7 @@ namespace MyShaderAnalysis.codestash
         }
         public static string GetByteFlagsAsString(ConstraintsBlock sRuleBlock)
         {
-            return CombineIntArray(Array.ConvertAll(sRuleBlock.ConditionalTypes, x => (int)x));
+            return CombineIntArray(Array.ConvertAll(sRuleBlock.ConditionalTypes, x => (int) x));
         }
 
 
@@ -275,7 +275,7 @@ namespace MyShaderAnalysis.codestash
                 foreach (ConstraintsBlock unkBlock in shaderFile.DConstraintsBlocks)
                 {
                     string relRuleKeyDesciption = $"{RelRuleDescribe(unkBlock),-10} {CombineValues2(unkBlock.Values),-8} " +
-                        $"{CombineValues2(Array.ConvertAll(unkBlock.ConditionalTypes, x => (int)x), includeParenth: true),-15} " +
+                        $"{CombineValues2(Array.ConvertAll(unkBlock.ConditionalTypes, x => (int) x), includeParenth: true),-15} " +
                         $"{CombineValues2(unkBlock.Range2)}";
                     CollectStringValue(relRuleKeyDesciption);
                 }
@@ -523,7 +523,8 @@ namespace MyShaderAnalysis.codestash
             try
             {
                 shaderFile = InstantiateShaderFile(filenamepath);
-            } catch (Exception)
+            }
+            catch (Exception)
             {
                 Console.WriteLine($"ERROR! couldn't parse this file {filenamepath}");
                 return;
@@ -609,7 +610,7 @@ namespace MyShaderAnalysis.codestash
                 string s0 = $"[{uBlock.BlockIndex,2}]";
                 string s1 = uBlock.Rule == ConditionalRule.Requires ? $"INC({uBlock.Rule})" : $"EXC({uBlock.Rule})";
                 // string s2 = $"{cBlock.arg0}";
-                string s3 = $"{CombineIntArray(Array.ConvertAll(uBlock.ConditionalTypes, x => (int)x))}";
+                string s3 = $"{CombineIntArray(Array.ConvertAll(uBlock.ConditionalTypes, x => (int) x))}";
                 // string s4 = $"{CombineValues(uknNames)}";
                 string s4 = $"{breakNames[0]}";
                 // string s4 = "NAMES HERE";
@@ -657,7 +658,7 @@ namespace MyShaderAnalysis.codestash
                     }
                     {
                         // 16 bytes long, so these are skipped in the next part
-                        string val = CombineIntArray(Array.ConvertAll(uBlock.ConditionalTypes, x => (int)x));
+                        string val = CombineIntArray(Array.ConvertAll(uBlock.ConditionalTypes, x => (int) x));
                         int curVal = byteflags.GetValueOrDefault(val, 0);
                         byteflags[val] = curVal + 1;
                     }
@@ -699,7 +700,7 @@ namespace MyShaderAnalysis.codestash
                 OutputWriteLine($"rule = {uBlock.Rule}");
                 OutputWriteLine($"arg1 = {uBlock.BlockType}");
                 // OutputWriteLine($"{CombineValues(cBlock.flags)}");
-                OutputWriteLine($"      {CombineValues(Array.ConvertAll(uBlock.ConditionalTypes, x => (int)x))}");
+                OutputWriteLine($"      {CombineValues(Array.ConvertAll(uBlock.ConditionalTypes, x => (int) x))}");
                 OutputWriteLine($"{CombineValues(uBlock.Indices)}");
                 OutputWriteLine($"{CombineValues(uBlock.Values)}");
                 OutputWriteLine($"{CombineValues(uBlock.Range2)}");
@@ -804,7 +805,8 @@ namespace MyShaderAnalysis.codestash
             if (showLink)
             {
                 OutputWriteLine($"SF params for {GetHtmlLink(filenamepath, "")}");
-            } else
+            }
+            else
             {
                 OutputWriteLine($"SF params for {ShortHandName(filenamepath)}");
             }
@@ -976,7 +978,7 @@ namespace MyShaderAnalysis.codestash
                     OutputWriteLine($"{configHeader}");
                 }
                 int[] configState = configGen.GetConfigState(item.Key);
-                string zframeLink = $"{GetZframeHtmlLinkCheckExists((uint)item.Key, multiBlendPsFile, SERVER_BASEDIR, zFrameBaseDir)}";
+                string zframeLink = $"{GetZframeHtmlLinkCheckExists((uint) item.Key, multiBlendPsFile, SERVER_BASEDIR, zFrameBaseDir)}";
 
                 if (File.Exists(triple.psFile.GetZFrameHtmlFilenamepath(item.Key, "summary")))
                 {
@@ -1054,7 +1056,8 @@ namespace MyShaderAnalysis.codestash
                     OutputWriteLine($"Compatibility rules for {GetHtmlLink(filenamepath, "")}");
                     // OutputWriteLine(RemoveBaseDir(filenamepath));
                     OutputWriteLine("");
-                } else if (newFile)
+                }
+                else if (newFile)
                 {
                     OutputWriteLine("Compatibility rules");
                 }
@@ -1184,7 +1187,8 @@ namespace MyShaderAnalysis.codestash
                 if (newFile)
                 {
                     OutputWrite(GetHtmlLink(filenamepath, "") + " ");
-                } else
+                }
+                else
                 {
                     OutputWrite("");
                 }
@@ -1193,7 +1197,8 @@ namespace MyShaderAnalysis.codestash
                 {
                     // OutputWriteLine($"{blockSummary}  {cBlock.description.PadRight(70)} {GetHtmlLink(filenamepath)}");
                     OutputWriteLine($"{cBlock.Description}");
-                } else
+                }
+                else
                 {
                     OutputWriteLine("");
                 }
@@ -1541,7 +1546,8 @@ namespace MyShaderAnalysis.codestash
                     {
                         if (p[sfBlock.FeatureIndex][1].Length > 0) throw new ShaderParserException("id not unique");
                         p[sfBlock.FeatureIndex][1] = $"{sfBlock.Name}({sfBlock.FeatureIndex})";
-                    } else
+                    }
+                    else
                     {
                         if (sfBlock.FeatureIndex != -1) throw new ShaderParserException("unexpected value");
                         n[sfBlock.Name] = 1;
@@ -1554,7 +1560,8 @@ namespace MyShaderAnalysis.codestash
                     {
                         if (p[sfBlock.FeatureIndex][2].Length > 0) throw new ShaderParserException("error!");
                         p[sfBlock.FeatureIndex][2] = $"{sfBlock.Name}({sfBlock.FeatureIndex})";
-                    } else
+                    }
+                    else
                     {
                         if (sfBlock.FeatureIndex != -1) throw new ShaderParserException("unexpected value");
                         int val = n.GetValueOrDefault(sfBlock.Name, 0);
@@ -1626,14 +1633,16 @@ namespace MyShaderAnalysis.codestash
                         {
                             e2 = $"<span style='color:#999'>({i})</span>";
                             e2len = e2.Length - 2 - nd(i);
-                        } else
+                        }
+                        else
                         {
                         }
                         if (e3 == "")
                         {
                             e3 = $"<span style='color:#999'>({i})</span>";
                             e3len = e3.Length - 2 - nd(i);
-                        } else
+                        }
+                        else
                         {
                         }
                         string reportStr = $"{e1.PadRight(50 + e1len)} {e2.PadRight(50 + e2len)} {e3.PadRight(50 + e3len)}";
@@ -1646,9 +1655,9 @@ namespace MyShaderAnalysis.codestash
                 int psmaxIndex = psFile.GetZFrameCount() - 1;
                 long psMaxId = psFile.GetZFrameIdByIndex(psmaxIndex);
                 // int vsMaxD = Convert.ToString(vsMaxId, 2).Length;
-                int vsMaxD = nBinDigits((int)vsMaxId);
+                int vsMaxD = nBinDigits((int) vsMaxId);
                 // int psMaxD = Convert.ToString(psMaxId, 2).Length;
-                int psMaxD = nBinDigits((int)psMaxId);
+                int psMaxD = nBinDigits((int) psMaxId);
                 string vsStyle = $"<span style='color:#999; font-weight:bold'>({Convert.ToString(vsMaxId, 2)})</span>";
                 string psStyle = $"<span style='color:#999; font-weight:bold'>({Convert.ToString(psMaxId, 2)})</span>";
                 string f0 = "";
@@ -1692,7 +1701,7 @@ namespace MyShaderAnalysis.codestash
             {
                 return 1;
             }
-            return (int)(Math.Floor(Math.Log10(i) + 1));
+            return (int) (Math.Floor(Math.Log10(i) + 1));
         }
 
         public static int nBinDigits(int num)

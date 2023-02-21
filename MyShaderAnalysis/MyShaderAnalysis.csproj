@@ -16,6 +16,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <NoWarn>MSB3270</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>

@@ -42,7 +42,8 @@ namespace MyShaderAnalysis.util
                 if (saveAsHex)
                 {
                     fileWriter.WriteLine($"0x{d:X}");
-                } else
+                }
+                else
                 {
                     fileWriter.WriteLine($"{d}");
                 }

@@ -134,7 +134,7 @@ namespace MyShaderAnalysis.codestash
             if (archive == ARCHIVE_OLD.dotagame_pcgl) return "dota";
             // todo - fix this, don't use archive-label as part of pathname
             if (archive == ARCHIVE_OLD.dotacore_pc) return "core-pc"; // the archive-labels need to be distinct because I'm using them as part
-                                                                  // of the byte-dump paths
+                                                                      // of the byte-dump paths
             if (archive == ARCHIVE_OLD.dotagame_pc) return "dota-pc";
             if (archive == ARCHIVE_OLD.dota_core_gles) return "core-gles";
             if (archive == ARCHIVE_OLD.dota_dac_gles) return "dac-gles";
@@ -237,11 +237,11 @@ namespace MyShaderAnalysis.codestash
             {
                 return ARCHIVE_OLD.hl_hlvr_vulkan;
             }
-            if (Path.GetDirectoryName(vcsFileName).EndsWith("dota2-export-shaders-vulkan-V65\\shaders-core\\vfx"));
+            if (Path.GetDirectoryName(vcsFileName).EndsWith("dota2-export-shaders-vulkan-V65\\shaders-core\\vfx")) ;
             {
                 return ARCHIVE_OLD.dota_core_vulkan_v65;
             }
-            if (Path.GetDirectoryName(vcsFileName).EndsWith("dota2-export-shaders-vulkan-V65\\shaders-game\\vfx"));
+            if (Path.GetDirectoryName(vcsFileName).EndsWith("dota2-export-shaders-vulkan-V65\\shaders-game\\vfx")) ;
             {
                 return ARCHIVE_OLD.dota_core_vulkan_v65;
             }

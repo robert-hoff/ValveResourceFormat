@@ -36,7 +36,8 @@ namespace MyShaderAnalysis.util
                 {
                     collectValuesInt.TryGetValue(i, out int instanceCount);
                     Console.WriteLine($"{i,5}        {instanceCount,3}");
-                } else
+                }
+                else
                 {
                     Console.WriteLine($"{i}");
                 }
@@ -54,7 +55,8 @@ namespace MyShaderAnalysis.util
                 {
                     collectValuesString.TryGetValue(s, out int instanceCount);
                     Console.WriteLine($"{s.PadRight(120)}        {instanceCount,3}");
-                } else
+                }
+                else
                 {
                     Console.WriteLine($"{s}");
                 }

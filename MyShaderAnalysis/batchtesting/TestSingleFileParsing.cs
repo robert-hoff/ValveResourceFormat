@@ -247,7 +247,7 @@ namespace MyShaderAnalysis.batchtesting
 
             // zframeFile.PrintByteDetail();
 
-            VulkanSource vulkanSource = (VulkanSource)zframeFile.GpuSources[2];
+            VulkanSource vulkanSource = (VulkanSource) zframeFile.GpuSources[2];
             ParseVulkanSource vulkanParser = new ParseVulkanSource(vulkanSource);
             // vulkanParser.PrintByteDetailSpirvReflection();
             vulkanParser.PrintByteDetail();

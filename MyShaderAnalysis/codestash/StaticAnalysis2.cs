@@ -146,7 +146,8 @@ namespace MyShaderAnalysis.codestash
                             reportString += $"\n{spaceString}{dynExpLines[i]}";
                         }
                         reportString += "\n";
-                    } else
+                    }
+                    else
                     {
                         reportString += $"{dynExpLines[0]}";
                     }

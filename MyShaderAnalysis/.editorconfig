@@ -55,7 +55,7 @@ dotnet_diagnostic.CA1305.severity = none
 dotnet_diagnostic.CA1801.severity = none
 
 # Remove unused parameter
-dotnet_diagnostic.IDE0060.severity = none
+dotnet_diagnostic.IDE0060.severity = suggestion
 
 # Use discard
 dotnet_diagnostic.IDE0058.severity = none
@@ -126,7 +126,7 @@ dotnet_diagnostic.CA1062.severity = none
 dotnet_diagnostic.CA1303.severity = none
 
 # CA1304: Specify CultureInfo
-# dotnet_diagnostic.CA1304.severity = none
+dotnet_diagnostic.CA1304.severity = none
 
 # CA1305: Specify IFormatProvider
 # dotnet_diagnostic.CA1305.severity = suggestion
@@ -185,6 +185,8 @@ dotnet_diagnostic.CA2214.severity = none
 # CA5394: Do not use insecure randomness
 dotnet_diagnostic.CA5394.severity = suggestion
 
+# use pattern matching
+dotnet_diagnostic.IDE0038.severity = warning
 
 
 #
@@ -192,7 +194,7 @@ dotnet_diagnostic.CA5394.severity = suggestion
 #
 
 # IDE0055: Fix formatting
-dotnet_diagnostic.IDE0055.severity = none
+dotnet_diagnostic.IDE0055.severity = warning
 
 # Sort using and Import directives with System.* appearing first
 dotnet_separate_import_directive_groups = false:suggestion
@@ -222,21 +224,21 @@ dotnet_style_explicit_tuple_names = true:suggestion
 #
 
 # Newline settings
-# csharp_new_line_before_open_brace = all
-# csharp_new_line_before_else = true:suggestion
-# csharp_new_line_before_catch = true:suggestion
-# csharp_new_line_before_finally = true:suggestion
-# csharp_new_line_before_members_in_object_initializers = true:suggestion
-# csharp_new_line_before_members_in_anonymous_types = true:suggestion
-# csharp_new_line_between_query_expression_clauses = true:suggestion
-
 csharp_new_line_before_open_brace = all
-csharp_new_line_before_else = false
-csharp_new_line_before_catch = false
-csharp_new_line_before_finally = false
-csharp_new_line_before_members_in_object_initializers = false
-csharp_new_line_before_members_in_anonymous_types = false
-csharp_new_line_between_query_expression_clauses = false
+csharp_new_line_before_else = true:suggestion
+csharp_new_line_before_catch = true:suggestion
+csharp_new_line_before_finally = true:suggestion
+csharp_new_line_before_members_in_object_initializers = true:suggestion
+csharp_new_line_before_members_in_anonymous_types = true:suggestion
+csharp_new_line_between_query_expression_clauses = true:suggestion
+
+# csharp_new_line_before_open_brace = all
+# csharp_new_line_before_else = false
+# csharp_new_line_before_catch = false
+# csharp_new_line_before_finally = false
+# csharp_new_line_before_members_in_object_initializers = false
+# csharp_new_line_before_members_in_anonymous_types = false
+# csharp_new_line_between_query_expression_clauses = false
 
 
 # Indentation preferences
@@ -276,7 +278,10 @@ csharp_style_throw_expression = true:suggestion
 csharp_style_conditional_delegate_call = true:suggestion
 
 # Space preferences
-csharp_space_after_cast = false:suggestion
+# R: changing suggestion to warning or error doesn't do anything
+# csharp_space_after_cast = true:sugges
+csharp_space_after_cast = true
+
 csharp_space_after_colon_in_inheritance_clause = true:suggestion
 csharp_space_after_comma = true:suggestion
 csharp_space_after_dot = false:suggestion

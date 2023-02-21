@@ -126,7 +126,7 @@ namespace MyShaderAnalysis.codestash
             reader.BreakLine();
 
             reader.ShowByteCount();
-            int chunkOffset = (int)reader.BaseStream.Position;
+            int chunkOffset = (int) reader.BaseStream.Position;
             int chunkSize = reader.ReadInt32AtPosition();
             reader.ShowBytes(4, $"{chunkSize}");
             reader.ShowBytes(4);
@@ -138,7 +138,7 @@ namespace MyShaderAnalysis.codestash
 
             reader.BaseStream.Position = chunkOffset + chunkSize + 4;
             reader.ShowByteCount();
-            int chunkOffset2 = (int)reader.BaseStream.Position;
+            int chunkOffset2 = (int) reader.BaseStream.Position;
             int chunkSize2 = reader.ReadInt32AtPosition();
             reader.ShowBytes(4, $"{chunkSize2}");
             reader.ShowBytes(4);

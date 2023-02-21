@@ -137,7 +137,8 @@ namespace MyShaderAnalysis.batchtesting
             try
             {
                 dataReaderZframeBytes.PrintByteDetail();
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 long zframeId = shaderFile.GetZFrameIdByIndex(zFrameIndex);
                 Console.WriteLine($"ERROR in Z[0x{zframeId:x08}] zframeIndex={zFrameIndex} {e.Message}");
@@ -266,7 +267,8 @@ namespace MyShaderAnalysis.batchtesting
             try
             {
                 ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(zFrameIndex);
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 long zframeId = shaderFile.GetZFrameIdByIndex(zFrameIndex);
                 Console.WriteLine($"ERROR in Z[0x{zframeId:x08}] zframeIndex={zFrameIndex} {e.GetType()} {e.Message}");
@@ -314,7 +316,8 @@ namespace MyShaderAnalysis.batchtesting
                 {
                     ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(f);
                     Console.WriteLine($"{reportString} OK");
-                } catch (Exception e)
+                }
+                catch (Exception e)
                 {
                     Console.WriteLine($"{reportString} ERROR\n {e.Message}");
                 }
@@ -370,7 +373,8 @@ namespace MyShaderAnalysis.batchtesting
                         Console.WriteLine($"{reportString} OK");
                     }
                     statCounter.recPassed(vcsProgType);
-                } catch (Exception e)
+                }
+                catch (Exception e)
                 {
                     Console.WriteLine($"Error in /{archiveName}/{Path.GetFileName(f)} - {e.Message}");
                     statCounter.recFail(vcsProgType);
@@ -421,7 +425,8 @@ namespace MyShaderAnalysis.batchtesting
                 {
                     ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(f);
                     shaderFile.PrintByteDetail(outputWriter: (x) => { });
-                } catch (Exception e)
+                }
+                catch (Exception e)
                 {
                     Console.WriteLine($"ERROR {e.Message}");
                 }

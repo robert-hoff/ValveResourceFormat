@@ -1,5 +1,5 @@
-using System;
 using MyShaderFile.CompiledShader;
+using System;
 using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 
 namespace MyShaderAnalysis.compat
@@ -60,7 +60,7 @@ namespace MyShaderAnalysis.compat
             for (int i = 0; i < layers.Length; i++)
             {
                 long res = (zframeId / offsets[i]) % (layers[i] + 1);
-                state[i] = (int)res;
+                state[i] = (int) res;
             }
             return state;
         }

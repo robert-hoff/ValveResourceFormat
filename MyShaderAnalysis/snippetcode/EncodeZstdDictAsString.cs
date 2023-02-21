@@ -68,9 +68,9 @@ namespace MyShaderAnalysis.snippetcode
         {
             byte[] res = new byte[3];
             int val = ctv(enc[0], 18) + ctv(enc[1], 12) + ctv(enc[2], 6) + ctv(enc[3], 0);
-            res[0] = (byte)(val >> 16);
-            res[1] = (byte)(0xFF & val >> 8);
-            res[2] = (byte)(0xFF & val);
+            res[0] = (byte) (val >> 16);
+            res[1] = (byte) (0xFF & val >> 8);
+            res[2] = (byte) (0xFF & val);
             return res;
         }
 
@@ -97,11 +97,11 @@ namespace MyShaderAnalysis.snippetcode
 
         static char ValToChar(int val, int shift)
         {
-            return (char)((0x3F & val >> shift) + 0x30);
+            return (char) ((0x3F & val >> shift) + 0x30);
         }
         static char ValToChar(int val)
         {
-            return (char)(val + 0x30);
+            return (char) (val + 0x30);
         }
 
         static int GetPiece2(byte[] dict, int ind)

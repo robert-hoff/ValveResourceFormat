@@ -39,13 +39,15 @@ namespace MyShaderAnalysis.parsing
             if (vcsProgramType == VcsProgramType.Features)
             {
                 PrintVcsFeaturesHeader();
-            } else if (vcsProgramType == VcsProgramType.VertexShader || vcsProgramType == VcsProgramType.PixelShader
+            }
+            else if (vcsProgramType == VcsProgramType.VertexShader || vcsProgramType == VcsProgramType.PixelShader
                    || vcsProgramType == VcsProgramType.GeometryShader || vcsProgramType == VcsProgramType.PixelShaderRenderState
                    || vcsProgramType == VcsProgramType.ComputeShader || vcsProgramType == VcsProgramType.HullShader
                    || vcsProgramType == VcsProgramType.DomainShader || vcsProgramType == VcsProgramType.RaytracingShader)
             {
                 version = PrintVsPsHeader();
-            } else
+            }
+            else
             {
                 throw new ShaderParserException($"can't parse this filetype: {vcsProgramType}");
             }
@@ -104,7 +106,7 @@ namespace MyShaderAnalysis.parsing
             VcsAdditionalFiles AdditionalFiles = VcsAdditionalFiles.None;
             if (version >= 64)
             {
-                AdditionalFiles = (VcsAdditionalFiles)ReadInt32AtPosition();
+                AdditionalFiles = (VcsAdditionalFiles) ReadInt32AtPosition();
                 // ShowBytes(4, "has_psrs_file = " + (has_psrs_file > 0 ? "True" : "False"));
                 ShowBytes(4, "PSRS or RTX file if > 0");
             }
@@ -136,7 +138,8 @@ namespace MyShaderAnalysis.parsing
                 uint arg7 = ReadUInt32AtPosition(12);
                 ShowBytes(16, 4, breakLine: false);
                 TabComment($"({arg4},{arg5},{arg6},{arg7})");
-            } else
+            }
+            else
             {
                 ShowBytes(12, 4, breakLine: false);
                 TabComment($"({arg4},{arg5},{arg6})");
@@ -147,7 +150,7 @@ namespace MyShaderAnalysis.parsing
 
             int nrArguments = ReadInt32AtPosition();
             ShowBytes(4, $"nr of arguments {nrArguments}");
-            for (int i = 0; i < (int)AdditionalFiles; i++)
+            for (int i = 0; i < (int) AdditionalFiles; i++)
             {
                 // NOTE nr_of_arguments is overwritten
                 nrArguments = ReadInt32AtPosition();
@@ -174,7 +177,7 @@ namespace MyShaderAnalysis.parsing
             BreakLine();
             ShowByteCount("File IDs");
 
-            int maxFileReference = (int)VcsProgramType.PixelShaderRenderState + (int)AdditionalFiles;
+            int maxFileReference = (int) VcsProgramType.PixelShaderRenderState + (int) AdditionalFiles;
             for (int i = 0; i < maxFileReference; i++)
             {
                 ShowBytes(16, $"file ID{i} programType {(VcsProgramType) i}");
@@ -235,7 +238,7 @@ namespace MyShaderAnalysis.parsing
             TabComment($"({arg0},{arg1},{arg2},{arg3})");
             ShowBytes(4, $"({arg4}) Features index");
             ShowBytes(4, $"{arg5} additional string params");
-            int string_offset = (int)BaseStream.Position;
+            int string_offset = (int) BaseStream.Position;
             List<string> names = new();
             for (int i = 0; i < arg5; i++)
             {
@@ -246,7 +249,7 @@ namespace MyShaderAnalysis.parsing
             if (names.Count > 0)
             {
                 PrintStringList(names);
-                ShowBytes(string_offset - (int)BaseStream.Position);
+                ShowBytes(string_offset - (int) BaseStream.Position);
             }
             BreakLine();
         }
@@ -391,7 +394,8 @@ namespace MyShaderAnalysis.parsing
             {
                 ShowBytes(20, 4);
                 ShowBytes(4);
-            } else
+            }
+            else
             {
                 ShowBytes(20, 4);
             }
@@ -634,7 +638,8 @@ namespace MyShaderAnalysis.parsing
             if (zstdDelimOrChunkSize == ShaderFile.ZSTD_DELIM)
             {
                 ShowBytes(4, $"Zstd delim (0x{ShaderFile.ZSTD_DELIM:x08})");
-            } else
+            }
+            else
             {
                 ShowBytes(4, $"Lzma chunk size {zstdDelimOrChunkSize}");
                 uint lzmaDelim = ReadUInt32AtPosition();
@@ -642,7 +647,7 @@ namespace MyShaderAnalysis.parsing
                 {
                     // throw new ShaderParserException("Unknown compression, neither ZStd nor Lzma found");
                     Console.WriteLine($"neither zstd or lzma found");
-                    ShowBytes((int)zstdDelimOrChunkSize);
+                    ShowBytes((int) zstdDelimOrChunkSize);
                     return;
                 }
                 isLzma = true;

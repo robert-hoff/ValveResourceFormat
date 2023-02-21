@@ -360,7 +360,8 @@ namespace MyShaderAnalysis.codestash
                 databytesFileWriter.WriteLine($"{GetHtmlFooter()}");
                 databytesFileWriter.Flush();
                 databytesFileWriter.Close();
-            } else
+            }
+            else
             {
                 File.WriteAllBytes(outputFilenamepath, databytes);
             }

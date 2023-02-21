@@ -26,7 +26,8 @@ namespace MyShaderAnalysis.codestash
             {
                 vsFile = new FileTokensOld(archive, vsNamepath);
                 psFile = new FileTokensOld(archive, psNamepath);
-            } else
+            }
+            else
             {
                 throw new ShaderParserException($"this features file doesn't have associated vs and ps files {ftFile.GetShortHandName()}");
             }
@@ -52,7 +53,8 @@ namespace MyShaderAnalysis.codestash
             if (File.Exists(vsNamepath) && File.Exists(psNamepath))
             {
                 return new FileTriple(archive, ftFilename, vsNamepath, psNamepath);
-            } else
+            }
+            else
             {
                 return null;
             }

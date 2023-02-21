@@ -58,7 +58,8 @@ namespace MyShaderAnalysis.staticanalysis
                                 ShowSfBlockRules(shaderFile);
                             }
                         }
-                    } catch (Exception) { }
+                    }
+                    catch (Exception) { }
                 }
             }
         }
@@ -99,11 +100,11 @@ namespace MyShaderAnalysis.staticanalysis
             {
                 string biText = $"{ruleBlock.BlockIndex:00}";
                 string ruleIncExc = ruleBlock.Rule == ConditionalRule.Requires ? "inc" : "exc";
-                string ruleText = $"{ruleIncExc}({(int)ruleBlock.Rule})";
+                string ruleText = $"{ruleIncExc}({(int) ruleBlock.Rule})";
                 string a1Text = $"{ruleBlock.Arg1,2}";
                 string btText = $"{ruleBlock.BlockType}";
                 // string ctText = $"{CombineIntArray(ruleBlock.ConditionalTypes)}";
-                string ctText = CombineIntArray(Array.ConvertAll(ruleBlock.ConditionalTypes, x => (int)x));
+                string ctText = CombineIntArray(Array.ConvertAll(ruleBlock.ConditionalTypes, x => (int) x));
                 string indText = $"{CombineIntArray(ruleBlock.Indices)}";
                 string valText = $"{CombineIntArray(ruleBlock.Values)}";
                 string ran2Text = $"{CombineIntArray(ruleBlock.Range2)}";
@@ -134,7 +135,8 @@ namespace MyShaderAnalysis.staticanalysis
                             break;
                         }
                     }
-                } catch (Exception) { }
+                }
+                catch (Exception) { }
             }
         }
 
@@ -168,11 +170,11 @@ namespace MyShaderAnalysis.staticanalysis
                             // string biText = $"{dRuleBlock.BlockIndex:00}";
                             string biText = $".";
                             string ruleIncExc = dRuleBlock.Rule == ConditionalRule.Requires ? "inc" : "exc";
-                            string ruleText = $"{ruleIncExc}({(int)dRuleBlock.Rule})";
+                            string ruleText = $"{ruleIncExc}({(int) dRuleBlock.Rule})";
                             string a1Text = $"{dRuleBlock.Arg1,2}";
                             string btText = $"{dRuleBlock.BlockType}";
                             /// string ctText = $"{CombineIntArray(dRuleBlock.ConditionalTypes)}";
-                            string ctText = CombineIntArray(Array.ConvertAll(dRuleBlock.ConditionalTypes, x => (int)x));
+                            string ctText = CombineIntArray(Array.ConvertAll(dRuleBlock.ConditionalTypes, x => (int) x));
                             string indText = $"{CombineIntArray(dRuleBlock.Indices)}";
                             // string indText = $".";
                             string valText = $"{CombineIntArray(dRuleBlock.Values)}";
@@ -185,7 +187,8 @@ namespace MyShaderAnalysis.staticanalysis
                             //    Debug.WriteLine($"{shaderFile.FilenamePath}");
                             //}
                         }
-                    } catch (Exception) { }
+                    }
+                    catch (Exception) { }
                 }
             }
             List<string> rows = outputter.BuildTabulatedRows();
@@ -220,7 +223,8 @@ namespace MyShaderAnalysis.staticanalysis
                         {
                             CollectStringValue($"{pBlock.Name}");
                         }
-                    } catch (Exception) { }
+                    }
+                    catch (Exception) { }
                 }
             }
             PrintReport(showCount: false);

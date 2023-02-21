@@ -60,7 +60,8 @@ namespace MyShaderAnalysis.snippetcode
             if (fileStat.Value.Item2 > 0)
             {
                 return $"{getVcsToken(fileStat.Key)}[{fileStat.Value.Item1}/{fileStat.Value.Item2}] ";
-            } else
+            }
+            else
             {
                 return "";
             }

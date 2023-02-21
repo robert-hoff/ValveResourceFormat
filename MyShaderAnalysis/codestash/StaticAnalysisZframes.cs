@@ -1059,14 +1059,16 @@ breakhere: Console.WriteLine("");
                 try
                 {
                     shaderFile = InstantiateShaderFile(checkVcsFile);
-                } catch (Exception)
+                }
+                catch (Exception)
                 {
                     continue;
                 }
                 if (shaderFile.GetZFrameCount() < 4000 && shaderFile.GetZFrameCount() > 0)
                 {
                     vcsFiles.Add(checkVcsFile);
-                } else if (shaderFile.GetZFrameCount() > 0)
+                }
+                else if (shaderFile.GetZFrameCount() > 0)
                 {
                     Debug.WriteLine($"{shaderFile.FilenamePath}");
                 }

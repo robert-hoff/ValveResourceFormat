@@ -35,7 +35,7 @@ namespace MyShaderAnalysis.serverhtml
     {
         public static void RunTrials()
         {
-            
+
             // SaveAllServerFilesFromArchive();
             SaveServerSets();
             // SingleFileExamples2();

@@ -14,7 +14,6 @@ namespace ValveTrials
         private Button button3;
         private ByteViewer byteviewer;
 
-
         /* ByteViewer class
          *
          * for some reason can't select text and the text doesn't scroll on mouse-wheel (pretty weird really)
@@ -39,6 +38,10 @@ namespace ValveTrials
         {
             // Initialize the controls other than the ByteViewer.
             InitializeForm();
+
+
+            double d = 9.0;
+            int hello = (int)d;
 
             // Location = new Point(500,100);
 

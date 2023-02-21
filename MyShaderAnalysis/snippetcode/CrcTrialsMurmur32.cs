@@ -1,8 +1,8 @@
+using MyShaderAnalysis.util;
+using MyShaderFile.ThirdParty;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using MyShaderAnalysis.util;
-using MyShaderFile.ThirdParty;
 
 namespace MyShaderAnalysis.snippetcode
 {
@@ -35,7 +35,8 @@ namespace MyShaderAnalysis.snippetcode
                 murmurs.Add($"{murmur32:x08} {paramname}");
             }
             murmurs.Sort();
-            foreach (string murmurString in murmurs) {
+            foreach (string murmurString in murmurs)
+            {
                 Debug.WriteLine($"{murmurString}");
             }
         }
@@ -100,7 +101,7 @@ namespace MyShaderAnalysis.snippetcode
             string mystr = "";
             foreach (byte b in ParseString(databytes))
             {
-                mystr += (char)b;
+                mystr += (char) b;
             }
 
             return mystr;

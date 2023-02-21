@@ -46,10 +46,12 @@ namespace MyShaderAnalysis.filearchive
                     if (vcsFile.EndsWith("features.vcs"))
                     {
                         featuresFile = Path.GetFileName(vcsFile);
-                    } else if (vcsFile.EndsWith("vs.vcs"))
+                    }
+                    else if (vcsFile.EndsWith("vs.vcs"))
                     {
                         relatedFiles.Insert(0, Path.GetFileName(vcsFile));
-                    } else
+                    }
+                    else
                     {
                         relatedFiles.Add(Path.GetFileName(vcsFile));
                     }

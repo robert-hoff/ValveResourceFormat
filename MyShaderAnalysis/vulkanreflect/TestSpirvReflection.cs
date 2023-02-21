@@ -1,10 +1,10 @@
 using MyShaderAnalysis.filearchive;
 using MyShaderAnalysis.serverhtml;
 using MyShaderAnalysis.snippetcode;
+using MyShaderFile.CompiledShader;
 using System;
 using System.Diagnostics;
 using System.IO;
-using MyShaderFile.CompiledShader;
 using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 
 namespace MyShaderAnalysis.vulkanreflect
@@ -56,7 +56,7 @@ namespace MyShaderAnalysis.vulkanreflect
 
             FileVcsTokens vcsTokens = new FileVcsTokens(ARCHIVE.dota_game_vulkan_v65, "multiblend_vulkan_40_vs.vcs");
             ZFrameFile zFrameFile = vcsTokens.GetZframeFile(0);
-            VulkanSource vulkanSource = (VulkanSource)zFrameFile.GpuSources[5];
+            VulkanSource vulkanSource = (VulkanSource) zFrameFile.GpuSources[5];
             byte[] spirvBytes = vulkanSource.GetSpirvBytes();
 
             Debug.WriteLine($"file ref. {vulkanSource.GetEditorRefIdAsString()}");
@@ -84,7 +84,7 @@ namespace MyShaderAnalysis.vulkanreflect
         {
             FileVcsTokens vcsTokens = new FileVcsTokens(ARCHIVE.alyx_hlvr_vulkan_v64, "cables_vulkan_50_ps.vcs");
             ZFrameFile zFrameFile = vcsTokens.GetZframeFile(0x44);
-            VulkanSource vulkanSource = (VulkanSource)zFrameFile.GpuSources[0];
+            VulkanSource vulkanSource = (VulkanSource) zFrameFile.GpuSources[0];
             byte[] spirvBytes = vulkanSource.GetSpirvBytes();
             Debug.WriteLine($"{BytesToString(spirvBytes)}");
 
@@ -105,7 +105,7 @@ namespace MyShaderAnalysis.vulkanreflect
         {
             FileVcsTokens vcsTokens = new FileVcsTokens(ARCHIVE.alyx_hlvr_vulkan_v64, "cables_vulkan_50_ps.vcs");
             ZFrameFile zFrameFile = vcsTokens.GetZframeFile(0);
-            VulkanSource vulkanSource = (VulkanSource)zFrameFile.GpuSources[0];
+            VulkanSource vulkanSource = (VulkanSource) zFrameFile.GpuSources[0];
             // byte[] spirvBytes = vulkanSource.GetSpirvBytes();
             // string decompiledSource = DecompileSpirvDll.DecompileVulkan(spirvBytes);
             // Debug.WriteLine($"{decompiledSource}");
@@ -126,7 +126,7 @@ namespace MyShaderAnalysis.vulkanreflect
         {
             FileVcsTokens vcsTokens = new FileVcsTokens(ARCHIVE.alyx_hlvr_vulkan_v64, "cables_vulkan_50_ps.vcs");
             ZFrameFile zFrameFile = vcsTokens.GetZframeFile(0x44);
-            VulkanSource vulkanSource = (VulkanSource)zFrameFile.GpuSources[0];
+            VulkanSource vulkanSource = (VulkanSource) zFrameFile.GpuSources[0];
             byte[] spirvBytes = vulkanSource.GetSpirvBytes();
             string decompiledSource = DecompileSpirvDll.DecompileVulkan(spirvBytes); // fixed!! I fixed it
             Debug.WriteLine($"{decompiledSource}");
@@ -182,7 +182,7 @@ namespace MyShaderAnalysis.vulkanreflect
 
             FileVcsTokens vcsTokens = new FileVcsTokens(ARCHIVE.alyx_hlvr_vulkan_v64, filename);
             ZFrameFile zFrameFile = vcsTokens.GetZframeFile(zFrameId);
-            VulkanSource vulkanSource = (VulkanSource)zFrameFile.GpuSources[sourceId];
+            VulkanSource vulkanSource = (VulkanSource) zFrameFile.GpuSources[sourceId];
             byte[] spirvBytes = vulkanSource.GetSpirvBytes();
 
             // -- test parser
@@ -220,7 +220,7 @@ namespace MyShaderAnalysis.vulkanreflect
                 {
                     // vcsTokens.GetZframeFile(i).PrintGpuSource(j);
                     ZFrameFile zFrameFile = vcsTokens.GetZframeFile(i);
-                    VulkanSource vulkanSource = (VulkanSource)zFrameFile.GpuSources[0];
+                    VulkanSource vulkanSource = (VulkanSource) zFrameFile.GpuSources[0];
                     byte[] spirvBytes = vulkanSource.GetSpirvBytes();
                     string decompiledSource = DecompileSpirvDll.DecompileVulkan(spirvBytes);
                     Debug.WriteLine($"FILE {vcsTokens} zframe[{i}] source[{j}]\n");
@@ -233,7 +233,7 @@ namespace MyShaderAnalysis.vulkanreflect
         {
             FileVcsTokens vcsTokens = new FileVcsTokens(ARCHIVE.alyx_hlvr_vulkan_v64, "vr_ice_surface_vulkan_50_ps.vcs");
             ZFrameFile firstZFrameFile = vcsTokens.GetZframeFile(0);
-            VulkanSource vulkanSource = (VulkanSource)firstZFrameFile.GpuSources[0];
+            VulkanSource vulkanSource = (VulkanSource) firstZFrameFile.GpuSources[0];
             byte[] sourceBytes = vulkanSource.Sourcebytes;
             byte[] spirvBytes = vulkanSource.GetSpirvBytes();
             string decompiledSource = DecompileSpirvDll.DecompileVulkan(spirvBytes);
@@ -246,7 +246,7 @@ namespace MyShaderAnalysis.vulkanreflect
             // FileVcsTokens vcsTokens = new FileVcsTokens(ARCHIVE.alyx_hlvr_vulkan_v64, "visualize_cloth_vulkan_50_ps.vcs");
             FileVcsTokens vcsTokens = new FileVcsTokens(ARCHIVE.alyx_hlvr_vulkan_v64, "visualize_cloth_vulkan_50_gs.vcs");
             ZFrameFile firstZFrameFile = vcsTokens.GetZframeFile(0);
-            VulkanSource vulkanSource = (VulkanSource)firstZFrameFile.GpuSources[0];
+            VulkanSource vulkanSource = (VulkanSource) firstZFrameFile.GpuSources[0];
             byte[] sourceBytes = vulkanSource.Sourcebytes;
             byte[] spirvBytes = vulkanSource.GetSpirvBytes();
             string decompiledSource = DecompileSpirvDll.DecompileVulkan(spirvBytes);
@@ -263,7 +263,7 @@ namespace MyShaderAnalysis.vulkanreflect
         {
             FileVcsTokens vcsTokens = new FileVcsTokens(ARCHIVE.alyx_hlvr_vulkan_v64, "visualize_cloth_vulkan_50_gs.vcs");
             ZFrameFile firstZFrameFile = vcsTokens.GetZframeFile(0);
-            VulkanSource vulkanSource = (VulkanSource)firstZFrameFile.GpuSources[0];
+            VulkanSource vulkanSource = (VulkanSource) firstZFrameFile.GpuSources[0];
             byte[] sourceBytes = vulkanSource.Sourcebytes;
             byte[] spirvBytes = vulkanSource.GetSpirvBytes();
             Debug.WriteLine($"{sourceBytes.Length}");
@@ -299,7 +299,7 @@ namespace MyShaderAnalysis.vulkanreflect
                 FileVcsTokens fileVcsTokens = fileArchive.GetFileVcsTokens(i);
                 ZFrameFile zFrameFile = fileArchive.GetZFrameFile(i, zFrameIndex);
                 // zFrameFile.PrintGpuSource(sourceIndex, outputWriter: (x) => { });
-                VulkanSource vulkanSource = (VulkanSource)zFrameFile.GpuSources[0];
+                VulkanSource vulkanSource = (VulkanSource) zFrameFile.GpuSources[0];
                 if (vulkanSource.Arg0 == -1)
                 {
                     Debug.WriteLine($"{fileVcsTokens} zframe={zFrameIndex} sourceIndex={sourceIndex}");
@@ -363,7 +363,7 @@ namespace MyShaderAnalysis.vulkanreflect
             FileArchive fileArchive = new(ARCHIVE.alyx_hlvr_vulkan_v64, VS, PS, useModularLookup: true);
             ZFrameFile zFrame = fileArchive.GetZFrameFile(10, 100);
 
-            VulkanSource vulkanSource = (VulkanSource)zFrame.GpuSources[0];
+            VulkanSource vulkanSource = (VulkanSource) zFrame.GpuSources[0];
             Debug.WriteLine($"ARG0");
             Debug.WriteLine($"{vulkanSource.Arg0}");
             Debug.WriteLine($"---\n\n");

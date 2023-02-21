@@ -31,7 +31,8 @@ namespace MyShaderAnalysis.util
                     sw.Write(x);
                     Console.Write(x);
                 };
-            } else
+            }
+            else
             {
                 return (x) =>
                 {

@@ -197,7 +197,8 @@ namespace MyShaderAnalysis.snippetcode
             if (dict.TryGetValue(number, out (bool isTrue, DateTime timestamp) booltime))
             {
                 Console.WriteLine($"Found it: {booltime.isTrue}, {booltime.timestamp}");
-            } else
+            }
+            else
             {
                 Console.WriteLine($"{number} Not Found");
             }
@@ -283,8 +284,9 @@ namespace MyShaderAnalysis.snippetcode
                 int hexChar = Convert.ToInt32(hexcode, 16);
                 if (hexChar >= 32 && hexChar <= 126)
                 {
-                    assembleString += (char)hexChar;
-                } else
+                    assembleString += (char) hexChar;
+                }
+                else
                 {
                     assembleString += ".";
                 }

@@ -1,7 +1,7 @@
-using System;
-using System.IO;
 using MyShaderFile.CompiledShader;
 using MyShaderFile.ThirdParty;
+using System;
+using System.IO;
 using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 
 namespace MyShaderAnalysis.parsing
@@ -110,7 +110,8 @@ namespace MyShaderAnalysis.parsing
                     default:
                         throw new ShaderParserException($"Unknown or unsupported model type {vcsPlatformType} {vcsShaderModelType}");
                 }
-            } else
+            }
+            else
             {
                 switch (vcsPlatformType)
                 {
@@ -133,7 +134,8 @@ namespace MyShaderAnalysis.parsing
                 vcsProgramType == VcsProgramType.ComputeShader || vcsProgramType == VcsProgramType.DomainShader)
             {
                 ShowZAllEndBlocksTypeVs();
-            } else if (vcsProgramType == VcsProgramType.HullShader ||
+            }
+            else if (vcsProgramType == VcsProgramType.HullShader ||
                 vcsProgramType == VcsProgramType.RaytracingShader)
             {
                 ShowZAllEndBlocksTypeHs();
@@ -185,7 +187,8 @@ namespace MyShaderAnalysis.parsing
                         ShowBytes(64, 32);
                     }
                 }
-            } else
+            }
+            else
             {
                 throw new ShaderParserException($"Unknown or unsupported ProgramType {vcsProgramType}");
             }
@@ -248,7 +251,8 @@ namespace MyShaderAnalysis.parsing
             {
                 prevBlockWasZero = true;
                 return;
-            } else
+            }
+            else
             {
                 prevBlockWasZero = false;
             }
@@ -313,7 +317,7 @@ namespace MyShaderAnalysis.parsing
                 if (sourceOffset > 0)
                 {
                     ShowBytes(4);
-                    int unknown_prog_uint16 = (int)ReadUInt16AtPosition(2);
+                    int unknown_prog_uint16 = (int) ReadUInt16AtPosition(2);
                     ShowBytes(4, $"({unknown_prog_uint16}) the first ({unknown_prog_uint16} * 4) " +
                         $"bytes look like header data that may need to be processed");
                     BreakLine();
@@ -325,23 +329,26 @@ namespace MyShaderAnalysis.parsing
                     }
                     additionalSourceBytes = sourceSize - unknown_prog_uint16 * 4;
                 }
-                int endOfSource = (int)BaseStream.Position + additionalSourceBytes;
+                int endOfSource = (int) BaseStream.Position + additionalSourceBytes;
                 if (additionalSourceBytes > SOURCE_BYTES_TO_SHOW)
                 {
                     ShowBytes(SOURCE_BYTES_TO_SHOW, breakLine: false);
                     OutputWrite(" ");
-                    int remainingBytes = endOfSource - (int)BaseStream.Position;
+                    int remainingBytes = endOfSource - (int) BaseStream.Position;
                     if (remainingBytes < 50)
                     {
                         ShowBytes(remainingBytes);
-                    } else
+                    }
+                    else
                     {
                         Comment($"... ({endOfSource - BaseStream.Position} bytes of data not shown)");
                     }
-                } else if (additionalSourceBytes <= SOURCE_BYTES_TO_SHOW && additionalSourceBytes > 0)
+                }
+                else if (additionalSourceBytes <= SOURCE_BYTES_TO_SHOW && additionalSourceBytes > 0)
                 {
                     ShowBytes(additionalSourceBytes);
-                } else
+                }
+                else
                 {
                     OutputWriteLine("// no source present");
                 }
@@ -360,7 +367,7 @@ namespace MyShaderAnalysis.parsing
                 ShowByteCount();
                 ShowBytes(4, $"Source size, {sourceSize} bytes");
                 BreakLine();
-                int endOfSource = (int)BaseStream.Position + sourceSize;
+                int endOfSource = (int) BaseStream.Position + sourceSize;
                 ShowByteCount($"DXBC-SOURCE[{sourceId}]");
                 if (sourceSize == 0)
                 {
@@ -371,7 +378,8 @@ namespace MyShaderAnalysis.parsing
                     ShowBytes(SOURCE_BYTES_TO_SHOW, breakLine: false);
                     OutputWrite(" ");
                     Comment($"... ({endOfSource - BaseStream.Position} bytes of data not shown)");
-                } else if (sourceSize <= SOURCE_BYTES_TO_SHOW && sourceSize > 0)
+                }
+                else if (sourceSize <= SOURCE_BYTES_TO_SHOW && sourceSize > 0)
                 {
                     ShowBytes(sourceSize);
                 }
@@ -394,11 +402,12 @@ namespace MyShaderAnalysis.parsing
                     ShowBytes(4);
                     OutputWriteLine("// no source present");
                     BreakLine();
-                } else
+                }
+                else
                 {
                     ShowByteCount();
                     ShowBytes(4, $"({offsetToEditorId}) offset to Editor ref. ID ");
-                    int endOfSourceOffset = (int)BaseStream.Position + offsetToEditorId;
+                    int endOfSourceOffset = (int) BaseStream.Position + offsetToEditorId;
                     int arg0 = ReadInt32AtPosition();
                     ShowBytes(4, $"({arg0}) values seen for Vulkan sources are (2,3)");
                     int metaDataOffset = ReadInt32AtPosition();
@@ -426,7 +435,7 @@ namespace MyShaderAnalysis.parsing
             for (int sourceId = 0; sourceId < glslSourceCount; sourceId++)
             {
                 int sourceSize = ShowGlslSourceOffsets();
-                int sourceOffset = (int)BaseStream.Position;
+                int sourceOffset = (int) BaseStream.Position;
                 ShowZGlslSourceSummary(sourceId);
                 ShowByteCount();
                 byte[] fileIdBytes = ReadBytes(16);
@@ -455,7 +464,7 @@ namespace MyShaderAnalysis.parsing
         public void ShowZGlslSourceSummary(int sourceId)
         {
             int bytesToRead = ReadInt32AtPosition(-4);
-            int endOfSource = (int)BaseStream.Position + bytesToRead;
+            int endOfSource = (int) BaseStream.Position + bytesToRead;
             ShowByteCount($"GLSL-SOURCE[{sourceId}]");
             if (bytesToRead == 0)
             {
@@ -465,7 +474,8 @@ namespace MyShaderAnalysis.parsing
             {
                 ShowBytes(SOURCE_BYTES_TO_SHOW);
                 Comment($"... ({endOfSource - BaseStream.Position} bytes of data not shown)");
-            } else if (bytesToRead <= SOURCE_BYTES_TO_SHOW && bytesToRead > 0)
+            }
+            else if (bytesToRead <= SOURCE_BYTES_TO_SHOW && bytesToRead > 0)
             {
                 ShowBytes(bytesToRead);
             }

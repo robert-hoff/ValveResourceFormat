@@ -201,7 +201,8 @@ namespace MyShaderAnalysis.snippetcode
                 if (bool0[i] == bool1[i] == matchingOn)
                 {
                     matchLen++;
-                } else
+                }
+                else
                 {
                     return matchLen;
                 }
@@ -253,7 +254,8 @@ namespace MyShaderAnalysis.snippetcode
                 if (i % SKIP > 0)
                 {
                     result += "_";
-                } else
+                }
+                else
                 {
                     result += bool0[i] ? "T" : "F";
                 }
@@ -289,7 +291,8 @@ namespace MyShaderAnalysis.snippetcode
                 if (s1[i] == s2[i])
                 {
                     matchLen++;
-                } else
+                }
+                else
                 {
                     return matchLen;
                 }
@@ -304,10 +307,12 @@ namespace MyShaderAnalysis.snippetcode
             if (dirname.EndsWith(@"/shaders/vfx"))
             {
                 return @"/shaders/vfx/" + filename;
-            } else if (dirname.EndsWith(@"/shaders-core/vfx"))
+            }
+            else if (dirname.EndsWith(@"/shaders-core/vfx"))
             {
                 return @"/shaders-core/vfx/" + filename;
-            } else
+            }
+            else
             {
                 return filenamepath;
             }

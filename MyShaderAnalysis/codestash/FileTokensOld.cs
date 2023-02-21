@@ -192,7 +192,8 @@ namespace MyShaderAnalysis.codestash
             if (!Directory.Exists(GetZFramesServerDir()))
             {
                 return zframeFiles;
-            } else
+            }
+            else
             {
                 foreach (string zframeFile in Directory.GetFiles(GetZFramesServerDir()))
                 {
@@ -252,7 +253,8 @@ namespace MyShaderAnalysis.codestash
             {
                 string summariesPath = GetSummariesPath();
                 return File.Exists($"{serverdir}{summariesPath}") ? summariesPath : "";
-            } else
+            }
+            else
             {
                 return "";
             }

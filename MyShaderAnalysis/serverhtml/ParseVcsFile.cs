@@ -64,7 +64,7 @@ namespace MyShaderAnalysis.serverhtml
             GpuSource gpuSource = zframeFile.GpuSources[gpuSourceId];
             if (gpuSource.Sourcebytes.Length > 0 && gpuSource is VulkanSource)
             {
-                VulkanSource vulkanSource = (VulkanSource)gpuSource;
+                VulkanSource vulkanSource = (VulkanSource) gpuSource;
                 string reflectedSpirv = DecompileSpirvDll.DecompileVulkan(vulkanSource.GetSpirvBytes());
                 textBuffer.GetStringBuilder().Clear();
                 textBuffer.WriteLine(vulkanSource.GetSourceDetails());
@@ -73,7 +73,8 @@ namespace MyShaderAnalysis.serverhtml
                 textBuffer.WriteLine($"// Source metadata (unknown encoding) ({vulkanSource.MetadataLength})");
                 textBuffer.WriteLine($"[{vulkanSource.MetadataOffset}]");
                 textBuffer.WriteLine($"{BytesToString(vulkanSource.GetMetadataBytes())}");
-            } else
+            }
+            else
             {
                 zframeFile.PrintGpuSource(gpuSourceId, outputWriter: textBuffer.Write);
             }

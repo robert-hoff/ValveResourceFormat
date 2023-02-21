@@ -69,7 +69,8 @@ namespace MyShaderAnalysis.postprocessing
             if (programType != VcsProgramType.Undetermined)
             {
                 return $"<a href='{fileTokens.GetServerFilePath()}/{groups[1].ToString()[..^4]}-summary2.html'>{groups[1]}</a>";
-            } else
+            }
+            else
             {
                 long zframeId = Convert.ToInt64(groups[1].ToString(), 16);
                 return fileTokens.GetBestZframesLink(zframeId, noBrackets: true);

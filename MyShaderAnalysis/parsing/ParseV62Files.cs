@@ -1,7 +1,7 @@
+using MyShaderFile.CompiledShader;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using MyShaderFile.CompiledShader;
 using static MyShaderAnalysis.codestash.FileSystemOld;
 using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
 using static MyShaderAnalysis.filearchive.ReadShaderFile;
@@ -78,13 +78,15 @@ namespace MyShaderAnalysis.parsing
             if (vcsProgramType == VcsProgramType.Features)
             {
                 PrintVcsFeaturesHeader();
-            } else if (vcsProgramType == VcsProgramType.VertexShader || vcsProgramType == VcsProgramType.PixelShader
+            }
+            else if (vcsProgramType == VcsProgramType.VertexShader || vcsProgramType == VcsProgramType.PixelShader
                    || vcsProgramType == VcsProgramType.GeometryShader || vcsProgramType == VcsProgramType.PixelShaderRenderState
                    || vcsProgramType == VcsProgramType.ComputeShader || vcsProgramType == VcsProgramType.HullShader
                    || vcsProgramType == VcsProgramType.DomainShader || vcsProgramType == VcsProgramType.RaytracingShader)
             {
                 version = PrintVsPsHeader();
-            } else
+            }
+            else
             {
                 throw new ShaderParserException($"can't parse this filetype: {vcsProgramType}");
             }
@@ -167,7 +169,8 @@ namespace MyShaderAnalysis.parsing
                 uint arg7 = ReadUInt32AtPosition(12);
                 ShowBytes(16, 4, breakLine: false);
                 TabComment($"({arg4},{arg5},{arg6},{arg7})");
-            } else
+            }
+            else
             {
                 ShowBytes(12, 4, breakLine: false);
                 TabComment($"({arg4},{arg5},{arg6})");
@@ -207,7 +210,8 @@ namespace MyShaderAnalysis.parsing
             if (writeHtmlLinks)
             {
                 OutputWrite($"{GetVsHtmlLink(vcsFilename, ReadBytesAsString(16))}");
-            } else
+            }
+            else
             {
                 ShowBytes(16, breakLine: false);
             }
@@ -215,7 +219,8 @@ namespace MyShaderAnalysis.parsing
             if (writeHtmlLinks)
             {
                 OutputWrite($"{GetPsHtmlLink(vcsFilename, ReadBytesAsString(16))}");
-            } else
+            }
+            else
             {
                 ShowBytes(16, breakLine: false);
             }
@@ -289,7 +294,7 @@ namespace MyShaderAnalysis.parsing
             TabComment($"({arg0},{arg1},{arg2},{arg3})");
             ShowBytes(4, $"({arg4}) known values [-1,28]");
             ShowBytes(4, $"{arg5} additional string params");
-            int string_offset = (int)BaseStream.Position;
+            int string_offset = (int) BaseStream.Position;
             List<string> names = new();
             for (int i = 0; i < arg5; i++)
             {
@@ -300,7 +305,7 @@ namespace MyShaderAnalysis.parsing
             if (names.Count > 0)
             {
                 PrintStringList(names);
-                ShowBytes(string_offset - (int)BaseStream.Position);
+                ShowBytes(string_offset - (int) BaseStream.Position);
             }
             BreakLine();
         }
@@ -686,7 +691,8 @@ namespace MyShaderAnalysis.parsing
             if (zstdDelimOrChunkSize == ShaderFile.ZSTD_DELIM)
             {
                 ShowBytes(4, $"Zstd delim (0x{ShaderFile.ZSTD_DELIM:x08})");
-            } else
+            }
+            else
             {
                 ShowBytes(4, $"Lzma chunk size {zstdDelimOrChunkSize}");
                 uint lzmaDelim = ReadUInt32AtPosition();
@@ -694,7 +700,7 @@ namespace MyShaderAnalysis.parsing
                 {
                     // throw new ShaderParserException("Unknown compression, neither ZStd nor Lzma found");
                     Comment($"neither zstd or lzma found");
-                    ShowBytes((int)zstdDelimOrChunkSize);
+                    ShowBytes((int) zstdDelimOrChunkSize);
                     return;
                 }
                 isLzma = true;
@@ -726,7 +732,8 @@ namespace MyShaderAnalysis.parsing
                 string basedir = $"/vcs-all/{GetCoreOrDotaString(vcsFilename)}/zsource/";
 
                 return GetZframeHtmlLinkCheckExists(zframeId, vcsFilename, serverdir, basedir);
-            } else
+            }
+            else
             {
                 return $"zframe[0x{zframeId:x08}]";
             }
