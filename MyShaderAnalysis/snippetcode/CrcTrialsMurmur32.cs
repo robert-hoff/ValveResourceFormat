@@ -18,7 +18,7 @@ namespace MyShaderAnalysis.snippetcode
             // Trial3();
             // Trial4();
 
-            // WriteOutMurmurStringsForParams();
+            WriteOutMurmurStringsForParams();
             // ReadParameterNames();
 
             // Debug.WriteLine($"{Murmur32("$TRANS_OFFSET_V"):x08}");

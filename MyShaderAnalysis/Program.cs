@@ -121,10 +121,10 @@ namespace MyShaderAnalysis
         public static void CSharpSnippets()
         {
             // -- fix some style issues
-            FixCsSources.Run();
+            // FixCsSources.Run();
             // RegexExamples.RunTrials();
             // Snippetcode.RunTrials();
-            // CrcTrialsMurmur32.RunTrials();
+            CrcTrialsMurmur32.RunTrials();
         }
 
         public static void TestConstraintRules()
