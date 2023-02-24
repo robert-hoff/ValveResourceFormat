@@ -12,10 +12,10 @@ namespace MyShaderAnalysis.serverhtml
 {
     public class ParseVcsFile
     {
-        private FileVcsTokens fileTokens;
-        private ShaderFile shaderFile;
-        private bool showRichTextBoxLinks;
-        private bool convertLinksToHtml;
+        private readonly FileVcsTokens fileTokens;
+        private readonly ShaderFile shaderFile;
+        private readonly bool showRichTextBoxLinks;
+        private readonly bool convertLinksToHtml;
 
         // public int zframesToPrint { get; set; } = 0;
 
@@ -49,22 +49,21 @@ namespace MyShaderAnalysis.serverhtml
             return buffer.ToString();
         }
 
-        public string GetZframeByteSummary(ZFrameFile zframeFile)
+        public static string GetZframeByteSummary(ZFrameFile zframeFile)
         {
             StringWriter buffer = new StringWriter(CultureInfo.InvariantCulture);
             zframeFile.PrintByteDetail(outputWriter: buffer.Write);
             return buffer.ToString();
         }
 
-        public string GetGpuSource(ZFrameFile zframeFile, int gpuSourceId)
+        public static string GetGpuSource(ZFrameFile zframeFile, int gpuSourceId)
         {
             StringWriter textBuffer = new StringWriter(CultureInfo.InvariantCulture);
 
             // Do spirv reflection if applicable
             GpuSource gpuSource = zframeFile.GpuSources[gpuSourceId];
-            if (gpuSource.Sourcebytes.Length > 0 && gpuSource is VulkanSource)
+            if (gpuSource.Sourcebytes.Length > 0 && gpuSource is VulkanSource vulkanSource)
             {
-                VulkanSource vulkanSource = (VulkanSource) gpuSource;
                 string reflectedSpirv = DecompileSpirvDll.DecompileVulkan(vulkanSource.GetSpirvBytes());
                 textBuffer.GetStringBuilder().Clear();
                 textBuffer.WriteLine(vulkanSource.GetSourceDetails());
@@ -81,7 +80,7 @@ namespace MyShaderAnalysis.serverhtml
             return textBuffer.ToString();
         }
 
-        public string GetGpuByteSource(ZFrameFile zframeFile, int gpuSourceId)
+        public static string GetGpuByteSource(ZFrameFile zframeFile, int gpuSourceId)
         {
             GpuSource gpuSource = zframeFile.GpuSources[gpuSourceId];
             byte[] sourceBytes = gpuSource.Sourcebytes;

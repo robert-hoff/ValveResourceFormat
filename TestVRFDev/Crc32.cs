@@ -1,13 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using System;
 using System.Linq;
 
-namespace TestVRFDev {
+namespace TestVRFDev
+{
     /// <summary>
     /// A utility class to compute CRC32.
     /// </summary>

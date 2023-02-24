@@ -7,6 +7,7 @@ using System.IO;
  *
  *
  */
+#pragma warning disable IDE0060 // Remove unused parameter
 namespace MyShaderAnalysis.filearchive
 {
     class FileVcsCollection
@@ -35,7 +36,7 @@ namespace MyShaderAnalysis.filearchive
             {
                 // e.g. 'hero_pcgl_30_ps.vcs' is shortened to 'hero_pcgl_30'
                 vcsCollectionName = Path.GetFileName(vcsCollectionName);
-                vcsCollectionName = vcsCollectionName.Substring(0, vcsCollectionName.LastIndexOf('_'));
+                vcsCollectionName = vcsCollectionName[..vcsCollectionName.LastIndexOf('_')];
             }
             List<string> relatedFiles = new();
             string featuresFile = null;

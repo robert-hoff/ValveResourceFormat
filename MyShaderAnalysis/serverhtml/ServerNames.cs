@@ -1,5 +1,4 @@
-using System.Reflection;
-
+#pragma warning disable CA1024 // Use properties where appropriate
 namespace MyShaderAnalysis.serverhtml
 {
     public class ServerNames

@@ -18,6 +18,13 @@ using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
  *
  */
 #pragma warning disable IDE0011 // Add braces
+#pragma warning disable IDE0028 // Simplify collection initialization
+#pragma warning disable IDE0051 // Remove unused private members
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
+#pragma warning disable IDE0071 // Simplify interpolation
+#pragma warning disable CA1508 // Avoid dead conditional code
+#pragma warning disable CA1823 // Avoid unused private fields
+#pragma warning disable CS0219 // Variable is assigned but its value is never used
 namespace MyShaderAnalysis.codestash
 {
     public class StaticAnalysis1
@@ -353,7 +360,7 @@ namespace MyShaderAnalysis.codestash
         static string GetSFSummaryLink(string filenamepath)
         {
             // FileTripe fileTriple = FileTriple.GetTripleIfExists()
-            VcsProgramType vcsFiletype = ComputeVCSFileName(filenamepath).Item1;
+            VcsProgramType vcsFiletype = ComputeVCSFileName(filenamepath).ProgramType;
             if (vcsFiletype == VcsProgramType.VertexShader || vcsFiletype == VcsProgramType.PixelShader)
             {
                 ARCHIVE_OLD archive = DetermineArchiveType(filenamepath);
@@ -913,7 +920,6 @@ namespace MyShaderAnalysis.codestash
          *
          */
         // static void FileSummaryMultiblendPs(string featuresfile, string outputFilenamepath = null, bool writeFile = false) {
-
         static void FileSummaryMultiblendPs()
         {
             string featuresfile = @$"{PCGL_DIR_NOT_CORE}/multiblend_pcgl_30_features.vcs";
@@ -1892,10 +1898,7 @@ namespace MyShaderAnalysis.codestash
             {
                 Console.Write(text);
             }
-            if (sw != null)
-            {
-                sw.Write(text);
-            }
+            sw?.Write(text);
         }
         public static void OutputWriteLine(string text)
         {
