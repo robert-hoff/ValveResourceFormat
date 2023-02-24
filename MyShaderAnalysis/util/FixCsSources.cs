@@ -40,7 +40,7 @@ namespace MyShaderAnalysis.util
         public static void FixStylesForFile(string filenamepath)
         {
             List<string> sourceLines = GetModifiedSourceLines(filenamepath);
-            FileWriter fw = new FileWriter(filenamepath, EOL: EOL_PREFERENCE, useBom: BOM_PREFERENCE);
+            FileWriter fw = new(filenamepath, EOL: EOL_PREFERENCE, useBom: BOM_PREFERENCE);
             foreach (string line in sourceLines)
             {
                 fw.WriteLine(line);

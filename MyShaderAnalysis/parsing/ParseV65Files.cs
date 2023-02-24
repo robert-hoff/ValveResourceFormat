@@ -14,6 +14,12 @@ using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
  *
  */
 #pragma warning disable IDE0011 // Add braces
+#pragma warning disable IDE0033 // Use explicitly provided tuple name
+#pragma warning disable IDE0044 // Add readonly modifier
+#pragma warning disable IDE0051 // Remove unused private members
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
+#pragma warning disable CA1822 // Mark members as static
+#pragma warning disable CA1823 // Avoid unused private fields
 namespace MyShaderAnalysis.parsing
 {
     class ParseV65Files : ShaderDataReader

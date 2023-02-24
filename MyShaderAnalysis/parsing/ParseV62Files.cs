@@ -13,6 +13,10 @@ using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
  *
  */
 #pragma warning disable IDE0011 // Add braces
+#pragma warning disable IDE0044 // Add readonly modifier
+#pragma warning disable IDE0051 // Remove unused private members
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
+#pragma warning disable CA1823 // Avoid unused private fields
 namespace MyShaderAnalysis.parsing
 {
     class ParseV62Files : ShaderDataReader
@@ -73,7 +77,7 @@ namespace MyShaderAnalysis.parsing
 
         public ParseV62Files(string filenamepath) : base(new MemoryStream(File.ReadAllBytes(filenamepath)))
         {
-            vcsProgramType = ComputeVCSFileName(filenamepath).Item1;
+            vcsProgramType = ComputeVCSFileName(filenamepath).ProgramType;
             vcsFilename = filenamepath;
 
             if (vcsProgramType == VcsProgramType.Features)
@@ -532,18 +536,24 @@ namespace MyShaderAnalysis.parsing
             BreakLine();
         }
 
-        private string Format(float val)
+        private static string Format(float val)
         {
-            if (val == -1e9) return "-inf";
-            if (val == 1e9) return "inf";
-            return $"{val}";
+            return val switch
+            {
+                -1e9f => "-inf",
+                1e9f => "inf",
+                _ => $"{val}"
+            };
         }
 
-        private string Format(int val)
+        private static string Format(int val)
         {
-            if (val == -999999999) return "-inf";
-            if (val == 999999999) return "inf";
-            return "" + val; ;
+            return val switch
+            {
+                -999999999 => "-inf",
+                999999999 => "inf",
+                _ => $"{val}"
+            };
         }
 
         private void PrintAllMipmapBlocks()
@@ -682,7 +692,7 @@ namespace MyShaderAnalysis.parsing
             }
         }
 
-        int MAX_ZFRAME_BYTES_SHOWN = 96;
+        private const int MAX_ZFRAME_BYTES_SHOWN = 96;
 
         public void PrintCompressedZFrame(uint zframeId)
         {

@@ -36,6 +36,7 @@ using VcsProgramType = MyShaderFile.CompiledShader.VcsProgramType;
  *
  */
 #pragma warning disable IDE0011 // Add braces
+#pragma warning disable CA1024 // Use properties where appropriate
 namespace MyShaderAnalysis.codestash
 {
     public class FileSystemOld
@@ -87,13 +88,14 @@ namespace MyShaderAnalysis.codestash
         }
 
         public static string GetServerBaseDir()
+
         {
             return SERVER_BASEDIR;
         }
 
         public static string GetServerTestDir()
         {
-            return $"{SERVER_BASEDIR}{SERVER_TESTPATH}"; ;
+            return $"{SERVER_BASEDIR}{SERVER_TESTPATH}";
         }
 
         // todo - it may be possible to write all of this into the enums

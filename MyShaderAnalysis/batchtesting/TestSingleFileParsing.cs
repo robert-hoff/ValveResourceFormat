@@ -6,6 +6,7 @@ using MyShaderFile.CompiledShader;
 using static MyShaderAnalysis.codestash.FileSystemOld;
 using static MyShaderAnalysis.filearchive.FileArchive;
 
+#pragma warning disable IDE0051 // Remove unused private members
 namespace MyShaderAnalysis.batchtesting
 {
     public class TestSingleFileParsing
@@ -26,7 +27,7 @@ namespace MyShaderAnalysis.batchtesting
             ShowGpuSource();
         }
 
-        static void RunZframeBytesSetExample2()
+        private static void RunZframeBytesSetExample2()
         {
             string filenamepath = GetFilenamepath(ARCHIVE.the_lab_pc_v62, "test_pcgl_50_hs.vcs"); int zframeIndex = 0;
             // string filenamepath = GetFilenamepath(ARCHIVE.alyx_core_vulkan, "test_vulkan_50_hs.vcs"); int zframeIndex = 1;
@@ -35,7 +36,7 @@ namespace MyShaderAnalysis.batchtesting
             TestZFrameBytePrintout2(filenamepath, zframeIndex);
         }
 
-        static void RunZframeBytesSetExample1()
+        private static void RunZframeBytesSetExample1()
         {
             string filenamepath = GetFilenamepath(ARCHIVE.the_lab_pc_v62, "test_pcgl_50_ds.vcs"); int zframeIndex = 0;
             TestZFrameFilePrintout(filenamepath, zframeIndex);
@@ -47,7 +48,7 @@ namespace MyShaderAnalysis.batchtesting
             TestZFrameBytePrintout2(filenamepath, zframeIndex);
         }
 
-        static void RunTestSingleFilePrintout()
+        private static void RunTestSingleFilePrintout()
         {
             // string filenamepath = GetFilenamepath(ARCHIVE.dota_core_pcgl_v64, "cs_compress_dxt5_pcgl_30_features.vcs");
             // string filenamepath = GetFilenamepath(ARCHIVE.dota_core_pcgl_v64, "hero_pcgl_30_features.vcs");
@@ -78,7 +79,7 @@ namespace MyShaderAnalysis.batchtesting
             TestSingleFilePrintout(filenamepath);
         }
 
-        static void RunTestZFrameFilePrintout()
+        private static void RunTestZFrameFilePrintout()
         {
             // string filenamepath = GetFilenamepath(ARCHIVE.dotagame_pcgl, "multiblend_pcgl_30_vs.vcs"); int zframeIndex = 0;
             // string filenamepath = GetFilenamepath(ARCHIVE.alyx_hlvr_vulkan, "cs_surface_interactions_vulkan_50_cs.vcs"); int zframeIndex = 0;
@@ -87,27 +88,27 @@ namespace MyShaderAnalysis.batchtesting
             TestZFrameFilePrintout(filenamepath, zframeIndex);
         }
 
-        static void RunTestZFrameBytePrintout2()
+        private static void RunTestZFrameBytePrintout2()
         {
             // string filenamepath = GetFilenamepath(ARCHIVE.the_lab_pc_v62, "test_pcgl_50_ds.vcs"); int zframeIndex = 0;
             string filenamepath = GetFilenamepath(ARCHIVE.dota_core_pcgl_v64, "multiblend_pcgl_30_vs.vcs"); int zframeIndex = 0;
             TestZFrameFilePrintout(filenamepath, zframeIndex);
         }
 
-        static void TestSingleFilePrintout(string filenamepath)
+        private static void TestSingleFilePrintout(string filenamepath)
         {
             ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
             new PrintVcsFileSummary(shaderFile);
         }
 
-        static void TestZFrameBytePrintout2(string filenamepath, int zframeIndex)
+        private static void TestZFrameBytePrintout2(string filenamepath, int zframeIndex)
         {
             ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath); ;
             ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(zframeIndex);
             zframeFile.PrintByteDetail();
         }
 
-        static void RunTestZFrameBytePrintout1()
+        private static void RunTestZFrameBytePrintout1()
         {
             // string filenamepath = GetFilenamepath(ARCHIVE.the_lab_v62, "test_pcgl_50_ds.vcs"); int zframeIndex = 0;
             // string filenamepath = GetFilenamepath(ARCHIVE.dota_game_pcgl_v64, "multiblend_pcgl_30_vs.vcs"); int zframeIndex = 0;
@@ -115,19 +116,19 @@ namespace MyShaderAnalysis.batchtesting
             TestZFrameFilePrintout(filenamepath, zframeIndex);
         }
 
-        static void TestZFrameBytePrintout1(string filenamepath, int zframeIndex)
+        private static void TestZFrameBytePrintout1(string filenamepath, int zframeIndex)
         {
             ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath); ;
 
             byte[] zframeBytes = shaderFile.GetDecompressedZFrameByIndex(zframeIndex);
-            DataReaderZFrameBytes dataReaderZframe = new DataReaderZFrameBytes(zframeBytes,
+            DataReaderZFrameBytes dataReaderZframe = new(zframeBytes,
                 shaderFile.VcsProgramType, shaderFile.VcsPlatformType, shaderFile.VcsShaderModelType, shaderFile.VcsVersion);
             long zframeId = shaderFile.GetZFrameIdByIndex(zframeIndex);
             Console.Write($"parsing zframe[0x{zframeId:x08}]");
             dataReaderZframe.PrintByteDetail();
         }
 
-        static void RunTestZFrameBytePrintoutV62BatchSuppressOutput()
+        private static void RunTestZFrameBytePrintoutV62BatchSuppressOutput()
         {
             // string filenamepath = GetFilenamepath(ARCHIVE.dota_game_pcgl_v62, "multiblend_pcgl_30_features.vcs");
             string filenamepath = GetFilenamepath(ARCHIVE.dota_core_pcgl_v62, "depth_only_pcgl_30_features.vcs");
@@ -136,7 +137,7 @@ namespace MyShaderAnalysis.batchtesting
             for (int i = 0; i < Math.Min(shaderFile.GetZFrameCount(), MAX_ZFRAMES); i++)
             {
                 byte[] zframeBytes = shaderFile.GetDecompressedZFrameByIndex(i);
-                ParseV62ZFrame zframeParser = new ParseV62ZFrame(zframeBytes, shaderFile, outputWriter: (x) => { });
+                ParseV62ZFrame zframeParser = new(zframeBytes, shaderFile, outputWriter: (x) => { });
                 zframeParser.PrintByteDetail();
                 // Console.WriteLine(new String('_', 40));
                 // Console.WriteLine($"");
@@ -144,7 +145,7 @@ namespace MyShaderAnalysis.batchtesting
             }
         }
 
-        static void RunBatchTestZFramesSuppressOutput()
+        private static void RunBatchTestZFramesSuppressOutput()
         {
             // ARCHIVE archive = ARCHIVE.dotagame_pcgl_v62;
             ARCHIVE archive = ARCHIVE.dota_core_pcgl_v62;
@@ -164,7 +165,8 @@ namespace MyShaderAnalysis.batchtesting
                 //} catch (Exception) {}
             }
         }
-        static void BatchTestZFramesSuppressOutput(ShaderFile shaderFile)
+
+        private static void BatchTestZFramesSuppressOutput(ShaderFile shaderFile)
         {
             int MAX_ZFRAMES = 100;
             for (int i = 0; i < Math.Min(shaderFile.GetZFrameCount(), MAX_ZFRAMES); i++)
@@ -172,7 +174,7 @@ namespace MyShaderAnalysis.batchtesting
                 Console.WriteLine($"parsing {shaderFile.FilenamePath} zframeIndex = {i}");
                 byte[] zframeBytes = shaderFile.GetDecompressedZFrameByIndex(i);
                 Console.WriteLine($"zframe size {zframeBytes.Length}");
-                ParseV62ZFrame zframeParser = new ParseV62ZFrame(zframeBytes, shaderFile, outputWriter: (x) => { });
+                ParseV62ZFrame zframeParser = new(zframeBytes, shaderFile, outputWriter: (x) => { });
                 zframeParser.PrintByteDetail();
                 // Console.WriteLine(new String('_', 40));
                 // Console.WriteLine($"");
@@ -180,7 +182,7 @@ namespace MyShaderAnalysis.batchtesting
             }
         }
 
-        static void RunTestZFrameBytePrintoutV62Batch()
+        private static void RunTestZFrameBytePrintoutV62Batch()
         {
             string filenamepath = GetFilenamepath(ARCHIVE.dota_game_pcgl_v62, "multiblend_pcgl_30_features.vcs");
             ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath); ;
@@ -191,7 +193,7 @@ namespace MyShaderAnalysis.batchtesting
             for (int i = 0; i < Math.Min(shaderFile.GetZFrameCount(), MAX_ZFRAMES); i++)
             {
                 byte[] zframeBytes = shaderFile.GetDecompressedZFrameByIndex(i);
-                ParseV62ZFrame zframeParser = new ParseV62ZFrame(zframeBytes, shaderFile);
+                ParseV62ZFrame zframeParser = new(zframeBytes, shaderFile);
                 zframeParser.PrintByteDetail();
                 Console.WriteLine(new string('_', 40));
                 Console.WriteLine($"");
@@ -199,7 +201,7 @@ namespace MyShaderAnalysis.batchtesting
             }
         }
 
-        static void RunTestZFrameBytePrintoutV62()
+        private static void RunTestZFrameBytePrintoutV62()
         {
             // string filenamepath = GetFilenamepath(ARCHIVE.dota_game_pcgl_v62, "bloom_dota_pcgl_30_features.vcs"); int zframeIndex = 0;
             // string filenamepath = GetFilenamepath(ARCHIVE.dota_game_pcgl_v62, "multiblend_pcgl_30_features.vcs"); int zframeIndex = 0;
@@ -212,10 +214,11 @@ namespace MyShaderAnalysis.batchtesting
             ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath); ;
             byte[] zframeBytes = shaderFile.GetDecompressedZFrameByIndex(zframeIndex);
 
-            ParseV62ZFrame zframeParser = new ParseV62ZFrame(zframeBytes, shaderFile);
+            ParseV62ZFrame zframeParser = new(zframeBytes, shaderFile);
             zframeParser.PrintByteDetail();
         }
-        static void TestZFrameFilePrintout(string filenamepath, int zframeIndex)
+
+        private static void TestZFrameFilePrintout(string filenamepath, int zframeIndex)
         {
             ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath); ;
             // ZFrameFile zframeFile = shaderFile.GetZFrameFileByIndex(zframeIndex, omitParsing: true);
@@ -225,7 +228,8 @@ namespace MyShaderAnalysis.batchtesting
             new PrintZFrameSummary(shaderFile, zframeFile, showRichTextBoxLinks: true);
             // Console.WriteLine($"{zframeFile.gpuSourceCount}");
         }
-        static void ShowZFrameCount()
+
+        private static void ShowZFrameCount()
         {
             string filenamepath = GetFilenamepath(ARCHIVE.dota_core_pcgl_v64, "multiblend_pcgl_30_vs.vcs");
             Console.WriteLine($"{filenamepath}");
@@ -233,7 +237,7 @@ namespace MyShaderAnalysis.batchtesting
             Console.WriteLine($"{shaderFile.GetZFrameCount()} zframes");
         }
 
-        static void ShowGpuSource()
+        private static void ShowGpuSource()
         {
             // GetFilenamepath(ARCHIVE.alyx_core_vulkan_v64, "debug_wireframe_2d_vulkan_50_ps.vcs");
             // FileVcsTokens fileTokens = new FileVcsTokens(ARCHIVE.alyx_hlvr_vulkan_v64, "debug_wireframe_2d_vulkan_50_vs.vcs");
@@ -241,14 +245,14 @@ namespace MyShaderAnalysis.batchtesting
             // FileVcsTokens fileTokens = new FileVcsTokens(ARCHIVE.alyx_hlvr_vulkan_v64, "solidcolor_vulkan_50_vs.vcs");
             // FileVcsTokens fileTokens = new FileVcsTokens(ARCHIVE.alyx_hlvr_vulkan_v64, "msaa_resolve_cs_vulkan_50_cs.vcs");
             // FileVcsTokens fileTokens = new FileVcsTokens(ARCHIVE.alyx_hlvr_vulkan_v64, "visualize_cloth_vulkan_50_ps.vcs");
-            FileVcsTokens fileTokens = new FileVcsTokens(ARCHIVE.alyx_core_vulkan_v64, "blend_vulkan_41_ps.vcs");
+            FileVcsTokens fileTokens = new(ARCHIVE.alyx_core_vulkan_v64, "blend_vulkan_41_ps.vcs");
 
             ZFrameFile zframeFile = fileTokens.GetZframeFileByIndex(0);
 
             // zframeFile.PrintByteDetail();
 
             VulkanSource vulkanSource = (VulkanSource) zframeFile.GpuSources[2];
-            ParseVulkanSource vulkanParser = new ParseVulkanSource(vulkanSource);
+            ParseVulkanSource vulkanParser = new(vulkanSource);
             // vulkanParser.PrintByteDetailSpirvReflection();
             vulkanParser.PrintByteDetail();
         }

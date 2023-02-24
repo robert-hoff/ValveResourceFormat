@@ -9,8 +9,13 @@ using static MyShaderAnalysis.filearchive.ReadShaderFile;
 using static MyShaderAnalysis.util.DataCollectAcrossQueries;
 using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 
-#pragma warning disable IDE1006 // Naming Styles
 #pragma warning disable IDE0011 // Add braces
+#pragma warning disable IDE0031 // Use null propagation
+#pragma warning disable IDE0044 // Add readonly modifier
+#pragma warning disable IDE0051 // Remove unused private members
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
+#pragma warning disable IDE0090 // Use 'new(...)'
+#pragma warning disable IDE1006 // Naming Styles
 namespace MyShaderAnalysis.codestash
 {
     public class StaticAnalysis2

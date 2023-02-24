@@ -1,5 +1,8 @@
 using System;
 
+#pragma warning disable IDE0044 // Add readonly modifier
+#pragma warning disable IDE0051 // Remove unused private members
+#pragma warning disable CA1823 // Avoid unused private fields
 namespace MyShaderAnalysis.compat.background
 {
     public class CompatRulesWater2

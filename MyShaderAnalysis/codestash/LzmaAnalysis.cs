@@ -5,6 +5,8 @@ using static MyShaderAnalysis.codestash.FileSystemOld;
 using static MyShaderAnalysis.filearchive.ReadShaderFile;
 using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 
+#pragma warning disable IDE0051 // Remove unused private members
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
 namespace MyShaderAnalysis.codestash
 {
     public class LzmaAnalysis
@@ -111,7 +113,7 @@ namespace MyShaderAnalysis.codestash
             // ConsoleConsole.WriteLine($"{filenamepath}");
             // ShaderFile shaderfile = new ShaderFile(filenamepath);
 
-            DataReaderVcsBytes reader = new DataReaderVcsBytes(filenamepath);
+            DataReaderVcsBytes reader = new(filenamepath);
             reader.PrintByteDetail();
 
             // reader.ShowBytes(300);

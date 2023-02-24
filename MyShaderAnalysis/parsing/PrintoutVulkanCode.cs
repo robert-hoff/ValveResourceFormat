@@ -19,6 +19,9 @@ using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
  *
  *
  */
+#pragma warning disable IDE0051 // Remove unused private members
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
+#pragma warning disable IDE0090 // Use 'new(...)'
 namespace MyShaderAnalysis.parsing
 {
     public class PrintoutVulkanCode

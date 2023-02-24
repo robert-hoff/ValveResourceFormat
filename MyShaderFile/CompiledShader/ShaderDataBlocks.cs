@@ -36,12 +36,12 @@ namespace MyShaderFile.CompiledShader
 
             if (VcsFileVersion >= 64)
             {
-                AdditionalFiles = (VcsAdditionalFiles)datareader.ReadInt32();
+                AdditionalFiles = (VcsAdditionalFiles) datareader.ReadInt32();
             }
 
             if (!Enum.IsDefined(AdditionalFiles))
             {
-                throw new UnexpectedMagicException("Unexpected v64 value", (int)AdditionalFiles, nameof(AdditionalFiles));
+                throw new UnexpectedMagicException("Unexpected v64 value", (int) AdditionalFiles, nameof(AdditionalFiles));
             }
 
             // -- note it doesn't print any useful information when it fails
@@ -70,7 +70,7 @@ namespace MyShaderFile.CompiledShader
             }
 
             var modeCount = datareader.ReadInt32();
-            for (int i = 0; i < (int)AdditionalFiles; i++)
+            for (int i = 0; i < (int) AdditionalFiles; i++)
             {
                 // Note the modeCount is overwritten
                 modeCount = datareader.ReadInt32();
@@ -87,10 +87,10 @@ namespace MyShaderFile.CompiledShader
                 }
                 Modes.Add((string_arg0, string_arg1));
             }
-            int maxFileReference = (int)VcsProgramType.PixelShaderRenderState + (int)AdditionalFiles;
+            int maxFileReference = (int) VcsProgramType.PixelShaderRenderState + (int) AdditionalFiles;
             for (int i = 0; i < maxFileReference; i++)
             {
-                EditorIDs.Add((datareader.ReadBytesAsString(16), $"// Editor ref {i} programType {(VcsProgramType)i}"));
+                EditorIDs.Add((datareader.ReadBytesAsString(16), $"// Editor ref {i} programType {(VcsProgramType) i}"));
             }
             if (VcsFileVersion >= 64)
             {
@@ -215,11 +215,11 @@ namespace MyShaderFile.CompiledShader
             var extraFile = VcsAdditionalFiles.None;
             if (VcsFileVersion >= 64)
             {
-                extraFile = (VcsAdditionalFiles)datareader.ReadInt32();
+                extraFile = (VcsAdditionalFiles) datareader.ReadInt32();
                 if (!VcsAdditionalFiles.IsDefined(extraFile))
                 {
                     // -- note it doesn't print any useful information when it fails
-                    throw new UnexpectedMagicException($"Unexpected value", (int)extraFile, nameof(extraFile));
+                    throw new UnexpectedMagicException($"Unexpected value", (int) extraFile, nameof(extraFile));
                 }
             }
             FileID0 = datareader.ReadBytesAsString(16);
@@ -307,7 +307,7 @@ namespace MyShaderFile.CompiledShader
             DataReader.TabComment($"({arg0},{arg1},{arg2},{arg3})");
             DataReader.ShowBytes(4, $"({arg4}) known values [-1,28]");
             DataReader.ShowBytes(4, $"{arg5} additional string params");
-            var string_offset = (int)DataReader.BaseStream.Position;
+            var string_offset = (int) DataReader.BaseStream.Position;
             List<string> names = new();
             for (var i = 0; i < arg5; i++)
             {
@@ -318,7 +318,7 @@ namespace MyShaderFile.CompiledShader
             if (names.Count > 0)
             {
                 PrintStringList(names);
-                DataReader.ShowBytes(string_offset - (int)DataReader.BaseStream.Position);
+                DataReader.ShowBytes(string_offset - (int) DataReader.BaseStream.Position);
             }
             DataReader.BreakLine();
         }
@@ -355,9 +355,9 @@ namespace MyShaderFile.CompiledShader
         {
             BlockIndex = blockIndex;
             Rule = (ConditionalRule) datareader.ReadInt32();
-            BlockType = (ConditionalType)datareader.ReadInt32();
+            BlockType = (ConditionalType) datareader.ReadInt32();
             // flags at (8)
-            ConditionalTypes = Array.ConvertAll(ReadByteFlags(), x => (ConditionalType)x);
+            ConditionalTypes = Array.ConvertAll(ReadByteFlags(), x => (ConditionalType) x);
             // range0 at (24)
             Indices = ReadIntRange();
             datareader.BaseStream.Position += 64 - Indices.Length * 4;
@@ -867,6 +867,5 @@ namespace MyShaderFile.CompiledShader
                 DataReader.BreakLine();
             }
         }
-
     }
 }

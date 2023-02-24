@@ -23,7 +23,7 @@ namespace ShaderAnalysis.utilhelpers
             string name = ReadNullTermStringAtPosition();
             ShowBytes(name.Length + 1, name);
             BreakLine();
-            ShowBytes(32,4);
+            ShowBytes(32, 4);
             BreakLine();
             ShowBytes(4, "nr of arguments");
             ShowBytes(128);

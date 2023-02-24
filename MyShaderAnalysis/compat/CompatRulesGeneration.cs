@@ -2,6 +2,9 @@ using System;
 using MyShaderFile.CompiledShader;
 using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 
+#pragma warning disable IDE0044 // Add readonly modifier
+#pragma warning disable IDE0051 // Remove unused private members
+#pragma warning disable IDE0052 // Remove unread private members
 namespace MyShaderAnalysis.compat
 {
     public class CompatRulesGenerationz

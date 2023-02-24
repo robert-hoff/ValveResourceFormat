@@ -67,7 +67,7 @@ namespace ShaderAnalysis
             // string filenamepath = $"{TEST_SHADERS_DIR}/error_vulkan_40_vs.vcs";
             // string filenamepath = $"{ALYX_VULKAN_CORE}/brushsplat_vulkan_40_ps.vcs";
             string filenamepath = $"{PC_DIR_CORE}/debugoverlay_wireframe_pc_40_ps.vcs";
-            ShaderFile shaderFile  = ReadShaderFile.InstantiateShaderFile(filenamepath);
+            ShaderFile shaderFile = ReadShaderFile.InstantiateShaderFile(filenamepath);
             shaderFile.PrintByteDetail(shortenOutput: false);
         }
 

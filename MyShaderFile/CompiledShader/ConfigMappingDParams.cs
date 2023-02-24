@@ -40,7 +40,7 @@ namespace MyShaderFile.CompiledShader
             var state = new int[nr_states.Length];
             for (var i = 0; i < nr_states.Length; i++)
             {
-                state[i] = (int)(zframeId / offsets[i]) % nr_states[i];
+                state[i] = (int) (zframeId / offsets[i]) % nr_states[i];
             }
             return state;
         }
@@ -50,6 +50,5 @@ namespace MyShaderFile.CompiledShader
             ShowIntArray(offsets, 8, "offsets", hex: hex);
             ShowIntArray(nr_states, 8, "layers");
         }
-
     }
 }

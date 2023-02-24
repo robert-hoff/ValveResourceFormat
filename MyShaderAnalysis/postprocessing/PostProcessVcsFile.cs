@@ -4,6 +4,9 @@ using MyShaderAnalysis.filearchive;
 using MyShaderFile.CompiledShader;
 using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 
+#pragma warning disable IDE0044 // Add readonly modifier
+#pragma warning disable IDE0071 // Simplify interpolation
+#pragma warning disable IDE0090 // Use 'new(...)'
 namespace MyShaderAnalysis.postprocessing
 {
     /*

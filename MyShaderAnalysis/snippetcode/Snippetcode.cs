@@ -6,6 +6,14 @@ using System.Text;
 using MyShaderFile.CompiledShader;
 using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 
+#pragma warning disable IDE0028 // Simplify collection initialization
+#pragma warning disable IDE0033 // Use explicitly provided tuple name
+#pragma warning disable IDE0039 // Use local function
+#pragma warning disable IDE0051 // Remove unused private members
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
+#pragma warning disable IDE0071 // Simplify interpolation
+#pragma warning disable IDE0090 // Use 'new(...)'
+#pragma warning disable CS0219 // Variable is assigned but its value is never used
 namespace MyShaderAnalysis.snippetcode
 {
     class Snippetcode
@@ -106,7 +114,7 @@ namespace MyShaderAnalysis.snippetcode
 
         static void DumbTest6()
         {
-            Func<int, int, int> add = (int x, int y) => x + y;
+            static int add(int x, int y) => x + y;
             Console.WriteLine($"{add(10, 20)}");
         }
 
@@ -149,7 +157,8 @@ namespace MyShaderAnalysis.snippetcode
         static void GettingGsDataOut2()
         {
             string filenamepath = "debugoverlay_wireframe_pc_40_gs.vcs";
-            Func<string, (VcsProgramType ProgramType, VcsPlatformType PlatformType, VcsShaderModelType ShaderModelType)> vcsProg = (string a) => ComputeVCSFileName(a);
+            static (VcsProgramType ProgramType, VcsPlatformType PlatformType, VcsShaderModelType ShaderModelType)
+                vcsProg(string a) => ComputeVCSFileName(a);
             (VcsProgramType ProgramType, VcsPlatformType PlatformType, VcsShaderModelType ShaderModelType) res = vcsProg(filenamepath);
             Console.WriteLine($"{res.Item1}");
         }
@@ -178,14 +187,18 @@ namespace MyShaderAnalysis.snippetcode
         static void ConvertIntToByteString()
         {
             Func<byte[], string> toByteString = (byte[] b) => $"{b[0]:x02} {b[1]:x02} {b[2]:x02} {b[3]:x02}";
+            // -- alternative
+            // static string toByteString(byte[] b) => $"{b[0]:x02} {b[1]:x02} {b[2]:x02} {b[3]:x02}";
             string byteString = toByteString(BitConverter.GetBytes(1010));
             Console.WriteLine($"{byteString}");
         }
 
         static void DumbTest2()
         {
-            dict = new Dictionary<int, (bool, DateTime)>();
-            dict.Add(0, (true, DateTime.Now));
+            dict = new Dictionary<int, (bool, DateTime)>
+            {
+                { 0, (true, DateTime.Now) }
+            };
             SomeMethod(1);
             SomeMethod(0);
         }

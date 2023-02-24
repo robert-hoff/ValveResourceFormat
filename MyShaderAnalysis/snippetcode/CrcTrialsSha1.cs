@@ -5,6 +5,9 @@ using MyShaderFile.CompiledShader;
 using static MyShaderAnalysis.filearchive.FileArchive;
 using static MyShaderAnalysis.filearchive.ReadShaderFile;
 
+#pragma warning disable IDE0044 // Add readonly modifier
+#pragma warning disable IDE0051 // Remove unused private members
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
 namespace MyShaderAnalysis.snippetcode
 {
     public class CrcTrialsSha1

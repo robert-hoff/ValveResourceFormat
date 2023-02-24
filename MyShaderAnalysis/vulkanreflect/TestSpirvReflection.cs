@@ -7,6 +7,11 @@ using MyShaderAnalysis.snippetcode;
 using MyShaderFile.CompiledShader;
 using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 
+#pragma warning disable IDE0051 // Remove unused private members
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
+#pragma warning disable IDE0090 // Use 'new(...)'
+#pragma warning disable CA1823 // Avoid unused private fields
+#pragma warning disable CS0219 // Variable is assigned but its value is never used
 namespace MyShaderAnalysis.vulkanreflect
 {
     internal class TestSpirvReflection

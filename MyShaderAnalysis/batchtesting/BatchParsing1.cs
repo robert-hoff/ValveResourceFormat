@@ -113,7 +113,7 @@ namespace MyShaderAnalysis.batchtesting
             }
         }
 
-        static int LIMIT_ZFRAME_COUNT = 100;
+        private const int LIMIT_ZFRAME_COUNT = 100;
 
         public static void RunTestSingleZframeBytesSilent()
         {
@@ -130,7 +130,7 @@ namespace MyShaderAnalysis.batchtesting
         public static void TestSingleZframeBytesSilent(ShaderFile shaderFile, int zFrameIndex)
         {
             byte[] zframeBytes = shaderFile.GetDecompressedZFrameByIndex(zFrameIndex);
-            DataReaderZFrameBytes dataReaderZframeBytes = new DataReaderZFrameBytes(zframeBytes, shaderFile.VcsProgramType,
+            DataReaderZFrameBytes dataReaderZframeBytes = new(zframeBytes, shaderFile.VcsProgramType,
                 shaderFile.VcsPlatformType, shaderFile.VcsShaderModelType, shaderFile.VcsVersion,
                 outputWriter: (x) => { }, showStatusMessage: false);
             try
@@ -182,7 +182,7 @@ namespace MyShaderAnalysis.batchtesting
             byte[] zframeBytes = shaderFile.GetDecompressedZFrameByIndex(zframeIndex);
             // Console.WriteLine($"{zframeBytes.Length}");
 
-            DataReaderZFrameBytes dataReaderZframe = new DataReaderZFrameBytes(zframeBytes,
+            DataReaderZFrameBytes dataReaderZframe = new(zframeBytes,
                 shaderFile.VcsProgramType, shaderFile.VcsPlatformType, shaderFile.VcsShaderModelType,
                 shaderFile.VcsVersion, showStatusMessage: false,
                 // outputWriter: (x) => { });

@@ -9,6 +9,13 @@ using static MyShaderAnalysis.filearchive.ReadShaderFile;
 using static MyShaderAnalysis.util.DataCollectAcrossQueries;
 using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 
+#pragma warning disable IDE0028 // Simplify collection initialization
+#pragma warning disable IDE0033 // Use explicitly provided tuple name
+#pragma warning disable IDE0044 // Add readonly modifier
+#pragma warning disable IDE0051 // Remove unused private members
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
+#pragma warning disable IDE0090 // Use 'new(...)'
+#pragma warning disable CA1823 // Avoid unused private fields
 namespace MyShaderAnalysis.codestash
 {
     public class StaticAnalysisZframes
@@ -987,7 +994,7 @@ namespace MyShaderAnalysis.codestash
                     }
                 }
             }
-breakhere: Console.WriteLine("");
+            breakhere: Console.WriteLine("");
         }
 
         /*
@@ -1114,10 +1121,7 @@ breakhere: Console.WriteLine("");
             {
                 Console.Write(text);
             }
-            if (sw != null)
-            {
-                sw.Write(text);
-            }
+            sw?.Write(text);
         }
         public static void OutputWriteLine(string text)
         {
