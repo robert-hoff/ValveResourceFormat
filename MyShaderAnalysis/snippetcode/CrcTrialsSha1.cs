@@ -171,7 +171,7 @@ namespace MyShaderAnalysis.snippetcode
                 {
                     ind2 -= 160;
                 }
-                if (i % SKIP > 0) continue;
+                if (i % SKIP > 0) { continue; }
                 int b1 = BitAt(i, bytes2);
                 int b2 = BitAt(ind2, bytes1);
                 matches[i] = b1 == b2;

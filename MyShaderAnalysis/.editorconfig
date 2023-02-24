@@ -69,7 +69,7 @@ dotnet_diagnostic.CA1024.severity = suggestion
 # CA1031: Do not catch general exception types
 dotnet_diagnostic.CA1031.severity = none
 # CA1034: Nested types should not be visible
-dotnet_diagnostic.CA1034.severity = suggestion
+dotnet_diagnostic.CA1034.severity = none
 # CA1051: do not declare visible instance fields
 dotnet_diagnostic.CA1051.severity = suggestion
 # CA1052: Static holder type

@@ -9,7 +9,7 @@ using static MyShaderAnalysis.filearchive.FileArchive;
 //  17      16      15    14     13   12     11   10   9     8   7   6   5  4  3  2  1  0
 // 98304  49152  24576  12288  6144  2048  1024  512  256  128  64  32  16  8  4  2  1  1
 
-namespace MyShaderAnalysis.compat
+namespace MyShaderAnalysis.compat.background
 {
     public class CompatRulesMultiframe
     {
@@ -105,7 +105,7 @@ namespace MyShaderAnalysis.compat
                 if (CheckZFrame(zframeId))
                 {
                     int[] thisState = GetBitPattern(zframeId);
-                    string sfNameList = getSfNameList(shaderFile, thisState);
+                    string sfNameList = GetSfNameList(shaderFile, thisState);
                     // string stateList = GetStateString(thisState);
                     // StaticAnalysis.OutputWriteLine($"zframe[{i:x08}]   {Convert.ToString(i, 2).PadLeft(20, '0')}    {sfNameList}");
                     // StaticAnalysis.OutputWriteLine($"zframe[{i:x08}]  {sfNameList}");
@@ -123,7 +123,7 @@ namespace MyShaderAnalysis.compat
             return fw;
         }
 
-        static string getSfNameList(ShaderFile shaderFile, int[] thisState)
+        static string GetSfNameList(ShaderFile shaderFile, int[] thisState)
         {
             string nameList = "";
             for (int i = 0; i < thisState.Length; i++)
@@ -178,7 +178,7 @@ namespace MyShaderAnalysis.compat
             for (int i = 1; i < offset.Length; i++)
             {
                 int s1 = state[i];
-                if (s1 == 0) continue;
+                if (s1 == 0) { continue; }
                 for (int j = 1; j < offset.Length; j++)
                 {
                     if (inclusions[i, j] && state[j] == 0)

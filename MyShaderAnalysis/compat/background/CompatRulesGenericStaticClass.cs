@@ -19,7 +19,9 @@ using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
  *
  *
  */
-namespace MyShaderAnalysis.compat
+#pragma warning disable IDE0051 // Remove unused private members
+#pragma warning disable CA1823 // Avoid unused private fields
+namespace MyShaderAnalysis.compat.background
 {
     public class CompatRulesGenericStaticClass
     {
@@ -86,8 +88,8 @@ namespace MyShaderAnalysis.compat
         static int[] offsets;
         static int[] layers;
 
-        static bool[,] exclusions = new bool[100, 100];
-        static bool[,] inclusions = new bool[100, 100];
+        static readonly bool[,] exclusions = new bool[100, 100];
+        static readonly bool[,] inclusions = new bool[100, 100];
         static void AddExclusion(int s1, int s2, int s3)
         {
             AddExclusion(s1, s2);
@@ -137,7 +139,7 @@ namespace MyShaderAnalysis.compat
             for (int i = 1; i < offsets.Length; i++)
             {
                 int s1 = state[i];
-                if (s1 == 0) continue;
+                if (s1 == 0) { continue; }
                 for (int j = 1; j < offsets.Length; j++)
                 {
                     if (inclusions[i, j] && state[j] == 0)

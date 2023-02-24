@@ -12,9 +12,9 @@ namespace MyShaderAnalysis.util
     internal class FixCsSources
     {
         // MyShaderAnalysis directory
-        private static string SOURCE_DIR = @"../../";
-        // private static string SOURCE_DIR = @"../../../TestVRF";
-        private static string TEST_FILE = @"../../Program.cs";
+        private const string SOURCE_DIR = @"../../";
+        // private const string SOURCE_DIR = @"../../../TestVRF";
+        private const string TEST_FILE = @"../../Program.cs";
         private const int DESIRED_BLANK_LINES_AT_EOF = 2;
         private const int EOL_PREFERENCE = FileWriter.LINUX_ENDINGS;
         private const int BOM_PREFERENCE = FileWriter.SAVE_UTF_FILE_WITHOUT_BOM;

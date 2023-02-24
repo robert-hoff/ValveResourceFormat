@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using MyShaderAnalysis.filearchive;
 using MyShaderFile.CompiledShader;
 
+#pragma warning disable IDE1006 // Naming Styles
 namespace MyShaderAnalysis.postprocessing
 {
     /*

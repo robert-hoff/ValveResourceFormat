@@ -5,6 +5,7 @@ using static MyShaderAnalysis.codestash.FileSystemOld;
 using static MyShaderAnalysis.filearchive.FileArchive;
 using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 
+#pragma warning disable IDE1006 // Naming Styles
 namespace MyShaderAnalysis.codestash
 {
     public class FileTriple

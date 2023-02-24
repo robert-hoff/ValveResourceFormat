@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 
+#pragma warning disable IDE1006 // Naming Styles
 namespace MyShaderAnalysis.snippetcode
 {
     public class EncodeZstdDictAsString

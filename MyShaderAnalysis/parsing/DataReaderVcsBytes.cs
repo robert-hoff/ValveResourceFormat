@@ -4,6 +4,7 @@ using System.IO;
 using MyShaderFile.CompiledShader;
 using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 
+#pragma warning disable IDE0011 // Add braces
 namespace MyShaderAnalysis.parsing
 {
     public class DataReaderVcsBytes : ShaderDataReader
@@ -476,14 +477,14 @@ namespace MyShaderAnalysis.parsing
             BreakLine();
         }
 
-        private string Fmt(float val)
+        private static string Fmt(float val)
         {
             if (val == -1e9) return "-inf";
             if (val == 1e9) return "inf";
             return $"{val}";
         }
 
-        private string Format(int val)
+        private static string Format(int val)
         {
             if (val == -999999999) return "-inf";
             if (val == 999999999) return "inf";

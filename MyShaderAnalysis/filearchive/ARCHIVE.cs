@@ -1,6 +1,7 @@
 using System;
 
 #pragma warning disable CA1813 // Avoid unsealed attributes
+#pragma warning disable IDE1006 // Naming Styles
 namespace MyShaderAnalysis.filearchive
 {
     /*

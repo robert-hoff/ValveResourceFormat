@@ -124,7 +124,7 @@ namespace MyShaderAnalysis.compat
             for (int i = 1; i < offsets.Length; i++)
             {
                 int s1 = state[i];
-                if (s1 == 0) continue;
+                if (s1 == 0) { continue; }
                 for (int j = 1; j < offsets.Length; j++)
                 {
                     if (inclusions[i, j] && state[j] == 0)

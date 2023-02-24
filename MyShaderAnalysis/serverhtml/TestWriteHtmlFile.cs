@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MyShaderAnalysis.util;
 
 namespace MyShaderAnalysis.serverhtml
@@ -29,7 +23,7 @@ namespace MyShaderAnalysis.serverhtml
         {
             string filenamepath = $"{ServerNames.GetServerBaseDir()}hello.html";
             FileWriter fw = new FileWriter(filenamepath);
-            fw.WriteHtmlHeader("title","header");
+            fw.WriteHtmlHeader("title", "header");
             fw.WriteLine("hello");
             fw.CloseStreamWriter();
         }

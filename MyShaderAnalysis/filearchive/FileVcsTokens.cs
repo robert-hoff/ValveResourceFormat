@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
 using MyShaderFile.CompiledShader;
-using static MyShaderAnalysis.codestash.FileSystemOld;
 using static MyShaderAnalysis.filearchive.ReadShaderFile;
 using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 
@@ -23,6 +22,7 @@ using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
  * GetBaseName()                       /dota-game-pcgl-v64/multiblend_pcgl_30_ps.vcs
  *
  */
+#pragma warning disable IDE1006 // Naming Styles
 namespace MyShaderAnalysis.filearchive
 {
     public class FileVcsTokens

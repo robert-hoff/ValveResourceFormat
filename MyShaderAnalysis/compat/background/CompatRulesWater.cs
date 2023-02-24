@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace MyShaderAnalysis.compat
+namespace MyShaderAnalysis.compat.background
 {
     public class CompatRulesWater
     {

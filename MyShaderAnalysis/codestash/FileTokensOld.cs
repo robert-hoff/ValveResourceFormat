@@ -26,6 +26,7 @@ using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
  *
  */
 // todo - get rid of  GetShortName(string vcsFileName) from MyShaderUtilHelpers (and others)
+#pragma warning disable IDE1006 // Naming Styles
 namespace MyShaderAnalysis.codestash
 {
     public class FileTokensOld

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace MyShaderAnalysis.compat
+namespace MyShaderAnalysis.compat.background
 {
     public class CompatRules4
     {
@@ -17,7 +17,6 @@ namespace MyShaderAnalysis.compat
          *
          * 1 excludes both of 2,3, but doesn't say anything about 2,3 together
          * I feel this interpretation makes more sense, but it doesn't match the data
-         *
          *
          *
          */

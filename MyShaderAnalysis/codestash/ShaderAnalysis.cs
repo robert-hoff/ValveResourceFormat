@@ -314,7 +314,7 @@ namespace MyShaderAnalysis.codestash
                     continue;
                 }
                 byte[] zframeDatabytes = shaderFile.GetDecompressedZFrameByIndex(0);
-                string outputFilenamepath = @$"{OUTPUT_DIR}/{GetZframeTxtFilename((uint)shaderFile.GetZFrameIdByIndex(0), vcsFile)}";
+                string outputFilenamepath = @$"{OUTPUT_DIR}/{GetZframeTxtFilename((uint) shaderFile.GetZFrameIdByIndex(0), vcsFile)}";
                 StreamWriter sw = new(outputFilenamepath);
                 Console.WriteLine($"parsing {vcsFile}");
                 Console.WriteLine($"writing to {outputFilenamepath}");
@@ -351,7 +351,7 @@ namespace MyShaderAnalysis.codestash
         {
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             byte[] zframeDatabytes = shaderFile.GetDecompressedZFrame(zframeId);
-            string outputFilenamepath = @$"{OUTPUT_DIR}/{GetZframeTxtFilename((uint)zframeId, filenamepath)}";
+            string outputFilenamepath = @$"{OUTPUT_DIR}/{GetZframeTxtFilename((uint) zframeId, filenamepath)}";
             StreamWriter sw = new(outputFilenamepath);
             Console.WriteLine($"parsing {filenamepath}");
             Console.WriteLine($"writing to {outputFilenamepath}");
@@ -364,7 +364,7 @@ namespace MyShaderAnalysis.codestash
         {
             ShaderFile shaderFile = InstantiateShaderFile(filenamepath);
             byte[] zframeDatabytes = shaderFile.GetDecompressedZFrameByIndex(zframeIndex);
-            string outputFilenamepath = @$"{OUTPUT_DIR}/{GetZframeTxtFilename((uint)shaderFile.GetZFrameIdByIndex(zframeIndex), filenamepath)}";
+            string outputFilenamepath = @$"{OUTPUT_DIR}/{GetZframeTxtFilename((uint) shaderFile.GetZFrameIdByIndex(zframeIndex), filenamepath)}";
             StreamWriter sw = new(outputFilenamepath);
             Console.WriteLine($"parsing {filenamepath}");
             Console.WriteLine($"writing to {outputFilenamepath}");

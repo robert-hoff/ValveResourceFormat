@@ -12,6 +12,7 @@ using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
  *
  *
  */
+#pragma warning disable IDE0011 // Add braces
 namespace MyShaderAnalysis.parsing
 {
     class ParseV62Files : ShaderDataReader
@@ -656,7 +657,7 @@ namespace MyShaderAnalysis.parsing
             {
                 uint zframeId = ReadUInt32AtPosition();
                 ShowBytes(8, breakLine: false);
-                TabComment($"{getZFrameIdString(zframeId)}    {Convert.ToString(zframeId, 2).PadLeft(20, '0')}");
+                TabComment($"{GetZFrameIdString(zframeId)}    {Convert.ToString(zframeId, 2).PadLeft(20, '0')}");
                 zFrameIndexes.Add(zframeId);
             }
             BreakLine();
@@ -670,7 +671,7 @@ namespace MyShaderAnalysis.parsing
             foreach (uint zframeId in zFrameIndexes)
             {
                 uint zframe_offset = ReadUInt32AtPosition();
-                ShowBytes(4, $"{zframe_offset} offset of {getZFrameIdString(zframeId)}");
+                ShowBytes(4, $"{zframe_offset} offset of {GetZFrameIdString(zframeId)}");
             }
             uint total_size = ReadUInt32AtPosition();
             ShowBytes(4, $"{total_size} - end of file");
@@ -685,7 +686,7 @@ namespace MyShaderAnalysis.parsing
 
         public void PrintCompressedZFrame(uint zframeId)
         {
-            OutputWriteLine($"[{BaseStream.Position}] {getZFrameIdString(zframeId)}");
+            OutputWriteLine($"[{BaseStream.Position}] {GetZFrameIdString(zframeId)}");
             bool isLzma = false;
             uint zstdDelimOrChunkSize = ReadUInt32AtPosition();
             if (zstdDelimOrChunkSize == ShaderFile.ZSTD_DELIM)
@@ -723,7 +724,7 @@ namespace MyShaderAnalysis.parsing
             BreakLine();
         }
 
-        private string getZFrameIdString(uint zframeId)
+        private string GetZFrameIdString(uint zframeId)
         {
             if (writeHtmlLinks)
             {

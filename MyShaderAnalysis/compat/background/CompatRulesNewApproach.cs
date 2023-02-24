@@ -2,7 +2,7 @@ using System;
 using MyShaderAnalysis.filearchive;
 using MyShaderFile.CompiledShader;
 
-namespace MyShaderAnalysis.compat
+namespace MyShaderAnalysis.compat.background
 {
     public class CompatRulesNewApproach
     {

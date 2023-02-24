@@ -1,6 +1,6 @@
 using System;
 
-namespace MyShaderAnalysis.compat
+namespace MyShaderAnalysis.compat.background
 {
     public class BitTestGeneration
     {

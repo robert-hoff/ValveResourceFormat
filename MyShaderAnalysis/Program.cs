@@ -18,14 +18,14 @@ namespace MyShaderAnalysis
     {
         public class ToDebugWriter : StringWriter
         {
-            public override void WriteLine(string str0)
+            public override void WriteLine(string value)
             {
-                Debug.WriteLine(str0);
+                Debug.WriteLine(value);
             }
 
-            public override void Write(string str0)
+            public override void Write(string value)
             {
-                Debug.Write(str0);
+                Debug.Write(value);
             }
         }
 

@@ -1,6 +1,6 @@
 using System;
 
-namespace MyShaderAnalysis.compat
+namespace MyShaderAnalysis.compat.background
 {
     public class CompatRulesWater2
     {
@@ -82,7 +82,7 @@ namespace MyShaderAnalysis.compat
             for (int i = 1; i <= 11; i++)
             {
                 int s1 = state[i];
-                if (s1 == 0) continue;
+                if (s1 == 0) { continue; }
                 for (int j = 1; j <= 11; j++)
                 {
                     //Console.WriteLine($"{i} {j}");

@@ -9,6 +9,8 @@ using static MyShaderAnalysis.filearchive.ReadShaderFile;
 using static MyShaderAnalysis.util.DataCollectAcrossQueries;
 using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 
+#pragma warning disable IDE1006 // Naming Styles
+#pragma warning disable IDE0011 // Add braces
 namespace MyShaderAnalysis.codestash
 {
     public class StaticAnalysis2
@@ -253,27 +255,27 @@ namespace MyShaderAnalysis.codestash
 
         private static string comb2(int[] ints0)
         {
-            return $"({f(ints0[0]),2},{f(ints0[1]),2},{f(ints0[2]),2},{f(ints0[3]),2})";
+            return $"({Fmt(ints0[0]),2},{Fmt(ints0[1]),2},{Fmt(ints0[2]),2},{Fmt(ints0[3]),2})";
         }
 
         private static string comb(int[] ints0)
         {
-            return $"({f(ints0[0])},{f(ints0[1])},{f(ints0[2])},{f(ints0[3])})";
+            return $"({Fmt(ints0[0])},{Fmt(ints0[1])},{Fmt(ints0[2])},{Fmt(ints0[3])})";
         }
 
         private static string comb(float[] floats0)
         {
-            return $"({f(floats0[0])},{f(floats0[1])},{f(floats0[2])},{f(floats0[3])})";
+            return $"({Fmt(floats0[0])},{Fmt(floats0[1])},{Fmt(floats0[2])},{Fmt(floats0[3])})";
         }
 
-        private static string f(float val)
+        private static string Fmt(float val)
         {
             if (val == -1e9) return "-M";
             if (val == 1e9) return "M";
             return $"{val}";
         }
 
-        private static string f(int val)
+        private static string Fmt(int val)
         {
             if (val == -999999999) return "-M";
             if (val == 999999999) return "M";

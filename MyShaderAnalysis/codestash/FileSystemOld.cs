@@ -35,6 +35,7 @@ using VcsProgramType = MyShaderFile.CompiledShader.VcsProgramType;
  *
  *
  */
+#pragma warning disable IDE0011 // Add braces
 namespace MyShaderAnalysis.codestash
 {
     public class FileSystemOld

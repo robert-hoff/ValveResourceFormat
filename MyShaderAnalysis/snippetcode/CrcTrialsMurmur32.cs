@@ -101,7 +101,7 @@ namespace MyShaderAnalysis.snippetcode
 
         public static void Trial4()
         {
-            byte[] databytes = getDatabytesExample1();
+            byte[] databytes = GetDatabytesExample1();
             uint murmur32 = MurmurHash2.Hash(databytes, MURMUR2SEED);
             Console.WriteLine($"{murmur32:X08}");
         }
@@ -135,7 +135,7 @@ namespace MyShaderAnalysis.snippetcode
          * Tried to reproduce the buffer block crc, but couldn't get it (also tried crc32)
          *
          */
-        public static byte[] getDatabytesExample1()
+        public static byte[] GetDatabytesExample1()
         {
             string bytestring = "" +
                 "49 72 72 61 64 54 65 78 74 75 72 65 41 63 74 69 76 65 52 65 63 74 43 42 00 00 00 00 00 00 00 00 " +

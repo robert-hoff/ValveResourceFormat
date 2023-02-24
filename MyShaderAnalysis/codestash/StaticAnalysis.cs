@@ -17,6 +17,7 @@ using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
  *
  *
  */
+#pragma warning disable IDE0011 // Add braces
 namespace MyShaderAnalysis.codestash
 {
     public class StaticAnalysis1
@@ -542,7 +543,7 @@ namespace MyShaderAnalysis.codestash
             //    $"{uCount,pad}{pCount,pad}{mCount,pad}{bCount,pad}{sCount,pad}{zCount,pad}");
 
             int filepadlength = 55 - Path.GetFileName(filenamepath).Length;
-            if (filepadlength < 0) filepadlength = 0;
+            if (filepadlength < 0) { filepadlength = 0; }
             // string empty = "";
             string detLink = GetSFSummaryLink(filenamepath);
             const int linkLength = 4; // "det."
@@ -1625,12 +1626,12 @@ namespace MyShaderAnalysis.codestash
                         if (string.IsNullOrEmpty(e1))
                         {
                             e1 = $"<span style='color:#999'>({i})</span>";
-                            e1len = e1.Length - 2 - nd(i);
+                            e1len = e1.Length - 2 - NDigits(i);
                         }
                         if (string.IsNullOrEmpty(e2))
                         {
                             e2 = $"<span style='color:#999'>({i})</span>";
-                            e2len = e2.Length - 2 - nd(i);
+                            e2len = e2.Length - 2 - NDigits(i);
                         }
                         else
                         {
@@ -1638,7 +1639,7 @@ namespace MyShaderAnalysis.codestash
                         if (string.IsNullOrEmpty(e3))
                         {
                             e3 = $"<span style='color:#999'>({i})</span>";
-                            e3len = e3.Length - 2 - nd(i);
+                            e3len = e3.Length - 2 - NDigits(i);
                         }
                         else
                         {
@@ -1653,9 +1654,9 @@ namespace MyShaderAnalysis.codestash
                 int psmaxIndex = psFile.GetZFrameCount() - 1;
                 long psMaxId = psFile.GetZFrameIdByIndex(psmaxIndex);
                 // int vsMaxD = Convert.ToString(vsMaxId, 2).Length;
-                int vsMaxD = nBinDigits((int) vsMaxId);
+                int vsMaxD = NBinDigits((int) vsMaxId);
                 // int psMaxD = Convert.ToString(psMaxId, 2).Length;
-                int psMaxD = nBinDigits((int) psMaxId);
+                int psMaxD = NBinDigits((int) psMaxId);
                 string vsStyle = $"<span style='color:#999; font-weight:bold'>({Convert.ToString(vsMaxId, 2)})</span>";
                 string psStyle = $"<span style='color:#999; font-weight:bold'>({Convert.ToString(psMaxId, 2)})</span>";
                 string f0 = "";
@@ -1693,7 +1694,7 @@ namespace MyShaderAnalysis.codestash
             return count;
         }
 
-        public static int nd(int i)
+        public static int NDigits(int i)
         {
             if (i == 0)
             {
@@ -1702,7 +1703,7 @@ namespace MyShaderAnalysis.codestash
             return (int) (Math.Floor(Math.Log10(i) + 1));
         }
 
-        public static int nBinDigits(int num)
+        public static int NBinDigits(int num)
         {
             if (num == 0)
             {
