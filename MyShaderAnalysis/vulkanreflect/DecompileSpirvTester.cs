@@ -2,11 +2,13 @@ using System;
 using System.Diagnostics;
 using MyShaderFile.CompiledShader;
 
+#pragma warning disable IDE0052 // Remove unread private members
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
 namespace MyShaderAnalysis.vulkanreflect
 {
     public class DecompileSpirvTester
     {
-        private ZFrameFile zFrameFile;
+        private readonly ZFrameFile zFrameFile;
 
         public DecompileSpirvTester(ZFrameFile zFrameFile, int MAX_SOURCES = 10)
         {

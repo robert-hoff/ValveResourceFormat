@@ -8,6 +8,7 @@ using MyShaderAnalysis.vulkanreflect;
 using MyShaderFile.CompiledShader;
 using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 
+#pragma warning disable IDE0090 // Use 'new(...)'
 namespace MyShaderAnalysis.serverhtml
 {
     public class ParseVcsFile

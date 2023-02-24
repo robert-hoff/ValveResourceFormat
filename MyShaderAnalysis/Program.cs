@@ -12,6 +12,35 @@ using MyShaderAnalysis.util;
 using MyShaderAnalysis.vulkanreflect;
 using MyShaderFileKristiker.MyHelperClasses.ProgEntries;
 
+/*
+-- suppress new warnings and suggestions
+#pragma warning disable IDE0003 // Remove qualification
+#pragma warning disable IDE0011 // Add braces
+#pragma warning disable IDE0017 // Simplify object initialization
+#pragma warning disable IDE0028 // Simplify collection initialization
+#pragma warning disable IDE0031 // Use null propagation
+#pragma warning disable IDE0033 // Use explicitly provided tuple name
+#pragma warning disable IDE0039 // Use local function
+#pragma warning disable IDE0044 // Add readonly modifier
+#pragma warning disable IDE0049 // Simplify Names
+#pragma warning disable IDE0051 // Remove unused private members
+#pragma warning disable IDE0052 // Remove unread private members
+#pragma warning disable IDE0057 // Use range operator
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
+#pragma warning disable IDE0060 // Remove unused parameter
+#pragma warning disable IDE0066 // Convert switch statement to expression
+#pragma warning disable IDE0071 // Simplify interpolation
+#pragma warning disable IDE0074 // Use compound assignment
+#pragma warning disable IDE0090 // Use 'new(...)'
+#pragma warning disable IDE1006 // Naming Styles
+#pragma warning disable CA1024 // Use properties where appropriate
+#pragma warning disable CA1051 // Do not declare visible instance fields
+#pragma warning disable CA1508 // Avoid dead conditional code
+#pragma warning disable CA1822 // Mark members as static
+#pragma warning disable CA1823 // Avoid unused private fields
+#pragma warning disable CS0219 // Variable is assigned but its value is never used
+#pragma warning disable CA2211 // Non-constant fields should not be visible
+*/
 namespace MyShaderAnalysis
 {
     public class Program

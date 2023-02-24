@@ -1,5 +1,6 @@
 using System;
 
+#pragma warning disable IDE0044 // Add readonly modifier
 namespace MyShaderAnalysis.compat.background
 {
     public class BitTestGeneration

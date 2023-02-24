@@ -4,6 +4,12 @@ using MyShaderFile.CompiledShader;
 using static MyShaderAnalysis.filearchive.FileArchive;
 using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 
+#pragma warning disable IDE0033 // Use explicitly provided tuple name
+#pragma warning disable IDE0057 // Use range operator
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
+#pragma warning disable IDE0074 // Use compound assignment
+#pragma warning disable IDE0090 // Use 'new(...)'
+#pragma warning disable CA1024 // Use properties where appropriate
 namespace MyShaderAnalysis.codestash
 {
     public class MyTrashUtilHelpers

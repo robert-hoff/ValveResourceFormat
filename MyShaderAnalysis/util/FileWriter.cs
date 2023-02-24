@@ -4,6 +4,8 @@ using System.IO;
 using System.Text;
 using HandleOutputWrite = MyShaderFile.CompiledShader.HandleOutputWrite;
 
+#pragma warning disable IDE0003 // Remove qualification
+#pragma warning disable IDE0017 // Simplify object initialization
 namespace MyShaderAnalysis.util
 {
     public class FileWriter : IDisposable

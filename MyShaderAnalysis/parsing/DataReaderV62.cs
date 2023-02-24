@@ -11,6 +11,8 @@ using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
  *
  *
  */
+#pragma warning disable IDE0044 // Add readonly modifier
+#pragma warning disable IDE0052 // Remove unread private members
 namespace MyShaderAnalysis.parsing
 {
     public class DataReaderV62 : ShaderDataReader

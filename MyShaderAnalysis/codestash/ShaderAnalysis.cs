@@ -7,6 +7,10 @@ using static MyShaderAnalysis.codestash.MyTrashUtilHelpers;
 using static MyShaderAnalysis.filearchive.FileArchive;
 using static MyShaderAnalysis.filearchive.ReadShaderFile;
 
+#pragma warning disable IDE0051 // Remove unused private members
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
+#pragma warning disable IDE0060 // Remove unused parameter
+#pragma warning disable CA1823 // Avoid unused private fields
 namespace MyShaderAnalysis.codestash
 {
     public class ShaderAnalysis

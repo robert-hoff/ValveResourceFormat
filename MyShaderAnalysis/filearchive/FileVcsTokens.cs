@@ -22,7 +22,12 @@ using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
  * GetBaseName()                       /dota-game-pcgl-v64/multiblend_pcgl_30_ps.vcs
  *
  */
+#pragma warning disable IDE0003 // Remove qualification
+#pragma warning disable IDE0057 // Use range operator
+#pragma warning disable IDE0066 // Convert switch statement to expression
 #pragma warning disable IDE1006 // Naming Styles
+#pragma warning disable CA1024 // Use properties where appropriate
+#pragma warning disable CA1051 // Do not declare visible instance fields
 namespace MyShaderAnalysis.filearchive
 {
     public class FileVcsTokens

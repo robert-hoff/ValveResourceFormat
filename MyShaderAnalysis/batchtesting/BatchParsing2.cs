@@ -5,6 +5,7 @@ using MyShaderAnalysis.filearchive;
 using MyShaderAnalysis.parsing;
 using MyShaderFile.CompiledShader;
 
+#pragma warning disable IDE0090 // Use 'new(...)'
 namespace MyShaderAnalysis.batchtesting
 {
     public class BatchParsing2

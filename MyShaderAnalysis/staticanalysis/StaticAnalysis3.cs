@@ -6,6 +6,8 @@ using MyShaderFile.CompiledShader;
 using static MyShaderAnalysis.util.DataCollectAcrossQueries;
 using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 
+#pragma warning disable IDE0028 // Simplify collection initialization
+#pragma warning disable IDE0090 // Use 'new(...)'
 namespace MyShaderAnalysis.staticanalysis
 {
     internal class StaticAnalysis3

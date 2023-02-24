@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using MyShaderFile.CompiledShader;
 
+#pragma warning disable IDE0051 // Remove unused private members
+#pragma warning disable IDE0090 // Use 'new(...)'
 namespace MyShaderAnalysis.filearchive
 {
     public class TestFileArchive

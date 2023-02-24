@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 /*
@@ -9,6 +10,9 @@ using System.Text.RegularExpressions;
  *
  *
  */
+#pragma warning disable IDE0051 // Remove unused private members
+#pragma warning disable IDE0090 // Use 'new(...)'
+#pragma warning disable CA1822 // Mark members as static
 namespace MyShaderAnalysis.snippetcode
 {
     class RegexExamples
@@ -51,7 +55,7 @@ namespace MyShaderAnalysis.snippetcode
             Regex rx = new Regex(@"\\\\(spritecard)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
             MatchCollection matches = rx.Matches(sInput);
-            foreach (Match match in matches)
+            foreach (Match match in matches.Cast<Match>())
             {
                 GroupCollection groups = match.Groups;
                 Console.WriteLine("'match found: {0}", groups[1]);

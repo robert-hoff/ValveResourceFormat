@@ -13,6 +13,9 @@ using MyShaderFile.CompiledShader;
  *
  *
  */
+#pragma warning disable IDE0044 // Add readonly modifier
+#pragma warning disable IDE0074 // Use compound assignment
+#pragma warning disable CA1024 // Use properties where appropriate
 namespace MyShaderAnalysis.filearchive
 {
     public class FileArchive

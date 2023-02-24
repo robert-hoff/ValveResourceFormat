@@ -26,7 +26,12 @@ using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
  *
  */
 // todo - get rid of  GetShortName(string vcsFileName) from MyShaderUtilHelpers (and others)
+#pragma warning disable IDE0003 // Remove qualification
+#pragma warning disable IDE0033 // Use explicitly provided tuple name
+#pragma warning disable IDE0057 // Use range operator
+#pragma warning disable IDE0060 // Remove unused parameter
 #pragma warning disable IDE1006 // Naming Styles
+#pragma warning disable CA1024 // Use properties where appropriate
 namespace MyShaderAnalysis.codestash
 {
     public class FileTokensOld

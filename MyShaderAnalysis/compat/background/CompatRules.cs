@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
 
+#pragma warning disable IDE0044 // Add readonly modifier
+#pragma warning disable IDE0049 // Simplify Names
+#pragma warning disable IDE0051 // Remove unused private members
 namespace MyShaderAnalysis.compat.background
 {
     public class CompatRules

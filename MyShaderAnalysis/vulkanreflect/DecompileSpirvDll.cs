@@ -6,7 +6,6 @@ namespace MyShaderAnalysis.vulkanreflect
 {
     public class DecompileSpirvDll
     {
-#pragma warning disable CA1813 // Avoid unsealed attributes
 #pragma warning disable CA5392 // Use DefaultDllImportSearchPaths attribute for P/Invokes
 
         [DllImport("SpirvCrossDll.dll")]
@@ -24,7 +23,6 @@ namespace MyShaderAnalysis.vulkanreflect
         [DllImport("SpirvCrossDll.dll")]
         private static extern char GetChar(IntPtr decompiler, int i);
 
-#pragma warning restore CA1813
 #pragma warning restore CA5392
 
         public static string DecompileVulkan(byte[] databytes)
@@ -41,7 +39,7 @@ namespace MyShaderAnalysis.vulkanreflect
             }
             Parse(decompiler);
             int len = GetDataLength(decompiler);
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             for (int i = 0; i < len; i++)
             {
                 char c = GetChar(decompiler, i);

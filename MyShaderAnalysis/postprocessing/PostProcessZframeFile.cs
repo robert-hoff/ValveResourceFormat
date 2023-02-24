@@ -5,6 +5,8 @@ using System.Text.RegularExpressions;
 using MyShaderAnalysis.filearchive;
 using MyShaderFile.CompiledShader;
 
+#pragma warning disable IDE0044 // Add readonly modifier
+#pragma warning disable IDE0090 // Use 'new(...)'
 #pragma warning disable IDE1006 // Naming Styles
 namespace MyShaderAnalysis.postprocessing
 {

@@ -1,5 +1,6 @@
 using MyShaderAnalysis.util;
 
+#pragma warning disable IDE0090 // Use 'new(...)'
 namespace MyShaderAnalysis.serverhtml
 {
     public class TestWriteHtmlFile

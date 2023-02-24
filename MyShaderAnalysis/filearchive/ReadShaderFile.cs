@@ -1,5 +1,6 @@
 using MyShaderFile.CompiledShader;
 
+#pragma warning disable IDE0090 // Use 'new(...)'
 namespace MyShaderAnalysis.filearchive
 {
     public class ReadShaderFile

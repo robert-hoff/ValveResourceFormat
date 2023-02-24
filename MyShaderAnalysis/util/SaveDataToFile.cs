@@ -9,7 +9,7 @@ namespace MyShaderAnalysis.util
         public static void SaveSingleColumnIntData(string filename, ICollection<int> data, bool saveAsHex = false)
         {
             string filenamepath = $"{DEFAULT_OUTPUT_DIR}/{filename}";
-            FileWriter fileWriter = new FileWriter(filenamepath);
+            FileWriter fileWriter = new(filenamepath);
             foreach (int d in data)
             {
                 if (saveAsHex)
@@ -27,7 +27,7 @@ namespace MyShaderAnalysis.util
         public static void SaveSingleColumnStringData(string filename, ICollection<string> data)
         {
             string filenamepath = $"{DEFAULT_OUTPUT_DIR}/{filename}";
-            FileWriter fileWriter = new FileWriter(filenamepath);
+            FileWriter fileWriter = new(filenamepath);
             foreach (string d in data)
             {
                 fileWriter.WriteLine($"{d}");

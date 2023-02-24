@@ -3,6 +3,8 @@ using MyShaderAnalysis.filearchive;
 using MyShaderFile.CompiledShader;
 using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 
+#pragma warning disable IDE0051 // Remove unused private members
+#pragma warning disable CA1823 // Avoid unused private fields
 namespace MyShaderAnalysis.compat
 {
     public class CompatRulesGenerationTestRuns

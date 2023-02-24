@@ -7,6 +7,11 @@ using static MyShaderAnalysis.filearchive.FileArchive;
 using static MyShaderAnalysis.filearchive.ReadShaderFile;
 using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 
+#pragma warning disable IDE0033 // Use explicitly provided tuple name
+#pragma warning disable IDE0051 // Remove unused private members
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
+#pragma warning disable IDE0060 // Remove unused parameter
+#pragma warning disable IDE0090 // Use 'new(...)'
 namespace MyShaderAnalysis.codestash
 {
     public class TestFileUtilFunctionsOld

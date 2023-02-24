@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 
+#pragma warning disable IDE0071 // Simplify interpolation
+#pragma warning disable CA2211 // Non-constant fields should not be visible
 namespace MyShaderAnalysis.util
 {
     public class DataCollectAcrossQueries

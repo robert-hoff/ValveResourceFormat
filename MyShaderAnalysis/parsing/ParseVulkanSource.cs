@@ -15,6 +15,7 @@ using MyShaderFile.CompiledShader;
  *
  *
  */
+#pragma warning disable IDE0044 // Add readonly modifier
 namespace MyShaderAnalysis.parsing
 {
     public class ParseVulkanSource : ShaderDataReader

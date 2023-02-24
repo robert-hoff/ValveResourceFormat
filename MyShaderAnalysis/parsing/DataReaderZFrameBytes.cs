@@ -4,6 +4,8 @@ using MyShaderFile.CompiledShader;
 using MyShaderFile.ThirdParty;
 using static MyShaderFile.CompiledShader.ShaderUtilHelpers;
 
+#pragma warning disable IDE0044 // Add readonly modifier
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
 namespace MyShaderAnalysis.parsing
 {
     public class DataReaderZFrameBytes : ShaderDataReader

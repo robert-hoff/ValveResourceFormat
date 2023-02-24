@@ -4,6 +4,7 @@ using MyShaderFile.CompiledShader;
 using static MyShaderAnalysis.codestash.FileSystemOld;
 using static MyShaderAnalysis.filearchive.ReadShaderFile;
 
+#pragma warning disable IDE0051 // Remove unused private members
 namespace MyShaderAnalysis.parsing
 {
     public class TestMobileShaderFiles
