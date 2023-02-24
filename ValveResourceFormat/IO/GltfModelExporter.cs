@@ -732,7 +732,7 @@ namespace ValveResourceFormat.IO
                             ushortBuffer = ChangeBufferStride(ushortBuffer, numComponents, 4);
                         }
 
-                        BufferView bufferView = exportedModel.CreateBufferView(2 * ushortBuffer.Length, 0, BufferMode.ARRAY_BUFFER);
+                        var bufferView = exportedModel.CreateBufferView(2 * ushortBuffer.Length, 0, BufferMode.ARRAY_BUFFER);
                         ushortBuffer.CopyTo(MemoryMarshal.Cast<byte, ushort>(((Memory<byte>)bufferView.Content).Span));
                         var accessor = mesh.LogicalParent.CreateAccessor();
                         accessor.SetVertexData(bufferView, 0, ushortBuffer.Length / 4, DimensionType.VEC4, EncodingType.UNSIGNED_SHORT);
@@ -759,17 +759,17 @@ namespace ValveResourceFormat.IO
                             var (normals, tangents) = DecompressNormalTangents(vectors);
 
                             {
-                                BufferView bufferView = exportedModel.CreateBufferView(12 * normals.Length, 0, BufferMode.ARRAY_BUFFER);
+                                var bufferView = exportedModel.CreateBufferView(12 * normals.Length, 0, BufferMode.ARRAY_BUFFER);
                                 new Vector3Array(bufferView.Content).Fill(normals);
-                                Accessor accessor = exportedModel.CreateAccessor();
+                                var accessor = exportedModel.CreateAccessor();
                                 accessor.SetVertexData(bufferView, 0, normals.Length, DimensionType.VEC3);
                                 accessors["NORMAL"] = accessor;
                             }
 
                             {
-                                BufferView bufferView = exportedModel.CreateBufferView(16 * tangents.Length, 0, BufferMode.ARRAY_BUFFER);
+                                var bufferView = exportedModel.CreateBufferView(16 * tangents.Length, 0, BufferMode.ARRAY_BUFFER);
                                 new Vector4Array(bufferView.Content).Fill(tangents);
-                                Accessor accessor = exportedModel.CreateAccessor();
+                                var accessor = exportedModel.CreateAccessor();
                                 accessor.SetVertexData(bufferView, 0, tangents.Length, DimensionType.VEC4);
                                 accessors["TANGENT"] = accessor;
                             }
@@ -802,9 +802,9 @@ namespace ValveResourceFormat.IO
                                 vectors = FixZeroLengthVectors(vectors);
                             }
 
-                            BufferView bufferView = exportedModel.CreateBufferView(16 * vectors.Length, 0, BufferMode.ARRAY_BUFFER);
+                            var bufferView = exportedModel.CreateBufferView(16 * vectors.Length, 0, BufferMode.ARRAY_BUFFER);
                             new Vector4Array(bufferView.Content).Fill(vectors);
-                            Accessor accessor = exportedModel.CreateAccessor();
+                            var accessor = exportedModel.CreateAccessor();
                             accessor.SetVertexData(bufferView, 0, vectors.Length, DimensionType.VEC4);
                             accessors[accessorName] = accessor;
                             break;
@@ -820,9 +820,9 @@ namespace ValveResourceFormat.IO
                                 vectors = FixZeroLengthVectors(vectors);
                             }
 
-                            BufferView bufferView = exportedModel.CreateBufferView(12 * vectors.Length, 0, BufferMode.ARRAY_BUFFER);
+                            var bufferView = exportedModel.CreateBufferView(12 * vectors.Length, 0, BufferMode.ARRAY_BUFFER);
                             new Vector3Array(bufferView.Content).Fill(vectors);
-                            Accessor accessor = exportedModel.CreateAccessor();
+                            var accessor = exportedModel.CreateAccessor();
                             accessor.SetVertexData(bufferView, 0, vectors.Length, DimensionType.VEC3);
                             accessors[accessorName] = accessor;
                             break;
@@ -831,9 +831,9 @@ namespace ValveResourceFormat.IO
                         case 2:
                         {
                             var vectors = ToVector2Array(buffer);
-                            BufferView bufferView = exportedModel.CreateBufferView(8 * vectors.Length, 0, BufferMode.ARRAY_BUFFER);
+                            var bufferView = exportedModel.CreateBufferView(8 * vectors.Length, 0, BufferMode.ARRAY_BUFFER);
                             new Vector2Array(bufferView.Content).Fill(vectors);
-                            Accessor accessor = exportedModel.CreateAccessor();
+                            var accessor = exportedModel.CreateAccessor();
                             accessor.SetVertexData(bufferView, 0, vectors.Length, DimensionType.VEC2);
                             accessors[accessorName] = accessor;
                             break;
@@ -841,9 +841,9 @@ namespace ValveResourceFormat.IO
 
                         case 1:
                         {
-                            BufferView bufferView = exportedModel.CreateBufferView(4 * buffer.Length, 0, BufferMode.ARRAY_BUFFER);
+                            var bufferView = exportedModel.CreateBufferView(4 * buffer.Length, 0, BufferMode.ARRAY_BUFFER);
                             new ScalarArray(bufferView.Content).Fill(buffer);
-                            Accessor accessor = exportedModel.CreateAccessor();
+                            var accessor = exportedModel.CreateAccessor();
                             accessor.SetVertexData(bufferView, 0, buffer.Length, DimensionType.SCALAR);
                             accessors[accessorName] = accessor;
                             break;
@@ -869,7 +869,7 @@ namespace ValveResourceFormat.IO
                         );
                         var defaultWeights = Enumerable.Repeat(baseWeights, jointAccessor.Count).ToList();
 
-                        BufferView bufferView = exportedModel.CreateBufferView(16 * defaultWeights.Count, 0, BufferMode.ARRAY_BUFFER);
+                        var bufferView = exportedModel.CreateBufferView(16 * defaultWeights.Count, 0, BufferMode.ARRAY_BUFFER);
                         new Vector4Array(bufferView.Content).Fill(defaultWeights);
                         weightsAccessor = exportedModel.CreateAccessor();
                         weightsAccessor.SetVertexData(bufferView, 0, defaultWeights.Count, DimensionType.VEC4);
