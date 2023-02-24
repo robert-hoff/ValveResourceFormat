@@ -232,8 +232,10 @@ namespace ValveResourceFormat.ResourceTypes
 
             // 8 bytes that help valve preallocate, useless for us
             var stringAndTypesBufferSize = reader.ReadUInt32();
-            var b = reader.ReadUInt16();
-            var c = reader.ReadUInt16();
+            // var b = reader.ReadUInt16();
+            _ = reader.ReadUInt16();
+            // var c = reader.ReadUInt16();
+            _ = reader.ReadUInt16();
 
             var uncompressedSize = reader.ReadUInt32();
             var compressedSize = reader.ReadUInt32();

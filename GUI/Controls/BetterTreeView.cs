@@ -205,7 +205,9 @@ namespace GUI.Controls
             };
 
             currentNode.Nodes.Add(newNode);
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
             currentNode = newNode;
+#pragma warning restore IDE0059 // Unnecessary assignment of a value
         }
     }
 }

@@ -1020,7 +1020,7 @@ namespace ValveResourceFormat.IO
             }
 
             var skeletonNode = scene.CreateNode(modelName);
-            var boneNodes = new Dictionary<string, Node>();
+            // var boneNodes = new Dictionary<string, Node>();
             var joints = new Node[skeleton.Bones.Length];
             foreach (var root in skeleton.Roots)
             {

@@ -83,7 +83,8 @@ namespace GUI.Types.Renderer
             GL.BindVertexArray(quadVao);
 
             var viewProjectionMatrix = context.Camera.ViewProjectionMatrix.ToOpenTK();
-            var cameraPosition = context.Camera.Location.ToOpenTK();
+            // var cameraPosition = context.Camera.Location.ToOpenTK();
+            _ = context.Camera.Location.ToOpenTK();
 
             // Create billboarding rotation (always facing camera)
             Matrix4x4.Decompose(context.Camera.CameraViewMatrix, out _, out var modelViewRotation, out _);
@@ -98,7 +99,8 @@ namespace GUI.Types.Renderer
 
             GL.UniformMatrix4(shader.GetUniformLocation("uProjectionViewMatrix"), false, ref viewProjectionMatrix);
 
-            var transformTk = Transform.ToOpenTK();
+            // var transformTk = Transform.ToOpenTK();
+            _ = Transform.ToOpenTK();
             GL.UniformMatrix4(shader.GetUniformLocation("transform"), false, ref test2);
 
             material.Render(shader);

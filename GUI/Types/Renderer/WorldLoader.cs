@@ -116,7 +116,8 @@ namespace GUI.Types.Renderer
                 }
                 else if (classname == "skybox_reference")
                 {
-                    var worldgroupid = entity.GetProperty<string>("worldgroupid");
+                    // var worldgroupid = entity.GetProperty<string>("worldgroupid");
+                    _ = entity.GetProperty<string>("worldgroupid");
                     var targetmapname = entity.GetProperty<string>("targetmapname");
 
                     var skyboxWorldPath = $"maps/{Path.GetFileNameWithoutExtension(targetmapname)}/world.vwrld_c";

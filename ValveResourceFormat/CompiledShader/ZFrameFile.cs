@@ -769,8 +769,10 @@ namespace ValveResourceFormat.CompiledShader
         {
             for (var sourceId = 0; sourceId < glslSourceCount; sourceId++)
             {
-                var sourceSize = ShowGlslSourceOffsets();
-                var sourceOffset = (int)DataReader.BaseStream.Position;
+                // var sourceSize = ShowGlslSourceOffsets();
+                _ = ShowGlslSourceOffsets();
+                // var sourceOffset = (int)DataReader.BaseStream.Position;
+                _ = (int)DataReader.BaseStream.Position;
                 ShowZGlslSourceSummary(sourceId);
                 DataReader.ShowByteCount();
                 var fileIdBytes = DataReader.ReadBytes(16);

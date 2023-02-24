@@ -100,7 +100,8 @@ namespace ValveResourceFormat.CompiledShader
 
         public void PrintSummary(HandleOutputWrite OutputWriter = null, bool showRichTextBoxLinks = false, List<string> relatedfiles = null)
         {
-            var fileSummary = new PrintVcsFileSummary(this, OutputWriter, showRichTextBoxLinks, relatedfiles);
+            // var fileSummary = new PrintVcsFileSummary(this, OutputWriter, showRichTextBoxLinks, relatedfiles);
+            _ = new PrintVcsFileSummary(this, OutputWriter, showRichTextBoxLinks, relatedfiles);
         }
 
         private void ParseFile()

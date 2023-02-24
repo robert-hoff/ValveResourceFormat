@@ -169,7 +169,8 @@ namespace ValveResourceFormat.CompiledShader
                 DataReader.ShowBytes(4);
                 if (has_s_argument > 0)
                 {
-                    var sSymbolArgValue = DataReader.ReadUInt32AtPosition(64);
+                    // var sSymbolArgValue = DataReader.ReadUInt32AtPosition(64);
+                    _ = DataReader.ReadUInt32AtPosition(64);
                     var sSymbolName = DataReader.ReadNullTermStringAtPosition();
                     DataReader.Comment($"{sSymbolName}");
                     DataReader.ShowBytes(68);

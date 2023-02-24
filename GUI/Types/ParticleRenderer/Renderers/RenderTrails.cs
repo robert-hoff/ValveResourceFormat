@@ -186,7 +186,8 @@ namespace GUI.Types.ParticleRenderer.Renderers
             // Create billboarding rotation (always facing camera)
             Matrix4x4.Decompose(modelViewMatrix, out _, out var modelViewRotation, out _);
             modelViewRotation = Quaternion.Inverse(modelViewRotation);
-            var billboardMatrix = Matrix4x4.CreateFromQuaternion(modelViewRotation);
+            // var billboardMatrix = Matrix4x4.CreateFromQuaternion(modelViewRotation);
+            _ = Matrix4x4.CreateFromQuaternion(modelViewRotation);
 
             for (var i = 0; i < particles.Length; ++i)
             {
@@ -195,7 +196,7 @@ namespace GUI.Types.ParticleRenderer.Renderers
                 var difference = previousPosition - position;
                 var direction = Vector3.Normalize(difference);
 
-                var midPoint = position + (0.5f * difference);
+                // var midPoint = position + (0.5f * difference);
 
                 // Trail width = radius
                 // Trail length = distance between current and previous times trail length divided by 2 (because the base particle is 2 wide)

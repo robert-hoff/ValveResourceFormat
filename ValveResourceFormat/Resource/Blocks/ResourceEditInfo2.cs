@@ -36,11 +36,11 @@ namespace ValveResourceFormat.Blocks
             ConstuctInputDependencies();
 
             SearchableUserData = kv3.AsKeyValueCollection().GetSubCollection("m_SearchableUserData");
-            foreach (var kv in kv3.Data)
-            {
-                // TODO: Structs?
-                //var structType = ConstructStruct(kv.Key);
-            }
+            //  foreach (var kv in kv3.Data)
+            //  {
+            //      TODO: Structs?
+            //      var structType = ConstructStruct(kv.Key);
+            //  }
         }
 
         public override void WriteText(IndentedTextWriter writer)
