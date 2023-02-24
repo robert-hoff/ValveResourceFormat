@@ -6,22 +6,23 @@ namespace MyShaderAnalysis.util
 {
     class ReadDataFromFile
     {
-        // static readonly string INPUT_FOLDER = "../../../../data-input/";
-        public const string INPUT_FOLDER = "../../../data-input-samples/";
-        // static readonly string OUTPUT_FOLDER = "../../../../data-output/";
-        public const string OUTPUT_FOLDER = "../../../data-output-samples/";
+        // static readonly string DEFAULT_INPUT_FOLDER = "../../../data-input/";
+        public const string DEFAULT_INPUT_FOLDER = "../../../data-input-samples/";
 
-        public static List<int> ReadSingleColumnIntData(string filename, string folder = INPUT_FOLDER)
+        public static List<int> ReadSingleColumnIntData(string filename, string folder = DEFAULT_INPUT_FOLDER)
         {
             List<int> data = new();
             string[] lines = File.ReadAllLines($"{folder}/{filename}");
             foreach (string line in lines)
             {
-                data.Add(int.Parse(line));
+                if (line.Trim().Length > 0)
+                {
+                    data.Add(int.Parse(line));
+                }
             }
             return data;
         }
-        public static List<string> ReadSingleColumnStringData(string filename, string folder = INPUT_FOLDER)
+        public static List<string> ReadSingleColumnStringData(string filename, string folder = DEFAULT_INPUT_FOLDER)
         {
             List<string> data = new();
             string[] lines = File.ReadAllLines($"{folder}/{filename}");
@@ -33,25 +34,6 @@ namespace MyShaderAnalysis.util
                 }
             }
             return data;
-        }
-        public static void SaveSingleColumnData(string filename, List<int> data, bool saveAsHex = false)
-        {
-            string filenamepath = $"{OUTPUT_FOLDER}/{filename}";
-            FileWriter fileWriter = new FileWriter(filenamepath);
-            foreach (int d in data)
-            {
-                if (saveAsHex)
-                {
-                    fileWriter.WriteLine($"0x{d:X}");
-                }
-                else
-                {
-                    fileWriter.WriteLine($"{d}");
-                }
-            }
-            fileWriter.CloseStreamWriter();
-
-            Debug.WriteLine($"data written to {filenamepath}");
         }
     }
 }

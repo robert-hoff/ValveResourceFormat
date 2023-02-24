@@ -6,7 +6,7 @@ using MyShaderFile.ThirdParty;
 
 namespace MyShaderAnalysis.snippetcode
 {
-    class CrcTrialsMurmur32
+    public class CrcTrialsMurmur32
     {
         private const uint MURMUR2SEED = 0x31415926; // It's pi!
 
@@ -18,13 +18,29 @@ namespace MyShaderAnalysis.snippetcode
             // Trial3();
             // Trial4();
 
-            WriteOutMurmurStringsForParams();
+            SaveMurmurStringsForParams();
+            // ShowMurmurStringsForParams();
             // ReadParameterNames();
 
             // Debug.WriteLine($"{Murmur32("$TRANS_OFFSET_V"):x08}");
         }
 
-        static void WriteOutMurmurStringsForParams()
+        public static void SaveMurmurStringsForParams()
+        {
+            List<string> murmurs = GetMurmurStringsForParams();
+            SaveDataToFile.SaveSingleColumnStringData("paramname-murmurs.txt", murmurs);
+        }
+
+        public static void ShowMurmurStringsForParams()
+        {
+            List<string> murmurs = GetMurmurStringsForParams();
+            foreach (string murmurString in murmurs)
+            {
+                Debug.WriteLine($"{murmurString}");
+            }
+        }
+
+        public static List<string> GetMurmurStringsForParams()
         {
             List<string> murmurs = new();
             foreach (string paramname in ReadParameterNames())
@@ -33,13 +49,10 @@ namespace MyShaderAnalysis.snippetcode
                 murmurs.Add($"{murmur32:x08} {paramname}");
             }
             murmurs.Sort();
-            foreach (string murmurString in murmurs)
-            {
-                Debug.WriteLine($"{murmurString}");
-            }
+            return murmurs;
         }
 
-        static void Trial5()
+        public static void Trial5()
         {
             // string myStr = "g_flRimLightScale";
             string myStr = "g_flAmbientScale";
@@ -47,7 +60,7 @@ namespace MyShaderAnalysis.snippetcode
             Console.WriteLine($"{murmur32:X08}");
         }
 
-        static void Trial1()
+        public static void Trial1()
         {
             string databytes = "53 68 61 64 6F 77 73 4F 6E 6C 79"; // ShadowsOnly
             string theword = ByteStringtoString(databytes);
@@ -61,7 +74,7 @@ namespace MyShaderAnalysis.snippetcode
          * Testing some predictable string for comparison with Java
          *
          */
-        static void Trial2()
+        public static void Trial2()
         {
             // uint murmur32 = MurmurHash2.Hash("r", MURMUR2SEED);
             // uint murmur32 = MurmurHash2.Hash("representativetexture", MURMUR2SEED);
@@ -74,7 +87,7 @@ namespace MyShaderAnalysis.snippetcode
          * It looks Java produces the same results for this operation when using signed ints
          *
          */
-        static void Trial3()
+        public static void Trial3()
         {
             uint seed = 0x31415926;
             // uint seed = 0xF1415926;
@@ -86,14 +99,14 @@ namespace MyShaderAnalysis.snippetcode
             Console.WriteLine("{0:X08}", h);
         }
 
-        static void Trial4()
+        public static void Trial4()
         {
             byte[] databytes = getDatabytesExample1();
             uint murmur32 = MurmurHash2.Hash(databytes, MURMUR2SEED);
             Console.WriteLine($"{murmur32:X08}");
         }
 
-        static string ByteStringtoString(string databytes)
+        public static string ByteStringtoString(string databytes)
         {
             string mystr = "";
             foreach (byte b in ParseString(databytes))
@@ -104,7 +117,7 @@ namespace MyShaderAnalysis.snippetcode
             return mystr;
         }
 
-        static byte[] ParseString(string bytestring)
+        public static byte[] ParseString(string bytestring)
         {
             string[] tokens = bytestring.Split(" ");
             byte[] databytes = new byte[tokens.Length];
@@ -122,7 +135,7 @@ namespace MyShaderAnalysis.snippetcode
          * Tried to reproduce the buffer block crc, but couldn't get it (also tried crc32)
          *
          */
-        static byte[] getDatabytesExample1()
+        public static byte[] getDatabytesExample1()
         {
             string bytestring = "" +
                 "49 72 72 61 64 54 65 78 74 75 72 65 41 63 74 69 76 65 52 65 63 74 43 42 00 00 00 00 00 00 00 00 " +

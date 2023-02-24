@@ -28,7 +28,8 @@ namespace MyShaderAnalysis.serverhtml
         public static void WriteHtmlTestfile()
         {
             string filenamepath = $"{ServerNames.GetServerBaseDir()}hello.html";
-            FileWriter fw = new FileWriter(filenamepath, writeAsHtml: true);
+            FileWriter fw = new FileWriter(filenamepath);
+            fw.WriteHtmlHeader("title","header");
             fw.WriteLine("hello");
             fw.CloseStreamWriter();
         }

@@ -8,17 +8,16 @@ namespace MyShaderAnalysis.util
     internal class FixCsSources
     {
         // MyShaderAnalysis directory
-        // private static string SOURCE_DIR = @"../../";
-        private static string SOURCE_DIR = @"../../../TestVRF";
-
+        private static string SOURCE_DIR = @"../../";
+        // private static string SOURCE_DIR = @"../../../TestVRF";
         private static string TEST_FILE = @"../../Program.cs";
 
         public static void Run()
         {
-            // FixAllFiles();
+            FixAllFiles();
             // FixStylesForFile(TEST_FILE);
             // ShowFixesForFile(TEST_FILE);
-            ShowCsFilesWalkDirectory();
+            // ShowCsFilesWalkDirectory();
         }
 
         public static void CopyOverEditorConfigs() { }
@@ -65,7 +64,7 @@ namespace MyShaderAnalysis.util
         }
 
         /*
-         * Remove any lines that are spaces beyond the last two
+         * Remove any blank lines found beyond the last two
          *
          */
         public static List<string> RemoveMultipleEndingSpaces(List<string> lines)

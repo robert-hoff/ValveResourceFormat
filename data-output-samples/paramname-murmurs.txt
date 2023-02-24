@@ -1,4 +1,4 @@
-00370a19 g_flMaterial1EmissiveLevel
+﻿00370a19 g_flMaterial1EmissiveLevel
 003f43b9 TextureNormalDetail
 003f8ec2 g_tLayer4Color
 0091d020 g_flGlassFogExtinctionAmount

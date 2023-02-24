@@ -1,5 +1,7 @@
 using System;
+using System.Diagnostics;
 using System.IO;
+using System.Text;
 using HandleOutputWrite = MyShaderFile.CompiledShader.HandleOutputWrite;
 
 namespace MyShaderAnalysis.util
@@ -7,24 +9,49 @@ namespace MyShaderAnalysis.util
     public class FileWriter : IDisposable
     {
         private StreamWriter sw;
-        private bool writeToConsole;
-        private bool writeAsHtml = false; // is set to true if html header is written
         private bool swOpen = true;
 
-        public FileWriter(string outputFilenamepath, bool showOutputToConsole = false, bool writeAsHtml = false)
+        private readonly bool showOutputToConsole;
+        private readonly string newLineCharacters;
+
+        /*
+         * writes an html footer if a call to WriteHtmlHeader(..) has been made
+         */
+        private bool writeAsHtml = false;
+
+        public const int SAVE_UTF_FILE_WITH_BOM = 0; // this seems to be what they like at Microsoft
+        public const int SAVE_UTF_FILE_WITHOUT_BOM = 1;
+        public const int LINUX_ENDINGS = 0;
+        public const int WINDOWS_ENDINGS = 1;
+
+        public FileWriter(
+            string outputFilenamepath,
+            bool showOutputToConsole = false,
+            int EOL = WINDOWS_ENDINGS,
+            int useBom = SAVE_UTF_FILE_WITHOUT_BOM
+            )
         {
-            Console.WriteLine($"Writing to {outputFilenamepath}");
-            sw = new StreamWriter(outputFilenamepath);
-            if (writeAsHtml)
+            this.showOutputToConsole = showOutputToConsole;
+            this.newLineCharacters = EOL switch
             {
-                WriteHtmlHeader("output", "");
-            }
-            this.writeToConsole = showOutputToConsole;
+                LINUX_ENDINGS => "\n",
+                WINDOWS_ENDINGS => "\r\n",
+                _ => throw new Exception($"Unrecognized value for EOL {EOL}")
+            };
+            bool saveUtfFileWithBom = useBom switch
+            {
+                SAVE_UTF_FILE_WITH_BOM => true,
+                SAVE_UTF_FILE_WITHOUT_BOM => false,
+                _ => throw new Exception($"Unrecognized value for useBom {useBom}")
+            };
+            Debug.WriteLine($"Writing to {outputFilenamepath}");
+            sw = new StreamWriter(outputFilenamepath, false, new UTF8Encoding(saveUtfFileWithBom));
+            sw.NewLine = newLineCharacters;
         }
 
         public HandleOutputWrite GetOutputWriter()
         {
-            if (writeToConsole)
+            if (showOutputToConsole)
             {
                 return (x) =>
                 {
@@ -70,12 +97,25 @@ namespace MyShaderAnalysis.util
             }
         }
 
+        /*
+         * If Write("..") contains /n or /r/n it can mess up the specified line endings
+         *
+         */
+        public void Write(string text)
+        {
+            sw.Write(text.ReplaceLineEndings(newLineCharacters));
+            if (showOutputToConsole)
+            {
+                Debug.Write($"{text}");
+            }
+        }
+
         public void WriteLine(string text)
         {
             sw.WriteLine(text);
-            if (writeToConsole)
+            if (showOutputToConsole)
             {
-                Console.WriteLine($"{text}");
+                Debug.WriteLine($"{text}");
             }
         }
 
