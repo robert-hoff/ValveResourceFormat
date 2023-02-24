@@ -344,4 +344,3 @@ namespace MyShaderAnalysis.filearchive
     }
 }
 
-

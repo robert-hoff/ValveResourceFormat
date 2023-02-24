@@ -83,4 +83,3 @@ namespace MyShaderAnalysis.filearchive
 }
 #pragma warning restore CA1813
 
-

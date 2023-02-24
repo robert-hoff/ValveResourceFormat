@@ -66,4 +66,3 @@ namespace MyShaderAnalysis.filearchive
     }
 }
 
-

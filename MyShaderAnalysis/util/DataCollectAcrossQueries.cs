@@ -67,4 +67,3 @@ namespace MyShaderAnalysis.util
     }
 }
 
-

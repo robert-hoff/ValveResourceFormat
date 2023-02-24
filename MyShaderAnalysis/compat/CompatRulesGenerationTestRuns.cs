@@ -36,4 +36,3 @@ namespace MyShaderAnalysis.compat
     }
 }
 
-

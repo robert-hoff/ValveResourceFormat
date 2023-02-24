@@ -433,4 +433,3 @@ namespace MyShaderAnalysis.batchtesting
     }
 }
 
-

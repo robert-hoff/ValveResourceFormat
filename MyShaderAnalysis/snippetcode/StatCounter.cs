@@ -87,4 +87,3 @@ namespace MyShaderAnalysis.snippetcode
     }
 }
 
-

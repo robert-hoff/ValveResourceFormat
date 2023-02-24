@@ -293,4 +293,3 @@ namespace MyShaderAnalysis.staticanalysis
     }
 }
 
-

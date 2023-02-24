@@ -247,4 +247,3 @@ namespace MyShaderAnalysis.compat.background
     }
 }
 
-

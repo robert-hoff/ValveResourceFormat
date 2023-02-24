@@ -268,4 +268,3 @@ namespace MyShaderAnalysis.parsing
     }
 }
 
-

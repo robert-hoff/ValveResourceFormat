@@ -338,4 +338,3 @@ namespace MyShaderAnalysis.compat.background
     }
 }
 
-

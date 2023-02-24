@@ -337,4 +337,3 @@ namespace MyShaderAnalysis.snippetcode
     }
 }
 
-

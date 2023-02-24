@@ -20,4 +20,3 @@ namespace MyShaderAnalysis.filearchive
     }
 }
 
-

@@ -197,4 +197,3 @@ namespace MyShaderAnalysis.compat.background
     }
 }
 
-

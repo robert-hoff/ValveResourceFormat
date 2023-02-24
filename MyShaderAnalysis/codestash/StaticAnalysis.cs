@@ -1904,4 +1904,3 @@ namespace MyShaderAnalysis.codestash
     }
 }
 
-
