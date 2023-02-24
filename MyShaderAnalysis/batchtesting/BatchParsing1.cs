@@ -239,7 +239,7 @@ namespace MyShaderAnalysis.batchtesting
                     }
                 }
                 // NOTE - ignoring parsing errors at the shader-level
-                catch (Exception shaderFileException)
+                catch (Exception)
                 {
                     // Console.WriteLine($"ERROR in {i} {e.Message}");
                 }
@@ -432,4 +432,5 @@ namespace MyShaderAnalysis.batchtesting
         }
     }
 }
+
 

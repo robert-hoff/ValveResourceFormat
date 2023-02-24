@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 
+
+
+
+
 namespace MyShaderAnalysis.util
 {
     internal class FixCsSources
@@ -11,16 +15,17 @@ namespace MyShaderAnalysis.util
         private static string SOURCE_DIR = @"../../";
         // private static string SOURCE_DIR = @"../../../TestVRF";
         private static string TEST_FILE = @"../../Program.cs";
+        private const int DESIRED_BLANK_LINES_AT_EOF = 2;
+        private const int EOL_PREFERENCE = FileWriter.LINUX_ENDINGS;
+        private const int BOM_PREFERENCE = FileWriter.SAVE_UTF_FILE_WITHOUT_BOM;
 
         public static void Run()
         {
             FixAllFiles();
-            // FixStylesForFile(TEST_FILE);
+            // FixSingleFile();
             // ShowFixesForFile(TEST_FILE);
             // ShowCsFilesWalkDirectory();
         }
-
-        public static void CopyOverEditorConfigs() { }
 
         public static void FixAllFiles()
         {
@@ -30,14 +35,20 @@ namespace MyShaderAnalysis.util
             }
         }
 
+        public static void FixSingleFile()
+        {
+            FixStylesForFile(TEST_FILE);
+        }
+
+
         // replace line endings and trim trailing spaces
         public static void FixStylesForFile(string filenamepath)
         {
             List<string> sourceLines = GetModifiedSourceLines(filenamepath);
-            FileWriter fw = new FileWriter(filenamepath);
+            FileWriter fw = new FileWriter(filenamepath, EOL: EOL_PREFERENCE, useBom: BOM_PREFERENCE);
             foreach (string line in sourceLines)
             {
-                fw.WriteLine(line.TrimEnd());
+                fw.WriteLine(line);
             }
             fw.CloseStreamWriter();
         }
@@ -55,42 +66,42 @@ namespace MyShaderAnalysis.util
         public static List<string> GetModifiedSourceLines(string filenamepath)
         {
             List<string> sourceLines = ReadFileAsStringList(filenamepath);
-            sourceLines = RemoveTrailingSpaces(sourceLines);
-            sourceLines = RemoveDoubleBlankLines(sourceLines);
-            sourceLines = RemoveBlankLinesFollowingBracket(sourceLines);
+            //sourceLines = RemoveDoubleBlankLines(sourceLines);
+            //sourceLines = RemoveBlankLinesFollowingBracket(sourceLines);
             sourceLines = RemoveBlankLinesLeadingBracket(sourceLines);
-            sourceLines = RemoveMultipleEndingSpaces(sourceLines);
+            sourceLines = SetDesiredEndOfFileBlankLines(sourceLines, DESIRED_BLANK_LINES_AT_EOF);
+            // sourceLines = RemoveTrailingSpacesAndUnifyEndings(sourceLines);
             return sourceLines;
         }
 
         /*
-         * Remove any blank lines found beyond the last two
+         * Add or remove blank lines at end of file to match preference
          *
          */
-        public static List<string> RemoveMultipleEndingSpaces(List<string> lines)
+        public static List<string> SetDesiredEndOfFileBlankLines(List<string> lines, int desiredBlankLines = 1)
         {
-            bool[] removeLines = new bool[lines.Count];
-            int lastBracketFound = 999999999;
-            for (int i = 0; i < lines.Count; i++)
+            if (desiredBlankLines <= 0)
             {
-                if (lines[i].Length > 0 && lines[i][0] == '}' && lines[i].Trim().Equals("}"))
-                {
-                    if (lastBracketFound < 999999999)
-                    {
-                        throw new Exception("unexpected syntax");
-                    }
-                    lastBracketFound = i;
-                }
-                if (string.IsNullOrEmpty(lines[i].Trim()) && i > (lastBracketFound + 1))
-                {
-                    removeLines[i] = true;
-                }
+                throw new Exception("this method only makes sense for desiredBlankLines >= 1");
             }
-            return ApplyRemoveListedIndexes(lines, removeLines);
+
+            List<string> sourceLines = lines;
+            for (int i = 0; i < desiredBlankLines; i++)
+            {
+                sourceLines.Add("\n");
+            }
+            bool[] removeLines = new bool[sourceLines.Count];
+            for (int i = sourceLines.Count - desiredBlankLines;
+                i >= 0 && string.IsNullOrWhiteSpace(sourceLines[i]);
+                i--)
+            {
+                removeLines[i] = true;
+            }
+            return ApplyRemoveListedIndexes(sourceLines, removeLines);
         }
 
         /*
-         * Remove any blank lines leading curly braket '}' (but not '{')
+         * Remove any blank lines leading open braces '}' but not applied to '{'
          *
          */
         public static List<string> RemoveBlankLinesLeadingBracket(List<string> lines)
@@ -103,7 +114,7 @@ namespace MyShaderAnalysis.util
                 {
                     prevSingleBracket = i;
                 }
-                if (prevSingleBracket == i + 1 && string.IsNullOrEmpty(lines[i].Trim()))
+                if (prevSingleBracket == i + 1 && string.IsNullOrWhiteSpace(lines[i]))
                 {
                     removeLines[i] = true;
                     prevSingleBracket = i;
@@ -113,7 +124,7 @@ namespace MyShaderAnalysis.util
         }
 
         /*
-         * Remove any blank lines following curly braket '{' (but not '}')
+         * Remove any blank lines following open braces '{' but not applied to '}'
          *
          */
         public static List<string> RemoveBlankLinesFollowingBracket(List<string> lines)
@@ -126,7 +137,7 @@ namespace MyShaderAnalysis.util
                 {
                     prevSingleBracket = i;
                 }
-                if (prevSingleBracket == i - 1 && string.IsNullOrEmpty(lines[i].Trim()))
+                if (prevSingleBracket == i - 1 && string.IsNullOrWhiteSpace(lines[i]))
                 {
                     removeLines[i] = true;
                     prevSingleBracket = i;
@@ -176,7 +187,7 @@ namespace MyShaderAnalysis.util
             return modifiedLines;
         }
 
-        public static List<string> RemoveTrailingSpaces(List<string> lines)
+        public static List<string> RemoveTrailingSpacesAndUnifyEndings(List<string> lines)
         {
             List<string> modifiedLines = new();
             foreach (string line in lines)
@@ -215,3 +226,5 @@ namespace MyShaderAnalysis.util
         }
     }
 }
+
+

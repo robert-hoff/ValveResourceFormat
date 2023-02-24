@@ -222,7 +222,7 @@ namespace MyShaderAnalysis.filearchive
             {
                 return GetShaderFileDetail(queryIndex).shaderFile;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw new ShaderParserException($"FileArchive.GetShaderFile error parsing file {vcsFiles[queryIndex % vcsFiles.Count]}");
             }
@@ -401,4 +401,5 @@ namespace MyShaderAnalysis.filearchive
         }
     }
 }
+
 
