@@ -390,22 +390,22 @@ namespace GUI.Types.Viewers
                         break;
 
                     case ResourceType.Texture:
+                    {
+                        if (FileExtract.IsChildResource(resource))
                         {
-                            if (FileExtract.IsChildResource(resource))
-                            {
-                                break;
-                            }
-
-                            var textureExtract = new TextureExtract(resource);
-                            AddContentTab(resTabs, "Reconstructed vtex", textureExtract.ToValveTexture());
-
-                            if (textureExtract.TryGetMksData(out var _, out var mks))
-                            {
-                                AddContentTab(resTabs, "Reconstructed mks", mks);
-                            }
-
                             break;
                         }
+
+                        var textureExtract = new TextureExtract(resource);
+                        AddContentTab(resTabs, "Reconstructed vtex", textureExtract.ToValveTexture());
+
+                        if (textureExtract.TryGetMksData(out var _, out var mks))
+                        {
+                            AddContentTab(resTabs, "Reconstructed mks", mks);
+                        }
+
+                        break;
+                    }
                 }
             }
 

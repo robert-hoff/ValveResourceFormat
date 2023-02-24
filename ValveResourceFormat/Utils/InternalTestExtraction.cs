@@ -23,35 +23,35 @@ namespace ValveResourceFormat.Utils
                     return;
 
                 case ResourceType.Model:
+                {
+                    var model = (Model)resource.DataBlock;
+                    model.GetEmbeddedAnimations();
+                    model.GetEmbeddedMeshes();
+                    model.GetEmbeddedPhys();
+
+                    /* TODO: Getting first mesh index isn't working
+                    if (model.Data.ContainsKey("m_modelSkeleton"))
                     {
-                        var model = (Model)resource.DataBlock;
-                        model.GetEmbeddedAnimations();
-                        model.GetEmbeddedMeshes();
-                        model.GetEmbeddedPhys();
-
-                        /* TODO: Getting first mesh index isn't working
-                        if (model.Data.ContainsKey("m_modelSkeleton"))
-                        {
-                            var first = model.Data.GetIntegerArray("m_remappingTableStarts");
-                            Skeleton.FromModelData(model.Data, (int)first[0]);
-                        }
-                        */
-
-                        break;
+                        var first = model.Data.GetIntegerArray("m_remappingTableStarts");
+                        Skeleton.FromModelData(model.Data, (int)first[0]);
                     }
+                    */
+
+                    break;
+                }
                 case ResourceType.Mesh:
-                    {
-                        var mesh = (Mesh)resource.DataBlock;
-                        mesh.GetBounds();
-                        break;
-                    }
+                {
+                    var mesh = (Mesh)resource.DataBlock;
+                    mesh.GetBounds();
+                    break;
+                }
 
                 case ResourceType.Particle:
-                    {
-                        var particle = (ParticleSystem)resource.DataBlock;
-                        particle.GetChildParticleNames();
-                        break;
-                    }
+                {
+                    var particle = (ParticleSystem)resource.DataBlock;
+                    particle.GetChildParticleNames();
+                    break;
+                }
             }
 
             using (FileExtract.Extract(resource, null))

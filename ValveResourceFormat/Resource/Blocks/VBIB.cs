@@ -196,113 +196,113 @@ namespace ValveResourceFormat.Blocks
             switch (attribute.Format)
             {
                 case DXGI_FORMAT.R32G32B32_FLOAT:
-                    {
-                        result = new float[3];
-                        Buffer.BlockCopy(vertexBuffer.Data, offset, result, 0, 12);
-                        break;
-                    }
+                {
+                    result = new float[3];
+                    Buffer.BlockCopy(vertexBuffer.Data, offset, result, 0, 12);
+                    break;
+                }
 
                 case DXGI_FORMAT.R32G32B32A32_FLOAT:
-                    {
-                        result = new float[4];
-                        Buffer.BlockCopy(vertexBuffer.Data, offset, result, 0, 16);
-                        break;
-                    }
+                {
+                    result = new float[4];
+                    Buffer.BlockCopy(vertexBuffer.Data, offset, result, 0, 16);
+                    break;
+                }
 
                 case DXGI_FORMAT.R16G16_UNORM:
-                    {
-                        var shorts = new ushort[2];
-                        Buffer.BlockCopy(vertexBuffer.Data, offset, shorts, 0, 4);
+                {
+                    var shorts = new ushort[2];
+                    Buffer.BlockCopy(vertexBuffer.Data, offset, shorts, 0, 4);
 
-                        result = new[]
-                        {
+                    result = new[]
+                    {
                             (float)shorts[0] / ushort.MaxValue,
                             (float)shorts[1] / ushort.MaxValue,
                         };
-                        break;
-                    }
+                    break;
+                }
 
                 case DXGI_FORMAT.R16G16_SNORM:
-                    {
-                        var shorts = new short[2];
-                        Buffer.BlockCopy(vertexBuffer.Data, offset, shorts, 0, 4);
+                {
+                    var shorts = new short[2];
+                    Buffer.BlockCopy(vertexBuffer.Data, offset, shorts, 0, 4);
 
-                        result = new[]
-                        {
+                    result = new[]
+                    {
                             (float)shorts[0] / short.MaxValue,
                             (float)shorts[1] / short.MaxValue,
                         };
-                        break;
-                    }
+                    break;
+                }
 
                 case DXGI_FORMAT.R16G16_FLOAT:
+                {
+                    result = new[]
                     {
-                        result = new[]
-                        {
                             (float)BitConverter.ToHalf(vertexBuffer.Data, offset),
                             (float)BitConverter.ToHalf(vertexBuffer.Data, offset + 2),
                         };
-                        break;
-                    }
+                    break;
+                }
 
                 case DXGI_FORMAT.R32_FLOAT:
-                    {
-                        result = new float[1];
-                        Buffer.BlockCopy(vertexBuffer.Data, offset, result, 0, 4);
-                        break;
-                    }
+                {
+                    result = new float[1];
+                    Buffer.BlockCopy(vertexBuffer.Data, offset, result, 0, 4);
+                    break;
+                }
 
                 case DXGI_FORMAT.R32G32_FLOAT:
-                    {
-                        result = new float[2];
-                        Buffer.BlockCopy(vertexBuffer.Data, offset, result, 0, 8);
-                        break;
-                    }
+                {
+                    result = new float[2];
+                    Buffer.BlockCopy(vertexBuffer.Data, offset, result, 0, 8);
+                    break;
+                }
 
                 case DXGI_FORMAT.R16G16_SINT:
+                {
+                    var shorts = new short[2];
+                    Buffer.BlockCopy(vertexBuffer.Data, offset, shorts, 0, 4);
+
+                    result = new float[2];
+                    for (var i = 0; i < 2; i++)
                     {
-                        var shorts = new short[2];
-                        Buffer.BlockCopy(vertexBuffer.Data, offset, shorts, 0, 4);
-
-                        result = new float[2];
-                        for (var i = 0; i < 2; i++)
-                        {
-                            result[i] = shorts[i];
-                        }
-
-                        break;
+                        result[i] = shorts[i];
                     }
+
+                    break;
+                }
 
                 case DXGI_FORMAT.R16G16B16A16_SINT:
+                {
+                    var shorts = new short[4];
+                    Buffer.BlockCopy(vertexBuffer.Data, offset, shorts, 0, 8);
+
+                    result = new float[4];
+                    for (var i = 0; i < 4; i++)
                     {
-                        var shorts = new short[4];
-                        Buffer.BlockCopy(vertexBuffer.Data, offset, shorts, 0, 8);
-
-                        result = new float[4];
-                        for (var i = 0; i < 4; i++)
-                        {
-                            result[i] = shorts[i];
-                        }
-
-                        break;
+                        result[i] = shorts[i];
                     }
+
+                    break;
+                }
 
                 case DXGI_FORMAT.R8G8B8A8_UINT:
                 case DXGI_FORMAT.R8G8B8A8_UNORM:
+                {
+                    var bytes = new byte[4];
+                    Buffer.BlockCopy(vertexBuffer.Data, offset, bytes, 0, 4);
+
+                    result = new float[4];
+                    for (var i = 0; i < 4; i++)
                     {
-                        var bytes = new byte[4];
-                        Buffer.BlockCopy(vertexBuffer.Data, offset, bytes, 0, 4);
-
-                        result = new float[4];
-                        for (var i = 0; i < 4; i++)
-                        {
-                            result[i] = attribute.Format == DXGI_FORMAT.R8G8B8A8_UNORM
-                                ? (float)bytes[i] / byte.MaxValue
-                                : bytes[i];
-                        }
-
-                        break;
+                        result[i] = attribute.Format == DXGI_FORMAT.R8G8B8A8_UNORM
+                            ? (float)bytes[i] / byte.MaxValue
+                            : bytes[i];
                     }
+
+                    break;
+                }
 
                 default:
                     throw new NotImplementedException($"Unsupported \"{attribute.SemanticName}\" DXGI_FORMAT.{attribute.Format}");

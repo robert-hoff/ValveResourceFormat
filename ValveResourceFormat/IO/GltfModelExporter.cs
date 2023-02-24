@@ -793,61 +793,61 @@ namespace ValveResourceFormat.IO
                     switch (numComponents)
                     {
                         case 4:
+                        {
+                            var vectors = ToVector4Array(buffer);
+
+                            // dropship.vmdl in HL:A has a tanget with value of <0, -0, 0>
+                            if (attribute.SemanticName == "NORMAL" || attribute.SemanticName == "TANGENT")
                             {
-                                var vectors = ToVector4Array(buffer);
-
-                                // dropship.vmdl in HL:A has a tanget with value of <0, -0, 0>
-                                if (attribute.SemanticName == "NORMAL" || attribute.SemanticName == "TANGENT")
-                                {
-                                    vectors = FixZeroLengthVectors(vectors);
-                                }
-
-                                BufferView bufferView = exportedModel.CreateBufferView(16 * vectors.Length, 0, BufferMode.ARRAY_BUFFER);
-                                new Vector4Array(bufferView.Content).Fill(vectors);
-                                Accessor accessor = exportedModel.CreateAccessor();
-                                accessor.SetVertexData(bufferView, 0, vectors.Length, DimensionType.VEC4);
-                                accessors[accessorName] = accessor;
-                                break;
+                                vectors = FixZeroLengthVectors(vectors);
                             }
+
+                            BufferView bufferView = exportedModel.CreateBufferView(16 * vectors.Length, 0, BufferMode.ARRAY_BUFFER);
+                            new Vector4Array(bufferView.Content).Fill(vectors);
+                            Accessor accessor = exportedModel.CreateAccessor();
+                            accessor.SetVertexData(bufferView, 0, vectors.Length, DimensionType.VEC4);
+                            accessors[accessorName] = accessor;
+                            break;
+                        }
 
                         case 3:
+                        {
+                            var vectors = ToVector3Array(buffer);
+
+                            // dropship.vmdl in HL:A has a normal with value of <0, 0, 0>
+                            if (attribute.SemanticName == "NORMAL" || attribute.SemanticName == "TANGENT")
                             {
-                                var vectors = ToVector3Array(buffer);
-
-                                // dropship.vmdl in HL:A has a normal with value of <0, 0, 0>
-                                if (attribute.SemanticName == "NORMAL" || attribute.SemanticName == "TANGENT")
-                                {
-                                    vectors = FixZeroLengthVectors(vectors);
-                                }
-
-                                BufferView bufferView = exportedModel.CreateBufferView(12 * vectors.Length, 0, BufferMode.ARRAY_BUFFER);
-                                new Vector3Array(bufferView.Content).Fill(vectors);
-                                Accessor accessor = exportedModel.CreateAccessor();
-                                accessor.SetVertexData(bufferView, 0, vectors.Length, DimensionType.VEC3);
-                                accessors[accessorName] = accessor;
-                                break;
+                                vectors = FixZeroLengthVectors(vectors);
                             }
+
+                            BufferView bufferView = exportedModel.CreateBufferView(12 * vectors.Length, 0, BufferMode.ARRAY_BUFFER);
+                            new Vector3Array(bufferView.Content).Fill(vectors);
+                            Accessor accessor = exportedModel.CreateAccessor();
+                            accessor.SetVertexData(bufferView, 0, vectors.Length, DimensionType.VEC3);
+                            accessors[accessorName] = accessor;
+                            break;
+                        }
 
                         case 2:
-                            {
-                                var vectors = ToVector2Array(buffer);
-                                BufferView bufferView = exportedModel.CreateBufferView(8 * vectors.Length, 0, BufferMode.ARRAY_BUFFER);
-                                new Vector2Array(bufferView.Content).Fill(vectors);
-                                Accessor accessor = exportedModel.CreateAccessor();
-                                accessor.SetVertexData(bufferView, 0, vectors.Length, DimensionType.VEC2);
-                                accessors[accessorName] = accessor;
-                                break;
-                            }
+                        {
+                            var vectors = ToVector2Array(buffer);
+                            BufferView bufferView = exportedModel.CreateBufferView(8 * vectors.Length, 0, BufferMode.ARRAY_BUFFER);
+                            new Vector2Array(bufferView.Content).Fill(vectors);
+                            Accessor accessor = exportedModel.CreateAccessor();
+                            accessor.SetVertexData(bufferView, 0, vectors.Length, DimensionType.VEC2);
+                            accessors[accessorName] = accessor;
+                            break;
+                        }
 
                         case 1:
-                            {
-                                BufferView bufferView = exportedModel.CreateBufferView(4 * buffer.Length, 0, BufferMode.ARRAY_BUFFER);
-                                new ScalarArray(bufferView.Content).Fill(buffer);
-                                Accessor accessor = exportedModel.CreateAccessor();
-                                accessor.SetVertexData(bufferView, 0, buffer.Length, DimensionType.SCALAR);
-                                accessors[accessorName] = accessor;
-                                break;
-                            }
+                        {
+                            BufferView bufferView = exportedModel.CreateBufferView(4 * buffer.Length, 0, BufferMode.ARRAY_BUFFER);
+                            new ScalarArray(bufferView.Content).Fill(buffer);
+                            Accessor accessor = exportedModel.CreateAccessor();
+                            accessor.SetVertexData(bufferView, 0, buffer.Length, DimensionType.SCALAR);
+                            accessors[accessorName] = accessor;
+                            break;
+                        }
 
                         default:
                             throw new NotImplementedException($"Attribute \"{attribute.SemanticName}\" has {numComponents} components");

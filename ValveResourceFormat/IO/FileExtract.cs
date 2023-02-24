@@ -105,27 +105,27 @@ namespace ValveResourceFormat.IO
                     break;
 
                 case ResourceType.Sound:
-                    {
-                        using var soundStream = ((Sound)resource.DataBlock).GetSoundStream();
-                        soundStream.TryGetBuffer(out var buffer);
-                        contentFile.Data = buffer.ToArray();
+                {
+                    using var soundStream = ((Sound)resource.DataBlock).GetSoundStream();
+                    soundStream.TryGetBuffer(out var buffer);
+                    contentFile.Data = buffer.ToArray();
 
-                        break;
-                    }
+                    break;
+                }
 
                 case ResourceType.Texture:
+                {
+                    if (IsChildResource(resource))
                     {
-                        if (IsChildResource(resource))
-                        {
-                            using var bitmap = ((Texture)resource.DataBlock).GenerateBitmap();
-                            contentFile.Data = TextureExtract.ToPngImage(bitmap);
-                            break;
-                        }
-
-                        var textureExtract = new TextureExtract(resource);
-                        contentFile = textureExtract.ToContentFile();
+                        using var bitmap = ((Texture)resource.DataBlock).GenerateBitmap();
+                        contentFile.Data = TextureExtract.ToPngImage(bitmap);
                         break;
                     }
+
+                    var textureExtract = new TextureExtract(resource);
+                    contentFile = textureExtract.ToContentFile();
+                    break;
+                }
 
                 case ResourceType.Particle:
                     contentFile.Data = Encoding.UTF8.GetBytes(((ParticleSystem)resource.DataBlock).ToString());
@@ -140,19 +140,19 @@ namespace ValveResourceFormat.IO
                     break;
 
                 case ResourceType.PostProcessing:
-                    {
-                        var lutFileName = Path.ChangeExtension(resource.FileName, "raw");
-                        contentFile.Data = Encoding.UTF8.GetBytes(
-                            ((PostProcessing)resource.DataBlock).ToValvePostProcessing(preloadLookupTable: true, lutFileName: lutFileName.Replace(Path.DirectorySeparatorChar, '/'))
-                        );
+                {
+                    var lutFileName = Path.ChangeExtension(resource.FileName, "raw");
+                    contentFile.Data = Encoding.UTF8.GetBytes(
+                        ((PostProcessing)resource.DataBlock).ToValvePostProcessing(preloadLookupTable: true, lutFileName: lutFileName.Replace(Path.DirectorySeparatorChar, '/'))
+                    );
 
-                        contentFile.AddSubFile(
-                            fileName: Path.GetFileName(lutFileName),
-                            extractMethod: () => ((PostProcessing)resource.DataBlock).GetRAWData()
-                        );
+                    contentFile.AddSubFile(
+                        fileName: Path.GetFileName(lutFileName),
+                        extractMethod: () => ((PostProcessing)resource.DataBlock).GetRAWData()
+                    );
 
-                        break;
-                    }
+                    break;
+                }
 
                 // These all just use ToString() and WriteText() to do the job
                 case ResourceType.PanoramaStyle:
@@ -163,19 +163,19 @@ namespace ValveResourceFormat.IO
                     break;
 
                 default:
+                {
+                    if (resource.DataBlock is BinaryKV3 dataKv3)
                     {
-                        if (resource.DataBlock is BinaryKV3 dataKv3)
-                        {
-                            // Wrap it around a KV3File object to get the header.
-                            contentFile.Data = Encoding.UTF8.GetBytes(dataKv3.GetKV3File().ToString());
-                        }
-                        else
-                        {
-                            contentFile.Data = Encoding.UTF8.GetBytes(resource.DataBlock.ToString());
-                        }
-
-                        break;
+                        // Wrap it around a KV3File object to get the header.
+                        contentFile.Data = Encoding.UTF8.GetBytes(dataKv3.GetKV3File().ToString());
                     }
+                    else
+                    {
+                        contentFile.Data = Encoding.UTF8.GetBytes(resource.DataBlock.ToString());
+                    }
+
+                    break;
+                }
             }
 
             return contentFile;

@@ -20,12 +20,12 @@ namespace GUI.Types.ParticleRenderer.Initializers
             switch (field)
             {
                 case ParticleAttribute.LifeDuration:
-                    {
-                        var lifetime = (float)value.NextNumber();
-                        particle.ConstantLifetime = lifetime;
-                        particle.Lifetime = lifetime;
-                        break;
-                    }
+                {
+                    var lifetime = (float)value.NextNumber();
+                    particle.ConstantLifetime = lifetime;
+                    particle.Lifetime = lifetime;
+                    break;
+                }
             }
 
             return particle;
