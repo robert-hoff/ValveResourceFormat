@@ -1,7 +1,6 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Net.Security;
 using MyShaderAnalysis.batchtesting;
 using MyShaderAnalysis.codestash;
 using MyShaderAnalysis.filearchive;
@@ -15,7 +14,7 @@ using MyShaderFileKristiker.MyHelperClasses.ProgEntries;
 
 namespace MyShaderAnalysis
 {
-    class Program
+    public class Program
     {
         public class ToDebugWriter : StringWriter
         {
@@ -23,13 +22,14 @@ namespace MyShaderAnalysis
             {
                 Debug.WriteLine(str0);
             }
+
             public override void Write(string str0)
             {
                 Debug.Write(str0);
             }
         }
 
-        static void Main()
+        public static void Main()
         {
             Console.SetOut(new ToDebugWriter());
 
@@ -103,7 +103,7 @@ namespace MyShaderAnalysis
             // PrintoutVulkanCode.RunTrials();
         }
 
-        public static void vulkanReflect()
+        public static void VulkanReflect()
         {
             TestSpirvReflection.Run();
         }
