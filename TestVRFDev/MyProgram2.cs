@@ -1,27 +1,21 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 // R: added these
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using ValveResourceFormat;
-using ValveResourceFormat.ResourceTypes;
 
-
-namespace TestVRFDev {
+namespace TestVRFDev
+{
     class MyProgram2
     {
-
         static void Mainz(string[] args)
         {
             // Trace.WriteLine("Hello!");
             processingAlchemistVmdlModel();
         }
-
 
         static void processingAlchemistVmdlModel()
         {
@@ -49,8 +43,6 @@ namespace TestVRFDev {
                 FileName = alchemist_file,
             };
             resource.Read(alchemist_file);
-
-
 
             var path = @"X:\checkouts\ValveResourceFormat\Tests\Files\ValidOutput";
             // files is a string[] of all the files in the directory
@@ -85,7 +77,6 @@ namespace TestVRFDev {
                 // also DATA, NTRO, REDI, RERL
                 // Trace.WriteLine(blockType);
 
-
                 // verify each of the blocks in the resource against the reference files
                 var actualOutput = resource.GetBlockByType(blockType).ToString();
                 var expectedOutput = File.ReadAllText(file);
@@ -93,8 +84,6 @@ namespace TestVRFDev {
                 Trace.WriteLine(blockType);
                 // Trace.WriteLine(actualOutput);
                 // break;
-
-
 
                 // R: the bytestreams are different, what's going on?
                 // for some reason there are extra tabs in expectedOutput[i]
@@ -138,16 +127,15 @@ namespace TestVRFDev {
                 if (expectedOutput != actualOutput)
                 {
                     Trace.WriteLine("NOT THE SAME");
-                } else
+                }
+                else
                 {
                     Trace.WriteLine("SAME");
                 }
 
-
                 // Trace.WriteLine(blockType);
                 // Trace.WriteLine(actualOutput);
                 // Trace.WriteLine(expectedOutput);
-
 
                 // The test doesn't pass for the DATA block, we have among the expectedOutput
                 // ExternalReference m_refMeshes[2] =
@@ -162,7 +150,6 @@ namespace TestVRFDev {
                 //   resource: "models/heroes/alchemist/alchemist_model.vmesh"
                 //   resource: "models/heroes/alchemist/alchemist_lod.vmesh"
                 // ]
-
 
                 // Also the resolution of the floats are different, in expectedOutput
                 // float32 m_boneSphere[67] =
@@ -185,8 +172,8 @@ namespace TestVRFDev {
                 // I suppose they must have figured out a way to get those
                 // alchemist_model.vmesh and alchemist_lod.vmesh from the vmdl_c file
             }
+            resource.Dispose();
         }
-
 
         /*
          * This is the first part of the test in Tests/Test.cl method ReadlBlocks()
@@ -204,7 +191,6 @@ namespace TestVRFDev {
          */
         static void extensionAndResourceTypeAttribute()
         {
-
             string file = @"X:\checkouts\ValveResourceFormat\Tests\Files\alchemist.vmdl_c";
             var resource = new Resource
             {
@@ -214,7 +200,6 @@ namespace TestVRFDev {
             // resource.ResourceType will
             Trace.WriteLine(resource.ResourceType); // prints Model, ResourceType is an enum
 
-
             // R: This gets the extension and removes the _c part
             // For the file alchemist.vmdl_c extension becomes .vmdl
             var extension = Path.GetExtension(file);
@@ -222,7 +207,6 @@ namespace TestVRFDev {
             {
                 extension = extension.Substring(0, extension.Length - 2);
             }
-
 
             // var type = typeof(ResourceType).GetMember(resource.ResourceType.ToString()).First();
 
@@ -241,18 +225,16 @@ namespace TestVRFDev {
             // or .. the system (Visual Studio) identifies type as 'System.Reflection.MemberInfo'
             Trace.WriteLine(type);
 
-
             // attribute is just evaluated as the string ".vmdl"
-            var attribute = "." + ((ExtensionAttribute)type.GetCustomAttributes(typeof(ExtensionAttribute), false).First()).Extension;
+            var attribute = "." + ((ExtensionAttribute) type.GetCustomAttributes(typeof(ExtensionAttribute), false).First()).Extension;
             Trace.WriteLine(attribute);
-
 
             // The test in ReadBlocks() checks that extension and attribute are the same
             // they are both the string ".vmdl"
 
             // Assert.AreEqual(extension, attribute, file);
+            resource.Dispose();
         }
-
 
         static void listFilesInDirectory()
         {
@@ -266,14 +248,12 @@ namespace TestVRFDev {
             }
         }
 
-
         // from Tests/Test.cs, PackageInResourceThrows()
         static void codeFromTestClass()
         {
             // R: the vpk magic number is is 34 12 AA 55
             // and a vpk file bytesream will start as
             // 34 12 AA 55 02 00 00 00
-
 
             // Resource seems to be generic type to represent a "Valve Resource"
             Resource resource = new Resource();
@@ -284,18 +264,8 @@ namespace TestVRFDev {
             // If I pass this data to the resource the exception "Use ValvePak library to parse VPK files." will be thrown
             // i.e. the resource is indicating that it is not meant for vpk archives
             // resource.Read(ms);
+            resource.Dispose();
         }
-
     }
-
-
 }
-
-
-
-
-
-
-
-
 

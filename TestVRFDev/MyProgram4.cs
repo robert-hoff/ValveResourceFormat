@@ -1,60 +1,39 @@
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Decompiler;
 using SkiaSharp;
-using SteamDatabase.ValvePak;
-using ValveResourceFormat;
 
-
-namespace TestVRFDev {
-
-
-
+namespace TestVRFDev
+{
     class MyProgram4
     {
-        static void Mainz()
+        public static void Mainz()
         {
             // RunTheDecompiler();
-            decompressDataAndGenerateBitmap();
+            DecompressDataAndGenerateBitmap();
             // analyseData();
         }
 
-
-
-
-        static void analyseData()
+        public static void AnalyseData()
         {
             // the data is exactly 2^17 !!!
             // length of the data is 131072
 
             // 2^17 = 128 * 128 * 8
-
-
-            Span<byte> dataspan = getTheDataPart2();
+            Span<byte> dataspan = GetTheDataPart2();
             Span<byte> blockStorage = dataspan.Slice(0, 8);
 
-            // Debug.WriteLine(blockStorage.ToArray().Length);
-
+            Debug.WriteLine(blockStorage.ToArray().Length);
             Debug.WriteLine(dataspan.Length);
-
         }
-
-
-
-        static void decompressDataAndGenerateBitmap()
+        static void DecompressDataAndGenerateBitmap()
         {
             int w = 512;
             int h = 512;
 
             var imageInfo = new SKBitmap(w, h, SKColorType.Bgra8888, SKAlphaType.Unpremul);
 
-            Span<byte> dataspan = getTheDataPart2();
+            Span<byte> dataspan = GetTheDataPart2();
             // var datadecompressed = new Span<byte>(new byte[512*512*4]);
             var datadecompressed = imageInfo.PeekPixels().GetPixelSpan<byte>();
 
@@ -76,7 +55,6 @@ namespace TestVRFDev {
             uint crc32 = Crc32.Compute(datadecompressed.ToArray());
             Debug.WriteLine("0x{0:x8}", crc32);
 
-
             Span<byte> data;
             // R: outputting to bmp or jpeg works but other formats offered by SKEncodedImageFormat produce
             // empty files (of 0 bytes)
@@ -87,11 +65,10 @@ namespace TestVRFDev {
                 Debug.WriteLine("Uncompressed size = {0}", data.Length);
             }
 
+            imageInfo.Dispose();
             string outputPath = @"X:\checkouts\ValveResourceFormat\output\hello.jpg";
             File.WriteAllBytes(outputPath, data.ToArray());
         }
-
-
 
         private static void DecompressBlockDXT1(int x, int y, int width, Span<byte> blockStorage, Span<byte> pixels, int stride)
         {
@@ -102,16 +79,16 @@ namespace TestVRFDev {
             ConvertRgb565ToRgb888(color1, out var r1, out var g1, out var b1);
 
             uint c1 = blockStorage[4];
-            var c2 = (uint)blockStorage[5] << 8;
-            var c3 = (uint)blockStorage[6] << 16;
-            var c4 = (uint)blockStorage[7] << 24;
+            var c2 = (uint) blockStorage[5] << 8;
+            var c3 = (uint) blockStorage[6] << 16;
+            var c4 = (uint) blockStorage[7] << 24;
             var code = c1 | c2 | c3 | c4;
 
             for (var j = 0; j < 4; j++)
             {
                 for (var i = 0; i < 4; i++)
                 {
-                    var positionCode = (byte)((code >> (2 * ((4 * j) + i))) & 0x03);
+                    var positionCode = (byte) ((code >> (2 * ((4 * j) + i))) & 0x03);
 
                     byte finalR = 0, finalG = 0, finalB = 0;
 
@@ -132,14 +109,15 @@ namespace TestVRFDev {
                         case 2:
                             if (color0 > color1)
                             {
-                                finalR = (byte)(((2 * r0) + r1) / 3);
-                                finalG = (byte)(((2 * g0) + g1) / 3);
-                                finalB = (byte)(((2 * b0) + b1) / 3);
-                            } else
+                                finalR = (byte) (((2 * r0) + r1) / 3);
+                                finalG = (byte) (((2 * g0) + g1) / 3);
+                                finalB = (byte) (((2 * b0) + b1) / 3);
+                            }
+                            else
                             {
-                                finalR = (byte)((r0 + r1) / 2);
-                                finalG = (byte)((g0 + g1) / 2);
-                                finalB = (byte)((b0 + b1) / 2);
+                                finalR = (byte) ((r0 + r1) / 2);
+                                finalG = (byte) ((g0 + g1) / 2);
+                                finalB = (byte) ((b0 + b1) / 2);
                             }
                             break;
 
@@ -149,10 +127,12 @@ namespace TestVRFDev {
                                 break;
                             }
 
-                            finalR = (byte)(((2 * r1) + r0) / 3);
-                            finalG = (byte)(((2 * g1) + g0) / 3);
-                            finalB = (byte)(((2 * b1) + b0) / 3);
+                            finalR = (byte) (((2 * r1) + r0) / 3);
+                            finalG = (byte) (((2 * g1) + g0) / 3);
+                            finalB = (byte) (((2 * b1) + b0) / 3);
                             break;
+                        default:
+                            throw new Exception("shouldn't happen");
                     }
 
                     var pixelIndex = ((y + j) * stride) + ((x + i) * 4);
@@ -163,29 +143,22 @@ namespace TestVRFDev {
                         pixels[pixelIndex + 2] = finalR;
                         pixels[pixelIndex + 3] = byte.MaxValue;
                     }
-
-
                 }
             }
         }
-
-
 
         private static void ConvertRgb565ToRgb888(ushort color, out byte r, out byte g, out byte b)
         {
             int temp;
             temp = ((color >> 11) * 255) + 16;
-            r = (byte)(((temp / 32) + temp) / 32);
+            r = (byte) (((temp / 32) + temp) / 32);
             temp = (((color & 0x07E0) >> 5) * 255) + 32;
-            g = (byte)(((temp / 64) + temp) / 64);
+            g = (byte) (((temp / 64) + temp) / 64);
             temp = ((color & 0x001F) * 255) + 16;
-            b = (byte)(((temp / 32) + temp) / 32);
+            b = (byte) (((temp / 32) + temp) / 32);
         }
 
-
-
-
-        static Span<byte> getTheDataPart2()
+        static Span<byte> GetTheDataPart2()
         {
             int start = 1764;
             int DATASIZE = 131072;
@@ -195,16 +168,15 @@ namespace TestVRFDev {
             myReader.BaseStream.Position = start;
             var databytes = new Span<byte>(new byte[DATASIZE]);
             myReader.Read(databytes);
+            myReader.Dispose();
             return databytes;
         }
-
-
 
         /*
          * crc32 = 0x348f965b
          *
          */
-        static byte[] getTheDataPart1()
+        public static byte[] GetTheDataPart1()
         {
             int start = 1764;
             int DATASIZE = 131072;
@@ -215,13 +187,12 @@ namespace TestVRFDev {
 
             myReader.BaseStream.Position = start;
             byte[] databytes = myReader.ReadBytes(DATASIZE);
+            myReader.Dispose();
 
             // uint crc32 = Crc32.Compute(databyes);
             // Debug.WriteLine("0x{0:x8}", crc32);
             return databytes;
         }
-
-
 
         /*
          * Produces
@@ -237,9 +208,9 @@ namespace TestVRFDev {
          *
          *
          */
-        static void RunTheDecompiler()
+        public static void RunTheDecompiler()
         {
-            String[] args = new string[4];
+            string[] args = new string[4];
             // args[0] = "--stats";
             args[0] = "-o";
             args[1] = @"X:\checkouts\ValveResourceFormat\output\output.png";
@@ -247,14 +218,6 @@ namespace TestVRFDev {
             args[3] = @"X:\checkouts\ValveResourceFormat\Tests\FilesLatest\shading_pen_lines_psd_4cab66cb.vtex_c";
             Decompiler.Decompiler.Main(args);
         }
-
-
-
-
     }
-
-
-
-
-
 }
+

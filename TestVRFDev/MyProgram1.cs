@@ -2,10 +2,10 @@ using System;
 using System.Diagnostics;
 
 [assembly: CLSCompliant(false)]
-namespace TestVRFDev {
+namespace TestVRFDev
+{
     class MyProgram1
     {
-
         static void Mainz(string[] args)
         {
             int j = 100;
@@ -22,9 +22,7 @@ namespace TestVRFDev {
 
             DogDog growly_dog = new DogDog();
             growly_dog.bark("high");
-
         }
-
 
         public MyProgram1(int my_fieldvar)
         {
@@ -32,23 +30,14 @@ namespace TestVRFDev {
         }
 
         int my_fieldvar;
-
-
     }
-
-
 
     class MathsCat
     {
-
-
         public int mulmul(int a, int b)
         {
             return a * b;
         }
-
-
-
     }
 
     class DogDog
@@ -59,10 +48,5 @@ namespace TestVRFDev {
             return 100000;
         }
     }
-
-
-
 }
-
-
 

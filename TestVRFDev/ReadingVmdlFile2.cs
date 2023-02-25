@@ -1,74 +1,63 @@
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using SteamDatabase.ValvePak;
 using ValveResourceFormat;
 using ValveResourceFormat.Blocks;
 using ValveResourceFormat.IO;
 using ValveResourceFormat.ResourceTypes;
 
-namespace TestVRFDev {
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
+namespace TestVRFDev
+{
     class ReadingVmdlFile2
     {
-
         public static void RunTrials()
         {
-
-            trial4ReadDataBlock();
-            // trial3ReadDataBlock();
-            // trial2ReadDataBlock();
-            // trial1ReadDataBlock();
-
+            Trial4ReadDataBlock();
+            // Trial3ReadDataBlock();
+            // Trial2ReadDataBlock();
+            // Trial1ReadDataBlock();
         }
 
-        static string EXPORT_DIR = @"C:\Users\R\Desktop\temttemp";
+        private const string EXPORT_DIR = @"C:\Users\R\Desktop\temttemp";
 
-
-
-        public static void trial4ReadDataBlock()
+        public static void Trial4ReadDataBlock()
         {
-            Package package = new SteamDatabase.ValvePak.Package();
+            Package package = new Package();
             package.Read(@"X:\Steam\steamapps\common\Half-Life Alyx\game\hlvr\pak01_dir.vpk");
             PackageEntry model_entry = package.FindEntry("models/creatures/zombie_classic/zombie_classic.vmdl_c");
             package.ReadEntry(model_entry, out byte[] output); // this obtains the vmdl_c file as byte[] output - which is 44968687 bytes long
+            package.Dispose();
 
             // Resource resource = new ValveResourceFormat.Resource();
 
             // when running the GUI resource is instantiated like this (but it doesn't seem to make any difference)
             // so it's unclear why this is done ..
-            Resource resource = new ValveResourceFormat.Resource
+            Resource resource = new Resource
             {
                 FileName = "zombie_classic.vmdl_c",
             };
 
-
             resource.Read(new MemoryStream(output));
-            ResourceData datablock = (ResourceData)resource.GetBlockByType(BlockType.DATA);
-
-
+            resource.Dispose();
+            // ResourceData datablock = (ResourceData) resource.GetBlockByType(BlockType.DATA);
+            _ = (ResourceData) resource.GetBlockByType(BlockType.DATA);
         }
 
-
-
-        public static void trial3ReadDataBlock()
+        public static void Trial3ReadDataBlock()
         {
-            Package package = new SteamDatabase.ValvePak.Package();
+            Package package = new Package();
             package.Read(@"X:\Steam\steamapps\common\Half-Life Alyx\game\hlvr\pak01_dir.vpk");
             PackageEntry model_entry = package.FindEntry("models/creatures/zombie_classic/zombie_hanging.vmdl_c");
             package.ReadEntry(model_entry, out byte[] output); // this obtains the vmdl_c file as byte[] output - which is 44968687 bytes long
 
-            Resource resource = new ValveResourceFormat.Resource();
+            Resource resource = new Resource();
             resource.Read(new MemoryStream(output));
-            ResourceData datablock = (ResourceData)resource.GetBlockByType(BlockType.DATA);
+            ResourceData datablock = (ResourceData) resource.GetBlockByType(BlockType.DATA);
 
 
             // ValveResourceFormat.ResourceTypes.Model datablock_to_model = (ValveResourceFormat.ResourceTypes.Model)datablock;
-
 
             var exporter = new GltfModelExporter
             {
@@ -76,26 +65,22 @@ namespace TestVRFDev {
             };
 
             string filename = "zombie_hanging.vmdl_c";
-            exporter.ExportToFile(filename, EXPORT_DIR + "\\" + filename, (Model)resource.DataBlock, null);
+            exporter.ExportToFile(filename, EXPORT_DIR + "\\" + filename, (Model) resource.DataBlock, null);
+            resource.Dispose();
         }
 
-
-
-
-        public static void trial2ReadDataBlock()
+        public static void Trial2ReadDataBlock()
         {
-            Package package = new SteamDatabase.ValvePak.Package();
+            Package package = new Package();
             package.Read(@"X:\Steam\steamapps\common\Half-Life Alyx\game\hlvr\pak01_dir.vpk");
             PackageEntry model_entry = package.FindEntry("models/creatures/zombie_classic/zombie_classic.vmdl_c");
             package.ReadEntry(model_entry, out byte[] output); // this obtains the vmdl_c file as byte[] output - which is 44968687 bytes long
 
-            Resource resource = new ValveResourceFormat.Resource();
+            Resource resource = new Resource();
             resource.Read(new MemoryStream(output));
-            ResourceData datablock = (ResourceData)resource.GetBlockByType(BlockType.DATA);
-
+            ResourceData datablock = (ResourceData) resource.GetBlockByType(BlockType.DATA);
 
             // ValveResourceFormat.ResourceTypes.Model datablock_to_model = (ValveResourceFormat.ResourceTypes.Model)datablock;
-
 
             var exporter = new GltfModelExporter
             {
@@ -103,26 +88,22 @@ namespace TestVRFDev {
             };
 
             string filename = "zombie_classic.vmdl_c";
-            exporter.ExportToFile(filename, EXPORT_DIR + "\\" + filename, (Model)resource.DataBlock, null);
+            exporter.ExportToFile(filename, EXPORT_DIR + "\\" + filename, (Model) resource.DataBlock, null);
+            resource.Dispose();
         }
 
-
-
-        public static void trial1ReadDataBlock()
+        public static void Trial1ReadDataBlock()
         {
-            Package package = new SteamDatabase.ValvePak.Package();
+            Package package = new Package();
             package.Read(@"Z:\git\vcs-decompile\vrf-decompiler-bat\pak01.vpk");
             PackageEntry model_entry = package.FindEntry("models/items/huskar/armor_of_reckless_vigor_weapon/armor_of_reckless_vigor_weapon.vmdl_c");
             package.ReadEntry(model_entry, out byte[] output); // this obtains the vmdl_c file as byte[] output - which is 44968687 bytes long
 
-            Resource resource = new ValveResourceFormat.Resource();
+            Resource resource = new Resource();
             resource.Read(new MemoryStream(output));
-            ResourceData datablock = (ResourceData)resource.GetBlockByType(BlockType.DATA);
-
+            ResourceData datablock = (ResourceData) resource.GetBlockByType(BlockType.DATA);
 
             // ValveResourceFormat.ResourceTypes.Model datablock_to_model = (ValveResourceFormat.ResourceTypes.Model)datablock;
-
-
 
             var exporter = new GltfModelExporter
             {
@@ -135,18 +116,14 @@ namespace TestVRFDev {
             // because it seems the outpath is sent to it as stated here
             string fileNameOutput = @"C:\Users\R\Desktop\temttemp\armor_of_reckless_vigor_weapon.gltf";
             // string fileNameOutput = @"C:\Users\R\Desktop\temttemp\armor_of_reckless_vigor_weapon.vmdl_c";
-            exporter.ExportToFile(resourceName, fileNameOutput, (Model)resource.DataBlock, null);
-
+            exporter.ExportToFile(resourceName, fileNameOutput, (Model) resource.DataBlock, null);
+            resource.Dispose();
         }
-
-
 
         class MyFileLoader : IFileLoader
         {
             Package package;
-            private readonly Dictionary<string, Resource> CachedResources = new Dictionary<string, Resource>();
-
-
+            private readonly Dictionary<string, Resource> CachedResources = new();
 
             public MyFileLoader(Package package)
             {
@@ -157,7 +134,6 @@ namespace TestVRFDev {
             {
                 Debug.WriteLine($"FILE LOADER: {file}");
                 // return null;
-
 
                 if (CachedResources.TryGetValue(file, out var resource) && resource.Reader != null)
                 {
@@ -178,25 +154,10 @@ namespace TestVRFDev {
                     CachedResources[file] = resource;
                     return resource;
                 }
-
-
+                resource.Dispose();
                 return null;
             }
         }
-
-
-
     }
-
-
-
 }
-
-
-
-
-
-
-
-
 

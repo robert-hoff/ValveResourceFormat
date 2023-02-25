@@ -1,42 +1,22 @@
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace TestVRFDev {
-	class TryStuff1 {
+namespace TestVRFDev
+{
+    class TryStuff1
+    {
+        public static void Mainz()
+        {
+            Trial1();
+        }
 
-
-		static void Mainz() {
-			trial1();
-		}
-
-
-
-		static void trial1() {
-			string query = @"SELECT foo, bar
+        public static void Trial1()
+        {
+            string query = @"SELECT foo, bar
 FROM table
 WHERE id = 42";
 
-
-			Debug.WriteLine(query);
-		}
-
-
-
-
-	}
-
-
-
-
-
-
-
-
-
-
-
+            Debug.WriteLine(query);
+        }
+    }
 }
+
