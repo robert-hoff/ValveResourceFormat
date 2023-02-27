@@ -1,23 +1,26 @@
 using System;
 using System.Collections.Generic;
-// R: added these
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using ValveResourceFormat;
 
+#pragma warning disable IDE0018 // Inline variable declaration
+#pragma warning disable IDE0051 // Remove unused private members
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
+#pragma warning disable IDE0060 // Remove unused parameter
 namespace TestVRFDev
 {
     class MyProgram2
     {
-        static void Mainz(string[] args)
+        public static void Mainz(string[] args)
         {
             // Trace.WriteLine("Hello!");
-            processingAlchemistVmdlModel();
+            ProcessingAlchemistVmdlModel();
         }
 
-        static void processingAlchemistVmdlModel()
+        static void ProcessingAlchemistVmdlModel()
         {
             /*
              *
@@ -189,7 +192,7 @@ namespace TestVRFDev
          *
          *
          */
-        static void extensionAndResourceTypeAttribute()
+        static void ExtensionAndResourceTypeAttribute()
         {
             string file = @"X:\checkouts\ValveResourceFormat\Tests\Files\alchemist.vmdl_c";
             var resource = new Resource
@@ -236,7 +239,7 @@ namespace TestVRFDev
             resource.Dispose();
         }
 
-        static void listFilesInDirectory()
+        static void ListFilesInDirectory()
         {
             var resources = new Dictionary<string, Resource>();
             string FILEPATH = @"X:\checkouts\ValveResourceFormat\Tests\Files";
@@ -249,7 +252,7 @@ namespace TestVRFDev
         }
 
         // from Tests/Test.cs, PackageInResourceThrows()
-        static void codeFromTestClass()
+        static void CodeFromTestClass()
         {
             // R: the vpk magic number is is 34 12 AA 55
             // and a vpk file bytesream will start as

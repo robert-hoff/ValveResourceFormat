@@ -5,7 +5,7 @@ using SkiaSharp;
 
 namespace TestVRFDev
 {
-    class MyProgram4
+    public static class MyProgram4
     {
         public static void Mainz()
         {
@@ -26,7 +26,7 @@ namespace TestVRFDev
             Debug.WriteLine(blockStorage.ToArray().Length);
             Debug.WriteLine(dataspan.Length);
         }
-        static void DecompressDataAndGenerateBitmap()
+        public static void DecompressDataAndGenerateBitmap()
         {
             int w = 512;
             int h = 512;
@@ -158,7 +158,7 @@ namespace TestVRFDev
             b = (byte) (((temp / 32) + temp) / 32);
         }
 
-        static Span<byte> GetTheDataPart2()
+        private static Span<byte> GetTheDataPart2()
         {
             int start = 1764;
             int DATASIZE = 131072;

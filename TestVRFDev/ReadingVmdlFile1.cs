@@ -7,15 +7,17 @@ using ValveResourceFormat.Blocks;
 using ValveResourceFormat.IO;
 using ValveResourceFormat.ResourceTypes;
 
+#pragma warning disable IDE0052 // Remove unread private members
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
 namespace TestVRFDev
 {
-    class ReadingVmdlFile1
+    public static class ReadingVmdlFile1
     {
-        static void Mainz()
+        public static void Mainz()
         {
-            // trial3ReadDataBlock();
-            // trial2();
-            trial1();
+            // Trial3ReadDataBlock();
+            // Trial2();
+            Trial1();
         }
 
         public const string DOTA2_TEST_VPK = @"Z:\git\vcs-decompile\vrf-decompiler-bat\pak01.vpk";
@@ -25,34 +27,36 @@ namespace TestVRFDev
         public const string ZOMBIE_CLASSIC = "models/creatures/zombie_classic/zombie_classic.vmdl_c";
         public const string EXPORT_DIR = @"C:\Users\R\Desktop\temttemp";
 
-        public static void trial3ReadDataBlock()
+        public static void Trial3ReadDataBlock()
         {
-            Package package = new SteamDatabase.ValvePak.Package();
+            Package package = new();
             package.Read(@"X:\Steam\steamapps\common\Half-Life Alyx\game\hlvr\pak01_dir.vpk");
             PackageEntry model_entry = package.FindEntry("models/creatures/zombie_classic/zombie_classic.vmdl_c");
             package.ReadEntry(model_entry, out byte[] output); // this obtains the vmdl_c file as byte[] output - which is 44968687 bytes long
+            package.Dispose();
 
-            Resource resource = new ValveResourceFormat.Resource();
+            Resource resource = new();
             resource.Read(new MemoryStream(output));
             ResourceData datablock = (ResourceData) resource.GetBlockByType(BlockType.DATA);
-
-            ValveResourceFormat.ResourceTypes.Model datablock_to_model = (ValveResourceFormat.ResourceTypes.Model) datablock;
+            resource.Dispose();
+            Model datablock_to_model = (Model) datablock;
         }
 
-        public static void trial2()
+        public static void Trial2()
         {
             string vpkfile = HLALYX_TEST_VPK;
-            SteamDatabase.ValvePak.Package package = new SteamDatabase.ValvePak.Package();
+            Package package = new();
             package.Read(vpkfile);
 
             string vpk_entry = "models/creatures/zombie_classic/zombie_classic.vmdl_c";
             // string filename = vpk_entry.Substring(vpk_entry.LastIndexOf("/") + 1);
 
-            SteamDatabase.ValvePak.PackageEntry model_entry = package.FindEntry(vpk_entry);
+            PackageEntry model_entry = package.FindEntry(vpk_entry);
 
             package.ReadEntry(model_entry, out byte[] output);
+            package.Dispose();
 
-            ValveResourceFormat.Resource resource = new ValveResourceFormat.Resource();
+            Resource resource = new();
 
             // ouput.Length here is
             // 44968687
@@ -62,13 +66,14 @@ namespace TestVRFDev
             long millis = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
             resource.Read(new MemoryStream(output));
             Debug.WriteLine($"reading {vpkfile} took {DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() - millis} ms");
-            ValveResourceFormat.Blocks.ResourceData datablock = (ResourceData) resource.GetBlockByType(BlockType.DATA);
+            ResourceData datablock = (ResourceData) resource.GetBlockByType(BlockType.DATA);
+            resource.Dispose();
         }
 
-        public static void trial1()
+        public static void Trial1()
         {
             string vpkfile = HLALYX_TEST_VPK;
-            var package = new SteamDatabase.ValvePak.Package();
+            Package package = new();
             package.Read(vpkfile);
 
             string vpk_entry = ZOMBIE_CLASSIC;
@@ -78,7 +83,7 @@ namespace TestVRFDev
 
             PackageEntry model_entry = package.FindEntry(vpk_entry);
 
-            var resource = new ValveResourceFormat.Resource();
+            Resource resource = new();
             package.ReadEntry(model_entry, out byte[] output);
 
             long millis = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
@@ -92,6 +97,7 @@ namespace TestVRFDev
             //
 
             MyFileLoader myFileLoader = new MyFileLoader(package);
+            package.Dispose();
 
             var exporter = new GltfModelExporter
             {
@@ -101,11 +107,12 @@ namespace TestVRFDev
             ResourceData datablock = (ResourceData) resource.GetBlockByType(BlockType.DATA);
 
             exporter.ExportToFile(filename, EXPORT_DIR + "\\" + filename, (Model) resource.DataBlock, null);
+            resource.Dispose();
         }
 
         class MyFileLoader : IFileLoader
         {
-            Package package;
+            private Package package;
             public MyFileLoader(Package package)
             {
                 this.package = package;

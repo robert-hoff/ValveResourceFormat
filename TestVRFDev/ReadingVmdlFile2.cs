@@ -10,7 +10,7 @@ using ValveResourceFormat.ResourceTypes;
 #pragma warning disable IDE0059 // Unnecessary assignment of a value
 namespace TestVRFDev
 {
-    class ReadingVmdlFile2
+    public static class ReadingVmdlFile2
     {
         public static void RunTrials()
         {
@@ -120,7 +120,7 @@ namespace TestVRFDev
             resource.Dispose();
         }
 
-        class MyFileLoader : IFileLoader
+        private class MyFileLoader : IFileLoader
         {
             Package package;
             private readonly Dictionary<string, Resource> CachedResources = new();

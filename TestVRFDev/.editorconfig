@@ -99,7 +99,7 @@ dotnet_diagnostic.CA1060.severity = warning
 # CA1061: Do not hide base class methods	A method in a base type is hidden by an identically named method in a derived type, when  ...
 dotnet_diagnostic.CA1061.severity = suggestion
 # CA1062: Validate arguments of public methods
-dotnet_diagnostic.CA1062.severity = warning
+dotnet_diagnostic.CA1062.severity = none
 # CA1063: Implement IDisposable correctly	All IDisposable types should implement the Dispose pattern correctly.
 dotnet_diagnostic.CA1063.severity = warning
 # CA1064: Exceptions should be public	An internal exception is visible only inside its own internal scope. After the exception fal ...

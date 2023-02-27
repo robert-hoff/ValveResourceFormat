@@ -1,20 +1,21 @@
 using System.Diagnostics;
 using ValveResourceFormat;
 
+#pragma warning disable IDE0060 // Remove unused parameter
 namespace TestVRFDev
 {
-    class MyProgram3
+    public static class MyProgram3
     {
-        static void Mainz(string[] args)
+        public static void Mainz(string[] args)
         {
-            // Trace.WriteLine("Hello!");
             string updated_file = @"X:\checkouts\ValveResourceFormat\Tests\FilesLatest\shading_pen_lines_psd_4cab66cb.vtex_c";
 
-            var resource = new Resource();
+            Resource resource = new();
             resource.Read(updated_file);
 
-            var data = resource.GetBlockByType(BlockType.REDI).ToString();
-            // Trace.WriteLine(data);
+            string data = resource.GetBlockByType(BlockType.REDI).ToString();
+            Trace.WriteLine(data);
+            resource.Dispose();
         }
 
         /*
@@ -24,7 +25,7 @@ namespace TestVRFDev
 		 *
 		 *
 		 */
-        static void getDataBlocksFromFile()
+        public static void GetDataBlocksFromFile()
         {
             // Exists in
             // X:\dota-2-VRF-exports\dota2-export-decompiled\models\items\huskar\armor_of_reckless_vigor_weapon
@@ -36,6 +37,7 @@ namespace TestVRFDev
 
             var data = resource.GetBlockByType(BlockType.REDI).ToString();
             Trace.WriteLine(data);
+            resource.Dispose();
         }
     }
 }

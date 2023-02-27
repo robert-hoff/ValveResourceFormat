@@ -6,9 +6,9 @@ using TestVRFDev.RunMyMathsLibDll;
 #pragma warning disable CA2000 // Dispose objects before losing scope
 namespace TestVRFDev
 {
-    class ProgramEntry
+    public static class ProgramEntry
     {
-        public class ToDebugWriter : StringWriter
+        private class ToDebugWriter : StringWriter
         {
             public override void WriteLine(string str0)
             {
@@ -20,7 +20,7 @@ namespace TestVRFDev
             }
         }
 
-        static void Main()
+        public static void Main()
         {
             Console.SetOut(new ToDebugWriter());
             RunMyMathsLib.Run();

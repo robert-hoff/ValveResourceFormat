@@ -5,27 +5,29 @@ using System.Linq;
 
 namespace TestVRFDev
 {
-    class LanguageAndSyntax1
+    public static class LanguageAndSyntax1
     {
-        static void Mainz()
+        public static void Mainz()
         {
-            arrowOperator();
+            ArrowOperator();
         }
 
-        static void TestGenericSort()
+        public static void TestGenericSort()
         {
             // SortThis testClass = new SortThis(12);
             // Debug.WriteLine(testClass.val);
 
-            List<SortThis> testlist = new();
-            testlist.Add(new SortThis(2));
-            testlist.Add(new SortThis(-10));
-            testlist.Add(new SortThis(10));
+            List<SortThis> testlist = new()
+            {
+                new SortThis(2),
+                new SortThis(-10),
+                new SortThis(10)
+            };
             testlist.Sort();
             Debug.WriteLine(testlist[0].val);
         }
 
-        class SortThis : IComparable<SortThis>
+        private class SortThis : IComparable<SortThis>
         {
             public int val;
             public SortThis(int val)
@@ -39,18 +41,18 @@ namespace TestVRFDev
             }
         }
 
-        public static void printFloatNumber()
+        public static void PrintFloatNumber()
         {
             Debug.WriteLine("{0:0.00}", 9.2);
         }
 
-        public static void printHexNumber()
+        public static void PrintHexNumber()
         {
             Debug.WriteLine("0x{0:x8}", 123123123);
         }
 
         // instead of copy-pasting from here type 'for' and tab,tab
-        static void forLoop()
+        public static void ForLoop()
         {
             for (int i = 0; i < 100; i++)
             {
@@ -61,14 +63,14 @@ namespace TestVRFDev
         // found the syntax in GUI > Types > Exporter > ExportFile.cs
         // where it's part of the statement
         // extractDialog.OnProcess += (_,__) => {..}
-        static void interestingStruct()
+        public static void InterestingStruct()
         {
             //object hihih += (_, __) => {
             //	Debug.WriteLine("hello!");
             //};
         }
 
-        static void arrowOperator()
+        public static void ArrowOperator()
         {
             string[] words = { "bot", "apple", "apricot" };
             int minimalLength = words.Where(w => w.StartsWith("a")).Min(w => w.Length);
@@ -87,7 +89,7 @@ namespace TestVRFDev
          *
          *
          */
-        static void variablesWithUnderscore()
+        public static void VariablesWithUnderscore()
         {
             // int _ = 100;
             // Debug.WriteLine(_);
@@ -102,14 +104,14 @@ namespace TestVRFDev
         /*
          * https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/builtin-types/value-tuples
          */
-        static void tupleTypes()
+        public static void TupleTypes()
         {
             (double, int) my_tuple = (4.5, 3);
             Debug.WriteLine(my_tuple.Item1);
             Debug.WriteLine(my_tuple.Item2);
         }
 
-        static void sliceExample()
+        public static void SliceExample()
         {
             byte[] myBytes = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
             Span<byte> dataspan = new Span<byte>(myBytes);
@@ -121,7 +123,7 @@ namespace TestVRFDev
             }
         }
 
-        static void runCrc32()
+        public static void RunCrc32()
         {
             byte[] data = { 1, 2, 3 };
             uint val = Crc32.Compute(data);
