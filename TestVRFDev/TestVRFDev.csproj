@@ -6,8 +6,8 @@
     <ApplicationIcon />
     <StartupObject />
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <RunAnalyzersDuringLiveAnalysis>True</RunAnalyzersDuringLiveAnalysis>
-    <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+    <RunAnalyzersDuringLiveAnalysis>False</RunAnalyzersDuringLiveAnalysis>
+    <EnforceCodeStyleInBuild>False</EnforceCodeStyleInBuild>
     <EnableNETAnalyzers>True</EnableNETAnalyzers>
   </PropertyGroup>
 

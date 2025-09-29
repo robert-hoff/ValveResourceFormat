@@ -1,6 +1,8 @@
+#pragma warning disable IDE0005 // Using directive is unnecessary.
 using System;
 using System.Diagnostics;
 using System.IO;
+using TestVRFDev.CSharpSnippets;
 using TestVRFDev.RunMyMathsLibDll;
 
 #pragma warning disable CA2000 // Dispose objects before losing scope
@@ -23,7 +25,9 @@ namespace TestVRFDev
         public static void Main()
         {
             Console.SetOut(new ToDebugWriter());
-            RunMyMathsLib.Run();
+
+            // RunMyMathsLib.Run();
+            Md5Test.Run();
         }
     }
 }
